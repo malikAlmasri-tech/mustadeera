@@ -20,7 +20,8 @@ input,select,button,textarea{font-family:'Cairo',sans-serif}
 .sec-title{font-size:15px;font-weight:700;color:#111827;padding:0 14px 10px;display:flex;justify-content:space-between;align-items:center}.ftab{background:white;border:1.5px solid #e5e7eb;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s}.ftab.active-tab{background:var(--g);border-color:var(--g);color:white}
 .header{background:linear-gradient(150deg,#15803d 0%,#064e2a 100%);color:white;padding:14px 16px 52px;position:relative;overflow:hidden}.header::before{content:'';position:absolute;top:-40px;left:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none}.header::after{content:'';position:absolute;bottom:-60px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.05);pointer-events:none}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center}.modal-overlay.show{display:flex}.modal{background:white;border-radius:20px 20px 0 0;width:100%;max-width:var(--max);max-height:92vh;overflow-y:auto;padding:18px 16px max(20px,env(safe-area-inset-bottom));animation:slideUp .3s ease}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.modal-handle{width:36px;height:3px;background:#e5e7eb;border-radius:2px;margin:0 auto 14px}
-.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;padding:20px}.success-overlay.show{display:flex}.scard{background:white;border-radius:18px;padding:28px 20px;text-align:center;width:100%;max-width:320px}
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;padding:20px}.success-overlay.show{display:flex}.scard{background:white;border-radius:18px;padding:28px 20px;text-align:center;width:100%;max-width:320px}.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#111827;color:white;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:all .25s ease;text-align:center;line-height:1.5}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast.error{background:#dc2626}.toast.success{background:#15803d}.toast.warn{background:#92400e}
+.loading-box{background:white;border-radius:14px;border:0.5px solid #e5e7eb;padding:20px;text-align:center;color:#6b7280;font-size:13px;font-weight:700}.spinner{width:24px;height:24px;border:3px solid #dcfce7;border-top-color:#16a34a;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}@keyframes spin{to{transform:rotate(360deg)}}
 .bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:var(--max);background:white;border-top:0.5px solid #f3f4f6;display:none;justify-content:space-around;padding:8px 0 max(10px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.08)}.bnav.show{display:flex}.nitem{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#9ca3af;cursor:pointer;padding:3px 10px;min-width:44px;transition:color .2s}.nitem.active{color:var(--g)}.nicon{font-size:20px;margin-bottom:1px}
 .tbtn{border:1.5px solid #e5e7eb;border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;color:#374151;background:white;transition:all .2s;line-height:1.4}.tbtn.sel{background:var(--g);border-color:var(--g);color:white}.tbtn.taken{background:#f9fafb;color:#d1d5db;cursor:not-allowed;border-color:#f3f4f6}
 .place-card{background:white;border-radius:14px;overflow:hidden;border:0.5px solid #e5e7eb;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform .2s}.place-card:active{transform:scale(0.98)}
@@ -218,6 +219,8 @@ input,select,button,textarea{font-family:'Cairo',sans-serif}
 
 <div class="success-overlay" id="successOverlay"><div class="scard"><div style="font-size:52px;margin-bottom:12px">🎉</div><div style="font-size:19px;font-weight:700;color:#111827;margin-bottom:6px">تمت العملية</div><div id="sMsgText" style="font-size:13px;color:#6b7280;margin-bottom:20px;line-height:1.6"></div><button class="sbtn" onclick="closeSuccess()">حسناً</button></div></div>
 
+<div id="toast" class="toast"></div>
+
 <div class="bnav" id="playerNav"><div class="nitem active" id="nav-home" onclick="showPage('home')"><div class="nicon">🏠</div><div>الرئيسية</div></div><div class="nitem" id="nav-bookings" onclick="showPage('bookings')"><div class="nicon">📅</div><div>حجوزاتي</div></div><div class="nitem" id="nav-account" onclick="showPage('account')"><div class="nicon">👤</div><div>حسابي</div></div></div>
 <div class="bnav" id="ownerNav"><div class="nitem active" onclick="showOwnerPage()"><div class="nicon">📊</div><div>لوحتي</div></div></div>
 </div>
@@ -235,6 +238,21 @@ function getArabicDayName(dateStr){const days=["الأحد","الاثنين","ا
 function getShortDate(dateStr){const d=new Date(dateStr+"T12:00:00");return `${d.getDate()}/${d.getMonth()+1}`}
 function getSource(){const params=new URLSearchParams(window.location.search);return params.get("source")||"direct"}
 function normalizePhoneLocal(phone){phone=String(phone||'').trim().replace(/\s+/g,'');if(phone.startsWith('+'))phone=phone.substring(1);if(phone.startsWith('00962'))phone='962'+phone.substring(5);if(phone.startsWith('07'))phone='962'+phone.substring(1);return phone}
+function showToast(message,type='error'){
+  const toast=document.getElementById('toast');
+  if(!toast){console.log(message);return}
+  toast.textContent=message;
+  toast.className='toast '+(type||'');
+  clearTimeout(window.__toastTimer);
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  window.__toastTimer=setTimeout(()=>toast.classList.remove('show'),3200);
+}
+function showInlineLoading(targetId,message='جاري التحميل...'){
+  const el=document.getElementById(targetId);
+  if(!el)return;
+  el.innerHTML=`<div class="loading-box"><div class="spinner"></div>${message}</div>`;
+}
+
 
 async function apiGet(action, extra={}){const params=new URLSearchParams({action,...extra});const res=await fetch(`${API_URL}?${params.toString()}`);if(!res.ok)throw new Error("API GET failed");return await res.json()}
 async function apiPost(data){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(data)});if(!res.ok)throw new Error("API POST failed");return await res.json()}
@@ -381,16 +399,16 @@ async function loadDataFromGoogleSheets(options={}){
     return false;
   }
 }
-async function initApp(){await loadDataFromGoogleSheets();renderRegionTabs();filterPlaces();if(ownerToken){document.getElementById('ownerNav').classList.add('show');document.getElementById('playerNav').classList.remove('show');showOwnerPage();loadOwnerDashboard();return}if(playerToken){try{const res=await apiGet('getPlayerBookings',{player_token:playerToken});if(res.success){playerData=res.player;document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home');return}else{localStorage.removeItem('player_token');playerToken=''}}catch(e){localStorage.removeItem('player_token');playerToken=''}}}
+async function initApp(){showInlineLoading('placesList','جاري تحميل الملاعب...');await loadDataFromGoogleSheets();renderRegionTabs();filterPlaces();if(ownerToken){document.getElementById('ownerNav').classList.add('show');document.getElementById('playerNav').classList.remove('show');showOwnerPage();loadOwnerDashboard();return}if(playerToken){try{const res=await apiGet('getPlayerBookings',{player_token:playerToken});if(res.success){playerData=res.player;document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home');return}else{localStorage.removeItem('player_token');playerToken=''}}catch(e){localStorage.removeItem('player_token');playerToken=''}}}
 
 function showPlayerLogin(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('playerLoginPage').classList.add('active');document.getElementById('playerNav').classList.remove('show');document.getElementById('ownerNav').classList.remove('show')}
 function showPlayerRegister(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('playerRegisterPage').classList.add('active');document.getElementById('playerNav').classList.remove('show');document.getElementById('ownerNav').classList.remove('show')}
-async function playerLogin(){const phone=document.getElementById('playerPhone').value.trim();const password=document.getElementById('playerPassword').value.trim();if(!phone||!password){alert('أدخل رقم الهاتف وكلمة السر');return}try{const res=await apiGet('playerLogin',{phone,password});if(!res.success){alert(res.message||'فشل تسجيل الدخول');return}playerToken=res.player_token;playerData=res.player;localStorage.setItem('player_token',playerToken);localStorage.removeItem('owner_token');ownerToken='';document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home')}catch(e){alert('صار خطأ بالاتصال أثناء تسجيل الدخول')}}
-async function playerRegister(){const name=document.getElementById('regPlayerName').value.trim();const phone=document.getElementById('regPlayerPhone').value.trim();const password=document.getElementById('regPlayerPassword').value.trim();if(!name||!phone||!password){alert('عبّي الاسم ورقم الهاتف وكلمة السر');return}try{const res=await apiPost({action:'playerRegister',name,phone,password});if(!res.success){alert(res.message||'فشل إنشاء الحساب');return}playerToken=res.player_token;playerData=res.player;localStorage.setItem('player_token',playerToken);localStorage.removeItem('owner_token');ownerToken='';document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home')}catch(e){alert('صار خطأ بالاتصال أثناء إنشاء الحساب')}}
+async function playerLogin(){const phone=document.getElementById('playerPhone').value.trim();const password=document.getElementById('playerPassword').value.trim();if(!phone||!password){showToast('أدخل رقم الهاتف وكلمة السر','warn');return}try{const res=await apiGet('playerLogin',{phone,password});if(!res.success){showToast(res.message||'فشل تسجيل الدخول','error');return}playerToken=res.player_token;playerData=res.player;localStorage.setItem('player_token',playerToken);localStorage.removeItem('owner_token');ownerToken='';document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home')}catch(e){showToast('صار خطأ بالاتصال أثناء تسجيل الدخول','error')}}
+async function playerRegister(){const name=document.getElementById('regPlayerName').value.trim();const phone=document.getElementById('regPlayerPhone').value.trim();const password=document.getElementById('regPlayerPassword').value.trim();if(!name||!phone||!password){showToast('عبّي الاسم ورقم الهاتف وكلمة السر','warn');return}try{const res=await apiPost({action:'playerRegister',name,phone,password});if(!res.success){showToast(res.message||'فشل إنشاء الحساب','error');return}playerToken=res.player_token;playerData=res.player;localStorage.setItem('player_token',playerToken);localStorage.removeItem('owner_token');ownerToken='';document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');document.getElementById('playerNav').classList.add('show');document.getElementById('ownerNav').classList.remove('show');showPage('home')}catch(e){showToast('صار خطأ بالاتصال أثناء إنشاء الحساب','error')}}
 function quickLogin(type){if(type==='player'){showPlayerLogin()}else{showOwnerLogin()}}
 function showOwnerLogin(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('ownerLoginPage').classList.add('active');document.getElementById('playerNav').classList.remove('show');document.getElementById('ownerNav').classList.remove('show')}
 function backToLogin(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('loginPage').classList.add('active')}
-async function ownerLogin(){const phone=document.getElementById('ownerPhone').value.trim();const password=document.getElementById('ownerPassword').value.trim();if(!phone||!password){alert('أدخل رقم الهاتف وكلمة السر');return}try{const res=await apiGet('ownerLogin',{phone,password});if(!res.success){alert(res.message||'فشل تسجيل الدخول');return}ownerToken=res.owner_token;localStorage.setItem('owner_token',ownerToken);localStorage.removeItem('player_token');playerToken='';playerData=null;document.getElementById('ownerNav').classList.add('show');document.getElementById('playerNav').classList.remove('show');showOwnerPage();await loadOwnerDashboard()}catch(e){alert('صار خطأ بالاتصال أثناء تسجيل الدخول')}}
+async function ownerLogin(){const phone=document.getElementById('ownerPhone').value.trim();const password=document.getElementById('ownerPassword').value.trim();if(!phone||!password){showToast('أدخل رقم الهاتف وكلمة السر','warn');return}try{const res=await apiGet('ownerLogin',{phone,password});if(!res.success){showToast(res.message||'فشل تسجيل الدخول','error');return}ownerToken=res.owner_token;localStorage.setItem('owner_token',ownerToken);localStorage.removeItem('player_token');playerToken='';playerData=null;document.getElementById('ownerNav').classList.add('show');document.getElementById('playerNav').classList.remove('show');showOwnerPage();await loadOwnerDashboard()}catch(e){showToast('صار خطأ بالاتصال أثناء تسجيل الدخول','error')}}
 function doLogout(){ownerToken='';ownerData=null;playerToken='';playerData=null;localStorage.removeItem('owner_token');localStorage.removeItem('player_token');document.getElementById('playerNav').classList.remove('show');document.getElementById('ownerNav').classList.remove('show');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('loginPage').classList.add('active')}
 function showPage(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -427,16 +445,16 @@ function renderAccountPage(){
 async function savePlayerAccount(){
   if(!playerToken){showPlayerLogin();return}
   const name=document.getElementById('accountName').value.trim();
-  if(!name){alert('اكتب الاسم');return}
+  if(!name){showToast('اكتب الاسم','warn');return}
   try{
     const res=await apiPost({action:'updatePlayerProfile',player_token:playerToken,name});
-    if(!res.success){alert(res.message||'تعذر تحديث الحساب');return}
+    if(!res.success){showToast(res.message||'تعذر تحديث الحساب','error');return}
     playerData=res.player;
     document.getElementById('playerWelcome').textContent='أهلاً '+(playerData.name||'بك');
     document.getElementById('sMsgText').textContent='تم تحديث بيانات حسابك بنجاح.';
     document.getElementById('successOverlay').classList.add('show');
   }catch(e){
-    alert('صار خطأ أثناء تحديث الحساب');
+    showToast('صار خطأ أثناء تحديث الحساب','error');
   }
 }
 
@@ -563,7 +581,7 @@ function setFilter(btn,filter){
   filterPlaces();
 }
 
-async function openDetail(placeId){await loadDataFromGoogleSheets();currentPlace=places.find(p=>String(p.place_id)===String(placeId));currentSubField=currentPlace.fields[0];selectedDate=getTodayDate();selectedHour=null;document.getElementById('dName').textContent=currentPlace.place_name;document.getElementById('dCity').textContent='📍 '+getPlaceLocationText(currentPlace);document.getElementById('dType').textContent=currentPlace.type;document.getElementById('dRating').textContent='⭐ '+ratingText(currentPlace);document.getElementById('detailHeader').style.background=`linear-gradient(135deg,${currentPlace.color},${currentPlace.color}99)`;document.getElementById('mapLink').href=currentPlace.map_link||'#';document.getElementById('dMapText').textContent=currentPlace.place_name+' — '+getPlaceLocationText(currentPlace);renderSubFields();renderDetailDays();renderDetailTimes();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('detailPage').classList.add('active')}
+async function openDetail(placeId){if(!places.length){showInlineLoading('placesList','جاري تحميل الملاعب...');await loadDataFromGoogleSheets();}else{try{await loadPublicBookings()}catch(e){showToast('تعذر تحديث الأوقات، قد تظهر بيانات قديمة','warn')}}currentPlace=places.find(p=>String(p.place_id)===String(placeId));currentSubField=currentPlace.fields[0];selectedDate=getTodayDate();selectedHour=null;document.getElementById('dName').textContent=currentPlace.place_name;document.getElementById('dCity').textContent='📍 '+getPlaceLocationText(currentPlace);document.getElementById('dType').textContent=currentPlace.type;document.getElementById('dRating').textContent='⭐ '+ratingText(currentPlace);document.getElementById('detailHeader').style.background=`linear-gradient(135deg,${currentPlace.color},${currentPlace.color}99)`;document.getElementById('mapLink').href=currentPlace.map_link||'#';document.getElementById('dMapText').textContent=currentPlace.place_name+' — '+getPlaceLocationText(currentPlace);renderSubFields();renderDetailDays();renderDetailTimes();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('detailPage').classList.add('active')}
 function renderSubFields(){document.getElementById('subFieldsList').innerHTML=currentPlace.fields.map(f=>`<div class="subfield-card ${String(currentSubField.field_id)===String(f.field_id)?'active':''}" onclick="selectSubField('${f.field_id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:800;color:#111827">${f.field_name}</div><div style="font-size:11px;color:#6b7280;margin-top:2px">📐 ${f.size}</div></div><div style="font-size:15px;font-weight:800;color:var(--g)">${f.price} JD</div></div></div>`).join('');document.getElementById('dPrice').textContent=currentSubField.price+' JD'}
 function selectSubField(fieldId){currentSubField=currentPlace.fields.find(f=>String(f.field_id)===String(fieldId));selectedHour=null;renderSubFields();renderDetailDays();renderDetailTimes()}
 function renderDetailDays(){const el=document.getElementById('detailDaysGrid');if(!el)return;el.innerHTML=Array.from({length:7},(_,i)=>{const date=getDateAfter(i);const active=date===selectedDate;return `<button onclick="selectDetailDate('${date}')" style="border:1.5px solid ${active?'var(--g)':'#e5e7eb'};background:${active?'var(--g)':'white'};color:${active?'white':'#374151'};border-radius:10px;padding:8px 6px;font-size:11px;font-weight:700;cursor:pointer;min-width:70px;flex-shrink:0"><div>${i===0?'اليوم':getArabicDayName(date)}</div><div style="font-size:10px;opacity:.8">${getShortDate(date)}</div></button>`}).join('')}
@@ -571,8 +589,8 @@ async function selectDetailDate(date){selectedDate=date;selectedHour=null;await 
 function selectDetailTime(hour){selectedHour=hour;renderDetailTimes()}
 function renderDetailTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('detailTimeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button ${t?'disabled':''} onclick="selectDetailTime(${s.hour})" style="padding:10px;border-radius:9px;text-align:center;background:${t?'#f9fafb':(sel?'var(--g)':'#f0fdf4')};border:1px solid ${t?'#f3f4f6':(sel?'var(--g)':'#bbf7d0')};cursor:${t?'not-allowed':'pointer'}"><div style="font-size:11px;font-weight:700;color:${t?'#d1d5db':(sel?'white':'#15803d')}">${s.label}</div><div style="font-size:10px;margin-top:2px;color:${t?'#dc2626':(sel?'white':'#16a34a')}">${t?'محجوز ✗':(sel?'تم الاختيار ✓':'متاح ✓')}</div></button>`}).join('')}
 
-function openBookingFromDetail(){if(selectedHour===null){alert('اختر وقت متاح أولاً');return}openBooking(currentPlace.place_id,currentSubField.field_id,selectedDate,selectedHour)}
-async function openBooking(placeId, fieldId=null, preDate=null, preHour=null){if(!playerToken){alert('لازم تسجل دخول كلاعب أولاً حتى تقدر تحجز وتشوف حجوزاتك لاحقاً');showPlayerLogin();return}await loadDataFromGoogleSheets();currentPlace=places.find(p=>String(p.place_id)===String(placeId));currentSubField=fieldId?currentPlace.fields.find(f=>String(f.field_id)===String(fieldId)):currentPlace.fields[0];selectedDate=preDate||getTodayDate();selectedHour=preHour!==null?preHour:null;document.getElementById('mTitle').textContent=currentPlace.place_name+' - '+currentSubField.field_name;document.getElementById('mSub').textContent='📍 '+getPlaceLocationText(currentPlace)+' • '+currentSubField.size;document.getElementById('mPrice').textContent=currentSubField.price+' دينار / ساعتان';document.getElementById('mRating').textContent=ratingText(currentPlace);renderBookingDays();renderBookingTimes();document.getElementById('bName').value=playerData?.name||'';const bPhoneInput=document.getElementById('bPhone');bPhoneInput.value=playerData?.phone||'';bPhoneInput.readOnly=!!playerData;bPhoneInput.style.background=playerData?'#f9fafb':'white';bPhoneInput.placeholder=playerData?'':'07XXXXXXXX';document.getElementById('bookingModal').classList.add('show')}
+function openBookingFromDetail(){if(selectedHour===null){showToast('اختر وقت متاح أولاً','warn');return}openBooking(currentPlace.place_id,currentSubField.field_id,selectedDate,selectedHour)}
+async function openBooking(placeId, fieldId=null, preDate=null, preHour=null){if(!playerToken){showToast('لازم تسجل دخول كلاعب أولاً حتى تقدر تحجز وتشوف حجوزاتك لاحقاً','warn');showPlayerLogin();return}try{await loadPublicBookings()}catch(e){showToast('تعذر تحديث الأوقات، حاول مرة أخرى','warn')}currentPlace=places.find(p=>String(p.place_id)===String(placeId));currentSubField=fieldId?currentPlace.fields.find(f=>String(f.field_id)===String(fieldId)):currentPlace.fields[0];selectedDate=preDate||getTodayDate();selectedHour=preHour!==null?preHour:null;document.getElementById('mTitle').textContent=currentPlace.place_name+' - '+currentSubField.field_name;document.getElementById('mSub').textContent='📍 '+getPlaceLocationText(currentPlace)+' • '+currentSubField.size;document.getElementById('mPrice').textContent=currentSubField.price+' دينار / ساعتان';document.getElementById('mRating').textContent=ratingText(currentPlace);renderBookingDays();renderBookingTimes();document.getElementById('bName').value=playerData?.name||'';const bPhoneInput=document.getElementById('bPhone');bPhoneInput.value=playerData?.phone||'';bPhoneInput.readOnly=!!playerData;bPhoneInput.style.background=playerData?'#f9fafb':'white';bPhoneInput.placeholder=playerData?'':'07XXXXXXXX';document.getElementById('bookingModal').classList.add('show')}
 function renderBookingDays(){document.getElementById('daysGrid').innerHTML=Array.from({length:7},(_,i)=>{const date=getDateAfter(i);const active=date===selectedDate;return `<button onclick="selectBookingDate('${date}')" style="border:1.5px solid ${active?'var(--g)':'#e5e7eb'};background:${active?'var(--g)':'white'};color:${active?'white':'#374151'};border-radius:10px;padding:8px 6px;font-size:11px;font-weight:700;cursor:pointer;min-width:70px;flex-shrink:0"><div>${i===0?'اليوم':getArabicDayName(date)}</div><div style="font-size:10px;opacity:.8">${getShortDate(date)}</div></button>`}).join('')}
 async function selectBookingDate(date){selectedDate=date;selectedHour=null;await loadDataFromGoogleSheets();renderBookingDays();renderBookingTimes()}
 function renderBookingTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('timeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectTime(this,${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':''}</button>`}).join('')}
@@ -580,7 +598,7 @@ function selectTime(btn,hour){document.querySelectorAll('.tbtn:not(.taken)').for
 function closeModal(){document.getElementById('bookingModal').classList.remove('show')}
 async function confirmBooking(){
   if(!playerToken){
-    alert('لازم تسجل دخول كلاعب أولاً');
+    showToast('لازم تسجل دخول كلاعب أولاً','warn');
     showPlayerLogin();
     return;
   }
@@ -589,7 +607,7 @@ async function confirmBooking(){
   const phone=document.getElementById('bPhone').value.trim();
 
   if(!name||!phone||selectedHour===null){
-    alert('⚠️ يرجى تعبئة البيانات واختيار وقت');
+    showToast('يرجى تعبئة البيانات واختيار وقت','warn');
     return;
   }
 
@@ -617,7 +635,7 @@ async function confirmBooking(){
     const result=await apiPost(bookingData);
 
     if(!result.success){
-      alert('⚠️ '+(result.message||'لم يتم تسجيل الحجز'));
+      showToast(result.message||'لم يتم تسجيل الحجز','error');
       await loadDataFromGoogleSheets();
       renderBookingTimes();
       if(document.getElementById('detailPage').classList.contains('active')){
@@ -642,13 +660,13 @@ async function confirmBooking(){
     }
   }catch(err){
     console.error(err);
-    alert('صار خطأ بالاتصال مع Google Sheets. تأكد من رابط Apps Script والنشر Web App.');
+    showToast('صار خطأ بالاتصال مع Google Sheets. تأكد من رابط Apps Script والنشر Web App.','error');
   }
 }
 
 async function loadPlayerBookings(){if(!playerToken){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لازم تسجل دخول كلاعب حتى تشوف حجوزاتك</div>';return}try{const res=await apiGet('getPlayerBookings',{player_token:playerToken});const el=document.getElementById('bookingsList');if(!res.success){el.innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'تعذر تحميل الحجوزات')+'</div>';return}if(!res.bookings||!res.bookings.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لا توجد حجوزات على هذا الحساب حالياً</div>';return}el.innerHTML=res.bookings.map(b=>{const cls=b.status==='confirmed'?'badge-green':(b.status==='pending'?'badge-yellow':'badge-red');const label=b.status==='confirmed'?'مؤكد':(b.status==='pending'?'بانتظار التأكيد':(b.status==='cancelled'?'ملغي':'مرفوض'));return `<div style="background:white;border-radius:12px;padding:13px;border:0.5px solid #e5e7eb;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="font-size:14px;font-weight:700;color:#111827">${b.place_name} - ${b.field_name}</div><span class="${cls}">${label}</span></div><div style="font-size:12px;color:#6b7280">📍 ${b.city} • 📅 ${b.date} • ⏰ ${b.time}</div><div style="font-size:12px;color:#6b7280;margin-top:2px">📐 ${b.players||''} • 💰 ${b.price} JD</div>${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-top:8px">السبب: ${b.cancel_reason}</div>`:''}</div>`}).join('')}catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">فشل تحميل الحجوزات</div>'}}
 
-async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#6b7280">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){alert(res.message||"غير مصرح بالدخول");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#dc2626">فشل تحميل بيانات المالك</div>'}}
+async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#6b7280">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){showToast(res.message||"غير مصرح بالدخول","error");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#dc2626">فشل تحميل بيانات المالك</div>'}}
 function formatMoney(value){
   const n=Number(value||0);
   if(Number.isNaN(n))return '0 JD';
@@ -807,7 +825,7 @@ async function updateBookingStatus(rowNumber,status){
 
   try{
     const res=await apiPost({action:"updateBookingStatus",owner_token:ownerToken,row_number:rowNumber,status,cancel_reason:reason});
-    if(!res.success){alert(res.message||"فشل التحديث");return}
+    if(!res.success){showToast(res.message||"فشل التحديث","error");return}
 
     if(booking){
       sendPlayerWhatsAppStatus(booking,status,reason);
@@ -818,7 +836,7 @@ async function updateBookingStatus(rowNumber,status){
     if(document.getElementById('homePage').classList.contains('active'))filterPlaces();
     if(document.getElementById('detailPage').classList.contains('active')&&currentSubField){renderDetailDays();renderDetailTimes();}
   }catch(e){
-    alert("صار خطأ أثناء تحديث الحجز");
+    showToast("صار خطأ أثناء تحديث الحجز","error");
   }
 }
 
@@ -826,14 +844,14 @@ function renderOwnerFields(){const el=document.getElementById("ownerFields");con
 function openEditFieldModal(fieldId){editingFieldMode="edit";const f=(ownerData.fields||[]).find(x=>String(x.field_id)===String(fieldId));if(!f)return;document.getElementById("fieldModalTitle").textContent="تعديل ملعب";document.getElementById("editFieldId").value=f.field_id;document.getElementById("fieldNameInput").value=f.field_name;document.getElementById("fieldNameInput").disabled=true;document.getElementById("fieldSizeInput").value=f.size;document.getElementById("fieldSizeInput").disabled=true;document.getElementById("fieldPriceInput").value=f.price;document.getElementById("fieldSlotsInput").value=slotsToKeyword(f.slots);document.getElementById("fieldActiveInput").checked=f.active!==false;document.getElementById("fieldModal").classList.add("show")}
 function openAddFieldModal(){editingFieldMode="add";document.getElementById("fieldModalTitle").textContent="إضافة ملعب جديد";document.getElementById("editFieldId").value="";document.getElementById("fieldNameInput").value="";document.getElementById("fieldNameInput").disabled=false;document.getElementById("fieldSizeInput").value="6×6";document.getElementById("fieldSizeInput").disabled=false;document.getElementById("fieldPriceInput").value="40";document.getElementById("fieldSlotsInput").value="full";document.getElementById("fieldActiveInput").checked=true;document.getElementById("fieldModal").classList.add("show")}
 function closeFieldModal(){document.getElementById("fieldModal").classList.remove("show")}
-async function saveOwnerField(){const field_id=document.getElementById("editFieldId").value;const field_name=document.getElementById("fieldNameInput").value.trim();const size=document.getElementById("fieldSizeInput").value.trim();const price=Number(document.getElementById("fieldPriceInput").value);const slots=document.getElementById("fieldSlotsInput").value;const active=document.getElementById("fieldActiveInput").checked;if(!field_name||!size||!price){alert("عبّي بيانات الملعب كاملة");return}try{let payload;if(editingFieldMode==="add"){payload={action:"ownerAddField",owner_token:ownerToken,field_name,size,price,slots}}else{payload={action:"ownerUpdateField",owner_token:ownerToken,field_id,price,slots,active}}const res=await apiPost(payload);if(!res.success){alert(res.message||"فشل الحفظ");return}closeFieldModal();await loadOwnerDashboard();await loadDataFromGoogleSheets();filterPlaces()}catch(e){alert("صار خطأ أثناء حفظ الملعب")}}
+async function saveOwnerField(){const field_id=document.getElementById("editFieldId").value;const field_name=document.getElementById("fieldNameInput").value.trim();const size=document.getElementById("fieldSizeInput").value.trim();const price=Number(document.getElementById("fieldPriceInput").value);const slots=document.getElementById("fieldSlotsInput").value;const active=document.getElementById("fieldActiveInput").checked;if(!field_name||!size||!price){showToast("عبّي بيانات الملعب كاملة","warn");return}try{let payload;if(editingFieldMode==="add"){payload={action:"ownerAddField",owner_token:ownerToken,field_name,size,price,slots}}else{payload={action:"ownerUpdateField",owner_token:ownerToken,field_id,price,slots,active}}const res=await apiPost(payload);if(!res.success){showToast(res.message||"فشل الحفظ","error");return}closeFieldModal();await loadOwnerDashboard();await loadDataFromGoogleSheets();filterPlaces()}catch(e){showToast("صار خطأ أثناء حفظ الملعب","error")}}
 
 function openReviewModal(){if(!currentPlace)return;selectedRating=0;setReviewRating(0);document.getElementById('reviewPlaceName').textContent=currentPlace.place_name;document.getElementById('rName').value=playerData?.name||'';document.getElementById('rPhone').value=playerData?.phone||'';document.getElementById('reviewModal').classList.add('show')}
 function closeReviewModal(){document.getElementById('reviewModal').classList.remove('show')}
 function setReviewRating(r){selectedRating=r;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('active',i<r))}
 async function submitReview(){
   if(!selectedRating){
-    alert('اختر عدد النجوم أولاً');
+    showToast('اختر عدد النجوم أولاً','warn');
     return;
   }
 
@@ -851,7 +869,7 @@ async function submitReview(){
     });
 
     if(!result.success){
-      alert(result.message||'تعذر إرسال التقييم');
+      showToast(result.message||'تعذر إرسال التقييم','error');
       return;
     }
 
@@ -873,7 +891,7 @@ async function submitReview(){
       document.getElementById('dRating').textContent='⭐ '+ratingText(currentPlace);
     }
   }catch(e){
-    alert('صار خطأ أثناء إرسال التقييم');
+    showToast('صار خطأ أثناء إرسال التقييم','error');
   }
 }
 function closeSuccess(){document.getElementById('successOverlay').classList.remove('show');filterPlaces()}
