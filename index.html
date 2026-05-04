@@ -24,6 +24,7 @@ input,select,button,textarea{font-family:'Cairo',sans-serif}
 .bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:var(--max);background:white;border-top:0.5px solid #f3f4f6;display:none;justify-content:space-around;padding:8px 0 max(10px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.08)}.bnav.show{display:flex}.nitem{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#9ca3af;cursor:pointer;padding:3px 10px;min-width:44px;transition:color .2s}.nitem.active{color:var(--g)}.nicon{font-size:20px;margin-bottom:1px}
 .tbtn{border:1.5px solid #e5e7eb;border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;color:#374151;background:white;transition:all .2s;line-height:1.4}.tbtn.sel{background:var(--g);border-color:var(--g);color:white}.tbtn.taken{background:#f9fafb;color:#d1d5db;cursor:not-allowed;border-color:#f3f4f6}
 .place-card{background:white;border-radius:14px;overflow:hidden;border:0.5px solid #e5e7eb;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform .2s}.place-card:active{transform:scale(0.98)}
+.owner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}.owner-stat-card{background:white;border-radius:14px;border:0.5px solid #e5e7eb;padding:12px;min-height:82px}.owner-stat-value{font-size:20px;font-weight:900;color:#111827;line-height:1.2}.owner-stat-label{font-size:11px;color:#6b7280;margin-top:4px;font-weight:700}.owner-stat-hint{font-size:10px;color:#9ca3af;margin-top:2px}.owner-mini-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#374151;margin-bottom:8px}.owner-progress{height:8px;background:#eef2ff;border-radius:999px;overflow:hidden}.owner-progress>div{height:100%;background:#1d4ed8;border-radius:999px;transition:width .25s}.owner-section-title{font-size:14px;font-weight:900;color:#111827;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}.mini-badge{background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:900}
 .subfield-card{border:1.5px solid #e5e7eb;border-radius:12px;padding:10px;background:white;cursor:pointer}.subfield-card.active{border-color:var(--g);background:#f0fdf4}.star{font-size:26px;color:#d1d5db;cursor:pointer;padding:0 2px}.star.active{color:#f59e0b}.badge-blue{background:#dbeafe;color:#1d4ed8;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;display:inline-block}.owner-action{border:none;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:800;cursor:pointer;color:white}.owner-confirm{background:#16a34a}.owner-reject{background:#f59e0b}.owner-cancel{background:#dc2626}.owner-edit{background:#1d4ed8}
 @media (min-width:700px){:root{--max:720px}.place-card{display:grid;grid-template-columns:220px 1fr}.place-card>div:first-child{height:100%;min-height:150px}.modal{border-radius:20px;max-width:560px;margin-bottom:30px}}
 @media (min-width:1024px){:root{--max:1100px}#placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:16px!important}.place-card{display:block}.place-card>div:first-child{height:160px}.header{border-radius:0 0 24px 24px}#detailPage>div:nth-child(2){max-width:850px;margin:auto}#detailTimeGrid,#timeGrid{grid-template-columns:repeat(4,1fr)!important}.bnav{max-width:1100px}}
@@ -170,7 +171,30 @@ input,select,button,textarea{font-family:'Cairo',sans-serif}
     <div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:18px;font-weight:900">📊 لوحة المالك</div><div id="ownerPlaceTitle" style="font-size:12px;opacity:0.75;margin-top:2px">تحميل البيانات...</div></div><button onclick="doLogout()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:800">خروج</button></div>
   </div>
   <div style="padding:14px">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"><div class="card" style="text-align:center"><div id="ownerTotalBookings" style="font-size:20px;font-weight:900;color:#111827">0</div><div style="font-size:11px;color:#6b7280">كل الحجوزات</div></div><div class="card" style="text-align:center"><div id="ownerPendingBookings" style="font-size:20px;font-weight:900;color:#92400e">0</div><div style="font-size:11px;color:#6b7280">Pending</div></div><div class="card" style="text-align:center"><div id="ownerConfirmedBookings" style="font-size:20px;font-weight:900;color:#15803d">0</div><div style="font-size:11px;color:#6b7280">Confirmed</div></div></div>
+    <div class="owner-stat-grid">
+      <div class="owner-stat-card"><div id="ownerTotalBookings" class="owner-stat-value">0</div><div class="owner-stat-label">كل الحجوزات</div><div class="owner-stat-hint">جميع الطلبات</div></div>
+      <div class="owner-stat-card"><div id="ownerConfirmedBookings" class="owner-stat-value" style="color:#15803d">0</div><div class="owner-stat-label">حجوزات مؤكدة</div><div class="owner-stat-hint">تدخل بالإيراد</div></div>
+      <div class="owner-stat-card"><div id="ownerPendingBookings" class="owner-stat-value" style="color:#92400e">0</div><div class="owner-stat-label">بانتظار التأكيد</div><div class="owner-stat-hint">تحتاج متابعة</div></div>
+      <div class="owner-stat-card"><div id="ownerTodayBookings" class="owner-stat-value" style="color:#1d4ed8">0</div><div class="owner-stat-label">حجوزات اليوم</div><div class="owner-stat-hint">حسب تاريخ اللعب</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#eff6ff,#ffffff);border-color:#bfdbfe">
+      <div class="owner-section-title"><span>💰 ملخص الإيراد</span><span class="mini-badge">عمولة 10%</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+        <div><div id="ownerConfirmedRevenue" style="font-size:18px;font-weight:900;color:#111827">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">إيراد مؤكد</div></div>
+        <div><div id="ownerPlatformProfit" style="font-size:18px;font-weight:900;color:#1d4ed8">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">ربح المنصة</div></div>
+        <div><div id="ownerNetRevenue" style="font-size:18px;font-weight:900;color:#15803d">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">صافي المالك</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="owner-section-title"><span>📈 مؤشرات الأداء</span><span id="ownerWeekBookings" class="mini-badge">آخر 7 أيام: 0</span></div>
+      <div class="owner-mini-row"><span>نسبة التأكيد</span><strong id="ownerConfirmRate">0%</strong></div>
+      <div class="owner-progress" style="margin-bottom:10px"><div id="ownerConfirmRateBar" style="width:0%"></div></div>
+      <div class="owner-mini-row"><span>أكثر ملعب عليه حجوزات</span><strong id="ownerTopField">-</strong></div>
+      <div class="owner-mini-row" style="margin-bottom:0"><span>أفضل مصدر للحجوزات</span><strong id="ownerTopSource">-</strong></div>
+    </div>
+
     <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">فلترة الحجوزات</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input class="finput" type="date" id="ownerDateFilter" onchange="renderOwnerBookings()"><select class="finput" id="ownerFieldFilter" onchange="renderOwnerBookings()"><option value="all">كل الملاعب</option></select></div><button class="cbtn" onclick="clearOwnerFilters()">مسح الفلتر</button></div>
     <div class="sec-title" style="padding:0 0 10px"><span>الحجوزات</span><a style="font-size:12px;color:#1d4ed8;font-weight:800;cursor:pointer" onclick="loadOwnerDashboard()">تحديث</a></div><div id="ownerBookings"></div>
     <div class="sec-title" style="padding:18px 0 10px"><span>إدارة الملاعب</span><a style="font-size:12px;color:#1d4ed8;font-weight:800;cursor:pointer" onclick="openAddFieldModal()">+ إضافة ملعب</a></div><div id="ownerFields"></div>
@@ -625,7 +649,67 @@ async function confirmBooking(){
 async function loadPlayerBookings(){if(!playerToken){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لازم تسجل دخول كلاعب حتى تشوف حجوزاتك</div>';return}try{const res=await apiGet('getPlayerBookings',{player_token:playerToken});const el=document.getElementById('bookingsList');if(!res.success){el.innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'تعذر تحميل الحجوزات')+'</div>';return}if(!res.bookings||!res.bookings.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لا توجد حجوزات على هذا الحساب حالياً</div>';return}el.innerHTML=res.bookings.map(b=>{const cls=b.status==='confirmed'?'badge-green':(b.status==='pending'?'badge-yellow':'badge-red');const label=b.status==='confirmed'?'مؤكد':(b.status==='pending'?'بانتظار التأكيد':(b.status==='cancelled'?'ملغي':'مرفوض'));return `<div style="background:white;border-radius:12px;padding:13px;border:0.5px solid #e5e7eb;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="font-size:14px;font-weight:700;color:#111827">${b.place_name} - ${b.field_name}</div><span class="${cls}">${label}</span></div><div style="font-size:12px;color:#6b7280">📍 ${b.city} • 📅 ${b.date} • ⏰ ${b.time}</div><div style="font-size:12px;color:#6b7280;margin-top:2px">📐 ${b.players||''} • 💰 ${b.price} JD</div>${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-top:8px">السبب: ${b.cancel_reason}</div>`:''}</div>`}).join('')}catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">فشل تحميل الحجوزات</div>'}}
 
 async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#6b7280">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){alert(res.message||"غير مصرح بالدخول");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#dc2626">فشل تحميل بيانات المالك</div>'}}
-function renderOwnerDashboard(){if(!ownerData)return;document.getElementById("ownerPlaceTitle").textContent=ownerData.place?ownerData.place.place_name:"مكان غير معروف";const bookings=ownerData.bookings||[];document.getElementById("ownerTotalBookings").textContent=bookings.length;document.getElementById("ownerPendingBookings").textContent=bookings.filter(b=>b.status==="pending").length;document.getElementById("ownerConfirmedBookings").textContent=bookings.filter(b=>b.status==="confirmed").length;const fieldSelect=document.getElementById("ownerFieldFilter");const oldValue=fieldSelect.value||"all";fieldSelect.innerHTML='<option value="all">كل الملاعب</option>'+(ownerData.fields||[]).map(f=>`<option value="${f.field_id}">${f.field_name}</option>`).join("");fieldSelect.value=oldValue;renderOwnerBookings();renderOwnerFields()}
+function formatMoney(value){
+  const n=Number(value||0);
+  if(Number.isNaN(n))return '0 JD';
+  return `${Math.round(n*100)/100} JD`;
+}
+
+function isSameOrAfter(dateStr, minDateStr){
+  return String(dateStr||'')>=String(minDateStr||'');
+}
+
+function getTopBy(items, keyFn, labelFn){
+  const map={};
+  items.forEach(item=>{
+    const key=keyFn(item)||'-';
+    if(!map[key])map[key]={count:0,label:labelFn?labelFn(item):key};
+    map[key].count+=1;
+  });
+  const sorted=Object.values(map).sort((a,b)=>b.count-a.count);
+  return sorted[0]||null;
+}
+
+function renderOwnerStats(bookings){
+  const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const pending=bookings.filter(b=>String(b.status||'').toLowerCase()==='pending');
+  const today=getTodayDate();
+  const weekStart=getDateAfter(-6);
+  const todayBookings=bookings.filter(b=>String(b.date)===today).length;
+  const weekBookings=bookings.filter(b=>isSameOrAfter(b.date,weekStart)&&String(b.date)<=today).length;
+  const confirmedRevenue=confirmed.reduce((sum,b)=>sum+(Number(b.price)||0),0);
+  const platformProfit=confirmedRevenue*0.10;
+  const netRevenue=confirmedRevenue-platformProfit;
+  const rate=bookings.length?Math.round((confirmed.length/bookings.length)*100):0;
+  const topField=getTopBy(bookings,b=>String(b.field_id||''),b=>b.field_name||'-');
+  const topSource=getTopBy(bookings,b=>String(b.source||'direct').trim()||'direct',b=>String(b.source||'direct').trim()||'direct');
+
+  document.getElementById("ownerTotalBookings").textContent=bookings.length;
+  document.getElementById("ownerPendingBookings").textContent=pending.length;
+  document.getElementById("ownerConfirmedBookings").textContent=confirmed.length;
+  document.getElementById("ownerTodayBookings").textContent=todayBookings;
+  document.getElementById("ownerWeekBookings").textContent=`آخر 7 أيام: ${weekBookings}`;
+  document.getElementById("ownerConfirmedRevenue").textContent=formatMoney(confirmedRevenue);
+  document.getElementById("ownerPlatformProfit").textContent=formatMoney(platformProfit);
+  document.getElementById("ownerNetRevenue").textContent=formatMoney(netRevenue);
+  document.getElementById("ownerConfirmRate").textContent=rate+'%';
+  document.getElementById("ownerConfirmRateBar").style.width=Math.min(rate,100)+'%';
+  document.getElementById("ownerTopField").textContent=topField?`${topField.label} (${topField.count})`:'-';
+  document.getElementById("ownerTopSource").textContent=topSource?`${topSource.label} (${topSource.count})`:'-';
+}
+
+function renderOwnerDashboard(){
+  if(!ownerData)return;
+  document.getElementById("ownerPlaceTitle").textContent=ownerData.place?ownerData.place.place_name:"مكان غير معروف";
+  const bookings=ownerData.bookings||[];
+  renderOwnerStats(bookings);
+  const fieldSelect=document.getElementById("ownerFieldFilter");
+  const oldValue=fieldSelect.value||"all";
+  fieldSelect.innerHTML='<option value="all">كل الملاعب</option>'+(ownerData.fields||[]).map(f=>`<option value="${f.field_id}">${f.field_name}</option>`).join("");
+  fieldSelect.value=oldValue;
+  renderOwnerBookings();
+  renderOwnerFields();
+}
 function clearOwnerFilters(){document.getElementById("ownerDateFilter").value="";document.getElementById("ownerFieldFilter").value="all";renderOwnerBookings()}
 function statusBadge(status){if(status==="confirmed")return '<span class="badge-green">مؤكد</span>';if(status==="cancelled")return '<span class="badge-red">ملغي</span>';if(status==="rejected")return '<span class="badge-red">مرفوض</span>';return '<span class="badge-yellow">بانتظار التأكيد</span>'}
 function renderOwnerBookings(){if(!ownerData)return;let bookings=ownerData.bookings||[];const date=document.getElementById("ownerDateFilter").value;const fieldId=document.getElementById("ownerFieldFilter").value;if(date)bookings=bookings.filter(b=>String(b.date)===date);if(fieldId&&fieldId!=="all")bookings=bookings.filter(b=>String(b.field_id)===String(fieldId));const el=document.getElementById("ownerBookings");if(!bookings.length){el.innerHTML='<div class="card" style="text-align:center;color:#9ca3af">لا توجد حجوزات مطابقة</div>';return}el.innerHTML=bookings.map(b=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:14px;font-weight:900;color:#111827">${b.field_name}</div><div style="font-size:12px;color:#6b7280;margin-top:2px">📅 ${b.date} • ⏰ ${b.time}</div></div>${statusBadge(b.status)}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;font-size:12px;color:#374151"><div>👤 ${b.name||"-"}</div><div>📞 ${b.phone||"-"}</div><div>📐 ${b.players||"-"}</div><div>💰 ${b.price||0} JD</div></div>${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-bottom:10px">سبب الإلغاء/الرفض: ${b.cancel_reason}</div>`:""}<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="owner-action owner-confirm" onclick="updateBookingStatus(${b.row_number},'confirmed')">تأكيد</button><button class="owner-action owner-reject" onclick="updateBookingStatus(${b.row_number},'rejected')">رفض</button><button class="owner-action owner-cancel" onclick="updateBookingStatus(${b.row_number},'cancelled')">إلغاء</button><a href="https://wa.me/${String(b.phone||'').replace(/^0/,'962')}" target="_blank" style="text-decoration:none"><button class="owner-action" style="background:#22c55e">واتساب</button></a></div></div>`).join("")}
