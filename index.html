@@ -278,6 +278,11 @@ button{-webkit-tap-highlight-color:transparent}.sec-title,.header [style*="font-
       <div class="owner-mini-row"><span>أكثر ملعب عليه حجوزات</span><strong id="ownerTopField">-</strong></div>
       <div class="owner-mini-row" style="margin-bottom:0"><span>أفضل مصدر للحجوزات</span><strong id="ownerTopSource">-</strong></div>
     </div>
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#f0fdf4,#ffffff);border-color:#bbf7d0">
+      <div class="owner-section-title"><span>➕ حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
+      <div style="font-size:12px;color:#4b5563;line-height:1.7;margin-bottom:10px">إذا وصلك حجز من واتساب أو اتصال، أضفه هون حتى يظهر الوقت محجوز للاعبين وما يصير تعارض.</div>
+      <button class="sbtn" onclick="openManualBookingModal()">+ إضافة حجز خارجي</button>
+    </div>
     <div class="card" style="margin-bottom:14px">
       <div style="font-size:14px;font-weight:900;color:#111827;margin-bottom:10px">فلترة الحجوزات</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -299,6 +304,26 @@ button{-webkit-tap-highlight-color:transparent}.sec-title,.header [style*="font-
 
 <!-- REVIEW MODAL -->
 <div class="modal-overlay" id="reviewModal"><div class="modal"><div class="modal-handle"></div><div style="font-size:16px;font-weight:800;margin-bottom:6px;color:#111827">تقييم المكان</div><div id="reviewPlaceName" style="font-size:12px;color:#6b7280;margin-bottom:12px"></div><div id="starsBox" style="text-align:center;margin-bottom:12px"><span class="star" onclick="setReviewRating(1)">★</span><span class="star" onclick="setReviewRating(2)">★</span><span class="star" onclick="setReviewRating(3)">★</span><span class="star" onclick="setReviewRating(4)">★</span><span class="star" onclick="setReviewRating(5)">★</span></div><input class="finput" id="rName" placeholder="اسمك" style="margin-bottom:10px"><input class="finput" id="rPhone" placeholder="رقم الهاتف" style="margin-bottom:10px"><textarea class="finput" id="rComment" placeholder="تعليق اختياري" style="min-height:80px;margin-bottom:14px"></textarea><button class="sbtn" onclick="submitReview()">إرسال التقييم</button><button class="cbtn" onclick="closeReviewModal()">إلغاء</button></div></div>
+
+<!-- MANUAL BOOKING MODAL -->
+<div class="modal-overlay" id="manualBookingModal"><div class="modal"><div class="modal-handle"></div>
+  <div style="font-size:16px;font-weight:900;margin-bottom:6px;color:#111827">إضافة حجز خارجي</div>
+  <div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.7">استخدمها للحجوزات القادمة من خارج الموقع. الحجز سينضاف كمؤكد مباشرة ويغلق الوقت أمام اللاعبين.</div>
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">اختر الملعب</label>
+  <select class="finput" id="manualFieldSelect" onchange="selectManualField()" style="margin-bottom:10px"></select>
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">اختر اليوم</label>
+  <div id="manualDaysGrid" style="display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px"></div>
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">اختر الوقت</label>
+  <div id="manualTimeGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px"></div>
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">اسم صاحب الحجز</label>
+  <input class="finput" id="manualName" placeholder="مثلاً: أبو أحمد" style="margin-bottom:10px">
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">رقم الهاتف</label>
+  <input class="finput" id="manualPhone" type="tel" placeholder="079xxxxxxx" style="margin-bottom:10px">
+  <label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">السعر</label>
+  <input class="finput" id="manualPrice" type="number" placeholder="40" style="margin-bottom:14px">
+  <button class="sbtn" onclick="saveManualBooking()">حفظ الحجز الخارجي</button>
+  <button class="cbtn" onclick="closeManualBookingModal()">إلغاء</button>
+</div></div>
 
 <!-- FIELD MODAL -->
 <div class="modal-overlay" id="fieldModal"><div class="modal"><div class="modal-handle"></div><div id="fieldModalTitle" style="font-size:16px;font-weight:900;margin-bottom:12px;color:#111827">تعديل ملعب</div><input type="hidden" id="editFieldId"><label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">اسم الملعب</label><input class="finput" id="fieldNameInput" placeholder="ملعب 1" style="margin-bottom:10px"><label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">الحجم</label><input class="finput" id="fieldSizeInput" placeholder="6×6" style="margin-bottom:10px"><label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">السعر</label><input class="finput" id="fieldPriceInput" type="number" placeholder="40" style="margin-bottom:10px"><label style="font-size:12px;font-weight:800;color:#374151;display:block;margin-bottom:5px">الأوقات</label><select class="finput" id="fieldSlotsInput" style="margin-bottom:10px"><option value="full">Full - كل اليوم</option><option value="morning">Morning - صباحي</option><option value="evening">Evening - مسائي</option></select><label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#374151;font-weight:700;margin-bottom:14px"><input type="checkbox" id="fieldActiveInput" checked> نشط</label><button class="sbtn" style="background:#1d4ed8" onclick="saveOwnerField()">حفظ</button><button class="cbtn" onclick="closeFieldModal()">إلغاء</button></div></div>
@@ -387,7 +412,7 @@ let showAllOwnerBookings=false;
 const PLACES_CACHE_KEY='mustadaira_places_cache_v5_dynamic_regions';
 const PLACES_CACHE_MS=10*60*1000;
 ['mustadaira_places_cache_v1','mustadaira_places_cache_v2_rating','mustadaira_places_cache_v3_rating_fallback','mustadaira_places_cache_v3_rating_fixed'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
-let bookedSlots={};let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;
+let bookedSlots={};let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;let manualDate=getTodayDate();let manualFieldId=null;let manualHour=null;
 let ownerToken=localStorage.getItem('owner_token')||'';let ownerData=null;let editingFieldMode='edit';
 let playerToken=localStorage.getItem('player_token')||'';let playerData=null;
 
@@ -593,6 +618,41 @@ async function loadPlayerBookings(){
   }catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">ما قدرنا نجيب الحجوزات</div>'}
 }
 
+
+function getManualField(){return (ownerData?.fields||[]).find(f=>String(f.field_id)===String(manualFieldId))}
+async function openManualBookingModal(){
+  if(!ownerToken){showOwnerLogin();return}
+  if(!ownerData)await loadOwnerDashboard();
+  const fields=ownerData?.fields||[];
+  if(!fields.length){showToast('ما في ملاعب مضافة لهذا الحساب','warn');return}
+  try{await loadPublicBookings()}catch(e){}
+  manualFieldId=String(fields[0].field_id);manualDate=getTodayDate();manualHour=null;
+  document.getElementById('manualName').value='';document.getElementById('manualPhone').value='';document.getElementById('manualPrice').value=fields[0].price||'';
+  renderManualFields();renderManualDays();renderManualTimes();
+  document.getElementById('manualBookingModal').classList.add('show')
+}
+function closeManualBookingModal(){document.getElementById('manualBookingModal').classList.remove('show')}
+function renderManualFields(){const el=document.getElementById('manualFieldSelect');if(!el)return;el.innerHTML=(ownerData?.fields||[]).map(f=>`<option value="${f.field_id}">${f.field_name} — ${f.size} — ${f.price} JD</option>`).join('');el.value=manualFieldId||''}
+function selectManualField(){manualFieldId=document.getElementById('manualFieldSelect').value;manualHour=null;const f=getManualField();if(f)document.getElementById('manualPrice').value=f.price||'';renderManualTimes()}
+function renderManualDays(){const el=document.getElementById('manualDaysGrid');if(!el)return;el.innerHTML=Array.from({length:14},(_,i)=>{const date=getDateAfter(i);const active=date===manualDate;return `<button onclick="selectManualDate('${date}')" style="border:1.5px solid ${active?'var(--g)':'#e5e7eb'};background:${active?'var(--g)':'white'};color:${active?'white':'#374151'};border-radius:10px;padding:8px 6px;font-size:11px;font-weight:700;cursor:pointer;min-width:70px;flex-shrink:0"><div>${i===0?'اليوم':getArabicDayName(date)}</div><div style="font-size:10px;opacity:.8">${getShortDate(date)}</div></button>`}).join('')}
+async function selectManualDate(date){manualDate=date;manualHour=null;try{await loadPublicBookings()}catch(e){}renderManualDays();renderManualTimes()}
+function selectManualTime(hour){manualHour=hour;renderManualTimes()}
+function renderManualTimes(){const field=getManualField();const el=document.getElementById('manualTimeGrid');if(!field||!el){return}const slots=getFieldSlots(field);const taken=(bookedSlots[field.field_id]&&bookedSlots[field.field_id][manualDate])||[];el.innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=manualHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectManualTime(${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':(sel?'<br><span style="font-size:9px;color:white">تم الاختيار</span>':'')}</button>`}).join('')}
+async function saveManualBooking(){
+  const field=getManualField();const name=document.getElementById('manualName').value.trim();const phone=document.getElementById('manualPhone').value.trim();const price=Number(document.getElementById('manualPrice').value||0);
+  if(!field||!manualDate||manualHour===null){showToast('اختار الملعب واليوم والوقت','warn');return}
+  if(!name){showToast('اكتب اسم صاحب الحجز','warn');return}
+  if(!price||Number.isNaN(price)){showToast('اكتب سعر صحيح','warn');return}
+  const slot=getFieldSlots(field).find(s=>s.hour===manualHour);
+  try{
+    const res=await apiPost({action:'ownerCreateManualBooking',owner_token:ownerToken,field_id:field.field_id,date:manualDate,hour:manualHour,time:slot?slot.label:'',name,phone,players:field.size,price});
+    if(!res.success){showToast(res.message||'ما زبطت إضافة الحجز','error');await loadPublicBookings().catch(()=>{});renderManualTimes();return}
+    closeManualBookingModal();showToast('تمام، أضفنا الحجز الخارجي وحجزنا الوقت','success');
+    await loadOwnerDashboard();await loadDataFromGoogleSheets({force:true});
+    if(document.getElementById('homePage').classList.contains('active'))filterPlaces();
+  }catch(e){showToast('صار خطأ بإضافة الحجز الخارجي','error')}
+}
+
 async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#6b7280">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){showToast(res.message||"انتهت جلستك، ادخل من جديد","error");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#dc2626">ما قدرنا نجيب بيانات المالك</div>'}}
 function formatMoney(value){const n=Number(value||0);if(Number.isNaN(n))return '0 JD';return `${Math.round(n*100)/100} JD`}
 function isSameOrAfter(dateStr,minDateStr){return String(dateStr||'')>=String(minDateStr||'')}
@@ -647,6 +707,7 @@ function renderOwnerBookings(){
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#374151">${SVG_ICONS.phone} ${b.phone||"-"}</span>
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#374151">${SVG_ICONS.resize} ${b.players||"-"}</span>
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#374151">${SVG_ICONS.money} ${b.price||0} JD</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:${String(b.source||'')==='owner_manual'?'#1d4ed8':'#374151'}">${String(b.source||'')==='owner_manual'?'حجز خارجي':'مصدر: '+(b.source||'direct')}</span>
     </div>
     ${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-bottom:10px">سبب الإلغاء/الرفض: ${b.cancel_reason}</div>`:""}
     <div style="display:flex;gap:6px;flex-wrap:wrap">
