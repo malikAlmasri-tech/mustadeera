@@ -287,6 +287,7 @@ button{-webkit-tap-highlight-color:transparent}.sec-title,.header [style*="font-
       <button class="cbtn" onclick="clearOwnerFilters()">مسح الفلتر</button>
     </div>
     <div class="sec-title" style="padding:0 0 10px"><span>الحجوزات</span><a style="font-size:12px;color:#1d4ed8;font-weight:800;cursor:pointer" onclick="loadOwnerDashboard()">تحديث</a></div>
+    <button id="ownerHistoryToggle" class="cbtn" onclick="toggleOwnerBookingHistory()" style="margin:0 0 10px">عرض السجل الكامل</button>
     <div id="ownerBookings"></div>
     <div class="sec-title" style="padding:18px 0 10px"><span>إدارة الملاعب</span><a style="font-size:12px;color:#1d4ed8;font-weight:800;cursor:pointer" onclick="openAddFieldModal()">+ إضافة ملعب</a></div>
     <div id="ownerFields"></div>
@@ -368,6 +369,8 @@ const DEFAULT_SLOTS = [
 
 function getTodayDate(){return new Date().toISOString().split("T")[0]}
 function getDateAfter(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().split("T")[0]}
+function isOldBooking(dateStr,keepDays=14){const today=new Date(getTodayDate()+"T00:00:00");const d=new Date(String(dateStr||"").split("T")[0]+"T00:00:00");if(Number.isNaN(d.getTime()))return false;const diffDays=Math.floor((today-d)/(1000*60*60*24));return diffDays>keepDays}
+function getVisibleBookings(bookings,keepDays,showAll){return showAll?bookings:(bookings||[]).filter(b=>!isOldBooking(b.date,keepDays))}
 function getArabicDayName(dateStr){const days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];const d=new Date(dateStr+"T12:00:00");return days[d.getDay()]}
 function getShortDate(dateStr){const d=new Date(dateStr+"T12:00:00");return `${d.getDate()}/${d.getMonth()+1}`}
 function getSource(){const params=new URLSearchParams(window.location.search);return params.get("source")||"direct"}
@@ -379,6 +382,8 @@ async function apiGet(action,extra={}){const params=new URLSearchParams({action,
 async function apiPost(data){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(data)});if(!res.ok)throw new Error("API POST failed");return await res.json()}
 
 let places=[];
+let showAllPlayerBookings=false;
+let showAllOwnerBookings=false;
 const PLACES_CACHE_KEY='mustadaira_places_cache_v5_dynamic_regions';
 const PLACES_CACHE_MS=10*60*1000;
 ['mustadaira_places_cache_v1','mustadaira_places_cache_v2_rating','mustadaira_places_cache_v3_rating_fallback','mustadaira_places_cache_v3_rating_fixed'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
@@ -552,6 +557,9 @@ async function confirmBooking(){
   }catch(err){console.error(err);showToast('الاتصال مع الشيت علّق شوي، جرّب مرة ثانية.','error')}
 }
 
+function togglePlayerBookingHistory(){showAllPlayerBookings=!showAllPlayerBookings;loadPlayerBookings()}
+function toggleOwnerBookingHistory(){showAllOwnerBookings=!showAllOwnerBookings;renderOwnerBookings()}
+
 async function loadPlayerBookings(){
   if(!playerToken){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">سجّل دخولك أول عشان تشوف حجوزاتك</div>';return}
   try{
@@ -559,7 +567,11 @@ async function loadPlayerBookings(){
     const el=document.getElementById('bookingsList');
     if(!res.success){el.innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'ما قدرنا نجيب الحجوزات')+'</div>';return}
     if(!res.bookings||!res.bookings.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لسا ما عندك حجوزات</div>';return}
-    el.innerHTML=res.bookings.map(b=>{
+    const visibleBookings=getVisibleBookings(res.bookings,14,showAllPlayerBookings);
+    const hiddenCount=res.bookings.length-visibleBookings.length;
+    if(!visibleBookings.length){el.innerHTML=`<div class="card" style="text-align:center;color:#6b7280;margin-bottom:10px">ما في حجوزات ضمن آخر 14 يوم أو حجوزات قادمة.</div><button class="cbtn" onclick="togglePlayerBookingHistory()">عرض السجل الكامل</button>`;return}
+    const historyBtn=`<button class="cbtn" onclick="togglePlayerBookingHistory()" style="margin-bottom:10px">${showAllPlayerBookings?'إخفاء الحجوزات القديمة':'عرض السجل الكامل'+(hiddenCount>0?' ('+hiddenCount+')':'')}</button>`;
+    el.innerHTML=historyBtn+visibleBookings.map(b=>{
       const cls=b.status==='confirmed'?'badge-green':(b.status==='pending'?'badge-yellow':'badge-red');
       const label=b.status==='confirmed'?'مؤكد':(b.status==='pending'?'بانتظار التأكيد':(b.status==='cancelled'?'ملغي':'مرفوض'));
       return `<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:8px">
@@ -615,10 +627,12 @@ function renderOwnerBookings(){
   if(!ownerData)return;
   let bookings=ownerData.bookings||[];
   const date=document.getElementById("ownerDateFilter").value;const fieldId=document.getElementById("ownerFieldFilter").value;
+  if(!showAllOwnerBookings)bookings=getVisibleBookings(bookings,30,false);
   if(date)bookings=bookings.filter(b=>String(b.date)===date);
   if(fieldId&&fieldId!=="all")bookings=bookings.filter(b=>String(b.field_id)===String(fieldId));
+  const toggleBtn=document.getElementById("ownerHistoryToggle");if(toggleBtn)toggleBtn.textContent=showAllOwnerBookings?"إخفاء الحجوزات القديمة":"عرض السجل الكامل";
   const el=document.getElementById("ownerBookings");
-  if(!bookings.length){el.innerHTML='<div class="card" style="text-align:center;color:#9ca3af">لا توجد حجوزات مطابقة</div>';return}
+  if(!bookings.length){el.innerHTML='<div class="card" style="text-align:center;color:#9ca3af">لا توجد حجوزات مطابقة ضمن الفترة الحالية</div>';return}
   el.innerHTML=bookings.map(b=>`<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:10px">
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px">
       <div><div style="font-size:14px;font-weight:900;color:#111827">${b.field_name}</div>
