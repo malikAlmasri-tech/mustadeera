@@ -171,6 +171,17 @@ input,select,button,textarea{font-family:'Cairo',sans-serif}
       </span>
       <div><div id="dMapText" style="font-weight:700"></div><div style="font-size:10px;opacity:0.7">اضغط لعرض الموقع على خرائط جوجل</div></div>
     </a>
+    <a id="callPlaceBtn" href="#" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#f0fdf4;border-radius:9px;border:0.5px solid #bbf7d0;margin-bottom:14px;cursor:pointer;text-decoration:none;color:#15803d;font-size:12px;font-weight:700">
+  <span style="display:flex;align-items:center">
+    <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"></path>
+    </svg>
+  </span>
+  <div>
+    <div style="font-weight:800">اتصل بالملعب مباشرة</div>
+    <div style="font-size:10px;opacity:.7">للاستفسار أو التواصل السريع</div>
+  </div>
+</a>
     <div style="margin-bottom:14px">
       <div style="font-size:13px;font-weight:700;color:#111827;margin-bottom:10px">اختر الملعب داخل المكان:</div>
       <div id="subFieldsList" style="display:grid;grid-template-columns:1fr;gap:8px"></div>
@@ -455,6 +466,11 @@ async function openDetail(placeId){
   document.getElementById('detailHeader').style.background=`linear-gradient(135deg,${currentPlace.color},${currentPlace.color}99)`;
   document.getElementById('mapLink').href=currentPlace.map_link||'#';
   document.getElementById('dMapText').textContent=currentPlace.place_name+' — '+getPlaceLocationText(currentPlace);
+  const callBtn = document.getElementById('callPlaceBtn');
+if (callBtn) {
+  callBtn.href = currentPlace.phone ? `tel:+${normalizePhoneLocal(currentPlace.phone)}` : '#';
+  callBtn.style.display = currentPlace.phone ? 'flex' : 'none';
+}
   renderSubFields();renderDetailDays();renderDetailTimes();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('detailPage').classList.add('active')
 }
