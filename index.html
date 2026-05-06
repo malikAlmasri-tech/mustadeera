@@ -114,6 +114,22 @@ body.dark .skeleton-card{
   color:var(--ink)!important;
   border-color:var(--line)!important;
 }
+  /* الملعب المختار */
+body.dark .subfield-card.active{
+  background:#234c36 !important;
+  border-color:#5fb27d !important;
+  box-shadow:
+    0 0 0 1px rgba(95,178,125,.15),
+    0 10px 24px rgba(35,76,54,.34) !important;
+  transform:translateY(-1px);
+}
+
+/* النصوص داخل الملعب المختار */
+body.dark .subfield-card.active .subfield-name,
+body.dark .subfield-card.active .subfield-price,
+body.dark .subfield-card.active .subfield-meta{
+  color:white !important;
+}
   /* تهدئة بطاقات الملاعب */
 body.dark .place-card{
   background:#171b16 !important;
