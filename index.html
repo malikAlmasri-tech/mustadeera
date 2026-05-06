@@ -514,7 +514,10 @@ body.dark [style*="background: #fef3c7"]{background:var(--soft-yellow)!important
         </div>
         <div id="ownerPlaceTitle" class="lux-muted-white">تحميل البيانات...</div>
       </div>
-      <button onclick="doLogout()" class="lux-exit-btn">خروج</button>
+      <div style="display:flex;align-items:center;gap:8px">
+  <button onclick="toggleTheme()" id="ownerThemeBtn" class="lux-exit-btn" type="button">🌙</button>
+  <button onclick="doLogout()" class="lux-exit-btn">خروج</button>
+</div>
     </div>
   </div>
   <div style="padding:14px">
@@ -1166,14 +1169,17 @@ function updateAutoRefreshTimer(){const shouldRun=isAutoRefreshPageActive()&&!do
 document.addEventListener('visibilitychange',()=>{updateAutoRefreshTimer();if(!document.hidden&&isAutoRefreshPageActive())refreshVisibleData()});
 document.addEventListener('click',e=>{const overlay=e.target.closest('.modal-overlay,.success-overlay');if(!overlay||e.target!==overlay)return;overlay.classList.remove('show')});
   function applyTheme(theme){
+  const btn = document.getElementById('themeBtn');
+  const ownerBtn = document.getElementById('ownerThemeBtn');
+
   if(theme === 'dark'){
     document.body.classList.add('dark');
-    const btn=document.getElementById('themeBtn');
     if(btn) btn.innerHTML='☀️';
+    if(ownerBtn) ownerBtn.innerHTML='☀️';
   }else{
     document.body.classList.remove('dark');
-    const btn=document.getElementById('themeBtn');
     if(btn) btn.innerHTML='🌙';
+    if(ownerBtn) ownerBtn.innerHTML='🌙';
   }
 }
 
