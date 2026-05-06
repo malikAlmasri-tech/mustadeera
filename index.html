@@ -34,6 +34,34 @@
   --shadow-card-hover:0 16px 48px rgba(10,61,31,0.18);
   --ease-lux:cubic-bezier(0.34,1.56,0.64,1);
 }
+  .amenities{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+  margin-bottom:12px;
+}
+
+.amenity-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  color:#0a3d1f;
+  background:linear-gradient(135deg,#f0fdf4,#ffffff);
+  border:1px solid rgba(26,107,60,.14);
+  box-shadow:0 2px 8px rgba(10,61,31,.06);
+}
+
+body.dark .amenity-chip{
+  color:#dce8dd;
+  background:linear-gradient(135deg,rgba(47,122,77,.22),rgba(255,255,255,.035));
+  border-color:rgba(103,192,139,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
  body.dark {
 
   --forest:#123322;
@@ -683,7 +711,30 @@ function goBack(){showPage('home')}
 
 function getPlaceLocationText(place){const city=String(place?.city||'').trim();const region=String(place?.region||'').trim();if(city&&region)return `${city} - ${region}`;return city||region||''}
 function openPlaceSmart(placeId){openDetail(placeId)}
+function renderAmenities(amenitiesText){
+  const map = {
+    water: '💧 مياه مجانية',
+    vests: '🦺 بلوزات فرق',
+    ball: '⚽ كرة قدم',
+    bathrooms: '🚻 حمامات',
+    parking: '🅿️ مصفّات'
+  };
 
+  const items = String(amenitiesText || '')
+    .split('|')
+    .map(x => x.trim())
+    .filter(Boolean)
+    .map(key => map[key])
+    .filter(Boolean);
+
+  if (!items.length) return '';
+
+  return `
+    <div class="amenities">
+      ${items.map(item => `<span class="amenity-chip">${item}</span>`).join('')}
+    </div>
+  `;
+}
 function renderPlaces(list){
   const el=document.getElementById('placesList');
   if(!list.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px 0">لا توجد ملاعب مطابقة</div>';return}
@@ -711,10 +762,13 @@ function renderPlaces(list){
       </div>
       <div class="place-body">
         <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
-          <div style="font-size:11px;color:#6b7280"><span style="color:#f59e0b">★</span> ${ratingText(p)}</div>
-          <div style="font-size:11px;color:#6b7280">/ ساعتان</div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px">
+  <div style="font-size:11px;color:#6b7280"><span style="color:#f59e0b">★</span> ${ratingText(p)}</div>
+  <div style="font-size:11px;color:#6b7280">/ ساعتان</div>
+</div>
+
+${renderAmenities(p.amenities)}
+
+<div style="display:flex;justify-content:flex-end;align-items:center;gap:8px">
           <button class="place-cta" onclick="event.stopPropagation();openPlaceSmart('${p.place_id}')">${btnText}</button>
         </div>
       </div>
