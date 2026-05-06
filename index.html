@@ -859,7 +859,35 @@ async function confirmBooking(){
 
 function togglePlayerBookingHistory(){showAllPlayerBookings=!showAllPlayerBookings;loadPlayerBookings()}
 function toggleOwnerBookingHistory(){showAllOwnerBookings=!showAllOwnerBookings;renderOwnerBookings()}
+function getBookingRuntimeStatus(b){
+  const status = String(b.status || '').toLowerCase();
 
+  if(status !== 'confirmed') return status;
+
+  const now = new Date();
+  const startHour = Number(b.hour);
+
+  if(Number.isNaN(startHour) || !b.date) return status;
+
+  const start = new Date(`${b.date}T${String(startHour).padStart(2,'0')}:00:00`);
+  const end = new Date(start);
+  end.setHours(end.getHours() + 2);
+
+  if(now >= start && now < end) return 'in_progress';
+
+  return status;
+}
+
+function runtimeStatusBadge(b){
+  const runtimeStatus = getBookingRuntimeStatus(b);
+
+  if(runtimeStatus === 'in_progress'){
+    return '<span class="badge-blue">جاري اللعب الآن</span>';
+  }
+
+  return statusBadge(runtimeStatus);
+}
+  
 async function loadPlayerBookings(){
   if(!playerToken){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">سجّل دخولك أول عشان تشوف حجوزاتك</div>';return}
   try{
@@ -872,8 +900,37 @@ async function loadPlayerBookings(){
     if(!visibleBookings.length){el.innerHTML=`<div class="card" style="text-align:center;color:#6b7280;margin-bottom:10px">ما في حجوزات ضمن آخر 14 يوم أو حجوزات قادمة.</div><button class="cbtn" onclick="togglePlayerBookingHistory()">عرض السجل الكامل</button>`;return}
     const historyBtn=`<button class="cbtn" onclick="togglePlayerBookingHistory()" style="margin-bottom:10px">${showAllPlayerBookings?'إخفاء الحجوزات القديمة':'عرض السجل الكامل'+(hiddenCount>0?' ('+hiddenCount+')':'')}</button>`;
     el.innerHTML=historyBtn+visibleBookings.map(b=>{
-      const cls=b.status==='confirmed'?'badge-green':(b.status==='pending'?'badge-yellow':'badge-red');
-      const label=b.status==='confirmed'?'مؤكد':(b.status==='pending'?'بانتظار التأكيد':(b.status==='cancelled'?'ملغي':'مرفوض'));
+      const runtimeStatus = getBookingRuntimeStatus(b);
+
+const cls =
+  runtimeStatus === 'in_progress'
+    ? 'badge-blue'
+    : (
+        runtimeStatus === 'confirmed'
+          ? 'badge-green'
+          : (
+              runtimeStatus === 'pending'
+                ? 'badge-yellow'
+                : 'badge-red'
+            )
+      );
+
+const label =
+  runtimeStatus === 'in_progress'
+    ? 'جاري اللعب الآن'
+    : (
+        runtimeStatus === 'confirmed'
+          ? 'مؤكد'
+          : (
+              runtimeStatus === 'pending'
+                ? 'قيد المعالجة'
+                : (
+                    runtimeStatus === 'cancelled'
+                      ? 'ملغي'
+                      : 'مرفوض'
+                  )
+            )
+      );
       return `<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="font-size:14px;font-weight:700;color:#111827">${b.place_name} - ${b.field_name}</div><span class="${cls}">${label}</span></div>
         <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:#6b7280">
@@ -966,7 +1023,7 @@ function renderSingleBookingCard(b){
         <span style="display:flex;align-items:center;gap:3px;font-size:12px;color:#6b7280">${SVG_ICONS.cal_sm} ${b.date}</span>
         <span style="display:flex;align-items:center;gap:3px;font-size:12px;color:#6b7280">${SVG_ICONS.clock} ${b.time}</span>
       </div></div>
-      ${statusBadge(b.status)}
+      ${runtimeStatusBadge(b)}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#374151">${SVG_ICONS.person} ${b.name||"-"}</span>
