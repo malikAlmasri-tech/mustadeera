@@ -1253,6 +1253,10 @@ function renderPlaceEconomicStats(place){
   const availableRate=calcPercent(Math.max(totalSlots-takenThisWeek,0),totalSlots);
   const confirmed=placeBookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed').length;
   const confirmRate=calcPercent(confirmed,placeBookings.length);
+  let qualityText='بيانات قليلة';
+  if(placeBookings.length){
+    qualityText=confirmRate>=80?'ممتاز':(confirmRate>=60?'جيد':'بحاجة متابعة');
+  }
   const decision=confirmRate && confirmRate<80 ? 'تنبيه: معدل التأكيد أقل من 80%، ممكن اللاعب ينتظر موافقة أكثر.' : 'المؤشرات تساعدك تعرف إذا الملعب مناسب قبل الحجز.';
   el.innerHTML=`
     <div class="econ-card">
@@ -1261,7 +1265,7 @@ function renderPlaceEconomicStats(place){
         <div class="econ-item"><div class="econ-value">${availableRate}%</div><div class="econ-label">الأوقات المتاحة</div><div class="econ-hint">كلما قلت يعني الطلب عالي</div></div>
         <div class="econ-item"><div class="econ-value">${confirmRate}%</div><div class="econ-label">معدل التأكيد</div><div class="econ-hint">أقل من 80% يحتاج انتباه</div></div>
         <div class="econ-item"><div class="econ-value">${placeBookings.length}</div><div class="econ-label">طلبات سابقة</div><div class="econ-hint">مؤشر نشاط الملعب</div></div>
-        <div class="econ-item"><div class="econ-value">—</div><div class="econ-label">متوسط وقت التأكيد</div><div class="econ-hint">يحتاج حفظ وقت الرد بالشيت</div></div>
+        <div class="econ-item"><div class="econ-value">${qualityText}</div><div class="econ-label">نشاط المالك</div><div class="econ-hint">حسب معدل التأكيد</div></div>
       </div>
       <div class="econ-decision">${decision}</div>
     </div>`;
