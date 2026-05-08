@@ -344,6 +344,65 @@ body.dark [style*="background: #fef3c7"]{background:var(--soft-yellow)!important
 @media (min-width:700px){:root{--max:720px}.place-card{display:grid;grid-template-columns:250px 1fr}.place-cover{height:100%;min-height:168px}.modal{border-radius:28px!important;max-width:560px;margin-bottom:30px}.modal-handle{display:block}}
 @media (min-width:1024px){:root{--max:1100px}#placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:18px!important}.place-card{display:block}.place-cover{height:190px}.header{border-radius:0 0 32px 32px}#detailPage>div:nth-child(2){max-width:850px;margin:auto}#detailTimeGrid,#timeGrid{grid-template-columns:repeat(4,1fr)!important}.bnav{max-width:1100px}}
 @media (min-width:1400px){:root{--max:1200px}#placesList{grid-template-columns:repeat(3,1fr)}}
+  .amenities-grid{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.amenity-modern{
+  width:62px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+.amenity-modern-title{
+  font-size:10px;
+  font-weight:800;
+  color:#0a3d1f;
+  margin-bottom:6px;
+}
+
+.amenity-modern-icon{
+  width:48px;
+  height:48px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#effaf2,#dff5e6);
+  border:1px solid #cfe8d6;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:22px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    0 3px 10px rgba(10,61,31,.08);
+}
+
+.amenity-modern-label{
+  font-size:10px;
+  font-weight:900;
+  color:#15803d;
+  margin-top:6px;
+}
+
+body.dark .amenity-modern-title{
+  color:white;
+}
+
+body.dark .amenity-modern-icon{
+  background:linear-gradient(135deg,#1f2937,#111827);
+  border-color:#374151;
+}
+
+body.dark .amenity-modern-label{
+  color:#4ade80;
+}
 </style>
 </head>
 <body>
@@ -806,7 +865,7 @@ function goBack(){showPage('home')}
 
 function getPlaceLocationText(place){const city=String(place?.city||'').trim();const region=String(place?.region||'').trim();if(city&&region)return `${city} - ${region}`;return city||region||''}
 function openPlaceSmart(placeId){openDetail(placeId)}
-function renderAmenities(amenitiesText){
+  function renderAmenities(amenitiesText){
 
   const iconMap = {
     water:'💧',
@@ -832,23 +891,39 @@ function renderAmenities(amenitiesText){
   if(!items.length) return '';
 
   return `
-    <div class="amenities">
+    <div class="amenities-grid">
+
       ${items.map(item => {
+
         const parts = item.split(':');
+
         const key = (parts[0] || '').trim();
         const label = (parts[1] || '').trim();
 
         return `
-          <span class="amenity-chip amenity-icon-card">
-            <span class="amenity-icon">${iconMap[key] || '⚽'}</span>
-            <span class="amenity-title">${titleMap[key] || key}</span>
-            <span class="amenity-label">${label}</span>
-          </span>
+          <div class="amenity-modern">
+
+            <div class="amenity-modern-title">
+              ${titleMap[key] || key}
+            </div>
+
+            <div class="amenity-modern-icon">
+              ${iconMap[key] || '⚽'}
+            </div>
+
+            <div class="amenity-modern-label">
+              ${label}
+            </div>
+
+          </div>
         `;
+
       }).join('')}
+
     </div>
   `;
 }
+  
 function renderPlaces(list){
   const el=document.getElementById('placesList');
   if(!list.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px 0">لا توجد ملاعب مطابقة</div>';return}
