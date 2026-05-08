@@ -750,7 +750,7 @@ async function apiPost(data){const res=await fetch(API_URL,{method:"POST",body:J
 let places=[];
 let showAllPlayerBookings=false;
 let showAllOwnerBookings=false;
-const PLACES_CACHE_KEY='mustadaira_places_cache_v5_dynamic_regions';
+const PLACES_CACHE_KEY='mustadaira_places_cache_v6_dynamic_regions';
 const PLACES_CACHE_MS=10*60*1000;
 ['mustadaira_places_cache_v1','mustadaira_places_cache_v2_rating','mustadaira_places_cache_v3_rating_fallback','mustadaira_places_cache_v3_rating_fixed'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 let bookedSlots={};let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;let manualDate=getTodayDate();let manualFieldId=null;let manualHour=null;
