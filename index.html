@@ -659,6 +659,38 @@ const DEFAULT_SLOTS = [
 function getTodayDate(){return new Date().toISOString().split("T")[0]}
 function getDateAfter(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().split("T")[0]}
 function isOldBooking(dateStr,keepDays=14){const today=new Date(getTodayDate()+"T00:00:00");const d=new Date(String(dateStr||"").split("T")[0]+"T00:00:00");if(Number.isNaN(d.getTime()))return false;const diffDays=Math.floor((today-d)/(1000*60*60*24));return diffDays>keepDays}
+  function isBookingFinished(b){
+  const h = Number(b.hour);
+  if(!b.date || Number.isNaN(h)) return false;
+
+  const start = new Date(`${b.date}T${String(h).padStart(2,'0')}:00:00`);
+  const end = new Date(start);
+  end.setHours(end.getHours() + 2);
+
+  return new Date() >= end;
+}
+
+function splitFinishedBookings(bookings){
+  const active = [];
+  const finished = [];
+
+  (bookings || []).forEach(b => {
+    if(isBookingFinished(b)) finished.push(b);
+    else active.push(b);
+  });
+
+  return { active, finished };
+}
+
+function sectionTitle(title,count){
+  if(!count) return '';
+  return `
+    <div class="sec-title" style="padding:8px 0 10px">
+      <span>${title}</span>
+      <span class="mini-badge">${count}</span>
+    </div>
+  `;
+}
 function getVisibleBookings(bookings,keepDays,showAll){return showAll?bookings:(bookings||[]).filter(b=>!isOldBooking(b.date,keepDays))}
 function getArabicDayName(dateStr){const days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];const d=new Date(dateStr+"T12:00:00");return days[d.getDay()]}
 function getShortDate(dateStr){const d=new Date(dateStr+"T12:00:00");return `${d.getDate()}/${d.getMonth()+1}`}
@@ -900,42 +932,77 @@ function getBookingRuntimeStatus(b){
 }
 
 function runtimeStatusBadge(b){const runtimeStatus=getBookingRuntimeStatus(b);return statusBadge(runtimeStatus)}
-  
-async function loadPlayerBookings(){
-  if(!playerToken){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">سجّل دخولك أول عشان تشوف حجوزاتك</div>';return}
-  try{
-    const res=await apiGet('getPlayerBookings',{player_token:playerToken});
-    const el=document.getElementById('bookingsList');
-    if(!res.success){el.innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'ما قدرنا نجيب الحجوزات')+'</div>';return}
-    if(!res.bookings||!res.bookings.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لسا ما عندك حجوزات</div>';return}
-    const visibleBookings=getVisibleBookings(res.bookings,14,showAllPlayerBookings);
-    const hiddenCount=res.bookings.length-visibleBookings.length;
-    if(!visibleBookings.length){el.innerHTML=`<div class="card" style="text-align:center;color:#6b7280;margin-bottom:10px">ما في حجوزات ضمن آخر 14 يوم أو حجوزات قادمة.</div><button class="cbtn" onclick="togglePlayerBookingHistory()">عرض السجل الكامل</button>`;return}
-    const historyBtn=`<button class="cbtn" onclick="togglePlayerBookingHistory()" style="margin-bottom:10px">${showAllPlayerBookings?'إخفاء الحجوزات القديمة':'عرض السجل الكامل'+(hiddenCount>0?' ('+hiddenCount+')':'')}</button>`;
-    el.innerHTML=historyBtn+visibleBookings.map(b=>{
-      const runtimeStatus = getBookingRuntimeStatus(b);
-      const lbl = renderLabel(runtimeStatus);
-      const cls = lbl.className;
-      const label = lbl.text;
-      return `<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="font-size:14px;font-weight:700;color:#111827">${b.place_name} - ${b.field_name}</div><span class="${cls}">${label}</span></div>
-        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:#6b7280">
-          <div style="display:flex;align-items:center;gap:4px">${SVG_ICONS.pin} ${b.city}</div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.cal_sm} ${b.date}</span>
-            <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.clock} ${b.time}</span>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.resize} ${b.players||''}</span>
-            <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.money} ${b.price} JD</span>
-          </div>
-        </div>
-        ${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-top:8px">السبب: ${b.cancel_reason}</div>`:''}
-      </div>`
-    }).join('')
-  }catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">ما قدرنا نجيب الحجوزات</div>'}
-}
 
+  function renderPlayerBookingCard(b){
+  const runtimeStatus = getBookingRuntimeStatus(b);
+  const lbl = renderLabel(runtimeStatus);
+
+  return `<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div style="font-size:14px;font-weight:700;color:#111827">${b.place_name} - ${b.field_name}</div>
+      <span class="${lbl.className}">${lbl.text}</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:#6b7280">
+      <div style="display:flex;align-items:center;gap:4px">${SVG_ICONS.pin} ${b.city}</div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.cal_sm} ${b.date}</span>
+        <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.clock} ${b.time}</span>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.resize} ${b.players||''}</span>
+        <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.money} ${b.price} JD</span>
+      </div>
+    </div>
+
+    ${b.cancel_reason ? `<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-top:8px">السبب: ${b.cancel_reason}</div>` : ''}
+  </div>`;
+}
+async function loadPlayerBookings(){
+  if(!playerToken){
+    document.getElementById('bookingsList').innerHTML =
+      '<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">سجّل دخولك أول عشان تشوف حجوزاتك</div>';
+    return;
+  }
+
+  try{
+    const res = await apiGet('getPlayerBookings',{player_token:playerToken});
+    const el = document.getElementById('bookingsList');
+
+    if(!res.success){
+      el.innerHTML = '<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'ما قدرنا نجيب الحجوزات')+'</div>';
+      return;
+    }
+
+    if(!res.bookings || !res.bookings.length){
+      el.innerHTML = '<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لسا ما عندك حجوزات</div>';
+      return;
+    }
+
+    const visibleBookings = getVisibleBookings(res.bookings,14,showAllPlayerBookings);
+    const hiddenCount = res.bookings.length - visibleBookings.length;
+    const { active, finished } = splitFinishedBookings(visibleBookings);
+
+    const historyBtn = `
+      <button class="cbtn" onclick="togglePlayerBookingHistory()" style="margin-bottom:10px">
+        ${showAllPlayerBookings ? 'إخفاء الحجوزات القديمة' : 'عرض السجل الكامل' + (hiddenCount > 0 ? ' ('+hiddenCount+')' : '')}
+      </button>
+    `;
+
+    el.innerHTML =
+      historyBtn +
+      sectionTitle('الحجوزات الحالية والقادمة', active.length) +
+      (active.length ? active.map(renderPlayerBookingCard).join('') : '<div class="card" style="text-align:center;color:#9ca3af;margin-bottom:10px">لا توجد حجوزات حالية أو قادمة</div>') +
+      sectionTitle('الحجوزات المنتهية', finished.length) +
+      finished.map(renderPlayerBookingCard).join('');
+
+  }catch(e){
+    document.getElementById('bookingsList').innerHTML =
+      '<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">ما قدرنا نجيب الحجوزات</div>';
+  }
+}
 
 function getManualField(){return (ownerData?.fields||[]).find(f=>String(f.field_id)===String(manualFieldId))}
 async function openManualBookingModal(){
@@ -1050,13 +1117,18 @@ function renderOwnerBookings() {
 
   const grouped = {};
   bookings.forEach(b => {
+    const { active, finished } = splitFinishedBookings(bookings);
+
+function renderGroupedOwnerBookings(list){
+  const grouped = {};
+
+  list.forEach(b => {
     const d = String(b.date);
     if (!grouped[d]) grouped[d] = [];
     grouped[d].push(b);
   });
 
   const sortedDays = Object.keys(grouped).sort();
-
   const today = getTodayDate();
   const tomorrow = getDateAfter(1);
 
@@ -1066,7 +1138,7 @@ function renderOwnerBookings() {
     return `${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
   }
 
-  el.innerHTML = sortedDays.map(date => {
+  return sortedDays.map(date => {
     const dayBookings = grouped[date].sort((a, b) => Number(a.hour) - Number(b.hour));
     const confirmed = dayBookings.filter(b => b.status === 'confirmed').length;
     const pending = dayBookings.filter(b => b.status === 'pending').length;
@@ -1101,6 +1173,12 @@ function renderOwnerBookings() {
     `;
   }).join('');
 }
+
+el.innerHTML =
+  sectionTitle('الحجوزات الحالية والقادمة', active.length) +
+  (active.length ? renderGroupedOwnerBookings(active) : '<div class="card" style="text-align:center;color:#9ca3af;margin-bottom:10px">لا توجد حجوزات حالية أو قادمة</div>') +
+  sectionTitle('الحجوزات المنتهية', finished.length) +
+  renderGroupedOwnerBookings(finished);}
 
 function askReasonModal(title,hint){return new Promise(resolve=>{const modal=document.getElementById('reasonModal');const input=document.getElementById('reasonInput');const confirmBtn=document.getElementById('reasonConfirmBtn');const cancelBtn=document.getElementById('reasonCancelBtn');document.getElementById('reasonTitle').textContent=title;document.getElementById('reasonHint').textContent=hint;input.value='';modal.classList.add('show');setTimeout(()=>input.focus(),150);const cleanup=(value)=>{modal.classList.remove('show');confirmBtn.onclick=null;cancelBtn.onclick=null;resolve(value)};confirmBtn.onclick=()=>cleanup(input.value.trim());cancelBtn.onclick=()=>cleanup(null)})}
 
