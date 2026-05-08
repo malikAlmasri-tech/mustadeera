@@ -413,6 +413,78 @@ body.dark .amenity-modern-label{
 }
 
 
+/* === ECONOMIC STATS CARDS === */
+.econ-card{
+  background:linear-gradient(135deg,#fffdf7,#ffffff);
+  border:1px solid rgba(201,168,76,.22);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:var(--shadow-card);
+  margin-bottom:14px;
+}
+.econ-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-size:14px;
+  font-weight:900;
+  color:var(--ink);
+  margin-bottom:11px;
+}
+.econ-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+.econ-item{
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(10,61,31,.08);
+  border-radius:16px;
+  padding:11px;
+  min-height:78px;
+}
+.econ-value{
+  font-size:19px;
+  font-weight:900;
+  color:#111827;
+  line-height:1.2;
+  font-variant-numeric:tabular-nums;
+}
+.econ-label{
+  font-size:10.5px;
+  font-weight:900;
+  color:#6b7280;
+  margin-top:5px;
+}
+.econ-hint{
+  font-size:9.5px;
+  font-weight:800;
+  color:#9ca3af;
+  margin-top:2px;
+  line-height:1.4;
+}
+.econ-decision{
+  margin-top:10px;
+  padding:10px 11px;
+  border-radius:14px;
+  background:#f0fdf4;
+  color:#14532d;
+  font-size:12px;
+  font-weight:900;
+  line-height:1.6;
+}
+body.dark .econ-card,
+body.dark .econ-item{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+}
+body.dark .econ-value{color:var(--ink)!important}
+body.dark .econ-label,body.dark .econ-hint{color:var(--text-muted)!important}
+body.dark .econ-decision{background:var(--soft-green)!important;color:#bbf7d0!important}
+@media (min-width:700px){.econ-grid{grid-template-columns:repeat(4,1fr)}}
+
+
 /* === ANIMATIONS & MICRO-INTERACTIONS === */
 
 /* Page transitions */
@@ -802,6 +874,7 @@ body.dark .amenity-modern-label{
       <div style="text-align:left"><div id="dPrice" style="font-size:20px;font-weight:700;color:var(--g)"></div><div style="font-size:10px;color:#9ca3af">/ ساعتان</div></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap"><span class="badge-green" id="dType"></span><span id="dRating" style="background:#eff6ff;color:#1d4ed8;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;display:inline-block"></span></div>
+    <div id="placeEconomicStats"></div>
     <a id="mapLink" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#eff6ff;border-radius:9px;border:0.5px solid #bfdbfe;margin-bottom:14px;cursor:pointer;text-decoration:none;color:#1e40af;font-size:12px;font-weight:600">
       <span style="color:#1e40af;display:flex;align-items:center">
         <svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
@@ -846,7 +919,7 @@ body.dark .amenity-modern-label{
     </div>
     <div class="lux-muted-white">جميع حجوزاتك من حسابك</div>
   </div>
-  <div style="padding:14px"><div id="bookingsList"></div><button class="cbtn" onclick="loadPlayerBookings()">تحديث الحجوزات</button></div>
+  <div style="padding:14px"><div id="playerEconomicStats"></div><div id="bookingsList"></div><button class="cbtn" onclick="loadPlayerBookings()">تحديث الحجوزات</button></div>
 </div>
 
 <!-- ACCOUNT PAGE -->
@@ -912,6 +985,20 @@ body.dark .amenity-modern-label{
       <div class="owner-progress" style="margin-bottom:10px"><div id="ownerConfirmRateBar" style="width:0%"></div></div>
       <div class="owner-mini-row"><span>أكثر ملعب عليه حجوزات</span><strong id="ownerTopField">-</strong></div>
       <div class="owner-mini-row" style="margin-bottom:0"><span>أفضل مصدر للحجوزات</span><strong id="ownerTopSource">-</strong></div>
+    </div>
+    <div class="econ-card" id="ownerEconomicCard">
+      <div class="econ-title"><span>🧠 الإحصائيات الاقتصادية</span><span class="mini-badge">قرارات ذكية</span></div>
+      <div class="econ-grid">
+        <div class="econ-item"><div id="ownerOccupancyRate" class="econ-value">0%</div><div class="econ-label">معدل الإشغال</div><div class="econ-hint">المحجوز ÷ المتاح</div></div>
+        <div class="econ-item"><div id="ownerLostRevenue" class="econ-value">0 JD</div><div class="econ-label">إيراد محتمل ضائع</div><div class="econ-hint">الأوقات الفارغة × السعر</div></div>
+        <div class="econ-item"><div id="ownerAvgResponse" class="econ-value">—</div><div class="econ-label">متوسط الرد</div><div class="econ-hint">يحتاج وقت تحديث الحالة</div></div>
+        <div class="econ-item"><div id="ownerCancelRate" class="econ-value">0%</div><div class="econ-label">إلغاء / رفض</div><div class="econ-hint">كل ما قلت أفضل</div></div>
+        <div class="econ-item"><div id="ownerBestTime" class="econ-value">-</div><div class="econ-label">أكثر وقت طلب</div><div class="econ-hint">مفيد للتسعير</div></div>
+        <div class="econ-item"><div id="ownerWebsiteShare" class="econ-value">0%</div><div class="econ-label">حجوزات الموقع</div><div class="econ-hint">مباشر vs خارجي</div></div>
+        <div class="econ-item"><div id="ownerReturnRate" class="econ-value">0%</div><div class="econ-label">معدل العودة</div><div class="econ-hint">نفس الرقم حجز أكثر من مرة</div></div>
+        <div class="econ-item"><div id="ownerPricingSignal" class="econ-value">-</div><div class="econ-label">قرار مقترح</div><div class="econ-hint">حسب الإشغال</div></div>
+      </div>
+      <div id="ownerEconomicDecision" class="econ-decision">كلما زادت البيانات، بتصير القرارات أدق.</div>
     </div>
     <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#f0fdf4,#ffffff);border-color:#bbf7d0">
       <div class="owner-section-title"><span>➕ حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
@@ -1079,7 +1166,7 @@ let showAllOwnerBookings=false;
 const PLACES_CACHE_KEY='mustadaira_places_cache_v7_amenities_compact';
 const PLACES_CACHE_MS=10*60*1000;
 ['mustadaira_places_cache_v1','mustadaira_places_cache_v2_rating','mustadaira_places_cache_v3_rating_fallback','mustadaira_places_cache_v3_rating_fixed'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
-let bookedSlots={};let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;let manualDate=getTodayDate();let manualFieldId=null;let manualHour=null;
+let bookedSlots={};let publicBookingsRaw=[];let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;let manualDate=getTodayDate();let manualFieldId=null;let manualHour=null;
 let ownerToken=localStorage.getItem('owner_token')||'';let ownerData=null;let editingFieldMode='edit';
 let playerToken=localStorage.getItem('player_token')||'';let playerData=null;
 
@@ -1099,7 +1186,7 @@ function readPlacesCache(){try{const cached=JSON.parse(localStorage.getItem(PLAC
 function savePlacesCache(data){try{localStorage.setItem(PLACES_CACHE_KEY,JSON.stringify({time:Date.now(),places:data}))}catch(e){}}
 function normalizeRemotePlaces(remotePlaces){return(remotePlaces||[]).map(p=>({...p,place_id:String(p.place_id),rating:safeRating(p.rating),reviews:safeReviews(p.reviews),fields:(p.fields||[]).map(f=>({...f,field_id:String(f.field_id),place_id:String(f.place_id)}))}))}
 
-function buildBookedSlots(remoteBookings){bookedSlots={};places.forEach(p=>p.fields.forEach(f=>bookedSlots[f.field_id]={}));if(Array.isArray(remoteBookings)){remoteBookings.forEach(b=>{const status=String(b.status||'pending').toLowerCase();if(status==='cancelled'||status==='rejected')return;const fid=String(b.field_id||'').trim();const hour=Number(b.hour);const date=String(b.date||'').trim().split('T')[0];if(!fid||!date||Number.isNaN(hour))return;if(!bookedSlots[fid])bookedSlots[fid]={};if(!bookedSlots[fid][date])bookedSlots[fid][date]=[];if(!bookedSlots[fid][date].includes(hour))bookedSlots[fid][date].push(hour)})}}
+function buildBookedSlots(remoteBookings){bookedSlots={};publicBookingsRaw=Array.isArray(remoteBookings)?remoteBookings:[];places.forEach(p=>p.fields.forEach(f=>bookedSlots[f.field_id]={}));if(Array.isArray(remoteBookings)){remoteBookings.forEach(b=>{const status=String(b.status||'pending').toLowerCase();if(status==='cancelled'||status==='rejected')return;const fid=String(b.field_id||'').trim();const hour=Number(b.hour);const date=String(b.date||'').trim().split('T')[0];if(!fid||!date||Number.isNaN(hour))return;if(!bookedSlots[fid])bookedSlots[fid]={};if(!bookedSlots[fid][date])bookedSlots[fid][date]=[];if(!bookedSlots[fid][date].includes(hour))bookedSlots[fid][date].push(hour)})}}
 async function loadInitialData(force=false){const result=await apiGet("getInitialData",{force:force?'1':'0'});const remotePlaces=Array.isArray(result)?result:(result.places||[]);places=normalizeRemotePlaces(remotePlaces);if(places.length)savePlacesCache(places);buildBookedSlots(result.bookings||[]);return true}
 async function loadPlacesOnly(force=false){if(!force){const cached=readPlacesCache();if(cached&&cached.length){places=normalizeRemotePlaces(cached);return true}}const result=await apiGet("getPlaces");const remotePlaces=Array.isArray(result)?result:(result.places||[]);places=normalizeRemotePlaces(remotePlaces);if(places.length)savePlacesCache(places);return true}
 async function loadPublicBookings(){const remoteBookings=await apiGet("getBookings");buildBookedSlots(Array.isArray(remoteBookings)?remoteBookings:(remoteBookings.bookings||[]));return true}
@@ -1262,7 +1349,7 @@ if (callBtn) {
   callBtn.href = currentPlace.phone ? `tel:+${normalizePhoneLocal(currentPlace.phone)}` : '#';
   callBtn.style.display = currentPlace.phone ? 'flex' : 'none';
 }
-  renderSubFields();renderDetailDays();renderDetailTimes();
+  renderSubFields();renderDetailDays();renderDetailTimes();renderPlaceEconomicStats();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('detailPage').classList.add('active');updateAutoRefreshTimer()
 }
 
@@ -1270,9 +1357,9 @@ function renderSubFields(){
   document.getElementById('subFieldsList').innerHTML=currentPlace.fields.map(f=>`<div class="subfield-card ${String(currentSubField.field_id)===String(f.field_id)?'active':''}" onclick="selectSubField('${f.field_id}')"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:800;color:#111827">${f.field_name}</div><div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#6b7280;margin-top:2px">${SVG_ICONS.resize}${f.size}</div></div><div style="font-size:15px;font-weight:800;color:var(--g)">${f.price} JD</div></div></div>`).join('');
   document.getElementById('dPrice').textContent=currentSubField.price+' JD'
 }
-function selectSubField(fieldId){currentSubField=currentPlace.fields.find(f=>String(f.field_id)===String(fieldId));selectedHour=null;renderSubFields();renderDetailDays();renderDetailTimes()}
+function selectSubField(fieldId){currentSubField=currentPlace.fields.find(f=>String(f.field_id)===String(fieldId));selectedHour=null;renderSubFields();renderDetailDays();renderDetailTimes();renderPlaceEconomicStats()}
 function renderDetailDays(){const el=document.getElementById('detailDaysGrid');if(!el)return;el.innerHTML=Array.from({length:7},(_,i)=>{const date=getDateAfter(i);const active=date===selectedDate;const label=i===0?'اليوم':getArabicDayName(date);const shortDate=getShortDate(date);return `<button onclick="selectDetailDate('${date}')" class="day-btn ${active?'active':''}"><div>${label}</div><div style="font-size:10px;opacity:.8">${shortDate}</div></button>`}).join('')}
-async function selectDetailDate(date){selectedDate=date;selectedHour=null;renderDetailDays();setDayButtonsLoading('detailDaysGrid',true,date);renderTimeSkeleton('detailTimeGrid',6);await loadPublicBookings().catch(()=>{});setDayButtonsLoading('detailDaysGrid',false,date);renderDetailDays();renderDetailTimes()}
+async function selectDetailDate(date){selectedDate=date;selectedHour=null;renderDetailDays();setDayButtonsLoading('detailDaysGrid',true,date);renderTimeSkeleton('detailTimeGrid',6);await loadPublicBookings().catch(()=>{});setDayButtonsLoading('detailDaysGrid',false,date);renderDetailDays();renderDetailTimes();renderPlaceEconomicStats()}
 function selectDetailTime(hour){selectedHour=hour;renderDetailTimes()}
 function renderDetailTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('detailTimeGrid').innerHTML=slots.map(s=>{const takenSlot=taken.includes(s.hour);const selected=selectedHour===s.hour;return `<button class="tbtn${takenSlot?' taken':''}${selected&&!takenSlot?' sel':''}" ${takenSlot?'disabled':''} onclick="selectDetailTime(${s.hour})">${s.label}${takenSlot?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':''}</button>`}).join('')}
 
@@ -1366,8 +1453,64 @@ function runtimeStatusBadge(b){const runtimeStatus=getBookingRuntimeStatus(b);re
     ${b.cancel_reason ? `<div style="font-size:12px;color:#dc2626;background:#fee2e2;border-radius:8px;padding:8px;margin-top:8px">السبب: ${b.cancel_reason}</div>` : ''}
   </div>`;
 }
+
+function percentText(part,total){return total?Math.round((part/total)*100)+'%':'0%'}
+function sourceArabicLabel(source){const s=String(source||'direct').trim().toLowerCase();if(s==='owner_manual')return 'خارجي';if(s==='instagram')return 'انستغرام';if(s==='whatsapp')return 'واتساب';if(s==='ads')return 'إعلانات';if(s==='direct')return 'مباشر';return source||'مباشر'}
+function getBookingDateObj(b){return new Date(String(b.date||'')+'T'+String(b.hour||0).padStart(2,'0')+':00:00')}
+function dateInRange(dateStr,startStr,endStr){return String(dateStr||'')>=String(startStr||'')&&String(dateStr||'')<=String(endStr||'')}
+function getPricingSignal(occupancy){if(occupancy>=85)return {text:'ارفع السعر',decision:'الإشغال فوق 85% — الطلب قوي، جرّب ترفع السعر للأوقات الأكثر طلباً.'};if(occupancy>=60)return {text:'وضع صحي',decision:'الإشغال بين 60% و80% تقريباً — الأداء صحي، ركّز على الحفاظ على الخدمة.'};if(occupancy>0&&occupancy<40)return {text:'سوّق أكثر',decision:'الإشغال أقل من 40% — الأفضل تقوية التسويق والعروض قبل رفع السعر.'};return {text:'راقب البيانات',decision:'لسا البيانات قليلة، استمر باستقبال حجوزات أكثر حتى يظهر القرار بدقة.'}}
+function setTextSafe(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
+
+function renderPlayerEconomicStats(bookings){
+  const box=document.getElementById('playerEconomicStats');
+  if(!box)return;
+  bookings=Array.isArray(bookings)?bookings:[];
+  if(!bookings.length){box.innerHTML='';return;}
+  const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const rejected=bookings.filter(b=>['rejected','cancelled'].includes(String(b.status||'').toLowerCase()));
+  const totalSpent=confirmed.reduce((s,b)=>s+(Number(b.price)||0),0);
+  const confirmRate=percentText(confirmed.length,bookings.length);
+  const rejectRate=percentText(rejected.length,bookings.length);
+  box.innerHTML=`<div class="econ-card">
+    <div class="econ-title"><span>💸 ملخصك كلاعب</span><span class="mini-badge">قيمة مقابل فلوسك</span></div>
+    <div class="econ-grid">
+      <div class="econ-item"><div class="econ-value">${confirmed.length}</div><div class="econ-label">مرات لعبت</div><div class="econ-hint">الحجوزات المؤكدة</div></div>
+      <div class="econ-item"><div class="econ-value">${formatMoney(totalSpent)}</div><div class="econ-label">إجمالي الصرف</div><div class="econ-hint">على الحجوزات المقبولة</div></div>
+      <div class="econ-item"><div class="econ-value">${confirmRate}</div><div class="econ-label">نسبة التأكيد</div><div class="econ-hint">قديش طلباتك بتنقبل</div></div>
+      <div class="econ-item"><div class="econ-value">${rejectRate}</div><div class="econ-label">رفض / إلغاء</div><div class="econ-hint">كل ما قلت أفضل</div></div>
+    </div>
+  </div>`;
+}
+
+function renderPlaceEconomicStats(){
+  const box=document.getElementById('placeEconomicStats');
+  if(!box||!currentPlace)return;
+  const fields=currentPlace.fields||[];
+  const totalSlots=fields.reduce((sum,f)=>sum+(getFieldSlots(f).length*7),0);
+  let takenSlots=0;
+  fields.forEach(f=>{for(let i=0;i<7;i++){const date=getDateAfter(i);takenSlots+=((bookedSlots[String(f.field_id)]||{})[date]||[]).length;}});
+  const available=Math.max(totalSlots-takenSlots,0);
+  const availability=percentText(available,totalSlots);
+  const placeBookings=(publicBookingsRaw||[]).filter(b=>String(b.place_id)===String(currentPlace.place_id));
+  const confirmed=placeBookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed').length;
+  const rejected=placeBookings.filter(b=>['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length;
+  const decisive=placeBookings.filter(b=>['confirmed','cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length;
+  const confirmRate=decisive?Math.round((confirmed/decisive)*100):0;
+  const qualityText=confirmRate>=80?'مالك نشيط':(confirmRate>0?'بحاجة متابعة':'بيانات قليلة');
+  box.innerHTML=`<div class="econ-card">
+    <div class="econ-title"><span>📊 مؤشرات قبل الحجز</span><span class="mini-badge">هذا الأسبوع</span></div>
+    <div class="econ-grid">
+      <div class="econ-item"><div class="econ-value">${availability}</div><div class="econ-label">الأوقات المتاحة</div><div class="econ-hint">كلما قلت يعني الملعب مطلوب</div></div>
+      <div class="econ-item"><div class="econ-value">${confirmRate}%</div><div class="econ-label">تأكيد المالك</div><div class="econ-hint">أقل من 80% يحتاج حذر</div></div>
+      <div class="econ-item"><div class="econ-value">${qualityText}</div><div class="econ-label">قراءة سريعة</div><div class="econ-hint">حسب سجل الحجوزات</div></div>
+      <div class="econ-item"><div class="econ-value">—</div><div class="econ-label">متوسط وقت التأكيد</div><div class="econ-hint">يحتاج وقت تحديث الحالة</div></div>
+    </div>
+  </div>`;
+}
+
 async function loadPlayerBookings(){
   if(!playerToken){
+    const statsBox=document.getElementById('playerEconomicStats');if(statsBox)statsBox.innerHTML='';
     document.getElementById('bookingsList').innerHTML =
       '<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">سجّل دخولك أول عشان تشوف حجوزاتك</div>';
     return;
@@ -1383,9 +1526,12 @@ async function loadPlayerBookings(){
     }
 
     if(!res.bookings || !res.bookings.length){
+      renderPlayerEconomicStats([]);
       el.innerHTML = '<div style="text-align:center;color:#9ca3af;padding:40px;font-size:13px">لسا ما عندك حجوزات</div>';
       return;
     }
+
+    renderPlayerEconomicStats(res.bookings || []);
 
     const visibleBookings = getVisibleBookings(res.bookings,14,showAllPlayerBookings);
     const hiddenCount = res.bookings.length - visibleBookings.length;
@@ -1477,7 +1623,38 @@ function renderOwnerStats(bookings){
   document.getElementById("ownerConfirmRate").textContent=rate+'%';
   document.getElementById("ownerConfirmRateBar").style.width=Math.min(rate,100)+'%';
   document.getElementById("ownerTopField").textContent=topField?`${topField.label} (${topField.count})`:'-';
-  document.getElementById("ownerTopSource").textContent=topSource?`${topSource.label} (${topSource.count})`:'-'
+  document.getElementById("ownerTopSource").textContent=topSource?`${sourceArabicLabel(topSource.label)} (${topSource.count})`:'-';
+
+  const fields=(ownerData&&ownerData.fields)||[];
+  const today30Start=getDateAfter(-29);
+  const today30End=getTodayDate();
+  const periodBookings=bookings.filter(b=>dateInRange(b.date,today30Start,today30End));
+  const periodConfirmed=periodBookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const periodCancelled=periodBookings.filter(b=>['cancelled','rejected'].includes(String(b.status||'').toLowerCase()));
+  const slotsPerDay=fields.reduce((sum,f)=>sum+getFieldSlots(f).length,0)||8;
+  const totalAvailableSlots=slotsPerDay*30;
+  const occupancy=totalAvailableSlots?Math.min(100,Math.round((periodConfirmed.length/totalAvailableSlots)*100)):0;
+  const avgPrice=periodConfirmed.length?periodConfirmed.reduce((sum,b)=>sum+(Number(b.price)||0),0)/periodConfirmed.length:(fields.length?fields.reduce((sum,f)=>sum+(Number(f.price)||0),0)/fields.length:0);
+  const emptySlots=Math.max(totalAvailableSlots-periodConfirmed.length,0);
+  const lostRevenue=emptySlots*avgPrice;
+  const cancelRate=periodBookings.length?Math.round((periodCancelled.length/periodBookings.length)*100):0;
+  const topHour=getTopBy(periodBookings,b=>String(b.hour||''),b=>String(b.hour||'-')+':00');
+  const websiteShare=periodConfirmed.length?Math.round((periodConfirmed.filter(b=>!isOwnerManualBooking(b)).length/periodConfirmed.length)*100):0;
+  const playerCounts={};
+  periodConfirmed.forEach(b=>{const phone=String(b.phone||'').trim();if(phone)playerCounts[phone]=(playerCounts[phone]||0)+1});
+  const uniquePlayers=Object.keys(playerCounts).length;
+  const returningPlayers=Object.values(playerCounts).filter(c=>c>1).length;
+  const returnRate=uniquePlayers?Math.round((returningPlayers/uniquePlayers)*100):0;
+  const signal=getPricingSignal(occupancy);
+  setTextSafe('ownerOccupancyRate',occupancy+'%');
+  setTextSafe('ownerLostRevenue',formatMoney(lostRevenue));
+  setTextSafe('ownerAvgResponse','—');
+  setTextSafe('ownerCancelRate',cancelRate+'%');
+  setTextSafe('ownerBestTime',topHour?`${topHour.label} (${topHour.count})`:'-');
+  setTextSafe('ownerWebsiteShare',websiteShare+'%');
+  setTextSafe('ownerReturnRate',returnRate+'%');
+  setTextSafe('ownerPricingSignal',signal.text);
+  setTextSafe('ownerEconomicDecision',signal.decision);
 }
 
 function renderOwnerDashboard(){
