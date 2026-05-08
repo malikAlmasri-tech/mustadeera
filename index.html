@@ -411,6 +411,265 @@ body.dark .amenity-modern-icon{
 body.dark .amenity-modern-label{
   color:#4ade80;
 }
+
+
+/* === ANIMATIONS & MICRO-INTERACTIONS === */
+
+/* Page transitions */
+.page.active {
+  animation: pageIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal slide-up smoother */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.modal { animation: slideUp 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Success overlay pop */
+.scard {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes popIn {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* Header pulse on load */
+.header, .lux-page-header {
+  animation: headerReveal 0.5s ease both;
+}
+@keyframes headerReveal {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Place cards stagger */
+.place-card {
+  animation: fadeSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.place-card:nth-child(1)  { animation-delay: 0.00s; }
+.place-card:nth-child(2)  { animation-delay: 0.07s; }
+.place-card:nth-child(3)  { animation-delay: 0.14s; }
+.place-card:nth-child(4)  { animation-delay: 0.21s; }
+.place-card:nth-child(5)  { animation-delay: 0.28s; }
+.place-card:nth-child(6)  { animation-delay: 0.35s; }
+
+/* Card hover lift */
+.place-card {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease;
+  will-change: transform;
+}
+.place-card:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: var(--shadow-card-hover) !important;
+}
+.place-card:active {
+  transform: scale(0.982);
+  transition-duration: 0.12s;
+}
+
+/* Booking card entrance */
+.card {
+  animation: fadeSlideUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Time button bounce on select */
+.tbtn {
+  transition: background 0.2s ease, color 0.2s ease,
+              border-color 0.2s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease;
+}
+.tbtn:not(.taken):hover {
+  transform: translateY(-2px);
+  border-color: rgba(26,107,60,.35);
+}
+.tbtn.sel {
+  transform: scale(1.04);
+}
+.tbtn.taken {
+  transition: none;
+}
+
+/* Day button hover */
+.day-btn {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.day-btn:hover:not(.active) {
+  transform: translateY(-2px);
+}
+.day-btn.active {
+  transform: scale(1.05);
+}
+
+/* Subfield card */
+.subfield-card {
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.subfield-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(10,61,31,.12);
+}
+.subfield-card.active {
+  transform: scale(1.02);
+}
+
+/* Filter tab hop */
+.ftab {
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ftab:hover:not(.active-tab) {
+  transform: translateY(-2px);
+}
+.ftab.active-tab {
+  transform: scale(1.05);
+}
+
+/* Bottom nav icons bounce */
+.nitem {
+  transition: color 0.2s ease;
+}
+.nitem .nicon {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease;
+}
+.nitem:active .nicon {
+  transform: scale(0.85);
+}
+.nitem.active .nicon {
+  transform: scale(1.12);
+}
+
+/* Primary button press */
+.sbtn {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              opacity 0.15s ease;
+}
+.sbtn:hover  { transform: translateY(-2px) scale(1.01); }
+.sbtn:active { transform: scale(0.96); opacity: .9; }
+
+/* Secondary button */
+.cbtn {
+  transition: all 0.22s ease;
+}
+.cbtn:hover  { transform: translateY(-1px); }
+.cbtn:active { transform: scale(0.97); }
+
+/* Owner stat cards pop in */
+.owner-stat-card {
+  animation: fadeSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.owner-stat-card:nth-child(1) { animation-delay: 0.05s; }
+.owner-stat-card:nth-child(2) { animation-delay: 0.10s; }
+.owner-stat-card:nth-child(3) { animation-delay: 0.15s; }
+.owner-stat-card:nth-child(4) { animation-delay: 0.20s; }
+.owner-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(10,61,31,.12);
+}
+
+/* Progress bar animate */
+#ownerConfirmRateBar {
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Amenity icon hover */
+.amenity-modern-icon {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.amenity-modern:hover .amenity-modern-icon {
+  transform: scale(1.18) rotate(-6deg);
+}
+
+/* Badge entrance */
+.badge-green, .badge-red, .badge-yellow, .badge-blue {
+  animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes badgePop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Search input focus glow */
+#searchInput:focus {
+  outline: none;
+}
+
+/* Place CTA button */
+.place-cta {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease;
+}
+.place-cta:hover  { transform: scale(1.06); }
+.place-cta:active { transform: scale(0.95); }
+
+/* Owner action buttons */
+.owner-action {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.15s ease;
+}
+.owner-action:hover  { transform: scale(1.06); }
+.owner-action:active { transform: scale(0.92); opacity: .85; }
+
+/* Star rating wiggle */
+.star {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
+}
+.star:hover, .star.active {
+  transform: scale(1.3) rotate(-8deg);
+}
+
+/* Toast slide */
+.toast {
+  transition: opacity 0.28s ease,
+              transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Shimmer skeleton */
+.skeleton-line, .skeleton-img {
+  background: linear-gradient(90deg,
+    rgba(0,0,0,.04) 0%,
+    rgba(0,0,0,.08) 45%,
+    rgba(0,0,0,.04) 90%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+/* Scroll-triggered reveal (JS adds .revealed) */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1422,6 +1681,77 @@ function toggleTheme(){
 const savedTheme=localStorage.getItem('theme') || 'light';
 applyTheme(savedTheme);
 new MutationObserver(updateAutoRefreshTimer).observe(document.getElementById('app'),{subtree:true,attributes:true,attributeFilter:['class']});
+
+/* === SCROLL REVEAL === */
+function initScrollReveal() {
+  const cards = document.querySelectorAll('.card, .place-card, .owner-stat-card');
+  cards.forEach(el => el.classList.add('reveal-on-scroll'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  cards.forEach(el => io.observe(el));
+}
+
+/* === NAV TAP BOUNCE === */
+document.querySelectorAll('.nitem').forEach(item => {
+  item.addEventListener('click', () => {
+    const icon = item.querySelector('.nicon');
+    if (!icon) return;
+    icon.style.transition = 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)';
+    icon.style.transform = 'scale(0.78)';
+    setTimeout(() => { icon.style.transform = ''; }, 180);
+  });
+});
+
+/* === BUTTON RIPPLE === */
+function addRipple(e) {
+  const btn = e.currentTarget;
+  const circle = document.createElement('span');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  circle.style.cssText = `
+    position:absolute;
+    width:${size}px;height:${size}px;
+    top:${e.clientY - rect.top - size/2}px;
+    left:${e.clientX - rect.left - size/2}px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.28);
+    pointer-events:none;
+    transform:scale(0);
+    animation:ripple 0.5s ease-out forwards;
+  `;
+  if (!document.getElementById('ripple-style')) {
+    const s = document.createElement('style');
+    s.id = 'ripple-style';
+    s.textContent = '@keyframes ripple{to{transform:scale(2.5);opacity:0}}';
+    document.head.appendChild(s);
+  }
+  btn.style.position = 'relative';
+  btn.style.overflow = 'hidden';
+  btn.appendChild(circle);
+  setTimeout(() => circle.remove(), 520);
+}
+document.querySelectorAll('.sbtn').forEach(b => b.addEventListener('click', addRipple));
+
+/* === RE-INIT ON DYNAMIC CONTENT === */
+const _origFilterPlaces = filterPlaces;
+filterPlaces = function() {
+  _origFilterPlaces.apply(this, arguments);
+  requestAnimationFrame(initScrollReveal);
+};
+
+const _origLoadOwner = loadOwnerDashboard;
+loadOwnerDashboard = async function() {
+  await _origLoadOwner.apply(this, arguments);
+  requestAnimationFrame(initScrollReveal);
+};
+
+initScrollReveal();
 initApp();
 updateAutoRefreshTimer();
 </script>
