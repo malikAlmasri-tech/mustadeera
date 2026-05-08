@@ -344,15 +344,16 @@ body.dark [style*="background: #fef3c7"]{background:var(--soft-yellow)!important
 @media (min-width:700px){:root{--max:720px}.place-card{display:grid;grid-template-columns:250px 1fr}.place-cover{height:100%;min-height:168px}.modal{border-radius:28px!important;max-width:560px;margin-bottom:30px}.modal-handle{display:block}}
 @media (min-width:1024px){:root{--max:1100px}#placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:18px!important}.place-card{display:block}.place-cover{height:190px}.header{border-radius:0 0 32px 32px}#detailPage>div:nth-child(2){max-width:850px;margin:auto}#detailTimeGrid,#timeGrid{grid-template-columns:repeat(4,1fr)!important}.bnav{max-width:1100px}}
 @media (min-width:1400px){:root{--max:1200px}#placesList{grid-template-columns:repeat(3,1fr)}}
-  .amenities-grid{
+.amenities-grid{
   display:flex;
-  gap:14px;
+  gap:10px;
   flex-wrap:wrap;
-  margin-top:12px;
+  margin-top:10px;
+  margin-bottom:46px;
 }
 
 .amenity-modern{
-  width:62px;
+  width:48px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -360,35 +361,42 @@ body.dark [style*="background: #fef3c7"]{background:var(--soft-yellow)!important
 }
 
 .amenity-modern-title{
-  font-size:10px;
-  font-weight:800;
+  font-size:9px;
+  font-weight:900;
   color:#0a3d1f;
-  margin-bottom:6px;
+  margin-bottom:4px;
 }
 
 .amenity-modern-icon{
-  width:48px;
-  height:48px;
+  width:36px;
+  height:36px;
   border-radius:999px;
   background:linear-gradient(135deg,#effaf2,#dff5e6);
   border:1px solid #cfe8d6;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
-  font-size:22px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.7),
-    0 3px 10px rgba(10,61,31,.08);
+  font-size:17px;
+  box-shadow:0 2px 8px rgba(10,61,31,.07);
 }
 
 .amenity-modern-label{
-  font-size:10px;
+  font-size:8px;
   font-weight:900;
   color:#15803d;
-  margin-top:6px;
+  margin-top:4px;
+}
+
+.place-body{
+  position:relative;
+  min-height:150px;
+  padding-bottom:58px;
+}
+
+.place-cta-wrap{
+  position:absolute;
+  left:13px;
+  bottom:13px;
 }
 
 body.dark .amenity-modern-title{
@@ -809,7 +817,7 @@ async function apiPost(data){const res=await fetch(API_URL,{method:"POST",body:J
 let places=[];
 let showAllPlayerBookings=false;
 let showAllOwnerBookings=false;
-const PLACES_CACHE_KEY='mustadaira_places_cache_v6_dynamic_regions';
+const PLACES_CACHE_KEY='mustadaira_places_cache_v7_amenities_compact';
 const PLACES_CACHE_MS=10*60*1000;
 ['mustadaira_places_cache_v1','mustadaira_places_cache_v2_rating','mustadaira_places_cache_v3_rating_fallback','mustadaira_places_cache_v3_rating_fixed'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 let bookedSlots={};let activeFilter='all';let currentPlace=null;let currentSubField=null;let selectedHour=null;let selectedDate=getTodayDate();let selectedRating=0;let manualDate=getTodayDate();let manualFieldId=null;let manualHour=null;
@@ -957,7 +965,7 @@ function renderPlaces(list){
 
 ${renderAmenities(p.amenities)}
 
-<div style="display:flex;justify-content:flex-end;align-items:center;gap:8px">
+<div class="place-cta-wrap">
           <button class="place-cta" onclick="event.stopPropagation();openPlaceSmart('${p.place_id}')">${btnText}</button>
         </div>
       </div>
