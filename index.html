@@ -763,11 +763,31 @@ function getPlaceLocationText(place){const city=String(place?.city||'').trim();c
 function openPlaceSmart(placeId){openDetail(placeId)}
 function renderAmenities(amenitiesText){
   const map = {
-    water: '💧 مياه مجانية',
-    vests: '🦺 بلوزات فرق',
-    ball: '⚽ كرة قدم',
-    bathrooms: '🚻 حمامات',
-    parking: '🅿️ مصفّات'
+    water: {
+      icon: '💧',
+      title: 'مياه',
+      label: 'Free'
+    },
+    vests: {
+      icon: '🦺',
+      title: 'بلوزات',
+      label: 'Available'
+    },
+    ball: {
+      icon: '⚽',
+      title: 'كرة',
+      label: 'Free'
+    },
+    bathrooms: {
+      icon: '🚻',
+      title: 'حمامات',
+      label: 'Available'
+    },
+    parking: {
+      icon: '🅿️',
+      title: 'مصفّات',
+      label: 'Free'
+    }
   };
 
   const items = String(amenitiesText || '')
@@ -781,7 +801,13 @@ function renderAmenities(amenitiesText){
 
   return `
     <div class="amenities">
-      ${items.map(item => `<span class="amenity-chip">${item}</span>`).join('')}
+      ${items.map(item => `
+        <span class="amenity-chip amenity-icon-card">
+          <span class="amenity-icon">${item.icon}</span>
+          <span class="amenity-title">${item.title}</span>
+          <span class="amenity-label">${item.label}</span>
+        </span>
+      `).join('')}
     </div>
   `;
 }
