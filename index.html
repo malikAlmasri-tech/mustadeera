@@ -1096,89 +1096,92 @@ function renderSingleBookingCard(b){
   </div>`
 }
 
-function renderOwnerBookings() {
+  function renderOwnerBookings() {
   if (!ownerData) return;
   let bookings = ownerData.bookings || [];
 
   const date = document.getElementById("ownerDateFilter").value;
   const fieldId = document.getElementById("ownerFieldFilter").value;
+
   if (!showAllOwnerBookings) bookings = getVisibleBookings(bookings, 30, false);
   if (date) bookings = bookings.filter(b => String(b.date) === date);
   if (fieldId && fieldId !== "all") bookings = bookings.filter(b => String(b.field_id) === String(fieldId));
 
   const toggleBtn = document.getElementById("ownerHistoryToggle");
-  if (toggleBtn) toggleBtn.textContent = showAllOwnerBookings ? "إخفاء الحجوزات القديمة" : "عرض السجل الكامل";
+  if (toggleBtn) {
+    toggleBtn.textContent = showAllOwnerBookings ? "إخفاء الحجوزات القديمة" : "عرض السجل الكامل";
+  }
 
   const el = document.getElementById("ownerBookings");
+
   if (!bookings.length) {
     el.innerHTML = '<div class="card" style="text-align:center;color:#9ca3af">لا توجد حجوزات مطابقة ضمن الفترة الحالية</div>';
     return;
   }
 
-  const grouped = {};
-  bookings.forEach(b => {
-    const { active, finished } = splitFinishedBookings(bookings);
+  const { active, finished } = splitFinishedBookings(bookings);
 
-function renderGroupedOwnerBookings(list){
-  const grouped = {};
+  function renderGroupedOwnerBookings(list) {
+    const grouped = {};
 
-  list.forEach(b => {
-    const d = String(b.date);
-    if (!grouped[d]) grouped[d] = [];
-    grouped[d].push(b);
-  });
+    list.forEach(b => {
+      const d = String(b.date);
+      if (!grouped[d]) grouped[d] = [];
+      grouped[d].push(b);
+    });
 
-  const sortedDays = Object.keys(grouped).sort();
-  const today = getTodayDate();
-  const tomorrow = getDateAfter(1);
+    const sortedDays = Object.keys(grouped).sort();
+    const today = getTodayDate();
+    const tomorrow = getDateAfter(1);
 
-  function getDayLabel(dateStr) {
-    if (dateStr === today) return `اليوم — ${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
-    if (dateStr === tomorrow) return `غداً — ${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
-    return `${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
+    function getDayLabel(dateStr) {
+      if (dateStr === today) return `اليوم — ${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
+      if (dateStr === tomorrow) return `غداً — ${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
+      return `${getArabicDayName(dateStr)} ${getShortDate(dateStr)}`;
+    }
+
+    return sortedDays.map(date => {
+      const dayBookings = grouped[date].sort((a, b) => Number(a.hour) - Number(b.hour));
+      const confirmed = dayBookings.filter(b => b.status === 'confirmed').length;
+      const pending = dayBookings.filter(b => b.status === 'pending').length;
+      const cancelled = dayBookings.filter(b => b.status === 'cancelled' || b.status === 'rejected').length;
+      const isToday = date === today;
+      const isPast = date < today;
+
+      return `
+        <div style="margin-bottom:20px">
+          <div class="day-group-header" style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            background:${isToday ? 'linear-gradient(135deg,#0a3d1f,#1a6b3c)' : isPast ? '#f4f2ed' : '#f0fdf4'};
+            color:${isToday ? 'white' : isPast ? '#9ca3af' : '#0a3d1f'};
+            border-radius:14px;
+            padding:11px 14px;
+            margin-bottom:10px;
+            font-size:13px;
+            font-weight:900;
+            box-shadow:${isToday ? '0 6px 18px rgba(26,107,60,.22)' : '0 2px 8px rgba(10,61,31,.06)'};
+          ">
+            <span>📅 ${getDayLabel(date)}</span>
+            <span style="display:flex;gap:8px;font-size:11px;font-weight:900;opacity:.9">
+              ${confirmed > 0 ? `<span style="background:rgba(21,128,61,.15);padding:2px 8px;border-radius:999px">✓ ${confirmed}</span>` : ''}
+              ${pending > 0 ? `<span style="background:rgba(245,158,11,.15);padding:2px 8px;border-radius:999px">⏳ ${pending}</span>` : ''}
+              ${cancelled > 0 ? `<span style="background:rgba(220,38,38,.10);padding:2px 8px;border-radius:999px">✕ ${cancelled}</span>` : ''}
+            </span>
+          </div>
+          ${dayBookings.map(b => renderSingleBookingCard(b)).join('')}
+        </div>
+      `;
+    }).join('');
   }
 
-  return sortedDays.map(date => {
-    const dayBookings = grouped[date].sort((a, b) => Number(a.hour) - Number(b.hour));
-    const confirmed = dayBookings.filter(b => b.status === 'confirmed').length;
-    const pending = dayBookings.filter(b => b.status === 'pending').length;
-    const cancelled = dayBookings.filter(b => b.status === 'cancelled' || b.status === 'rejected').length;
-    const isToday = date === today;
-    const isPast = date < today;
-
-    return `
-      <div style="margin-bottom:20px">
-        <div class="day-group-header" style="
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          background:${isToday ? 'linear-gradient(135deg,#0a3d1f,#1a6b3c)' : isPast ? '#f4f2ed' : '#f0fdf4'};
-          color:${isToday ? 'white' : isPast ? '#9ca3af' : '#0a3d1f'};
-          border-radius:14px;
-          padding:11px 14px;
-          margin-bottom:10px;
-          font-size:13px;
-          font-weight:900;
-          box-shadow:${isToday ? '0 6px 18px rgba(26,107,60,.22)' : '0 2px 8px rgba(10,61,31,.06)'};
-        ">
-          <span>📅 ${getDayLabel(date)}</span>
-          <span style="display:flex;gap:8px;font-size:11px;font-weight:900;opacity:.9">
-            ${confirmed > 0 ? `<span style="background:rgba(21,128,61,.15);padding:2px 8px;border-radius:999px">✓ ${confirmed}</span>` : ''}
-            ${pending > 0 ? `<span style="background:rgba(245,158,11,.15);padding:2px 8px;border-radius:999px">⏳ ${pending}</span>` : ''}
-            ${cancelled > 0 ? `<span style="background:rgba(220,38,38,.10);padding:2px 8px;border-radius:999px">✕ ${cancelled}</span>` : ''}
-          </span>
-        </div>
-        ${dayBookings.map(b => renderSingleBookingCard(b)).join('')}
-      </div>
-    `;
-  }).join('');
+  el.innerHTML =
+    sectionTitle('الحجوزات الحالية والقادمة', active.length) +
+    (active.length ? renderGroupedOwnerBookings(active) : '<div class="card" style="text-align:center;color:#9ca3af;margin-bottom:10px">لا توجد حجوزات حالية أو قادمة</div>') +
+    sectionTitle('الحجوزات المنتهية', finished.length) +
+    renderGroupedOwnerBookings(finished);
 }
-
-el.innerHTML =
-  sectionTitle('الحجوزات الحالية والقادمة', active.length) +
-  (active.length ? renderGroupedOwnerBookings(active) : '<div class="card" style="text-align:center;color:#9ca3af;margin-bottom:10px">لا توجد حجوزات حالية أو قادمة</div>') +
-  sectionTitle('الحجوزات المنتهية', finished.length) +
-  renderGroupedOwnerBookings(finished);}
 
 function askReasonModal(title,hint){return new Promise(resolve=>{const modal=document.getElementById('reasonModal');const input=document.getElementById('reasonInput');const confirmBtn=document.getElementById('reasonConfirmBtn');const cancelBtn=document.getElementById('reasonCancelBtn');document.getElementById('reasonTitle').textContent=title;document.getElementById('reasonHint').textContent=hint;input.value='';modal.classList.add('show');setTimeout(()=>input.focus(),150);const cleanup=(value)=>{modal.classList.remove('show');confirmBtn.onclick=null;cancelBtn.onclick=null;resolve(value)};confirmBtn.onclick=()=>cleanup(input.value.trim());cancelBtn.onclick=()=>cleanup(null)})}
 
