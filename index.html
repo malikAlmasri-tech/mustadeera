@@ -68,6 +68,51 @@ body.dark .text-primary,body.dark .field-title,body.dark .modal-title,body.dark 
   box-shadow:0 2px 8px rgba(10,61,31,.06);
 }
 
+ .amenity-icon-card{
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  min-width:72px;
+  gap:3px;
+  padding:9px 10px;
+  border-radius:16px;
+}
+
+.amenity-icon{
+  font-size:18px;
+  line-height:1;
+}
+
+.amenity-title{
+  font-size:11px;
+  font-weight:900;
+  color:#0a3d1f;
+  line-height:1.2;
+}
+
+.amenity-label{
+  font-size:9px;
+  font-weight:900;
+  color:#6b7280;
+  line-height:1;
+}
+
+body.dark .amenity-title{
+  color:white !important;
+}
+
+body.dark .amenity-label{
+  color:var(--text-muted) !important;
+}
+
+body.dark .amenity-title{
+  color:white !important;
+}
+
+body.dark .amenity-label{
+  color:var(--text-muted) !important;
+}
+  
 body.dark .amenity-chip{
   color:#dce8dd;
   background:linear-gradient(135deg,rgba(47,122,77,.22),rgba(255,255,255,.035));
@@ -762,52 +807,45 @@ function goBack(){showPage('home')}
 function getPlaceLocationText(place){const city=String(place?.city||'').trim();const region=String(place?.region||'').trim();if(city&&region)return `${city} - ${region}`;return city||region||''}
 function openPlaceSmart(placeId){openDetail(placeId)}
 function renderAmenities(amenitiesText){
-  const map = {
-    water: {
-      icon: '💧',
-      title: 'مياه',
-      label: 'Free'
-    },
-    vests: {
-      icon: '🦺',
-      title: 'بلوزات',
-      label: 'Available'
-    },
-    ball: {
-      icon: '⚽',
-      title: 'كرة',
-      label: 'Free'
-    },
-    bathrooms: {
-      icon: '🚻',
-      title: 'حمامات',
-      label: 'Available'
-    },
-    parking: {
-      icon: '🅿️',
-      title: 'مصفّات',
-      label: 'Free'
-    }
+
+  const iconMap = {
+    water:'💧',
+    parking:'🅿️',
+    ball:'⚽',
+    vests:'🦺',
+    bathrooms:'🚻'
+  };
+
+  const titleMap = {
+    water:'مياه',
+    parking:'مصفات',
+    ball:'كرة',
+    vests:'بلوزات',
+    bathrooms:'حمامات'
   };
 
   const items = String(amenitiesText || '')
     .split('|')
     .map(x => x.trim())
-    .filter(Boolean)
-    .map(key => map[key])
     .filter(Boolean);
 
-  if (!items.length) return '';
+  if(!items.length) return '';
 
   return `
     <div class="amenities">
-      ${items.map(item => `
-        <span class="amenity-chip amenity-icon-card">
-          <span class="amenity-icon">${item.icon}</span>
-          <span class="amenity-title">${item.title}</span>
-          <span class="amenity-label">${item.label}</span>
-        </span>
-      `).join('')}
+      ${items.map(item => {
+        const parts = item.split(':');
+        const key = (parts[0] || '').trim();
+        const label = (parts[1] || '').trim();
+
+        return `
+          <span class="amenity-chip amenity-icon-card">
+            <span class="amenity-icon">${iconMap[key] || '⚽'}</span>
+            <span class="amenity-title">${titleMap[key] || key}</span>
+            <span class="amenity-label">${label}</span>
+          </span>
+        `;
+      }).join('')}
     </div>
   `;
 }
