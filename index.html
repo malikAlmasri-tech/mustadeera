@@ -901,9 +901,9 @@ body.dark .amenity-modern-label{
     <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#eff6ff,#ffffff);border-color:#bfdbfe">
       <div class="owner-section-title"><span>💰 ملخص الإيراد</span><span class="mini-badge">عمولة 10%</span></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-        <div><div id="ownerConfirmedRevenue" style="font-size:18px;font-weight:900;color:#111827">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">إيراد مؤكد</div></div>
-        <div><div id="ownerPlatformProfit" style="font-size:18px;font-weight:900;color:#1d4ed8">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">ربح المنصة</div></div>
-        <div><div id="ownerNetRevenue" style="font-size:18px;font-weight:900;color:#15803d">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">صافي المالك</div></div>
+        <div><div id="ownerConfirmedRevenue" style="font-size:18px;font-weight:900;color:#111827">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">إيراد الموقع</div></div>
+        <div><div id="ownerPlatformProfit" style="font-size:18px;font-weight:900;color:#1d4ed8">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">ربح المنصة من الموقع</div></div>
+        <div><div id="ownerNetRevenue" style="font-size:18px;font-weight:900;color:#15803d">0 JD</div><div style="font-size:10px;color:#6b7280;font-weight:700">صافي المالك الكلي</div></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:14px">
@@ -1449,18 +1449,35 @@ function formatMoney(value){const n=Number(value||0);if(Number.isNaN(n))return '
 function isSameOrAfter(dateStr,minDateStr){return String(dateStr||'')>=String(minDateStr||'')}
 function getTopBy(items,keyFn,labelFn){const map={};items.forEach(item=>{const key=keyFn(item)||'-';if(!map[key])map[key]={count:0,label:labelFn?labelFn(item):key};map[key].count+=1});const sorted=Object.values(map).sort((a,b)=>b.count-a.count);return sorted[0]||null}
 
+function isOwnerManualBooking(b){return String(b.source||'').trim().toLowerCase()==='owner_manual'}
+
 function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const confirmedFromWebsite=confirmed.filter(b=>!isOwnerManualBooking(b));
+  const confirmedManual=confirmed.filter(isOwnerManualBooking);
   const pending=bookings.filter(b=>String(b.status||'').toLowerCase()==='pending');
   const today=getTodayDate();const weekStart=getDateAfter(-6);
   const todayBookings=bookings.filter(b=>String(b.date)===today).length;
   const weekBookings=bookings.filter(b=>isSameOrAfter(b.date,weekStart)&&String(b.date)<=today).length;
-  const confirmedRevenue=confirmed.reduce((sum,b)=>sum+(Number(b.price)||0),0);
-  const platformProfit=confirmedRevenue*0.10;const netRevenue=confirmedRevenue-platformProfit;
+  const websiteRevenue=confirmedFromWebsite.reduce((sum,b)=>sum+(Number(b.price)||0),0);
+  const manualRevenue=confirmedManual.reduce((sum,b)=>sum+(Number(b.price)||0),0);
+  const platformProfit=websiteRevenue*0.10;
+  const ownerNetRevenue=websiteRevenue-platformProfit+manualRevenue;
   const rate=bookings.length?Math.round((confirmed.length/bookings.length)*100):0;
   const topField=getTopBy(bookings,b=>String(b.field_id||''),b=>b.field_name||'-');
   const topSource=getTopBy(bookings,b=>String(b.source||'direct').trim()||'direct',b=>String(b.source||'direct').trim()||'direct');
-  document.getElementById("ownerTotalBookings").textContent=bookings.length;document.getElementById("ownerPendingBookings").textContent=pending.length;document.getElementById("ownerConfirmedBookings").textContent=confirmed.length;document.getElementById("ownerTodayBookings").textContent=todayBookings;document.getElementById("ownerWeekBookings").textContent=`آخر 7 أيام: ${weekBookings}`;document.getElementById("ownerConfirmedRevenue").textContent=formatMoney(confirmedRevenue);document.getElementById("ownerPlatformProfit").textContent=formatMoney(platformProfit);document.getElementById("ownerNetRevenue").textContent=formatMoney(netRevenue);document.getElementById("ownerConfirmRate").textContent=rate+'%';document.getElementById("ownerConfirmRateBar").style.width=Math.min(rate,100)+'%';document.getElementById("ownerTopField").textContent=topField?`${topField.label} (${topField.count})`:'-';document.getElementById("ownerTopSource").textContent=topSource?`${topSource.label} (${topSource.count})`:'-'
+  document.getElementById("ownerTotalBookings").textContent=bookings.length;
+  document.getElementById("ownerPendingBookings").textContent=pending.length;
+  document.getElementById("ownerConfirmedBookings").textContent=confirmed.length;
+  document.getElementById("ownerTodayBookings").textContent=todayBookings;
+  document.getElementById("ownerWeekBookings").textContent=`آخر 7 أيام: ${weekBookings}`;
+  document.getElementById("ownerConfirmedRevenue").textContent=formatMoney(websiteRevenue);
+  document.getElementById("ownerPlatformProfit").textContent=formatMoney(platformProfit);
+  document.getElementById("ownerNetRevenue").textContent=formatMoney(ownerNetRevenue);
+  document.getElementById("ownerConfirmRate").textContent=rate+'%';
+  document.getElementById("ownerConfirmRateBar").style.width=Math.min(rate,100)+'%';
+  document.getElementById("ownerTopField").textContent=topField?`${topField.label} (${topField.count})`:'-';
+  document.getElementById("ownerTopSource").textContent=topSource?`${topSource.label} (${topSource.count})`:'-'
 }
 
 function renderOwnerDashboard(){
