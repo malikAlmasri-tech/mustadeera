@@ -1343,7 +1343,9 @@ function runtimeStatusBadge(b){return statusBadge(getBookingRuntimeStatus(b))}
 
 function renderPlayerBookingCard(b){
   const runtimeStatus=getBookingRuntimeStatus(b);const lbl=renderLabel(runtimeStatus);
-  return `<div class="card booking-status-strip ${String(b.status||'pending').toLowerCase()}" style="margin-bottom:9px">
+  const status=String(b.status||'pending').toLowerCase();
+  const canCancel=!isBookingFinished(b)&&status!=='cancelled'&&status!=='rejected'&&runtimeStatus!=='in_progress';
+  return `<div class="card booking-status-strip ${status}" style="margin-bottom:9px">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px">
       <div style="font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.01em">${b.place_name} - ${b.field_name}</div>
       <span class="${lbl.className}">${lbl.text}</span>
@@ -1360,7 +1362,46 @@ function renderPlayerBookingCard(b){
       </div>
     </div>
     ${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:var(--soft-red);border-radius:10px;padding:9px 11px;margin-top:9px;font-weight:600">السبب: ${b.cancel_reason}</div>`:''}
+    ${canCancel?`<div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--line)">
+      <button onclick="playerCancelBooking(${b.row_number},'${escapeHtml(b.place_name+' - '+b.field_name)}')" style="background:transparent;color:#dc2626;border:1.5px solid rgba(220,38,38,.25);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 140ms" onmouseover="this.style.background='var(--soft-red)'" onmouseout="this.style.background='transparent'">
+        <svg style="width:13px;height:13px;stroke:#dc2626;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        إلغاء الحجز
+      </button>
+    </div>`:''}
   </div>`
+}
+
+async function playerCancelBooking(rowNumber, bookingLabel){
+  // Show confirm modal
+  const modal=document.getElementById('reasonModal');
+  const input=document.getElementById('reasonInput');
+  const confirmBtn=document.getElementById('reasonConfirmBtn');
+  const cancelBtn=document.getElementById('reasonCancelBtn');
+  document.getElementById('reasonTitle').textContent='إلغاء الحجز';
+  document.getElementById('reasonHint').textContent=`${bookingLabel} — اكتب سبب الإلغاء (اختياري)`;
+  input.value='';
+  confirmBtn.style.background='linear-gradient(140deg,#dc2626,#991b1b)';
+  confirmBtn.style.boxShadow='0 4px 16px rgba(220,38,38,.28)';
+  confirmBtn.textContent='تأكيد الإلغاء';
+  modal.classList.add('show');
+  setTimeout(()=>input.focus(),200);
+
+  const reason = await new Promise(resolve=>{
+    const cleanup=val=>{modal.classList.remove('show');confirmBtn.onclick=null;cancelBtn.onclick=null;resolve(val)};
+    confirmBtn.onclick=()=>cleanup(input.value.trim()||'ألغى اللاعب الحجز');
+    cancelBtn.onclick=()=>cleanup(null);
+  });
+
+  if(reason===null)return;
+
+  try{
+    const res=await apiPost({action:'updateBookingStatus',player_token:playerToken,row_number:rowNumber,status:'cancelled',cancel_reason:reason});
+    if(!res.success){showToast(res.message||'ما زبط الإلغاء، جرّب مرة ثانية','error');return}
+    showToast('تمام، تم إلغاء الحجز','success');
+    await loadPlayerBookings();
+    await loadDataFromGoogleSheets();
+    if(document.getElementById('homePage').classList.contains('active'))filterPlaces();
+  }catch(e){showToast('صار خطأ بالإلغاء','error')}
 }
 
 async function loadPlayerBookings(){
