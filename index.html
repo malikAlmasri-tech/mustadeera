@@ -3,837 +3,653 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f8fafc">
+<meta name="theme-color" content="#091a0f">
 <title>المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ============ RESET & VARIABLES ============ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+/* ============ RESET & BASE ============ /
+,::before,::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
 :root{
-  --primary: #10b981; --primary-dark: #059669; --primary-light: #d1fae5;
-  --bg-main: #f8fafc; --bg-card: #ffffff;
-  --text-main: #0f172a; --text-muted: #64748b;
-  --border: #e2e8f0; --border-focus: #10b981;
-  --danger: #ef4444; --danger-light: #fee2e2;
-  --warning: #f59e0b; --warning-light: #fef3c7;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
-  --shadow-float: 0 10px 25px -5px rgba(0,0,0,.1);
-  --radius: 12px; --radius-lg: 16px;
-  --transition: all 0.2s ease;
+/* Core palette */
+--forest:#071910; --forest-2:#0d2b18; --emerald:#1a6b3c; --emerald-2:#22883e; --sage:#4a8c64;
+--gold:#c9a84c; --gold-2:#e8c96a; --gold-glow:rgba(201,168,76,.35);
+--cream:#f0ede6; --surface:#ffffff; --surface-soft:#f7f5f0; --surface-muted:#ede9e0;
+--input-bg:#ffffff; --ink:#0f1419; --ink-2:#374151; --muted:#6b7280; --soft:#9ca3af;
+--text-muted:#6b7280; --soft-green:#e8f5ec; --soft-blue:#eff6ff;
+--soft-yellow:#fef3c7; --soft-red:#fee2e2;
+--line:rgba(10,61,31,.07); --line-2:rgba(10,61,31,.12);
+
+/* Shadows - richer */
+--shadow-xs:0 1px 2px rgba(7,25,16,.06);
+--shadow-sm:0 2px 6px rgba(7,25,16,.07),0 1px 2px rgba(7,25,16,.05);
+--shadow-md:0 6px 20px rgba(7,25,16,.10),0 2px 6px rgba(7,25,16,.06);
+--shadow-lg:0 16px 40px rgba(7,25,16,.14),0 4px 10px rgba(7,25,16,.06);
+--shadow-card:0 8px 28px rgba(7,25,16,.09),0 2px 6px rgba(7,25,16,.05);
+--shadow-green:0 8px 28px rgba(26,107,60,.22),0 3px 8px rgba(26,107,60,.14);
+--shadow-green-lg:0 16px 40px rgba(26,107,60,.28),0 6px 16px rgba(26,107,60,.16);
+--shadow-gold:0 6px 20px rgba(201,168,76,.28);
+
+/* Radii */
+--r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --r-2xl:26px; --r-3xl:32px;
+
+/* Spacing */
+--s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;
+
+/* Transitions */
+--ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+--ease-smooth:cubic-bezier(.4,0,.2,1);
+--t-fast:120ms; --t-base:200ms; --t-slow:300ms; --t-slower:450ms;
+--max:480px;
+
+/* Gradient shorthand */
+--g-main:linear-gradient(160deg,var(--forest),var(--emerald));
+--g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
+--g-btn:linear-gradient(140deg,#1f8045,#0d5228);
 }
+
 body.dark{
-  --primary: #10b981; --primary-dark: #34d399; --primary-light: #064e3b;
-  --bg-main: #0f172a; --bg-card: #1e293b;
-  --text-main: #f8fafc; --text-muted: #94a3b8;
-  --border: #334155; --border-focus: #34d399;
-  --danger-light: #450a0a; --warning-light: #451a03;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.4);
-  --shadow-float: 0 10px 25px -5px rgba(0,0,0,.5);
+--cream:#080f0a; --surface:#101510; --surface-soft:#151c15; --surface-muted:#0d1210;
+--input-bg:#161e16; --ink:#e8ede8; --ink-2:#c4cdc4; --muted:#8aa38a; --soft:#5a6b5a;
+--text-muted:#8aa38a; --soft-green:#0f2416; --soft-blue:#101c2a; --soft-yellow:#251c08;
+--soft-red:#280d0d; --line:rgba(255,255,255,.05); --line-2:rgba(255,255,255,.08);
+--shadow-xs:0 1px 2px rgba(0,0,0,.3); --shadow-sm:0 2px 6px rgba(0,0,0,.32);
+--shadow-md:0 6px 20px rgba(0,0,0,.38),0 2px 6px rgba(0,0,0,.22);
+--shadow-lg:0 16px 40px rgba(0,0,0,.48),0 4px 10px rgba(0,0,0,.28);
+--shadow-card:0 8px 28px rgba(0,0,0,.38),0 2px 6px rgba(0,0,0,.22);
+--surface:var(--surface);
+--forest:#091a0f; --forest-2:#0f2418; --emerald:#1d5b39; --emerald-2:#237040; --gold:#d4b35a; --gold-2:#f0d07a;
 }
 
-html,body{height:100%;direction:rtl;background:var(--bg-main);color:var(--text-main);font-family:'Tajawal','Cairo',sans-serif;font-size:14px;line-height:1.6}
-body{display:flex;justify-content:center}
-#app{width:100%;max-width:500px;min-height:100vh;position:relative;overflow-x:hidden}
+html,body{height:100%;direction:rtl;background:var(--cream);color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{display:flex;justify-content:center;background:var(--cream);font-size:14px;line-height:1.55}
+#app{width:100%;max-width:var(--max);min-height:100vh;background:var(--cream);position:relative;overflow-x:hidden}
 
-/* ============ PAGES & ANIMATIONS ============ */
-.page{display:none;padding-bottom:90px;min-height:100vh}
-.page.active{display:block;animation:fadeIn 0.3s ease forwards}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-h1,h2,h3{font-family:'Cairo',sans-serif;font-weight:800}
+.page{display:none;padding-bottom:90px;min-height:100vh;background:var(--cream)}
+.page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
+@keyframes pageIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 
-/* ============ FORMS & BUTTONS ============ */
-input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-main);font-family:inherit;transition:var(--transition);outline:none;margin-bottom:12px}
-input:focus,select:focus,textarea:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(16,185,129,0.15)}
-.form-label{display:block;font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px}
-button{cursor:pointer;border:none;background:none;font-family:inherit;transition:var(--transition)}
-.btn-primary{width:100%;background:var(--primary);color:#fff;padding:14px;border-radius:var(--radius);font-weight:700;font-size:14px;box-shadow:var(--shadow-md);margin-bottom:8px}
-.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
-.btn-secondary{width:100%;background:transparent;color:var(--text-main);border:1px solid var(--border);padding:12px;border-radius:var(--radius);font-weight:700;margin-bottom:8px}
-.btn-secondary:hover{background:var(--border)}
-.btn-danger{background:var(--danger);color:#fff;box-shadow:0 4px 12px rgba(239,68,68,0.2)}
-.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:900;letter-spacing:-.015em}
+input,select,button,textarea{font-family:inherit;color:var(--ink);font-size:14px}
+button{cursor:pointer;border:none;background:none}
 
-/* ============ CARDS & UI ELEMENTS ============ */
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);margin-bottom:12px}
-.header-box{background:var(--bg-card);padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
-.tabs-scroll{display:flex;gap:8px;padding:16px 20px;overflow-x:auto;scrollbar-width:none}
-.tabs-scroll::-webkit-scrollbar{display:none}
-.tab-btn{padding:8px 16px;border-radius:99px;border:1px solid var(--border);color:var(--text-muted);font-weight:700;white-space:nowrap;background:var(--bg-card)}
-.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* ============ NOISE TEXTURE ============ */
+.noise-overlay::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;border-radius:inherit;opacity:.5}
 
-/* ============ PLACES & BOOKINGS ============ */
-.place-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:16px;transition:var(--transition);cursor:pointer}
-.place-card:hover{box-shadow:var(--shadow-float);transform:translateY(-2px)}
-.place-cover{height:160px;background-color:var(--primary-light);background-size:cover;background-position:center;position:relative;display:flex;align-items:center;justify-content:center;font-size:40px}
-.place-info{padding:16px}
-.badge{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px}
-.badge-green{background:var(--primary-light);color:var(--primary-dark)}
-.badge-yellow{background:var(--warning-light);color:var(--warning)}
-.badge-red{background:var(--danger-light);color:var(--danger)}
-.badge-float{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.9);color:#000;box-shadow:var(--shadow-sm)}
-body.dark .badge-float{background:rgba(15,23,42,0.9);color:#fff}
+/* ============ FORMS ============ */
+.form-label{font-size:12px;font-weight:800;color:var(--ink-2);display:block;margin-bottom:6px;letter-spacing:.01em}
+.form-label-sm{font-size:11.5px;font-weight:700;color:var(--ink-2);display:block;margin-bottom:5px}
+.field-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.finput{
+width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:12px 14px;
+font-size:14px;color:var(--ink);outline:none;background:var(--input-bg);
+transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-fast)
+}
+.finput:focus{border-color:rgba(34,136,62,.55);box-shadow:0 0 0 3px rgba(34,136,62,.12),0 2px 8px rgba(26,107,60,.08)}
+.finput::placeholder{color:var(--soft)}
 
-/* ============ GRIDS (DAYS & TIMES) ============ */
-.grid-days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
-.grid-days::-webkit-scrollbar{display:none}
-.day-btn{flex-shrink:0;min-width:64px;padding:10px 8px;border:1px solid var(--border);border-radius:var(--radius);text-align:center;font-weight:700;font-size:12px;color:var(--text-muted);background:var(--bg-card)}
-.day-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.grid-times{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.time-btn{padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-weight:700;font-size:12px;color:var(--text-main);background:var(--bg-card)}
-.time-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.time-btn:disabled{opacity:0.5;background:var(--bg-main);text-decoration:line-through;cursor:not-allowed}
+/* ============ BUTTONS ============ */
+.sbtn{
+width:100%;background:var(--g-btn)!important;color:#fff;border:none;
+border-radius:var(--r-lg);padding:15px;font-size:15px;font-weight:800;
+box-shadow:var(--shadow-green);letter-spacing:.01em;position:relative;overflow:hidden;
+transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)
+}
+.sbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.sbtn:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-green-lg)}
+.sbtn:active{transform:translate3d(0,1px,0) scale(.99);opacity:.92;box-shadow:var(--shadow-green)}
 
-/* ============ MODALS & NAVIGATION ============ */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:200;align-items:flex-end;justify-content:center}
-.modal-overlay.show{display:flex;animation:fadeIn 0.2s}
-.modal-content{background:var(--bg-main);width:100%;max-width:500px;border-radius:24px 24px 0 0;padding:24px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-float)}
-.modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 20px}
-.bnav{position:fixed;bottom:0;width:100%;max-width:500px;background:var(--bg-card);border-top:1px solid var(--border);display:none;justify-content:space-around;padding:12px;padding-bottom:max(12px,env(safe-area-inset-bottom));z-index:100}
-.bnav.show{display:flex}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--text-muted);cursor:pointer}
-.nav-item.active{color:var(--primary)}
-.nav-icon{width:22px;height:22px}
-.nav-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cbtn{
+width:100%;background:var(--surface);color:var(--ink-2);border:1.5px solid var(--line-2);
+border-radius:var(--r-lg);padding:13px;font-size:13px;font-weight:700;margin-top:10px;
+transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast)
+}
+.cbtn:hover{background:var(--surface-soft);border-color:rgba(26,107,60,.22);transform:translate3d(0,-1px,0)}
+.cbtn:active{transform:scale(.99);opacity:.9}
 
-/* ============ OWNER DASHBOARD ============ */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-.stat-card{background:var(--bg-card);border:1px solid var(--border);padding:16px;border-radius:var(--radius-lg)}
-.stat-value{font-size:24px;font-weight:800;color:var(--text-main);margin-bottom:4px}
-.stat-label{font-size:12px;color:var(--text-muted);font-weight:600}
+/* ============ CARD ============ */
+.card{background:var(--surface);border-radius:var(--r-xl);padding:16px;box-shadow:var(--shadow-card);color:var(--ink);border:1px solid rgba(0,0,0,.04)}
+
+/* ============ BADGES ============ */
+.badge-green,.badge-red,.badge-yellow,.badge-blue{
+border-radius:999px;padding:5px 12px;font-size:11px;font-weight:800;
+display:inline-flex;align-items:center;gap:6px;white-space:nowrap;letter-spacing:.01em
+}
+.badge-green{background:var(--surface);color:#15803d;border:1.5px solid rgba(21,128,61,.22)}
+.badge-red{background:var(--surface);color:#dc2626;border:1.5px solid rgba(220,38,38,.20)}
+.badge-yellow{background:var(--surface);color:#92400e;border:1.5px solid rgba(245,158,11,.25)}
+.badge-blue{background:var(--soft-blue);color:#1d4ed8;border:1.5px solid rgba(29,78,216,.14)}
+.badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;display:inline-block;flex-shrink:0}
+.badge-green::before{background:#16a34a;box-shadow:0 0 0 2px rgba(22,163,74,.2)}
+.badge-red::before{background:#dc2626}
+.badge-yellow::before{background:#f59e0b}
+
+/* ============ FILTER TABS ============ */
+.ftab{
+background:var(--surface);border:1.5px solid var(--line-2);border-radius:999px;
+padding:9px 17px;font-size:12px;font-weight:800;color:var(--ink-2);white-space:nowrap;
+flex-shrink:0;transition:all var(--t-base) var(--ease-out);
+box-shadow:var(--shadow-xs);letter-spacing:.01em
+}
+.ftab.active-tab{
+background:var(--g-btn);border-color:transparent;color:#fff;
+box-shadow:var(--shadow-green);transform:translate3d(0,-1px,0)
+}
+.ftab:not(.active-tab):hover{border-color:rgba(26,107,60,.35);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
+
+/* ============ HEADER — REVAMPED ============ /
+.header{
+background:linear-gradient(160deg,var(--forest) 0%,var(--forest-2) 40%,#0d3b20 100%);
+color:#fff;position:relative;overflow:hidden;padding:20px 18px 68px;border-radius:0 0 36px 36px;
+box-shadow:0 8px 32px rgba(7,25,16,.28)
+}
+/ Animated radial glow /
+.header::before{
+content:'';position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:50%;
+background:radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 65%);
+animation:pulseGlow 4s ease-in-out infinite;pointer-events:none
+}
+@keyframes pulseGlow{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.15);opacity:1}}
+.header::after{content:'';position:absolute;bottom:-80px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(34,136,62,.18) 0%,transparent 65%);pointer-events:none}
+/ Grid lines decoration /
+.header-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.header>{position:relative;z-index:1}
+
+.lux-page-header{
+background:linear-gradient(160deg,var(--forest),var(--forest-2) 50%,#0d3b20);
+color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(7,25,16,.25)
+}
+.lux-page-header::before{content:'';position:absolute;top:-60px;left:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 65%);pointer-events:none;animation:pulseGlow 5s ease-in-out infinite}
+.lux-page-header::after{content:'';position:absolute;bottom:-60px;right:-35px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(34,136,62,.12) 0%,transparent 65%);pointer-events:none}
+.lux-page-header>*{position:relative;z-index:1}
+.lux-page-header.auth{padding:54px 24px 36px;text-align:center;border-radius:0 0 32px 32px}
+.lux-page-header.compact{padding:22px 18px;text-align:right;border-radius:0 0 24px 24px}
+.lux-page-header.owner{padding:22px 18px 26px;text-align:right;border-radius:0 0 32px 32px}
+
+.lux-logo-box{
+width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 16px;
+background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(255,255,255,.12));
+border:1.5px solid rgba(201,168,76,.3);box-shadow:0 4px 16px rgba(201,168,76,.2),inset 0 1px 0 rgba(255,255,255,.2)
+}
+.lux-header-emoji{font-size:44px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))}
+.lux-header-title{font-size:23px;font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.lux-header-subtitle{font-size:12px;opacity:.7;margin-top:5px;font-weight:500}
+.lux-title-row{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.lux-owner-head{display:flex;justify-content:space-between;align-items:center}
+.lux-exit-btn{
+background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.20);
+border-radius:12px;padding:8px 12px;font-size:12px;font-weight:800;
+transition:background var(--t-fast),transform var(--t-fast);
+box-shadow:0 2px 8px rgba(0,0,0,.15)
+}
+.lux-exit-btn:hover{background:rgba(255,255,255,.20);transform:translate3d(0,-1px,0)}
+.lux-exit-btn:active{transform:scale(.96)}
+.lux-muted-white{font-size:12px;opacity:.68;margin-top:3px;font-weight:500}
+.lux-page-pad{padding:24px 18px}
+.lux-home-pad{padding:26px 20px}
+.lux-header-svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+
+/* ============ WELCOME / LANDING — REVAMPED ============ /
+.welcome-hero{
+background:linear-gradient(155deg,var(--forest) 0%,#0f2d18 35%,#14452a 70%,#1a5e35 100%);
+padding:56px 24px 40px;text-align:center;color:#fff;
+border-radius:0 0 40px 40px;position:relative;overflow:hidden;
+box-shadow:0 12px 40px rgba(7,25,16,.35)
+}
+/ Decorative rings */
+.welcome-hero::before{
+content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+width:320px;height:320px;border-radius:50%;
+border:1px solid rgba(201,168,76,.12);
+box-shadow:0 0 0 40px rgba(201,168,76,.05),0 0 0 80px rgba(201,168,76,.03);
+pointer-events:none
+}
+.welcome-hero::after{
+content:'';position:absolute;inset:0;
+background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,255,255,.008) 30px,rgba(255,255,255,.008) 31px);
+pointer-events:none
+}
+.welcome-ball-wrap{position:relative;z-index:1;margin-bottom:18px}
+.welcome-ball{
+font-size:62px;display:inline-block;
+animation:ballFloat 3s ease-in-out infinite;
+filter:drop-shadow(0 8px 20px rgba(0,0,0,.35));
+}
+@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(-3deg)}33%{transform:translateY(-10px) rotate(3deg)}66%{transform:translateY(-5px) rotate(-1deg)}}
+.welcome-title{
+font-size:34px;font-weight:900;font-family:'Cairo',sans-serif;
+margin-bottom:7px;letter-spacing:-.03em;position:relative;z-index:1;
+text-shadow:0 3px 12px rgba(0,0,0,.25)
+}
+.welcome-title span{
+background:var(--g-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text
+}
+.welcome-sub{font-size:14px;opacity:.72;margin-bottom:34px;position:relative;z-index:1;font-weight:500}
+.welcome-actions{display:flex;flex-direction:column;gap:11px;max-width:310px;margin:0 auto;position:relative;z-index:1}
+.welcome-cta{
+padding:16px;border-radius:16px;font-size:15px;font-weight:800;cursor:pointer;
+transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base);border:none;
+letter-spacing:.01em;position:relative;overflow:hidden
+}
+.welcome-cta:active{transform:scale(.96)!important}
+.welcome-cta-primary{
+background:#fff;color:var(--forest);
+box-shadow:0 4px 20px rgba(0,0,0,.2),0 1px 4px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8)
+}
+.welcome-cta-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.4),transparent 60%);pointer-events:none}
+.welcome-cta-primary:hover{transform:translate3d(0,-2px,0);box-shadow:0 8px 28px rgba(0,0,0,.28)}
+.welcome-cta-secondary{
+background:rgba(255,255,255,.1);color:#fff;
+border:1.5px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);
+box-shadow:0 2px 12px rgba(0,0,0,.15)
+}
+.welcome-cta-secondary:hover{background:rgba(255,255,255,.18);transform:translate3d(0,-2px,0)}
+.welcome-cta-ghost{background:transparent;color:rgba(255,255,255,.6);font-size:13px;padding:10px}
+.welcome-cta-ghost:hover{color:rgba(255,255,255,.85)}
+
+.trust-row{display:flex;justify-content:center;gap:24px;margin-top:32px;flex-wrap:wrap;position:relative;z-index:1}
+.trust-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.trust-num{font-size:22px;font-weight:900;font-family:'Cairo',sans-serif;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.trust-label{font-size:10px;opacity:.7;font-weight:600;letter-spacing:.02em}
+.trust-divider{width:1px;height:36px;background:rgba(255,255,255,.15);align-self:center}
+
+/* ============ MODAL ============ */
+.modal-overlay{
+display:none;position:fixed;inset:0;background:rgba(7,25,16,.55);z-index:200;
+align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity var(--t-base)
+}
+.modal-overlay.show{display:flex;opacity:1}
+.modal{
+background:var(--surface);border-radius:28px 28px 0 0;width:100%;max-width:var(--max);
+max-height:92vh;overflow-y:auto;padding:20px 18px max(22px,env(safe-area-inset-bottom));
+border-top:2px solid var(--gold);
+box-shadow:0 -12px 48px rgba(7,25,16,.22),0 -2px 8px rgba(7,25,16,.08);
+animation:slideUp var(--t-slow) var(--ease-out) both;-webkit-overflow-scrolling:touch
+}
+@keyframes slideUp{from{transform:translate3d(0,100%,0)}to{transform:translate3d(0,0,0)}}
+.modal-handle{width:48px;height:5px;background:var(--line-2);border-radius:999px;margin:0 auto 16px}
+
+/* ============ SUCCESS ============ */
+.success-overlay{
+display:none;position:fixed;inset:0;background:rgba(7,25,16,.6);z-index:300;
+align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity var(--t-base)
+}
+.success-overlay.show{display:flex;opacity:1}
+.scard{
+background:var(--surface);border-radius:var(--r-2xl);padding:34px 24px;text-align:center;
+width:100%;max-width:320px;box-shadow:var(--shadow-lg);
+animation:popIn var(--t-slow) var(--ease-spring) both;border:1px solid rgba(0,0,0,.04)
+}
+@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
 
 /* ============ TOAST ============ */
-.toast{position:fixed;bottom:80px;left:50%;transform:translate(-50%,20px);background:var(--text-main);color:var(--bg-card);padding:12px 24px;border-radius:99px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:var(--transition);z-index:500;box-shadow:var(--shadow-md)}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast{
+position:fixed;left:50%;bottom:100px;transform:translate3d(-50%,14px,0);
+background:var(--surface);border:1px solid var(--line-2);border-radius:16px;
+padding:13px 16px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);
+box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;
+transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);
+text-align:right;line-height:1.5;display:flex;align-items:center;gap:10px;color:var(--ink)
+}
+.toast.show{opacity:1;transform:translate3d(-50%,0,0)}
+.toast-icon{width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;font-weight:900;font-size:13px}
+.toast.error .toast-icon{background:#fee2e2;color:#dc2626}
+.toast.success .toast-icon{background:#dcfce7;color:#15803d}
+.toast.warn .toast-icon{background:#fef3c7;color:#92400e}
+.toast.error{color:#7a1f1f}
+.toast.success{color:#0c5641}
+.toast.warn{color:#633806}
+
+/* ============ SKELETON ============ */
+@keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
+.skeleton-card{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px}
+.skeleton-img,.skeleton-line{
+background:linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.08) 50%,rgba(0,0,0,.04) 100%);
+background-size:700px 100%;animation:shimmer 1.5s linear infinite
+}
+.skeleton-img{height:160px}
+.skeleton-body{padding:16px}
+.skeleton-line{height:12px;border-radius:999px;margin-bottom:10px}
+.skeleton-line.w70{width:70%}
+.skeleton-line.w45{width:45%}
+.skeleton-line.w88{width:88%}
+.loading-box{background:transparent;border:none;padding:0}
+.time-skeleton{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.time-skeleton>span{height:44px;border-radius:12px;background:linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.08) 50%,rgba(0,0,0,.04) 100%);background-size:500px 100%;animation:shimmer 1.5s linear infinite}
+.day-btn.is-loading{opacity:.7;pointer-events:none}
+body.dark .skeleton-img,body.dark .skeleton-line,body.dark .time-skeleton>span{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%)!important;background-size:500px 100%!important}
+
+/* ============ BOTTOM NAV — REVAMPED ============ */
+.bnav{
+position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);
+background:rgba(255,255,255,.9);backdrop-filter:blur(24px) saturate(200%);
+-webkit-backdrop-filter:blur(24px) saturate(200%);
+border-top:1px solid rgba(0,0,0,.07);
+display:none;justify-content:space-around;
+padding:6px 12px max(12px,env(safe-area-inset-bottom));
+z-index:100;box-shadow:0 -4px 24px rgba(7,25,16,.08)
+}
+.bnav.show{display:flex}
+.nitem{
+display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;
+color:var(--soft);padding:2px 14px;min-width:60px;
+transition:color var(--t-base);font-weight:700;cursor:pointer;
+border-radius:14px;padding:6px 14px;
+transition:all var(--t-base) var(--ease-out)
+}
+.nitem.active{color:var(--forest)}
+.nitem.active .nicon{
+background:linear-gradient(140deg,rgba(34,136,62,.15),rgba(26,107,60,.1));
+border-radius:14px;box-shadow:0 2px 8px rgba(26,107,60,.12)
+}
+.nicon{width:38px;height:32px;margin-bottom:1px;display:flex;align-items:center;justify-content:center;transition:all var(--t-base) var(--ease-spring)}
+.nicon svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nitem:active .nicon{transform:scale(.88)}
+.nitem.active:active .nicon{transform:scale(.92)}
+
+/* ============ DAY & TIME BUTTONS — REVAMPED ============ */
+.day-btn{
+border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+border-radius:14px;padding:9px 8px;font-size:11px;font-weight:700;min-width:68px;
+flex-shrink:0;transition:all var(--t-base) var(--ease-out);
+box-shadow:var(--shadow-xs)
+}
+.day-btn.active{
+background:var(--g-btn);border-color:transparent;color:#fff;
+box-shadow:var(--shadow-green);transform:translate3d(0,-1px,0)
+}
+.day-btn:hover:not(.active){border-color:rgba(26,107,60,.32);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
+
+.tbtn{
+border:1.5px solid rgba(26,107,60,.18);border-radius:13px;padding:11px 5px;
+text-align:center;font-size:11px;font-weight:800;color:#16a34a;background:var(--soft-green);
+transition:all var(--t-base) var(--ease-out);line-height:1.4;position:relative;overflow:hidden
+}
+.tbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 70%);pointer-events:none}
+.tbtn:not(.taken):hover{border-color:var(--emerald);transform:translate3d(0,-1px,0);box-shadow:0 4px 12px rgba(26,107,60,.18)}
+.tbtn.sel{
+background:var(--g-btn);border-color:transparent;color:#fff;
+box-shadow:var(--shadow-green);transform:translate3d(0,-1px,0)
+}
+.tbtn.taken{background:var(--surface-muted);color:var(--soft);cursor:not-allowed;border-color:var(--line);opacity:.7}
+
+/* ============ PLACE CARDS — FULLY REVAMPED ============ */
+.place-card{
+background:var(--surface);border-radius:22px;overflow:hidden;cursor:pointer;
+box-shadow:var(--shadow-card);
+transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow);
+position:relative;opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards;will-change:transform;
+border:1px solid rgba(0,0,0,.045)
+}
+@keyframes fadeUp{from{opacity:0;transform:translate3d(0,16px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.place-card:nth-child(1){animation-delay:.00s}
+.place-card:nth-child(2){animation-delay:.07s}
+.place-card:nth-child(3){animation-delay:.14s}
+.place-card:nth-child(4){animation-delay:.21s}
+.place-card:nth-child(5){animation-delay:.28s}
+.place-card:hover{transform:translate3d(0,-4px,0);box-shadow:0 20px 50px rgba(7,25,16,.15),0 6px 16px rgba(7,25,16,.08)}
+.place-card:active{transform:translate3d(0,-1px,0);box-shadow:var(--shadow-card)}
+
+.place-cover{
+height:178px;background-size:cover!important;background-position:center!important;
+position:relative;display:flex;align-items:flex-end;overflow:hidden
+}
+/* Shine effect on hover */
+.place-cover::before{
+content:'';position:absolute;top:0;left:-120%;width:80%;height:100%;
+background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.12) 50%,transparent 80%);
+pointer-events:none;z-index:4;transition:left var(--t-slow) ease
+}
+.place-card:hover .place-cover::before{left:130%}
+.place-cover::after{
+content:'';position:absolute;inset:0;
+background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.08) 35%,rgba(5,15,8,.82) 100%);
+z-index:1
+}
+.place-cover-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;z-index:0;filter:blur(2px) opacity(.6)}
+.place-top-badges{position:absolute;top:11px;right:11px;left:11px;z-index:3;display:flex;justify-content:space-between;align-items:flex-start}
+.place-avail-badge{
+border-radius:999px;padding:6px 12px;font-size:10px;font-weight:800;
+backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);letter-spacing:.02em;
+box-shadow:0 2px 8px rgba(0,0,0,.18)
+}
+.avail-yes{background:rgba(220,252,231,.92);color:#166534}
+.avail-no{background:rgba(254,226,226,.92);color:#991b1b}
+.place-price-badge{
+background:rgba(255,255,255,.94);border-radius:999px;padding:6px 12px;
+font-size:11px;font-weight:900;color:var(--forest);
+box-shadow:0 2px 10px rgba(0,0,0,.18);letter-spacing:.01em
+}
+
+.place-footer{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:14px 15px 16px}
+.place-name{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.02em;text-shadow:0 2px 6px rgba(0,0,0,.25);line-height:1.2}
+.place-meta-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
+.place-loc{font-size:11px;color:rgba(255,255,255,.78);display:flex;align-items:center;gap:3px;font-weight:600}
+.place-rating{font-size:11px;color:rgba(255,255,255,.92);font-weight:800;background:rgba(0,0,0,.25);border-radius:999px;padding:3px 8px;backdrop-filter:blur(6px)}
+
+.place-strip{
+display:flex;align-items:center;justify-content:space-between;
+padding:11px 15px;gap:12px;background:var(--surface)
+}
+.place-strip-info{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.place-strip-type{font-size:11px;color:var(--muted);font-weight:700}
+.place-strip-fields{font-size:11px;color:var(--muted)}
+.place-book-btn{
+background:var(--g-btn)!important;color:#fff!important;border:none;border-radius:12px;
+padding:10px 18px;font-size:12px;font-weight:800;white-space:nowrap;flex-shrink:0;
+box-shadow:var(--shadow-green);cursor:pointer;position:relative;overflow:hidden;
+transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)
+}
+.place-book-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent 60%);pointer-events:none}
+.place-book-btn:hover{transform:translate3d(0,-2px,0) scale(1.03);box-shadow:var(--shadow-green-lg)}
+.place-book-btn:active{transform:scale(.96)}
+
+/* ============ AMENITIES ============ */
+.amenities-row{display:flex;gap:7px;flex-wrap:wrap;padding:0 15px 12px}
+.amenity-chip{
+background:linear-gradient(135deg,rgba(34,136,62,.08),rgba(26,107,60,.06));
+border:1px solid rgba(26,107,60,.14);border-radius:999px;padding:4px 11px;
+font-size:10px;font-weight:800;color:#15803d;display:inline-flex;align-items:center;gap:4px
+}
+
+/* ============ SECTION TITLE ============ */
+.sec-title{font-size:15px;font-weight:900;color:var(--ink);padding:0 16px 13px;display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em}
+.sec-title a{color:var(--emerald);cursor:pointer;font-size:12px;font-weight:700}
+
+/* ============ SEARCH BAR ============ */
+.search-bar{
+margin-top:18px;background:rgba(255,255,255,.97);border-radius:16px;
+display:flex;align-items:center;padding:4px 4px 4px 14px;gap:8px;position:relative;z-index:1;
+box-shadow:0 6px 24px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.08);
+border:1px solid rgba(255,255,255,.9)
+}
+.search-bar input{flex:1;border:none;outline:none;font-size:13px;color:var(--ink-2);background:transparent;padding:10px 0;font-weight:500}
+.search-btn{
+background:var(--g-btn);color:#fff;border:none;border-radius:12px;
+padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;
+box-shadow:0 2px 8px rgba(26,107,60,.25);transition:all var(--t-fast) var(--ease-spring)
+}
+.search-btn:hover{transform:scale(1.05);box-shadow:0 4px 14px rgba(26,107,60,.35)}
+.search-btn:active{transform:scale(.96)}
+
+/* ============ OWNER STATS ============ */
+.owner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:14px}
+.owner-stat-card{
+background:var(--surface);border-radius:20px;padding:14px;min-height:86px;
+box-shadow:var(--shadow-card);opacity:0;animation:fadeUp var(--t-base) var(--ease-out) forwards;
+border:1px solid rgba(0,0,0,.04);position:relative;overflow:hidden
+}
+.owner-stat-card::after{content:'';position:absolute;top:-30px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.06;pointer-events:none}
+.owner-stat-card.stat-confirmed::after{background:#16a34a}
+.owner-stat-card.stat-pending::after{background:#f59e0b}
+.owner-stat-card.stat-today::after{background:#2563eb}
+.owner-stat-card:nth-child(1){animation-delay:.04s}
+.owner-stat-card:nth-child(2){animation-delay:.08s}
+.owner-stat-card:nth-child(3){animation-delay:.12s}
+.owner-stat-card:nth-child(4){animation-delay:.16s}
+.owner-stat-card.stat-confirmed{border-right:3px solid #16a34a}
+.owner-stat-card.stat-pending{border-right:3px solid #f59e0b}
+.owner-stat-card.stat-today{border-right:3px solid #2563eb}
+.owner-stat-value{font-size:22px;font-weight:900;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.owner-stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:800}
+.owner-stat-hint{font-size:10px;color:var(--soft);margin-top:2px}
+
+.owner-mini-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--ink-2);margin-bottom:8px}
+.owner-progress{height:8px;background:var(--surface-muted);border-radius:999px;overflow:hidden}
+.owner-progress>div{height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:999px;transition:width 700ms var(--ease-out)}
+.owner-section-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em}
+.mini-badge{background:var(--soft-blue);color:#1d4ed8;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:800}
+.day-group-header{position:sticky;top:0;z-index:10}
+
+/* ============ SUBFIELD CARD ============ */
+.subfield-card{
+border:1.5px solid var(--line-2);border-radius:16px;padding:12px 14px;
+background:var(--surface);box-shadow:var(--shadow-xs);
+transition:all var(--t-base) var(--ease-out);cursor:pointer
+}
+.subfield-card:hover:not(.active){border-color:rgba(26,107,60,.3);transform:translate3d(0,-1px,0)}
+.subfield-card.active{
+border-color:var(--emerald-2);background:var(--soft-green);
+box-shadow:0 0 0 3px rgba(34,136,62,.1),var(--shadow-sm);transform:translate3d(0,-1px,0)
+}
+
+.star{font-size:28px;color:#d1d5db;cursor:pointer;padding:0 3px;display:inline-block;transition:all var(--t-base) var(--ease-spring)}
+.star.active{color:#f59e0b;text-shadow:0 2px 8px rgba(245,158,11,.4)}
+.star:hover{transform:scale(1.2);color:#fbbf24}
+
+.owner-action{
+border:none;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800;color:#fff;
+display:inline-flex;align-items:center;gap:5px;box-shadow:var(--shadow-sm);
+transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)
+}
+.owner-action:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-md)}
+.owner-action:active{transform:scale(.95);box-shadow:var(--shadow-xs)}
+.owner-confirm{background:linear-gradient(135deg,#16a34a,#14532d)}
+.owner-reject{background:linear-gradient(135deg,#d97706,#92400e)}
+.owner-cancel{background:linear-gradient(135deg,#dc2626,#991b1b)}
+.owner-edit{background:linear-gradient(135deg,#2563eb,#1e40af)}
+
+.booking-status-strip{border-right-width:4px!important;border-right-style:solid!important}
+.booking-status-strip.confirmed{border-right-color:#16a34a!important}
+.booking-status-strip.pending{border-right-color:#f59e0b!important}
+.booking-status-strip.cancelled,.booking-status-strip.rejected{border-right-color:#dc2626!important}
+
+/* ============ DETAIL PAGE ============ */
+#detailHeader{border-radius:0 0 32px 32px;overflow:hidden;position:relative}
+#detailHeader::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,25,16,.1),rgba(7,25,16,.38));pointer-events:none}
+#dPrice,#mPrice{
+display:inline-block!important;padding:7px 12px;
+background:linear-gradient(135deg,rgba(34,136,62,.12),rgba(26,107,60,.08));
+border:1.5px solid rgba(26,107,60,.18);border-radius:13px;box-shadow:0 2px 8px rgba(26,107,60,.12);
+font-weight:900!important;color:var(--forest)!important;font-size:inherit;
+line-height:1.4;font-variant-numeric:tabular-nums
+}
+
+/* ============ ECON CARDS ============ */
+.econ-card{background:var(--surface);border:1px solid rgba(201,168,76,.16);border-radius:var(--r-xl);padding:15px;box-shadow:var(--shadow-card);margin-bottom:14px}
+.econ-title{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px;letter-spacing:-.01em}
+.econ-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.econ-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:80px;transition:all var(--t-fast)}
+.econ-item:hover{border-color:rgba(26,107,60,.2);transform:translate3d(0,-1px,0)}
+.econ-value{font-size:19px;font-weight:900;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.econ-label{font-size:10.5px;font-weight:800;color:var(--muted);margin-top:5px}
+.econ-hint{font-size:9.5px;font-weight:600;color:var(--soft);margin-top:2px;line-height:1.4}
+.econ-decision{margin-top:11px;padding:11px 13px;border-radius:13px;background:linear-gradient(135deg,rgba(34,136,62,.1),rgba(26,107,60,.07));color:#14532d;font-size:12px;font-weight:700;line-height:1.65;border:1px solid rgba(26,107,60,.12)}
+body.dark .econ-decision{color:#bbf7d0;background:rgba(26,107,60,.12)}
+
+/* ============ SVG HELPERS ============ */
+.svg-icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
+.svg-sm{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;flex-shrink:0}
+
+/* ============ DARK MODE ============ */
+body.dark .card,body.dark .place-card,body.dark .subfield-card,body.dark .owner-stat-card,body.dark .modal,body.dark .scard,body.dark .skeleton-card,body.dark .econ-card,body.dark .econ-item{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+body.dark .econ-item{background:var(--surface-soft)!important}
+body.dark .subfield-card.active{background:rgba(34,136,62,.12)!important;border-color:#5fb27d!important}
+body.dark .place-card{background:#101510!important;border-color:rgba(255,255,255,.05)!important}
+body.dark .place-cover::after{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.12) 35%,rgba(4,10,6,.88) 100%)!important}
+body.dark .place-cover{filter:saturate(.7) brightness(.8)}
+body.dark .place-strip{background:#101510!important}
+body.dark .place-book-btn{background:linear-gradient(140deg,#1d5b39,#0f3320)!important}
+body.dark .finput,body.dark input,body.dark select,body.dark textarea{background:var(--input-bg)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
+body.dark input::placeholder,body.dark textarea::placeholder{color:var(--soft)!important;opacity:.7}
+body.dark .cbtn,body.dark .ftab,body.dark .day-btn{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
+body.dark .ftab.active-tab,body.dark .day-btn.active,body.dark .tbtn.sel{color:#fff!important}
+body.dark .day-btn.active{background:linear-gradient(140deg,#237040,#0f3320)!important;border-color:transparent!important}
+body.dark .tbtn{background:rgba(34,136,62,.1)!important;color:#86efac!important;border-color:rgba(103,192,139,.14)!important}
+body.dark .tbtn.sel{background:linear-gradient(140deg,#237040,#0f3320)!important;border-color:transparent!important}
+body.dark .tbtn.taken{background:rgba(255,255,255,.03)!important;color:#5a6b5a!important;border-color:var(--line)!important}
+body.dark .bnav{background:rgba(14,20,15,.9)!important;border-top-color:var(--line)!important}
+body.dark .nitem{color:#5a6b5a!important}
+body.dark .nitem.active{color:#e8ede8!important}
+body.dark .nitem.active .nicon{background:rgba(255,255,255,.07)!important}
+body.dark .badge-green,body.dark .badge-red,body.dark .badge-yellow{background:var(--surface)!important;border-color:var(--line-2)!important}
+body.dark .badge-blue,body.dark .mini-badge{background:rgba(29,78,216,.14)!important;color:#93c5fd!important}
+body.dark #dPrice,body.dark #mPrice{background:rgba(34,136,62,.14)!important;color:#86efac!important;border-color:rgba(103,192,139,.2)!important}
+body.dark .toast{background:#131a13!important;color:var(--ink)!important;border:1px solid var(--line-2)!important}
+body.dark #mapLink{background:rgba(29,78,216,.12)!important;border-color:rgba(29,78,216,.18)!important;color:#93c5fd!important}
+body.dark #callPlaceBtn{background:rgba(34,136,62,.12)!important;border-color:rgba(103,192,139,.18)!important;color:#86efac!important}
+body.dark .welcome-hero{background:linear-gradient(155deg,#060e08,#0b1e0f,#102a18,#164030)!important}
+body.dark .welcome-cta-primary{background:#e8ede8!important;color:#071910!important}
+body.dark .place-price-badge{background:rgba(14,20,15,.92);color:#86efac}
+body.dark .amenity-chip{background:rgba(34,136,62,.12);color:#86efac;border-color:rgba(103,192,139,.14)}
+body.dark .sbtn{background:linear-gradient(140deg,#237040,#0f3320)!important}
+body.dark .search-bar{background:rgba(20,28,20,.97)!important}
+body.dark .search-btn{background:linear-gradient(140deg,#237040,#0f3320)!important}
+body.dark .owner-progress{background:var(--surface-muted)!important}
+body.dark [style*="color:#111827"],body.dark [style*="color: #111827"]{color:var(--ink)!important}
+body.dark [style*="color:#374151"],body.dark [style*="color: #374151"],body.dark [style*="color:#4b5563"],body.dark [style*="color: #4b5563"],body.dark [style*="color:#6b7280"],body.dark [style*="color: #6b7280"]{color:var(--text-muted)!important}
+body.dark [style*="background:white"],body.dark [style*="background: white"],body.dark [style*="background:#fff"],body.dark [style*="background: #fff"]{background:var(--surface)!important}
+body.dark [style*="background:#f9fafb"]{background:var(--surface-muted)!important}
+body.dark [style*="background:#f0fdf4"]{background:var(--soft-green)!important}
+body.dark [style*="background:#eff6ff"]{background:var(--soft-blue)!important}
+body.dark [style*="background:#fee2e2"]{background:var(--soft-red)!important}
+body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
+
+/* ============ RESPONSIVE ============ /
+@media(min-width:700px){
+:root{--max:720px}
+.place-card{display:grid;grid-template-columns:270px 1fr}
+.place-cover{height:100%;min-height:188px}
+.modal{border-radius:24px!important;max-width:560px;margin-bottom:30px}
+}
+@media(min-width:1024px){
+:root{--max:1100px}
+#placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:20px!important}
+.place-card{display:block}
+.place-cover{height:205px}
+#detailPage>div:nth-child(2){max-width:850px;margin:auto}
+#detailTimeGrid,#timeGrid{grid-template-columns:repeat(4,1fr)!important}
+.bnav{max-width:1100px}
+}
+@media(min-width:1400px){
+:root{--max:1200px}
+#placesList{grid-template-columns:repeat(3,1fr)}
+.econ-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(prefers-reduced-motion:reduce){,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(max-width:600px){.owner-action{padding:9px 11px;font-size:12px}}
+
+/* Scrollbar hide */
+#regionTabs::-webkit-scrollbar,#detailDaysGrid::-webkit-scrollbar,#daysGrid::-webkit-scrollbar,#manualDaysGrid::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
 <div id="app">
 
-<div id="welcomePage" class="page active" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px">
-  <div style="font-size:64px;margin-bottom:16px;animation:fadeIn 1s">⚽</div>
-  <h1 style="font-size:32px;margin-bottom:8px">المستديرة</h1>
-  <p style="color:var(--text-muted);margin-bottom:40px">احجز ملعبك في ثوانٍ، بتجربة بسيطة ومباشرة.</p>
-  <div style="width:100%;max-width:300px">
-    <button class="btn-primary" onclick="startBrowsing()">تصفح الملاعب</button>
-    <button class="btn-secondary" onclick="showPlayerLogin()">دخول / إنشاء حساب</button>
-    <button class="btn-secondary" style="border:none;font-size:12px" onclick="showOwnerLogin()">دخول كمالك ملعب ←</button>
-  </div>
-  <div style="margin-top:30px;display:flex;gap:20px;color:var(--text-muted);font-size:12px;font-weight:700">
-    <div><span id="trustPlaces" style="font-size:16px;color:var(--primary);display:block">—</span>ملعب متاح</div>
-    <div><span style="font-size:16px;color:var(--primary);display:block">⚡</span>حجز سريع</div>
-  </div>
+<!-- ===== WELCOME PAGE ===== -->
+<div id="welcomePage" class="page active">
+<div style="padding-bottom:0">
+<div class="welcome-hero">
+<div class="welcome-ball-wrap">
+<span class="welcome-ball">⚽</span>
 </div>
-
-<div id="playerLoginPage" class="page">
-  <div class="header-box"><h2>👤 دخول اللاعب</h2></div>
-  <div style="padding:20px">
-    <div class="card">
-      <label class="form-label">رقم الهاتف</label>
-      <input id="playerPhone" type="tel" placeholder="079xxxxxxx">
-      <label class="form-label">كلمة السر</label>
-      <input id="playerPassword" type="password" placeholder="••••••">
-      <button class="btn-primary" onclick="playerLogin()">دخول</button>
-      <button class="btn-secondary" onclick="showPlayerRegister()">إنشاء حساب جديد</button>
-      <button class="btn-secondary" style="border:none" onclick="startBrowsing()">تصفح بدون حساب</button>
-    </div>
-  </div>
-</div>
-
-<div id="playerRegisterPage" class="page">
-  <div class="header-box"><h2>📝 إنشاء حساب</h2></div>
-  <div style="padding:20px">
-    <div class="card">
-      <label class="form-label">الاسم</label>
-      <input id="regPlayerName" type="text" placeholder="محمد أحمد">
-      <label class="form-label">رقم الهاتف</label>
-      <input id="regPlayerPhone" type="tel" placeholder="079xxxxxxx">
-      <label class="form-label">كلمة السر</label>
-      <input id="regPlayerPassword" type="password" placeholder="4 خانات على الأقل">
-      <button class="btn-primary" onclick="playerRegister()">إنشاء الحساب</button>
-      <button class="btn-secondary" onclick="showPlayerLogin()">عندي حساب</button>
-    </div>
-  </div>
-</div>
-
-<div id="ownerLoginPage" class="page">
-  <div class="header-box"><h2>🔐 دخول المالك</h2></div>
-  <div style="padding:20px">
-    <div class="card">
-      <label class="form-label">رقم الهاتف</label>
-      <input id="ownerPhone" type="tel" placeholder="079xxxxxxx">
-      <label class="form-label">كلمة السر</label>
-      <input id="ownerPassword" type="password" placeholder="••••••">
-      <button class="btn-primary" onclick="ownerLogin()">دخول</button>
-      <button class="btn-secondary" onclick="document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('welcomePage').classList.add('active')">رجوع</button>
-    </div>
-  </div>
-</div>
-
-<div id="homePage" class="page">
-  <div class="header-box" style="display:flex;justify-content:space-between;align-items:center">
-    <div>
-      <h2 style="color:var(--primary);display:flex;align-items:center;gap:8px">⚽ المستديرة</h2>
-      <div id="playerWelcome" style="font-size:11px;color:var(--text-muted);font-weight:700">أهلاً بك</div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button onclick="toggleTheme()" class="tab-btn">🌓</button>
-    </div>
-  </div>
-  <div style="padding:16px 20px 0">
-    <div style="display:flex;gap:8px">
-      <input type="text" id="searchInput" placeholder="ابحث عن مكان..." oninput="filterPlaces()" style="margin-bottom:0">
-      <button class="btn-primary" style="width:auto;margin-bottom:0" onclick="filterPlaces()">بحث</button>
-    </div>
-  </div>
-  <div id="regionTabs" class="tabs-scroll"></div>
-  <div style="padding:0 20px 12px;display:flex;justify-content:space-between;font-weight:800">
-    <span>الملاعب المتاحة</span>
-    <a style="color:var(--primary);cursor:pointer;font-size:12px" onclick="localStorage.removeItem(PLACES_CACHE_KEY);loadDataFromGoogleSheets({force:true}).then(()=>filterPlaces())">تحديث ↺</a>
-  </div>
-  <div id="placesList" style="padding:0 20px"></div>
-</div>
-
-<div id="detailPage" class="page">
-  <div id="detailHeader" class="place-cover" style="height:220px;border-radius:0 0 24px 24px">
-    <button onclick="goBack()" style="position:absolute;top:20px;right:20px;background:rgba(0,0,0,0.5);color:#fff;width:40px;height:40px;border-radius:50%;font-size:18px;backdrop-filter:blur(4px)">→</button>
-  </div>
-  <div style="padding:20px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
-      <div>
-        <h2 id="dName"></h2>
-        <div id="dCity" style="color:var(--text-muted);font-size:13px;font-weight:600;margin-top:4px"></div>
-      </div>
-      <div style="text-align:left">
-        <div id="dPrice" style="font-size:18px;font-weight:800;color:var(--primary)"></div>
-        <div style="font-size:11px;color:var(--text-muted)">/ ساعتان</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:20px">
-      <span class="badge badge-green" id="dType"></span>
-      <span class="badge" style="background:var(--bg-card);border:1px solid var(--border)" id="dRating"></span>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <a id="mapLink" target="_blank" class="btn-secondary" style="text-align:center;text-decoration:none;display:block;margin:0">📍 الموقع</a>
-      <a id="callPlaceBtn" href="#" class="btn-secondary" style="text-align:center;text-decoration:none;display:block;margin:0;border-color:var(--primary);color:var(--primary)">📞 اتصال</a>
-    </div>
-    <h3 style="font-size:14px;margin-bottom:12px">اختر الملعب:</h3>
-    <div id="subFieldsList" style="display:grid;gap:8px;margin-bottom:20px"></div>
-    <h3 style="font-size:14px;margin-bottom:12px">اختر اليوم:</h3>
-    <div id="detailDaysGrid" class="grid-days"></div>
-    <h3 style="font-size:14px;margin-bottom:12px">الأوقات المتاحة:</h3>
-    <div id="detailTimeGrid" class="grid-times"></div>
-    <div id="placeEconomicStats" style="margin-bottom:20px"></div>
-    <button class="btn-primary" onclick="openBookingFromDetail()">احجز الآن</button>
-    <button class="btn-secondary" onclick="openReviewModal()">قيّم هذا المكان ⭐</button>
-  </div>
-</div>
-
-<div id="bookingsPage" class="page">
-  <div class="header-box"><h2>📅 حجوزاتي</h2><p style="color:var(--text-muted);font-size:12px;font-weight:600">تابع حجوزاتك السابقة والقادمة</p></div>
-  <div style="padding:20px">
-    <div id="playerEconomicStats"></div>
-    <div id="bookingsList"></div>
-    <button class="btn-secondary" onclick="loadPlayerBookings()">تحديث الحجوزات ↺</button>
-  </div>
-</div>
-
-<div id="accountPage" class="page">
-  <div class="header-box"><h2>⚙️ حسابي</h2></div>
-  <div style="padding:20px">
-    <div class="card">
-      <label class="form-label">الاسم</label>
-      <input id="accountName" type="text">
-      <label class="form-label">رقم الهاتف</label>
-      <input id="accountPhone" type="tel" disabled style="opacity:0.6">
-      <button class="btn-primary" onclick="savePlayerAccount()">حفظ التعديل</button>
-      <button class="btn-secondary" onclick="doLogout()">تسجيل خروج</button>
-    </div>
-  </div>
-</div>
-
-<div id="ownerPage" class="page">
-  <div class="header-box" style="display:flex;justify-content:space-between;align-items:center">
-    <div>
-      <h2 style="color:var(--primary)">لوحة المالك</h2>
-      <div id="ownerPlaceTitle" style="font-size:12px;color:var(--text-muted);font-weight:700">تحميل...</div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button onclick="toggleTheme()" class="tab-btn">🌓</button>
-      <button onclick="doLogout()" class="tab-btn" style="color:var(--danger)">خروج</button>
-    </div>
-  </div>
-  <div style="padding:20px">
-    <div class="stat-grid">
-      <div class="stat-card"><div id="ownerConfirmedBookings" class="stat-value" style="color:var(--primary)">0</div><div class="stat-label">مؤكدة</div></div>
-      <div class="stat-card"><div id="ownerPendingBookings" class="stat-value" style="color:var(--warning)">0</div><div class="stat-label">بانتظار التأكيد</div></div>
-      <div class="stat-card"><div id="ownerTodayBookings" class="stat-value">0</div><div class="stat-label">حجوزات اليوم</div></div>
-      <div class="stat-card"><div id="ownerNetRevenue" class="stat-value" style="color:var(--primary)">0 JD</div><div class="stat-label">صافي الإيراد</div></div>
-    </div>
-    
-    <div class="card" style="background:var(--primary-light);border-color:var(--primary-light)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <h3 style="font-size:14px;color:var(--primary-dark)">حجز خارجي (واتساب/اتصال)</h3>
-      </div>
-      <button class="btn-primary" style="margin:0" onclick="openManualBookingModal()">+ إضافة حجز لإغلاق الوقت</button>
-    </div>
-
-    <div class="card" style="margin-bottom:20px">
-      <h3 style="font-size:14px;margin-bottom:12px">فلترة الحجوزات</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <input type="date" id="ownerDateFilter" onchange="renderOwnerBookings()">
-        <select id="ownerFieldFilter" onchange="renderOwnerBookings()"><option value="all">الكل</option></select>
-      </div>
-      <button class="btn-secondary" style="margin:0;padding:8px" onclick="clearOwnerFilters()">مسح الفلتر</button>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:800">
-      <span>طلبات الحجز</span>
-      <a style="color:var(--primary);cursor:pointer;font-size:12px" onclick="loadOwnerDashboard()">تحديث ↺</a>
-    </div>
-    <button id="ownerHistoryToggle" class="btn-secondary" style="font-size:12px" onclick="toggleOwnerBookingHistory()">عرض السجل الكامل</button>
-    <div id="ownerBookings"></div>
-
-    <h3 style="font-size:14px;margin:20px 0 12px;display:flex;justify-content:space-between">
-      إدارة الملاعب <a style="color:var(--primary);cursor:pointer" onclick="openAddFieldModal()">+ إضافة</a>
-    </h3>
-    <div id="ownerFields"></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="bookingModal"><div class="modal-content"><div class="modal-handle"></div>
-  <h2 id="mTitle" style="font-size:18px;margin-bottom:4px"></h2>
-  <div id="mSub" style="color:var(--text-muted);font-size:12px;font-weight:600;margin-bottom:16px"></div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center;background:var(--primary-light);border:none;margin-bottom:16px">
-    <div><div style="font-size:11px;color:var(--primary-dark)">السعر (ساعتان)</div><div id="mPrice" style="font-size:18px;font-weight:800;color:var(--primary-dark)"></div></div>
-    <div style="text-align:left"><div style="font-size:11px;color:var(--primary-dark)">التقييم</div><div id="mRating" style="font-size:14px;font-weight:800;color:var(--warning)"></div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div><label class="form-label">الاسم</label><input id="bName"></div>
-    <div><label class="form-label">الهاتف</label><input id="bPhone" type="tel"></div>
-  </div>
-  <h3 style="font-size:13px;margin-bottom:8px">اليوم:</h3><div id="daysGrid" class="grid-days"></div>
-  <h3 style="font-size:13px;margin-bottom:8px">الوقت:</h3><div id="timeGrid" class="grid-times"></div>
-  <button class="btn-primary" onclick="confirmBooking()">إرسال الطلب</button>
-  <button class="btn-secondary" onclick="closeModal('bookingModal')">إلغاء</button>
-</div></div>
-
-<div class="modal-overlay" id="manualBookingModal"><div class="modal-content"><div class="modal-handle"></div>
-  <h2 style="font-size:18px;margin-bottom:16px">إضافة حجز خارجي</h2>
-  <label class="form-label">الملعب</label><select id="manualFieldSelect" onchange="selectManualField()"></select>
-  <h3 style="font-size:13px;margin-bottom:8px">اليوم:</h3><div id="manualDaysGrid" class="grid-days"></div>
-  <h3 style="font-size:13px;margin-bottom:8px">الوقت:</h3><div id="manualTimeGrid" class="grid-times"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div><label class="form-label">الاسم</label><input id="manualName"></div>
-    <div><label class="form-label">الهاتف</label><input id="manualPhone" type="tel"></div>
-  </div>
-  <label class="form-label">السعر المحصل</label><input id="manualPrice" type="number">
-  <button class="btn-primary" onclick="saveManualBooking()">حفظ الحجز</button>
-  <button class="btn-secondary" onclick="closeModal('manualBookingModal')">إلغاء</button>
-</div></div>
-
-<div class="modal-overlay" id="reviewModal"><div class="modal-content"><div class="modal-handle"></div>
-  <h2 style="font-size:18px;margin-bottom:4px">تقييم المكان</h2>
-  <div id="reviewPlaceName" style="color:var(--text-muted);font-size:12px;margin-bottom:16px;font-weight:600"></div>
-  <div id="starsBox" style="text-align:center;margin-bottom:16px;font-size:32px;color:var(--border);cursor:pointer">
-    <span class="star" onclick="setReviewRating(1)">★</span><span class="star" onclick="setReviewRating(2)">★</span><span class="star" onclick="setReviewRating(3)">★</span><span class="star" onclick="setReviewRating(4)">★</span><span class="star" onclick="setReviewRating(5)">★</span>
-  </div>
-  <input id="rName" placeholder="اسمك"><input id="rPhone" placeholder="رقم الهاتف">
-  <textarea id="rComment" placeholder="تعليق اختياري" style="min-height:80px;resize:vertical"></textarea>
-  <button class="btn-primary" onclick="submitReview()">إرسال التقييم ⭐</button>
-  <button class="btn-secondary" onclick="closeModal('reviewModal')">إلغاء</button>
-</div></div>
-
-<div class="modal-overlay" id="reasonModal"><div class="modal-content"><div class="modal-handle"></div>
-  <h2 id="reasonTitle" style="font-size:18px;margin-bottom:4px"></h2>
-  <div id="reasonHint" style="color:var(--text-muted);font-size:12px;margin-bottom:16px;font-weight:600"></div>
-  <textarea id="reasonInput" placeholder="اكتب السبب هنا..." style="min-height:80px;resize:vertical"></textarea>
-  <button class="btn-danger btn-primary" id="reasonConfirmBtn" style="background:var(--danger)">تأكيد</button>
-  <button class="btn-secondary" id="reasonCancelBtn">تراجع</button>
-</div></div>
-
-<div class="modal-overlay" id="fieldModal"><div class="modal-content"><div class="modal-handle"></div>
-  <h2 id="fieldModalTitle" style="font-size:18px;margin-bottom:16px">تعديل ملعب</h2>
-  <input type="hidden" id="editFieldId">
-  <label class="form-label">الاسم</label><input id="fieldNameInput">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div><label class="form-label">الحجم</label><input id="fieldSizeInput"></div>
-    <div><label class="form-label">السعر</label><input id="fieldPriceInput" type="number"></div>
-  </div>
-  <label class="form-label">الأوقات المتاحة</label>
-  <select id="fieldSlotsInput"><option value="full">كل اليوم</option><option value="morning">صباحي</option><option value="evening">مسائي</option></select>
-  <label style="display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:16px"><input type="checkbox" id="fieldActiveInput" style="width:auto;margin:0"> فعال ومتاح للحجز</label>
-  <button class="btn-primary" onclick="saveOwnerField()">حفظ</button>
-  <button class="btn-secondary" onclick="closeModal('fieldModal')">إلغاء</button>
-</div></div>
-
-<div class="modal-overlay" id="successOverlay" style="align-items:center"><div class="modal-content" style="border-radius:24px;text-align:center;padding:32px 24px">
-  <div style="font-size:64px;margin-bottom:16px">🎉</div>
-  <h2 style="font-size:24px;margin-bottom:8px">تم بنجاح!</h2>
-  <p id="sMsgText" style="color:var(--text-muted);font-weight:600;margin-bottom:24px"></p>
-  <button class="btn-primary" onclick="closeModal('successOverlay');filterPlaces()">حسناً</button>
-</div></div>
-
-<div id="toast" class="toast"></div>
-
-<div class="bnav" id="playerNav">
-  <div class="nav-item active" id="nav-home" onclick="showPage('home')">
-    <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>الرئيسية
-  </div>
-  <div class="nav-item" id="nav-bookings" onclick="showPage('bookings')">
-    <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>حجوزاتي
-  </div>
-  <div class="nav-item" id="nav-account" onclick="showPage('account')">
-    <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>حسابي
-  </div>
-</div>
-<div class="bnav" id="ownerNav">
-  <div class="nav-item active" onclick="showOwnerPage()">
-    <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>لوحة المالك
-  </div>
-</div>
-</div>
-
-<script>
-// ==========================================
-// CORE LOGIC (حافظنا على كل الوظائف الأصلية)
-// ==========================================
-const API_URL = "https://script.google.com/macros/s/AKfycby2x_4M12nac0FIk-kVOsB-lg0cOSI283cvjT5yR5cv0BIqiI2u6Pmuf4XEa4bGy6bl/exec";
-const DEFAULT_SLOTS=[{label:'8:00 - 10:00 ص',hour:8},{label:'10:00 - 12:00 م',hour:10},{label:'12:00 - 2:00 م',hour:12},{label:'2:00 - 4:00 م',hour:14},{label:'4:00 - 6:00 م',hour:16},{label:'6:00 - 8:00 م',hour:18},{label:'8:00 - 10:00 م',hour:20},{label:'10:00 - 12:00 م',hour:22}];
-const PLACES_CACHE_KEY='mustadaira_places_cache_v7';
-
-let places=[], publicBookings=[], bookedSlots={}, activeFilter='all';
-let currentPlace=null, currentSubField=null, selectedHour=null, selectedDate=getTodayDate();
-let manualDate=getTodayDate(), manualFieldId=null, manualHour=null, selectedRating=0;
-let ownerToken=localStorage.getItem('owner_token')||'', ownerData=null, editingFieldMode='edit';
-let playerToken=localStorage.getItem('player_token')||'', playerData=null, guestMode=false;
-let showAllPlayerBookings=false, showAllOwnerBookings=false, autoRefreshTimer=null;
-
-// Helpers
-function getTodayDate(){return new Date().toISOString().split("T")[0]}
-function getDateAfter(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().split("T")[0]}
-function getArabicDayName(dateStr){const days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];return days[new Date(dateStr+"T12:00:00").getDay()]}
-function getShortDate(dateStr){const d=new Date(dateStr+"T12:00:00");return `${d.getDate()}/${d.getMonth()+1}`}
-function normalizePhone(p){return String(p||'').replace(/\s+/g,'').replace(/^\+?00962|^07/,'9627')}
-function formatMoney(v){return `${Math.round(Number(v||0)*100)/100} JD`}
-function isBookingFinished(b){if(!b.date||isNaN(b.hour))return false;const end=new Date(`${b.date}T${String(b.hour).padStart(2,'0')}:00:00`);end.setHours(end.getHours()+2);return new Date()>=end}
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show';setTimeout(()=>t.classList.remove('show'),3000)}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-function getFieldSlots(f){const s=String(f?.slots||'').toLowerCase();return s==='morning'?DEFAULT_SLOTS.slice(0,3):s==='evening'?DEFAULT_SLOTS.slice(4):DEFAULT_SLOTS}
-function ratingText(p){return `${Math.round((Number(p?.rating)||0)*10)/10} (${Math.round(Number(p?.reviews)||0)})`}
-
-// API Handlers
-async function apiGet(action,extra={}){const r=await fetch(`${API_URL}?${new URLSearchParams({action,...extra})}`);return r.json()}
-async function apiPost(data){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(data)});return r.json()}
-
-// Data Loading
-async function loadDataFromGoogleSheets(opts={}){
-  try{
-    const res=await apiGet("getInitialData",{force:opts.force?'1':'0'});
-    places=res.places||[]; publicBookings=res.bookings||[];
-    bookedSlots={}; places.forEach(p=>p.fields.forEach(f=>bookedSlots[f.field_id]={}));
-    publicBookings.forEach(b=>{
-      if(['cancelled','rejected'].includes(String(b.status).toLowerCase()))return;
-      const d=b.date.split('T')[0];
-      if(!bookedSlots[b.field_id])bookedSlots[b.field_id]={};
-      if(!bookedSlots[b.field_id][d])bookedSlots[b.field_id][d]=[];
-      bookedSlots[b.field_id][d].push(Number(b.hour));
-    });
-    if(places.length)document.getElementById('trustPlaces').textContent=places.reduce((s,p)=>s+(p.fields||[]).length,0)+'+';
-    renderRegionTabs(); return true;
-  }catch(e){showToast("تعذر الاتصال بقاعدة البيانات"); return false;}
-}
-async function loadPublicBookings(){
-  const b=await apiGet("getBookings");
-  if(b.bookings) loadDataFromGoogleSheets({force:false}); // Simplified for stability
-}
-
-// Init & Navigation
-async function initApp(){
-  loadDataFromGoogleSheets();
-  if(ownerToken){ showOwnerPage(); loadOwnerDashboard(); return; }
-  if(playerToken){
-    try{
-      const res=await apiGet('getPlayerBookings',{player_token:playerToken});
-      if(res.success){ playerData=res.player; guestMode=false; showPage('home'); return; }
-    }catch(e){}
-    playerToken=''; localStorage.removeItem('player_token');
-  }
-  document.getElementById('welcomePage').classList.add('active');
-}
-initApp();
-
-function showPage(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('#playerNav .nav-item').forEach(n=>n.classList.remove('active'));
-  if(page==='home'){ document.getElementById('homePage').classList.add('active'); document.getElementById('nav-home').classList.add('active'); filterPlaces(); document.getElementById('playerNav').classList.add('show'); document.getElementById('ownerNav').classList.remove('show');}
-  if(page==='bookings'){ if(!playerToken){showPlayerLogin();return} document.getElementById('bookingsPage').classList.add('active'); document.getElementById('nav-bookings').classList.add('active'); loadPlayerBookings();}
-  if(page==='account'){ if(!playerToken){showPlayerLogin();return} document.getElementById('accountPage').classList.add('active'); document.getElementById('nav-account').classList.add('active'); document.getElementById('accountName').value=playerData?.name||''; document.getElementById('accountPhone').value=playerData?.phone||'';}
-  window.scrollTo(0,0);
-}
-function startBrowsing(){guestMode=true; showPage('home');}
-function goBack(){showPage('home');}
-function showPlayerLogin(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('playerLoginPage').classList.add('active'); document.getElementById('playerNav').classList.remove('show');}
-function showPlayerRegister(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('playerRegisterPage').classList.add('active'); document.getElementById('playerNav').classList.remove('show');}
-function showOwnerLogin(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('ownerLoginPage').classList.add('active'); document.getElementById('playerNav').classList.remove('show');}
-function showOwnerPage(){if(!ownerToken)return showOwnerLogin(); document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('ownerPage').classList.add('active'); document.getElementById('ownerNav').classList.add('show'); document.getElementById('playerNav').classList.remove('show');}
-function doLogout(){ownerToken=''; playerToken=''; localStorage.clear(); location.reload();}
-
-// Auth Actions
-async function playerLogin(){
-  const phone=document.getElementById('playerPhone').value, password=document.getElementById('playerPassword').value;
-  if(!phone||!password)return showToast('أدخل البيانات');
-  const r=await apiGet('playerLogin',{phone,password});
-  if(r.success){playerToken=r.player_token; playerData=r.player; localStorage.setItem('player_token',playerToken); showPage('home');} else showToast(r.message||'خطأ بالدخول');
-}
-async function playerRegister(){
-  const name=document.getElementById('regPlayerName').value, phone=document.getElementById('regPlayerPhone').value, password=document.getElementById('regPlayerPassword').value;
-  if(!name||!phone||!password)return showToast('أكمل البيانات');
-  const r=await apiPost({action:'playerRegister',name,phone,password});
-  if(r.success){playerToken=r.player_token; playerData=r.player; localStorage.setItem('player_token',playerToken); showPage('home');} else showToast(r.message||'خطأ بإنشاء الحساب');
-}
-async function savePlayerAccount(){
-  const name=document.getElementById('accountName').value;
-  if(!name)return showToast('اكتب الاسم');
-  const r=await apiPost({action:'updatePlayerProfile',player_token:playerToken,name});
-  if(r.success){playerData=r.player; showToast('تم الحفظ');} else showToast('خطأ بالحفظ');
-}
-async function ownerLogin(){
-  const phone=document.getElementById('ownerPhone').value, password=document.getElementById('ownerPassword').value;
-  const r=await apiGet('ownerLogin',{phone,password});
-  if(r.success){ownerToken=r.owner_token; localStorage.setItem('owner_token',ownerToken); showOwnerPage(); loadOwnerDashboard();} else showToast(r.message||'خطأ بالدخول');
-}
-
-// Rendering Places (Home & Filter)
-function getDynamicRegions(){const s=new Set(); places.forEach(p=>p.region&&s.add(p.region.trim())); return Array.from(s);}
-function renderRegionTabs(){
-  const r=getDynamicRegions();
-  document.getElementById('regionTabs').innerHTML=`<button class="tab-btn ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">الكل</button>`+r.map(x=>`<button class="tab-btn ${activeFilter===x?'active':''}" onclick="setFilter('${x}')">${x}</button>`).join('');
-}
-function setFilter(f){activeFilter=f; filterPlaces();}
-function filterPlaces(){
-  const q=document.getElementById('searchInput').value.trim().toLowerCase();
-  const f=places.filter(p=>{
-    const m1=activeFilter==='all'||p.region===activeFilter;
-    const m2=!q||p.place_name.toLowerCase().includes(q)||p.city.toLowerCase().includes(q);
-    return m1&&m2;
-  });
-  const el=document.getElementById('placesList');
-  if(!f.length)return el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">لا توجد نتائج</div>';
-  el.innerHTML=f.map(p=>{
-    const min=Math.min(...p.fields.map(x=>x.price||0)), max=Math.max(...p.fields.map(x=>x.price||0));
-    const price=min===max?`${min} JD`:`${min}-${max} JD`;
-    const bg=p.fields[0]?.image_url?`url('${p.fields[0].image_url}')`:`var(--primary-light)`;
-    return `<div class="place-card" onclick="openDetail('${p.place_id}')">
-      <div class="place-cover" style="background:${bg};background-size:cover;background-position:center">
-        <span class="badge-float badge badge-green">${price}</span>
-      </div>
-      <div class="place-info">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <h3 style="font-size:16px">${p.place_name}</h3>
-          <span style="font-size:13px;font-weight:700;color:var(--warning)">⭐ ${ratingText(p)}</span>
-        </div>
-        <div style="color:var(--text-muted);font-size:12px;margin-bottom:12px">📍 ${p.city} - ${p.region}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:12px">
-          <span style="font-size:12px;font-weight:700">${p.type} • ${p.fields.length} ملاعب</span>
-          <span style="color:var(--primary);font-weight:800;font-size:13px">احجز الآن ←</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  renderRegionTabs();
-  if(playerData) document.getElementById('playerWelcome').textContent = 'أهلاً ' + playerData.name;
-}
-
-// Detail Page
-async function openDetail(pid){
-  currentPlace=places.find(p=>String(p.place_id)===String(pid));
-  currentSubField=currentPlace.fields[0]; selectedDate=getTodayDate(); selectedHour=null;
-  document.getElementById('dName').textContent=currentPlace.place_name;
-  document.getElementById('dCity').textContent=`📍 ${currentPlace.city} - ${currentPlace.region}`;
-  document.getElementById('dType').textContent=currentPlace.type;
-  document.getElementById('dRating').textContent=`⭐ ${ratingText(currentPlace)}`;
-  document.getElementById('mapLink').href=currentPlace.map_link||'#';
-  const bg=currentSubField.image_url?`url('${currentSubField.image_url}')`:`var(--primary-light)`;
-  document.getElementById('detailHeader').style.background=`${bg} center/cover`;
-  
-  renderSubFields(); renderDetailDays(); renderDetailTimes();
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('detailPage').classList.add('active'); window.scrollTo(0,0);
-}
-function renderSubFields(){
-  document.getElementById('dPrice').textContent=`${currentSubField.price} JD`;
-  document.getElementById('subFieldsList').innerHTML=currentPlace.fields.map(f=>{
-    const act=currentSubField.field_id===f.field_id;
-    return `<div class="card" style="margin-bottom:0;cursor:pointer;border-color:${act?'var(--primary)':'var(--border)'};background:${act?'var(--primary-light)':'var(--bg-card)'}" onclick="selectSubField('${f.field_id}')">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><div style="font-weight:800">${f.field_name}</div><div style="font-size:11px;color:var(--text-muted)">📐 ${f.size}</div></div>
-        <div style="font-weight:800;color:var(--primary-dark)">${f.price} JD</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function selectSubField(fid){currentSubField=currentPlace.fields.find(f=>f.field_id===fid); selectedHour=null; renderSubFields(); renderDetailTimes();}
-function renderDetailDays(){
-  document.getElementById('detailDaysGrid').innerHTML=Array.from({length:7},(_,i)=>{
-    const d=getDateAfter(i), act=d===selectedDate;
-    return `<button class="day-btn ${act?'active':''}" onclick="selectDetailDate('${d}')"><div>${i===0?'اليوم':getArabicDayName(d)}</div><div style="font-size:10px;margin-top:2px;opacity:0.8">${getShortDate(d)}</div></button>`;
-  }).join('');
-}
-function selectDetailDate(d){selectedDate=d; selectedHour=null; renderDetailDays(); renderDetailTimes();}
-function renderDetailTimes(){
-  const slots=getFieldSlots(currentSubField), taken=bookedSlots[currentSubField.field_id]?.[selectedDate]||[];
-  document.getElementById('detailTimeGrid').innerHTML=slots.map(s=>{
-    const t=taken.includes(s.hour), act=selectedHour===s.hour;
-    return `<button class="time-btn ${act&&!t?'active':''}" ${t?'disabled':''} onclick="selectedHour=${s.hour};renderDetailTimes()">${s.label}</button>`;
-  }).join('');
-}
-
-// Booking Process
-function openBookingFromDetail(){
-  if(selectedHour===null)return showToast('اختر الوقت أولاً');
-  if(!playerToken){showToast('سجّل دخولك لإتمام الحجز'); return setTimeout(showPlayerLogin,1000);}
-  document.getElementById('mTitle').textContent=`${currentPlace.place_name} - ${currentSubField.field_name}`;
-  document.getElementById('mSub').textContent=`📍 ${currentPlace.city} • 📐 ${currentSubField.size}`;
-  document.getElementById('mPrice').textContent=`${currentSubField.price} JD`;
-  document.getElementById('mRating').textContent=`⭐ ${ratingText(currentPlace)}`;
-  document.getElementById('bName').value=playerData?.name||'';
-  document.getElementById('bPhone').value=playerData?.phone||'';
-  
-  // Sync grids
-  document.getElementById('daysGrid').innerHTML=document.getElementById('detailDaysGrid').innerHTML.replace(/selectDetailDate/g,'selectBookDate');
-  renderBookTimes();
-  document.getElementById('bookingModal').classList.add('show');
-}
-function selectBookDate(d){selectedDate=d; selectedHour=null; document.getElementById('daysGrid').innerHTML=document.getElementById('daysGrid').innerHTML.replace(/active/g,'').replace(`'${d}')"`,'active"'); renderBookTimes();}
-function renderBookTimes(){
-  const slots=getFieldSlots(currentSubField), taken=bookedSlots[currentSubField.field_id]?.[selectedDate]||[];
-  document.getElementById('timeGrid').innerHTML=slots.map(s=>{
-    const t=taken.includes(s.hour), act=selectedHour===s.hour;
-    return `<button class="time-btn ${act&&!t?'active':''}" ${t?'disabled':''} onclick="selectedHour=${s.hour};renderBookTimes()">${s.label}</button>`;
-  }).join('');
-}
-async function confirmBooking(){
-  const name=document.getElementById('bName').value, phone=document.getElementById('bPhone').value;
-  if(!name||!phone||selectedHour===null)return showToast('أكمل البيانات واختر الوقت');
-  const slot=getFieldSlots(currentSubField).find(s=>s.hour===selectedHour);
-  const data={action:'createBooking',player_token:playerToken,date:selectedDate,place_id:currentPlace.place_id,place_name:currentPlace.place_name,field_id:currentSubField.field_id,field_name:currentSubField.field_name,city:currentPlace.city,time:slot.label,hour:selectedHour,name,phone,players:currentSubField.size,price:currentSubField.price};
-  
-  const r=await apiPost(data);
-  if(!r.success)return showToast(r.message||'خطأ بالحجز');
-  
-  if(!bookedSlots[currentSubField.field_id][selectedDate]) bookedSlots[currentSubField.field_id][selectedDate]=[];
-  bookedSlots[currentSubField.field_id][selectedDate].push(selectedHour);
-  
-  closeModal('bookingModal');
-  document.getElementById('sMsgText').textContent='تم استلام طلبك بنجاح! بانتظار تأكيد المالك.';
-  document.getElementById('successOverlay').classList.add('show');
-  selectedHour=null; renderDetailTimes();
-}
-
-// Player Bookings
-async function loadPlayerBookings(){
-  const el=document.getElementById('bookingsList');
-  const r=await apiGet('getPlayerBookings',{player_token:playerToken});
-  if(!r.success||!r.bookings?.length)return el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">لا توجد حجوزات</div>';
-  
-  const bks = r.bookings;
-  const active=bks.filter(b=>!isBookingFinished(b)), finished=bks.filter(b=>isBookingFinished(b));
-  
-  el.innerHTML=active.map(b=>renderBookingCardUI(b,true)).join('') + 
-               (finished.length?`<h3 style="margin:20px 0 12px;font-size:14px">سجل الحجوزات</h3>`:'') + 
-               finished.map(b=>renderBookingCardUI(b,false)).join('');
-}
-function renderBookingCardUI(b, canCancel){
-  const st=String(b.status).toLowerCase();
-  const badges={confirmed:'badge-green',pending:'badge-yellow',cancelled:'badge-red',rejected:'badge-red'};
-  const labels={confirmed:'مؤكد',pending:'قيد الانتظار',cancelled:'ملغي',rejected:'مرفوض'};
-  return `<div class="card" style="border-right:4px solid ${st==='confirmed'?'var(--primary)':st==='pending'?'var(--warning)':'var(--danger)'}">
-    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-      <div style="font-weight:800">${b.place_name} - ${b.field_name}</div>
-      <span class="badge ${badges[st]}">${labels[st]}</span>
-    </div>
-    <div style="color:var(--text-muted);font-size:12px;display:grid;grid-template-columns:1fr 1fr;gap:4px">
-      <div>📅 ${b.date}</div><div>⏰ ${b.time}</div>
-      <div>💰 ${b.price} JD</div><div>📍 ${b.city}</div>
-    </div>
-    ${b.cancel_reason?`<div style="margin-top:8px;padding:8px;background:var(--danger-light);color:var(--danger);border-radius:8px;font-size:11px;font-weight:700">السبب: ${b.cancel_reason}</div>`:''}
-    ${canCancel&&!['cancelled','rejected'].includes(st)?`<button class="btn-secondary btn-sm" style="margin-top:12px;color:var(--danger);border-color:var(--danger)" onclick="playerCancelBooking(${b.row_number})">إلغاء الحجز</button>`:''}
-  </div>`;
-}
-
-let pendingCancelRow = null;
-function playerCancelBooking(row){
-  pendingCancelRow=row;
-  document.getElementById('reasonTitle').textContent='إلغاء الحجز';
-  document.getElementById('reasonHint').textContent='يرجى كتابة سبب الإلغاء (اختياري)';
-  document.getElementById('reasonInput').value='';
-  document.getElementById('reasonConfirmBtn').onclick=confirmPlayerCancel;
-  document.getElementById('reasonCancelBtn').onclick=()=>closeModal('reasonModal');
-  document.getElementById('reasonModal').classList.add('show');
-}
-async function confirmPlayerCancel(){
-  const reason=document.getElementById('reasonInput').value||'ألغى اللاعب الحجز';
-  const r=await apiPost({action:'updateBookingStatus',player_token:playerToken,row_number:pendingCancelRow,status:'cancelled',cancel_reason:reason});
-  closeModal('reasonModal');
-  if(r.success){showToast('تم الإلغاء'); loadPlayerBookings();} else showToast('خطأ بالإلغاء');
-}
-
-// Owner Dashboard
-async function loadOwnerDashboard(){
-  document.getElementById('ownerBookings').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">جاري التحميل...</div>';
-  const r=await apiGet("getOwnerData",{owner_token:ownerToken});
-  if(r.success){ownerData=r; renderOwnerDashboard();} else {showToast('انتهت الجلسة'); doLogout();}
-}
-function renderOwnerDashboard(){
-  document.getElementById('ownerPlaceTitle').textContent=ownerData.place?.place_name||'';
-  const bks=ownerData.bookings||[];
-  const conf=bks.filter(b=>b.status==='confirmed'), pend=bks.filter(b=>b.status==='pending');
-  document.getElementById('ownerConfirmedBookings').textContent=conf.length;
-  document.getElementById('ownerPendingBookings').textContent=pend.length;
-  document.getElementById('ownerTodayBookings').textContent=bks.filter(b=>b.date===getTodayDate()).length;
-  document.getElementById('ownerNetRevenue').textContent=formatMoney(conf.reduce((s,b)=>s+Number(b.price||0),0) * 0.9); // assuming 10% platform fee
-  
-  const fsel=document.getElementById('ownerFieldFilter');
-  fsel.innerHTML='<option value="all">الكل</option>'+(ownerData.fields||[]).map(f=>`<option value="${f.field_id}">${f.field_name}</option>`).join('');
-  
-  renderOwnerBookings(); renderOwnerFields();
-}
-function renderOwnerBookings(){
-  let bks=ownerData.bookings||[];
-  const dFilter=document.getElementById('ownerDateFilter').value, fFilter=document.getElementById('ownerFieldFilter').value;
-  if(!showAllOwnerBookings) bks=bks.filter(b=>b.date>=getDateAfter(-7));
-  if(dFilter) bks=bks.filter(b=>b.date===dFilter);
-  if(fFilter!=='all') bks=bks.filter(b=>b.field_id===fFilter);
-  
-  const el=document.getElementById('ownerBookings');
-  if(!bks.length)return el.innerHTML='<div class="card" style="text-align:center;color:var(--text-muted)">لا توجد حجوزات</div>';
-  
-  el.innerHTML=bks.sort((a,b)=>a.date>b.date?-1:1).map(b=>{
-    const st=String(b.status).toLowerCase();
-    return `<div class="card" style="border-right:4px solid ${st==='confirmed'?'var(--primary)':st==='pending'?'var(--warning)':'var(--danger)'}">
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-        <div style="font-weight:800">${b.field_name}</div>
-        <div style="font-size:12px;font-weight:700;color:var(--text-muted)">${b.date} • ${b.time}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:12px;color:var(--text-muted);margin-bottom:12px">
-        <div>👤 ${b.name}</div><div>📞 ${b.phone}</div>
-        <div>💰 ${b.price} JD</div><div>📍 المصدر: ${b.source||'direct'}</div>
-      </div>
-      ${b.cancel_reason?`<div style="margin-bottom:12px;padding:8px;background:var(--danger-light);color:var(--danger);border-radius:8px;font-size:11px;font-weight:700">السبب: ${b.cancel_reason}</div>`:''}
-      <div style="display:flex;gap:8px">
-        ${st==='pending'?`<button class="btn-primary btn-sm" style="margin:0" onclick="updateOwnerBooking(${b.row_number},'confirmed')">تأكيد ✓</button>`:''}
-        ${st!=='rejected'&&st!=='cancelled'?`<button class="btn-secondary btn-sm" style="margin:0;color:var(--danger);border-color:var(--danger)" onclick="promptOwnerReject(${b.row_number})">${st==='confirmed'?'إلغاء':'رفض'}</button>`:''}
-        <a href="https://wa.me/${normalizePhone(b.phone)}" target="_blank" class="btn-secondary btn-sm" style="margin:0;text-decoration:none;text-align:center;color:#16a34a;border-color:#16a34a">واتساب</a>
-      </div>
-    </div>`;
-  }).join('');
-}
-function toggleOwnerBookingHistory(){showAllOwnerBookings=!showAllOwnerBookings; document.getElementById('ownerHistoryToggle').textContent=showAllOwnerBookings?"إخفاء القديم":"عرض السجل الكامل"; renderOwnerBookings();}
-function clearOwnerFilters(){document.getElementById('ownerDateFilter').value=''; document.getElementById('ownerFieldFilter').value='all'; renderOwnerBookings();}
-
-async function updateOwnerBooking(row, status, reason=''){
-  const r=await apiPost({action:"updateBookingStatus",owner_token:ownerToken,row_number:row,status,cancel_reason:reason});
-  if(r.success){showToast('تم التحديث'); loadOwnerDashboard();} else showToast('خطأ بالتحديث');
-}
-function promptOwnerReject(row){
-  pendingCancelRow=row;
-  document.getElementById('reasonTitle').textContent='رفض/إلغاء الحجز';
-  document.getElementById('reasonHint').textContent='يرجى كتابة السبب ليظهر للاعب';
-  document.getElementById('reasonInput').value='';
-  document.getElementById('reasonConfirmBtn').onclick=()=> {
-    const r=document.getElementById('reasonInput').value||'مرفوض من قبل الإدارة';
-    closeModal('reasonModal'); updateOwnerBooking(pendingCancelRow, 'rejected', r);
-  };
-  document.getElementById('reasonCancelBtn').onclick=()=>closeModal('reasonModal');
-  document.getElementById('reasonModal').classList.add('show');
-}
-
-// Manual Booking (Owner)
-function openManualBookingModal(){
-  if(!ownerData?.fields?.length)return showToast('لا يوجد ملاعب');
-  manualDate=getTodayDate(); manualHour=null; manualFieldId=ownerData.fields[0].field_id;
-  const s=document.getElementById('manualFieldSelect');
-  s.innerHTML=ownerData.fields.map(f=>`<option value="${f.field_id}">${f.field_name}</option>`).join('');
-  document.getElementById('manualName').value=''; document.getElementById('manualPhone').value=''; document.getElementById('manualPrice').value=ownerData.fields[0].price;
-  renderManualDays(); renderManualTimes();
-  document.getElementById('manualBookingModal').classList.add('show');
-}
-function selectManualField(){manualFieldId=document.getElementById('manualFieldSelect').value; const f=ownerData.fields.find(x=>x.field_id===manualFieldId); document.getElementById('manualPrice').value=f?.price||0; renderManualTimes();}
-function renderManualDays(){
-  document.getElementById('manualDaysGrid').innerHTML=Array.from({length:14},(_,i)=>{
-    const d=getDateAfter(i), act=d===manualDate;
-    return `<button class="day-btn ${act?'active':''}" onclick="manualDate='${d}';manualHour=null;renderManualDays();renderManualTimes()">${i===0?'اليوم':getShortDate(d)}</button>`;
-  }).join('');
-}
-function renderManualTimes(){
-  const f=ownerData.fields.find(x=>x.field_id===manualFieldId); if(!f)return;
-  const slots=getFieldSlots(f), taken=bookedSlots[f.field_id]?.[manualDate]||[];
-  document.getElementById('manualTimeGrid').innerHTML=slots.map(s=>{
-    const t=taken.includes(s.hour), act=manualHour===s.hour;
-    return `<button class="time-btn ${act&&!t?'active':''}" ${t?'disabled':''} onclick="manualHour=${s.hour};renderManualTimes()">${s.label}</button>`;
-  }).join('');
-}
-async function saveManualBooking(){
-  const name=document.getElementById('manualName').value, phone=document.getElementById('manualPhone').value, price=document.getElementById('manualPrice').value;
-  if(!name||!price||manualHour===null)return showToast('أكمل البيانات واختر الوقت');
-  const f=ownerData.fields.find(x=>x.field_id===manualFieldId), slot=getFieldSlots(f).find(s=>s.hour===manualHour);
-  const r=await apiPost({action:'ownerCreateManualBooking',owner_token:ownerToken,field_id:f.field_id,date:manualDate,hour:manualHour,time:slot.label,name,phone,players:f.size,price});
-  if(r.success){closeModal('manualBookingModal'); showToast('تم الحفظ'); loadOwnerDashboard(); loadDataFromGoogleSheets({force:true});} else showToast('خطأ بالحفظ');
-}
-
-// Field Management (Owner)
-function renderOwnerFields(){
-  const el=document.getElementById('ownerFields');
-  el.innerHTML=(ownerData.fields||[]).map(f=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center">
-    <div><div style="font-weight:800">${f.field_name}</div><div style="font-size:12px;color:var(--text-muted)">💰 ${f.price} JD • 📐 ${f.size}</div></div>
-    <button class="btn-secondary btn-sm" style="margin:0;width:auto" onclick="openEditFieldModal('${f.field_id}')">تعديل</button>
-  </div>`).join('');
-}
-function openEditFieldModal(fid){
-  editingFieldMode='edit'; const f=ownerData.fields.find(x=>x.field_id===fid);
-  document.getElementById('fieldModalTitle').textContent="تعديل ملعب";
-  document.getElementById('editFieldId').value=f.field_id; document.getElementById('fieldNameInput').value=f.field_name; document.getElementById('fieldNameInput').disabled=true;
-  document.getElementById('fieldSizeInput').value=f.size; document.getElementById('fieldSizeInput').disabled=true;
-  document.getElementById('fieldPriceInput').value=f.price; document.getElementById('fieldSlotsInput').value=f.slots||'full'; document.getElementById('fieldActiveInput').checked=f.active!==false;
-  document.getElementById('fieldModal').classList.add('show');
-}
-function openAddFieldModal(){
-  editingFieldMode='add'; document.getElementById('fieldModalTitle').textContent="إضافة ملعب";
-  document.getElementById('editFieldId').value=''; document.getElementById('fieldNameInput').value=''; document.getElementById('fieldNameInput').disabled=false;
-  document.getElementById('fieldSizeInput').value='6x6'; document.getElementById('fieldSizeInput').disabled=false;
-  document.getElementById('fieldPriceInput').value='40'; document.getElementById('fieldModal').classList.add('show');
-}
-async function saveOwnerField(){
-  const field_id=document.getElementById('editFieldId').value, field_name=document.getElementById('fieldNameInput').value, size=document.getElementById('fieldSizeInput').value, price=document.getElementById('fieldPriceInput').value, slots=document.getElementById('fieldSlotsInput').value, active=document.getElementById('fieldActiveInput').checked;
-  if(!field_name||!size||!price)return showToast('أكمل البيانات');
-  const payload=editingFieldMode==='add'?{action:"ownerAddField",owner_token:ownerToken,field_name,size,price,slots}:{action:"ownerUpdateField",owner_token:ownerToken,field_id,price,slots,active};
-  const r=await apiPost(payload);
-  if(r.success){closeModal('fieldModal'); showToast('تم الحفظ'); loadOwnerDashboard();} else showToast('خطأ بالحفظ');
-}
-
-// Reviews
-function openReviewModal(){if(!currentPlace)return; selectedRating=0; setReviewRating(0); document.getElementById('reviewPlaceName').textContent=currentPlace.place_name; document.getElementById('rName').value=playerData?.name||''; document.getElementById('rPhone').value=playerData?.phone||''; document.getElementById('reviewModal').classList.add('show');}
-function setReviewRating(r){selectedRating=r; document.querySelectorAll('.star').forEach((s,i)=>s.style.color=i<r?'var(--warning)':'var(--border)');}
-async function submitReview(){
-  if(!selectedRating)return showToast('اختر التقييم النجمي');
-  const r=await apiPost({action:'createReview',place_id:currentPlace.place_id,field_id:currentSubField.field_id,user_name:document.getElementById('rName').value,phone:document.getElementById('rPhone').value,rating:selectedRating,comment:document.getElementById('rComment').value});
-  if(r.success){closeModal('reviewModal'); showToast('تم إرسال التقييم شكراً لك'); loadDataFromGoogleSheets({force:true});} else showToast('خطأ بإرسال التقييم');
-}
-
-// Theme
-function applyTheme(theme){
-  if(theme==='dark'){document.body.classList.add('dark'); document.querySelector('meta[name="theme-color"]').setAttribute('content','#0f172a');}
-  else{document.body.classList.remove('dark'); document.querySelector('meta[name="theme-color"]').setAttribute('content','#f8fafc');}
-}
-function toggleTheme(){const t=document.body.classList.contains('dark')?'light':'dark'; localStorage.setItem('theme',t); applyTheme(t);}
-applyTheme(localStorage.getItem('theme')||'light');
-
-// Close Modals on outside click
-document.addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('show');});
-</script>
-</body>
-</html>
+<div class="welcome-title">ال<span>مستديرة</span></div>
+<div class="welcome-sub">احجز ملعبك في ثوانٍ — بدون تعقيد</div>
+<div class="welcome-actions">
+<button class="welcome-cta welcome-cta-primary" onclick="startBrowsing()">🏟️ تصفح الملاعب</button>
+<button class="welcome-cta welcome-cta-secondary" onclick="s
