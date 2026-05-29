@@ -636,6 +636,341 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
 
 /* Scrollbar hide */
 #regionTabs::-webkit-scrollbar,#detailDaysGrid::-webkit-scrollbar,#daysGrid::-webkit-scrollbar,#manualDaysGrid::-webkit-scrollbar{display:none}
+
+
+/* =========================================================
+   SIMPLE MODERN UX OVERRIDE — المستديرة
+   هدفه: واجهة أوضح، ألوان أهدأ، أزرار أكبر، وتجربة أسرع للمستخدم
+   ========================================================= */
+:root{
+  --forest:#0B3D2E;
+  --forest-2:#0F5132;
+  --emerald:#198754;
+  --emerald-2:#20A565;
+  --sage:#5F7F6D;
+  --gold:#F2C94C;
+  --gold-2:#FFE08A;
+  --cream:#F6F8F3;
+  --surface:#FFFFFF;
+  --surface-soft:#F9FBF7;
+  --surface-muted:#EEF3EC;
+  --input-bg:#FFFFFF;
+  --ink:#111827;
+  --ink-2:#263238;
+  --muted:#667085;
+  --soft:#98A2B3;
+  --text-muted:#667085;
+  --soft-green:#ECFDF3;
+  --soft-blue:#EFF8FF;
+  --soft-yellow:#FFFAEB;
+  --soft-red:#FEF3F2;
+  --line:rgba(15,81,50,.09);
+  --line-2:rgba(15,81,50,.14);
+  --shadow-xs:0 1px 2px rgba(16,24,40,.04);
+  --shadow-sm:0 2px 8px rgba(16,24,40,.06);
+  --shadow-md:0 8px 24px rgba(16,24,40,.08);
+  --shadow-lg:0 16px 42px rgba(16,24,40,.12);
+  --shadow-card:0 2px 6px rgba(16,24,40,.04),0 12px 28px rgba(16,24,40,.06);
+  --shadow-green:0 8px 20px rgba(25,135,84,.20);
+  --shadow-green-lg:0 14px 34px rgba(25,135,84,.24);
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:18px;
+  --r-xl:22px;
+  --r-2xl:28px;
+  --g-main:linear-gradient(145deg,#0B3D2E,#198754);
+  --g-btn:linear-gradient(135deg,#198754,#0F5132);
+  --g-gold:linear-gradient(135deg,#F2C94C,#FFE08A);
+}
+body.dark{
+  --cream:#0B1110;
+  --surface:#111A16;
+  --surface-soft:#17231D;
+  --surface-muted:#0E1512;
+  --input-bg:#111C17;
+  --ink:#F3F7F4;
+  --ink-2:#D6E1DA;
+  --muted:#A2B3AA;
+  --soft:#73847B;
+  --text-muted:#A2B3AA;
+  --line:rgba(255,255,255,.07);
+  --line-2:rgba(255,255,255,.11);
+  --soft-green:rgba(25,135,84,.14);
+  --soft-blue:rgba(46,144,250,.13);
+  --soft-yellow:rgba(242,201,76,.12);
+  --soft-red:rgba(240,68,56,.14);
+  --forest:#0A2219;
+  --forest-2:#103A2A;
+  --emerald:#3CCB7F;
+  --emerald-2:#53D894;
+  --gold:#F7D56B;
+  --gold-2:#FFE49A;
+  --shadow-card:0 1px 0 rgba(255,255,255,.03),0 12px 28px rgba(0,0,0,.32);
+  --shadow-md:0 10px 30px rgba(0,0,0,.32);
+  --shadow-lg:0 18px 48px rgba(0,0,0,.45);
+}
+html{scroll-behavior:smooth}
+body{font-size:15px;line-height:1.65;background:var(--cream)}
+#app{background:var(--cream);box-shadow:none}
+.page{background:var(--cream);padding-bottom:96px}
+.page.active{animation:simplePageIn .22s ease both}
+@keyframes simplePageIn{from{opacity:.75;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1,h2,h3,.welcome-title,.lux-header-title,.sec-title{letter-spacing:-.02em}
+button,a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(25,135,84,.18)!important;
+  outline-offset:2px!important;
+}
+
+/* Welcome: أبسط وأوضح */
+.welcome-hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:48px 22px 38px!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(242,201,76,.20),transparent 28%),
+    linear-gradient(150deg,#062A20 0%,#0B3D2E 48%,#198754 120%)!important;
+  box-shadow:none!important;
+}
+.welcome-hero::before,.welcome-hero::after,.header::before,.header::after,.lux-page-header::before,.lux-page-header::after{display:none!important}
+.welcome-ball{font-size:58px;animation:none!important;filter:none}
+.welcome-title{font-size:40px!important;line-height:1.1;margin-bottom:10px!important}
+.welcome-title span{-webkit-text-fill-color:inherit;background:none;color:#FFE08A}
+.welcome-sub{font-size:15px!important;opacity:.82!important;margin-bottom:28px!important}
+.welcome-actions{gap:12px!important;max-width:360px!important;width:100%}
+.welcome-cta{
+  border-radius:18px!important;
+  padding:16px 18px!important;
+  min-height:54px;
+  font-size:15px!important;
+  box-shadow:none!important;
+}
+.welcome-cta-primary{background:#fff!important;color:#0B3D2E!important}
+.welcome-cta-secondary{background:rgba(255,255,255,.13)!important;border-color:rgba(255,255,255,.22)!important;color:#fff!important}
+.welcome-cta-ghost{color:rgba(255,255,255,.78)!important}
+.trust-row{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:22px;
+  padding:14px 10px;
+  gap:18px!important;
+  max-width:360px;
+  margin:28px auto 0!important;
+  backdrop-filter:blur(12px);
+}
+.trust-num{font-size:19px!important}.trust-label{font-size:10px!important}
+
+/* Headers */
+.header,.lux-page-header{
+  background:linear-gradient(145deg,#0B3D2E,#198754)!important;
+  border-radius:0 0 28px 28px!important;
+  box-shadow:0 12px 30px rgba(11,61,46,.18)!important;
+}
+.header{padding:18px 16px 26px!important}
+.lux-page-header.auth{padding:44px 22px 30px!important}
+.lux-page-header.compact{padding:20px 16px!important}
+.lux-page-header.owner{padding:20px 16px 24px!important}
+.search-bar{
+  margin-top:16px!important;
+  border-radius:18px!important;
+  padding:5px!important;
+  border:1px solid rgba(255,255,255,.74)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.13)!important;
+}
+.search-bar input{font-size:14px!important;padding:12px 10px!important}
+.search-btn{border-radius:14px!important;min-height:44px;padding:0 18px!important}
+
+/* Cards & forms */
+.card,.owner-stat-card,.econ-card,.place-card,.modal,.scard,.subfield-card{
+  border:1px solid var(--line)!important;
+  box-shadow:var(--shadow-card)!important;
+}
+.card{border-radius:22px!important;padding:16px!important}
+.finput{
+  min-height:48px;
+  border-radius:16px!important;
+  border:1.5px solid var(--line-2)!important;
+  background:var(--input-bg)!important;
+  color:var(--ink)!important;
+  box-shadow:none!important;
+}
+.finput:focus{transform:none!important;border-color:rgba(25,135,84,.52)!important;box-shadow:0 0 0 4px rgba(25,135,84,.12)!important}
+.form-label{font-size:12px!important;color:var(--ink-2)!important;margin-bottom:7px!important}
+.sbtn,.cbtn{
+  min-height:50px;
+  border-radius:16px!important;
+  font-weight:900!important;
+  letter-spacing:0!important;
+}
+.sbtn{background:var(--g-btn)!important;box-shadow:var(--shadow-green)!important}
+.cbtn{background:var(--surface)!important;color:var(--ink-2)!important;border:1.5px solid var(--line-2)!important}
+.sbtn:hover,.cbtn:hover,.place-book-btn:hover,.place-card:hover,.owner-action:hover,.ftab:hover,.day-btn:hover,.subfield-card:hover{transform:translateY(-1px)!important}
+.sbtn:active,.cbtn:active,.place-book-btn:active,.owner-action:active{transform:scale(.98)!important}
+
+/* Filters */
+#regionTabs{padding:14px 16px 10px!important;gap:9px!important}
+.ftab{
+  min-height:38px;
+  padding:8px 16px!important;
+  border-radius:999px!important;
+  background:var(--surface)!important;
+  color:var(--ink-2)!important;
+  border:1.5px solid var(--line-2)!important;
+  box-shadow:var(--shadow-xs)!important;
+}
+.ftab.active-tab{background:#0F5132!important;color:#fff!important;border-color:#0F5132!important;box-shadow:0 8px 18px rgba(15,81,50,.20)!important}
+.sec-title{font-size:16px!important;padding:2px 16px 12px!important;color:var(--ink)!important}
+.sec-title a{color:#198754!important;font-weight:900!important}
+
+/* Place cards: بطاقة واضحة ومباشرة */
+#placesList{gap:14px!important;padding:0 16px 18px!important}
+.place-card{
+  border-radius:24px!important;
+  overflow:hidden!important;
+  background:var(--surface)!important;
+  animation:simpleCardIn .24s ease both!important;
+}
+@keyframes simpleCardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.place-cover{height:174px!important;background-position:center!important}
+.place-cover::before{display:none!important}
+.place-cover::after{background:linear-gradient(to bottom,rgba(0,0,0,.02),rgba(0,0,0,.12) 38%,rgba(0,0,0,.72))!important}
+.place-top-badges{top:12px!important;right:12px!important;left:12px!important}
+.place-avail-badge,.place-price-badge{
+  padding:6px 11px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
+}
+.place-footer{padding:14px 15px!important}
+.place-name{font-size:19px!important}
+.place-meta-row{gap:10px!important}
+.place-loc,.place-rating{font-size:11px!important}
+.amenities-row{padding:12px 14px 0!important;gap:7px!important}
+.amenity-chip{
+  background:var(--surface-soft)!important;
+  color:#0F5132!important;
+  border:1px solid rgba(25,135,84,.12)!important;
+  box-shadow:none!important;
+  padding:5px 10px!important;
+}
+.place-strip{padding:14px 15px 15px!important;border-top:1px solid var(--line)!important}
+.place-strip-info{gap:8px!important;flex-wrap:wrap}
+.place-strip-type,.place-strip-fields{font-size:12px!important;color:var(--muted)!important;font-weight:800!important}
+.place-book-btn{
+  min-height:42px;
+  border-radius:14px!important;
+  padding:0 18px!important;
+  background:var(--g-btn)!important;
+  box-shadow:var(--shadow-green)!important;
+}
+
+/* Details / booking flow */
+#detailHeader{height:220px!important;border-radius:0 0 28px 28px!important}
+#detailHeader button{width:44px!important;height:44px!important;background:rgba(0,0,0,.42)!important}
+#dName{font-size:22px!important}
+#mapLink,#callPlaceBtn{
+  min-height:52px;
+  border-radius:16px!important;
+  margin-bottom:0!important;
+  box-shadow:var(--shadow-xs)!important;
+}
+#detailDaysGrid,#daysGrid,#manualDaysGrid{gap:9px!important;padding-bottom:4px!important}
+.day-btn{
+  min-width:76px!important;
+  min-height:56px!important;
+  border-radius:16px!important;
+  background:var(--surface)!important;
+  border-color:var(--line-2)!important;
+  box-shadow:var(--shadow-xs)!important;
+}
+.day-btn.active{background:#0F5132!important;color:#fff!important;border-color:#0F5132!important;box-shadow:0 8px 18px rgba(15,81,50,.2)!important;transform:none!important}
+#detailTimeGrid,#timeGrid{gap:10px!important}
+.tbtn{
+  min-height:52px!important;
+  border-radius:16px!important;
+  background:var(--soft-green)!important;
+  color:#0F5132!important;
+  border-color:rgba(25,135,84,.18)!important;
+}
+.tbtn.sel{background:#0F5132!important;color:#fff!important;border-color:#0F5132!important;box-shadow:0 8px 18px rgba(15,81,50,.18)!important;transform:none!important}
+.tbtn.taken{background:var(--surface-muted)!important;color:var(--soft)!important;border-color:var(--line)!important}
+.subfield-card{border-radius:18px!important;background:var(--surface)!important;padding:14px!important}
+.subfield-card.active{background:var(--soft-green)!important;border-color:rgba(25,135,84,.42)!important;box-shadow:0 0 0 4px rgba(25,135,84,.10)!important;transform:none!important}
+#dPrice,#mPrice{border-radius:14px!important;color:#0F5132!important;background:var(--soft-green)!important;border-color:rgba(25,135,84,.16)!important}
+
+/* Stats: أبسط وأقل ازدحام */
+.owner-stat-grid,.econ-grid{gap:10px!important}
+.owner-stat-card,.econ-item{
+  background:var(--surface)!important;
+  border-radius:20px!important;
+  border:1px solid var(--line)!important;
+}
+.owner-stat-value,.econ-value{font-size:21px!important;color:var(--ink)!important}
+.owner-stat-label,.econ-label{color:var(--muted)!important}
+.econ-card{background:var(--surface)!important;border-radius:24px!important}
+.econ-decision{border-radius:16px!important;background:var(--soft-green)!important;color:#0B3D2E!important;border:1px solid rgba(25,135,84,.12)!important}
+.badge-green,.badge-red,.badge-yellow,.badge-blue,.mini-badge{
+  border-radius:999px!important;
+  padding:5px 11px!important;
+  background:var(--surface-soft)!important;
+  border:1px solid var(--line-2)!important;
+  box-shadow:none!important;
+}
+
+/* Bottom navigation */
+.bnav{
+  background:rgba(255,255,255,.92)!important;
+  border-top:1px solid var(--line)!important;
+  box-shadow:0 -8px 28px rgba(16,24,40,.08)!important;
+  padding:7px 10px max(11px,env(safe-area-inset-bottom))!important;
+}
+.nitem{border-radius:18px!important;min-width:66px!important;color:var(--muted)!important}
+.nitem.active{color:#0F5132!important;background:rgba(25,135,84,.09)!important}
+.nitem.active .nicon{background:transparent!important;box-shadow:none!important}
+.nicon{width:34px!important;height:28px!important}
+
+/* Modals / toast */
+.modal-overlay,.success-overlay{backdrop-filter:blur(10px)!important;background:rgba(7,18,13,.56)!important}
+.modal{border-radius:28px 28px 0 0!important;border-top:0!important;padding:18px 16px max(22px,env(safe-area-inset-bottom))!important}
+.modal-handle{background:var(--line-2)!important}
+.toast{border-radius:18px!important;border:1px solid var(--line)!important;box-shadow:var(--shadow-lg)!important}
+
+/* Dark mode final fixes */
+body.dark .bnav{background:rgba(17,26,22,.92)!important}
+body.dark .nitem.active{color:#fff!important;background:rgba(60,203,127,.12)!important}
+body.dark .amenity-chip{color:#D1FAE5!important;background:rgba(60,203,127,.10)!important;border-color:rgba(60,203,127,.14)!important}
+body.dark .econ-decision{color:#D1FAE5!important;background:rgba(60,203,127,.10)!important}
+body.dark .place-cover{filter:saturate(.88) brightness(.88)!important}
+body.dark #dPrice,body.dark #mPrice{color:#D1FAE5!important;background:rgba(60,203,127,.10)!important}
+body.dark .tbtn{background:rgba(60,203,127,.10)!important;color:#D1FAE5!important;border-color:rgba(60,203,127,.16)!important}
+body.dark .tbtn.sel{background:#198754!important;color:#fff!important;border-color:#198754!important}
+body.dark .day-btn.active,body.dark .ftab.active-tab{background:#198754!important;border-color:#198754!important}
+body.dark .welcome-hero{background:linear-gradient(150deg,#07100C 0%,#0B2219 48%,#103A2A 120%)!important}
+
+/* Mobile first comfort */
+@media(max-width:600px){
+  .lux-page-pad{padding:18px 16px!important}
+  #detailPage>div:nth-child(2){padding:16px!important}
+  #detailPage .sbtn[onclick="openBookingFromDetail()"]{
+    position:sticky;
+    bottom:84px;
+    z-index:20;
+    box-shadow:0 14px 34px rgba(25,135,84,.32)!important;
+  }
+  .owner-action{min-height:40px!important;padding:10px 12px!important}
+}
+@media(min-width:1024px){
+  #placesList{grid-template-columns:repeat(3,1fr)!important;gap:18px!important}
+  .place-cover{height:190px!important}
+  .welcome-hero{min-height:620px!important;border-radius:0 0 36px 36px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
 </style>
 </head>
 <body>
@@ -649,11 +984,11 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
         <span class="welcome-ball">⚽</span>
       </div>
       <div class="welcome-title">ال<span>مستديرة</span></div>
-      <div class="welcome-sub">احجز ملعبك في ثوانٍ — بدون تعقيد</div>
+      <div class="welcome-sub">احجز ملعبك بسرعة، بوضوح، وبدون تعقيد</div>
       <div class="welcome-actions">
-        <button class="welcome-cta welcome-cta-primary" onclick="startBrowsing()">🏟️ تصفح الملاعب</button>
-        <button class="welcome-cta welcome-cta-secondary" onclick="showPlayerLogin()">دخول / إنشاء حساب</button>
-        <button class="welcome-cta welcome-cta-ghost" onclick="showOwnerLogin()">دخول كمالك ملعب ←</button>
+        <button class="welcome-cta welcome-cta-primary" onclick="startBrowsing()">تصفح الملاعب الآن</button>
+        <button class="welcome-cta welcome-cta-secondary" onclick="showPlayerLogin()">تسجيل الدخول أو إنشاء حساب</button>
+        <button class="welcome-cta welcome-cta-ghost" onclick="showOwnerLogin()">دخول المالك</button>
       </div>
       <div class="trust-row">
         <div class="trust-item"><div class="trust-num" id="trustPlaces">—</div><div class="trust-label">ملعب متاح</div></div>
@@ -673,7 +1008,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     <div style="position:relative;z-index:1">
       <div class="lux-header-emoji">👤</div>
       <div class="lux-header-title">دخول اللاعب</div>
-      <div class="lux-header-subtitle">ادخل عشان تشوف وتتابع حجوزاتك</div>
+      <div class="lux-header-subtitle">سجّل دخولك لحفظ الحجز ومتابعته لاحقاً</div>
     </div>
   </div>
   <div class="lux-page-pad">
@@ -696,7 +1031,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     <div style="position:relative;z-index:1">
       <div class="lux-header-emoji">📝</div>
       <div class="lux-header-title">إنشاء حساب</div>
-      <div class="lux-header-subtitle">احفظ حجوزاتك وتابعها بأي وقت</div>
+      <div class="lux-header-subtitle">حساب بسيط لحفظ حجوزاتك ومتابعتها</div>
     </div>
   </div>
   <div class="lux-page-pad">
@@ -759,7 +1094,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     </div>
   </div>
   <div id="regionTabs" style="display:flex;gap:8px;padding:16px 16px 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
-  <div class="sec-title"><span>الملاعب المتاحة</span><a onclick="localStorage.removeItem(PLACES_CACHE_KEY);loadDataFromGoogleSheets({force:true}).then(()=>filterPlaces())">تحديث ↺</a></div>
+  <div class="sec-title"><span>اختر ملعبك</span><a onclick="localStorage.removeItem(PLACES_CACHE_KEY);loadDataFromGoogleSheets({force:true}).then(()=>filterPlaces())">تحديث ↺</a></div>
   <div id="placesList" style="padding:0 16px;display:flex;flex-direction:column;gap:14px"></div>
 </div>
 
@@ -794,13 +1129,13 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
       </a>
     </div>
     <div style="margin-bottom:16px">
-      <div class="field-title">اختر الملعب:</div>
+      <div class="field-title">اختر الملعب</div>
       <div id="subFieldsList" style="display:grid;grid-template-columns:1fr;gap:9px"></div>
     </div>
     <div style="margin-bottom:16px">
-      <div class="field-title">اختر اليوم:</div>
+      <div class="field-title">اختر اليوم</div>
       <div id="detailDaysGrid" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:13px;padding-bottom:2px"></div>
-      <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:11px">الأوقات المتاحة:</div>
+      <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:11px">اختر الوقت المناسب</div>
       <div id="detailTimeGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px"></div>
     </div>
     <details style="margin-bottom:16px">
@@ -810,7 +1145,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
       </summary>
       <div id="placeEconomicStats" style="margin-top:12px"></div>
     </details>
-    <button class="sbtn" onclick="openBookingFromDetail()">احجز الآن ←</button>
+    <button class="sbtn" onclick="openBookingFromDetail()">متابعة الحجز</button>
     <button class="cbtn" onclick="openReviewModal()">قيّم هذا المكان ⭐</button>
   </div>
 </div>
@@ -951,7 +1286,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     <div><label class="form-label-sm">اسمك</label><input class="finput" type="text" id="bName" placeholder="محمد أحمد" style="padding:11px 12px"></div>
     <div><label class="form-label-sm">رقم الهاتف</label><input class="finput" type="tel" id="bPhone" placeholder="07XXXXXXXX" style="padding:11px 12px"></div>
   </div>
-  <div class="field-title">اختر اليوم:</div>
+  <div class="field-title">اختر اليوم</div>
   <div id="daysGrid" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:13px;padding-bottom:2px"></div>
   <div class="field-title">اختر وقت البداية (الحجز ساعتان):</div>
   <div id="timeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px"></div>
@@ -1577,6 +1912,67 @@ function applyTheme(theme){
 }
 function toggleTheme(){const isDark=document.body.classList.add&&document.body.classList.contains('dark');const newTheme=isDark?'light':'dark';localStorage.setItem('theme',newTheme);applyTheme(newTheme)}
 applyTheme(localStorage.getItem('theme')||'light');
+
+
+
+/* =========================================================
+   EXTRA UX HELPERS — حفظ الاختيار للضيف + Enter للنماذج
+   ========================================================= */
+(function(){
+  const pendingKey='mustadeera_pending_booking_v1';
+
+  const oldStartBrowsing=window.startBrowsing || startBrowsing;
+  window.startBrowsing=startBrowsing=async function(){
+    await oldStartBrowsing.apply(this,arguments);
+    const w=document.getElementById('playerWelcome');
+    if(w && !playerToken) w.textContent='تتصفح كضيف — سجّل عند الحجز';
+  };
+
+  const oldOpenBookingFromDetail=window.openBookingFromDetail || openBookingFromDetail;
+  window.openBookingFromDetail=openBookingFromDetail=function(){
+    if(selectedHour===null){showToast('اختار وقت متاح أول','warn');return}
+    if(!playerToken){
+      try{sessionStorage.setItem(pendingKey,JSON.stringify({placeId:currentPlace?.place_id,fieldId:currentSubField?.field_id,date:selectedDate,hour:selectedHour}))}catch(e){}
+      showToast('سجّل دخولك، وبنرجّعك لنفس الوقت مباشرة','warn');
+      setTimeout(()=>showPlayerLogin(),850);
+      return;
+    }
+    return oldOpenBookingFromDetail.apply(this,arguments);
+  };
+
+  async function resumePendingBooking(){
+    if(!playerToken) return;
+    let pending=null;
+    try{pending=JSON.parse(sessionStorage.getItem(pendingKey)||'null');sessionStorage.removeItem(pendingKey)}catch(e){}
+    if(!pending || !pending.placeId || !pending.fieldId || !pending.date || pending.hour===null || pending.hour===undefined) return;
+    try{
+      if(!places.length) await loadDataFromGoogleSheets();
+      await openBooking(pending.placeId,pending.fieldId,pending.date,Number(pending.hour));
+      showToast('تمام، رجعناك لنفس الوقت المختار','success');
+    }catch(e){showToast('سجّلنا دخولك، بس أعد اختيار الوقت للتأكد من التوفر','warn')}
+  }
+
+  const oldPlayerLogin=window.playerLogin || playerLogin;
+  window.playerLogin=playerLogin=async function(){
+    await oldPlayerLogin.apply(this,arguments);
+    await resumePendingBooking();
+  };
+
+  const oldPlayerRegister=window.playerRegister || playerRegister;
+  window.playerRegister=playerRegister=async function(){
+    await oldPlayerRegister.apply(this,arguments);
+    await resumePendingBooking();
+  };
+
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return;
+    const active=document.querySelector('.page.active');
+    if(!active || e.target.tagName==='TEXTAREA') return;
+    if(active.id==='playerLoginPage'){e.preventDefault();playerLogin();}
+    else if(active.id==='playerRegisterPage'){e.preventDefault();playerRegister();}
+    else if(active.id==='ownerLoginPage'){e.preventDefault();ownerLogin();}
+  });
+})();
 
 initApp();
 updateAutoRefreshTimer();
