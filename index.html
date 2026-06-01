@@ -3,915 +3,629 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#052e16">
+<meta name="theme-color" content="#091a0f">
 <title>المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   DESIGN TOKENS — Complete backward-compatible variable system
-   ============================================================ */
+/* ============ RESET & BASE ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
 :root{
-  /* Core Greens */
-  --g:#10b981;
-  --g-dk:#059669;
-  --g-dkr:#047857;
-  --forest:#052e16;
-  --forest-2:#083d22;
+  /* Core palette — refined premium turf */
+  --forest:#05160d; --forest-2:#0b2616; --emerald:#168a47; --emerald-2:#1fa856; --sage:#4a8c64;
+  --gold:#cda94e; --gold-2:#f0d275; --gold-glow:rgba(205,169,78,.38);
+  --cream:#eef1ec; --surface:#ffffff; --surface-soft:#f6f8f4; --surface-muted:#e9ede6;
+  --input-bg:#ffffff; --ink:#0c1410; --ink-2:#334036; --muted:#697567; --soft:#9aa69b;
+  --text-muted:#697567; --soft-green:#e6f6ec; --soft-blue:#eef4ff;
+  --soft-yellow:#fef3c7; --soft-red:#fee2e2;
+  --line:rgba(10,61,31,.06); --line-2:rgba(10,61,31,.11);
 
-  /* Backward-compat aliases used in inline styles & JS HTML */
-  --emerald:var(--g);
-  --emerald-2:var(--g-dk);
-  --sage:#4a8c64;
-  --gold:#f59e0b;
-  --gold-2:#fcd34d;
-  --gold-glow:rgba(245,158,11,.25);
-  --g-main:linear-gradient(160deg,var(--forest),var(--forest-2));
-  --g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
-  --g-btn:linear-gradient(145deg,#12c98a,#059669 60%,#047857);
+  /* Shadows — softer & more diffuse */
+  --shadow-xs:0 1px 2px rgba(5,22,13,.05);
+  --shadow-sm:0 2px 8px rgba(5,22,13,.06),0 1px 2px rgba(5,22,13,.04);
+  --shadow-md:0 8px 24px rgba(5,22,13,.09),0 2px 6px rgba(5,22,13,.05);
+  --shadow-lg:0 20px 48px rgba(5,22,13,.15),0 6px 14px rgba(5,22,13,.07);
+  --shadow-card:0 10px 34px rgba(5,22,13,.08),0 2px 6px rgba(5,22,13,.04);
+  --shadow-green:0 10px 30px rgba(22,138,71,.26),0 3px 10px rgba(22,138,71,.16);
+  --shadow-green-lg:0 18px 46px rgba(22,138,71,.32),0 8px 18px rgba(22,138,71,.18);
+  --shadow-gold:0 8px 24px rgba(205,169,78,.32);
 
-  /* Surfaces */
-  --cream:#f2f5f3;
-  --surface:#ffffff;
-  --surface-soft:#f8faf9;
-  --surface-muted:#f1f4f2;
-  --input-bg:#ffffff;
+  /* Radii — softer, more modern */
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-2xl:28px; --r-3xl:34px;
 
-  /* Text */
-  --ink:#0f1f15;
-  --ink-2:#374151;
-  --muted:#6b7280;
-  --soft:#a1a9b0;
-  --text-muted:#6b7280;
-
-  /* Tint surfaces */
-  --soft-green:#ecfdf5;
-  --soft-blue:#eff6ff;
-  --soft-yellow:#fffbeb;
-  --soft-red:#fef2f2;
-
-  /* Borders */
-  --line:rgba(0,0,0,.07);
-  --line-2:rgba(0,0,0,.12);
-
-  /* Shadows — flatter, cleaner */
-  --shadow-xs:0 1px 2px rgba(0,0,0,.05);
-  --shadow-sm:0 1px 4px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
-  --shadow-md:0 4px 14px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);
-  --shadow-lg:0 8px 28px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
-  --shadow-card:0 2px 10px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.04);
-  --shadow-green:0 4px 16px rgba(16,185,129,.3);
-  --shadow-green-lg:0 8px 28px rgba(16,185,129,.34);
-  --shadow-gold:0 4px 14px rgba(245,158,11,.22);
-
-  /* Radius */
-  --r-sm:8px;
-  --r-md:12px;
-  --r-lg:16px;
-  --r-xl:20px;
-  --r-2xl:26px;
-  --r-3xl:32px;
+  /* Spacing */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;
 
   /* Transitions */
-  --ease-out:cubic-bezier(.16,1,.3,1);
-  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --ease-smooth:cubic-bezier(.4,0,.2,1);
-  --t-fast:120ms;
-  --t-base:190ms;
-  --t-slow:270ms;
-  --t-slower:400ms;
-
+  --t-fast:130ms; --t-base:220ms; --t-slow:320ms; --t-slower:480ms;
   --max:480px;
+
+  /* Gradient shorthand */
+  --g-main:linear-gradient(155deg,var(--forest),var(--emerald));
+  --g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
+  --g-btn:linear-gradient(140deg,#1fa856,#0c6a36);
 }
 
 body.dark{
-  --cream:#0a0f0b;
-  --surface:#111916;
-  --surface-soft:#182018;
-  --surface-muted:#1c251c;
-  --input-bg:#182018;
-  --ink:#e8f5ea;
-  --ink-2:#a7c5ab;
-  --muted:#6b9e75;
-  --soft:#3d6645;
-  --text-muted:#6b9e75;
-  --soft-green:rgba(16,185,129,.11);
-  --soft-blue:rgba(59,130,246,.11);
-  --soft-yellow:rgba(245,158,11,.11);
-  --soft-red:rgba(239,68,68,.11);
-  --line:rgba(255,255,255,.06);
-  --line-2:rgba(255,255,255,.10);
-  --shadow-xs:0 1px 3px rgba(0,0,0,.35);
-  --shadow-sm:0 1px 4px rgba(0,0,0,.40),0 1px 2px rgba(0,0,0,.22);
-  --shadow-md:0 4px 14px rgba(0,0,0,.44),0 1px 4px rgba(0,0,0,.22);
-  --shadow-lg:0 8px 28px rgba(0,0,0,.50),0 2px 8px rgba(0,0,0,.28);
-  --shadow-card:0 2px 10px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.22);
-  --forest:#031409;
-  --forest-2:#051e0d;
-  --g:#10b981;
-  --g-dk:#059669;
-  --g-dkr:#047857;
-  --gold:#f59e0b;
-  --gold-2:#fbbf24;
+  --cream:#070d09; --surface:#121912; --surface-soft:#18211a; --surface-muted:#0e150f;
+  --input-bg:#18211a; --ink:#eaf0ea; --ink-2:#c4cdc4; --muted:#8fa890; --soft:#5f715f;
+  --text-muted:#8fa890; --soft-green:#102818; --soft-blue:#101f2e; --soft-yellow:#251c08;
+  --soft-red:#2a0e0e; --line:rgba(255,255,255,.06); --line-2:rgba(255,255,255,.09);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.34); --shadow-sm:0 2px 8px rgba(0,0,0,.36);
+  --shadow-md:0 8px 24px rgba(0,0,0,.42),0 2px 6px rgba(0,0,0,.24);
+  --shadow-lg:0 20px 48px rgba(0,0,0,.52),0 6px 14px rgba(0,0,0,.3);
+  --shadow-card:0 10px 34px rgba(0,0,0,.42),0 2px 6px rgba(0,0,0,.24);
+  --forest:#081710; --forest-2:#0e2418; --emerald:#1f7a48; --emerald-2:#279454; --gold:#d8b85e; --gold-2:#f2d27e;
 }
 
-/* ============================================================
-   RESET & BASE
-   ============================================================ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;direction:rtl;background:var(--cream);color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
+body{display:flex;justify-content:center;background:var(--cream);font-size:14px;line-height:1.6}
+#app{width:100%;max-width:var(--max);min-height:100vh;background:linear-gradient(180deg,var(--cream),var(--surface-soft) 60%,var(--cream));position:relative;overflow-x:hidden}
 
-html,body{
-  height:100%;direction:rtl;background:var(--cream);color:var(--ink);
-  font-family:'Tajawal','Cairo',-apple-system,sans-serif;
-  -webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6
-}
-body{display:flex;justify-content:center;background:var(--cream)}
-#app{width:100%;max-width:var(--max);min-height:100vh;background:var(--cream);position:relative;overflow-x:hidden}
-h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:800;letter-spacing:-.015em}
+.page{display:none;padding-bottom:96px;min-height:100vh}
+.page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
+@keyframes pageIn{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+
+h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:900;letter-spacing:-.015em}
 input,select,button,textarea{font-family:inherit;color:var(--ink);font-size:14px}
 button{cursor:pointer;border:none;background:none}
-a{text-decoration:none;color:inherit}
 
-/* ============================================================
-   PAGE SYSTEM
-   ============================================================ */
-.page{display:none;padding-bottom:90px;min-height:100vh;background:var(--cream)}
-.page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
-@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ============ NOISE TEXTURE ============ */
+.noise-overlay::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;border-radius:inherit;opacity:.5}
 
-/* ============================================================
-   TYPOGRAPHY
-   ============================================================ */
-.form-label{font-size:12px;font-weight:700;color:var(--ink-2);display:block;margin-bottom:6px}
+/* ============ FORMS ============ */
+.form-label{font-size:12px;font-weight:800;color:var(--ink-2);display:block;margin-bottom:6px;letter-spacing:.01em}
 .form-label-sm{font-size:11.5px;font-weight:700;color:var(--ink-2);display:block;margin-bottom:5px}
-.field-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px}
-.sec-title{
-  font-size:15px;font-weight:800;color:var(--ink);padding:0 16px 12px;
-  display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em
-}
-.sec-title a{color:var(--g-dk);cursor:pointer;font-size:12px;font-weight:700}
-
-/* ============================================================
-   FORMS
-   ============================================================ */
+.field-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
 .finput{
-  width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-md);
-  padding:12px 14px;font-size:14px;color:var(--ink);outline:none;
-  background:var(--input-bg);
-  transition:border-color var(--t-base) var(--ease-smooth),
-             box-shadow var(--t-base) var(--ease-smooth),
-             background var(--t-fast)
+  width:100%;border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:13px 15px;
+  font-size:14px;color:var(--ink);outline:none;background:var(--input-bg);
+  transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-fast)
 }
-.finput:focus{
-  border-color:var(--g);
-  box-shadow:0 0 0 3px rgba(16,185,129,.15),0 1px 4px rgba(16,185,129,.08)
-}
+.finput:focus{border-color:var(--emerald-2);box-shadow:0 0 0 4px rgba(31,168,86,.14),0 4px 12px rgba(22,138,71,.1);background:var(--surface)}
 .finput::placeholder{color:var(--soft)}
-.finput:disabled{background:var(--surface-muted);color:var(--muted);cursor:not-allowed}
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
+/* ============ BUTTONS ============ */
 .sbtn{
   width:100%;background:var(--g-btn)!important;color:#fff;border:none;
-  border-radius:var(--r-lg);padding:15px;font-size:15px;font-weight:800;
-  letter-spacing:.01em;cursor:pointer;
-  box-shadow:var(--shadow-green);position:relative;overflow:hidden;
-  transition:transform var(--t-fast) var(--ease-spring),
-             box-shadow var(--t-base),opacity var(--t-fast)
+  border-radius:var(--r-lg);padding:16px;font-size:15px;font-weight:800;
+  box-shadow:var(--shadow-green);letter-spacing:.01em;position:relative;overflow:hidden;
+  transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)
 }
-.sbtn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.14),transparent 55%);
-  pointer-events:none
-}
-.sbtn:hover{transform:translateY(-2px);box-shadow:var(--shadow-green-lg)}
-.sbtn:active{transform:translateY(1px) scale(.99);opacity:.93}
+.sbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 55%);pointer-events:none}
+.sbtn::before{content:'';position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-18deg);transition:left var(--t-slower) var(--ease-out);pointer-events:none}
+.sbtn:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-green-lg)}
+.sbtn:hover::before{left:140%}
+.sbtn:active{transform:translate3d(0,1px,0) scale(.99);opacity:.94;box-shadow:var(--shadow-green)}
 
 .cbtn{
-  width:100%;background:var(--surface);color:var(--ink-2);
-  border:1.5px solid var(--line-2);border-radius:var(--r-lg);
-  padding:13px;font-size:13px;font-weight:700;margin-top:10px;cursor:pointer;
-  transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast)
+  width:100%;background:var(--surface);color:var(--ink-2);border:1.5px solid var(--line-2);
+  border-radius:var(--r-lg);padding:14px;font-size:13px;font-weight:800;margin-top:10px;
+  transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast)
 }
-.cbtn:hover{background:var(--surface-soft);border-color:rgba(16,185,129,.3);transform:translateY(-1px)}
-.cbtn:active{transform:scale(.99)}
+.cbtn:hover{background:var(--surface-soft);border-color:rgba(31,168,86,.3);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
+.cbtn:active{transform:scale(.99);opacity:.9}
 
-/* ============================================================
-   CARD
-   ============================================================ */
-.card{
-  background:var(--surface);border-radius:var(--r-xl);padding:16px;
-  box-shadow:var(--shadow-card);border:1px solid var(--line);color:var(--ink)
-}
+/* ============ CARD ============ */
+.card{background:var(--surface);border-radius:var(--r-xl);padding:17px;box-shadow:var(--shadow-card);color:var(--ink);border:1px solid var(--line)}
 
-/* ============================================================
-   BADGES
-   ============================================================ */
+/* ============ BADGES ============ */
 .badge-green,.badge-red,.badge-yellow,.badge-blue{
-  border-radius:999px;padding:4px 11px;font-size:11px;font-weight:700;
-  display:inline-flex;align-items:center;gap:5px;white-space:nowrap
+  border-radius:999px;padding:5px 12px;font-size:11px;font-weight:800;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;letter-spacing:.01em
 }
-.badge-green{background:var(--soft-green);color:#065f46;border:1px solid rgba(16,185,129,.2)}
-.badge-red{background:var(--soft-red);color:#991b1b;border:1px solid rgba(239,68,68,.2)}
-.badge-yellow{background:var(--soft-yellow);color:#78350f;border:1px solid rgba(245,158,11,.2)}
-.badge-blue{background:var(--soft-blue);color:#1e3a8a;border:1px solid rgba(59,130,246,.18)}
-
-.badge-green::before,.badge-red::before,.badge-yellow::before{
-  content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0
-}
-.badge-green::before{background:#10b981}
-.badge-red::before{background:#ef4444}
+.badge-green{background:var(--surface);color:#15803d;border:1.5px solid rgba(21,128,61,.22)}
+.badge-red{background:var(--surface);color:#dc2626;border:1.5px solid rgba(220,38,38,.20)}
+.badge-yellow{background:var(--surface);color:#92400e;border:1.5px solid rgba(245,158,11,.25)}
+.badge-blue{background:var(--soft-blue);color:#1d4ed8;border:1.5px solid rgba(29,78,216,.14)}
+.badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;display:inline-block;flex-shrink:0}
+.badge-green::before{background:#16a34a;box-shadow:0 0 0 2px rgba(22,163,74,.2)}
+.badge-red::before{background:#dc2626}
 .badge-yellow::before{background:#f59e0b}
 
-.mini-badge{
-  background:var(--soft-blue);color:#1e40af;border-radius:999px;
-  padding:3px 10px;font-size:10px;font-weight:700
-}
-
-/* ============================================================
-   FILTER TABS
-   ============================================================ */
+/* ============ FILTER TABS ============ */
 .ftab{
-  background:var(--surface);border:1.5px solid var(--line-2);
-  border-radius:999px;padding:8px 16px;font-size:12px;font-weight:700;
-  color:var(--muted);white-space:nowrap;flex-shrink:0;cursor:pointer;
-  box-shadow:var(--shadow-xs);
-  transition:all var(--t-base) var(--ease-smooth)
+  background:var(--surface);border:1.5px solid var(--line-2);border-radius:999px;
+  padding:10px 18px;font-size:12px;font-weight:800;color:var(--ink-2);white-space:nowrap;
+  flex-shrink:0;transition:all var(--t-base) var(--ease-out);
+  box-shadow:var(--shadow-xs);letter-spacing:.01em
 }
 .ftab.active-tab{
   background:var(--g-btn);border-color:transparent;color:#fff;
-  box-shadow:var(--shadow-green)
+  box-shadow:var(--shadow-green);transform:translate3d(0,-2px,0)
 }
-.ftab:not(.active-tab):hover{
-  border-color:rgba(16,185,129,.4);color:var(--g-dkr);transform:translateY(-1px)
-}
+.ftab:not(.active-tab):hover{border-color:rgba(31,168,86,.4);color:var(--emerald-2);transform:translate3d(0,-2px,0);box-shadow:var(--shadow-sm)}
 
-/* ============================================================
-   HEADER (HOME PAGE)
-   ============================================================ */
+/* ============ HEADER — REVAMPED ============ */
 .header{
-  background:linear-gradient(160deg,var(--forest) 0%,var(--forest-2) 100%);
-  color:#fff;position:relative;overflow:hidden;
-  padding:20px 18px 66px;border-radius:0 0 32px 32px;
-  box-shadow:0 6px 24px rgba(0,0,0,.22)
+  background:linear-gradient(160deg,var(--forest) 0%,var(--forest-2) 40%,#0d3b20 100%);
+  color:#fff;position:relative;overflow:hidden;padding:20px 18px 68px;border-radius:0 0 36px 36px;
+  box-shadow:0 8px 32px rgba(7,25,16,.28)
 }
-.header-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:28px 28px;pointer-events:none
+/* Animated radial glow */
+.header::before{
+  content:'';position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 65%);
+  animation:pulseGlow 4s ease-in-out infinite;pointer-events:none
 }
+@keyframes pulseGlow{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.15);opacity:1}}
+.header::after{content:'';position:absolute;bottom:-80px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(34,136,62,.18) 0%,transparent 65%);pointer-events:none}
+/* Grid lines decoration */
+.header-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
 .header>*{position:relative;z-index:1}
 
-/* Search Bar */
-.search-bar{
-  margin-top:16px;background:rgba(255,255,255,.98);border-radius:var(--r-lg);
-  display:flex;align-items:center;padding:4px 4px 4px 14px;gap:8px;
-  box-shadow:0 6px 24px rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.9)
-}
-.search-bar input{
-  flex:1;border:none;outline:none;font-size:13px;
-  color:var(--ink);background:transparent;padding:10px 0;font-weight:500
-}
-.search-bar input::placeholder{color:var(--soft)}
-.search-btn{
-  background:var(--g-btn);color:#fff;border:none;border-radius:var(--r-md);
-  padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;
-  box-shadow:var(--shadow-green);
-  transition:all var(--t-fast) var(--ease-spring)
-}
-.search-btn:hover{transform:scale(1.05);box-shadow:var(--shadow-green-lg)}
-.search-btn:active{transform:scale(.97)}
-
-/* ============================================================
-   LUX PAGE HEADERS (sub-pages)
-   ============================================================ */
 .lux-page-header{
-  background:linear-gradient(160deg,var(--forest),var(--forest-2));
-  color:#fff;position:relative;overflow:hidden
+  background:linear-gradient(160deg,var(--forest),var(--forest-2) 50%,#0d3b20);
+  color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(7,25,16,.25)
 }
-.lux-page-header::before{
-  content:'';position:absolute;top:-60px;left:-40px;width:200px;height:200px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(16,185,129,.14) 0%,transparent 65%);
-  pointer-events:none
-}
+.lux-page-header::before{content:'';position:absolute;top:-60px;left:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 65%);pointer-events:none;animation:pulseGlow 5s ease-in-out infinite}
+.lux-page-header::after{content:'';position:absolute;bottom:-60px;right:-35px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(34,136,62,.12) 0%,transparent 65%);pointer-events:none}
 .lux-page-header>*{position:relative;z-index:1}
-.lux-page-header.auth{padding:50px 24px 34px;text-align:center;border-radius:0 0 30px 30px}
-.lux-page-header.compact{padding:22px 18px;border-radius:0 0 24px 24px}
-.lux-page-header.owner{padding:22px 18px 26px;border-radius:0 0 30px 30px}
+.lux-page-header.auth{padding:54px 24px 36px;text-align:center;border-radius:0 0 32px 32px}
+.lux-page-header.compact{padding:22px 18px;text-align:right;border-radius:0 0 24px 24px}
+.lux-page-header.owner{padding:22px 18px 26px;text-align:right;border-radius:0 0 32px 32px}
 
 .lux-logo-box{
-  width:68px;height:68px;border-radius:20px;display:flex;align-items:center;
-  justify-content:center;font-size:32px;margin:0 auto 16px;
-  background:rgba(16,185,129,.18);
-  border:1.5px solid rgba(16,185,129,.3)
+  width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 16px;
+  background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(255,255,255,.12));
+  border:1.5px solid rgba(201,168,76,.3);box-shadow:0 4px 16px rgba(201,168,76,.2),inset 0 1px 0 rgba(255,255,255,.2)
 }
-.lux-header-emoji{font-size:40px;margin-bottom:12px;display:block}
-.lux-header-title{font-size:22px;font-weight:900;letter-spacing:-.02em}
-.lux-header-subtitle{font-size:12px;opacity:.65;margin-top:5px;font-weight:500}
-.lux-title-row{
-  display:flex;align-items:center;gap:9px;
-  font-size:19px;font-weight:900;letter-spacing:-.02em
-}
+.lux-header-emoji{font-size:44px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))}
+.lux-header-title{font-size:23px;font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.lux-header-subtitle{font-size:12px;opacity:.7;margin-top:5px;font-weight:500}
+.lux-title-row{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.15)}
 .lux-owner-head{display:flex;justify-content:space-between;align-items:center}
 .lux-exit-btn{
-  background:rgba(255,255,255,.12);color:#fff;
-  border:1.5px solid rgba(255,255,255,.2);border-radius:10px;
-  padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;
-  transition:background var(--t-fast),transform var(--t-fast)
+  background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.20);
+  border-radius:12px;padding:8px 12px;font-size:12px;font-weight:800;
+  transition:background var(--t-fast),transform var(--t-fast);
+  box-shadow:0 2px 8px rgba(0,0,0,.15)
 }
-.lux-exit-btn:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
+.lux-exit-btn:hover{background:rgba(255,255,255,.20);transform:translate3d(0,-1px,0)}
 .lux-exit-btn:active{transform:scale(.96)}
-.lux-muted-white{font-size:12px;opacity:.65;margin-top:3px;font-weight:500}
-.lux-page-pad{padding:22px 18px}
-.lux-home-pad{padding:24px 20px}
-.lux-header-svg{
-  width:20px;height:20px;stroke:#fff;fill:none;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round
-}
+.lux-muted-white{font-size:12px;opacity:.68;margin-top:3px;font-weight:500}
+.lux-page-pad{padding:24px 18px}
+.lux-home-pad{padding:26px 20px}
+.lux-header-svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
 
-/* ============================================================
-   WELCOME PAGE
-   ============================================================ */
+/* ============ WELCOME / LANDING — REVAMPED ============ */
 .welcome-hero{
-  background:linear-gradient(160deg,var(--forest) 0%,#093d1f 55%,#0d5228 100%);
-  padding:60px 24px 44px;text-align:center;color:#fff;
-  border-radius:0 0 40px 40px;position:relative;overflow:hidden;
-  box-shadow:0 10px 36px rgba(0,0,0,.3)
+  background:linear-gradient(155deg,#04130b 0%,#0c2916 35%,#114328 70%,#1a6336 100%);
+  padding:64px 24px 46px;text-align:center;color:#fff;
+  border-radius:0 0 44px 44px;position:relative;overflow:hidden;
+  box-shadow:0 16px 48px rgba(5,22,13,.4)
 }
+/* Decorative rings */
 .welcome-hero::before{
-  content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 65%);
+  content:'';position:absolute;top:-110px;left:50%;transform:translateX(-50%);
+  width:340px;height:340px;border-radius:50%;
+  border:1px solid rgba(205,169,78,.14);
+  box-shadow:0 0 0 44px rgba(205,169,78,.06),0 0 0 88px rgba(205,169,78,.03);
   pointer-events:none
 }
 .welcome-hero::after{
   content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(
-    45deg,transparent,transparent 32px,
-    rgba(255,255,255,.006) 32px,rgba(255,255,255,.006) 33px
-  );pointer-events:none
+  background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,255,255,.008) 30px,rgba(255,255,255,.008) 31px);
+  pointer-events:none
 }
-.welcome-hero>*{position:relative;z-index:1}
-
-.welcome-ball-wrap{margin-bottom:20px}
+.welcome-ball-wrap{position:relative;z-index:1;margin-bottom:18px}
 .welcome-ball{
-  font-size:66px;display:inline-block;
+  font-size:62px;display:inline-block;
   animation:ballFloat 3s ease-in-out infinite;
-  filter:drop-shadow(0 6px 18px rgba(0,0,0,.3))
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.35));
 }
-@keyframes ballFloat{
-  0%,100%{transform:translateY(0) rotate(-3deg)}
-  50%{transform:translateY(-10px) rotate(3deg)}
-}
-
+@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(-3deg)}33%{transform:translateY(-10px) rotate(3deg)}66%{transform:translateY(-5px) rotate(-1deg)}}
 .welcome-title{
-  font-size:36px;font-weight:900;font-family:'Cairo',sans-serif;
-  margin-bottom:8px;letter-spacing:-.03em
+  font-size:38px;font-weight:900;font-family:'Cairo',sans-serif;
+  margin-bottom:8px;letter-spacing:-.035em;position:relative;z-index:1;
+  text-shadow:0 3px 14px rgba(0,0,0,.28)
 }
-.welcome-title span{color:var(--g)}
-.welcome-sub{font-size:14px;opacity:.68;margin-bottom:36px;font-weight:500}
-
-.welcome-actions{
-  display:flex;flex-direction:column;gap:10px;max-width:316px;margin:0 auto
+.welcome-title span{
+  background:var(--g-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;filter:drop-shadow(0 2px 6px rgba(205,169,78,.35))
 }
+.welcome-sub{font-size:14.5px;opacity:.76;margin-bottom:36px;position:relative;z-index:1;font-weight:500}
+.welcome-actions{display:flex;flex-direction:column;gap:12px;max-width:320px;margin:0 auto;position:relative;z-index:1}
 .welcome-cta{
-  padding:15px;border-radius:var(--r-lg);font-size:15px;font-weight:800;
-  cursor:pointer;border:none;letter-spacing:.01em;
-  transition:transform var(--t-fast) var(--ease-spring),
-             box-shadow var(--t-base),
-             background var(--t-fast)
+  padding:17px;border-radius:18px;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base);border:none;
+  letter-spacing:.01em;position:relative;overflow:hidden
 }
-.welcome-cta:active{transform:scale(.97)!important}
-
+.welcome-cta:active{transform:scale(.96)!important}
 .welcome-cta-primary{
   background:#fff;color:var(--forest);
-  box-shadow:0 4px 20px rgba(0,0,0,.2)
+  box-shadow:0 4px 20px rgba(0,0,0,.2),0 1px 4px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8)
 }
-.welcome-cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.26)}
-
+.welcome-cta-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.4),transparent 60%);pointer-events:none}
+.welcome-cta-primary:hover{transform:translate3d(0,-2px,0);box-shadow:0 8px 28px rgba(0,0,0,.28)}
 .welcome-cta-secondary{
   background:rgba(255,255,255,.1);color:#fff;
-  border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)
+  border:1.5px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);
+  box-shadow:0 2px 12px rgba(0,0,0,.15)
 }
-.welcome-cta-secondary:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
-
-.welcome-cta-ghost{
-  background:transparent;color:rgba(255,255,255,.6);font-size:13px;padding:10px
-}
+.welcome-cta-secondary:hover{background:rgba(255,255,255,.18);transform:translate3d(0,-2px,0)}
+.welcome-cta-ghost{background:transparent;color:rgba(255,255,255,.6);font-size:13px;padding:10px}
 .welcome-cta-ghost:hover{color:rgba(255,255,255,.85)}
 
-.trust-row{
-  display:flex;justify-content:center;gap:28px;margin-top:38px;
-  flex-wrap:wrap;position:relative;z-index:1
-}
+.trust-row{display:flex;justify-content:center;gap:24px;margin-top:32px;flex-wrap:wrap;position:relative;z-index:1}
 .trust-item{display:flex;flex-direction:column;align-items:center;gap:4px}
-.trust-num{font-size:22px;font-weight:900;font-family:'Cairo',sans-serif}
-.trust-label{font-size:10px;opacity:.65;font-weight:600;letter-spacing:.03em}
-.trust-divider{width:1px;height:34px;background:rgba(255,255,255,.15);align-self:center}
+.trust-num{font-size:22px;font-weight:900;font-family:'Cairo',sans-serif;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.trust-label{font-size:10px;opacity:.7;font-weight:600;letter-spacing:.02em}
+.trust-divider{width:1px;height:36px;background:rgba(255,255,255,.15);align-self:center}
 
-/* ============================================================
-   PLACE CARDS
-   ============================================================ */
-.place-card{
-  background:var(--surface);border-radius:var(--r-2xl);overflow:hidden;cursor:pointer;
-  box-shadow:var(--shadow-card);border:1px solid var(--line);
-  transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow);
-  opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.place-card:nth-child(1){animation-delay:0s}
-.place-card:nth-child(2){animation-delay:.07s}
-.place-card:nth-child(3){animation-delay:.14s}
-.place-card:nth-child(4){animation-delay:.21s}
-.place-card:nth-child(5){animation-delay:.28s}
-.place-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
-.place-card:active{transform:translateY(-1px);box-shadow:var(--shadow-card)}
-
-.place-cover{
-  height:182px;background-size:cover!important;background-position:center!important;
-  position:relative;display:flex;align-items:flex-end;overflow:hidden
-}
-.place-cover::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom,transparent 20%,rgba(0,0,0,.08) 45%,rgba(2,12,5,.82) 100%);
-  z-index:1
-}
-.place-cover-emoji{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:54px;z-index:0;filter:blur(2px) opacity(.55)
-}
-
-.place-top-badges{
-  position:absolute;top:11px;right:11px;left:11px;z-index:3;
-  display:flex;justify-content:space-between;align-items:flex-start
-}
-.place-avail-badge{
-  border-radius:999px;padding:5px 12px;font-size:10px;font-weight:800;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);letter-spacing:.01em
-}
-.avail-yes{background:rgba(220,252,231,.92);color:#065f46}
-.avail-no{background:rgba(254,226,226,.92);color:#991b1b}
-.place-price-badge{
-  background:rgba(255,255,255,.94);border-radius:999px;padding:5px 12px;
-  font-size:11px;font-weight:900;color:var(--forest)
-}
-
-.place-footer{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:13px 15px 15px}
-.place-name{
-  font-size:18px;font-weight:900;color:#fff;letter-spacing:-.02em;
-  text-shadow:0 2px 6px rgba(0,0,0,.2);line-height:1.2
-}
-.place-meta-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
-.place-loc{font-size:11px;color:rgba(255,255,255,.78);display:flex;align-items:center;gap:3px;font-weight:600}
-.place-rating{
-  font-size:11px;color:rgba(255,255,255,.92);font-weight:800;
-  background:rgba(0,0,0,.26);border-radius:999px;padding:3px 8px;
-  backdrop-filter:blur(6px)
-}
-
-.amenities-row{display:flex;gap:6px;flex-wrap:wrap;padding:11px 14px 4px}
-.amenity-chip{
-  background:var(--soft-green);border:1px solid rgba(16,185,129,.18);
-  border-radius:999px;padding:4px 10px;font-size:10px;font-weight:700;
-  color:#065f46;display:inline-flex;align-items:center;gap:4px
-}
-
-.place-strip{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:11px 14px 14px;gap:12px;background:var(--surface)
-}
-.place-strip-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.place-strip-type{font-size:11px;color:var(--muted);font-weight:700}
-.place-strip-fields{font-size:11px;color:var(--muted)}
-.place-book-btn{
-  background:var(--g-btn)!important;color:#fff!important;border:none;
-  border-radius:var(--r-md);padding:10px 18px;font-size:12px;font-weight:800;
-  white-space:nowrap;flex-shrink:0;box-shadow:var(--shadow-green);cursor:pointer;
-  transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)
-}
-.place-book-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:var(--shadow-green-lg)}
-.place-book-btn:active{transform:scale(.96)}
-
-/* ============================================================
-   DAY & TIME BUTTONS
-   ============================================================ */
-.day-btn{
-  border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);
-  border-radius:var(--r-md);padding:9px 8px;font-size:11px;font-weight:700;
-  min-width:66px;flex-shrink:0;cursor:pointer;
-  transition:all var(--t-base) var(--ease-smooth);box-shadow:var(--shadow-xs)
-}
-.day-btn.active{
-  background:var(--g-btn);border-color:transparent;color:#fff;
-  box-shadow:var(--shadow-green);transform:translateY(-1px)
-}
-.day-btn:hover:not(.active){
-  border-color:rgba(16,185,129,.4);transform:translateY(-1px);box-shadow:var(--shadow-sm)
-}
-.day-btn.is-loading{opacity:.65;pointer-events:none}
-
-.tbtn{
-  border:1.5px solid rgba(16,185,129,.2);border-radius:var(--r-md);
-  padding:11px 5px;text-align:center;font-size:11px;font-weight:800;
-  color:#065f46;background:var(--soft-green);cursor:pointer;
-  transition:all var(--t-base) var(--ease-smooth);line-height:1.4;
-  position:relative;overflow:hidden
-}
-.tbtn:not(.taken):hover{
-  border-color:var(--g);transform:translateY(-1px);
-  box-shadow:0 4px 12px rgba(16,185,129,.18)
-}
-.tbtn.sel{
-  background:var(--g-btn);border-color:transparent;color:#fff;
-  box-shadow:var(--shadow-green);transform:translateY(-1px)
-}
-.tbtn.taken{
-  background:var(--surface-muted);color:var(--soft);
-  cursor:not-allowed;border-color:var(--line);opacity:.7
-}
-
-/* ============================================================
-   MODAL
-   ============================================================ */
+/* ============ MODAL ============ */
 .modal-overlay{
-  display:none;position:fixed;inset:0;background:rgba(5,20,10,.52);z-index:200;
-  align-items:flex-end;justify-content:center;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  opacity:0;transition:opacity var(--t-base)
+  display:none;position:fixed;inset:0;background:rgba(4,17,9,.58);z-index:200;
+  align-items:flex-end;justify-content:center;backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity var(--t-base)
 }
 .modal-overlay.show{display:flex;opacity:1}
 .modal{
-  background:var(--surface);border-radius:28px 28px 0 0;width:100%;
-  max-width:var(--max);max-height:92vh;overflow-y:auto;
-  padding:20px 18px max(22px,env(safe-area-inset-bottom));
-  border-top:2px solid var(--g);
-  box-shadow:0 -8px 36px rgba(0,0,0,.18);
-  animation:slideUp var(--t-slow) var(--ease-out) both;
-  -webkit-overflow-scrolling:touch
+  background:var(--surface);border-radius:30px 30px 0 0;width:100%;max-width:var(--max);
+  max-height:92vh;overflow-y:auto;padding:22px 18px max(24px,env(safe-area-inset-bottom));
+  border-top:3px solid var(--gold);
+  box-shadow:0 -16px 56px rgba(4,17,9,.26),0 -2px 8px rgba(4,17,9,.1);
+  animation:slideUp var(--t-slow) var(--ease-out) both;-webkit-overflow-scrolling:touch
 }
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{
-  width:44px;height:4px;background:var(--line-2);
-  border-radius:999px;margin:0 auto 16px
-}
+@keyframes slideUp{from{transform:translate3d(0,100%,0)}to{transform:translate3d(0,0,0)}}
+.modal-handle{width:48px;height:5px;background:var(--line-2);border-radius:999px;margin:0 auto 18px}
 
-/* ============================================================
-   SUCCESS
-   ============================================================ */
+/* ============ SUCCESS ============ */
 .success-overlay{
-  display:none;position:fixed;inset:0;background:rgba(5,20,10,.55);z-index:300;
-  align-items:center;justify-content:center;padding:20px;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  opacity:0;transition:opacity var(--t-base)
+  display:none;position:fixed;inset:0;background:rgba(7,25,16,.6);z-index:300;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity var(--t-base)
 }
 .success-overlay.show{display:flex;opacity:1}
 .scard{
-  background:var(--surface);border-radius:var(--r-2xl);padding:34px 24px;
-  text-align:center;width:100%;max-width:310px;
-  box-shadow:var(--shadow-lg);border:1px solid var(--line);
-  animation:popIn var(--t-slow) var(--ease-spring) both
+  background:var(--surface);border-radius:var(--r-2xl);padding:34px 24px;text-align:center;
+  width:100%;max-width:320px;box-shadow:var(--shadow-lg);
+  animation:popIn var(--t-slow) var(--ease-spring) both;border:1px solid rgba(0,0,0,.04)
 }
-@keyframes popIn{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
 
-/* ============================================================
-   TOAST
-   ============================================================ */
+/* ============ TOAST ============ */
 .toast{
-  position:fixed;left:50%;bottom:100px;transform:translate(-50%,14px);
-  background:var(--surface);border:1px solid var(--line-2);
-  border-radius:var(--r-lg);padding:12px 16px;font-size:13px;font-weight:700;
-  z-index:500;max-width:min(92%,400px);box-shadow:var(--shadow-lg);
-  opacity:0;pointer-events:none;
+  position:fixed;left:50%;bottom:100px;transform:translate3d(-50%,14px,0);
+  background:var(--surface);border:1px solid var(--line-2);border-radius:16px;
+  padding:13px 16px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);
+  box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;
   transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);
-  text-align:right;line-height:1.5;display:flex;align-items:center;gap:10px;
-  color:var(--ink)
+  text-align:right;line-height:1.5;display:flex;align-items:center;gap:10px;color:var(--ink)
 }
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.toast-icon{
-  width:22px;height:22px;border-radius:50%;display:inline-flex;
-  align-items:center;justify-content:center;flex:0 0 22px;
-  font-size:12px;font-weight:900
-}
-.toast.error .toast-icon{background:var(--soft-red);color:#991b1b}
-.toast.success .toast-icon{background:var(--soft-green);color:#065f46}
-.toast.warn .toast-icon{background:var(--soft-yellow);color:#78350f}
-.toast.error{color:#991b1b}
-.toast.success{color:#065f46}
-.toast.warn{color:#78350f}
+.toast.show{opacity:1;transform:translate3d(-50%,0,0)}
+.toast-icon{width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;font-weight:900;font-size:13px}
+.toast.error .toast-icon{background:#fee2e2;color:#dc2626}
+.toast.success .toast-icon{background:#dcfce7;color:#15803d}
+.toast.warn .toast-icon{background:#fef3c7;color:#92400e}
+.toast.error{color:#7a1f1f}
+.toast.success{color:#0c5641}
+.toast.warn{color:#633806}
 
-/* ============================================================
-   SKELETON / LOADING
-   ============================================================ */
-@keyframes shimmer{
-  0%{background-position:-480px 0}100%{background-position:480px 0}
-}
-.skeleton-card{
-  background:var(--surface);border-radius:var(--r-xl);
-  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px
-}
+/* ============ SKELETON ============ */
+@keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
+.skeleton-card{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px}
 .skeleton-img,.skeleton-line{
   background:linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.08) 50%,rgba(0,0,0,.04) 100%);
-  background-size:600px 100%;animation:shimmer 1.5s linear infinite
+  background-size:700px 100%;animation:shimmer 1.5s linear infinite
 }
 .skeleton-img{height:160px}
 .skeleton-body{padding:16px}
-.skeleton-line{height:11px;border-radius:999px;margin-bottom:10px}
+.skeleton-line{height:12px;border-radius:999px;margin-bottom:10px}
 .skeleton-line.w70{width:70%}
 .skeleton-line.w45{width:45%}
 .skeleton-line.w88{width:88%}
 .loading-box{background:transparent;border:none;padding:0}
 .time-skeleton{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.time-skeleton>span{
-  height:44px;border-radius:var(--r-md);
-  background:linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.08) 50%,rgba(0,0,0,.04) 100%);
-  background-size:500px 100%;animation:shimmer 1.5s linear infinite
-}
+.time-skeleton>span{height:44px;border-radius:12px;background:linear-gradient(90deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.08) 50%,rgba(0,0,0,.04) 100%);background-size:500px 100%;animation:shimmer 1.5s linear infinite}
+.day-btn.is-loading{opacity:.7;pointer-events:none}
+body.dark .skeleton-img,body.dark .skeleton-line,body.dark .time-skeleton>span{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%)!important;background-size:500px 100%!important}
 
-/* ============================================================
-   BOTTOM NAV
-   ============================================================ */
+/* ============ BOTTOM NAV — REVAMPED ============ */
 .bnav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:var(--max);
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border-top:1px solid var(--line);
+  position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);
+  background:rgba(255,255,255,.82);backdrop-filter:blur(28px) saturate(200%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+  border-top:1px solid rgba(10,61,31,.06);
   display:none;justify-content:space-around;
-  padding:6px 8px max(12px,env(safe-area-inset-bottom));
-  z-index:100;box-shadow:0 -3px 20px rgba(0,0,0,.07)
+  padding:8px 12px max(12px,env(safe-area-inset-bottom));
+  z-index:100;box-shadow:0 -6px 30px rgba(5,22,13,.1)
 }
 .bnav.show{display:flex}
 .nitem{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  font-size:10px;color:var(--soft);padding:4px 16px;
-  transition:color var(--t-base);font-weight:700;cursor:pointer;
-  border-radius:14px;
-  transition:all var(--t-base) var(--ease-smooth)
+  display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;
+  color:var(--soft);min-width:62px;font-weight:800;cursor:pointer;
+  border-radius:16px;padding:6px 14px;position:relative;
+  transition:all var(--t-base) var(--ease-out)
 }
-.nitem.active{color:var(--forest)}
+.nitem.active{color:var(--emerald-2)}
+.nitem.active::before{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:26px;height:3px;border-radius:999px;background:var(--g-btn);box-shadow:0 1px 6px rgba(31,168,86,.5)}
 .nitem.active .nicon{
-  background:var(--soft-green);border-radius:12px
+  background:linear-gradient(140deg,rgba(31,168,86,.18),rgba(22,138,71,.1));
+  border-radius:14px;box-shadow:0 3px 10px rgba(22,138,71,.16)
 }
-.nicon{
-  width:38px;height:30px;margin-bottom:2px;display:flex;align-items:center;
-  justify-content:center;transition:all var(--t-base) var(--ease-spring)
-}
-.nicon svg{
-  width:21px;height:21px;stroke:currentColor;fill:none;
-  stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round
-}
-.nitem:active .nicon{transform:scale(.88)}
+.nicon{width:40px;height:34px;margin-bottom:1px;display:flex;align-items:center;justify-content:center;transition:all var(--t-base) var(--ease-spring)}
+.nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nitem:active .nicon{transform:scale(.86)}
+.nitem.active:active .nicon{transform:scale(.92)}
+.nitem.active .nicon svg{stroke-width:2.1}
 
-/* ============================================================
-   SUBFIELD CARDS
-   ============================================================ */
-.subfield-card{
-  border:1.5px solid var(--line-2);border-radius:var(--r-lg);padding:12px 14px;
-  background:var(--surface);box-shadow:var(--shadow-xs);cursor:pointer;
-  transition:all var(--t-base) var(--ease-smooth)
+/* ============ DAY & TIME BUTTONS — REVAMPED ============ */
+.day-btn{
+  border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+  border-radius:16px;padding:10px 9px;font-size:11px;font-weight:800;min-width:70px;
+  flex-shrink:0;transition:all var(--t-base) var(--ease-out);
+  box-shadow:var(--shadow-xs)
 }
-.subfield-card:hover:not(.active){
-  border-color:rgba(16,185,129,.35);transform:translateY(-1px)
+.day-btn.active{
+  background:var(--g-btn);border-color:transparent;color:#fff;
+  box-shadow:var(--shadow-green);transform:translate3d(0,-2px,0)
 }
-.subfield-card.active{
-  border-color:var(--g);background:var(--soft-green);
-  box-shadow:0 0 0 3px rgba(16,185,129,.1),var(--shadow-sm);
-  transform:translateY(-1px)
+.day-btn:hover:not(.active){border-color:rgba(31,168,86,.38);transform:translate3d(0,-2px,0);box-shadow:var(--shadow-sm)}
+
+.tbtn{
+  border:1.5px solid rgba(31,168,86,.2);border-radius:14px;padding:12px 5px;
+  text-align:center;font-size:11px;font-weight:800;color:#15924c;background:var(--soft-green);
+  transition:all var(--t-base) var(--ease-out);line-height:1.4;position:relative;overflow:hidden
+}
+.tbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 70%);pointer-events:none}
+.tbtn:not(.taken):hover{border-color:var(--emerald-2);transform:translate3d(0,-2px,0);box-shadow:0 6px 16px rgba(22,138,71,.2)}
+.tbtn.sel{
+  background:var(--g-btn);border-color:transparent;color:#fff;
+  box-shadow:var(--shadow-green);transform:translate3d(0,-2px,0)
+}
+.tbtn.taken{background:var(--surface-muted);color:var(--soft);cursor:not-allowed;border-color:var(--line);opacity:.65}
+
+/* ============ PLACE CARDS — FULLY REVAMPED ============ */
+.place-card{
+  background:var(--surface);border-radius:24px;overflow:hidden;cursor:pointer;
+  box-shadow:var(--shadow-card);
+  transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow);
+  position:relative;opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards;will-change:transform;
+  border:1px solid var(--line)
+}
+@keyframes fadeUp{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.place-card:nth-child(1){animation-delay:.00s}
+.place-card:nth-child(2){animation-delay:.07s}
+.place-card:nth-child(3){animation-delay:.14s}
+.place-card:nth-child(4){animation-delay:.21s}
+.place-card:nth-child(5){animation-delay:.28s}
+.place-card:hover{transform:translate3d(0,-6px,0);box-shadow:0 26px 56px rgba(5,22,13,.18),0 8px 20px rgba(5,22,13,.1)}
+.place-card:active{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-card)}
+
+.place-cover{
+  height:184px;background-size:cover!important;background-position:center!important;
+  position:relative;display:flex;align-items:flex-end;overflow:hidden
+}
+/* Shine effect on hover */
+.place-cover::before{
+  content:'';position:absolute;top:0;left:-120%;width:80%;height:100%;
+  background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.12) 50%,transparent 80%);
+  pointer-events:none;z-index:4;transition:left var(--t-slow) ease
+}
+.place-card:hover .place-cover::before{left:130%}
+.place-cover::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.08) 35%,rgba(5,15,8,.82) 100%);
+  z-index:1
+}
+.place-cover-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;z-index:0;filter:blur(2px) opacity(.6)}
+.place-top-badges{position:absolute;top:11px;right:11px;left:11px;z-index:3;display:flex;justify-content:space-between;align-items:flex-start}
+.place-avail-badge{
+  border-radius:999px;padding:6px 12px;font-size:10px;font-weight:800;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);letter-spacing:.02em;
+  box-shadow:0 2px 8px rgba(0,0,0,.18)
+}
+.avail-yes{background:rgba(220,252,231,.92);color:#166534}
+.avail-no{background:rgba(254,226,226,.92);color:#991b1b}
+.place-price-badge{
+  background:rgba(255,255,255,.94);border-radius:999px;padding:6px 12px;
+  font-size:11px;font-weight:900;color:var(--forest);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);letter-spacing:.01em
 }
 
-/* ============================================================
-   STARS (REVIEW)
-   ============================================================ */
-.star{
-  font-size:28px;color:var(--line-2);cursor:pointer;padding:0 3px;display:inline-block;
-  transition:all var(--t-base) var(--ease-spring)
-}
-.star.active{color:#f59e0b;text-shadow:0 2px 8px rgba(245,158,11,.35)}
-.star:hover{transform:scale(1.18);color:#fbbf24}
+.place-footer{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:14px 15px 16px}
+.place-name{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.02em;text-shadow:0 2px 6px rgba(0,0,0,.25);line-height:1.2}
+.place-meta-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
+.place-loc{font-size:11px;color:rgba(255,255,255,.78);display:flex;align-items:center;gap:3px;font-weight:600}
+.place-rating{font-size:11px;color:rgba(255,255,255,.92);font-weight:800;background:rgba(0,0,0,.25);border-radius:999px;padding:3px 8px;backdrop-filter:blur(6px)}
 
-/* ============================================================
-   OWNER DASHBOARD
-   ============================================================ */
-.owner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.place-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 15px;gap:12px;background:var(--surface)
+}
+.place-strip-info{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.place-strip-type{font-size:11px;color:var(--muted);font-weight:700}
+.place-strip-fields{font-size:11px;color:var(--muted)}
+.place-book-btn{
+  background:var(--g-btn)!important;color:#fff!important;border:none;border-radius:12px;
+  padding:10px 18px;font-size:12px;font-weight:800;white-space:nowrap;flex-shrink:0;
+  box-shadow:var(--shadow-green);cursor:pointer;position:relative;overflow:hidden;
+  transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)
+}
+.place-book-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent 60%);pointer-events:none}
+.place-book-btn:hover{transform:translate3d(0,-2px,0) scale(1.03);box-shadow:var(--shadow-green-lg)}
+.place-book-btn:active{transform:scale(.96)}
+
+/* ============ AMENITIES ============ */
+.amenities-row{display:flex;gap:7px;flex-wrap:wrap;padding:0 15px 12px}
+.amenity-chip{
+  background:linear-gradient(135deg,rgba(34,136,62,.08),rgba(26,107,60,.06));
+  border:1px solid rgba(26,107,60,.14);border-radius:999px;padding:4px 11px;
+  font-size:10px;font-weight:800;color:#15803d;display:inline-flex;align-items:center;gap:4px
+}
+
+/* ============ SECTION TITLE ============ */
+.sec-title{font-size:15px;font-weight:900;color:var(--ink);padding:0 16px 13px;display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em}
+.sec-title a{color:var(--emerald);cursor:pointer;font-size:12px;font-weight:700}
+
+/* ============ SEARCH BAR ============ */
+.search-bar{
+  margin-top:18px;background:rgba(255,255,255,.98);border-radius:18px;
+  display:flex;align-items:center;padding:5px 5px 5px 16px;gap:8px;position:relative;z-index:1;
+  box-shadow:0 8px 28px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);
+  border:1px solid rgba(255,255,255,.9);transition:box-shadow var(--t-base)
+}
+.search-bar:focus-within{box-shadow:0 10px 32px rgba(22,138,71,.24),0 0 0 3px rgba(31,168,86,.18)}
+.search-bar input{flex:1;border:none;outline:none;font-size:13px;color:var(--ink-2);background:transparent;padding:10px 0;font-weight:500}
+.search-btn{
+  background:var(--g-btn);color:#fff;border:none;border-radius:12px;
+  padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;
+  box-shadow:0 2px 8px rgba(26,107,60,.25);transition:all var(--t-fast) var(--ease-spring)
+}
+.search-btn:hover{transform:scale(1.05);box-shadow:0 4px 14px rgba(26,107,60,.35)}
+.search-btn:active{transform:scale(.96)}
+
+/* ============ OWNER STATS ============ */
+.owner-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:14px}
 .owner-stat-card{
-  background:var(--surface);border-radius:var(--r-xl);padding:14px;min-height:84px;
-  box-shadow:var(--shadow-card);border:1px solid var(--line);
-  opacity:0;animation:fadeUp var(--t-base) var(--ease-out) forwards
+  background:var(--surface);border-radius:20px;padding:14px;min-height:86px;
+  box-shadow:var(--shadow-card);opacity:0;animation:fadeUp var(--t-base) var(--ease-out) forwards;
+  border:1px solid rgba(0,0,0,.04);position:relative;overflow:hidden
 }
+.owner-stat-card::after{content:'';position:absolute;top:-30px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.06;pointer-events:none}
+.owner-stat-card.stat-confirmed::after{background:#16a34a}
+.owner-stat-card.stat-pending::after{background:#f59e0b}
+.owner-stat-card.stat-today::after{background:#2563eb}
 .owner-stat-card:nth-child(1){animation-delay:.04s}
 .owner-stat-card:nth-child(2){animation-delay:.08s}
 .owner-stat-card:nth-child(3){animation-delay:.12s}
 .owner-stat-card:nth-child(4){animation-delay:.16s}
-.owner-stat-card.stat-confirmed{border-right:3px solid #10b981}
+.owner-stat-card.stat-confirmed{border-right:3px solid #16a34a}
 .owner-stat-card.stat-pending{border-right:3px solid #f59e0b}
-.owner-stat-card.stat-today{border-right:3px solid #3b82f6}
-.owner-stat-value{font-size:22px;font-weight:900;color:var(--ink);line-height:1.2;letter-spacing:-.02em}
-.owner-stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:700}
+.owner-stat-card.stat-today{border-right:3px solid #2563eb}
+.owner-stat-value{font-size:22px;font-weight:900;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.owner-stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:800}
 .owner-stat-hint{font-size:10px;color:var(--soft);margin-top:2px}
 
-.owner-mini-row{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;
-  font-size:12px;color:var(--ink-2);margin-bottom:8px
-}
-.owner-progress{height:7px;background:var(--surface-muted);border-radius:999px;overflow:hidden}
-.owner-progress>div{
-  height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);
-  border-radius:999px;transition:width 650ms var(--ease-smooth)
-}
-.owner-section-title{
-  font-size:14px;font-weight:800;color:var(--ink);margin-bottom:11px;
-  display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em
-}
-.mini-badge{
-  background:var(--soft-blue);color:#1e40af;border-radius:999px;
-  padding:3px 10px;font-size:10px;font-weight:700
-}
+.owner-mini-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--ink-2);margin-bottom:8px}
+.owner-progress{height:8px;background:var(--surface-muted);border-radius:999px;overflow:hidden}
+.owner-progress>div{height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:999px;transition:width 700ms var(--ease-out)}
+.owner-section-title{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;letter-spacing:-.01em}
+.mini-badge{background:var(--soft-blue);color:#1d4ed8;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:800}
 .day-group-header{position:sticky;top:0;z-index:10}
 
-/* ============================================================
-   ECONOMIC CARDS
-   ============================================================ */
-.econ-card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r-xl);padding:15px;box-shadow:var(--shadow-sm);margin-bottom:14px
+/* ============ SUBFIELD CARD ============ */
+.subfield-card{
+  border:1.5px solid var(--line-2);border-radius:16px;padding:12px 14px;
+  background:var(--surface);box-shadow:var(--shadow-xs);
+  transition:all var(--t-base) var(--ease-out);cursor:pointer
 }
-.econ-title{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;
-  font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px;letter-spacing:-.01em
-}
-.econ-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.econ-item{
-  background:var(--surface-soft);border:1px solid var(--line);
-  border-radius:var(--r-lg);padding:12px;min-height:78px;
-  transition:all var(--t-fast)
-}
-.econ-item:hover{border-color:rgba(16,185,129,.22);transform:translateY(-1px)}
-.econ-value{font-size:19px;font-weight:900;color:var(--ink);line-height:1.2;letter-spacing:-.02em}
-.econ-label{font-size:10.5px;font-weight:700;color:var(--muted);margin-top:5px}
-.econ-hint{font-size:9.5px;font-weight:600;color:var(--soft);margin-top:2px;line-height:1.4}
-.econ-decision{
-  margin-top:10px;padding:11px 13px;border-radius:var(--r-md);
-  background:var(--soft-green);color:#065f46;
-  font-size:12px;font-weight:600;line-height:1.65;
-  border:1px solid rgba(16,185,129,.15)
+.subfield-card:hover:not(.active){border-color:rgba(26,107,60,.3);transform:translate3d(0,-1px,0)}
+.subfield-card.active{
+  border-color:var(--emerald-2);background:var(--soft-green);
+  box-shadow:0 0 0 3px rgba(34,136,62,.1),var(--shadow-sm);transform:translate3d(0,-1px,0)
 }
 
-/* ============================================================
-   OWNER ACTIONS
-   ============================================================ */
+.star{font-size:28px;color:#d1d5db;cursor:pointer;padding:0 3px;display:inline-block;transition:all var(--t-base) var(--ease-spring)}
+.star.active{color:#f59e0b;text-shadow:0 2px 8px rgba(245,158,11,.4)}
+.star:hover{transform:scale(1.2);color:#fbbf24}
+
 .owner-action{
-  border:none;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700;
-  color:#fff;display:inline-flex;align-items:center;gap:5px;cursor:pointer;
-  transition:transform var(--t-fast) var(--ease-spring),opacity var(--t-fast)
+  border:none;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800;color:#fff;
+  display:inline-flex;align-items:center;gap:5px;box-shadow:var(--shadow-sm);
+  transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)
 }
-.owner-action:hover{transform:translateY(-2px);opacity:.88}
-.owner-action:active{transform:scale(.95)}
-.owner-confirm{background:linear-gradient(135deg,#10b981,#059669)}
-.owner-reject{background:linear-gradient(135deg,#f59e0b,#d97706)}
-.owner-cancel{background:linear-gradient(135deg,#ef4444,#dc2626)}
-.owner-edit{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.owner-action:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-md)}
+.owner-action:active{transform:scale(.95);box-shadow:var(--shadow-xs)}
+.owner-confirm{background:linear-gradient(135deg,#16a34a,#14532d)}
+.owner-reject{background:linear-gradient(135deg,#d97706,#92400e)}
+.owner-cancel{background:linear-gradient(135deg,#dc2626,#991b1b)}
+.owner-edit{background:linear-gradient(135deg,#2563eb,#1e40af)}
 
-/* ============================================================
-   BOOKING STATUS STRIP
-   ============================================================ */
 .booking-status-strip{border-right-width:4px!important;border-right-style:solid!important}
-.booking-status-strip.confirmed{border-right-color:#10b981!important}
+.booking-status-strip.confirmed{border-right-color:#16a34a!important}
 .booking-status-strip.pending{border-right-color:#f59e0b!important}
-.booking-status-strip.cancelled,.booking-status-strip.rejected{border-right-color:#ef4444!important}
+.booking-status-strip.cancelled,.booking-status-strip.rejected{border-right-color:#dc2626!important}
 
-/* ============================================================
-   DETAIL PAGE
-   ============================================================ */
-#detailHeader{border-radius:0 0 30px 30px;overflow:hidden;position:relative}
-#detailHeader::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.36));
-  pointer-events:none
-}
+/* ============ DETAIL PAGE ============ */
+#detailHeader{border-radius:0 0 32px 32px;overflow:hidden;position:relative}
+#detailHeader::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,25,16,.1),rgba(7,25,16,.38));pointer-events:none}
 #dPrice,#mPrice{
-  display:inline-block!important;padding:6px 12px;
-  background:var(--soft-green);border:1.5px solid rgba(16,185,129,.22);
-  border-radius:var(--r-md);font-weight:900!important;
-  color:#065f46!important;font-size:inherit;line-height:1.4
+  display:inline-block!important;padding:7px 12px;
+  background:linear-gradient(135deg,rgba(34,136,62,.12),rgba(26,107,60,.08));
+  border:1.5px solid rgba(26,107,60,.18);border-radius:13px;box-shadow:0 2px 8px rgba(26,107,60,.12);
+  font-weight:900!important;color:var(--forest)!important;font-size:inherit;
+  line-height:1.4;font-variant-numeric:tabular-nums
 }
 
-/* ============================================================
-   SVG HELPERS
-   ============================================================ */
-.svg-icon{
-  width:18px;height:18px;stroke:currentColor;fill:none;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-  display:inline-block;vertical-align:middle
-}
-.svg-sm{
-  width:13px;height:13px;stroke:currentColor;fill:none;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-  display:inline-block;vertical-align:middle;flex-shrink:0
-}
+/* ============ ECON CARDS ============ */
+.econ-card{background:var(--surface);border:1px solid rgba(201,168,76,.16);border-radius:var(--r-xl);padding:15px;box-shadow:var(--shadow-card);margin-bottom:14px}
+.econ-title{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px;letter-spacing:-.01em}
+.econ-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.econ-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:80px;transition:all var(--t-fast)}
+.econ-item:hover{border-color:rgba(26,107,60,.2);transform:translate3d(0,-1px,0)}
+.econ-value{font-size:19px;font-weight:900;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.econ-label{font-size:10.5px;font-weight:800;color:var(--muted);margin-top:5px}
+.econ-hint{font-size:9.5px;font-weight:600;color:var(--soft);margin-top:2px;line-height:1.4}
+.econ-decision{margin-top:11px;padding:11px 13px;border-radius:13px;background:linear-gradient(135deg,rgba(34,136,62,.1),rgba(26,107,60,.07));color:#14532d;font-size:12px;font-weight:700;line-height:1.65;border:1px solid rgba(26,107,60,.12)}
+body.dark .econ-decision{color:#bbf7d0;background:rgba(26,107,60,.12)}
 
-/* ============================================================
-   DARK MODE OVERRIDES
-   ============================================================ */
-body.dark .card,
-body.dark .place-card,
-body.dark .subfield-card,
-body.dark .owner-stat-card,
-body.dark .modal,
-body.dark .scard,
-body.dark .skeleton-card,
-body.dark .econ-card,
-body.dark .econ-item{
-  background:var(--surface)!important;color:var(--ink)!important;
-  border-color:var(--line)!important
-}
+/* ============ SVG HELPERS ============ */
+.svg-icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
+.svg-sm{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;flex-shrink:0}
+
+/* ============ DARK MODE ============ */
+body.dark .card,body.dark .place-card,body.dark .subfield-card,body.dark .owner-stat-card,body.dark .modal,body.dark .scard,body.dark .skeleton-card,body.dark .econ-card,body.dark .econ-item{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
 body.dark .econ-item{background:var(--surface-soft)!important}
-body.dark .subfield-card.active{background:var(--soft-green)!important;border-color:var(--g)!important}
-body.dark .place-card{background:var(--surface)!important;border-color:var(--line)!important}
-body.dark .place-cover{filter:saturate(.65) brightness(.75)}
-body.dark .place-strip{background:var(--surface)!important}
-body.dark .amenity-chip{background:var(--soft-green)!important;color:#6ee7b7!important;border-color:rgba(16,185,129,.2)!important}
-body.dark .finput,body.dark input,body.dark select,body.dark textarea{
-  background:var(--input-bg)!important;color:var(--ink)!important;border-color:var(--line-2)!important
-}
+body.dark .subfield-card.active{background:rgba(34,136,62,.12)!important;border-color:#5fb27d!important}
+body.dark .place-card{background:#101510!important;border-color:rgba(255,255,255,.05)!important}
+body.dark .place-cover::after{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.12) 35%,rgba(4,10,6,.88) 100%)!important}
+body.dark .place-cover{filter:saturate(.7) brightness(.8)}
+body.dark .place-strip{background:#101510!important}
+body.dark .place-book-btn{background:linear-gradient(140deg,#1d5b39,#0f3320)!important}
+body.dark .finput,body.dark input,body.dark select,body.dark textarea{background:var(--input-bg)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
 body.dark input::placeholder,body.dark textarea::placeholder{color:var(--soft)!important;opacity:.7}
-body.dark .cbtn,body.dark .ftab,body.dark .day-btn{
-  background:var(--surface)!important;color:var(--ink-2)!important;border-color:var(--line-2)!important
-}
+body.dark .cbtn,body.dark .ftab,body.dark .day-btn{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
 body.dark .ftab.active-tab,body.dark .day-btn.active,body.dark .tbtn.sel{color:#fff!important}
-body.dark .day-btn.active{background:var(--g-btn)!important;border-color:transparent!important}
-body.dark .tbtn{background:var(--soft-green)!important;color:#6ee7b7!important;border-color:rgba(16,185,129,.18)!important}
-body.dark .tbtn.sel{background:var(--g-btn)!important;border-color:transparent!important}
-body.dark .tbtn.taken{background:var(--surface-muted)!important;color:var(--soft)!important;border-color:var(--line)!important}
-body.dark .bnav{background:rgba(14,20,14,.95)!important;border-top-color:var(--line)!important}
-body.dark .nitem{color:var(--soft)!important}
-body.dark .nitem.active{color:var(--g)!important}
-body.dark .nitem.active .nicon{background:var(--soft-green)!important}
-body.dark .badge-green{background:var(--soft-green)!important;color:#6ee7b7!important;border-color:rgba(16,185,129,.2)!important}
-body.dark .badge-red{background:var(--soft-red)!important;color:#fca5a5!important;border-color:rgba(239,68,68,.2)!important}
-body.dark .badge-yellow{background:var(--soft-yellow)!important;color:#fde68a!important}
-body.dark .badge-blue,.dark .mini-badge{background:var(--soft-blue)!important;color:#93c5fd!important}
-body.dark #dPrice,body.dark #mPrice{background:var(--soft-green)!important;color:#6ee7b7!important;border-color:rgba(16,185,129,.2)!important}
-body.dark .toast{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
-body.dark .toast.error{color:#fca5a5!important}
-body.dark .toast.success{color:#6ee7b7!important}
-body.dark .toast.warn{color:#fde68a!important}
-body.dark .toast.error .toast-icon{background:var(--soft-red)!important;color:#fca5a5!important}
-body.dark .toast.success .toast-icon{background:var(--soft-green)!important;color:#6ee7b7!important}
-body.dark .toast.warn .toast-icon{background:var(--soft-yellow)!important;color:#fde68a!important}
-body.dark #mapLink{background:var(--soft-blue)!important;border-color:rgba(59,130,246,.2)!important;color:#93c5fd!important}
-body.dark #callPlaceBtn{background:var(--soft-green)!important;border-color:rgba(16,185,129,.2)!important;color:#6ee7b7!important}
-body.dark .place-price-badge{background:rgba(10,16,10,.92)!important;color:#6ee7b7!important}
-body.dark .search-bar{background:rgba(18,26,18,.97)!important}
-body.dark .welcome-cta-primary{background:#e4ede6!important;color:var(--forest)!important}
+body.dark .day-btn.active{background:linear-gradient(140deg,#237040,#0f3320)!important;border-color:transparent!important}
+body.dark .tbtn{background:rgba(34,136,62,.1)!important;color:#86efac!important;border-color:rgba(103,192,139,.14)!important}
+body.dark .tbtn.sel{background:linear-gradient(140deg,#237040,#0f3320)!important;border-color:transparent!important}
+body.dark .tbtn.taken{background:rgba(255,255,255,.03)!important;color:#5a6b5a!important;border-color:var(--line)!important}
+body.dark .bnav{background:rgba(14,20,15,.9)!important;border-top-color:var(--line)!important}
+body.dark .nitem{color:#5a6b5a!important}
+body.dark .nitem.active{color:#e8ede8!important}
+body.dark .nitem.active .nicon{background:rgba(255,255,255,.07)!important}
+body.dark .badge-green,body.dark .badge-red,body.dark .badge-yellow{background:var(--surface)!important;border-color:var(--line-2)!important}
+body.dark .badge-blue,body.dark .mini-badge{background:rgba(29,78,216,.14)!important;color:#93c5fd!important}
+body.dark #dPrice,body.dark #mPrice{background:rgba(34,136,62,.14)!important;color:#86efac!important;border-color:rgba(103,192,139,.2)!important}
+body.dark .toast{background:#131a13!important;color:var(--ink)!important;border:1px solid var(--line-2)!important}
+body.dark #mapLink{background:rgba(29,78,216,.12)!important;border-color:rgba(29,78,216,.18)!important;color:#93c5fd!important}
+body.dark #callPlaceBtn{background:rgba(34,136,62,.12)!important;border-color:rgba(103,192,139,.18)!important;color:#86efac!important}
+body.dark .welcome-hero{background:linear-gradient(155deg,#060e08,#0b1e0f,#102a18,#164030)!important}
+body.dark .welcome-cta-primary{background:#e8ede8!important;color:#071910!important}
+body.dark .place-price-badge{background:rgba(14,20,15,.92);color:#86efac}
+body.dark .amenity-chip{background:rgba(34,136,62,.12);color:#86efac;border-color:rgba(103,192,139,.14)}
+body.dark .sbtn{background:linear-gradient(140deg,#237040,#0f3320)!important}
+body.dark .search-bar{background:rgba(20,28,20,.97)!important}
+body.dark .search-btn{background:linear-gradient(140deg,#237040,#0f3320)!important}
 body.dark .owner-progress{background:var(--surface-muted)!important}
-body.dark .econ-decision{color:#6ee7b7!important;background:var(--soft-green)!important}
-body.dark .skeleton-img,body.dark .skeleton-line,body.dark .time-skeleton>span{
-  background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 100%)!important;
-  background-size:500px 100%!important
-}
-
-/* Inline style color overrides */
 body.dark [style*="color:#111827"],body.dark [style*="color: #111827"]{color:var(--ink)!important}
-body.dark [style*="color:#374151"],body.dark [style*="color: #374151"],
-body.dark [style*="color:#4b5563"],body.dark [style*="color: #4b5563"],
-body.dark [style*="color:#6b7280"],body.dark [style*="color: #6b7280"]{color:var(--muted)!important}
-body.dark [style*="background:white"],body.dark [style*="background: white"],
-body.dark [style*="background:#fff"],body.dark [style*="background: #fff"]{background:var(--surface)!important}
-body.dark [style*="background:#f9fafb"]{background:var(--surface-soft)!important}
+body.dark [style*="color:#374151"],body.dark [style*="color: #374151"],body.dark [style*="color:#4b5563"],body.dark [style*="color: #4b5563"],body.dark [style*="color:#6b7280"],body.dark [style*="color: #6b7280"]{color:var(--text-muted)!important}
+body.dark [style*="background:white"],body.dark [style*="background: white"],body.dark [style*="background:#fff"],body.dark [style*="background: #fff"]{background:var(--surface)!important}
+body.dark [style*="background:#f9fafb"]{background:var(--surface-muted)!important}
 body.dark [style*="background:#f0fdf4"]{background:var(--soft-green)!important}
 body.dark [style*="background:#eff6ff"]{background:var(--soft-blue)!important}
 body.dark [style*="background:#fee2e2"]{background:var(--soft-red)!important}
 body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
 
-/* ============================================================
-   SCROLLBAR HIDE
-   ============================================================ */
-#regionTabs::-webkit-scrollbar,
-#detailDaysGrid::-webkit-scrollbar,
-#daysGrid::-webkit-scrollbar,
-#manualDaysGrid::-webkit-scrollbar{display:none}
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+/* ============ RESPONSIVE ============ */
 @media(min-width:700px){
   :root{--max:720px}
-  .place-card{display:grid;grid-template-columns:264px 1fr}
-  .place-cover{height:100%;min-height:185px}
-  .modal{border-radius:24px!important;max-width:540px;margin-bottom:30px}
+  .place-card{display:grid;grid-template-columns:270px 1fr}
+  .place-cover{height:100%;min-height:188px}
+  .modal{border-radius:24px!important;max-width:560px;margin-bottom:30px}
 }
 @media(min-width:1024px){
   :root{--max:1100px}
-  #placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:18px!important}
+  #placesList{display:grid!important;grid-template-columns:repeat(2,1fr);gap:20px!important}
   .place-card{display:block}
-  .place-cover{height:200px}
+  .place-cover{height:205px}
+  #detailPage>div:nth-child(2){max-width:850px;margin:auto}
   #detailTimeGrid,#timeGrid{grid-template-columns:repeat(4,1fr)!important}
   .bnav{max-width:1100px}
 }
@@ -920,10 +634,11 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
   #placesList{grid-template-columns:repeat(3,1fr)}
   .econ-grid{grid-template-columns:repeat(4,1fr)}
 }
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
-@media(max-width:600px){.owner-action{padding:8px 10px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(max-width:600px){.owner-action{padding:9px 11px;font-size:12px}}
+
+/* Scrollbar hide */
+#regionTabs::-webkit-scrollbar,#detailDaysGrid::-webkit-scrollbar,#daysGrid::-webkit-scrollbar,#manualDaysGrid::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
@@ -931,31 +646,24 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
 
 <!-- ===== WELCOME PAGE ===== -->
 <div id="welcomePage" class="page active">
-  <div class="welcome-hero">
-    <div class="welcome-ball-wrap">
-      <span class="welcome-ball">⚽</span>
-    </div>
-    <div class="welcome-title">ال<span>مستديرة</span></div>
-    <div class="welcome-sub">احجز ملعبك في ثوانٍ — بدون تعقيد</div>
-    <div class="welcome-actions">
-      <button class="welcome-cta welcome-cta-primary" onclick="startBrowsing()">🏟️ تصفح الملاعب</button>
-      <button class="welcome-cta welcome-cta-secondary" onclick="showPlayerLogin()">دخول / إنشاء حساب</button>
-      <button class="welcome-cta welcome-cta-ghost" onclick="showOwnerLogin()">دخول كمالك ملعب ←</button>
-    </div>
-    <div class="trust-row">
-      <div class="trust-item">
-        <div class="trust-num" id="trustPlaces">—</div>
-        <div class="trust-label">ملعب متاح</div>
+  <div style="padding-bottom:0">
+    <div class="welcome-hero">
+      <div class="welcome-ball-wrap">
+        <span class="welcome-ball">⚽</span>
       </div>
-      <div class="trust-divider"></div>
-      <div class="trust-item">
-        <div class="trust-num">⚡</div>
-        <div class="trust-label">حجز سريع</div>
+      <div class="welcome-title">ال<span>مستديرة</span></div>
+      <div class="welcome-sub">احجز ملعبك في ثوانٍ — بدون تعقيد</div>
+      <div class="welcome-actions">
+        <button class="welcome-cta welcome-cta-primary" onclick="startBrowsing()">🏟️ تصفح الملاعب</button>
+        <button class="welcome-cta welcome-cta-secondary" onclick="showPlayerLogin()">دخول / إنشاء حساب</button>
+        <button class="welcome-cta welcome-cta-ghost" onclick="showOwnerLogin()">دخول كمالك ملعب ←</button>
       </div>
-      <div class="trust-divider"></div>
-      <div class="trust-item">
-        <div class="trust-num">✓</div>
-        <div class="trust-label">واتساب</div>
+      <div class="trust-row">
+        <div class="trust-item"><div class="trust-num" id="trustPlaces">—</div><div class="trust-label">ملعب متاح</div></div>
+        <div class="trust-divider"></div>
+        <div class="trust-item"><div class="trust-num">⚡</div><div class="trust-label">حجز سريع</div></div>
+        <div class="trust-divider"></div>
+        <div class="trust-item"><div class="trust-num">✓</div><div class="trust-label">واتساب</div></div>
       </div>
     </div>
   </div>
@@ -964,7 +672,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
 <!-- ===== PLAYER LOGIN ===== -->
 <div id="playerLoginPage" class="page">
   <div class="lux-page-header auth">
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:28px 28px;pointer-events:none"></div>
+    <div class="lux-header-grid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:28px 28px;pointer-events:none"></div>
     <div style="position:relative;z-index:1">
       <div class="lux-header-emoji">👤</div>
       <div class="lux-header-title">دخول اللاعب</div>
@@ -1037,15 +745,15 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     <div class="header-grid"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1">
       <div style="display:flex;align-items:center;gap:11px">
-        <div style="width:44px;height:44px;background:rgba(16,185,129,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1.5px solid rgba(16,185,129,.3)">⚽</div>
+        <div style="width:44px;height:44px;background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(255,255,255,.12));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1.5px solid rgba(201,168,76,.25);box-shadow:0 2px 10px rgba(0,0,0,.15)">⚽</div>
         <div>
-          <div style="font-size:20px;font-weight:900;letter-spacing:-.025em;font-family:'Cairo',sans-serif">المستديرة</div>
-          <div id="playerWelcome" style="font-size:11px;opacity:.65;font-weight:500">أهلاً بك</div>
+          <div style="font-size:20px;font-weight:900;letter-spacing:-.025em;font-family:'Cairo',sans-serif;text-shadow:0 2px 6px rgba(0,0,0,.2)">المستديرة</div>
+          <div id="playerWelcome" style="font-size:11px;opacity:.68;font-weight:500">أهلاً بك</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button onclick="toggleTheme()" id="themeBtn" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.18);color:#fff;border-radius:11px;padding:8px 11px;font-size:14px;font-weight:800;transition:all 140ms;cursor:pointer">🌙</button>
-        <div style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700">عمّان</div>
+        <button onclick="toggleTheme()" id="themeBtn" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:8px 11px;font-size:14px;font-weight:800;transition:all 140ms;box-shadow:0 2px 8px rgba(0,0,0,.12)">🌙</button>
+        <div style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;backdrop-filter:blur(8px)">عمّان</div>
       </div>
     </div>
     <div class="search-bar">
@@ -1054,17 +762,14 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     </div>
   </div>
   <div id="regionTabs" style="display:flex;gap:8px;padding:16px 16px 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
-  <div class="sec-title">
-    <span>الملاعب المتاحة</span>
-    <a onclick="localStorage.removeItem(PLACES_CACHE_KEY);loadDataFromGoogleSheets({force:true}).then(()=>filterPlaces())">تحديث ↺</a>
-  </div>
+  <div class="sec-title"><span>الملاعب المتاحة</span><a onclick="localStorage.removeItem(PLACES_CACHE_KEY);loadDataFromGoogleSheets({force:true}).then(()=>filterPlaces())">تحديث ↺</a></div>
   <div id="placesList" style="padding:0 16px;display:flex;flex-direction:column;gap:14px"></div>
 </div>
 
 <!-- ===== DETAIL PAGE ===== -->
 <div id="detailPage" class="page">
   <div id="detailHeader" style="height:210px;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(160deg,var(--forest),#1a5e35)">
-    <button onclick="goBack()" style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,.32);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;z-index:5;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);transition:transform 140ms" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">←</button>⚽
+    <button onclick="goBack()" style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,.35);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;z-index:5;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);transition:all 140ms var(--ease-spring)" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">←</button>⚽
   </div>
   <div style="padding:18px">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px">
@@ -1079,15 +784,15 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     </div>
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
       <span class="badge-green" id="dType"></span>
-      <span id="dRating" style="background:var(--soft-blue);color:#1e3a8a;border-radius:999px;padding:5px 12px;font-size:11px;font-weight:800;display:inline-block;border:1px solid rgba(59,130,246,.18)"></span>
+      <span id="dRating" style="background:var(--soft-blue);color:#1d4ed8;border-radius:999px;padding:5px 12px;font-size:11px;font-weight:800;display:inline-block;border:1.5px solid rgba(29,78,216,.14)"></span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px">
-      <a id="mapLink" target="_blank" style="display:flex;align-items:center;gap:6px;padding:11px 13px;background:var(--soft-blue);border-radius:var(--r-md);border:1.5px solid rgba(59,130,246,.18);cursor:pointer;text-decoration:none;color:#1e40af;font-size:12px;font-weight:700;transition:all 140ms;box-shadow:var(--shadow-xs)">
-        <svg style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      <a id="mapLink" target="_blank" style="display:flex;align-items:center;gap:6px;padding:11px 13px;background:var(--soft-blue);border-radius:12px;border:1.5px solid rgba(29,78,216,.14);cursor:pointer;text-decoration:none;color:#1e40af;font-size:12px;font-weight:700;transition:all 140ms;box-shadow:var(--shadow-xs)">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
         الموقع
       </a>
-      <a id="callPlaceBtn" href="#" style="display:flex;align-items:center;gap:6px;padding:11px 13px;background:var(--soft-green);border-radius:var(--r-md);border:1.5px solid rgba(16,185,129,.2);cursor:pointer;text-decoration:none;color:#065f46;font-size:12px;font-weight:700;transition:all 140ms;box-shadow:var(--shadow-xs)">
-        <svg style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+      <a id="callPlaceBtn" href="#" style="display:flex;align-items:center;gap:6px;padding:11px 13px;background:var(--soft-green);border-radius:12px;border:1.5px solid rgba(26,107,60,.18);cursor:pointer;text-decoration:none;color:#15803d;font-size:12px;font-weight:700;transition:all 140ms;box-shadow:var(--shadow-xs)">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"></path></svg>
         اتصال
       </a>
     </div>
@@ -1149,7 +854,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
       <label class="form-label">الاسم</label>
       <input class="finput" id="accountName" type="text" placeholder="اسم اللاعب" style="margin-bottom:12px">
       <label class="form-label">رقم الهاتف</label>
-      <input class="finput" id="accountPhone" type="tel" disabled style="margin-bottom:16px;opacity:.7">
+      <input class="finput" id="accountPhone" type="tel" disabled style="margin-bottom:16px;background:var(--surface-muted);color:var(--muted)">
       <button class="sbtn" onclick="savePlayerAccount()">حفظ التعديل</button>
       <button class="cbtn" onclick="doLogout()">تسجيل خروج</button>
     </div>
@@ -1177,16 +882,16 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
   <div style="padding:16px">
     <div class="owner-stat-grid">
       <div class="owner-stat-card"><div id="ownerTotalBookings" class="owner-stat-value">0</div><div class="owner-stat-label">كل الحجوزات</div><div class="owner-stat-hint">جميع الطلبات</div></div>
-      <div class="owner-stat-card stat-confirmed"><div id="ownerConfirmedBookings" class="owner-stat-value" style="color:#059669">0</div><div class="owner-stat-label">مؤكدة</div><div class="owner-stat-hint">تدخل بالإيراد</div></div>
-      <div class="owner-stat-card stat-pending"><div id="ownerPendingBookings" class="owner-stat-value" style="color:#78350f">0</div><div class="owner-stat-label">بانتظار التأكيد</div><div class="owner-stat-hint">تحتاج متابعة</div></div>
-      <div class="owner-stat-card stat-today"><div id="ownerTodayBookings" class="owner-stat-value" style="color:#1e40af">0</div><div class="owner-stat-label">حجوزات اليوم</div><div class="owner-stat-hint">حسب تاريخ اللعب</div></div>
+      <div class="owner-stat-card stat-confirmed"><div id="ownerConfirmedBookings" class="owner-stat-value" style="color:#15803d">0</div><div class="owner-stat-label">مؤكدة</div><div class="owner-stat-hint">تدخل بالإيراد</div></div>
+      <div class="owner-stat-card stat-pending"><div id="ownerPendingBookings" class="owner-stat-value" style="color:#92400e">0</div><div class="owner-stat-label">بانتظار التأكيد</div><div class="owner-stat-hint">تحتاج متابعة</div></div>
+      <div class="owner-stat-card stat-today"><div id="ownerTodayBookings" class="owner-stat-value" style="color:#1d4ed8">0</div><div class="owner-stat-label">حجوزات اليوم</div><div class="owner-stat-hint">حسب تاريخ اللعب</div></div>
     </div>
-    <div class="card" style="margin-bottom:14px;background:var(--soft-blue);border:1.5px solid rgba(59,130,246,.14)">
+    <div class="card" style="margin-bottom:14px;background:var(--soft-blue);border:1.5px solid rgba(29,78,216,.12)">
       <div class="owner-section-title"><span>💰 ملخص الإيراد</span><span class="mini-badge">عمولة 10%</span></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-        <div><div id="ownerConfirmedRevenue" style="font-size:19px;font-weight:900;color:var(--ink)">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">إيراد الموقع</div></div>
-        <div><div id="ownerPlatformProfit" style="font-size:19px;font-weight:900;color:#1e40af">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">ربح المنصة</div></div>
-        <div><div id="ownerNetRevenue" style="font-size:19px;font-weight:900;color:#065f46">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">صافي المالك</div></div>
+        <div><div id="ownerConfirmedRevenue" style="font-size:19px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">إيراد الموقع</div></div>
+        <div><div id="ownerPlatformProfit" style="font-size:19px;font-weight:900;color:#1d4ed8;font-variant-numeric:tabular-nums">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">ربح المنصة</div></div>
+        <div><div id="ownerNetRevenue" style="font-size:19px;font-weight:900;color:#15803d;font-variant-numeric:tabular-nums">0 JD</div><div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">صافي المالك</div></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:14px">
@@ -1210,23 +915,23 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
       </div>
       <div id="ownerEconomicDecision" class="econ-decision">كلما زادت البيانات، بتصير القرارات أدق.</div>
     </div>
-    <div class="card" style="margin-bottom:14px;background:var(--soft-green);border:1.5px solid rgba(16,185,129,.18)">
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(34,136,62,.08),rgba(26,107,60,.05));border:1.5px solid rgba(26,107,60,.15)">
       <div class="owner-section-title"><span>➕ حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
       <div style="font-size:12px;color:var(--ink-2);line-height:1.75;margin-bottom:11px">حجوزات واتساب أو اتصال — أضفها هون لإغلاق الوقت أمام اللاعبين.</div>
       <button class="sbtn" onclick="openManualBookingModal()">+ إضافة حجز خارجي</button>
     </div>
     <div class="card" style="margin-bottom:14px">
-      <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:11px">فلترة الحجوزات</div>
+      <div style="font-size:14px;font-weight:900;color:var(--ink);margin-bottom:11px">فلترة الحجوزات</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <input class="finput" type="date" id="ownerDateFilter" onchange="renderOwnerBookings()">
         <select class="finput" id="ownerFieldFilter" onchange="renderOwnerBookings()"><option value="all">كل الملاعب</option></select>
       </div>
       <button class="cbtn" onclick="clearOwnerFilters()">مسح الفلتر</button>
     </div>
-    <div class="sec-title" style="padding:0 0 11px"><span>الحجوزات</span><a style="color:#1e40af" onclick="loadOwnerDashboard()">تحديث ↺</a></div>
+    <div class="sec-title" style="padding:0 0 11px"><span>الحجوزات</span><a style="color:#1d4ed8" onclick="loadOwnerDashboard()">تحديث ↺</a></div>
     <button id="ownerHistoryToggle" class="cbtn" onclick="toggleOwnerBookingHistory()" style="margin:0 0 11px">عرض السجل الكامل</button>
     <div id="ownerBookings"></div>
-    <div class="sec-title" style="padding:18px 0 11px"><span>إدارة الملاعب</span><a style="color:#1e40af" onclick="openAddFieldModal()">+ إضافة ملعب</a></div>
+    <div class="sec-title" style="padding:18px 0 11px"><span>إدارة الملاعب</span><a style="color:#1d4ed8" onclick="openAddFieldModal()">+ إضافة ملعب</a></div>
     <div id="ownerFields"></div>
   </div>
 </div>
@@ -1235,7 +940,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
 <div class="modal-overlay" id="bookingModal"><div class="modal"><div class="modal-handle"></div>
   <div id="mTitle" style="font-size:17px;font-weight:900;color:var(--ink);margin-bottom:3px;letter-spacing:-.015em"></div>
   <div id="mSub" style="font-size:12px;color:var(--muted);margin-bottom:15px;display:flex;align-items:center;gap:4px;font-weight:500"></div>
-  <div style="background:var(--soft-green);border:1.5px solid rgba(16,185,129,.18);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center">
+  <div style="background:linear-gradient(135deg,rgba(34,136,62,.1),rgba(26,107,60,.06));border:1.5px solid rgba(26,107,60,.16);border-radius:14px;padding:12px 14px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center">
     <div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:600">السعر الإجمالي (ساعتان)</div>
       <div id="mPrice" style="font-size:18px;font-weight:900;color:var(--forest)"></div>
@@ -1312,7 +1017,7 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
     <option value="evening">Evening — مسائي</option>
   </select>
   <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);font-weight:700;margin-bottom:16px;cursor:pointer">
-    <input type="checkbox" id="fieldActiveInput" checked style="width:16px;height:16px;accent-color:var(--g)"> نشط
+    <input type="checkbox" id="fieldActiveInput" checked style="width:16px;height:16px;accent-color:var(--emerald)"> نشط
   </label>
   <button class="sbtn" onclick="saveOwnerField()">حفظ ←</button>
   <button class="cbtn" onclick="closeFieldModal()">إلغاء</button>
@@ -1323,13 +1028,13 @@ body.dark [style*="background:#fef3c7"]{background:var(--soft-yellow)!important}
   <div id="reasonTitle" style="font-size:17px;font-weight:900;color:var(--ink);margin-bottom:6px;letter-spacing:-.015em">سبب التحديث</div>
   <div id="reasonHint" style="font-size:12px;color:var(--muted);margin-bottom:14px;font-weight:500"></div>
   <textarea class="finput" id="reasonInput" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." style="min-height:100px;margin-bottom:16px;resize:vertical"></textarea>
-  <button class="sbtn" style="background:linear-gradient(140deg,#ef4444,#dc2626)!important;box-shadow:0 4px 16px rgba(239,68,68,.28)!important" id="reasonConfirmBtn">تأكيد</button>
+  <button class="sbtn" style="background:linear-gradient(140deg,#dc2626,#991b1b)!important;box-shadow:0 4px 16px rgba(220,38,38,.28)!important" id="reasonConfirmBtn">تأكيد</button>
   <button class="cbtn" id="reasonCancelBtn">رجوع</button>
 </div></div>
 
 <!-- ===== SUCCESS ===== -->
 <div class="success-overlay" id="successOverlay"><div class="scard">
-  <div style="font-size:56px;margin-bottom:14px;animation:ballFloat 2s ease-in-out infinite">🎉</div>
+  <div style="font-size:56px;margin-bottom:14px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.2));animation:ballFloat 2s ease-in-out infinite">🎉</div>
   <div style="font-size:20px;font-weight:900;color:var(--ink);margin-bottom:7px;letter-spacing:-.02em">تمام!</div>
   <div id="sMsgText" style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.65;font-weight:500"></div>
   <button class="sbtn" onclick="closeSuccess()">تمام ✓</button>
@@ -1422,7 +1127,7 @@ function buildBookedSlots(remoteBookings){publicBookings=Array.isArray(remoteBoo
 
 async function loadInitialData(force=false){const result=await apiGet("getInitialData",{force:force?'1':'0'});const remotePlaces=Array.isArray(result)?result:(result.places||[]);places=normalizeRemotePlaces(remotePlaces);if(places.length)savePlacesCache(places);buildBookedSlots(result.bookings||[]);return true}
 async function loadPublicBookings(){const remoteBookings=await apiGet("getBookings");buildBookedSlots(Array.isArray(remoteBookings)?remoteBookings:(remoteBookings.bookings||[]));return true}
-async function loadDataFromGoogleSheets(options={}){const force=!!options.force;try{const oldNotice=document.getElementById('offlineNotice');if(oldNotice)oldNotice.remove();await loadInitialData(force);renderRegionTabs();updateTrustCount();return true}catch(err){const cached=readPlacesCache();if(cached&&cached.length){places=normalizeRemotePlaces(cached);bookedSlots={};places.forEach(p=>p.fields.forEach(f=>bookedSlots[f.field_id]={}));renderRegionTabs();updateTrustCount();const el=document.getElementById('placesList');if(el)el.insertAdjacentHTML('beforebegin','<div id="offlineNotice" style="margin:10px 16px;background:var(--soft-yellow);color:#78350f;border:1.5px solid #fde68a;border-radius:12px;padding:10px 13px;font-size:12px;font-weight:700">تم عرض نسخة مخزنة. اضغط تحديث لآخر البيانات.</div>');return true}places=[];bookedSlots={};const el=document.getElementById('placesList');if(el)el.innerHTML='<div style="text-align:center;color:#ef4444;padding:50px 16px;font-size:13px">تعذر تحميل الملاعب. تأكد من اتصالك واضغط تحديث.</div>';return false}}
+async function loadDataFromGoogleSheets(options={}){const force=!!options.force;try{const oldNotice=document.getElementById('offlineNotice');if(oldNotice)oldNotice.remove();await loadInitialData(force);renderRegionTabs();updateTrustCount();return true}catch(err){const cached=readPlacesCache();if(cached&&cached.length){places=normalizeRemotePlaces(cached);bookedSlots={};places.forEach(p=>p.fields.forEach(f=>bookedSlots[f.field_id]={}));renderRegionTabs();updateTrustCount();const el=document.getElementById('placesList');if(el)el.insertAdjacentHTML('beforebegin','<div id="offlineNotice" style="margin:10px 16px;background:var(--soft-yellow);color:#92400e;border:1.5px solid #fde68a;border-radius:12px;padding:10px 13px;font-size:12px;font-weight:700">تم عرض نسخة مخزنة. اضغط تحديث لآخر البيانات.</div>');return true}places=[];bookedSlots={};const el=document.getElementById('placesList');if(el)el.innerHTML='<div style="text-align:center;color:#dc2626;padding:50px 16px;font-size:13px">تعذر تحميل الملاعب. تأكد من اتصالك واضغط تحديث.</div>';return false}}
 
 function updateTrustCount(){const el=document.getElementById('trustPlaces');if(el&&places.length)el.textContent=places.reduce((sum,p)=>sum+(p.fields||[]).length,0)+'+';}
 
@@ -1588,7 +1293,7 @@ function selectSubField(fieldId){currentSubField=currentPlace.fields.find(f=>Str
 function renderDetailDays(){const el=document.getElementById('detailDaysGrid');if(!el)return;el.innerHTML=Array.from({length:7},(_,i)=>{const date=getDateAfter(i);const active=date===selectedDate;const label=i===0?'اليوم':getArabicDayName(date);const shortDate=getShortDate(date);return `<button onclick="selectDetailDate('${date}')" class="day-btn ${active?'active':''}"><div>${label}</div><div style="font-size:10px;opacity:.8;margin-top:2px">${shortDate}</div></button>`}).join('')}
 async function selectDetailDate(date){selectedDate=date;selectedHour=null;renderDetailDays();setDayButtonsLoading('detailDaysGrid',true,date);renderTimeSkeleton('detailTimeGrid',6);await loadPublicBookings().catch(()=>{});setDayButtonsLoading('detailDaysGrid',false,date);renderDetailDays();renderDetailTimes()}
 function selectDetailTime(hour){selectedHour=hour;renderDetailTimes()}
-function renderDetailTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('detailTimeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectDetailTime(${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#ef4444">محجوز</span>':''}</button>`}).join('')}
+function renderDetailTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('detailTimeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectDetailTime(${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':''}</button>`}).join('')}
 
 function openBookingFromDetail(){
   if(selectedHour===null){showToast('اختار وقت متاح أول','warn');return}
@@ -1613,7 +1318,7 @@ async function openBooking(placeId,fieldId=null,preDate=null,preHour=null){
 }
 function renderBookingDays(){document.getElementById('daysGrid').innerHTML=Array.from({length:7},(_,i)=>{const date=getDateAfter(i);const active=date===selectedDate;const label=i===0?'اليوم':getArabicDayName(date);const shortDate=getShortDate(date);return `<button onclick="selectBookingDate('${date}')" class="day-btn ${active?'active':''}"><div>${label}</div><div style="font-size:10px;opacity:.8;margin-top:2px">${shortDate}</div></button>`}).join('')}
 async function selectBookingDate(date){selectedDate=date;selectedHour=null;renderBookingDays();setDayButtonsLoading('daysGrid',true,date);renderTimeSkeleton('timeGrid',6);await loadPublicBookings().catch(()=>{});setDayButtonsLoading('daysGrid',false,date);renderBookingDays();renderBookingTimes()}
-function renderBookingTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('timeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectTime(this,${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#ef4444">محجوز</span>':''}</button>`}).join('')}
+function renderBookingTimes(){const slots=getFieldSlots(currentSubField);const taken=(bookedSlots[currentSubField.field_id]&&bookedSlots[currentSubField.field_id][selectedDate])||[];document.getElementById('timeGrid').innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=selectedHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectTime(this,${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':''}</button>`}).join('')}
 function selectTime(btn,hour){document.querySelectorAll('.tbtn:not(.taken)').forEach(b=>{b.classList.remove('sel')});btn.classList.add('sel');selectedHour=hour}
 function closeModal(){document.getElementById('bookingModal').classList.remove('show')}
 
@@ -1656,13 +1361,13 @@ function renderPlayerBookingCard(b){
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.resize} ${b.players||''}</span>
-        <span style="display:flex;align-items:center;gap:4px">${SVG_ICONS.money} ${b.price} JD</span>
+        <span style="display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums">${SVG_ICONS.money} ${b.price} JD</span>
       </div>
     </div>
-    ${b.cancel_reason?`<div style="font-size:12px;color:#ef4444;background:var(--soft-red);border-radius:10px;padding:9px 11px;margin-top:9px;font-weight:600">السبب: ${b.cancel_reason}</div>`:''}
+    ${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:var(--soft-red);border-radius:10px;padding:9px 11px;margin-top:9px;font-weight:600">السبب: ${b.cancel_reason}</div>`:''}
     ${canCancel?`<div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--line)">
-      <button onclick="playerCancelBooking(${b.row_number},'${escapeHtml(b.place_name+' - '+b.field_name)}')" style="background:transparent;color:#ef4444;border:1.5px solid rgba(239,68,68,.25);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 140ms" onmouseover="this.style.background='var(--soft-red)'" onmouseout="this.style.background='transparent'">
-        <svg style="width:13px;height:13px;stroke:#ef4444;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <button onclick="playerCancelBooking(${b.row_number},'${escapeHtml(b.place_name+' - '+b.field_name)}')" style="background:transparent;color:#dc2626;border:1.5px solid rgba(220,38,38,.25);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 140ms" onmouseover="this.style.background='var(--soft-red)'" onmouseout="this.style.background='transparent'">
+        <svg style="width:13px;height:13px;stroke:#dc2626;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
         إلغاء الحجز
       </button>
     </div>`:''}
@@ -1670,6 +1375,7 @@ function renderPlayerBookingCard(b){
 }
 
 async function playerCancelBooking(rowNumber, bookingLabel){
+  // Show confirm modal
   const modal=document.getElementById('reasonModal');
   const input=document.getElementById('reasonInput');
   const confirmBtn=document.getElementById('reasonConfirmBtn');
@@ -1677,8 +1383,8 @@ async function playerCancelBooking(rowNumber, bookingLabel){
   document.getElementById('reasonTitle').textContent='إلغاء الحجز';
   document.getElementById('reasonHint').textContent=`${bookingLabel} — اكتب سبب الإلغاء (اختياري)`;
   input.value='';
-  confirmBtn.style.background='linear-gradient(140deg,#ef4444,#dc2626)';
-  confirmBtn.style.boxShadow='0 4px 16px rgba(239,68,68,.28)';
+  confirmBtn.style.background='linear-gradient(140deg,#dc2626,#991b1b)';
+  confirmBtn.style.boxShadow='0 4px 16px rgba(220,38,38,.28)';
   confirmBtn.textContent='تأكيد الإلغاء';
   modal.classList.add('show');
   setTimeout(()=>input.focus(),200);
@@ -1706,7 +1412,7 @@ async function loadPlayerBookings(){
   try{
     const res=await apiGet('getPlayerBookings',{player_token:playerToken});
     const el=document.getElementById('bookingsList');
-    if(!res.success){el.innerHTML='<div style="text-align:center;color:#ef4444;padding:30px;font-size:13px">'+(res.message||'ما قدرنا نجيب الحجوزات')+'</div>';return}
+    if(!res.success){el.innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">'+(res.message||'ما قدرنا نجيب الحجوزات')+'</div>';return}
     renderPlayerEconomicStats(res.bookings||[]);
     if(!res.bookings||!res.bookings.length){el.innerHTML='<div style="text-align:center;color:var(--soft);padding:50px;font-size:13px">لسا ما عندك حجوزات</div>';return}
     const visibleBookings=getVisibleBookings(res.bookings,14,showAllPlayerBookings);
@@ -1714,7 +1420,7 @@ async function loadPlayerBookings(){
     const {active,finished}=splitFinishedBookings(visibleBookings);
     const historyBtn=`<button class="cbtn" onclick="togglePlayerBookingHistory()" style="margin-bottom:11px">${showAllPlayerBookings?'إخفاء الحجوزات القديمة':'عرض السجل الكامل'+(hiddenCount>0?' ('+hiddenCount+')':'')}</button>`;
     el.innerHTML=historyBtn+sectionTitle('الحجوزات الحالية والقادمة',active.length)+(active.length?active.map(renderPlayerBookingCard).join(''):'<div class="card" style="text-align:center;color:var(--soft);margin-bottom:10px">لا توجد حجوزات حالية أو قادمة</div>')+sectionTitle('الحجوزات المنتهية',finished.length)+finished.map(renderPlayerBookingCard).join('')
-  }catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#ef4444;padding:30px;font-size:13px">ما قدرنا نجيب الحجوزات</div>'}
+  }catch(e){document.getElementById('bookingsList').innerHTML='<div style="text-align:center;color:#dc2626;padding:30px;font-size:13px">ما قدرنا نجيب الحجوزات</div>'}
 }
 
 function getManualField(){return(ownerData?.fields||[]).find(f=>String(f.field_id)===String(manualFieldId))}
@@ -1725,10 +1431,10 @@ function selectManualField(){manualFieldId=document.getElementById('manualFieldS
 function renderManualDays(){const el=document.getElementById('manualDaysGrid');if(!el)return;el.innerHTML=Array.from({length:14},(_,i)=>{const date=getDateAfter(i);const active=date===manualDate;const label=i===0?'اليوم':getArabicDayName(date);return `<button onclick="selectManualDate('${date}')" class="day-btn ${active?'active':''}"><div>${label}</div><div style="font-size:10px;opacity:.8;margin-top:2px">${getShortDate(date)}</div></button>`}).join('')}
 async function selectManualDate(date){manualDate=date;manualHour=null;renderManualDays();setDayButtonsLoading('manualDaysGrid',true,date);renderTimeSkeleton('manualTimeGrid',6);try{await loadPublicBookings()}catch(e){}setDayButtonsLoading('manualDaysGrid',false,date);renderManualDays();renderManualTimes()}
 function selectManualTime(hour){manualHour=hour;renderManualTimes()}
-function renderManualTimes(){const field=getManualField();const el=document.getElementById('manualTimeGrid');if(!field||!el)return;const slots=getFieldSlots(field);const taken=(bookedSlots[field.field_id]&&bookedSlots[field.field_id][manualDate])||[];el.innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=manualHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectManualTime(${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#ef4444">محجوز</span>':(sel?'<br><span style="font-size:9px;color:white">محدد</span>':'')}</button>`}).join('')}
+function renderManualTimes(){const field=getManualField();const el=document.getElementById('manualTimeGrid');if(!field||!el)return;const slots=getFieldSlots(field);const taken=(bookedSlots[field.field_id]&&bookedSlots[field.field_id][manualDate])||[];el.innerHTML=slots.map(s=>{const t=taken.includes(s.hour);const sel=manualHour===s.hour;return `<button class="tbtn${t?' taken':''}${sel&&!t?' sel':''}" ${t?'disabled':''} onclick="selectManualTime(${s.hour})">${s.label}${t?'<br><span style="font-size:9px;color:#dc2626">محجوز</span>':(sel?'<br><span style="font-size:9px;color:white">محدد</span>':'')}</button>`}).join('')}
 async function saveManualBooking(){const field=getManualField();const name=document.getElementById('manualName').value.trim();const phone=document.getElementById('manualPhone').value.trim();const price=Number(document.getElementById('manualPrice').value||0);if(!field||!manualDate||manualHour===null){showToast('اختار الملعب واليوم والوقت','warn');return}if(!name){showToast('اكتب اسم صاحب الحجز','warn');return}if(!price||Number.isNaN(price)){showToast('اكتب سعر صحيح','warn');return}const slot=getFieldSlots(field).find(s=>s.hour===manualHour);try{const res=await apiPost({action:'ownerCreateManualBooking',owner_token:ownerToken,field_id:field.field_id,date:manualDate,hour:manualHour,time:slot?slot.label:'',name,phone,players:field.size,price});if(!res.success){showToast(res.message||'ما زبطت إضافة الحجز','error');await loadPublicBookings().catch(()=>{});renderManualTimes();return}closeManualBookingModal();showToast('تمام، أضفنا الحجز الخارجي','success');await loadOwnerDashboard();await loadDataFromGoogleSheets({force:true});if(document.getElementById('homePage').classList.contains('active'))filterPlaces()}catch(e){showToast('صار خطأ بإضافة الحجز الخارجي','error')}}
 
-async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:var(--muted)">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){showToast(res.message||"انتهت جلستك، ادخل من جديد","error");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#ef4444">ما قدرنا نجيب بيانات المالك</div>'}}
+async function loadOwnerDashboard(){if(!ownerToken){showOwnerLogin();return}document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:var(--muted)">جاري تحميل الحجوزات...</div>';try{const res=await apiGet("getOwnerData",{owner_token:ownerToken});if(!res.success){showToast(res.message||"انتهت جلستك، ادخل من جديد","error");doLogout();return}ownerData=res;renderOwnerDashboard()}catch(e){document.getElementById("ownerBookings").innerHTML='<div class="card" style="text-align:center;color:#dc2626">ما قدرنا نجيب بيانات المالك</div>'}}
 function formatMoney(value){const n=Number(value||0);if(Number.isNaN(n))return '0 JD';return `${Math.round(n*100)/100} JD`}
 function isSameOrAfter(dateStr,minDateStr){return String(dateStr||'')>=String(minDateStr||'')}
 function isOwnerManualBooking(b){return String(b.source||'').trim().toLowerCase()==='owner_manual'}
@@ -1781,10 +1487,10 @@ function renderSingleBookingCard(b){
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2)">${SVG_ICONS.person} ${b.name||"-"}</span>
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2)">${SVG_ICONS.phone} ${b.phone||"-"}</span>
       <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2)">${SVG_ICONS.resize} ${b.players||"-"}</span>
-      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2)">${SVG_ICONS.money} ${b.price||0} JD</span>
-      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:${String(b.source||'')==='owner_manual'?'#1e40af':'var(--ink-2)'}">${String(b.source||'')==='owner_manual'?'حجز خارجي':'مصدر: '+(b.source||'direct')}</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums">${SVG_ICONS.money} ${b.price||0} JD</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:${String(b.source||'')==='owner_manual'?'#1d4ed8':'var(--ink-2)'}">${String(b.source||'')==='owner_manual'?'حجز خارجي':'مصدر: '+(b.source||'direct')}</span>
     </div>
-    ${b.cancel_reason?`<div style="font-size:12px;color:#ef4444;background:var(--soft-red);border-radius:10px;padding:9px 11px;margin-bottom:11px;font-weight:600">سبب الإلغاء/الرفض: ${b.cancel_reason}</div>`:""}
+    ${b.cancel_reason?`<div style="font-size:12px;color:#dc2626;background:var(--soft-red);border-radius:10px;padding:9px 11px;margin-bottom:11px;font-weight:600">سبب الإلغاء/الرفض: ${b.cancel_reason}</div>`:""}
     <div style="display:flex;gap:7px;flex-wrap:wrap">
       <button class="owner-action owner-confirm" onclick="updateBookingStatus(${b.row_number},'confirmed')">تأكيد ✓</button>
       <button class="owner-action owner-reject" onclick="updateBookingStatus(${b.row_number},'rejected')">رفض</button>
@@ -1816,12 +1522,12 @@ function renderOwnerBookings(){
       const confirmed=dayBookings.filter(b=>b.status==='confirmed').length;const pending=dayBookings.filter(b=>b.status==='pending').length;const cancelled=dayBookings.filter(b=>b.status==='cancelled'||b.status==='rejected').length;
       const isToday=date===today;const isPast=date<today;
       return `<div style="margin-bottom:22px">
-        <div class="day-group-header" style="display:flex;justify-content:space-between;align-items:center;background:${isToday?'linear-gradient(140deg,var(--forest),var(--emerald))':isPast?'var(--surface-muted)':'var(--soft-green)'};color:${isToday?'#fff':isPast?'var(--soft)':'var(--forest)'};border-radius:var(--r-lg);padding:12px 15px;margin-bottom:11px;font-size:13px;font-weight:800;box-shadow:${isToday?'var(--shadow-green)':'var(--shadow-xs)'};letter-spacing:-.01em">
+        <div class="day-group-header" style="display:flex;justify-content:space-between;align-items:center;background:${isToday?'linear-gradient(140deg,var(--forest),var(--emerald))':isPast?'var(--surface-muted)':'var(--soft-green)'};color:${isToday?'#fff':isPast?'var(--soft)':'var(--forest)'};border-radius:14px;padding:12px 15px;margin-bottom:11px;font-size:13px;font-weight:800;box-shadow:${isToday?'var(--shadow-green)':'var(--shadow-xs)'};letter-spacing:-.01em">
           <span>📅 ${getDayLabel(date)}</span>
           <span style="display:flex;gap:8px;font-size:11px;font-weight:800;opacity:.9">
-            ${confirmed>0?`<span style="background:rgba(16,185,129,.18);padding:2px 9px;border-radius:999px">✓ ${confirmed}</span>`:''}
+            ${confirmed>0?`<span style="background:rgba(21,128,61,.18);padding:2px 9px;border-radius:999px">✓ ${confirmed}</span>`:''}
             ${pending>0?`<span style="background:rgba(245,158,11,.18);padding:2px 9px;border-radius:999px">⏳ ${pending}</span>`:''}
-            ${cancelled>0?`<span style="background:rgba(239,68,68,.12);padding:2px 9px;border-radius:999px">✕ ${cancelled}</span>`:''}
+            ${cancelled>0?`<span style="background:rgba(220,38,38,.12);padding:2px 9px;border-radius:999px">✕ ${cancelled}</span>`:''}
           </span>
         </div>
         ${dayBookings.map(b=>renderSingleBookingCard(b)).join('')}
@@ -1848,7 +1554,7 @@ async function updateBookingStatus(rowNumber,status){
   try{const res=await apiPost({action:"updateBookingStatus",owner_token:ownerToken,row_number:rowNumber,status,cancel_reason:reason});if(!res.success){showToast(res.message||"ما زبط التحديث","error");return}if(booking)sendPlayerWhatsAppStatus(booking,status,reason);await loadOwnerDashboard();await loadDataFromGoogleSheets();if(document.getElementById('homePage').classList.contains('active'))filterPlaces();if(document.getElementById('detailPage').classList.contains('active')&&currentSubField){renderDetailDays();renderDetailTimes()}}catch(e){showToast("صار خطأ بتحديث الحجز","error")}
 }
 
-function renderOwnerFields(){const el=document.getElementById("ownerFields");const fields=ownerData.fields||[];if(!fields.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--soft)">لا توجد ملاعب</div>';return}el.innerHTML=fields.map(f=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div style="font-size:14px;font-weight:900;color:var(--ink);letter-spacing:-.01em">${f.field_name}</div><div style="display:flex;gap:10px;margin-top:5px"><span style="display:flex;align-items:center;gap:3px;font-size:12px;color:var(--muted)">${SVG_ICONS.resize} ${f.size}</span><span style="display:flex;align-items:center;gap:3px;font-size:12px;color:var(--muted)">${SVG_ICONS.money} ${f.price} JD</span></div><div style="font-size:11px;color:var(--soft);margin-top:3px">Slots: ${slotsToKeyword(f.slots)}</div></div><button class="owner-action owner-edit" onclick="openEditFieldModal('${f.field_id}')">تعديل</button></div></div>`).join("")}
+function renderOwnerFields(){const el=document.getElementById("ownerFields");const fields=ownerData.fields||[];if(!fields.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--soft)">لا توجد ملاعب</div>';return}el.innerHTML=fields.map(f=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div style="font-size:14px;font-weight:900;color:var(--ink);letter-spacing:-.01em">${f.field_name}</div><div style="display:flex;gap:10px;margin-top:5px"><span style="display:flex;align-items:center;gap:3px;font-size:12px;color:var(--muted)">${SVG_ICONS.resize} ${f.size}</span><span style="display:flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">${SVG_ICONS.money} ${f.price} JD</span></div><div style="font-size:11px;color:var(--soft);margin-top:3px">Slots: ${slotsToKeyword(f.slots)}</div></div><button class="owner-action owner-edit" onclick="openEditFieldModal('${f.field_id}')">تعديل</button></div></div>`).join("")}
 function openEditFieldModal(fieldId){editingFieldMode="edit";const f=(ownerData.fields||[]).find(x=>String(x.field_id)===String(fieldId));if(!f)return;document.getElementById("fieldModalTitle").textContent="تعديل ملعب";document.getElementById("editFieldId").value=f.field_id;document.getElementById("fieldNameInput").value=f.field_name;document.getElementById("fieldNameInput").disabled=true;document.getElementById("fieldSizeInput").value=f.size;document.getElementById("fieldSizeInput").disabled=true;document.getElementById("fieldPriceInput").value=f.price;document.getElementById("fieldSlotsInput").value=slotsToKeyword(f.slots);document.getElementById("fieldActiveInput").checked=f.active!==false;document.getElementById("fieldModal").classList.add("show")}
 function openAddFieldModal(){editingFieldMode="add";document.getElementById("fieldModalTitle").textContent="إضافة ملعب جديد";document.getElementById("editFieldId").value="";document.getElementById("fieldNameInput").value="";document.getElementById("fieldNameInput").disabled=false;document.getElementById("fieldSizeInput").value="6×6";document.getElementById("fieldSizeInput").disabled=false;document.getElementById("fieldPriceInput").value="40";document.getElementById("fieldSlotsInput").value="full";document.getElementById("fieldActiveInput").checked=true;document.getElementById("fieldModal").classList.add("show")}
 function closeFieldModal(){document.getElementById("fieldModal").classList.remove("show")}
@@ -1869,10 +1575,10 @@ document.addEventListener('click',e=>{const overlay=e.target.closest('.modal-ove
 
 function applyTheme(theme){
   const btn=document.getElementById('themeBtn');const ownerBtn=document.getElementById('ownerThemeBtn');const meta=document.querySelector('meta[name="theme-color"]');
-  if(theme==='dark'){document.body.classList.add('dark');if(btn)btn.innerHTML='☀️';if(ownerBtn)ownerBtn.innerHTML='☀️';if(meta)meta.setAttribute('content','#0a0f0b')}
-  else{document.body.classList.remove('dark');if(btn)btn.innerHTML='🌙';if(ownerBtn)ownerBtn.innerHTML='🌙';if(meta)meta.setAttribute('content','#052e16')}
+  if(theme==='dark'){document.body.classList.add('dark');if(btn)btn.innerHTML='☀️';if(ownerBtn)ownerBtn.innerHTML='☀️';if(meta)meta.setAttribute('content','#080f0a')}
+  else{document.body.classList.remove('dark');if(btn)btn.innerHTML='🌙';if(ownerBtn)ownerBtn.innerHTML='🌙';if(meta)meta.setAttribute('content','#091a0f')}
 }
-function toggleTheme(){const isDark=document.body.classList.contains('dark');const newTheme=isDark?'light':'dark';localStorage.setItem('theme',newTheme);applyTheme(newTheme)}
+function toggleTheme(){const isDark=document.body.classList.add&&document.body.classList.contains('dark');const newTheme=isDark?'light':'dark';localStorage.setItem('theme',newTheme);applyTheme(newTheme)}
 applyTheme(localStorage.getItem('theme')||'light');
 
 initApp();
