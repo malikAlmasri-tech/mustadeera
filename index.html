@@ -7,13 +7,11 @@
 <title>المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- التسلسل الهرمي: Cairo للعناوين الثقيلة، Tajawal للنصوص -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* =============================================================
    المستديرة · style.css
    Design system — glass + aurora · RTL · light/dark
-   ملاحظة معمارية: كل التصميم هنا (فصل الاهتمامات). لا أنماط داخل HTML.
    ============================================================= */
 
 /* ---------- RESET ---------- */
@@ -39,12 +37,11 @@
 
   --r-sm:11px; --r-md:15px; --r-lg:19px; --r-xl:24px; --r-2xl:30px; --r-3xl:38px;
 
-  /* مساحات التنفّس (Negative space scale) */
   --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:28px;--s-8:36px;
 
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --t-fast:140ms; --t-base:240ms; --t-slow:360ms; --t-slower:520ms;
-  --max:480px; --tap:48px; /* الحد الأدنى لمساحة اللمس */
+  --max:480px; --tap:48px;
 
   --g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
   --g-btn:linear-gradient(135deg,#22cf74,#0c8a4b 92%);
@@ -68,7 +65,6 @@ body{display:flex;justify-content:center;background:var(--cream);font-size:14px;
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
 
-/* خلفية أورورا متحركة (transform/opacity فقط = 60fps) */
 #app::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
     radial-gradient(60vw 42vh at 85% -6%, rgba(30,192,107,.16), transparent 60%),
@@ -97,10 +93,10 @@ a{color:inherit;text-decoration:none}
 .page{display:none;padding-bottom:calc(var(--tap) + 54px);min-height:100vh;position:relative;z-index:1}
 .page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
 @keyframes pageIn{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-.pad{padding:var(--s-6) var(--s-5)}              /* مساحة تنفّس قياسية */
+.pad{padding:var(--s-6) var(--s-5)}
 .stack{display:flex;flex-direction:column;gap:var(--s-4)}
 
-/* ---------- TYPOGRAPHY UTILITIES (التسلسل الهرمي) ---------- */
+/* ---------- TYPOGRAPHY ---------- */
 .t-title{font-family:'Cairo',sans-serif;font-weight:900;font-size:19px;letter-spacing:-.02em;color:var(--ink)}
 .t-sub{font-size:13px;color:var(--muted);font-weight:500}
 .muted{color:var(--muted)}
@@ -119,7 +115,7 @@ a{color:inherit;text-decoration:none}
 textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
 
-/* ---------- BUTTONS (tap target ≥ 48px) ---------- */
+/* ---------- BUTTONS ---------- */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);border-radius:var(--r-lg);font-weight:800;letter-spacing:.01em;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)}
 .sbtn{width:100%;background:var(--g-btn)!important;color:#fff;padding:15px;font-size:15px;box-shadow:var(--shadow-green);min-height:var(--tap)}
 .sbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 55%);pointer-events:none}
@@ -132,7 +128,6 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .cbtn:hover{background:var(--surface-soft);border-color:rgba(30,192,107,.34);color:var(--emerald);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
 .cbtn:active{transform:scale(.99);opacity:.9}
 
-/* مؤشّر تحميل على الأزرار (منع النقر المزدوج) */
 .is-loading{pointer-events:none;opacity:.9}
 .spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.45);border-top-color:#fff;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
 .cbtn .spinner,.spinner.dark{border-color:rgba(20,40,28,.25);border-top-color:var(--emerald)}
@@ -199,35 +194,127 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .ftab.active-tab{background:var(--g-btn);border-color:transparent;color:#fff;box-shadow:var(--shadow-green);transform:translate3d(0,-2px,0)}
 .ftab:not(.active-tab):hover{border-color:rgba(30,192,107,.42);color:var(--emerald);transform:translate3d(0,-2px,0)}
 
-/* ---------- WELCOME HERO ---------- */
-.welcome-hero{padding:70px var(--s-6) 50px;text-align:center;color:#fff;border-radius:0 0 var(--r-3xl) var(--r-3xl);position:relative;overflow:hidden;
-  background:radial-gradient(90% 70% at 50% -10%, rgba(63,240,140,.2), transparent 60%),linear-gradient(160deg,#03100a,#0d3019 55%,#155e34);
-  box-shadow:0 22px 60px rgba(4,19,11,.45)}
-.welcome-hero::before{content:'';position:absolute;top:-130px;left:50%;transform:translateX(-50%);width:360px;height:360px;border-radius:50%;border:1px solid rgba(216,181,82,.16);box-shadow:0 0 0 46px rgba(216,181,82,.06),0 0 0 92px rgba(216,181,82,.03),0 0 0 138px rgba(216,181,82,.015);pointer-events:none}
-.welcome-hero::after{content:'';position:absolute;inset:0;pointer-events:none;animation:auroraDrift 18s ease-in-out infinite alternate;
-  background:repeating-linear-gradient(48deg,transparent,transparent 32px,rgba(255,255,255,.01) 32px,rgba(255,255,255,.01) 33px),radial-gradient(40% 30% at 18% 88%, rgba(30,192,107,.18), transparent 60%),radial-gradient(40% 30% at 84% 78%, rgba(216,181,82,.12), transparent 60%)}
-.welcome-ball-wrap{position:relative;z-index:1;margin-bottom:20px;display:inline-block}
-.welcome-ball-wrap::after{content:'';position:absolute;inset:-28px;border-radius:50%;background:radial-gradient(circle,rgba(63,240,140,.3),transparent 68%);filter:blur(6px);z-index:-1;animation:pulseGlow 3.4s ease-in-out infinite}
-.welcome-ball{font-size:68px;display:inline-block;animation:ballFloat 3s ease-in-out infinite;filter:drop-shadow(0 12px 26px rgba(0,0,0,.4))}
-@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(-4deg)}33%{transform:translateY(-12px) rotate(4deg)}66%{transform:translateY(-6px) rotate(-1deg)}}
-.welcome-title{font-size:40px;font-weight:900;font-family:'Cairo',sans-serif;margin-bottom:9px;letter-spacing:-.04em;position:relative;z-index:1;text-shadow:0 4px 18px rgba(0,0,0,.32)}
-.welcome-title span{background:linear-gradient(120deg,var(--gold),#fff 45%,var(--gold-2));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shineText 5s linear infinite}
+/* =============================================================
+   LANDING PAGE — navbar + hero + sections
+   ============================================================= */
+#page-welcome{padding-bottom:0}
+
+/* ---------- NAVBAR ---------- */
+.lp-nav{position:sticky;top:0;z-index:90;background:var(--glass);backdrop-filter:blur(22px) saturate(180%);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
+body.dark .lp-nav{box-shadow:none}
+.lp-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4);padding:13px var(--s-5);max-width:1180px;margin:0 auto}
+.lp-brand{display:inline-flex;align-items:center;gap:10px;background:none}
+.lp-brand-logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:linear-gradient(135deg,var(--emerald-2),var(--emerald));box-shadow:0 6px 16px rgba(19,164,90,.32),inset 0 1px 0 rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.18)}
+.lp-brand-name{font-family:'Cairo',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.03em;color:var(--ink)}
+.lp-brand-name span{background:linear-gradient(110deg,var(--emerald-2),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lp-links{display:flex;align-items:center;gap:var(--s-2)}
+.lp-link{font-size:13.5px;font-weight:700;color:var(--ink-2);padding:8px 12px;border-radius:10px;transition:color var(--t-fast),background var(--t-fast)}
+.lp-link:hover{color:var(--emerald);background:var(--surface-soft)}
+.lp-nav-actions{display:flex;align-items:center;gap:9px}
+.lp-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:11px;font-size:16px;background:var(--surface-soft);border:1px solid var(--line-2);transition:background var(--t-fast),transform var(--t-fast)}
+.lp-icon:hover{background:var(--surface-muted)}.lp-icon:active{transform:scale(.92)}
+.lp-login{font-size:13.5px;font-weight:800;color:var(--ink-2);padding:10px 14px;border-radius:12px;min-height:40px;transition:color var(--t-fast),background var(--t-fast)}
+.lp-login:hover{color:var(--emerald);background:var(--surface-soft)}
+.lp-cta-sm{font-size:13.5px;font-weight:800;color:#fff;background:var(--g-btn);padding:10px 18px;border-radius:12px;min-height:40px;box-shadow:var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
+.lp-cta-sm:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-green-lg)}
+.lp-cta-sm:active{transform:scale(.96)}
+
+/* ---------- HERO ---------- */
+.lp-hero{position:relative;text-align:center;padding:64px var(--s-5) 56px;max-width:880px;margin:0 auto}
+.lp-hero-glow{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:min(560px,90%);height:340px;z-index:-1;pointer-events:none;
+  background:radial-gradient(50% 60% at 50% 40%,rgba(30,192,107,.18),transparent 70%),radial-gradient(40% 50% at 78% 30%,rgba(216,181,82,.16),transparent 70%);filter:blur(8px)}
+.lp-badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--emerald);background:var(--surface);border:1.5px solid rgba(19,164,90,.24);border-radius:999px;padding:8px 16px;box-shadow:var(--shadow-sm);margin-bottom:24px;animation:fadeUp var(--t-slow) var(--ease-out) both}
+.lp-title{font-family:'Cairo',sans-serif;font-size:clamp(32px,7.5vw,58px);font-weight:900;line-height:1.12;letter-spacing:-.035em;color:var(--ink);margin-bottom:20px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:40ms}
+.lp-title span{position:relative;background:linear-gradient(110deg,var(--emerald-2) 10%,var(--gold) 90%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shineText 6s linear infinite}
 @keyframes shineText{to{background-position:200% center}}
-.welcome-sub{font-size:15px;opacity:.78;margin-bottom:38px;position:relative;z-index:1;font-weight:500}
-.welcome-actions{display:flex;flex-direction:column;gap:13px;max-width:330px;margin:0 auto;position:relative;z-index:1}
-.welcome-cta{padding:18px;border-radius:var(--r-lg);font-size:15.5px;font-weight:800;min-height:var(--tap);position:relative;overflow:hidden;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),background var(--t-base)}
-.welcome-cta:active{transform:scale(.96)}
-.welcome-cta-primary{background:linear-gradient(135deg,#fff,#eef6f0);color:var(--forest);box-shadow:0 10px 30px rgba(63,240,140,.28),0 2px 8px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.9)}
-.welcome-cta-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 60%);pointer-events:none}
-.welcome-cta-primary:hover{transform:translate3d(0,-3px,0)}
-.welcome-cta-secondary{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(10px)}
-.welcome-cta-secondary:hover{background:rgba(255,255,255,.2);transform:translate3d(0,-3px,0)}
-.welcome-cta-ghost{background:transparent;color:rgba(255,255,255,.64);font-size:13px;min-height:44px}
-.welcome-cta-ghost:hover{color:#fff}
-.trust-row{display:flex;justify-content:center;gap:10px;margin-top:36px;position:relative;z-index:1}
-.trust-item{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:104px;padding:13px 8px;border-radius:var(--r-md);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px)}
-.trust-num{font-size:23px;font-weight:900;font-family:'Cairo',sans-serif;color:var(--gold-2)}
-.trust-label{font-size:10px;opacity:.74;font-weight:700}
+.lp-sub{font-size:clamp(15px,2.4vw,18px);line-height:1.75;color:var(--muted);max-width:620px;margin:0 auto 34px;font-weight:500;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:80ms}
+.lp-hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:120ms}
+.lp-btn-primary{display:inline-flex;align-items:center;gap:9px;background:var(--g-btn);color:#fff;font-size:15.5px;font-weight:800;padding:16px 30px;border-radius:var(--r-lg);min-height:var(--tap);box-shadow:var(--shadow-green);position:relative;overflow:hidden;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
+.lp-btn-primary::before{content:'';position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);transition:left var(--t-slower) var(--ease-out)}
+.lp-btn-primary:hover{transform:translate3d(0,-3px,0);box-shadow:var(--shadow-green-lg)}
+.lp-btn-primary:hover::before{left:150%}
+.lp-btn-primary:active{transform:scale(.97)}
+.lp-arrow{font-size:17px;transition:transform var(--t-fast)}
+.lp-btn-primary:hover .lp-arrow{transform:translateX(-4px)}
+.lp-btn-ghost{display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--ink-2);font-size:15px;font-weight:800;padding:16px 26px;border-radius:var(--r-lg);min-height:var(--tap);border:1.5px solid var(--line-2);box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast)}
+.lp-btn-ghost:hover{border-color:rgba(30,192,107,.4);color:var(--emerald);transform:translate3d(0,-2px,0);box-shadow:var(--shadow-sm)}
+.lp-btn-ghost:active{transform:scale(.98)}
+.lp-owner-link{display:inline-block;background:none;color:var(--muted);font-size:13px;font-weight:700;padding:8px;min-height:40px;transition:color var(--t-fast)}
+.lp-owner-link:hover{color:var(--emerald)}
+
+/* ---------- STATS ---------- */
+.lp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:46px auto 0;animation:fadeUp var(--t-slower) var(--ease-out) both;animation-delay:160ms}
+.lp-stat{background:var(--glass);backdrop-filter:blur(14px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r-xl);padding:20px 12px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base)}
+.lp-stat:hover{transform:translate3d(0,-5px,0);box-shadow:var(--shadow-lg)}
+.lp-stat-num{font-family:'Cairo',sans-serif;font-size:30px;font-weight:900;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  background:linear-gradient(120deg,var(--emerald-2),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lp-stat-lbl{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:8px}
+
+/* ---------- SECTIONS ---------- */
+.lp-section{max-width:1100px;margin:0 auto;padding:64px var(--s-5)}
+.lp-sec-head{text-align:center;max-width:600px;margin:0 auto 44px}
+.lp-eyebrow{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--emerald);text-transform:uppercase;margin-bottom:12px}
+.lp-h2{font-family:'Cairo',sans-serif;font-size:clamp(26px,4.5vw,40px);font-weight:900;letter-spacing:-.03em;color:var(--ink);line-height:1.2}
+.lp-h2 span{background:linear-gradient(110deg,var(--emerald-2),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lp-sec-sub{font-size:15px;line-height:1.75;color:var(--muted);margin-top:14px;font-weight:500}
+
+.lp-features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lp-feature{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:26px 22px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base),border-color var(--t-base)}
+.lp-feature:hover{transform:translate3d(0,-6px,0);box-shadow:var(--shadow-lg);border-color:rgba(30,192,107,.25)}
+.lp-feat-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:26px;margin-bottom:16px;
+  background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.1));border:1px solid rgba(19,164,90,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.lp-feat-title{font-size:17px;font-weight:900;color:var(--ink);letter-spacing:-.015em;margin-bottom:8px}
+.lp-feat-text{font-size:13.5px;line-height:1.7;color:var(--muted);font-weight:500}
+
+/* ---------- HOW IT WORKS ---------- */
+.lp-how{position:relative}
+.lp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}
+.lp-step{position:relative;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:30px 22px;box-shadow:var(--shadow-card)}
+.lp-step-num{width:52px;height:52px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fff;background:var(--g-btn);box-shadow:var(--shadow-green)}
+.lp-step-title{font-size:17px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.015em}
+.lp-step-text{font-size:13.5px;line-height:1.7;color:var(--muted);font-weight:500}
+
+/* ---------- CALLOUT ---------- */
+.lp-callout{padding:0 var(--s-5) 64px;max-width:1100px;margin:0 auto}
+.lp-callout-inner{position:relative;overflow:hidden;text-align:center;padding:54px var(--s-6);border-radius:var(--r-3xl);color:#fff;
+  background:radial-gradient(120% 90% at 90% -10%,rgba(63,240,140,.22),transparent 55%),linear-gradient(150deg,var(--forest),#0d3019 55%,#15673a);
+  box-shadow:0 30px 70px rgba(4,19,11,.4)}
+.lp-callout-inner::before{content:'';position:absolute;top:-90px;right:-40px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;animation:pulseGlow 5s ease-in-out infinite}
+.lp-callout-inner::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(70% 70% at 50% 30%,#000,transparent);pointer-events:none}
+.lp-callout-title{position:relative;z-index:1;font-family:'Cairo',sans-serif;font-size:clamp(24px,4.5vw,38px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;text-shadow:0 3px 14px rgba(0,0,0,.3)}
+.lp-callout-sub{position:relative;z-index:1;font-size:15px;line-height:1.75;opacity:.82;max-width:520px;margin:0 auto 28px;font-weight:500}
+.lp-callout-cta{position:relative;z-index:1;display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+.lp-btn-on-dark{background:linear-gradient(135deg,#fff,#eaf6ee);color:var(--forest);box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.9)}
+.lp-btn-outline-light{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);color:#fff;font-size:15px;font-weight:800;padding:16px 26px;border-radius:var(--r-lg);min-height:var(--tap);border:1.5px solid rgba(255,255,255,.32);backdrop-filter:blur(8px);transition:background var(--t-fast),transform var(--t-fast)}
+.lp-btn-outline-light:hover{background:rgba(255,255,255,.2);transform:translate3d(0,-2px,0)}
+.lp-btn-outline-light:active{transform:scale(.98)}
+
+/* ---------- FOOTER ---------- */
+.lp-footer{border-top:1px solid var(--line);padding:40px var(--s-5) 32px;max-width:1100px;margin:0 auto}
+.lp-footer-top{display:flex;align-items:center;justify-content:space-between;gap:var(--s-5);flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.lp-footer-brand{display:flex;align-items:center;gap:12px}
+.lp-footer-brand .lp-brand-name{font-size:19px}
+.lp-footer-tag{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+.lp-footer-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lp-link-btn{background:none;cursor:pointer}
+.lp-footer-bottom{text-align:center;font-size:12px;color:var(--soft);font-weight:600;padding-top:22px}
+
+/* ---------- DARK tweaks ---------- */
+body.dark .lp-badge{background:var(--surface);border-color:rgba(63,224,140,.22)}
+body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224,140,.18)}
+
+/* ---------- LANDING RESPONSIVE ---------- */
+@media(max-width:760px){
+  .lp-links{display:none}
+  .lp-login{display:none}
+  .lp-features,.lp-steps{grid-template-columns:1fr}
+  .lp-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .lp-section{padding:48px var(--s-5)}
+  .lp-hero{padding:44px var(--s-5) 40px}
+}
+@media(min-width:761px) and (max-width:1023px){
+  .lp-features{grid-template-columns:repeat(2,1fr)}
+}
 
 /* ---------- BOTTOM NAV ---------- */
 .bnav{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(28px) saturate(200%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:9px 12px max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -8px 34px rgba(4,19,11,.12)}
@@ -241,7 +328,7 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .nitem:active .nicon{transform:scale(.84)}
 .nitem.active .nicon svg{stroke-width:2.2}
 
-/* ---------- DAY & TIME (tap ≥ 48px) ---------- */
+/* ---------- DAY & TIME ---------- */
 .days-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .days-row::-webkit-scrollbar{display:none}
 .day-btn{border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:16px;padding:9px 11px;min-width:74px;min-height:var(--tap);font-size:11px;font-weight:800;flex-shrink:0;box-shadow:var(--shadow-xs);transition:all var(--t-base) var(--ease-out);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
@@ -322,20 +409,20 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .disclosure summary::-webkit-details-marker{display:none}
 .cta-row{display:flex;flex-direction:column;gap:0}
 
-/* ---------- PROGRESSIVE DISCLOSURE (الأوقات) ---------- */
+/* ---------- PROGRESSIVE DISCLOSURE ---------- */
 .times-section{opacity:1;transition:opacity var(--t-base)}
 .disclosure-hint{display:flex;align-items:center;gap:8px;padding:16px;border-radius:var(--r-md);background:var(--surface-soft);border:1px dashed var(--line-2);color:var(--muted);font-size:12.5px;font-weight:600}
 
-/* ---------- MODAL (transform/opacity + swipe) ---------- */
+/* ---------- MODAL ---------- */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(12px);opacity:0;transition:opacity var(--t-base)}
 .modal-overlay.show{display:flex;opacity:1}
 .modal{background:var(--surface);border-radius:var(--r-3xl) var(--r-3xl) 0 0;width:100%;max-width:var(--max);max-height:92vh;overflow-y:auto;padding:10px var(--s-5) max(24px,env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(3,16,9,.3);position:relative;-webkit-overflow-scrolling:touch;
   transform:translate3d(0,100%,0);transition:transform var(--t-slow) var(--ease-out)}
 .modal-overlay.show .modal{transform:translate3d(0,0,0)}
-.modal.dragging{transition:none}                 /* أثناء السحب لا انتقال */
+.modal.dragging{transition:none}
 .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-3xl) var(--r-3xl) 0 0;background:var(--g-gold);opacity:.9}
 .modal-handle{width:50px;height:5px;background:var(--line-2);border-radius:999px;margin:8px auto 18px;cursor:grab;touch-action:none}
-.modal-grip{padding-top:4px}                       /* منطقة سحب أوسع */
+.modal-grip{padding-top:4px}
 .modal-title{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.015em;margin-bottom:4px}
 .modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:500;display:flex;align-items:center;gap:4px}
 .summary-box{background:linear-gradient(135deg,rgba(30,192,107,.1),rgba(19,164,90,.06));border:1.5px solid rgba(19,164,90,.18);border-radius:var(--r-md);padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
@@ -349,6 +436,7 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .success-overlay.show .scard{transform:scale(1);opacity:1}
 .scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(30,192,107,.18),transparent 65%);pointer-events:none}
 .scard-emoji{font-size:58px;margin-bottom:14px;animation:ballFloat 2s ease-in-out infinite}
+@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(-4deg)}33%{transform:translateY(-12px) rotate(4deg)}66%{transform:translateY(-6px) rotate(-1deg)}}
 .scard-title{font-size:21px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
 .scard-text{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7}
 
@@ -369,7 +457,7 @@ body.dark .sk{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255
 .time-skeleton{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .time-skeleton>span{height:48px;border-radius:15px}
 
-/* ---------- EMPTY STATE (حالات الفراغ) ---------- */
+/* ---------- EMPTY STATE ---------- */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:56px 28px;gap:14px;animation:fadeUp var(--t-slow) var(--ease-out) both}
 .empty-icon{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.08));border:1px solid rgba(19,164,90,.16);box-shadow:var(--shadow-sm)}
 .empty-title{font-size:16.5px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
@@ -425,7 +513,7 @@ body.dark .econ-decision{color:#a7f3c9;background:rgba(19,164,90,.14)}
 .checkbox-row{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-2);font-weight:700;min-height:var(--tap);cursor:pointer}
 .checkbox-row input{width:18px;height:18px;accent-color:var(--emerald)}
 
-/* ---------- DARK overrides for white-ish helpers ---------- */
+/* ---------- DARK overrides ---------- */
 body.dark .search-bar{background:rgba(22,32,26,.97);border-color:rgba(255,255,255,.06)}
 body.dark .price-badge{background:rgba(16,24,19,.92);color:#7ff0ad}
 body.dark .place-cover{filter:saturate(.82) brightness(.85)}
@@ -457,29 +545,115 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
 }
 @media(min-width:1400px){:root{--max:1200px}.places-list{grid-template-columns:repeat(3,1fr)}.econ-grid{grid-template-columns:repeat(4,1fr)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ============ WELCOME ============ -->
+  <!-- ============ WELCOME / LANDING ============ -->
   <section class="page active" id="page-welcome">
-    <div class="welcome-hero">
-      <div class="welcome-ball-wrap"><span class="welcome-ball">⚽</span></div>
-      <h1 class="welcome-title">ال<span>مستديرة</span></h1>
-      <p class="welcome-sub">احجز ملعبك في ثوانٍ — بدون تعقيد</p>
-      <div class="welcome-actions">
-        <button class="welcome-cta welcome-cta-primary" data-action="browse">🏟️ تصفح الملاعب</button>
-        <button class="welcome-cta welcome-cta-secondary" data-go="playerLogin">دخول / إنشاء حساب</button>
-        <button class="welcome-cta welcome-cta-ghost" data-go="ownerLogin">دخول كمالك ملعب ←</button>
+
+    <!-- ---------- NAVBAR ---------- -->
+    <header class="lp-nav">
+      <div class="lp-nav-inner">
+        <button class="lp-brand" data-action="browse" aria-label="المستديرة">
+          <span class="lp-brand-logo">⚽</span>
+          <span class="lp-brand-name">ال<span>مستديرة</span></span>
+        </button>
+        <nav class="lp-links" aria-label="روابط الصفحة">
+          <a class="lp-link" href="#lp-features">المميزات</a>
+          <a class="lp-link" href="#lp-how">كيف يعمل</a>
+          <a class="lp-link" href="#lp-stats">إحصائيات</a>
+        </nav>
+        <div class="lp-nav-actions">
+          <button class="lp-icon" data-action="toggleTheme" aria-label="تبديل الوضع">🌙</button>
+          <button class="lp-login" data-go="playerLogin">تسجيل الدخول</button>
+          <button class="lp-cta-sm" data-action="browse">ابدأ الآن</button>
+        </div>
       </div>
-      <div class="trust-row">
-        <div class="trust-item"><div class="trust-num" id="trustPlaces">—</div><div class="trust-label">ملعب متاح</div></div>
-        <div class="trust-item"><div class="trust-num">⚡</div><div class="trust-label">حجز سريع</div></div>
-        <div class="trust-item"><div class="trust-num">✓</div><div class="trust-label">واتساب</div></div>
+    </header>
+
+    <!-- ---------- HERO ---------- -->
+    <div class="lp-hero">
+      <div class="lp-hero-glow" aria-hidden="true"></div>
+      <span class="lp-badge">⚽ منصّة حجز ملاعب ذكية</span>
+      <h1 class="lp-title">احجز ملعبك بثوانٍ مع <span>المستديرة</span></h1>
+      <p class="lp-sub">المنصّة الأحدث لحجز ملاعب كرة القدم. تصفّح الملاعب، شوف الأوقات المتاحة لحظياً، واحجز فوراً — مع تأكيد مباشر على واتساب.</p>
+      <div class="lp-hero-cta">
+        <button class="lp-btn-primary" data-action="browse">🏟️ تصفّح الملاعب <span class="lp-arrow">←</span></button>
+        <button class="lp-btn-ghost" data-go="playerLogin">دخول / إنشاء حساب</button>
+      </div>
+      <button class="lp-owner-link" data-go="ownerLogin">عندك ملعب؟ ادخل كمالك ←</button>
+
+      <div class="lp-stats" id="lp-stats">
+        <div class="lp-stat"><div class="lp-stat-num" id="trustPlaces">—</div><div class="lp-stat-lbl">ملعب متاح</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">⚡</div><div class="lp-stat-lbl">حجز فوري</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">24/7</div><div class="lp-stat-lbl">متاح دائماً</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">✓</div><div class="lp-stat-lbl">تأكيد واتساب</div></div>
       </div>
     </div>
+
+    <!-- ---------- FEATURES ---------- -->
+    <section class="lp-section" id="lp-features">
+      <div class="lp-sec-head">
+        <span class="lp-eyebrow">المميزات</span>
+        <h2 class="lp-h2">ليش <span>المستديرة</span>؟</h2>
+        <p class="lp-sec-sub">كل اللي بتحتاجه عشان تحجز ملعبك بسهولة — وكل اللي بيحتاجه المالك عشان يدير ملاعبه باحتراف.</p>
+      </div>
+      <div class="lp-features">
+        <div class="lp-feature"><div class="lp-feat-icon">⚡</div><div class="lp-feat-title">حجز فوري</div><div class="lp-feat-text">اختر اليوم والوقت واحجز خلال ثوانٍ — بدون اتصالات ولا انتظار.</div></div>
+        <div class="lp-feature"><div class="lp-feat-icon">📍</div><div class="lp-feat-title">ملاعب قريبة منك</div><div class="lp-feat-text">تصفّح الملاعب حسب المنطقة، وشوف الموقع والسعر قبل ما تحجز.</div></div>
+        <div class="lp-feature"><div class="lp-feat-icon">🕐</div><div class="lp-feat-title">أوقات لحظية</div><div class="lp-feat-text">الأوقات المتاحة تتحدّث تلقائياً، فما بتحجز وقت محجوز أبداً.</div></div>
+        <div class="lp-feature"><div class="lp-feat-icon">💬</div><div class="lp-feat-title">تأكيد على واتساب</div><div class="lp-feat-text">بيوصلك تأكيد الحجز مباشرة على الواتساب من إدارة الملعب.</div></div>
+        <div class="lp-feature"><div class="lp-feat-icon">📊</div><div class="lp-feat-title">لوحة تحكم للمالك</div><div class="lp-feat-text">عندك ملعب؟ لوحة كاملة بإحصائيات وإيرادات وقرارات ذكية.</div></div>
+        <div class="lp-feature"><div class="lp-feat-icon">⭐</div><div class="lp-feat-title">تقييمات حقيقية</div><div class="lp-feat-text">شوف تقييمات اللاعبين الحقيقية قبل ما تختار ملعبك.</div></div>
+      </div>
+    </section>
+
+    <!-- ---------- HOW IT WORKS ---------- -->
+    <section class="lp-section lp-how" id="lp-how">
+      <div class="lp-sec-head">
+        <span class="lp-eyebrow">كيف يعمل</span>
+        <h2 class="lp-h2">3 خطوات وبتكون <span>جاهز تلعب</span></h2>
+      </div>
+      <div class="lp-steps">
+        <div class="lp-step"><div class="lp-step-num">1</div><div class="lp-step-title">تصفّح واختر</div><div class="lp-step-text">افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.</div></div>
+        <div class="lp-step"><div class="lp-step-num">2</div><div class="lp-step-title">حدّد الوقت</div><div class="lp-step-text">اختر اليوم والوقت المتاح اللي بناسبك من جدول لحظي.</div></div>
+        <div class="lp-step"><div class="lp-step-num">3</div><div class="lp-step-title">أكّد واحجز</div><div class="lp-step-text">أرسل الطلب وبيوصلك التأكيد على واتساب — جاهز تلعب!</div></div>
+      </div>
+    </section>
+
+    <!-- ---------- CALLOUT ---------- -->
+    <section class="lp-callout">
+      <div class="lp-callout-inner">
+        <h2 class="lp-callout-title">جاهز تحجز ملعبك الجاي؟</h2>
+        <p class="lp-callout-sub">صار حجز الملاعب أسهل من أي وقت. ابدأ بدون حساب أو سجّل دخولك لمتابعة حجوزاتك.</p>
+        <div class="lp-callout-cta">
+          <button class="lp-btn-primary lp-btn-on-dark" data-action="browse">ابدأ مجاناً <span class="lp-arrow">←</span></button>
+          <button class="lp-btn-outline-light" data-go="ownerLogin">عندي ملعب</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="lp-footer">
+      <div class="lp-footer-top">
+        <div class="lp-footer-brand">
+          <span class="lp-brand-logo">⚽</span>
+          <div>
+            <div class="lp-brand-name">ال<span>مستديرة</span></div>
+            <div class="lp-footer-tag">احجز ملعبك بثوانٍ</div>
+          </div>
+        </div>
+        <nav class="lp-footer-links" aria-label="روابط أسفل الصفحة">
+          <a class="lp-link" href="#lp-features">المميزات</a>
+          <a class="lp-link" href="#lp-how">كيف يعمل</a>
+          <button class="lp-link lp-link-btn" data-go="playerLogin">تسجيل الدخول</button>
+          <button class="lp-link lp-link-btn" data-go="ownerLogin">دخول المالك</button>
+        </nav>
+      </div>
+      <div class="lp-footer-bottom">© 2026 المستديرة — جميع الحقوق محفوظة.</div>
+    </footer>
   </section>
 
   <!-- ============ PLAYER LOGIN ============ -->
@@ -738,7 +912,6 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
       <div class="field-title">اختر اليوم:</div>
       <div class="days-row" id="bkDays" style="margin-bottom:14px"></div>
-      <!-- الإفشاء التدريجي: قسم الأوقات يظهر فقط بعد اختيار اليوم -->
       <div id="bkTimesSection" class="times-section">
         <div class="field-title">اختر وقت البداية (الحجز ساعتان):</div>
         <div class="times-grid" id="bkTimes" style="margin-bottom:18px"></div>
@@ -858,20 +1031,11 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
 </div>
 <script>
 /* =============================================================
-   المستديرة · app.js
-   المعمارية: وحدة واحدة مغلّفة (IIFE) — صفر متغيرات عامة في window.
-   الأقسام: Config → DOM utils → Utils → Session → API → State
-            → UI(toast/loading) → Modal(+swipe) → Render → Actions → Router → Init
-   مبادئ:
-   • بناء DOM آمن عبر h() باستخدام textContent (يمنع XSS) — لا نمرّر بيانات
-     المستخدم عبر innerHTML إطلاقاً (innerHTML مسموح فقط لأيقونات SVG ثابتة موثوقة).
-   • كل التعامل مع الأحداث عبر تفويض (event delegation) و data-attributes.
-   • الحركات تعتمد transform/opacity فقط (60fps).
+   المستديرة · app.js — مدمج في ملف واحد
    ============================================================= */
 (() => {
 "use strict";
 
-/* ===================== CONFIG ===================== */
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycby2x_4M12nac0FIk-kVOsB-lg0cOSI283cvjT5yR5cv0BIqiI2u6Pmuf4XEa4bGy6bl/exec",
   CACHE_KEY: "mustadaira:places_cache_v8",
@@ -887,7 +1051,6 @@ const DEFAULT_SLOTS = [
   {label:'8:00 - 10:00 م',hour:20},{label:'10:00 - 12:00 م',hour:22}
 ];
 
-/* أيقونات SVG ثابتة موثوقة (تُحقن كـ innerHTML بأمان لأنها ليست بيانات مستخدم) */
 const ICON = {
   pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
   cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>',
@@ -899,12 +1062,9 @@ const ICON = {
   wa:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884Z"/></svg>'
 };
 
-/* ===================== DOM UTILS ===================== */
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-/* h(): مُنشئ عناصر آمن. النصوص دائماً textContent ⇒ لا XSS.
-   props.html محجوز فقط لسلاسل SVG الثابتة (ICON.*). */
 function h(tag, props, ...kids) {
   const e = document.createElement(tag);
   if (props) for (const k in props) {
@@ -912,7 +1072,7 @@ function h(tag, props, ...kids) {
     if (v == null || v === false) continue;
     if (k === 'class') e.className = v;
     else if (k === 'text') e.textContent = v;
-    else if (k === 'html') e.innerHTML = v;                 // SVG ثابت فقط
+    else if (k === 'html') e.innerHTML = v;
     else if (k === 'dataset') Object.assign(e.dataset, v);
     else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
     else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
@@ -931,7 +1091,6 @@ const ico = (name, cls='svg-sm') => h('span', { class:cls, html:ICON[name], styl
 const clear = (el) => { while (el && el.firstChild) el.removeChild(el.firstChild); };
 const setText = (id, val) => { const el = $('#'+id); if (el) el.textContent = val; };
 
-/* ===================== UTILS ===================== */
 function debounce(fn, wait){
   let t; return function(...a){ clearTimeout(t); t = setTimeout(() => fn.apply(this, a), wait); };
 }
@@ -980,13 +1139,8 @@ function isFieldAvailable(fid, total){ const fb=State.bookedSlots[fid]||{}; for(
 const isPlaceAvailable = (p) => p.fields.some(f=>isFieldAvailable(f.field_id, fieldSlots(f).length));
 const placeLocation = (p) => { const c=String(p?.city||'').trim(), r=String(p?.region||'').trim(); return (c&&r)?`${c} - ${r}`:(c||r||''); };
 
-/* ===================== SESSION (إدارة الجلسات) ===================== */
-/* ملاحظة أمنية: التخزين الأكثر أماناً للإنتاج هو httpOnly + Secure + SameSite
-   cookies تُضبط من الخادم — غير ممكن من جهة العميل وحده مع Apps Script.
-   هنا نغلّف التوكنات تحت namespace واحد مع صلاحية زمنية (TTL) وتنظيف تلقائي،
-   بدل تركها متغيرات عامة مكشوفة ومبعثرة. */
 const Session = (() => {
-  const NS = 'mustadaira:'; const TTL = 30 * 864e5; // 30 يوماً
+  const NS = 'mustadaira:'; const TTL = 30 * 864e5;
   const set = (k, token) => { try { localStorage.setItem(NS+k, JSON.stringify({ token, exp: Date.now()+TTL })); } catch(_){} };
   const get = (k) => { try { const r = JSON.parse(localStorage.getItem(NS+k)||'null'); if(!r||!r.token) return ''; if(r.exp && Date.now()>r.exp){ del(k); return ''; } return r.token; } catch(_){ return ''; } };
   const del = (k) => { try { localStorage.removeItem(NS+k); } catch(_){} };
@@ -999,7 +1153,6 @@ const Session = (() => {
   };
 })();
 
-/* ===================== API ===================== */
 const API = {
   async get(action, extra={}) {
     const params = new URLSearchParams({ action, ...extra });
@@ -1014,7 +1167,6 @@ const API = {
   }
 };
 
-/* ===================== STATE (حالة مغلّفة) ===================== */
 const State = {
   places: [], publicBookings: [], bookedSlots: {},
   player: null, owner: null, ownerData: null, guest: false,
@@ -1022,9 +1174,8 @@ const State = {
   showAllPlayer: false, showAllOwner: false,
   editingField: 'edit',
   refreshTimer: null,
-  // اختيارات المستخدم (بدل المتغيرات العامة المتفرّقة)
   detail: { place:null, field:null, date: today(), hour:null },
-  booking:{ place:null, field:null, date:null, hour:null },   // null date ⇒ إفشاء تدريجي
+  booking:{ place:null, field:null, date:null, hour:null },
   manual: { fieldId:null, date: today(), hour:null },
   review: { rating:0, placeId:null },
 };
@@ -1071,7 +1222,6 @@ async function loadData(opts={}){
 }
 function updateTrust(){ const el=$('#trustPlaces'); if(el && State.places.length) el.textContent = State.places.reduce((s,p)=>s+(p.fields||[]).length,0)+'+'; }
 
-/* ===================== UI: TOAST / LOADING ===================== */
 function toast(message, type='error'){
   const el = $('#toast'); if(!el) return;
   const icons = { success:'✓', error:'✕', warn:'!' };
@@ -1083,18 +1233,16 @@ function toast(message, type='error'){
   toast._t = setTimeout(() => el.classList.remove('show'), 3400);
 }
 
-/* مؤشّر تحميل على الزر + تعطيله (يمنع النقر المزدوج Double-Submit) */
 async function withLoading(btn, fn){
   if (!btn || btn.dataset.busy === '1') return;
   btn.dataset.busy = '1';
-  const original = btn.innerHTML;                 // محتوى الزر نفسه (موثوق) — نعيده لاحقاً
+  const original = btn.innerHTML;
   btn.classList.add('is-loading'); btn.setAttribute('disabled','');
   clear(btn); btn.append(h('span', { class:'spinner' + (btn.classList.contains('cbtn')?' dark':'') }));
   try { return await fn(); }
   finally { btn.classList.remove('is-loading'); btn.removeAttribute('disabled'); btn.innerHTML = original; delete btn.dataset.busy; }
 }
 
-/* skeleton placeholders */
 function placesSkeleton(){
   const one = () => h('div',{class:'skeleton-card'}, h('div',{class:'sk sk-img'}),
     h('div',{class:'sk-body'}, h('div',{class:'sk sk-line w70'}), h('div',{class:'sk sk-line w88'}), h('div',{class:'sk sk-line w45'})));
@@ -1106,7 +1254,6 @@ function timeSkeleton(el, count=6){ if(!el) return; clear(el);
   el.append(wrap);
 }
 
-/* حالة فراغ جذّابة (Empty State) بدل النص العادي */
 function emptyState({icon='🗂️', title, sub, actionLabel, action}){
   const box = h('div',{class:'empty'},
     h('div',{class:'empty-icon'}, icon),
@@ -1117,13 +1264,11 @@ function emptyState({icon='🗂️', title, sub, actionLabel, action}){
   return box;
 }
 
-/* ===================== MODAL (+ swipe to close) ===================== */
 const Modal = {
   open(id){ const o=$('#'+id); if(!o) return; this.closeAll(o); o.classList.add('show'); },
   close(id){ const o = id ? $('#'+id) : $('.modal-overlay.show'); if(o) o.classList.remove('show'); },
   closeAll(except){ $$('.modal-overlay.show, .success-overlay.show').forEach(o=>{ if(o!==except) o.classList.remove('show'); }); },
 };
-/* السحب لأسفل لإغلاق النافذة — transform فقط لضمان 60fps */
 function enableSwipe(overlay){
   const modal = $('.modal', overlay); if(!modal) return;
   const grip = $('.modal-grip', modal) || modal;
@@ -1134,7 +1279,6 @@ function enableSwipe(overlay){
   grip.addEventListener('touchend', end); grip.addEventListener('touchcancel', end);
 }
 
-/* ===================== RENDER: HOME / PLACES ===================== */
 function getRegions(){ const seen=new Set(), out=[]; State.places.forEach(p=>{ const r=String(p.region||'').trim(); if(!r||normalizeText(r)==='all')return; const k=normalizeText(r); if(seen.has(k))return; seen.add(k); out.push(r); }); return out; }
 function renderRegionTabs(){
   const el = $('#regionTabs'); if(!el) return;
@@ -1161,9 +1305,8 @@ function placeCard(p){
   const price = mn===mx ? `${mn} JD` : `${mn}-${mx} JD`;
   const oneField=(p.fields||[]).length===1;
   const img = p.fields?.[0]?.image_url;
-
   const cover = h('div',{class:'place-cover'});
-  if (img) cover.append(h('img',{ src:img, alt:p.place_name||'ملعب', loading:'lazy', decoding:'async' }));  // Lazy loading
+  if (img) cover.append(h('img',{ src:img, alt:p.place_name||'ملعب', loading:'lazy', decoding:'async' }));
   else cover.append(h('div',{class:'place-cover-emoji'},'⚽'));
   cover.append(
     h('div',{class:'place-top-badges'},
@@ -1175,10 +1318,8 @@ function placeCard(p){
         h('div',{class:'place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(p)),
         h('div',{class:'place-rating'}, '⭐ '+ratingText(p))))
   );
-
   const bookBtn = h('button',{class:'place-book-btn'}, oneField?'احجز →':'اختر ملعب →');
   bookBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(p.place_id); });
-
   const card = h('div',{class:'place-card'},
     cover,
     amenitiesRow(p.amenities),
@@ -1209,29 +1350,22 @@ function renderPlaces(){
   list.forEach(p => el.append(placeCard(p)));
 }
 
-/* ===================== RENDER: DETAIL ===================== */
 async function openDetail(placeId){
   if (!State.places.length){ placesSkeleton(); await loadData(); }
   else { try { await loadPublicBookings(); } catch(_){ toast('ما قدرنا نحدّث الأوقات، ممكن تكون قديمة شوي','warn'); } }
   const place = State.places.find(p=>String(p.place_id)===String(placeId)); if(!place) return;
   State.detail = { place, field: place.fields[0], date: today(), hour: null };
-
   setText('dName', place.place_name);
   const dCity=$('#dCity'); clear(dCity); dCity.append(ico('pin','svg-sm'), ' '+placeLocation(place));
   setText('dPrice', place.fields[0].price+' JD');
-
   const badges=$('#dBadges'); clear(badges);
   badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(place)));
-
-  // الغلاف (lazy image)
   const hero=$('#detailHero'); $$('#detailHero img').forEach(n=>n.remove());
   const emoji=$('#detailEmoji');
   if (place.fields?.[0]?.image_url){ emoji.style.display='none'; hero.insertBefore(h('img',{src:place.fields[0].image_url,alt:place.place_name,loading:'lazy'}), hero.firstChild); }
   else { emoji.style.display=''; hero.style.background='linear-gradient(160deg,var(--forest),#155e34)'; }
-
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
-
   renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats();
   showPage('detail');
 }
@@ -1278,7 +1412,6 @@ function renderDetailTimes(){
   slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
 }
 
-/* ===================== RENDER: ECONOMIC (place / player) ===================== */
 const bookingsForPlace = (id) => (State.publicBookings||[]).filter(b=>String(b.place_id)===String(id));
 const placeWeeklySlots = (p) => (p?.fields||[]).reduce((s,f)=>s+fieldSlots(f).length,0)*7;
 function placeTakenThisWeek(p){ const ids=new Set((p?.fields||[]).map(f=>String(f.field_id))); const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i))); return (State.publicBookings||[]).filter(b=>ids.has(String(b.field_id))&&days.has(String(b.date).split('T')[0])&&!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length; }
@@ -1319,9 +1452,7 @@ function renderPlayerStats(list){
   $('.card', el).style.marginBottom='15px';
 }
 
-/* ===================== RENDER: BOOKING MODAL (Progressive Disclosure) ===================== */
 function openBookingModal(){
-  // يُفتح من صفحة التفاصيل. الإفشاء التدريجي: لا يوم محدد ⇒ الأوقات مخفية حتى يختار المستخدم يوماً.
   if (!Session.player()){ toast('سجّل دخولك أول عشان تحجز','warn'); showPage('playerLogin'); return; }
   const { place, field } = State.detail;
   State.booking = { place, field, date:null, hour:null };
@@ -1331,7 +1462,7 @@ function openBookingModal(){
   setText('bkRating', ratingText(place));
   $('#bkName').value = State.player?.name || '';
   const ph=$('#bkPhone'); ph.value = State.player?.phone || ''; ph.readOnly = !!State.player;
-  renderBookingDays(); toggleBookingTimes();   // يبدأ مخفياً
+  renderBookingDays(); toggleBookingTimes();
   Modal.open('modal-booking');
 }
 function renderBookingDays(){
@@ -1347,7 +1478,7 @@ function renderBookingDays(){
 }
 function toggleBookingTimes(){
   const hasDay = !!State.booking.date;
-  $('#bkTimesSection').hidden = !hasDay;        // يظهر بعد اختيار اليوم
+  $('#bkTimesSection').hidden = !hasDay;
   $('#bkTimesHint').hidden = hasDay;
 }
 function renderBookingTimes(){
@@ -1357,7 +1488,6 @@ function renderBookingTimes(){
   slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.booking.hour===s.hour, ()=>{ State.booking.hour=s.hour; renderBookingTimes(); })));
 }
 
-/* ===================== RENDER: PLAYER BOOKINGS ===================== */
 function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
   const status = String(b.status||'pending').toLowerCase();
@@ -1421,7 +1551,6 @@ async function playerCancelBooking(btn, rowNumber, label){
   });
 }
 
-/* ===================== RENDER: OWNER DASHBOARD ===================== */
 async function loadOwnerDashboard(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
   const el=$('#ownerBookings'); clear(el); el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--muted)'}}, 'جاري تحميل الحجوزات...'));
@@ -1556,7 +1685,6 @@ function renderOwnerFields(){
   });
 }
 
-/* ===================== ACTIONS (controllers) ===================== */
 async function updateBookingStatus(btn, rowNumber, status){
   const booking=(State.ownerData?.bookings||[]).find(b=>Number(b.row_number)===Number(rowNumber));
   let reason='';
@@ -1582,7 +1710,6 @@ function sendWhatsApp(b, status, reason=''){
   if(!msg) return; setTimeout(()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank'),500);
 }
 
-/* ---- Reason modal as a Promise ---- */
 function askReason(title, hint, confirmLabel='تأكيد'){
   return new Promise(resolve=>{
     const overlay=$('#modal-reason'), input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
@@ -1593,7 +1720,6 @@ function askReason(title, hint, confirmLabel='تأكيد'){
   });
 }
 
-/* ---- Manual booking ---- */
 function manualField(){ return (State.ownerData?.fields||[]).find(f=>String(f.field_id)===String(State.manual.fieldId)); }
 async function openManual(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
@@ -1618,7 +1744,6 @@ function renderManualTimes(){
   fieldSlots(f).forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.manual.hour===s.hour, ()=>{ State.manual.hour=s.hour; renderManualTimes(); })));
 }
 
-/* ---- Fields modal ---- */
 function openEditField(fieldId){
   State.editingField='edit';
   const f=(State.ownerData.fields||[]).find(x=>String(x.field_id)===String(fieldId)); if(!f)return;
@@ -1637,7 +1762,6 @@ function openAddField(){
   Modal.open('modal-field');
 }
 
-/* ---- Review ---- */
 function openReview(){
   const p=State.detail.place; if(!p)return;
   State.review={ rating:0, placeId:String(p.place_id) }; setRating(0);
@@ -1646,17 +1770,14 @@ function openReview(){
 }
 function setRating(r){ State.review.rating=r; $$('.star').forEach((s,i)=>s.classList.toggle('active', i<r)); }
 
-/* ===================== ROUTER ===================== */
 const NAV_OF = { home:'player', bookings:'player', account:'player', owner:'owner' };
 function showPage(name){
   $$('.page').forEach(p=>p.classList.remove('active'));
   const page=$('#page-'+name); if(page) page.classList.add('active');
-  // أشرطة التنقّل
   const nav=NAV_OF[name];
   $('#nav-player').classList.toggle('show', nav==='player');
   $('#nav-owner').classList.toggle('show', nav==='owner');
   $$('#nav-player .nitem').forEach(n=>n.classList.toggle('active', n.dataset.nav===name));
-  // خطافات الصفحات
   if (name==='home') renderPlaces();
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast('سجّل دخولك عشان تشوف حجوزاتك','warn'); return showPage('playerLogin'); } loadPlayerBookings(); }
   if (name==='account'){ if(!Session.player()){ return showPage('playerLogin'); } $('#accName').value=State.player?.name||''; $('#accPhone').value=State.player?.phone||''; }
@@ -1665,12 +1786,10 @@ function showPage(name){
   window.scrollTo({ top:0, behavior:'instant' });
 }
 
-/* تحديث تلقائي للأوقات على الصفحات الحيّة فقط */
 function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active'); }
 async function refreshVisible(){ if (document.hidden || !autoRefreshActive()) return; await loadData(); if($('#page-home').classList.contains('active')) renderPlaces(); if($('#page-detail').classList.contains('active')&&State.detail.field){ renderDetailDays(); renderDetailTimes(); } }
 function manageAutoRefresh(){ const run=autoRefreshActive()&&!document.hidden; if(run&&!State.refreshTimer)State.refreshTimer=setInterval(refreshVisible,CONFIG.AUTO_REFRESH_MS); if(!run&&State.refreshTimer){clearInterval(State.refreshTimer);State.refreshTimer=null;} }
 
-/* ===================== AUTH ===================== */
 async function browse(){
   State.guest=true; showPage('home'); placesSkeleton();
   await loadData(); renderPlaces();
@@ -1682,7 +1801,7 @@ async function playerLogin(btn){
     try{
       const res=await API.get('playerLogin',{phone,password});
       if(!res.success){ toast(res.message||'ما زبط الدخول، جرّب مرة ثانية','error'); return; }
-      Session.setOwner('') /* لا مالك */; Session.setPlayer(res.player_token);
+      Session.setOwner(''); Session.setPlayer(res.player_token);
       State.player=res.player; State.guest=false;
       setText('playerWelcome','أهلاً '+(State.player.name||'بك'));
       if(!State.places.length){ placesSkeleton(); await loadData(); }
@@ -1734,7 +1853,6 @@ async function saveAccount(btn){
   });
 }
 
-/* ---- booking confirm ---- */
 async function confirmBooking(btn){
   if(!Session.player()){ toast('لازم تسجل دخول أولاً','warn'); showPage('playerLogin'); return; }
   const name=$('#bkName').value.trim(), phone=$('#bkPhone').value.trim();
@@ -1797,7 +1915,6 @@ async function saveField(btn){
   });
 }
 
-/* ===================== THEME ===================== */
 function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
@@ -1806,7 +1923,6 @@ function applyTheme(theme){
 }
 function toggleTheme(){ const t = document.body.classList.contains('dark')?'light':'dark'; Session.setTheme(t); applyTheme(t); }
 
-/* ===================== EVENT DELEGATION ===================== */
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, toggleTheme,
   search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
@@ -1823,19 +1939,13 @@ document.addEventListener('click', (e)=>{
   const act=e.target.closest('[data-action]'); if(!act) return;
   const fn=Actions[act.dataset.action]; if(fn) fn(act, e);
 });
-// إغلاق النافذة عند الضغط على الخلفية
 document.addEventListener('click', (e)=>{ const o=e.target.closest('.modal-overlay,.success-overlay'); if(o&&e.target===o) o.classList.remove('show'); });
-// بحث مع تأخير (Debounce 300ms)
 $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
-// الفلاتر في لوحة المالك
 $('#ownerDateFilter')?.addEventListener('change', renderOwnerBookings);
 $('#ownerFieldFilter')?.addEventListener('change', renderOwnerBookings);
-// تحديث تلقائي عند العودة للتبويب
 document.addEventListener('visibilitychange', ()=>{ manageAutoRefresh(); if(!document.hidden&&autoRefreshActive()) refreshVisible(); });
-// تفعيل السحب لإغلاق كل النوافذ
 $$('.modal-overlay').forEach(enableSwipe);
 
-/* ===================== INIT ===================== */
 async function init(){
   applyTheme(Session.theme());
   loadData().then(updateTrust);
@@ -1847,14 +1957,13 @@ async function init(){
       const res=await API.get('getPlayerBookings',{ player_token:Session.player() });
       if (res.success){ State.player=res.player; State.guest=false; setText('playerWelcome','أهلاً '+(State.player.name||'بك')); showPage('home'); placesSkeleton(); await loadData(); renderPlaces(); return; }
       Session.clear();
-    }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
+    }catch(_){}
   }
   showPage('welcome');
 }
 init();
 
 })();
-
 </script>
 </body>
 </html>
