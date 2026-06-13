@@ -51,16 +51,16 @@
 }
 
 body.dark{
-  /* قاعدة كحلية/نيلية عميقة (مستوحاة من واجهات SaaS الحديثة) — مع إبقاء الهوية خضراء/ذهبية */
-  --forest:#0b1024; --forest-2:#141b3c; --emerald:#1fb368; --emerald-2:#2bd07c; --neon:#4ff09a;
-  --gold:#e6c46a; --gold-2:#f8df8f; --gold-glow:rgba(230,196,106,.38);
-  --cream:#080c1c; --surface:#141a33; --surface-soft:#1b2342; --surface-muted:#10152b;
-  --input-bg:#1b2342; --ink:#eef1fb; --ink-2:#c4cbe6; --muted:#8d94b6; --soft:#5e6789;
-  --soft-green:#11281d; --soft-blue:#151e3c; --soft-yellow:#2a230d; --soft-red:#2c1320;
-  --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.12);
-  --glass:rgba(20,27,52,.66); --glass-brd:rgba(255,255,255,.08);
-  --shadow-card:0 12px 38px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.3);
-  --shadow-lg:0 24px 56px rgba(0,0,0,.6),0 8px 18px rgba(0,0,0,.34);
+  /* قاعدة فحمية خضراء داكنة — متّسقة مع الهوية الخضراء/الذهبية (لا كحلي/نيلي) */
+  --forest:#06120c; --forest-2:#0c2014; --emerald:#1fb866; --emerald-2:#2bd07c; --neon:#4ff09a;
+  --gold:#d9bd6b; --gold-2:#eccf82; --gold-glow:rgba(217,189,107,.3);
+  --cream:#07110c; --surface:#101b14; --surface-soft:#16241a; --surface-muted:#0c160f;
+  --input-bg:#142019; --ink:#edf5ef; --ink-2:#c4d1c7; --muted:#8f9f93; --soft:#5d6c62;
+  --soft-green:#0f2618; --soft-blue:#10241f; --soft-yellow:#241d0b; --soft-red:#2a1212;
+  --line:rgba(255,255,255,.06); --line-2:rgba(255,255,255,.1);
+  --glass:rgba(16,27,20,.7); --glass-brd:rgba(255,255,255,.07);
+  --shadow-card:0 8px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.3);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.55),0 6px 14px rgba(0,0,0,.32);
 }
 
 /* ---------- BASE ---------- */
@@ -76,19 +76,17 @@ body{display:flex;justify-content:center;background:var(--cream);font-size:14px;
     radial-gradient(50vw 38vh at 8% 8%, rgba(216,181,82,.12), transparent 58%),
     radial-gradient(60vw 50vh at 50% 116%, rgba(19,164,90,.12), transparent 60%),
     linear-gradient(180deg,#eef3ed,#f5f8f3 55%,#e9efe8)}
-#app::after{content:'';position:fixed;inset:-20% -10%;z-index:-1;pointer-events:none;opacity:.55;
+#app::after{content:'';position:fixed;inset:-20% -10%;z-index:-1;pointer-events:none;opacity:.3;
   background:
-    radial-gradient(38vw 38vw at 78% 12%, rgba(63,240,140,.16), transparent 60%),
-    radial-gradient(34vw 34vw at 16% 30%, rgba(216,181,82,.12), transparent 62%);
-  filter:blur(10px);animation:auroraDrift 22s ease-in-out infinite alternate}
+    radial-gradient(38vw 38vw at 78% 12%, rgba(63,240,140,.12), transparent 62%),
+    radial-gradient(34vw 34vw at 16% 30%, rgba(216,181,82,.09), transparent 64%);
+  filter:blur(6px)}  /* خلفية شبه ثابتة وهادئة (أُزيلت حركة auroraDrift) */
 body.dark #app::before{background:
-    radial-gradient(60vw 42vh at 85% -6%, rgba(43,208,124,.18), transparent 60%),
-    radial-gradient(50vw 38vh at 8% 8%, rgba(230,196,106,.10), transparent 58%),
-    radial-gradient(58vw 46vh at 50% 112%, rgba(70,96,210,.20), transparent 62%),
-    linear-gradient(180deg,#0a0f28,#0d1432 55%,#080b1e)}
-body.dark #app::after{opacity:.5;background:
-    radial-gradient(38vw 38vw at 78% 12%, rgba(43,208,124,.16), transparent 60%),
-    radial-gradient(34vw 34vw at 16% 30%, rgba(96,118,225,.16), transparent 62%)}
+    radial-gradient(60vw 40vh at 85% -6%, rgba(43,208,124,.10), transparent 62%),
+    radial-gradient(55vw 44vh at 50% 112%, rgba(12,32,20,.55), transparent 62%),
+    linear-gradient(180deg,#06110b,#091610 55%,#050d09)}
+body.dark #app::after{opacity:.22;background:
+    radial-gradient(36vw 36vw at 80% 14%, rgba(43,208,124,.12), transparent 62%)}
 @keyframes auroraDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-3%,2%,0) scale(1.08)}100%{transform:translate3d(3%,-2%,0) scale(1.04)}}
 
 h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:900;letter-spacing:-.02em}
@@ -127,9 +125,7 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);border-radius:var(--r-lg);font-weight:800;letter-spacing:.01em;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)}
 .sbtn{width:100%;background:var(--g-btn)!important;color:#fff;padding:15px;font-size:15px;box-shadow:var(--shadow-green);min-height:var(--tap)}
 .sbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 55%);pointer-events:none}
-.sbtn::before{content:'';position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.32),transparent);transform:skewX(-18deg);transition:left var(--t-slower) var(--ease-out);pointer-events:none}
-.sbtn:hover{transform:translate3d(0,-3px,0);box-shadow:var(--shadow-green-lg)}
-.sbtn:hover::before{left:150%}
+.sbtn:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-green)}
 .sbtn:active{transform:translate3d(0,1px,0) scale(.98);opacity:.95}
 .cbtn{width:100%;background:var(--surface);color:var(--ink-2);border:1.5px solid var(--line-2);border-radius:var(--r-lg);padding:14px;font-size:13px;font-weight:800;margin-top:10px;min-height:var(--tap);
   transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast)}
@@ -153,22 +149,21 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .badge-yellow{background:var(--surface);color:#92400e;border:1.5px solid rgba(245,158,11,.28)}
 .badge-blue{background:var(--soft-blue);color:#1d4ed8;border:1.5px solid rgba(29,78,216,.16)}
 .badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;flex-shrink:0}
-.badge-green::before{background:#16c163;box-shadow:0 0 0 3px rgba(22,193,99,.22);animation:pulseDot 2s ease-in-out infinite}
+.badge-green::before{background:#16c163;box-shadow:0 0 0 3px rgba(22,193,99,.18)}
 .badge-red::before{background:#dc2626}.badge-yellow::before{background:#f59e0b}
-@keyframes pulseDot{0%,100%{box-shadow:0 0 0 3px rgba(22,193,99,.22)}50%{box-shadow:0 0 0 5px rgba(22,193,99,.08)}}
 
 /* ---------- HEADERS ---------- */
 .app-header{color:#fff;position:relative;overflow:hidden;
   background:radial-gradient(120% 90% at 90% -10%, rgba(63,240,140,.16), transparent 55%),linear-gradient(160deg,var(--forest) 0%,var(--forest-2) 45%,#0e4427 100%);
   box-shadow:0 16px 44px rgba(4,19,11,.34)}
-.app-header::before{content:'';position:absolute;top:-90px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow) 0%,transparent 65%);animation:pulseGlow 5s ease-in-out infinite;pointer-events:none}
+.app-header::before{content:'';position:absolute;top:-90px;left:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow) 0%,transparent 68%);opacity:.6;pointer-events:none}
 @keyframes pulseGlow{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.18);opacity:1}}
 .app-header>*{position:relative;z-index:1}
 .app-header.home{padding:22px var(--s-5) 72px;border-radius:0 0 var(--r-3xl) var(--r-3xl)}
 .app-header.auth{padding:58px var(--s-6) 40px;text-align:center;border-radius:0 0 var(--r-3xl) var(--r-3xl)}
 .app-header.compact{padding:var(--s-6) var(--s-5);border-radius:0 0 var(--r-2xl) var(--r-2xl)}
 .header-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:34px 34px;pointer-events:none;mask-image:linear-gradient(180deg,#000,transparent)}
-.header-emoji{font-size:48px;margin-bottom:14px;display:inline-block;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35));animation:floatY 4s ease-in-out infinite}
+.header-emoji{font-size:46px;margin-bottom:14px;display:inline-block;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .header-title{font-size:24px;font-weight:900;letter-spacing:-.025em;text-shadow:0 2px 10px rgba(0,0,0,.22)}
 .header-subtitle{font-size:12.5px;opacity:.74;margin-top:6px;font-weight:500}
@@ -176,6 +171,8 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .home-bar{display:flex;justify-content:space-between;align-items:center}
 .home-brand{display:flex;align-items:center;gap:11px}
 .brand-logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:23px;border:1.5px solid rgba(216,181,82,.28);box-shadow:0 3px 12px rgba(0,0,0,.16);background:linear-gradient(135deg,rgba(216,181,82,.28),rgba(255,255,255,.12))}
+.brand-mark{width:60%;height:60%;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lp-brand-logo .brand-mark{stroke:#fff}
 .brand-name{font-size:20px;font-weight:900;letter-spacing:-.025em;font-family:'Cairo',sans-serif;text-shadow:0 2px 6px rgba(0,0,0,.2)}
 .brand-sub{font-size:11px;opacity:.7;font-weight:500}
 .home-tools{display:flex;align-items:center;gap:8px}
@@ -210,7 +207,7 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 #page-welcome{padding-bottom:0}
 
 /* ---------- NAVBAR ---------- */
-.lp-nav{position:sticky;top:0;z-index:90;background:var(--glass);backdrop-filter:blur(22px) saturate(180%);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
+.lp-nav{position:sticky;top:0;z-index:90;background:var(--glass);backdrop-filter:blur(10px) saturate(150%);border-bottom:1px solid var(--line)}
 body.dark .lp-nav{box-shadow:none}
 .lp-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4);padding:13px var(--s-5);max-width:1180px;margin:0 auto}
 .lp-brand{display:inline-flex;align-items:center;gap:10px;background:none}
@@ -235,14 +232,11 @@ body.dark .lp-nav{box-shadow:none}
   background:radial-gradient(50% 60% at 50% 40%,rgba(30,192,107,.18),transparent 70%),radial-gradient(40% 50% at 78% 30%,rgba(216,181,82,.16),transparent 70%);filter:blur(8px)}
 .lp-badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--emerald);background:var(--surface);border:1.5px solid rgba(19,164,90,.24);border-radius:999px;padding:8px 16px;box-shadow:var(--shadow-sm);margin-bottom:24px;animation:fadeUp var(--t-slow) var(--ease-out) both}
 .lp-title{font-family:'Cairo',sans-serif;font-size:clamp(32px,7.5vw,58px);font-weight:900;line-height:1.12;letter-spacing:-.035em;color:var(--ink);margin-bottom:20px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:40ms}
-.lp-title span{position:relative;background:linear-gradient(110deg,var(--emerald-2) 10%,var(--gold) 90%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shineText 6s linear infinite}
-@keyframes shineText{to{background-position:200% center}}
+.lp-title span{position:relative;background:linear-gradient(110deg,var(--emerald-2) 10%,var(--gold) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}  /* تدرّج ثابت بلا حركة shineText */
 .lp-sub{font-size:clamp(15px,2.4vw,18px);line-height:1.75;color:var(--muted);max-width:620px;margin:0 auto 34px;font-weight:500;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:80ms}
 .lp-hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:120ms}
 .lp-btn-primary{display:inline-flex;align-items:center;gap:9px;background:var(--g-btn);color:#fff;font-size:15.5px;font-weight:800;padding:16px 30px;border-radius:var(--r-lg);min-height:var(--tap);box-shadow:var(--shadow-green);position:relative;overflow:hidden;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
-.lp-btn-primary::before{content:'';position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);transition:left var(--t-slower) var(--ease-out)}
-.lp-btn-primary:hover{transform:translate3d(0,-3px,0);box-shadow:var(--shadow-green-lg)}
-.lp-btn-primary:hover::before{left:150%}
+.lp-btn-primary:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-green)}
 .lp-btn-primary:active{transform:scale(.97)}
 .lp-arrow{font-size:17px;transition:transform var(--t-fast)}
 .lp-btn-primary:hover .lp-arrow{transform:translateX(-4px)}
@@ -254,8 +248,8 @@ body.dark .lp-nav{box-shadow:none}
 
 /* ---------- HERO STATS ---------- */
 .lp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:46px auto 0;animation:fadeUp var(--t-slower) var(--ease-out) both;animation-delay:160ms}
-.lp-stat{background:var(--glass);backdrop-filter:blur(14px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r-xl);padding:20px 12px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base)}
-.lp-stat:hover{transform:translate3d(0,-5px,0);box-shadow:var(--shadow-lg)}
+.lp-stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:20px 12px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base)}
+.lp-stat:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-md)}
 .lp-stat-num{font-family:'Cairo',sans-serif;font-size:30px;font-weight:900;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
   background:linear-gradient(120deg,var(--emerald-2),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .lp-stat-lbl{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:8px}
@@ -270,9 +264,10 @@ body.dark .lp-nav{box-shadow:none}
 
 .lp-features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .lp-feature{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:26px 22px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base),border-color var(--t-base)}
-.lp-feature:hover{transform:translate3d(0,-6px,0);box-shadow:var(--shadow-lg);border-color:rgba(30,192,107,.25)}
-.lp-feat-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:26px;margin-bottom:16px;
-  background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.1));border:1px solid rgba(19,164,90,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.lp-feature:hover{transform:translate3d(0,-3px,0);box-shadow:var(--shadow-md);border-color:rgba(30,192,107,.22)}
+.lp-feat-icon{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:26px;margin-bottom:16px;color:var(--emerald);
+  background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.08));border:1px solid rgba(19,164,90,.18)}
+.lp-feat-icon svg{width:26px;height:26px}
 .lp-feat-title{font-size:17px;font-weight:900;color:var(--ink);letter-spacing:-.015em;margin-bottom:8px}
 .lp-feat-text{font-size:13.5px;line-height:1.7;color:var(--muted);font-weight:500}
 
@@ -289,7 +284,7 @@ body.dark .lp-nav{box-shadow:none}
 .lp-callout-inner{position:relative;overflow:hidden;text-align:center;padding:54px var(--s-6);border-radius:var(--r-3xl);color:#fff;
   background:radial-gradient(120% 90% at 90% -10%,rgba(63,240,140,.22),transparent 55%),linear-gradient(150deg,var(--forest),#0d3019 55%,#15673a);
   box-shadow:0 30px 70px rgba(4,19,11,.4)}
-.lp-callout-inner::before{content:'';position:absolute;top:-90px;right:-40px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;animation:pulseGlow 5s ease-in-out infinite}
+.lp-callout-inner::before{content:'';position:absolute;top:-90px;right:-40px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow),transparent 68%);opacity:.7;pointer-events:none}
 .lp-callout-inner::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(70% 70% at 50% 30%,#000,transparent);pointer-events:none}
 .lp-callout-title{position:relative;z-index:1;font-family:'Cairo',sans-serif;font-size:clamp(24px,4.5vw,38px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;text-shadow:0 3px 14px rgba(0,0,0,.3)}
 .lp-callout-sub{position:relative;z-index:1;font-size:15px;line-height:1.75;opacity:.82;max-width:520px;margin:0 auto 28px;font-weight:500}
@@ -327,7 +322,7 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 }
 
 /* ---------- BOTTOM NAV ---------- */
-.bnav{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(28px) saturate(200%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:9px 12px max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -8px 34px rgba(4,19,11,.12)}
+.bnav{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(12px) saturate(150%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:9px 12px max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -6px 22px rgba(4,19,11,.1)}
 .bnav.show{display:flex}
 .nitem{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--soft);min-width:64px;min-height:var(--tap);font-weight:800;border-radius:16px;padding:6px 14px;position:relative;transition:all var(--t-base) var(--ease-out)}
 .nitem.active{color:var(--emerald-2)}
@@ -360,12 +355,12 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .places-list{padding:0 var(--s-5);display:flex;flex-direction:column;gap:var(--s-4)}
 .place-card{background:var(--surface);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;box-shadow:var(--shadow-card);position:relative;border:1px solid var(--line);opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards;transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow)}
 @keyframes fadeUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-.place-card:hover{transform:translate3d(0,-7px,0);box-shadow:0 30px 60px rgba(4,19,11,.2),0 10px 22px rgba(4,19,11,.1)}
-.place-card:active{transform:translate3d(0,-2px,0)}
+.place-card:active{transform:translate3d(0,-1px,0)}
+@media (hover:hover) and (pointer:fine){
+  .place-card:hover{transform:translate3d(0,-3px,0);box-shadow:0 16px 36px rgba(4,19,11,.14),0 6px 14px rgba(4,19,11,.08)}
+}
 .place-cover{height:190px;position:relative;display:flex;align-items:flex-end;overflow:hidden;background:linear-gradient(145deg,#13a45a,#0a2415)}
 .place-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.place-cover::before{content:'';position:absolute;top:0;left:-120%;width:80%;height:100%;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.16) 50%,transparent 80%);pointer-events:none;z-index:4;transition:left var(--t-slow) ease}
-.place-card:hover .place-cover::before{left:130%}
 .place-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.06) 35%,rgba(3,12,7,.86) 100%);z-index:1}
 .place-cover-emoji{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;z-index:0;filter:blur(2px) opacity(.55)}
 .place-top-badges{position:absolute;top:12px;right:12px;left:12px;z-index:3;display:flex;justify-content:space-between;align-items:flex-start}
@@ -424,7 +419,7 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .disclosure-hint{display:flex;align-items:center;gap:8px;padding:16px;border-radius:var(--r-md);background:var(--surface-soft);border:1px dashed var(--line-2);color:var(--muted);font-size:12.5px;font-weight:600}
 
 /* ---------- MODAL (transform/opacity + swipe) ---------- */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(12px);opacity:0;transition:opacity var(--t-base)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.58);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);opacity:0;transition:opacity var(--t-base)}
 .modal-overlay.show{display:flex;opacity:1}
 .modal{background:var(--surface);border-radius:var(--r-3xl) var(--r-3xl) 0 0;width:100%;max-width:var(--max);max-height:92vh;overflow-y:auto;padding:10px var(--s-5) max(24px,env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(3,16,9,.3);position:relative;-webkit-overflow-scrolling:touch;
   transform:translate3d(0,100%,0);transition:transform var(--t-slow) var(--ease-out)}
@@ -474,6 +469,24 @@ body.dark .chosen-box{border-color:rgba(63,224,140,.2);background:linear-gradien
 .guest-hint{display:flex;align-items:flex-start;gap:8px;background:var(--soft-blue);border:1px solid rgba(29,78,216,.16);color:#1d4ed8;border-radius:var(--r-md);padding:12px 14px;font-size:12.5px;font-weight:700;line-height:1.6;margin-bottom:14px}
 body.dark .guest-hint{background:rgba(29,78,216,.14);border-color:rgba(96,118,225,.24);color:#9bc2fd}
 .auth-choice-icon{font-size:42px;text-align:center;margin:6px 0 12px}
+
+/* ---------- BOOKING REVIEW (نافذة المراجعة فقط) ---------- */
+.bk-review{margin-bottom:14px}
+.rv-place{background:linear-gradient(135deg,rgba(30,192,107,.1),rgba(19,164,90,.05));border:1.5px solid rgba(19,164,90,.18);border-radius:var(--r-md);padding:13px 15px;margin-bottom:12px}
+body.dark .rv-place{background:rgba(31,184,102,.1);border-color:rgba(63,224,140,.2)}
+.rv-place-name{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.015em}
+.rv-place-loc{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);font-weight:600;margin-top:5px}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.rv-user{display:grid;gap:9px;border-top:1px solid var(--line);padding-top:12px}
+.rv-row{display:flex;align-items:center;gap:8px;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;min-height:44px}
+.rv-ic{flex-shrink:0;color:var(--emerald);display:inline-flex}
+.rv-lbl{font-size:11.5px;font-weight:700;color:var(--muted)}
+.rv-val{margin-inline-start:auto;font-size:13.5px;font-weight:800;color:var(--ink);text-align:end}
+.bk-note{display:flex;align-items:center;gap:8px;background:var(--soft-yellow);border:1px solid rgba(245,158,11,.22);color:#92400e;border-radius:var(--r-md);padding:11px 14px;font-size:12px;font-weight:700;line-height:1.5;margin-bottom:16px}
+.bk-note svg{width:17px;height:17px;flex-shrink:0}
+body.dark .bk-note{background:rgba(245,158,11,.1);color:#fcd34d;border-color:rgba(245,158,11,.22)}
+.detail-book-inline{display:none}   /* على الجوال: الإجراء الرئيسي هو الملخّص اللاصق */
+@media(min-width:700px){ .detail-book-inline{display:flex} }
 
 /* ---------- INLINE FIELD ERRORS (تحقّق الحقول) ---------- */
 .field-err{color:#dc2626;font-size:11.5px;font-weight:700;margin-top:6px;display:flex;align-items:center;gap:5px;line-height:1.5}
@@ -531,9 +544,20 @@ body.dark .avail-soon{background:rgba(245,158,11,.22);color:#fcd34d;border-color
 .dsec-title{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.015em}
 .no-times{padding:16px;border-radius:var(--r-md);background:var(--soft-yellow);border:1px dashed rgba(245,158,11,.4);color:#92400e;font-size:12.5px;font-weight:700;text-align:center}
 body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+.dsec-ic{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--emerald);background:var(--soft-green);border:1px solid rgba(19,164,90,.18)}
+.dsec-ic svg{width:15px;height:15px}
+.amen-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.amen-item{display:flex;align-items:center;gap:10px;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 13px;min-height:54px}
+.amen-ic{flex-shrink:0;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--emerald);background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.08));border:1px solid rgba(19,164,90,.16)}
+.amen-ic svg{width:17px;height:17px}
+.amen-text{min-width:0}
+.amen-name{font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.amen-val{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
+.amen-empty{font-size:12.5px;color:var(--muted);font-weight:600;text-align:center;padding:14px;background:var(--surface-soft);border:1px dashed var(--line-2);border-radius:var(--r-md)}
+@media(max-width:360px){.amen-grid{grid-template-columns:1fr}}
 
 .detail-sticky{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);z-index:95;display:flex;align-items:center;gap:12px;
-  padding:12px var(--s-5) max(12px,env(safe-area-inset-bottom));background:var(--glass);backdrop-filter:blur(22px) saturate(180%);border-top:1px solid var(--glass-brd);box-shadow:0 -8px 30px rgba(4,19,11,.18);
+  padding:12px var(--s-5) max(12px,env(safe-area-inset-bottom));background:var(--glass);backdrop-filter:blur(10px) saturate(150%);border-top:1px solid var(--glass-brd);box-shadow:0 -6px 20px rgba(4,19,11,.12);
   animation:stickyUp var(--t-base) var(--ease-out) both}
 @keyframes stickyUp{from{opacity:0;transform:translate3d(-50%,100%,0)}to{opacity:1;transform:translate3d(-50%,0,0)}}
 .dsticky-info{flex:1;min-width:0}
@@ -546,7 +570,7 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 #page-detail{padding-bottom:96px}
 
 /* ---------- OWNER TABS + CALENDAR + CONFIRM (المرحلة 4) ---------- */
-.owner-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:80;background:var(--glass);backdrop-filter:blur(18px) saturate(160%);padding:11px var(--s-5);border-bottom:1px solid var(--line)}
+.owner-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:80;background:var(--glass);backdrop-filter:blur(10px) saturate(150%);padding:11px var(--s-5);border-bottom:1px solid var(--line)}
 .owner-tabs::-webkit-scrollbar{display:none}
 .otab{flex:0 0 auto;background:transparent;border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 16px;min-height:40px;font-size:12.5px;font-weight:800;white-space:nowrap;transition:all var(--t-fast) var(--ease-out)}
 .otab:hover{border-color:rgba(30,192,107,.4);color:var(--emerald)}
@@ -593,7 +617,7 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 .scard-title{font-size:21px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
 .scard-text{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7}
 
-.toast{position:fixed;left:50%;bottom:108px;transform:translate3d(-50%,16px,0);background:var(--glass);border:1px solid var(--glass-brd);border-radius:var(--r-lg);padding:14px 17px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;backdrop-filter:blur(20px) saturate(180%);transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);text-align:right;line-height:1.5;display:flex;align-items:center;gap:11px;color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:108px;transform:translate3d(-50%,16px,0);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:14px 17px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);box-shadow:var(--shadow-md);opacity:0;pointer-events:none;backdrop-filter:blur(8px);transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);text-align:start;line-height:1.5;display:flex;align-items:center;gap:11px;color:var(--ink)}
 .toast.show{opacity:1;transform:translate3d(-50%,0,0)}
 .toast-icon{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;flex:0 0 26px;font-weight:900;font-size:13px}
 .toast.error .toast-icon{background:#fee2e2;color:#dc2626}.toast.success .toast-icon{background:#dcfce7;color:#13954f}.toast.warn .toast-icon{background:#fef3c7;color:#92400e}
@@ -712,7 +736,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
     <header class="lp-nav">
       <div class="lp-nav-inner">
         <button class="lp-brand" data-action="browse" aria-label="المستديرة">
-          <span class="lp-brand-logo">⚽</span>
+          <span class="lp-brand-logo"><svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="3"/><circle cx="16" cy="16" r="4.5"/><path d="M16 7v18"/></svg></span>
           <span class="lp-brand-name">ال<span>مستديرة</span></span>
         </button>
         <nav class="lp-links" aria-label="روابط الصفحة">
@@ -731,20 +755,20 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
     <!-- ---------- HERO ---------- -->
     <div class="lp-hero">
       <div class="lp-hero-glow" aria-hidden="true"></div>
-      <span class="lp-badge">⚽ منصّة حجز ملاعب ذكية</span>
-      <h1 class="lp-title">احجز ملعبك بثوانٍ مع <span>المستديرة</span></h1>
-      <p class="lp-sub">المنصّة الأحدث لحجز ملاعب كرة القدم. تصفّح الملاعب، شوف الأوقات المتاحة لحظياً، واحجز فوراً — مع تأكيد مباشر على واتساب.</p>
+      <span class="lp-badge">منصّة حجز ملاعب كرة القدم</span>
+      <h1 class="lp-title">احجز ملعبك بسهولة مع <span>المستديرة</span></h1>
+      <p class="lp-sub">تصفّح الملاعب القريبة منك، اطّلع على آخر الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — وتابع تأكيده مع إدارة الملعب.</p>
       <div class="lp-hero-cta">
-        <button class="lp-btn-primary" data-action="browse">🏟️ تصفّح الملاعب <span class="lp-arrow">←</span></button>
-        <button class="lp-btn-ghost" data-go="playerLogin">دخول / إنشاء حساب</button>
+        <button class="lp-btn-primary" data-action="browse">تصفّح الملاعب <span class="lp-arrow">←</span></button>
+        <button class="lp-btn-ghost" data-go="playerLogin">تسجيل الدخول</button>
       </div>
       <button class="lp-owner-link" data-go="ownerLogin">عندك ملعب؟ ادخل كمالك ←</button>
 
       <div class="lp-stats" id="lp-stats">
         <div class="lp-stat"><div class="lp-stat-num" id="trustPlaces">—</div><div class="lp-stat-lbl">ملعب متاح</div></div>
-        <div class="lp-stat"><div class="lp-stat-num">⚡</div><div class="lp-stat-lbl">حجز فوري</div></div>
-        <div class="lp-stat"><div class="lp-stat-num">24/7</div><div class="lp-stat-lbl">متاح دائماً</div></div>
-        <div class="lp-stat"><div class="lp-stat-num">✓</div><div class="lp-stat-lbl">تأكيد واتساب</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">سهل</div><div class="lp-stat-lbl">حجز بدون اتصالات</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">24/7</div><div class="lp-stat-lbl">تصفّح في أي وقت</div></div>
+        <div class="lp-stat"><div class="lp-stat-num">مجاني</div><div class="lp-stat-lbl">بدون رسوم تصفّح</div></div>
       </div>
     </div>
 
@@ -757,34 +781,19 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
       <div class="lp-features">
         <div class="lp-feature">
-          <div class="lp-feat-icon">⚡</div>
-          <div class="lp-feat-title">حجز فوري</div>
-          <div class="lp-feat-text">اختر اليوم والوقت واحجز خلال ثوانٍ — بدون اتصالات ولا انتظار.</div>
+          <div class="lp-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m9 15 2 2 3.5-3.5"/></svg></div>
+          <div class="lp-feat-title">اختيار وحجز أسهل</div>
+          <div class="lp-feat-text">شوف الأوقات المتاحة، اختر اليوم والوقت، وأرسل طلب الحجز — كل هذا بخطوات واضحة وقليلة.</div>
         </div>
         <div class="lp-feature">
-          <div class="lp-feat-icon">📍</div>
-          <div class="lp-feat-title">ملاعب قريبة منك</div>
-          <div class="lp-feat-text">تصفّح الملاعب حسب المنطقة، وشوف الموقع والسعر قبل ما تحجز.</div>
+          <div class="lp-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+          <div class="lp-feat-title">اعرف الملعب قبل ما تروح</div>
+          <div class="lp-feat-text">الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — معلومات واضحة قبل ما تختار.</div>
         </div>
         <div class="lp-feature">
-          <div class="lp-feat-icon">🕐</div>
-          <div class="lp-feat-title">أوقات لحظية</div>
-          <div class="lp-feat-text">الأوقات المتاحة تتحدّث تلقائياً، فما بتحجز وقت محجوز أبداً.</div>
-        </div>
-        <div class="lp-feature">
-          <div class="lp-feat-icon">💬</div>
-          <div class="lp-feat-title">تأكيد على واتساب</div>
-          <div class="lp-feat-text">بيوصلك تأكيد الحجز مباشرة على الواتساب من إدارة الملعب.</div>
-        </div>
-        <div class="lp-feature">
-          <div class="lp-feat-icon">📊</div>
-          <div class="lp-feat-title">لوحة تحكم للمالك</div>
-          <div class="lp-feat-text">عندك ملعب؟ لوحة كاملة بإحصائيات وإيرادات وقرارات ذكية.</div>
-        </div>
-        <div class="lp-feature">
-          <div class="lp-feat-icon">⭐</div>
-          <div class="lp-feat-title">تقييمات حقيقية</div>
-          <div class="lp-feat-text">شوف تقييمات اللاعبين الحقيقية قبل ما تختار ملعبك.</div>
+          <div class="lp-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="lp-feat-title">متابعة واضحة للحجز</div>
+          <div class="lp-feat-text">من حسابك تتابع حالة الحجز وتأكيد إدارة الملعب، وتتواصل معها عند توفّر وسيلة التواصل.</div>
         </div>
       </div>
     </section>
@@ -803,13 +812,13 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         </div>
         <div class="lp-step">
           <div class="lp-step-num">2</div>
-          <div class="lp-step-title">حدّد الوقت</div>
-          <div class="lp-step-text">اختر اليوم والوقت المتاح اللي بناسبك من جدول لحظي.</div>
+          <div class="lp-step-title">حدّد الموعد</div>
+          <div class="lp-step-text">اختر اليوم والوقت المتاح اللي بناسبك من جدول الأوقات المتاحة.</div>
         </div>
         <div class="lp-step">
           <div class="lp-step-num">3</div>
-          <div class="lp-step-title">أكّد واحجز</div>
-          <div class="lp-step-text">أرسل الطلب وبيوصلك التأكيد على واتساب — جاهز تلعب!</div>
+          <div class="lp-step-title">أرسل وتابع</div>
+          <div class="lp-step-text">أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — وجاهز تلعب!</div>
         </div>
       </div>
     </section>
@@ -830,7 +839,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
     <footer class="lp-footer">
       <div class="lp-footer-top">
         <div class="lp-footer-brand">
-          <span class="lp-brand-logo">⚽</span>
+          <span class="lp-brand-logo"><svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="3"/><circle cx="16" cy="16" r="4.5"/><path d="M16 7v18"/></svg></span>
           <div>
             <div class="lp-brand-name">ال<span>مستديرة</span></div>
             <div class="lp-footer-tag">احجز ملعبك بثوانٍ</div>
@@ -913,7 +922,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
     <header class="app-header home"><div class="header-grid"></div>
       <div class="home-bar">
         <div class="home-brand">
-          <div class="brand-logo">⚽</div>
+          <div class="brand-logo"><svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="3"/><circle cx="16" cy="16" r="4.5"/><path d="M16 7v18"/></svg></div>
           <div>
             <div class="brand-name">المستديرة</div>
             <div class="brand-sub" id="playerWelcome">أهلاً بك</div>
@@ -968,6 +977,10 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> اتصال
         </a>
       </div>
+      <section class="detail-section" aria-label="الخدمات والمرافق">
+        <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title">الخدمات والمرافق</h2></div>
+        <div id="detailAmenities"></div>
+      </section>
       <section class="detail-section" aria-label="اختيار الملعب">
         <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title">اختر الملعب</h2></div>
         <div class="subfields" id="subFields"></div>
@@ -985,8 +998,8 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         </summary>
         <div id="placeStats" style="margin-top:12px"></div>
       </details>
-      <button class="sbtn" data-action="openBooking">احجز الآن ←</button>
-      <button class="cbtn" data-action="openReview">قيّم هذا المكان ⭐</button>
+      <button class="sbtn detail-book-inline" data-action="openBooking">متابعة الحجز ←</button>
+      <button class="cbtn" data-action="openReview">قيّم هذا المكان</button>
     </div>
   </section>
 
@@ -1147,42 +1160,24 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
     </div>
   </section>
 
-  <!-- ============ BOOKING MODAL ============ -->
-  <div class="modal-overlay" id="modal-booking" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
+  <!-- ============ BOOKING REVIEW MODAL (مراجعة فقط — لا اختيار يوم/وقت هنا) ============ -->
+  <div class="modal-overlay" id="modal-booking" role="dialog" aria-modal="true" aria-labelledby="bkTitle" aria-describedby="bkReview">
     <div class="modal" data-modal="booking">
       <div class="modal-grip"><div class="modal-handle"></div></div>
-      <div class="modal-title" id="bkTitle"></div>
-      <div class="modal-sub" id="bkSub"></div>
-      <!-- مؤشّر خطوات الحجز: الملعب ← الموعد ← التأكيد -->
+      <div class="modal-title" id="bkTitle">مراجعة الحجز</div>
+      <!-- مؤشّر الخطوات: 1 و2 مكتملتان، 3 (التأكيد) نشطة -->
       <ol class="bk-steps" id="bkSteps" aria-label="خطوات الحجز">
         <li class="bk-step done" data-step="1"><span class="bk-step-dot">1</span><span class="bk-step-lbl">الملعب</span></li>
-        <li class="bk-step active" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl">الموعد</span></li>
-        <li class="bk-step" data-step="3"><span class="bk-step-dot">3</span><span class="bk-step-lbl">التأكيد</span></li>
+        <li class="bk-step done" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl">الموعد</span></li>
+        <li class="bk-step active" data-step="3" aria-current="step"><span class="bk-step-dot">3</span><span class="bk-step-lbl">التأكيد</span></li>
       </ol>
-      <div class="summary-box">
-        <div><div class="lbl">السعر الإجمالي (ساعتان)</div><div class="val" id="bkPrice"></div></div>
-        <div style="text-align:left"><div class="lbl">⭐ التقييم</div><div class="val" id="bkRating" style="color:#f59e0b;font-size:15px"></div></div>
+      <div id="bkReview" class="bk-review"></div>
+      <div class="bk-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+        <span>بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
       </div>
-      <div class="guest-hint" id="bkGuestHint" hidden>👤 تحجز كضيف — اختر موعدك وبنطلب منك تسجيل دخول سريع عند التأكيد، واختيارك بينحفظلك.</div>
-      <div class="grid-2" style="margin-bottom:14px">
-        <div><label class="form-label" for="bkName">اسمك</label><input class="finput" id="bkName" type="text" placeholder="محمد أحمد" autocomplete="name"></div>
-        <div><label class="form-label" for="bkPhone">رقم الهاتف</label><input class="finput" id="bkPhone" type="tel" inputmode="tel" placeholder="07XXXXXXXX" autocomplete="tel"></div>
-      </div>
-      <!-- ملخّص الاختيار: يظهر بعد اختيار اليوم والوقت (بدل إعادة تعبئتهما) -->
-      <div id="bkChosen" class="chosen-box" hidden></div>
-      <!-- منتقيات اليوم/الوقت: تُطوى تلقائياً بعد اكتمال الاختيار -->
-      <div id="bkPicker">
-        <div class="field-title">اختر اليوم:</div>
-        <div class="days-row" id="bkDays" style="margin-bottom:14px"></div>
-        <!-- الإفشاء التدريجي: قسم الأوقات يظهر فقط بعد اختيار اليوم -->
-        <div id="bkTimesSection" class="times-section">
-          <div class="field-title">اختر وقت البداية (الحجز ساعتان):</div>
-          <div class="times-grid" id="bkTimes" style="margin-bottom:18px"></div>
-        </div>
-        <div class="disclosure-hint" id="bkTimesHint" hidden style="margin-bottom:18px">👆 اختر يوماً أولاً لعرض الأوقات المتاحة</div>
-      </div>
-      <button class="sbtn" data-action="confirmBooking">إرسال طلب الحجز ←</button>
-      <button class="cbtn" data-action="closeModal">إلغاء</button>
+      <button class="sbtn" data-action="confirmBooking">تأكيد الحجز ←</button>
+      <button class="cbtn" data-action="changeTime">تغيير الموعد</button>
     </div>
   </div>
 
@@ -1394,10 +1389,11 @@ const DEFAULT_SLOTS = [
   {label:'8:00 - 10:00 م',hour:20},{label:'10:00 - 12:00 م',hour:22}
 ];
 
-/* خريطة المرافق (أيقونة + تسمية) — مصدر واحد لبطاقات الملاعب وورقة الفلاتر */
+/* خريطة المرافق (أيقونة SVG + تسمية) — مصدر واحد للبطاقة والتفاصيل والفلاتر.
+   icon = اسم أيقونة في ICON (تُحلّ وقت العرض، لا مراجع TDZ). "مواقف" بدل "مصفات". */
 const AMENITY = {
-  water:{i:'💧',l:'مياه'}, parking:{i:'🅿️',l:'مصفات'}, ball:{i:'⚽',l:'كرة'},
-  vests:{i:'🦺',l:'بلوزات'}, bathrooms:{i:'🚻',l:'حمامات'}
+  water:{icon:'drop', label:'مياه'}, parking:{icon:'parking', label:'مواقف'}, ball:{icon:'ball', label:'كرة'},
+  vests:{icon:'vest', label:'بلوزات'}, bathrooms:{icon:'bath', label:'حمامات'}
 };
 
 /* أيقونات SVG ثابتة موثوقة (تُحقن كـ innerHTML بأمان لأنها ليست بيانات مستخدم) */
@@ -1409,7 +1405,16 @@ const ICON = {
   money:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M9 10h4.5a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3H15"/></svg>',
   phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>',
   person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>',
-  wa:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884Z"/></svg>'
+  wa:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884Z"/></svg>',
+  /* أيقونات المرافق (موحّدة: نفس الـ stroke والحواف) */
+  drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11Z"/></svg>',
+  parking:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9 17V8h3.5a2.5 2.5 0 0 1 0 5H9"/></svg>',
+  ball:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg>',
+  vest:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 6v14h16V6l-4-3-4 3-4-3Z"/><path d="M12 6v14"/></svg>',
+  bath:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M6 19v2M18 19v2"/></svg>',
+  dot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>'
 };
 
 /* ===================== DOM UTILS ===================== */
@@ -1452,7 +1457,9 @@ const today = () => new Date().toISOString().split('T')[0];
 const dateAfter = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; };
 const arabicDay = (s) => ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date(s+"T12:00:00").getDay()];
 const shortDate = (s) => { const d = new Date(s+"T12:00:00"); return `${d.getDate()}/${d.getMonth()+1}`; };
-const formatMoney = (v) => { const n = Number(v||0); return Number.isNaN(n) ? '0 JD' : `${Math.round(n*100)/100} JD`; };
+/* تنسيق العملة الموحّد: د.أ (دينار أردني) — مصدر واحد بدل تكرار JD يدوياً */
+const formatCurrency = (v) => { const n = Number(v||0); return `${Number.isNaN(n)?0:Math.round(n*100)/100} د.أ`; };
+const formatMoney = formatCurrency;   // توافق مع الاستدعاءات الحالية
 const calcPercent = (p, t) => t ? Math.round((p/t)*100) : 0;
 function normalizePhone(p){ p = String(p||'').trim().replace(/\s+/g,''); if(p.startsWith('+'))p=p.slice(1); if(p.startsWith('00962'))p='962'+p.slice(5); if(p.startsWith('07'))p='962'+p.slice(1); return p; }
 function normalizeText(v){ return String(v||'').trim().toLowerCase().replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ـ/g,'').replace(/\s+/g,''); }
@@ -1494,21 +1501,21 @@ const isPlaceAvailable = (p) => p.fields.some(f=>isFieldAvailable(f.field_id, fi
 const placeLocation = (p) => { const c=String(p?.city||'').trim(), r=String(p?.region||'').trim(); return (c&&r)?`${c} - ${r}`:(c||r||''); };
 
 /* ===================== SESSION (إدارة الجلسات) ===================== */
-/* ملاحظة أمنية: التخزين الأكثر أماناً للإنتاج هو httpOnly + Secure + SameSite
-   cookies تُضبط من الخادم — غير ممكن من جهة العميل وحده مع Apps Script.
-   هنا نغلّف التوكنات تحت namespace واحد مع صلاحية زمنية (TTL) وتنظيف تلقائي،
-   بدل تركها متغيرات عامة مكشوفة ومبعثرة. */
+/* توافق كامل مع النسخة الأصلية المنشورة: التوكنات تُخزَّن بالمفاتيح القديمة
+   player_token / owner_token كنص مباشر بلا TTL (حتى لا يُسجَّل خروج المستخدمين
+   الحاليين). الثيم/اللغة فقط تحت namespace. لا تغيير لأي شيء في الخادم. */
 const Session = (() => {
-  const NS = 'mustadaira:'; const TTL = 30 * 864e5; // 30 يوماً
-  const set = (k, token) => { try { localStorage.setItem(NS+k, JSON.stringify({ token, exp: Date.now()+TTL })); } catch(_){} };
-  const get = (k) => { try { const r = JSON.parse(localStorage.getItem(NS+k)||'null'); if(!r||!r.token) return ''; if(r.exp && Date.now()>r.exp){ del(k); return ''; } return r.token; } catch(_){ return ''; } };
-  const del = (k) => { try { localStorage.removeItem(NS+k); } catch(_){} };
+  const getRaw = (k) => { try { return localStorage.getItem(k) || ''; } catch(_){ return ''; } };
+  const setRaw = (k,v) => { try { if(v) localStorage.setItem(k,v); else localStorage.removeItem(k); } catch(_){} };
+  const del = (k) => { try { localStorage.removeItem(k); } catch(_){} };
   return {
-    player:  () => get('player'),  setPlayer: t => set('player', t),
-    owner:   () => get('owner'),   setOwner:  t => set('owner', t),
-    clear:   () => { del('player'); del('owner'); },
-    theme:   () => { try { return localStorage.getItem(NS+'theme') || 'light'; } catch(_){ return 'light'; } },
-    setTheme:t => { try { localStorage.setItem(NS+'theme', t); } catch(_){} },
+    player:  () => getRaw('player_token'),
+    owner:   () => getRaw('owner_token'),
+    setPlayer: t => { setRaw('player_token', t); del('owner_token'); },   // دخول لاعب ⇒ احذف توكن المالك
+    setOwner:  t => { setRaw('owner_token', t); del('player_token'); },   // دخول مالك ⇒ احذف توكن اللاعب
+    clear:   () => { del('player_token'); del('owner_token'); },
+    theme:   () => { try { return localStorage.getItem('mustadaira:theme') || 'light'; } catch(_){ return 'light'; } },
+    setTheme:t => { try { localStorage.setItem('mustadaira:theme', t); } catch(_){} },
   };
 })();
 
@@ -1659,8 +1666,8 @@ function focusFirstError(scope){ const el=(scope||document).querySelector('.inpu
 /* ===================== PENDING BOOKING (استئناف حجز الضيف بعد الدخول) ===================== */
 const PENDING_KEY = 'mustadaira:pending';
 function savePendingBooking(){
-  const b=State.booking; if(!b.place||!b.field) return;
-  State.pendingBooking = { placeId:String(b.place.place_id), fieldId:String(b.field.field_id), date:b.date, hour:b.hour };
+  const d=State.detail; if(!d.place||!d.field) return;   // المصدر الوحيد = State.detail
+  State.pendingBooking = { placeId:String(d.place.place_id), fieldId:String(d.field.field_id), date:d.date, hour:d.hour };
   try{ localStorage.setItem(PENDING_KEY, JSON.stringify(State.pendingBooking)); }catch(_){}
 }
 function loadPendingBooking(){
@@ -1675,10 +1682,20 @@ async function resumePendingBooking(){
   const place=State.places.find(x=>String(x.place_id)===String(p.placeId));
   if(!place){ clearPendingBooking(); return false; }
   const field=place.fields.find(f=>String(f.field_id)===String(p.fieldId))||place.fields[0];
-  await openDetail(place.place_id);                                  // صفحة التفاصيل كخلفية للنافذة
-  State.detail.field=field; renderSubFields(); setText('dPrice', field.price+' JD');
-  openBookingModal({ date:p.date, hour:p.hour });                    // إعادة فتح المراجعة بنفس الاختيار
+  await openDetail(place.place_id);                                  // يجلب أحدث الحجوزات العامة + يبني التفاصيل
+  State.detail.field=field; State.detail.date=p.date; State.detail.hour=p.hour;
+  renderSubFields(); renderDetailDays(); renderDetailTimes(); setText('dPrice', formatCurrency(field.price));
   clearPendingBooking();
+  // تحقّق أن الوقت ما زال متاحاً قبل فتح المراجعة
+  const taken=(State.bookedSlots[field.field_id]?.[p.date])||[];
+  if(taken.includes(Number(p.hour))){
+    State.detail.hour=null; renderDetailTimes(); renderDetailSticky();
+    toast('للأسف، الوقت الذي اخترته انحجز قبل قليل. اختر وقتاً آخر.','warn');
+    scrollToDetailSection('time','#detailTimes .tbtn:not(.taken)');
+    return true;
+  }
+  renderDetailSticky();
+  openBookingReview();                                               // الآن مسجّل ⇒ تظهر المراجعة مباشرة
   return true;
 }
 
@@ -1721,15 +1738,46 @@ function renderRegionTabs(){
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
 
-function amenityKeys(p){ return String(p?.amenities||'').split('|').map(x=>(x.split(':')[0]||'').trim()).filter(Boolean); }
+/* تحليل مركزي للمرافق (يُستخدم في البطاقة والتفاصيل والفلاتر).
+   الصيغة: "water|parking|vests:10" — القيمة بعد ':' تمثّل عدداً/تفصيلاً اختيارياً. */
+function parseAmenities(text){
+  return String(text||'').split('|').map(s=>s.trim()).filter(Boolean).map(item=>{
+    const [rawKey,...rest]=item.split(':');
+    const key=(rawKey||'').trim(); const value=rest.join(':').trim();
+    const meta=AMENITY[key]||{icon:'dot', label:key};
+    return { key, icon:meta.icon||'dot', label:meta.label||key, value };
+  });
+}
+function amenityKeys(p){ return parseAmenities(p?.amenities).map(a=>a.key); }
 function amenitiesRow(text, max){
-  const items=String(text||'').split('|').map(x=>(x.split(':')[0]||'').trim()).filter(Boolean);
+  const items=parseAmenities(text);
   if(!items.length) return null;
   const shown = max ? items.slice(0,max) : items;
   const row=h('div',{class:'amenities-row'});
-  shown.forEach(key=>{ const m=AMENITY[key]||{i:'•',l:key}; row.append(h('span',{class:'amenity-chip'}, `${m.i} ${m.l}`)); });
+  shown.forEach(a=> row.append(h('span',{class:'amenity-chip'}, ico(a.icon,'svg-sm'), ' '+a.label)));
   if(max && items.length>max) row.append(h('span',{class:'amenity-chip amenity-more'}, `+${items.length-max}`));
   return row;
+}
+/* تحويل قيمة الخدمة إلى نص عربي واضح (لا إنجليزية داخل العربية) */
+function amenityValueText(value, label){
+  const v=String(value||'').trim(); if(!v) return 'متوفرة';
+  if(/^\d+$/.test(v)) return `${v} ${label}`;                 // عدد: 10 بلوزات
+  const map={ free:'مجانية', paid:'برسوم', available:'متوفرة', yes:'متوفرة', no:'غير متوفرة', 'true':'متوفرة', 'false':'غير متوفرة' };
+  return map[v.toLowerCase()] || v;                            // قيمة عربية/أخرى كما هي
+}
+/* قسم "الخدمات والمرافق" الكامل في صفحة التفاصيل (كل الخدمات الفعلية بلا تكرار) */
+function renderAmenitiesFull(p){
+  const el=$('#detailAmenities'); if(!el) return; clear(el);
+  const items=parseAmenities(p?.amenities);
+  if(!items.length){ el.append(h('div',{class:'amen-empty'}, 'لم تتم إضافة معلومات عن الخدمات بعد.')); return; }
+  const grid=h('div',{class:'amen-grid'});
+  items.forEach(a=>{
+    const valueText = amenityValueText(a.value, a.label);
+    grid.append(h('div',{class:'amen-item'},
+      h('span',{class:'amen-ic'}, ico(a.icon,'svg-sm')),
+      h('div',{class:'amen-text'}, h('div',{class:'amen-name'}, a.label), h('div',{class:'amen-val'}, valueText))));
+  });
+  el.append(grid);
 }
 
 /* ===================== AVAILABILITY (حالات دقيقة) + SORT + FILTERS ===================== */
@@ -1820,7 +1868,7 @@ function updateFilterBar(){
 function placeCard(p, eager){
   const av = placeAvailability(p);
   const mn=minPrice(p), mx=maxPrice(p);
-  const price = mn===mx ? `${mn} JD` : `${mn}-${mx} JD`;
+  const price = mn===mx ? `${mn} د.أ` : `${mn}-${mx} د.أ`;
   const oneField=(p.fields||[]).length===1;
   const img = p.fields?.[0]?.image_url;
   const soon = soonestSlotLabel(p);
@@ -1914,7 +1962,7 @@ function renderFiltersSheet(){
   $('#fxToday').checked = !!fx.availableToday;
   // المرافق
   const am=$('#fxAmenities'); clear(am); const ams=distinctAmenities();
-  ams.length ? ams.forEach(k=>{ const m=AMENITY[k]||{i:'•',l:k}; const c=fxChip(`${m.i} ${m.l}`, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
+  ams.length ? ams.forEach(k=>{ const m=AMENITY[k]||{label:k}; const c=fxChip(m.label, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
               : am.append(h('span',{class:'fx-empty'},'لا توجد بيانات'));
   // عدّاد المسودّة
   let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++; n+=fx.sizes.length+fx.types.length+fx.amenities.length; if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
@@ -1945,7 +1993,7 @@ async function openDetail(placeId){
 
   setText('dName', place.place_name);
   const dCity=$('#dCity'); clear(dCity); dCity.append(ico('pin','svg-sm'), ' '+placeLocation(place));
-  setText('dPrice', place.fields[0].price+' JD');
+  setText('dPrice', formatCurrency(place.fields[0].price));
 
   const badges=$('#dBadges'); clear(badges);
   badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(place)));
@@ -1961,7 +2009,7 @@ async function openDetail(placeId){
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
 
-  renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
+  renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
   showPage('detail');
 }
 /* معرض مصغّرات (يظهر فقط عند وجود أكثر من صورة فعلية) */
@@ -1994,8 +2042,8 @@ function renderSubFields(){
       h('div',{},
         h('div',{class:'subfield-name'}, f.field_name),
         h('div',{class:'subfield-size'}, ico('resize','svg-sm'), ' '+f.size)),
-      h('div',{class:'subfield-price'}, f.price+' JD'));
-    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', f.price+' JD'); });
+      h('div',{class:'subfield-price'}, formatCurrency(f.price)));
+    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); });
     el.append(card);
   });
 }
@@ -2073,89 +2121,55 @@ function renderPlayerStats(list){
   $('.card', el).style.marginBottom='15px';
 }
 
-/* ===================== RENDER: BOOKING MODAL (Progressive Disclosure) ===================== */
-function openBookingModal(prefill){
-  // يُفتح من صفحة التفاصيل. الضيف مسموح له بالوصول حتى التأكيد (ثم يُطلب الدخول).
-  const { place, field } = State.detail;
-  if (!place || !field) return;
-  const restoring = !!prefill && prefill.date != null;
-  State.booking = { place, field, date: restoring?prefill.date:null, hour: restoring?(prefill.hour ?? null):null, editing: !restoring };
-  clearFieldError('bkName'); clearFieldError('bkPhone');
-  setText('bkTitle', place.place_name+' - '+field.field_name);
-  const sub=$('#bkSub'); clear(sub); sub.append(ico('pin','svg-sm'), ' '+placeLocation(place)+' • '+field.size);
-  setText('bkPrice', field.price+' دينار / ساعتان');
-  setText('bkRating', ratingText(place));
-  // اللاعب المسجّل: اسم/هاتف من الحساب (للقراءة). الضيف: حقول قابلة للتعبئة.
-  const logged = !!Session.player();
-  $('#bkName').value = State.player?.name || '';
-  const ph=$('#bkPhone'); ph.value = State.player?.phone || ''; ph.readOnly = logged;
-  $('#bkName').readOnly = logged;
-  const gh=$('#bkGuestHint'); if(gh) gh.hidden = logged;
-  renderBookingDays(); toggleBookingTimes();   // يبدأ مخفياً
-  if (restoring) renderBookingTimes();
-  renderBookingChosen(); updateBookingStep();
+/* ===================== BOOKING REVIEW (نافذة مراجعة فقط · مصدر حالة واحد = State.detail) =====================
+   لا يوجد اختيار يوم/وقت/ملعب داخل النافذة — كله يتم في صفحة التفاصيل (State.detail).
+   State.booking مجرّد لقطة من State.detail وقت الفتح حتى لا يختلفا أبداً. */
+function detailSelectionComplete(){
+  const d=State.detail; return !!(d.place && d.field && d.date && d.hour!=null);
+}
+function scrollToDetailSection(which, focus){
+  if(!$('#page-detail')?.classList.contains('active')) showPage('detail');
+  const sel = which==='field' ? '.detail-section[aria-label="اختيار الملعب"]' : '.detail-section[aria-label="اختيار الموعد"]';
+  const sec=$(sel);
+  requestAnimationFrame(()=>{ if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'}); if(focus){ const f=$(focus); if(f){ try{ f.focus(); }catch(_){} } } });
+}
+function updateBookingStep(){   // النافذة دائماً عند خطوة المراجعة: 1 و2 مكتملتان، 3 نشطة
+  $$('#bkSteps .bk-step').forEach(s=>{ const n=Number(s.dataset.step); s.classList.toggle('done', n<3); s.classList.toggle('active', n===3); s.setAttribute('aria-current', n===3?'step':'false'); });
+}
+function openBookingReview(){
+  const { place, field, date, hour } = State.detail;
+  // تحقّق قبل فتح المراجعة (رسالة + تمرير + Focus لأول عنصر ناقص)
+  if(!place || !field){ toast('اختر الملعب أولاً.','warn'); scrollToDetailSection('field','#subFields .subfield-card'); return; }
+  if(!date){ toast('اختر اليوم المناسب.','warn'); scrollToDetailSection('time','#detailDays .day-btn'); return; }
+  if(hour==null){ toast('اختر وقتاً متاحاً للمتابعة.','warn'); scrollToDetailSection('time','#detailTimes .tbtn:not(.taken)'); return; }
+  // ضيف؟ احفظ الاختيار وافتح خيار الدخول (تظهر المراجعة بعد الدخول)
+  if(!Session.player()){ savePendingBooking(); openAuthChoice(); return; }
+  State.booking = { place, field, date, hour };   // لقطة متطابقة مع التفاصيل
+  renderReview();
   Modal.open('modal-booking');
 }
-/* مؤشّر خطوات الحجز: الملعب ← الموعد ← التأكيد */
-function updateBookingStep(){
-  const b=State.booking; const done = !!b.date && b.hour!==null;
-  const cur = done ? 3 : 2;                    // الملعب مكتمل دائماً عند فتح النافذة
-  $$('#bkSteps .bk-step').forEach(s=>{
-    const n=Number(s.dataset.step);
-    s.classList.toggle('active', n===cur);
-    s.classList.toggle('done', n<cur);
-    s.setAttribute('aria-current', n===cur ? 'step' : 'false');
-  });
-}
-function renderBookingDays(){
-  const el=$('#bkDays'); clear(el);
-  for(let i=0;i<7;i++){ const d=dateAfter(i);
-    el.append(dayButton(d, i, d===State.booking.date, async()=>{
-      State.booking.date=d; State.booking.hour=null; State.booking.editing=true; renderBookingDays();
-      toggleBookingTimes(); timeSkeleton($('#bkTimes'),6); renderBookingChosen();
-      try{ await loadPublicBookings(); }catch(_){}
-      renderBookingDays(); renderBookingTimes();
-    }));
-  }
-}
-function toggleBookingTimes(){
-  const hasDay = !!State.booking.date;
-  $('#bkTimesSection').hidden = !hasDay;        // يظهر بعد اختيار اليوم
-  $('#bkTimesHint').hidden = hasDay;
-}
-function renderBookingTimes(){
-  const el=$('#bkTimes'); clear(el);
-  const slots=fieldSlots(State.booking.field);
-  const taken=(State.bookedSlots[State.booking.field.field_id]?.[State.booking.date])||[];
-  slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.booking.hour===s.hour, ()=>{
-    State.booking.hour=s.hour; State.booking.editing=false;   // اكتمل الاختيار ⇒ اطوِ المنتقيات
-    renderBookingTimes(); renderBookingChosen();
-  })));
-}
-/* ملخّص المراجعة الكامل: المكان/الملعب/المنطقة/التاريخ/اليوم/الوقت/المدة/السعر/حالة المستخدم */
-function renderBookingChosen(){
-  const box=$('#bkChosen'), picker=$('#bkPicker'); if(!box||!picker) return;
-  const { place, field, date, hour, editing } = State.booking;
-  const done = !!date && hour!==null && !editing;
-  box.hidden = !done; picker.hidden = done;
-  updateBookingStep();
-  clear(box); if(!done) return;
+function renderReview(){
+  const { place, field, date, hour } = State.detail;
+  const el=$('#bkReview'); if(!el) return; clear(el);
   const slot=fieldSlots(field).find(s=>s.hour===hour);
   const dayName = date===today() ? 'اليوم' : arabicDay(date);
   const logged = !!Session.player();
-  const change=h('button',{class:'chosen-change', type:'button'}, '✎ تغيير الموعد');
-  change.addEventListener('click', ()=>{ State.booking.editing=true; renderBookingDays(); renderBookingTimes(); toggleBookingTimes(); renderBookingChosen(); });
-  const cell=(lbl,val,icon)=> h('div',{class:'chosen-cell'}, h('div',{class:'c-lbl'}, ico(icon,'svg-sm'), ' '+lbl), h('div',{class:'c-val'}, val));
-  box.append(
-    h('div',{class:'chosen-head'}, h('div',{class:'ttl'}, 'مراجعة الحجز'), change),
-    h('div',{class:'chosen-rows'},
-      cell('اليوم', dayName+' '+shortDate(date), 'cal'),
-      cell('الوقت', slot?slot.label:'', 'clock'),
-      cell('الملعب', field.field_name+' • '+field.size, 'resize'),
-      cell('السعر', field.price+' دينار / ساعتان', 'money')),
-    h('div',{class:'chosen-user'}, ico('person','svg-sm'), ' ',
-      logged ? ('حساب لاعب: '+(State.player?.name||'')) : 'تحجز كضيف — بنطلب تسجيل دخول سريع عند التأكيد')
+  const row=(lbl,val,icon)=> h('div',{class:'rv-row'}, h('span',{class:'rv-ic'}, ico(icon,'svg-sm')), h('span',{class:'rv-lbl'}, lbl), h('span',{class:'rv-val'}, val));
+  el.append(
+    h('div',{class:'rv-place'},
+      h('div',{class:'rv-place-name'}, place.place_name+' - '+field.field_name),
+      h('div',{class:'rv-place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(place)+' • '+field.size)),
+    h('div',{class:'rv-grid'},
+      row('اليوم', dayName+' '+shortDate(date), 'cal'),
+      row('الوقت', slot?slot.label:'', 'clock'),
+      row('المدة', 'ساعتان', 'clock'),
+      row('السعر النهائي', formatCurrency(field.price), 'money')),
+    h('div',{class:'rv-user'},
+      row('الاسم', State.player?.name||'-', 'person'),
+      row('الهاتف', State.player?.phone||'-', 'phone'),
+      row('الحالة', logged?'حساب لاعب مسجّل':'ضيف', 'person'))
   );
+  updateBookingStep();
 }
 
 /* ===================== RENDER: PLAYER BOOKINGS ===================== */
@@ -2174,7 +2188,7 @@ function playerBookingCard(b){
         h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time)),
       h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap'}},
         h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+(b.players||'')),
-        h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+b.price+' JD')))
+        h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(b.price))))
   );
   if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, 'السبب: '+b.cancel_reason));
   if (canCancel){
@@ -2384,7 +2398,7 @@ function ownerBookingCard(b){
       h('span',{class:'info-line'}, ico('person','svg-sm'), ' '+(b.name||'-')),
       h('span',{class:'info-line'}, ico('phone','svg-sm'), ' '+(b.phone||'-')),
       h('span',{class:'info-line'}, ico('resize','svg-sm'), ' '+(b.players||'-')),
-      h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+(b.price||0)+' JD'),
+      h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+formatCurrency(b.price||0)),
       h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?'حجز خارجي':'مصدر: '+(b.source||'direct')))
   );
   if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, 'سبب الإلغاء/الرفض: '+b.cancel_reason));
@@ -2441,7 +2455,7 @@ function renderOwnerFields(){
           h('div',{style:{fontSize:'14px',fontWeight:'900',color:'var(--ink)'}}, f.field_name),
           h('div',{style:{display:'flex',gap:'10px',marginTop:'5px'}},
             h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+f.size),
-            h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+f.price+' JD')),
+            h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(f.price))),
           h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, 'Slots: '+slotsToKeyword(f.slots))),
         edit)));
   });
@@ -2509,7 +2523,7 @@ async function openManual(){
   try{ await loadPublicBookings(); }catch(_){}
   State.manual={ fieldId:String(fields[0].field_id), date:today(), hour:null };
   $('#mName').value=''; $('#mPhone').value=''; $('#mPrice').value=fields[0].price||'';
-  const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${f.price} JD`))); sel.value=State.manual.fieldId;
+  const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${f.price} د.أ`))); sel.value=State.manual.fieldId;
   sel.onchange=()=>{ State.manual.fieldId=sel.value; State.manual.hour=null; const f=manualField(); if(f)$('#mPrice').value=f.price||''; renderManualTimes(); };
   renderManualDays(); renderManualTimes(); Modal.open('modal-manual');
 }
@@ -2662,29 +2676,29 @@ async function saveAccount(btn){
   });
 }
 
-/* ---- booking confirm ---- */
+/* ---- booking confirm (من نافذة المراجعة · المصدر = State.detail) ---- */
 async function confirmBooking(btn){
-  // 1) تأكّد من اكتمال اختيار الموعد
-  if(!State.booking.date){ toast('اختار يوم أول','warn'); return; }
-  if(State.booking.hour===null){ toast('اختار وقت متاح','warn'); return; }
-  // 2) ضيف؟ احفظ الاختيار وافتح خيار الدخول/التسجيل (يُستأنف الحجز تلقائياً بعدها)
+  const { place, field, date, hour } = State.detail;
+  if(!place || !field || !date || hour==null){ toast('اكمل اختيار الموعد أولاً.','warn'); Modal.close('modal-booking'); scrollToDetailSection('time'); return; }
+  // ضيف؟ احفظ الاختيار وافتح خيار الدخول (تظهر المراجعة بعد الدخول)
   if(!Session.player()){ savePendingBooking(); openAuthChoice(); return; }
-  // 3) لاعب مسجّل: تحقق Inline من الاسم/الهاتف
-  clearFieldError('bkName'); clearFieldError('bkPhone');
-  const name=$('#bkName').value.trim(), phone=$('#bkPhone').value.trim();
-  let bad=false;
-  if(!name){ setFieldError('bkName','اكتب اسمك'); bad=true; }
-  if(!validPhone(phone)){ setFieldError('bkPhone','رقم هاتف غير صحيح'); bad=true; }
-  if(bad){ focusFirstError($('#modal-booking')); return; }
-  const { place, field, date, hour } = State.booking;
+  const name=(State.player?.name||'').trim(), phone=(State.player?.phone||'').trim();
+  // تحقّق نهائي أن الوقت ما زال متاحاً (سباق الحجوزات)
+  try{ await loadPublicBookings(); }catch(_){}
+  const takenNow=(State.bookedSlots[field.field_id]?.[date])||[];
+  if(takenNow.includes(Number(hour))){
+    Modal.close('modal-booking'); State.detail.hour=null; renderDetailTimes(); renderDetailSticky();
+    toast('للأسف، الوقت الذي اخترته انحجز قبل قليل. اختر وقتاً آخر.','warn');
+    scrollToDetailSection('time','#detailTimes .tbtn:not(.taken)'); return;
+  }
   const slot=fieldSlots(field).find(s=>s.hour===hour);
   await withLoading(btn, async()=>{
     try{
       const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:field.price, source:getSource() });
-      if(!res.success){ toast(res.message||'ما زبط الحجز، جرّب مرة ثانية','error'); await loadData(); renderBookingTimes(); return; }
+      if(!res.success){ toast(res.message||'ما زبط الحجز، جرّب مرة ثانية','error'); await loadData(); return; }
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
-      Modal.close('modal-booking'); setText('successText','وصل طلبك! الحجز بانتظار موافقة المالك وبنأكدلك على واتساب.'); Modal.open('success');
-      if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); }
+      Modal.close('modal-booking'); setText('successText','وصل طلبك! الحجز بانتظار تأكيد إدارة الملعب.'); Modal.open('success');
+      if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
     }catch(_){ toast('الاتصال مع الشيت علّق شوي، جرّب مرة ثانية.','error'); }
   });
 }
@@ -2738,7 +2752,7 @@ function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
   $$('[data-action="toggleTheme"]').forEach(b=>b.textContent = dark?'☀️':'🌙');
-  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#0a0f28':'#04130b');
+  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#07110c':'#04130b');
 }
 function toggleTheme(){ const t = document.body.classList.contains('dark')?'light':'dark'; Session.setTheme(t); applyTheme(t); }
 
@@ -2747,7 +2761,8 @@ const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, toggleTheme,
   search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
   openFilters, applyFilters, clearFiltersSheet,
-  openBooking:()=> openBookingModal(State.detail.hour!=null ? { date:State.detail.date, hour:State.detail.hour } : null),
+  openBooking: openBookingReview,
+  changeTime:()=>{ Modal.close('modal-booking'); scrollToDetailSection('time','#detailDays .day-btn'); },
   openReview, confirmBooking, submitReview,
   authLogin:()=>{ Modal.close('modal-authchoice'); showPage('playerLogin'); },
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
