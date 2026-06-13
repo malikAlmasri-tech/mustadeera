@@ -545,6 +545,36 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 .dsticky-btn:active{transform:scale(.96)}
 #page-detail{padding-bottom:96px}
 
+/* ---------- OWNER TABS + CALENDAR + CONFIRM (المرحلة 4) ---------- */
+.owner-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:80;background:var(--glass);backdrop-filter:blur(18px) saturate(160%);padding:11px var(--s-5);border-bottom:1px solid var(--line)}
+.owner-tabs::-webkit-scrollbar{display:none}
+.otab{flex:0 0 auto;background:transparent;border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 16px;min-height:40px;font-size:12.5px;font-weight:800;white-space:nowrap;transition:all var(--t-fast) var(--ease-out)}
+.otab:hover{border-color:rgba(30,192,107,.4);color:var(--emerald)}
+.otab.active{background:var(--g-btn);border-color:transparent;color:#fff;box-shadow:var(--shadow-green)}
+.owner-tab{animation:fadeUp var(--t-base) var(--ease-out) both}
+
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-title{font-size:15px;font-weight:900;color:var(--ink)}
+.cal-nav{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);font-size:20px;font-weight:900;transition:all var(--t-fast)}
+.cal-nav:hover{border-color:rgba(30,192,107,.4);color:var(--emerald)}
+.cal-nav:active{transform:scale(.94)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:6px}
+.cal-wd{text-align:center;font-size:10.5px;font-weight:800;color:var(--muted);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-cell{position:relative;min-width:0;height:52px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:border-color var(--t-fast),transform var(--t-fast),background var(--t-fast)}
+.cal-cell.empty{background:transparent;border:none;pointer-events:none}
+.cal-d{font-size:13px;font-weight:800;color:var(--ink-2)}
+.cal-dot{font-size:9px;font-weight:900;color:#fff;background:var(--g-btn);border-radius:999px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 4px;line-height:1}
+.cal-cell.has{border-color:rgba(30,192,107,.32)}
+.cal-cell.today{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-glow)}
+.cal-cell.today .cal-d{color:var(--gold)}
+.cal-cell.sel{background:var(--g-btn);border-color:transparent;box-shadow:var(--shadow-green)}
+.cal-cell.sel .cal-d{color:#fff}
+.cal-cell.sel .cal-dot{background:rgba(255,255,255,.28)}
+.cal-cell:not(.empty):hover{border-color:var(--emerald-2);transform:translateY(-1px)}
+
+.confirm-msg{font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-bottom:18px;white-space:pre-line;font-weight:600}
+
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
 .success-overlay.show{display:flex;opacity:1}
@@ -1001,58 +1031,110 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         </div>
       </div>
     </header>
+    <nav class="owner-tabs" id="ownerTabs" role="tablist" aria-label="أقسام لوحة المالك">
+      <button class="otab active" data-otab="today" role="tab" aria-selected="true">اليوم</button>
+      <button class="otab" data-otab="bookings" role="tab" aria-selected="false">الحجوزات</button>
+      <button class="otab" data-otab="calendar" role="tab" aria-selected="false">التقويم</button>
+      <button class="otab" data-otab="fields" role="tab" aria-selected="false">الملاعب</button>
+      <button class="otab" data-otab="reports" role="tab" aria-selected="false">التقارير</button>
+    </nav>
     <div class="pad">
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-value" id="oTotal">0</div><div class="stat-label">كل الحجوزات</div><div class="stat-hint">جميع الطلبات</div></div>
-        <div class="stat-card c-green"><div class="stat-value" id="oConfirmed">0</div><div class="stat-label">مؤكدة</div><div class="stat-hint">تدخل بالإيراد</div></div>
-        <div class="stat-card c-amber"><div class="stat-value" id="oPending">0</div><div class="stat-label">بانتظار التأكيد</div><div class="stat-hint">تحتاج متابعة</div></div>
-        <div class="stat-card c-blue"><div class="stat-value" id="oToday">0</div><div class="stat-label">حجوزات اليوم</div><div class="stat-hint">حسب تاريخ اللعب</div></div>
+
+      <!-- ===== تبويب: اليوم ===== -->
+      <div class="owner-tab active" id="ownerTab-today" role="tabpanel">
+        <div class="stat-grid">
+          <div class="stat-card c-blue"><div class="stat-value" id="otToday">0</div><div class="stat-label">حجوزات اليوم</div><div class="stat-hint">حسب تاريخ اللعب</div></div>
+          <div class="stat-card c-amber"><div class="stat-value" id="otPending">0</div><div class="stat-label">بانتظار ردّك</div><div class="stat-hint">طلبات اليوم</div></div>
+          <div class="stat-card c-green"><div class="stat-value" id="otRevenue">0 JD</div><div class="stat-label">إيراد اليوم المتوقع</div><div class="stat-hint">المؤكد اليوم</div></div>
+          <div class="stat-card"><div class="stat-value" id="otFree">0</div><div class="stat-label">أوقات فارغة اليوم</div><div class="stat-hint">قابلة للحجز</div></div>
+        </div>
+        <div class="card" style="margin-bottom:15px;border-color:rgba(19,164,90,.18)">
+          <div class="section-title"><span>➕ حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
+          <p class="t-sub" style="line-height:1.75;margin-bottom:12px">حجوزات واتساب أو اتصال — أضفها هون لإغلاق الوقت أمام اللاعبين.</p>
+          <button class="sbtn" data-action="openManual">+ إضافة حجز خارجي</button>
+        </div>
+        <div class="sec-title" style="padding:0 0 12px"><span>طلبات وحجوزات اليوم</span><span class="link" data-action="refreshOwner">تحديث ↺</span></div>
+        <div id="ownerToday"></div>
       </div>
-      <div class="card" style="margin-bottom:15px">
-        <div class="section-title"><span>💰 ملخص الإيراد</span><span class="mini-badge">عمولة 10%</span></div>
-        <div class="row-3">
-          <div><div class="kpi-val" id="oRevenue">0 JD</div><div class="kpi-lbl">إيراد الموقع</div></div>
-          <div><div class="kpi-val" id="oProfit" style="color:#2563eb">0 JD</div><div class="kpi-lbl">ربح المنصة</div></div>
-          <div><div class="kpi-val" id="oNet" style="color:#13954f">0 JD</div><div class="kpi-lbl">صافي المالك</div></div>
+
+      <!-- ===== تبويب: الحجوزات ===== -->
+      <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" hidden>
+        <div class="card" style="margin-bottom:15px">
+          <div class="section-title"><span>فلترة الحجوزات</span></div>
+          <input class="finput" id="ownerSearch" type="search" placeholder="بحث بالاسم أو رقم الهاتف..." aria-label="بحث في الحجوزات" style="margin-bottom:11px">
+          <div class="grid-2">
+            <input class="finput" type="date" id="ownerDateFilter" aria-label="فلترة بالتاريخ">
+            <select class="finput" id="ownerFieldFilter" aria-label="فلترة بالملعب"><option value="all">كل الملاعب</option></select>
+          </div>
+          <select class="finput" id="ownerStatusFilter" aria-label="فلترة بالحالة" style="margin-top:11px">
+            <option value="all">كل الحالات</option>
+            <option value="pending">بانتظار التأكيد</option>
+            <option value="confirmed">مؤكدة</option>
+            <option value="cancelled">ملغاة</option>
+            <option value="rejected">مرفوضة</option>
+          </select>
+          <button class="cbtn" data-action="clearFilters">مسح الفلتر</button>
+        </div>
+        <div class="sec-title" style="padding:0 0 12px"><span>الحجوزات</span><span class="link" data-action="refreshOwner">تحديث ↺</span></div>
+        <button class="cbtn" data-action="toggleOwnerHistory" id="ownerHistoryToggle" style="margin:0 0 12px">عرض السجل الكامل</button>
+        <div id="ownerBookings"></div>
+      </div>
+
+      <!-- ===== تبويب: التقويم ===== -->
+      <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" hidden>
+        <div class="cal-head">
+          <button class="cal-nav" data-action="calPrev" aria-label="الشهر السابق">‹</button>
+          <div class="cal-title" id="calTitle">—</div>
+          <button class="cal-nav" data-action="calNext" aria-label="الشهر التالي">›</button>
+        </div>
+        <div class="cal-weekdays" id="calWeekdays"></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div id="calDayBookings" style="margin-top:18px"></div>
+      </div>
+
+      <!-- ===== تبويب: الملاعب والأسعار ===== -->
+      <div class="owner-tab" id="ownerTab-fields" role="tabpanel" hidden>
+        <div class="sec-title" style="padding:0 0 12px"><span>إدارة الملاعب</span><span class="link" data-action="addField">+ إضافة ملعب</span></div>
+        <div id="ownerFields"></div>
+      </div>
+
+      <!-- ===== تبويب: التقارير ===== -->
+      <div class="owner-tab" id="ownerTab-reports" role="tabpanel" hidden>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-value" id="oTotal">0</div><div class="stat-label">كل الحجوزات</div><div class="stat-hint">جميع الطلبات</div></div>
+          <div class="stat-card c-green"><div class="stat-value" id="oConfirmed">0</div><div class="stat-label">مؤكدة</div><div class="stat-hint">تدخل بالإيراد</div></div>
+          <div class="stat-card c-amber"><div class="stat-value" id="oPending">0</div><div class="stat-label">بانتظار التأكيد</div><div class="stat-hint">تحتاج متابعة</div></div>
+          <div class="stat-card c-blue"><div class="stat-value" id="oToday">0</div><div class="stat-label">حجوزات اليوم</div><div class="stat-hint">حسب تاريخ اللعب</div></div>
+        </div>
+        <div class="card" style="margin-bottom:15px">
+          <div class="section-title"><span>💰 ملخص الإيراد</span><span class="mini-badge">عمولة 10%</span></div>
+          <div class="row-3">
+            <div><div class="kpi-val" id="oRevenue">0 JD</div><div class="kpi-lbl">إيراد الموقع</div></div>
+            <div><div class="kpi-val" id="oProfit" style="color:#2563eb">0 JD</div><div class="kpi-lbl">ربح المنصة</div></div>
+            <div><div class="kpi-val" id="oNet" style="color:#13954f">0 JD</div><div class="kpi-lbl">صافي المالك</div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:15px">
+          <div class="section-title"><span>📈 مؤشرات الأداء</span><span class="mini-badge" id="oWeek">آخر 7 أيام: 0</span></div>
+          <div class="mini-row"><span>نسبة التأكيد</span><strong id="oRate">0%</strong></div>
+          <div class="progress" style="margin-bottom:11px"><div id="oRateBar" style="width:0%"></div></div>
+          <div class="mini-row"><span>أكثر ملعب عليه حجوزات</span><strong id="oTopField">-</strong></div>
+          <div class="mini-row" style="margin-bottom:0"><span>أفضل مصدر للحجوزات</span><strong id="oTopSource">-</strong></div>
+        </div>
+        <div class="card" style="margin-bottom:15px;border-color:rgba(216,181,82,.2)">
+          <div class="section-title"><span>🧠 الإحصائيات الاقتصادية</span><span class="mini-badge">قرارات ذكية</span></div>
+          <div class="econ-grid">
+            <div class="econ-item"><div class="econ-value" id="oOccupancy">0%</div><div class="econ-label">معدل الإشغال</div><div class="econ-hint">المحجوز ÷ المتاح</div></div>
+            <div class="econ-item"><div class="econ-value" id="oLost">0 JD</div><div class="econ-label">إيراد ضائع</div><div class="econ-hint">الأوقات الفارغة × السعر</div></div>
+            <div class="econ-item"><div class="econ-value" id="oCancel">0%</div><div class="econ-label">إلغاء / رفض</div><div class="econ-hint">كل ما قلّت أفضل</div></div>
+            <div class="econ-item"><div class="econ-value" id="oBestTime">-</div><div class="econ-label">أكثر وقت طلب</div><div class="econ-hint">مفيد للتسعير</div></div>
+            <div class="econ-item"><div class="econ-value" id="oWebShare">0%</div><div class="econ-label">حجوزات الموقع</div><div class="econ-hint">مباشر vs خارجي</div></div>
+            <div class="econ-item"><div class="econ-value" id="oReturn">0%</div><div class="econ-label">معدل العودة</div><div class="econ-hint">نفس الرقم أكثر من مرة</div></div>
+          </div>
+          <div class="econ-decision" id="oDecision">كلما زادت البيانات، بتصير القرارات أدق.</div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:15px">
-        <div class="section-title"><span>📈 مؤشرات الأداء</span><span class="mini-badge" id="oWeek">آخر 7 أيام: 0</span></div>
-        <div class="mini-row"><span>نسبة التأكيد</span><strong id="oRate">0%</strong></div>
-        <div class="progress" style="margin-bottom:11px"><div id="oRateBar" style="width:0%"></div></div>
-        <div class="mini-row"><span>أكثر ملعب عليه حجوزات</span><strong id="oTopField">-</strong></div>
-        <div class="mini-row" style="margin-bottom:0"><span>أفضل مصدر للحجوزات</span><strong id="oTopSource">-</strong></div>
-      </div>
-      <div class="card" style="margin-bottom:15px;border-color:rgba(216,181,82,.2)">
-        <div class="section-title"><span>🧠 الإحصائيات الاقتصادية</span><span class="mini-badge">قرارات ذكية</span></div>
-        <div class="econ-grid">
-          <div class="econ-item"><div class="econ-value" id="oOccupancy">0%</div><div class="econ-label">معدل الإشغال</div><div class="econ-hint">المحجوز ÷ المتاح</div></div>
-          <div class="econ-item"><div class="econ-value" id="oLost">0 JD</div><div class="econ-label">إيراد ضائع</div><div class="econ-hint">الأوقات الفارغة × السعر</div></div>
-          <div class="econ-item"><div class="econ-value" id="oCancel">0%</div><div class="econ-label">إلغاء / رفض</div><div class="econ-hint">كل ما قلّت أفضل</div></div>
-          <div class="econ-item"><div class="econ-value" id="oBestTime">-</div><div class="econ-label">أكثر وقت طلب</div><div class="econ-hint">مفيد للتسعير</div></div>
-          <div class="econ-item"><div class="econ-value" id="oWebShare">0%</div><div class="econ-label">حجوزات الموقع</div><div class="econ-hint">مباشر vs خارجي</div></div>
-          <div class="econ-item"><div class="econ-value" id="oReturn">0%</div><div class="econ-label">معدل العودة</div><div class="econ-hint">نفس الرقم أكثر من مرة</div></div>
-        </div>
-        <div class="econ-decision" id="oDecision">كلما زادت البيانات، بتصير القرارات أدق.</div>
-      </div>
-      <div class="card" style="margin-bottom:15px;border-color:rgba(19,164,90,.18)">
-        <div class="section-title"><span>➕ حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
-        <p class="t-sub" style="line-height:1.75;margin-bottom:12px">حجوزات واتساب أو اتصال — أضفها هون لإغلاق الوقت أمام اللاعبين.</p>
-        <button class="sbtn" data-action="openManual">+ إضافة حجز خارجي</button>
-      </div>
-      <div class="card" style="margin-bottom:15px">
-        <div class="section-title"><span>فلترة الحجوزات</span></div>
-        <div class="grid-2">
-          <input class="finput" type="date" id="ownerDateFilter">
-          <select class="finput" id="ownerFieldFilter"><option value="all">كل الملاعب</option></select>
-        </div>
-        <button class="cbtn" data-action="clearFilters">مسح الفلتر</button>
-      </div>
-      <div class="sec-title" style="padding:0 0 12px"><span>الحجوزات</span><span class="link" data-action="refreshOwner">تحديث ↺</span></div>
-      <button class="cbtn" data-action="toggleOwnerHistory" id="ownerHistoryToggle" style="margin:0 0 12px">عرض السجل الكامل</button>
-      <div id="ownerBookings"></div>
-      <div class="sec-title" style="padding:18px 0 12px"><span>إدارة الملاعب</span><span class="link" data-action="addField">+ إضافة ملعب</span></div>
-      <div id="ownerFields"></div>
+
     </div>
   </section>
 
@@ -1206,6 +1288,17 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       <textarea class="finput" id="reasonInput" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." style="margin-bottom:18px"></textarea>
       <button class="sbtn" id="reasonConfirm" style="background:linear-gradient(135deg,#ef4444,#991b1b)!important">تأكيد</button>
       <button class="cbtn" id="reasonCancel">رجوع</button>
+    </div>
+  </div>
+
+  <!-- ============ CONFIRM DIALOG (تأكيد إجراء) ============ -->
+  <div class="modal-overlay" id="modal-confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+    <div class="modal" data-modal="confirm">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="confirmTitle">تأكيد</div>
+      <div class="confirm-msg" id="confirmMessage"></div>
+      <button class="sbtn" id="confirmOk">تأكيد</button>
+      <button class="cbtn" id="confirmCancel">رجوع</button>
     </div>
   </div>
 
@@ -1432,6 +1525,8 @@ const State = {
   review: { rating:0, placeId:null },
   pendingBooking: null,   // حجز الضيف المحفوظ ريثما يسجّل دخوله ثم يُستأنف
   homeScroll: 0,          // حفظ موضع التمرير للرجوع السلس من التفاصيل
+  ownerTab: 'today',      // تبويب لوحة المالك النشط
+  calMonth: null,         // شهر التقويم المعروض (Date لأول الشهر)
 };
 
 function normalizePlaces(remote){
@@ -2143,7 +2238,72 @@ function renderOwnerDashboard(){
   clear(sel); sel.append(h('option',{value:'all'},'كل الملاعب'));
   (d.fields||[]).forEach(f=> sel.append(h('option',{value:f.field_id}, f.field_name)));
   sel.value=old;
-  renderOwnerBookings(); renderOwnerFields();
+  renderOwnerBookings(); renderOwnerFields(); renderOwnerToday();
+  showOwnerTab(State.ownerTab || 'today');
+}
+/* ===================== OWNER TABS ===================== */
+function showOwnerTab(name){
+  State.ownerTab=name;
+  $$('#ownerTabs .otab').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+  $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
+  if(name==='calendar') renderOwnerCalendar();
+  if(name==='today') renderOwnerToday();
+  window.scrollTo({ top:0, behavior:'instant' });
+}
+/* ===================== OWNER · TODAY TAB ===================== */
+function renderOwnerToday(){
+  const el=$('#ownerToday'); if(!el) return;
+  const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const t=today();
+  const todayB=all.filter(b=>String(b.date||'').split('T')[0]===t);
+  const pend=todayB.filter(b=>String(b.status||'').toLowerCase()==='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
+  const conf=todayB.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const revenue=conf.reduce((s,b)=>s+(Number(b.price)||0),0);
+  // أوقات اليوم الفارغة (من بيانات المالك مباشرة)
+  const bookedToday={};
+  todayB.forEach(b=>{ const s=String(b.status||'').toLowerCase(); if(s==='cancelled'||s==='rejected') return; const fid=String(b.field_id); const hr=Number(b.hour); if(!Number.isNaN(hr)){ (bookedToday[fid] ||= new Set()).add(hr); } });
+  let totalSlots=0, booked=0;
+  fields.forEach(f=>{ if(f.active===false) return; const slots=fieldSlots(f); totalSlots+=slots.length; const set=bookedToday[String(f.field_id)]||new Set(); booked+=slots.filter(s=>set.has(s.hour)).length; });
+  setText('otToday', todayB.length); setText('otPending', pend.length); setText('otRevenue', formatMoney(revenue)); setText('otFree', Math.max(totalSlots-booked,0));
+  clear(el);
+  if(!todayB.length){ el.append(emptyState({icon:'📅', title:'لا حجوزات اليوم', sub:'ما في حجوزات أو طلبات بتاريخ اليوم. استمتع بيومك أو أضف حجزاً خارجياً.'})); return; }
+  const rest=todayB.filter(b=>String(b.status||'').toLowerCase()!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
+  if(pend.length){ el.append(sectionTitle('بانتظار ردّك', pend.length)); pend.forEach(b=>el.append(ownerBookingCard(b))); }
+  if(rest.length){ el.append(sectionTitle('بقية حجوزات اليوم', rest.length)); rest.forEach(b=>el.append(ownerBookingCard(b))); }
+}
+/* ===================== OWNER · CALENDAR TAB (Vanilla) ===================== */
+function ownerBookingsByDate(){
+  const m={}; (State.ownerData?.bookings||[]).forEach(b=>{ const d=String(b.date||'').split('T')[0]; if(!d) return; (m[d] ||= []).push(b); }); return m;
+}
+function renderOwnerCalendar(){
+  if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00');
+  const month=State.calMonth, y=month.getFullYear(), mo=month.getMonth();
+  setText('calTitle', month.toLocaleDateString('ar', {month:'long', year:'numeric'}));
+  const wd=$('#calWeekdays'); clear(wd); ['أحد','إثن','ثلا','أرب','خمي','جمع','سبت'].forEach(d=>wd.append(h('div',{class:'cal-wd'}, d)));
+  const grid=$('#calGrid'); clear(grid);
+  const startDay=new Date(y,mo,1).getDay();
+  const daysInMonth=new Date(y,mo+1,0).getDate();
+  const byDate=ownerBookingsByDate(); const t=today();
+  for(let i=0;i<startDay;i++) grid.append(h('div',{class:'cal-cell empty'}));
+  for(let d=1; d<=daysInMonth; d++){
+    const ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cnt=(byDate[ds]||[]).filter(b=>!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length;
+    const cell=h('button',{class:'cal-cell'+(ds===t?' today':'')+(cnt?' has':''), type:'button', dataset:{date:ds}},
+      h('span',{class:'cal-d'}, String(d)), cnt?h('span',{class:'cal-dot'}, String(cnt)):null);
+    cell.addEventListener('click', ()=>renderCalDay(ds));
+    grid.append(cell);
+  }
+  // اعرض اليوم افتراضياً إن كان ضمن الشهر، وإلا أول يوم فيه حجوزات
+  const def = (t.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)) ? t : Object.keys(byDate).filter(k=>k.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)).sort()[0];
+  if(def) renderCalDay(def); else clear($('#calDayBookings'));
+}
+function renderCalDay(ds){
+  const el=$('#calDayBookings'); if(!el) return;
+  $$('#calGrid .cal-cell').forEach(c=>c.classList.toggle('sel', c.dataset.date===ds));
+  const list=(ownerBookingsByDate()[ds]||[]).sort((a,b)=>Number(a.hour)-Number(b.hour));
+  clear(el);
+  el.append(h('div',{class:'sec-title', style:{padding:'0 0 10px'}}, h('span',{}, `${arabicDay(ds)} ${shortDate(ds)}`), h('span',{class:'mini-badge'}, String(list.length))));
+  if(!list.length){ el.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)'}}, 'لا حجوزات بهذا اليوم')); return; }
+  list.forEach(b=> el.append(ownerBookingCard(b)));
 }
 function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
@@ -2215,9 +2375,13 @@ function renderOwnerBookings(){
   const d=State.ownerData; if(!d) return;
   let bookings=d.bookings||[];
   const date=$('#ownerDateFilter').value; const fieldId=$('#ownerFieldFilter').value;
+  const status=$('#ownerStatusFilter')?.value||'all';
+  const raw=($('#ownerSearch')?.value||'').trim(); const q=normalizeText(raw); const qd=raw.replace(/\D/g,'');
   if (!State.showAllOwner) bookings=visibleBookings(bookings,30,false);
   if (date) bookings=bookings.filter(b=>String(b.date)===date);
   if (fieldId&&fieldId!=='all') bookings=bookings.filter(b=>String(b.field_id)===String(fieldId));
+  if (status!=='all') bookings=bookings.filter(b=>String(b.status||'').toLowerCase()===status);
+  if (raw) bookings=bookings.filter(b=> normalizeText(b.name).includes(q) || (qd && String(b.phone||'').replace(/\D/g,'').includes(qd)) );
   const tgl=$('#ownerHistoryToggle'); if(tgl) tgl.textContent=State.showAllOwner?'إخفاء الحجوزات القديمة':'عرض السجل الكامل';
   const el=$('#ownerBookings'); clear(el);
   if(!bookings.length){ el.append(emptyState({icon:'🗓️',title:'لا توجد حجوزات مطابقة',sub:'جرّب تغيير الفلتر أو التاريخ لعرض حجوزات أخرى.'})); return; }
@@ -2263,8 +2427,13 @@ function renderOwnerFields(){
 async function updateBookingStatus(btn, rowNumber, status){
   const booking=(State.ownerData?.bookings||[]).find(b=>Number(b.row_number)===Number(rowNumber));
   let reason='';
+  if (status==='confirmed'){
+    const info = booking ? `${booking.name||'لاعب'} — ${booking.field_name||''}\n${booking.date||''}  ${booking.time||''}` : '';
+    const ok = await askConfirm('تأكيد الحجز', 'هل تؤكّد هذا الحجز؟ سيصل اللاعب إشعار واتساب.\n\n'+info, 'تأكيد ✓');
+    if(!ok) return;
+  }
   if (status==='cancelled'||status==='rejected'){
-    const r=await askReason(status==='cancelled'?'سبب إلغاء الحجز':'سبب رفض الحجز','اكتب السبب الذي سيظهر للاعب وسيُجهّز برسالة واتساب.','تأكيد');
+    const r=await askReason(status==='cancelled'?'سبب إلغاء الحجز':'سبب رفض الحجز','اكتب السبب الذي سيظهر للاعب وسيُجهّز برسالة واتساب (إلزامي).','تأكيد', true);
     if (r===null) return; reason=r;
   }
   await withLoading(btn, async()=>{
@@ -2286,13 +2455,24 @@ function sendWhatsApp(b, status, reason=''){
 }
 
 /* ---- Reason modal as a Promise ---- */
-function askReason(title, hint, confirmLabel='تأكيد'){
+function askReason(title, hint, confirmLabel='تأكيد', required=false){
   return new Promise(resolve=>{
-    const overlay=$('#modal-reason'), input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
-    setText('reasonTitle',title); setText('reasonHint',hint); input.value=''; ok.textContent=confirmLabel;
+    const input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
+    setText('reasonTitle',title); setText('reasonHint',hint); input.value=''; ok.textContent=confirmLabel; clearFieldError('reasonInput');
     Modal.open('modal-reason'); setTimeout(()=>input.focus(),200);
-    const done=(val)=>{ Modal.close('modal-reason'); ok.onclick=null; no.onclick=null; resolve(val); };
-    ok.onclick=()=>done(input.value.trim()); no.onclick=()=>done(null);
+    const done=(val)=>{ Modal.close('modal-reason'); ok.onclick=null; no.onclick=null; clearFieldError('reasonInput'); resolve(val); };
+    ok.onclick=()=>{ const v=input.value.trim(); if(required && !v){ setFieldError('reasonInput','السبب إلزامي — اكتب سبباً واضحاً للاعب'); input.focus(); return; } done(v); };
+    no.onclick=()=>done(null);
+  });
+}
+/* تأكيد إجراء (Promise<boolean>) — يُستخدم قبل تأكيد الحجز */
+function askConfirm(title, message, confirmLabel='تأكيد'){
+  return new Promise(resolve=>{
+    setText('confirmTitle',title); setText('confirmMessage',message);
+    const ok=$('#confirmOk'), no=$('#confirmCancel'); ok.textContent=confirmLabel;
+    Modal.open('modal-confirm');
+    const done=(v)=>{ Modal.close('modal-confirm'); ok.onclick=null; no.onclick=null; resolve(v); };
+    ok.onclick=()=>done(true); no.onclick=()=>done(false);
   });
 }
 
@@ -2543,12 +2723,15 @@ const Actions = {
   authLogin:()=>{ Modal.close('modal-authchoice'); showPage('playerLogin'); },
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
   openManual, saveManual, addField:openAddField, saveField,
-  clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; renderOwnerBookings(); },
+  clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
+  calPrev:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()-1, 1); renderOwnerCalendar(); },
+  calNext:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()+1, 1); renderOwnerCalendar(); },
   closeModal:()=>Modal.close(), closeSuccess:()=>{ Modal.close('success'); renderPlaces(); },
 };
 document.addEventListener('click', (e)=>{
   const nav=e.target.closest('[data-nav]'); if(nav){ showPage(nav.dataset.nav); return; }
+  const otab=e.target.closest('[data-otab]'); if(otab){ showOwnerTab(otab.dataset.otab); return; }
   const go=e.target.closest('[data-go]'); if(go){ showPage(go.dataset.go); return; }
   const star=e.target.closest('[data-star]'); if(star){ setRating(Number(star.dataset.star)); return; }
   const act=e.target.closest('[data-action]'); if(!act) return;
@@ -2563,6 +2746,8 @@ $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG
 // الفلاتر في لوحة المالك
 $('#ownerDateFilter')?.addEventListener('change', renderOwnerBookings);
 $('#ownerFieldFilter')?.addEventListener('change', renderOwnerBookings);
+$('#ownerStatusFilter')?.addEventListener('change', renderOwnerBookings);
+$('#ownerSearch')?.addEventListener('input', debounce(()=>renderOwnerBookings(), CONFIG.SEARCH_DEBOUNCE));
 // تحديث تلقائي عند العودة للتبويب
 document.addEventListener('visibilitychange', ()=>{ manageAutoRefresh(); if(!document.hidden&&autoRefreshActive()) refreshVisible(); });
 // تفعيل السحب لإغلاق كل النوافذ
