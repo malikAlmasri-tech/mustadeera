@@ -516,6 +516,35 @@ body.dark .avail-soon{background:rgba(245,158,11,.22);color:#fcd34d;border-color
 .place-strip-info{flex-wrap:wrap;gap:6px}
 .amenity-more{opacity:.8}
 
+/* ---------- DETAIL: GALLERY + SECTIONS + STICKY (المرحلة 3) ---------- */
+.detail-thumbs{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding:12px var(--s-5) 0;margin-top:-6px}
+.detail-thumbs::-webkit-scrollbar{display:none}
+.thumb{flex:0 0 auto;width:64px;height:48px;border-radius:12px;overflow:hidden;border:2px solid var(--line-2);background:var(--surface-muted);padding:0;transition:border-color var(--t-fast),transform var(--t-fast)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb.active{border-color:var(--emerald-2);box-shadow:0 0 0 2px rgba(30,192,107,.2)}
+.thumb:active{transform:scale(.95)}
+
+.detail-section{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:var(--s-5);margin-bottom:var(--s-4);box-shadow:var(--shadow-card)}
+.dsec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.dsec-head:not(:first-child){margin-top:20px}
+.dsec-num{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff;background:var(--g-btn);box-shadow:0 3px 8px rgba(19,164,90,.25)}
+.dsec-title{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.015em}
+.no-times{padding:16px;border-radius:var(--r-md);background:var(--soft-yellow);border:1px dashed rgba(245,158,11,.4);color:#92400e;font-size:12.5px;font-weight:700;text-align:center}
+body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+
+.detail-sticky{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);z-index:95;display:flex;align-items:center;gap:12px;
+  padding:12px var(--s-5) max(12px,env(safe-area-inset-bottom));background:var(--glass);backdrop-filter:blur(22px) saturate(180%);border-top:1px solid var(--glass-brd);box-shadow:0 -8px 30px rgba(4,19,11,.18);
+  animation:stickyUp var(--t-base) var(--ease-out) both}
+@keyframes stickyUp{from{opacity:0;transform:translate3d(-50%,100%,0)}to{opacity:1;transform:translate3d(-50%,0,0)}}
+.dsticky-info{flex:1;min-width:0}
+.dsticky-line{font-size:12.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsticky-meta{display:flex;align-items:baseline;gap:5px;margin-top:3px}
+.dsticky-price{font-size:16px;font-weight:900;color:var(--emerald);font-variant-numeric:tabular-nums}
+.dsticky-unit{font-size:10px;color:var(--soft)}
+.dsticky-btn{flex-shrink:0;background:var(--g-btn);color:#fff;border-radius:var(--r-lg);padding:0 20px;min-height:var(--tap);font-size:14px;font-weight:800;box-shadow:var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring)}
+.dsticky-btn:active{transform:scale(.96)}
+#page-detail{padding-bottom:96px}
+
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
 .success-overlay.show{display:flex;opacity:1}
@@ -879,6 +908,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       <button class="detail-back" data-go="home" aria-label="رجوع">←</button>
       <span class="detail-emoji" id="detailEmoji">⚽</span>
     </div>
+    <div class="detail-thumbs" id="detailThumbs" hidden></div>
     <div class="detail-body">
       <div class="detail-head">
         <div>
@@ -899,16 +929,16 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> اتصال
         </a>
       </div>
-      <div class="block">
-        <div class="field-title">اختر الملعب:</div>
+      <section class="detail-section" aria-label="اختيار الملعب">
+        <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title">اختر الملعب</h2></div>
         <div class="subfields" id="subFields"></div>
-      </div>
-      <div class="block">
-        <div class="field-title">اختر اليوم:</div>
-        <div class="days-row" id="detailDays" style="margin-bottom:14px"></div>
-        <div class="field-title">الأوقات المتاحة:</div>
+      </section>
+      <section class="detail-section" aria-label="اختيار الموعد">
+        <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title">اختر اليوم</h2></div>
+        <div class="days-row" id="detailDays" style="margin-bottom:18px"></div>
+        <div class="dsec-head"><span class="dsec-num">3</span><h2 class="dsec-title">اختر الوقت</h2></div>
         <div class="times-grid" id="detailTimes"></div>
-      </div>
+      </section>
       <details class="disclosure">
         <summary>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg>
@@ -1190,6 +1220,15 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <div id="toast" class="toast"></div>
+
+  <!-- ============ DETAIL STICKY SUMMARY (يظهر بعد اختيار ملعب+يوم+وقت) ============ -->
+  <div class="detail-sticky" id="detailSticky" hidden>
+    <div class="dsticky-info">
+      <div class="dsticky-line" id="dstickyLine"></div>
+      <div class="dsticky-meta"><span class="dsticky-price" id="dstickyPrice"></span><span class="dsticky-unit">/ ساعتان</span></div>
+    </div>
+    <button class="dsticky-btn" data-action="openBooking">متابعة الحجز ←</button>
+  </div>
 
   <!-- ============ BOTTOM NAV ============ -->
   <nav class="bnav" id="nav-player">
@@ -1792,17 +1831,41 @@ async function openDetail(placeId){
   const badges=$('#dBadges'); clear(badges);
   badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(place)));
 
-  // الغلاف (lazy image)
+  // الغلاف + معرض صور (جاهز لعدة صور؛ صورة واحدة تبقى مفردة بلا تكرار وهمي)
   const hero=$('#detailHero'); $$('#detailHero img').forEach(n=>n.remove());
   const emoji=$('#detailEmoji');
-  if (place.fields?.[0]?.image_url){ emoji.style.display='none'; hero.insertBefore(h('img',{src:place.fields[0].image_url,alt:place.place_name,loading:'lazy'}), hero.firstChild); }
+  const imgs=[...new Set((place.fields||[]).map(f=>f.image_url).filter(Boolean))];
+  if (imgs.length){ emoji.style.display='none'; hero.insertBefore(h('img',{id:'detailHeroImg',src:imgs[0],alt:place.place_name,decoding:'async',fetchpriority:'high'}), hero.firstChild); }
   else { emoji.style.display=''; hero.style.background='linear-gradient(160deg,var(--forest),#155e34)'; }
+  renderDetailThumbs(imgs);
 
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
 
-  renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats();
+  renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
   showPage('detail');
+}
+/* معرض مصغّرات (يظهر فقط عند وجود أكثر من صورة فعلية) */
+function renderDetailThumbs(imgs){
+  const el=$('#detailThumbs'); if(!el) return; clear(el);
+  if(!imgs || imgs.length<2){ el.hidden=true; return; }
+  el.hidden=false;
+  imgs.forEach((src,i)=>{
+    const t=h('button',{class:'thumb'+(i===0?' active':''), type:'button', 'aria-label':'عرض الصورة '+(i+1)}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
+    t.addEventListener('click', ()=>{ const main=$('#detailHeroImg'); if(main) main.src=src; $$('#detailThumbs .thumb').forEach(x=>x.classList.remove('active')); t.classList.add('active'); });
+    el.append(t);
+  });
+}
+/* الملخّص اللاصق أسفل صفحة التفاصيل (يظهر بعد اختيار ملعب+يوم+وقت) */
+function renderDetailSticky(){
+  const bar=$('#detailSticky'); if(!bar) return;
+  const { field, date, hour } = State.detail;
+  const ok = !!field && hour!=null;
+  bar.hidden = !ok; if(!ok) return;
+  const slot=fieldSlots(field).find(s=>s.hour===hour);
+  const day = date===today()?'اليوم':arabicDay(date);
+  setText('dstickyLine', `${field.field_name} • ${day} ${shortDate(date)} • ${slot?slot.label:''}`);
+  setText('dstickyPrice', field.price+' د');
 }
 function renderSubFields(){
   const el=$('#subFields'); clear(el);
@@ -1828,7 +1891,7 @@ function renderDetailDays(){
   const el=$('#detailDays'); clear(el);
   for(let i=0;i<7;i++){ const d=dateAfter(i);
     el.append(dayButton(d, i, d===State.detail.date, async()=>{
-      State.detail.date=d; State.detail.hour=null; renderDetailDays(); timeSkeleton($('#detailTimes'),6);
+      State.detail.date=d; State.detail.hour=null; renderDetailDays(); renderDetailSticky(); timeSkeleton($('#detailTimes'),6);
       try{ await loadPublicBookings(); }catch(_){}
       renderDetailDays(); renderDetailTimes();
     }));
@@ -1844,7 +1907,10 @@ function renderDetailTimes(){
   const el=$('#detailTimes'); clear(el);
   const slots=fieldSlots(State.detail.field);
   const taken=(State.bookedSlots[State.detail.field.field_id]?.[State.detail.date])||[];
+  const free=slots.filter(s=>!taken.includes(s.hour)).length;
   slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
+  if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, '🚫 ما في أوقات متاحة بهذا اليوم. جرّب يوماً ثانياً.'));
+  renderDetailSticky();
 }
 
 /* ===================== RENDER: ECONOMIC (place / player) ===================== */
@@ -2010,16 +2076,37 @@ async function loadPlayerBookings(){
     renderPlayerStats(res.bookings||[]);
     clear(list);
     if (!res.bookings || !res.bookings.length){ list.append(emptyState({icon:'📭',title:'لسا ما عندك حجوزات',sub:'تصفّح الملاعب واحجز ملعبك الأول — بياخد ثواني!',actionLabel:'تصفّح الملاعب',action:()=>showPage('home')})); return; }
-    const vis = visibleBookings(res.bookings, 14, State.showAllPlayer);
-    const hidden = res.bookings.length - vis.length;
-    const { active, finished } = splitFinished(vis);
-    const toggle=h('button',{class:'cbtn', style:{marginBottom:'12px'}}, State.showAllPlayer?'إخفاء الحجوزات القديمة':('عرض السجل الكامل'+(hidden>0?` (${hidden})`:'')));
-    toggle.addEventListener('click', ()=>{ State.showAllPlayer=!State.showAllPlayer; loadPlayerBookings(); });
-    list.append(toggle);
-    if (active.length){ list.append(sectionTitle('الحجوزات الحالية والقادمة', active.length)); active.forEach(b=>list.append(playerBookingCard(b))); }
-    else list.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)',marginBottom:'10px'}}, 'لا توجد حجوزات حالية أو قادمة'));
-    if (finished.length){ list.append(sectionTitle('الحجوزات المنتهية', finished.length)); finished.forEach(b=>list.append(playerBookingCard(b))); }
+    // تصنيف لأربع مجموعات: قادمة / بانتظار التأكيد / سابقة / ملغاة-مرفوضة
+    const cats = categorizeBookings(res.bookings);
+    const recentFin = visibleBookings(cats.finished, 14, State.showAllPlayer);
+    const recentCan = visibleBookings(cats.cancelled, 14, State.showAllPlayer);
+    const hidden = (cats.finished.length-recentFin.length) + (cats.cancelled.length-recentCan.length);
+    const group=(title, arr)=>{ if(!arr.length) return; list.append(sectionTitle(title, arr.length)); arr.forEach(b=>list.append(playerBookingCard(b))); };
+    group('الحجوزات القادمة', cats.upcoming);
+    group('بانتظار التأكيد', cats.pending);
+    group('الحجوزات السابقة', recentFin);
+    group('ملغاة / مرفوضة', recentCan);
+    if(!cats.upcoming.length && !cats.pending.length && !recentFin.length && !recentCan.length){
+      list.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)'}}, 'لا توجد حجوزات لعرضها حالياً.'));
+    }
+    if (hidden>0 || State.showAllPlayer){
+      const toggle=h('button',{class:'cbtn', style:{marginTop:'14px'}}, State.showAllPlayer?'إخفاء الحجوزات القديمة':`عرض السجل الكامل (${hidden})`);
+      toggle.addEventListener('click', ()=>{ State.showAllPlayer=!State.showAllPlayer; loadPlayerBookings(); });
+      list.append(toggle);
+    }
   }catch(e){ clear(list); list.append(emptyState({icon:'📡',title:'مشكلة بالاتصال',sub:'ما قدرنا نجيب الحجوزات. تأكد من النت وحاول تاني.'})); }
+}
+/* تصنيف حجوزات اللاعب لأربع مجموعات واضحة */
+function categorizeBookings(list){
+  const g={ upcoming:[], pending:[], finished:[], cancelled:[] };
+  (list||[]).forEach(b=>{
+    const s=String(b.status||'pending').toLowerCase();
+    if(s==='cancelled'||s==='rejected'){ g.cancelled.push(b); return; }
+    if(isFinished(b)){ g.finished.push(b); return; }
+    if(s==='pending'){ g.pending.push(b); return; }
+    g.upcoming.push(b);   // مؤكّد (وجاري اللعب)
+  });
+  return g;
 }
 function sectionTitle(title, count){ return h('div',{class:'sec-title', style:{padding:'8px 0 10px'}}, h('span',{}, title), h('span',{class:'mini-badge'}, String(count))); }
 
@@ -2267,6 +2354,7 @@ const NAV_OF = { home:'player', bookings:'player', account:'player', owner:'owne
 function showPage(name){
   // حفظ موضع تمرير الرئيسية قبل المغادرة (رجوع سلس من التفاصيل)
   const curPage=$('.page.active'); if(curPage && curPage.id==='page-home') State.homeScroll=window.scrollY;
+  const ds=$('#detailSticky'); if(ds && name!=='detail') ds.hidden=true;   // إخفاء الملخّص اللاصق خارج التفاصيل
   $$('.page').forEach(p=>p.classList.remove('active'));
   const page=$('#page-'+name); if(page) page.classList.add('active');
   // أشرطة التنقّل
@@ -2450,7 +2538,8 @@ const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, toggleTheme,
   search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
   openFilters, applyFilters, clearFiltersSheet,
-  openBooking:openBookingModal, openReview, confirmBooking, submitReview,
+  openBooking:()=> openBookingModal(State.detail.hour!=null ? { date:State.detail.date, hour:State.detail.hour } : null),
+  openReview, confirmBooking, submitReview,
   authLogin:()=>{ Modal.close('modal-authchoice'); showPage('playerLogin'); },
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
   openManual, saveManual, addField:openAddField, saveField,
