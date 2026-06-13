@@ -7,11 +7,13 @@
 <title>المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- التسلسل الهرمي: Cairo للعناوين الثقيلة، Tajawal للنصوص -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* =============================================================
    المستديرة · style.css
    Design system — glass + aurora · RTL · light/dark
+   ملاحظة معمارية: كل التصميم هنا (فصل الاهتمامات). لا أنماط داخل HTML.
    ============================================================= */
 
 /* ---------- RESET ---------- */
@@ -37,24 +39,26 @@
 
   --r-sm:11px; --r-md:15px; --r-lg:19px; --r-xl:24px; --r-2xl:30px; --r-3xl:38px;
 
+  /* مساحات التنفّس (Negative space scale) */
   --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:28px;--s-8:36px;
 
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --t-fast:140ms; --t-base:240ms; --t-slow:360ms; --t-slower:520ms;
-  --max:480px; --tap:48px;
+  --max:480px; --tap:48px; /* الحد الأدنى لمساحة اللمس */
 
   --g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
   --g-btn:linear-gradient(135deg,#22cf74,#0c8a4b 92%);
 }
 
 body.dark{
-  --forest:#061410; --forest-2:#0c2418; --emerald:#1c9457; --emerald-2:#27b569; --neon:#3ff08c;
-  --gold:#e0bd5e; --gold-2:#f6d984; --gold-glow:rgba(224,189,94,.35);
-  --cream:#050d09; --surface:#101813; --surface-soft:#16201a; --surface-muted:#0d1410;
-  --input-bg:#16201a; --ink:#eaf2ec; --ink-2:#c2cec4; --muted:#8ba68f; --soft:#637463;
-  --soft-green:#0f2618; --soft-blue:#0f1f2e; --soft-yellow:#251c08; --soft-red:#2a0e0e;
-  --line:rgba(255,255,255,.06); --line-2:rgba(255,255,255,.1);
-  --glass:rgba(18,26,20,.66); --glass-brd:rgba(255,255,255,.08);
+  /* قاعدة كحلية/نيلية عميقة (مستوحاة من واجهات SaaS الحديثة) — مع إبقاء الهوية خضراء/ذهبية */
+  --forest:#0b1024; --forest-2:#141b3c; --emerald:#1fb368; --emerald-2:#2bd07c; --neon:#4ff09a;
+  --gold:#e6c46a; --gold-2:#f8df8f; --gold-glow:rgba(230,196,106,.38);
+  --cream:#080c1c; --surface:#141a33; --surface-soft:#1b2342; --surface-muted:#10152b;
+  --input-bg:#1b2342; --ink:#eef1fb; --ink-2:#c4cbe6; --muted:#8d94b6; --soft:#5e6789;
+  --soft-green:#11281d; --soft-blue:#151e3c; --soft-yellow:#2a230d; --soft-red:#2c1320;
+  --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.12);
+  --glass:rgba(20,27,52,.66); --glass-brd:rgba(255,255,255,.08);
   --shadow-card:0 12px 38px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.3);
   --shadow-lg:0 24px 56px rgba(0,0,0,.6),0 8px 18px rgba(0,0,0,.34);
 }
@@ -65,6 +69,7 @@ body{display:flex;justify-content:center;background:var(--cream);font-size:14px;
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
 
+/* خلفية أورورا متحركة (transform/opacity فقط = 60fps) */
 #app::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
     radial-gradient(60vw 42vh at 85% -6%, rgba(30,192,107,.16), transparent 60%),
@@ -77,10 +82,13 @@ body{display:flex;justify-content:center;background:var(--cream);font-size:14px;
     radial-gradient(34vw 34vw at 16% 30%, rgba(216,181,82,.12), transparent 62%);
   filter:blur(10px);animation:auroraDrift 22s ease-in-out infinite alternate}
 body.dark #app::before{background:
-    radial-gradient(60vw 42vh at 85% -6%, rgba(30,192,107,.2), transparent 60%),
-    radial-gradient(50vw 38vh at 8% 8%, rgba(216,181,82,.08), transparent 58%),
-    radial-gradient(60vw 50vh at 50% 116%, rgba(12,40,24,.7), transparent 60%),
-    linear-gradient(180deg,#050d09,#081209 60%,#040a07)}
+    radial-gradient(60vw 42vh at 85% -6%, rgba(43,208,124,.18), transparent 60%),
+    radial-gradient(50vw 38vh at 8% 8%, rgba(230,196,106,.10), transparent 58%),
+    radial-gradient(58vw 46vh at 50% 112%, rgba(70,96,210,.20), transparent 62%),
+    linear-gradient(180deg,#0a0f28,#0d1432 55%,#080b1e)}
+body.dark #app::after{opacity:.5;background:
+    radial-gradient(38vw 38vw at 78% 12%, rgba(43,208,124,.16), transparent 60%),
+    radial-gradient(34vw 34vw at 16% 30%, rgba(96,118,225,.16), transparent 62%)}
 @keyframes auroraDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-3%,2%,0) scale(1.08)}100%{transform:translate3d(3%,-2%,0) scale(1.04)}}
 
 h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:900;letter-spacing:-.02em}
@@ -93,10 +101,10 @@ a{color:inherit;text-decoration:none}
 .page{display:none;padding-bottom:calc(var(--tap) + 54px);min-height:100vh;position:relative;z-index:1}
 .page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
 @keyframes pageIn{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-.pad{padding:var(--s-6) var(--s-5)}
+.pad{padding:var(--s-6) var(--s-5)}              /* مساحة تنفّس قياسية */
 .stack{display:flex;flex-direction:column;gap:var(--s-4)}
 
-/* ---------- TYPOGRAPHY ---------- */
+/* ---------- TYPOGRAPHY UTILITIES (التسلسل الهرمي) ---------- */
 .t-title{font-family:'Cairo',sans-serif;font-weight:900;font-size:19px;letter-spacing:-.02em;color:var(--ink)}
 .t-sub{font-size:13px;color:var(--muted);font-weight:500}
 .muted{color:var(--muted)}
@@ -115,7 +123,7 @@ a{color:inherit;text-decoration:none}
 textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
 
-/* ---------- BUTTONS ---------- */
+/* ---------- BUTTONS (tap target ≥ 48px) ---------- */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);border-radius:var(--r-lg);font-weight:800;letter-spacing:.01em;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)}
 .sbtn{width:100%;background:var(--g-btn)!important;color:#fff;padding:15px;font-size:15px;box-shadow:var(--shadow-green);min-height:var(--tap)}
 .sbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 55%);pointer-events:none}
@@ -128,6 +136,7 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .cbtn:hover{background:var(--surface-soft);border-color:rgba(30,192,107,.34);color:var(--emerald);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
 .cbtn:active{transform:scale(.99);opacity:.9}
 
+/* مؤشّر تحميل على الأزرار (منع النقر المزدوج) */
 .is-loading{pointer-events:none;opacity:.9}
 .spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.45);border-top-color:#fff;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
 .cbtn .spinner,.spinner.dark{border-color:rgba(20,40,28,.25);border-top-color:var(--emerald)}
@@ -195,7 +204,8 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .ftab:not(.active-tab):hover{border-color:rgba(30,192,107,.42);color:var(--emerald);transform:translate3d(0,-2px,0)}
 
 /* =============================================================
-   LANDING PAGE — navbar + hero + sections
+   LANDING PAGE (صفحة الهبوط الاحترافية) — navbar + hero + sections
+   هوية خضراء/ذهبية بأسلوب SaaS حديث (فاتح/داكن)
    ============================================================= */
 #page-welcome{padding-bottom:0}
 
@@ -242,7 +252,7 @@ body.dark .lp-nav{box-shadow:none}
 .lp-owner-link{display:inline-block;background:none;color:var(--muted);font-size:13px;font-weight:700;padding:8px;min-height:40px;transition:color var(--t-fast)}
 .lp-owner-link:hover{color:var(--emerald)}
 
-/* ---------- STATS ---------- */
+/* ---------- HERO STATS ---------- */
 .lp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:46px auto 0;animation:fadeUp var(--t-slower) var(--ease-out) both;animation-delay:160ms}
 .lp-stat{background:var(--glass);backdrop-filter:blur(14px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r-xl);padding:20px 12px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base)}
 .lp-stat:hover{transform:translate3d(0,-5px,0);box-shadow:var(--shadow-lg)}
@@ -250,7 +260,7 @@ body.dark .lp-nav{box-shadow:none}
   background:linear-gradient(120deg,var(--emerald-2),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .lp-stat-lbl{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:8px}
 
-/* ---------- SECTIONS ---------- */
+/* ---------- SECTIONS (features / how) ---------- */
 .lp-section{max-width:1100px;margin:0 auto;padding:64px var(--s-5)}
 .lp-sec-head{text-align:center;max-width:600px;margin:0 auto 44px}
 .lp-eyebrow{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--emerald);text-transform:uppercase;margin-bottom:12px}
@@ -299,11 +309,11 @@ body.dark .lp-nav{box-shadow:none}
 .lp-link-btn{background:none;cursor:pointer}
 .lp-footer-bottom{text-align:center;font-size:12px;color:var(--soft);font-weight:600;padding-top:22px}
 
-/* ---------- DARK tweaks ---------- */
+/* ---------- LANDING: dark tweaks ---------- */
 body.dark .lp-badge{background:var(--surface);border-color:rgba(63,224,140,.22)}
 body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224,140,.18)}
 
-/* ---------- LANDING RESPONSIVE ---------- */
+/* ---------- LANDING: responsive ---------- */
 @media(max-width:760px){
   .lp-links{display:none}
   .lp-login{display:none}
@@ -328,7 +338,7 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .nitem:active .nicon{transform:scale(.84)}
 .nitem.active .nicon svg{stroke-width:2.2}
 
-/* ---------- DAY & TIME ---------- */
+/* ---------- DAY & TIME (tap ≥ 48px) ---------- */
 .days-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .days-row::-webkit-scrollbar{display:none}
 .day-btn{border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:16px;padding:9px 11px;min-width:74px;min-height:var(--tap);font-size:11px;font-weight:800;flex-shrink:0;box-shadow:var(--shadow-xs);transition:all var(--t-base) var(--ease-out);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
@@ -409,25 +419,40 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .disclosure summary::-webkit-details-marker{display:none}
 .cta-row{display:flex;flex-direction:column;gap:0}
 
-/* ---------- PROGRESSIVE DISCLOSURE ---------- */
+/* ---------- PROGRESSIVE DISCLOSURE (الأوقات) ---------- */
 .times-section{opacity:1;transition:opacity var(--t-base)}
 .disclosure-hint{display:flex;align-items:center;gap:8px;padding:16px;border-radius:var(--r-md);background:var(--surface-soft);border:1px dashed var(--line-2);color:var(--muted);font-size:12.5px;font-weight:600}
 
-/* ---------- MODAL ---------- */
+/* ---------- MODAL (transform/opacity + swipe) ---------- */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(12px);opacity:0;transition:opacity var(--t-base)}
 .modal-overlay.show{display:flex;opacity:1}
 .modal{background:var(--surface);border-radius:var(--r-3xl) var(--r-3xl) 0 0;width:100%;max-width:var(--max);max-height:92vh;overflow-y:auto;padding:10px var(--s-5) max(24px,env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(3,16,9,.3);position:relative;-webkit-overflow-scrolling:touch;
   transform:translate3d(0,100%,0);transition:transform var(--t-slow) var(--ease-out)}
 .modal-overlay.show .modal{transform:translate3d(0,0,0)}
-.modal.dragging{transition:none}
+.modal.dragging{transition:none}                 /* أثناء السحب لا انتقال */
 .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-3xl) var(--r-3xl) 0 0;background:var(--g-gold);opacity:.9}
 .modal-handle{width:50px;height:5px;background:var(--line-2);border-radius:999px;margin:8px auto 18px;cursor:grab;touch-action:none}
-.modal-grip{padding-top:4px}
+.modal-grip{padding-top:4px}                       /* منطقة سحب أوسع */
 .modal-title{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.015em;margin-bottom:4px}
 .modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:500;display:flex;align-items:center;gap:4px}
 .summary-box{background:linear-gradient(135deg,rgba(30,192,107,.1),rgba(19,164,90,.06));border:1.5px solid rgba(19,164,90,.18);border-radius:var(--r-md);padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .summary-box .lbl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}
 .summary-box .val{font-size:18px;font-weight:900;color:var(--emerald)}
+
+/* ---------- CHOSEN SUMMARY (ملخّص اليوم/الوقت بعد الاختيار + تغيير) ---------- */
+.chosen-box{margin-bottom:18px;border:1.5px solid rgba(19,164,90,.22);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(135deg,rgba(30,192,107,.1),rgba(19,164,90,.05));box-shadow:var(--shadow-sm);animation:fadeUp var(--t-base) var(--ease-out) both}
+.chosen-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px 6px}
+.chosen-head .ttl{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:900;color:var(--emerald)}
+.chosen-head .ttl::before{content:'✓';display:grid;place-items:center;width:20px;height:20px;border-radius:999px;background:var(--g-btn);color:#fff;font-size:11px;font-weight:900}
+.chosen-change{display:inline-flex;align-items:center;gap:5px;background:var(--surface);color:var(--emerald);border:1.5px solid rgba(19,164,90,.3);border-radius:999px;padding:7px 14px;min-height:36px;font-size:12px;font-weight:800;transition:background var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast)}
+.chosen-change:hover{background:var(--surface-soft);box-shadow:var(--shadow-xs);transform:translate3d(0,-1px,0)}
+.chosen-change:active{transform:scale(.96)}
+.chosen-rows{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:6px 15px 14px}
+.chosen-cell{display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 13px;min-height:60px}
+.chosen-cell .c-lbl{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.chosen-cell .c-val{font-size:14.5px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
+body.dark .chosen-box{border-color:rgba(63,224,140,.2);background:linear-gradient(135deg,rgba(43,208,124,.12),rgba(31,179,104,.05))}
 
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
@@ -436,7 +461,6 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .success-overlay.show .scard{transform:scale(1);opacity:1}
 .scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(30,192,107,.18),transparent 65%);pointer-events:none}
 .scard-emoji{font-size:58px;margin-bottom:14px;animation:ballFloat 2s ease-in-out infinite}
-@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(-4deg)}33%{transform:translateY(-12px) rotate(4deg)}66%{transform:translateY(-6px) rotate(-1deg)}}
 .scard-title{font-size:21px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
 .scard-text{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7}
 
@@ -457,7 +481,7 @@ body.dark .sk{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255
 .time-skeleton{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .time-skeleton>span{height:48px;border-radius:15px}
 
-/* ---------- EMPTY STATE ---------- */
+/* ---------- EMPTY STATE (حالات الفراغ) ---------- */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:56px 28px;gap:14px;animation:fadeUp var(--t-slow) var(--ease-out) both}
 .empty-icon{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:linear-gradient(140deg,var(--soft-green),rgba(30,192,107,.08));border:1px solid rgba(19,164,90,.16);box-shadow:var(--shadow-sm)}
 .empty-title{font-size:16.5px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
@@ -513,7 +537,7 @@ body.dark .econ-decision{color:#a7f3c9;background:rgba(19,164,90,.14)}
 .checkbox-row{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-2);font-weight:700;min-height:var(--tap);cursor:pointer}
 .checkbox-row input{width:18px;height:18px;accent-color:var(--emerald)}
 
-/* ---------- DARK overrides ---------- */
+/* ---------- DARK overrides for white-ish helpers ---------- */
 body.dark .search-bar{background:rgba(22,32,26,.97);border-color:rgba(255,255,255,.06)}
 body.dark .price-badge{background:rgba(16,24,19,.92);color:#7ff0ad}
 body.dark .place-cover{filter:saturate(.82) brightness(.85)}
@@ -545,6 +569,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
 }
 @media(min-width:1400px){:root{--max:1200px}.places-list{grid-template-columns:repeat(3,1fr)}.econ-grid{grid-template-columns:repeat(4,1fr)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
@@ -601,12 +626,36 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <p class="lp-sec-sub">كل اللي بتحتاجه عشان تحجز ملعبك بسهولة — وكل اللي بيحتاجه المالك عشان يدير ملاعبه باحتراف.</p>
       </div>
       <div class="lp-features">
-        <div class="lp-feature"><div class="lp-feat-icon">⚡</div><div class="lp-feat-title">حجز فوري</div><div class="lp-feat-text">اختر اليوم والوقت واحجز خلال ثوانٍ — بدون اتصالات ولا انتظار.</div></div>
-        <div class="lp-feature"><div class="lp-feat-icon">📍</div><div class="lp-feat-title">ملاعب قريبة منك</div><div class="lp-feat-text">تصفّح الملاعب حسب المنطقة، وشوف الموقع والسعر قبل ما تحجز.</div></div>
-        <div class="lp-feature"><div class="lp-feat-icon">🕐</div><div class="lp-feat-title">أوقات لحظية</div><div class="lp-feat-text">الأوقات المتاحة تتحدّث تلقائياً، فما بتحجز وقت محجوز أبداً.</div></div>
-        <div class="lp-feature"><div class="lp-feat-icon">💬</div><div class="lp-feat-title">تأكيد على واتساب</div><div class="lp-feat-text">بيوصلك تأكيد الحجز مباشرة على الواتساب من إدارة الملعب.</div></div>
-        <div class="lp-feature"><div class="lp-feat-icon">📊</div><div class="lp-feat-title">لوحة تحكم للمالك</div><div class="lp-feat-text">عندك ملعب؟ لوحة كاملة بإحصائيات وإيرادات وقرارات ذكية.</div></div>
-        <div class="lp-feature"><div class="lp-feat-icon">⭐</div><div class="lp-feat-title">تقييمات حقيقية</div><div class="lp-feat-text">شوف تقييمات اللاعبين الحقيقية قبل ما تختار ملعبك.</div></div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">⚡</div>
+          <div class="lp-feat-title">حجز فوري</div>
+          <div class="lp-feat-text">اختر اليوم والوقت واحجز خلال ثوانٍ — بدون اتصالات ولا انتظار.</div>
+        </div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">📍</div>
+          <div class="lp-feat-title">ملاعب قريبة منك</div>
+          <div class="lp-feat-text">تصفّح الملاعب حسب المنطقة، وشوف الموقع والسعر قبل ما تحجز.</div>
+        </div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">🕐</div>
+          <div class="lp-feat-title">أوقات لحظية</div>
+          <div class="lp-feat-text">الأوقات المتاحة تتحدّث تلقائياً، فما بتحجز وقت محجوز أبداً.</div>
+        </div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">💬</div>
+          <div class="lp-feat-title">تأكيد على واتساب</div>
+          <div class="lp-feat-text">بيوصلك تأكيد الحجز مباشرة على الواتساب من إدارة الملعب.</div>
+        </div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">📊</div>
+          <div class="lp-feat-title">لوحة تحكم للمالك</div>
+          <div class="lp-feat-text">عندك ملعب؟ لوحة كاملة بإحصائيات وإيرادات وقرارات ذكية.</div>
+        </div>
+        <div class="lp-feature">
+          <div class="lp-feat-icon">⭐</div>
+          <div class="lp-feat-title">تقييمات حقيقية</div>
+          <div class="lp-feat-text">شوف تقييمات اللاعبين الحقيقية قبل ما تختار ملعبك.</div>
+        </div>
       </div>
     </section>
 
@@ -617,9 +666,21 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <h2 class="lp-h2">3 خطوات وبتكون <span>جاهز تلعب</span></h2>
       </div>
       <div class="lp-steps">
-        <div class="lp-step"><div class="lp-step-num">1</div><div class="lp-step-title">تصفّح واختر</div><div class="lp-step-text">افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.</div></div>
-        <div class="lp-step"><div class="lp-step-num">2</div><div class="lp-step-title">حدّد الوقت</div><div class="lp-step-text">اختر اليوم والوقت المتاح اللي بناسبك من جدول لحظي.</div></div>
-        <div class="lp-step"><div class="lp-step-num">3</div><div class="lp-step-title">أكّد واحجز</div><div class="lp-step-text">أرسل الطلب وبيوصلك التأكيد على واتساب — جاهز تلعب!</div></div>
+        <div class="lp-step">
+          <div class="lp-step-num">1</div>
+          <div class="lp-step-title">تصفّح واختر</div>
+          <div class="lp-step-text">افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.</div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">2</div>
+          <div class="lp-step-title">حدّد الوقت</div>
+          <div class="lp-step-text">اختر اليوم والوقت المتاح اللي بناسبك من جدول لحظي.</div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">3</div>
+          <div class="lp-step-title">أكّد واحجز</div>
+          <div class="lp-step-text">أرسل الطلب وبيوصلك التأكيد على واتساب — جاهز تلعب!</div>
+        </div>
       </div>
     </section>
 
@@ -910,13 +971,19 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <div><label class="form-label" for="bkName">اسمك</label><input class="finput" id="bkName" type="text" placeholder="محمد أحمد"></div>
         <div><label class="form-label" for="bkPhone">رقم الهاتف</label><input class="finput" id="bkPhone" type="tel" inputmode="tel" placeholder="07XXXXXXXX"></div>
       </div>
-      <div class="field-title">اختر اليوم:</div>
-      <div class="days-row" id="bkDays" style="margin-bottom:14px"></div>
-      <div id="bkTimesSection" class="times-section">
-        <div class="field-title">اختر وقت البداية (الحجز ساعتان):</div>
-        <div class="times-grid" id="bkTimes" style="margin-bottom:18px"></div>
+      <!-- ملخّص الاختيار: يظهر بعد اختيار اليوم والوقت (بدل إعادة تعبئتهما) -->
+      <div id="bkChosen" class="chosen-box" hidden></div>
+      <!-- منتقيات اليوم/الوقت: تُطوى تلقائياً بعد اكتمال الاختيار -->
+      <div id="bkPicker">
+        <div class="field-title">اختر اليوم:</div>
+        <div class="days-row" id="bkDays" style="margin-bottom:14px"></div>
+        <!-- الإفشاء التدريجي: قسم الأوقات يظهر فقط بعد اختيار اليوم -->
+        <div id="bkTimesSection" class="times-section">
+          <div class="field-title">اختر وقت البداية (الحجز ساعتان):</div>
+          <div class="times-grid" id="bkTimes" style="margin-bottom:18px"></div>
+        </div>
+        <div class="disclosure-hint" id="bkTimesHint" hidden style="margin-bottom:18px">👆 اختر يوماً أولاً لعرض الأوقات المتاحة</div>
       </div>
-      <div class="disclosure-hint" id="bkTimesHint" hidden style="margin-bottom:18px">👆 اختر يوماً أولاً لعرض الأوقات المتاحة</div>
       <button class="sbtn" data-action="confirmBooking">إرسال طلب الحجز ←</button>
       <button class="cbtn" data-action="closeModal">إلغاء</button>
     </div>
@@ -1031,11 +1098,20 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
 </div>
 <script>
 /* =============================================================
-   المستديرة · app.js — مدمج في ملف واحد
+   المستديرة · app.js
+   المعمارية: وحدة واحدة مغلّفة (IIFE) — صفر متغيرات عامة في window.
+   الأقسام: Config → DOM utils → Utils → Session → API → State
+            → UI(toast/loading) → Modal(+swipe) → Render → Actions → Router → Init
+   مبادئ:
+   • بناء DOM آمن عبر h() باستخدام textContent (يمنع XSS) — لا نمرّر بيانات
+     المستخدم عبر innerHTML إطلاقاً (innerHTML مسموح فقط لأيقونات SVG ثابتة موثوقة).
+   • كل التعامل مع الأحداث عبر تفويض (event delegation) و data-attributes.
+   • الحركات تعتمد transform/opacity فقط (60fps).
    ============================================================= */
 (() => {
 "use strict";
 
+/* ===================== CONFIG ===================== */
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycby2x_4M12nac0FIk-kVOsB-lg0cOSI283cvjT5yR5cv0BIqiI2u6Pmuf4XEa4bGy6bl/exec",
   CACHE_KEY: "mustadaira:places_cache_v8",
@@ -1051,6 +1127,7 @@ const DEFAULT_SLOTS = [
   {label:'8:00 - 10:00 م',hour:20},{label:'10:00 - 12:00 م',hour:22}
 ];
 
+/* أيقونات SVG ثابتة موثوقة (تُحقن كـ innerHTML بأمان لأنها ليست بيانات مستخدم) */
 const ICON = {
   pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
   cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>',
@@ -1062,9 +1139,12 @@ const ICON = {
   wa:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884Z"/></svg>'
 };
 
+/* ===================== DOM UTILS ===================== */
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
+/* h(): مُنشئ عناصر آمن. النصوص دائماً textContent ⇒ لا XSS.
+   props.html محجوز فقط لسلاسل SVG الثابتة (ICON.*). */
 function h(tag, props, ...kids) {
   const e = document.createElement(tag);
   if (props) for (const k in props) {
@@ -1072,7 +1152,7 @@ function h(tag, props, ...kids) {
     if (v == null || v === false) continue;
     if (k === 'class') e.className = v;
     else if (k === 'text') e.textContent = v;
-    else if (k === 'html') e.innerHTML = v;
+    else if (k === 'html') e.innerHTML = v;                 // SVG ثابت فقط
     else if (k === 'dataset') Object.assign(e.dataset, v);
     else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
     else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
@@ -1091,6 +1171,7 @@ const ico = (name, cls='svg-sm') => h('span', { class:cls, html:ICON[name], styl
 const clear = (el) => { while (el && el.firstChild) el.removeChild(el.firstChild); };
 const setText = (id, val) => { const el = $('#'+id); if (el) el.textContent = val; };
 
+/* ===================== UTILS ===================== */
 function debounce(fn, wait){
   let t; return function(...a){ clearTimeout(t); t = setTimeout(() => fn.apply(this, a), wait); };
 }
@@ -1139,8 +1220,13 @@ function isFieldAvailable(fid, total){ const fb=State.bookedSlots[fid]||{}; for(
 const isPlaceAvailable = (p) => p.fields.some(f=>isFieldAvailable(f.field_id, fieldSlots(f).length));
 const placeLocation = (p) => { const c=String(p?.city||'').trim(), r=String(p?.region||'').trim(); return (c&&r)?`${c} - ${r}`:(c||r||''); };
 
+/* ===================== SESSION (إدارة الجلسات) ===================== */
+/* ملاحظة أمنية: التخزين الأكثر أماناً للإنتاج هو httpOnly + Secure + SameSite
+   cookies تُضبط من الخادم — غير ممكن من جهة العميل وحده مع Apps Script.
+   هنا نغلّف التوكنات تحت namespace واحد مع صلاحية زمنية (TTL) وتنظيف تلقائي،
+   بدل تركها متغيرات عامة مكشوفة ومبعثرة. */
 const Session = (() => {
-  const NS = 'mustadaira:'; const TTL = 30 * 864e5;
+  const NS = 'mustadaira:'; const TTL = 30 * 864e5; // 30 يوماً
   const set = (k, token) => { try { localStorage.setItem(NS+k, JSON.stringify({ token, exp: Date.now()+TTL })); } catch(_){} };
   const get = (k) => { try { const r = JSON.parse(localStorage.getItem(NS+k)||'null'); if(!r||!r.token) return ''; if(r.exp && Date.now()>r.exp){ del(k); return ''; } return r.token; } catch(_){ return ''; } };
   const del = (k) => { try { localStorage.removeItem(NS+k); } catch(_){} };
@@ -1153,6 +1239,7 @@ const Session = (() => {
   };
 })();
 
+/* ===================== API ===================== */
 const API = {
   async get(action, extra={}) {
     const params = new URLSearchParams({ action, ...extra });
@@ -1167,6 +1254,7 @@ const API = {
   }
 };
 
+/* ===================== STATE (حالة مغلّفة) ===================== */
 const State = {
   places: [], publicBookings: [], bookedSlots: {},
   player: null, owner: null, ownerData: null, guest: false,
@@ -1174,8 +1262,9 @@ const State = {
   showAllPlayer: false, showAllOwner: false,
   editingField: 'edit',
   refreshTimer: null,
+  // اختيارات المستخدم (بدل المتغيرات العامة المتفرّقة)
   detail: { place:null, field:null, date: today(), hour:null },
-  booking:{ place:null, field:null, date:null, hour:null },
+  booking:{ place:null, field:null, date:null, hour:null, editing:true },   // null date ⇒ إفشاء تدريجي
   manual: { fieldId:null, date: today(), hour:null },
   review: { rating:0, placeId:null },
 };
@@ -1222,6 +1311,7 @@ async function loadData(opts={}){
 }
 function updateTrust(){ const el=$('#trustPlaces'); if(el && State.places.length) el.textContent = State.places.reduce((s,p)=>s+(p.fields||[]).length,0)+'+'; }
 
+/* ===================== UI: TOAST / LOADING ===================== */
 function toast(message, type='error'){
   const el = $('#toast'); if(!el) return;
   const icons = { success:'✓', error:'✕', warn:'!' };
@@ -1233,16 +1323,18 @@ function toast(message, type='error'){
   toast._t = setTimeout(() => el.classList.remove('show'), 3400);
 }
 
+/* مؤشّر تحميل على الزر + تعطيله (يمنع النقر المزدوج Double-Submit) */
 async function withLoading(btn, fn){
   if (!btn || btn.dataset.busy === '1') return;
   btn.dataset.busy = '1';
-  const original = btn.innerHTML;
+  const original = btn.innerHTML;                 // محتوى الزر نفسه (موثوق) — نعيده لاحقاً
   btn.classList.add('is-loading'); btn.setAttribute('disabled','');
   clear(btn); btn.append(h('span', { class:'spinner' + (btn.classList.contains('cbtn')?' dark':'') }));
   try { return await fn(); }
   finally { btn.classList.remove('is-loading'); btn.removeAttribute('disabled'); btn.innerHTML = original; delete btn.dataset.busy; }
 }
 
+/* skeleton placeholders */
 function placesSkeleton(){
   const one = () => h('div',{class:'skeleton-card'}, h('div',{class:'sk sk-img'}),
     h('div',{class:'sk-body'}, h('div',{class:'sk sk-line w70'}), h('div',{class:'sk sk-line w88'}), h('div',{class:'sk sk-line w45'})));
@@ -1254,6 +1346,7 @@ function timeSkeleton(el, count=6){ if(!el) return; clear(el);
   el.append(wrap);
 }
 
+/* حالة فراغ جذّابة (Empty State) بدل النص العادي */
 function emptyState({icon='🗂️', title, sub, actionLabel, action}){
   const box = h('div',{class:'empty'},
     h('div',{class:'empty-icon'}, icon),
@@ -1264,11 +1357,13 @@ function emptyState({icon='🗂️', title, sub, actionLabel, action}){
   return box;
 }
 
+/* ===================== MODAL (+ swipe to close) ===================== */
 const Modal = {
   open(id){ const o=$('#'+id); if(!o) return; this.closeAll(o); o.classList.add('show'); },
   close(id){ const o = id ? $('#'+id) : $('.modal-overlay.show'); if(o) o.classList.remove('show'); },
   closeAll(except){ $$('.modal-overlay.show, .success-overlay.show').forEach(o=>{ if(o!==except) o.classList.remove('show'); }); },
 };
+/* السحب لأسفل لإغلاق النافذة — transform فقط لضمان 60fps */
 function enableSwipe(overlay){
   const modal = $('.modal', overlay); if(!modal) return;
   const grip = $('.modal-grip', modal) || modal;
@@ -1279,6 +1374,7 @@ function enableSwipe(overlay){
   grip.addEventListener('touchend', end); grip.addEventListener('touchcancel', end);
 }
 
+/* ===================== RENDER: HOME / PLACES ===================== */
 function getRegions(){ const seen=new Set(), out=[]; State.places.forEach(p=>{ const r=String(p.region||'').trim(); if(!r||normalizeText(r)==='all')return; const k=normalizeText(r); if(seen.has(k))return; seen.add(k); out.push(r); }); return out; }
 function renderRegionTabs(){
   const el = $('#regionTabs'); if(!el) return;
@@ -1305,8 +1401,9 @@ function placeCard(p){
   const price = mn===mx ? `${mn} JD` : `${mn}-${mx} JD`;
   const oneField=(p.fields||[]).length===1;
   const img = p.fields?.[0]?.image_url;
+
   const cover = h('div',{class:'place-cover'});
-  if (img) cover.append(h('img',{ src:img, alt:p.place_name||'ملعب', loading:'lazy', decoding:'async' }));
+  if (img) cover.append(h('img',{ src:img, alt:p.place_name||'ملعب', loading:'lazy', decoding:'async' }));  // Lazy loading
   else cover.append(h('div',{class:'place-cover-emoji'},'⚽'));
   cover.append(
     h('div',{class:'place-top-badges'},
@@ -1318,8 +1415,10 @@ function placeCard(p){
         h('div',{class:'place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(p)),
         h('div',{class:'place-rating'}, '⭐ '+ratingText(p))))
   );
+
   const bookBtn = h('button',{class:'place-book-btn'}, oneField?'احجز →':'اختر ملعب →');
   bookBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(p.place_id); });
+
   const card = h('div',{class:'place-card'},
     cover,
     amenitiesRow(p.amenities),
@@ -1350,22 +1449,29 @@ function renderPlaces(){
   list.forEach(p => el.append(placeCard(p)));
 }
 
+/* ===================== RENDER: DETAIL ===================== */
 async function openDetail(placeId){
   if (!State.places.length){ placesSkeleton(); await loadData(); }
   else { try { await loadPublicBookings(); } catch(_){ toast('ما قدرنا نحدّث الأوقات، ممكن تكون قديمة شوي','warn'); } }
   const place = State.places.find(p=>String(p.place_id)===String(placeId)); if(!place) return;
   State.detail = { place, field: place.fields[0], date: today(), hour: null };
+
   setText('dName', place.place_name);
   const dCity=$('#dCity'); clear(dCity); dCity.append(ico('pin','svg-sm'), ' '+placeLocation(place));
   setText('dPrice', place.fields[0].price+' JD');
+
   const badges=$('#dBadges'); clear(badges);
   badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(place)));
+
+  // الغلاف (lazy image)
   const hero=$('#detailHero'); $$('#detailHero img').forEach(n=>n.remove());
   const emoji=$('#detailEmoji');
   if (place.fields?.[0]?.image_url){ emoji.style.display='none'; hero.insertBefore(h('img',{src:place.fields[0].image_url,alt:place.place_name,loading:'lazy'}), hero.firstChild); }
   else { emoji.style.display=''; hero.style.background='linear-gradient(160deg,var(--forest),#155e34)'; }
+
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
+
   renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats();
   showPage('detail');
 }
@@ -1412,6 +1518,7 @@ function renderDetailTimes(){
   slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
 }
 
+/* ===================== RENDER: ECONOMIC (place / player) ===================== */
 const bookingsForPlace = (id) => (State.publicBookings||[]).filter(b=>String(b.place_id)===String(id));
 const placeWeeklySlots = (p) => (p?.fields||[]).reduce((s,f)=>s+fieldSlots(f).length,0)*7;
 function placeTakenThisWeek(p){ const ids=new Set((p?.fields||[]).map(f=>String(f.field_id))); const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i))); return (State.publicBookings||[]).filter(b=>ids.has(String(b.field_id))&&days.has(String(b.date).split('T')[0])&&!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length; }
@@ -1452,25 +1559,28 @@ function renderPlayerStats(list){
   $('.card', el).style.marginBottom='15px';
 }
 
+/* ===================== RENDER: BOOKING MODAL (Progressive Disclosure) ===================== */
 function openBookingModal(){
+  // يُفتح من صفحة التفاصيل. الإفشاء التدريجي: لا يوم محدد ⇒ الأوقات مخفية حتى يختار المستخدم يوماً.
   if (!Session.player()){ toast('سجّل دخولك أول عشان تحجز','warn'); showPage('playerLogin'); return; }
   const { place, field } = State.detail;
-  State.booking = { place, field, date:null, hour:null };
+  State.booking = { place, field, date:null, hour:null, editing:true };
   setText('bkTitle', place.place_name+' - '+field.field_name);
   const sub=$('#bkSub'); clear(sub); sub.append(ico('pin','svg-sm'), ' '+placeLocation(place)+' • '+field.size);
   setText('bkPrice', field.price+' دينار / ساعتان');
   setText('bkRating', ratingText(place));
   $('#bkName').value = State.player?.name || '';
   const ph=$('#bkPhone'); ph.value = State.player?.phone || ''; ph.readOnly = !!State.player;
-  renderBookingDays(); toggleBookingTimes();
+  renderBookingDays(); toggleBookingTimes();   // يبدأ مخفياً
+  renderBookingChosen();
   Modal.open('modal-booking');
 }
 function renderBookingDays(){
   const el=$('#bkDays'); clear(el);
   for(let i=0;i<7;i++){ const d=dateAfter(i);
     el.append(dayButton(d, i, d===State.booking.date, async()=>{
-      State.booking.date=d; State.booking.hour=null; renderBookingDays();
-      toggleBookingTimes(); timeSkeleton($('#bkTimes'),6);
+      State.booking.date=d; State.booking.hour=null; State.booking.editing=true; renderBookingDays();
+      toggleBookingTimes(); timeSkeleton($('#bkTimes'),6); renderBookingChosen();
       try{ await loadPublicBookings(); }catch(_){}
       renderBookingDays(); renderBookingTimes();
     }));
@@ -1478,16 +1588,38 @@ function renderBookingDays(){
 }
 function toggleBookingTimes(){
   const hasDay = !!State.booking.date;
-  $('#bkTimesSection').hidden = !hasDay;
+  $('#bkTimesSection').hidden = !hasDay;        // يظهر بعد اختيار اليوم
   $('#bkTimesHint').hidden = hasDay;
 }
 function renderBookingTimes(){
   const el=$('#bkTimes'); clear(el);
   const slots=fieldSlots(State.booking.field);
   const taken=(State.bookedSlots[State.booking.field.field_id]?.[State.booking.date])||[];
-  slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.booking.hour===s.hour, ()=>{ State.booking.hour=s.hour; renderBookingTimes(); })));
+  slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.booking.hour===s.hour, ()=>{
+    State.booking.hour=s.hour; State.booking.editing=false;   // اكتمل الاختيار ⇒ اطوِ المنتقيات
+    renderBookingTimes(); renderBookingChosen();
+  })));
+}
+/* ملخّص اليوم/الوقت المختارَين: بدل إعادة تعبئتهما، نعرضهما مع زر "تغيير" */
+function renderBookingChosen(){
+  const box=$('#bkChosen'), picker=$('#bkPicker'); if(!box||!picker) return;
+  const { date, hour, field, editing } = State.booking;
+  const done = !!date && hour!==null && !editing;
+  box.hidden = !done; picker.hidden = done;
+  clear(box); if(!done) return;
+  const slot=fieldSlots(field).find(s=>s.hour===hour);
+  const dayLbl=(date===today()?'اليوم':arabicDay(date))+' '+shortDate(date);
+  const change=h('button',{class:'chosen-change'}, '✎ تغيير');
+  change.addEventListener('click', ()=>{ State.booking.editing=true; renderBookingDays(); renderBookingTimes(); toggleBookingTimes(); renderBookingChosen(); });
+  box.append(
+    h('div',{class:'chosen-head'}, h('div',{class:'ttl'}, 'تم اختيار موعدك'), change),
+    h('div',{class:'chosen-rows'},
+      h('div',{class:'chosen-cell'}, h('div',{class:'c-lbl'}, ico('cal','svg-sm'), ' اليوم'), h('div',{class:'c-val'}, dayLbl)),
+      h('div',{class:'chosen-cell'}, h('div',{class:'c-lbl'}, ico('clock','svg-sm'), ' الوقت'), h('div',{class:'c-val'}, slot?slot.label:'')))
+  );
 }
 
+/* ===================== RENDER: PLAYER BOOKINGS ===================== */
 function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
   const status = String(b.status||'pending').toLowerCase();
@@ -1551,6 +1683,7 @@ async function playerCancelBooking(btn, rowNumber, label){
   });
 }
 
+/* ===================== RENDER: OWNER DASHBOARD ===================== */
 async function loadOwnerDashboard(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
   const el=$('#ownerBookings'); clear(el); el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--muted)'}}, 'جاري تحميل الحجوزات...'));
@@ -1685,6 +1818,7 @@ function renderOwnerFields(){
   });
 }
 
+/* ===================== ACTIONS (controllers) ===================== */
 async function updateBookingStatus(btn, rowNumber, status){
   const booking=(State.ownerData?.bookings||[]).find(b=>Number(b.row_number)===Number(rowNumber));
   let reason='';
@@ -1710,6 +1844,7 @@ function sendWhatsApp(b, status, reason=''){
   if(!msg) return; setTimeout(()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank'),500);
 }
 
+/* ---- Reason modal as a Promise ---- */
 function askReason(title, hint, confirmLabel='تأكيد'){
   return new Promise(resolve=>{
     const overlay=$('#modal-reason'), input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
@@ -1720,6 +1855,7 @@ function askReason(title, hint, confirmLabel='تأكيد'){
   });
 }
 
+/* ---- Manual booking ---- */
 function manualField(){ return (State.ownerData?.fields||[]).find(f=>String(f.field_id)===String(State.manual.fieldId)); }
 async function openManual(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
@@ -1744,6 +1880,7 @@ function renderManualTimes(){
   fieldSlots(f).forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.manual.hour===s.hour, ()=>{ State.manual.hour=s.hour; renderManualTimes(); })));
 }
 
+/* ---- Fields modal ---- */
 function openEditField(fieldId){
   State.editingField='edit';
   const f=(State.ownerData.fields||[]).find(x=>String(x.field_id)===String(fieldId)); if(!f)return;
@@ -1762,6 +1899,7 @@ function openAddField(){
   Modal.open('modal-field');
 }
 
+/* ---- Review ---- */
 function openReview(){
   const p=State.detail.place; if(!p)return;
   State.review={ rating:0, placeId:String(p.place_id) }; setRating(0);
@@ -1770,14 +1908,17 @@ function openReview(){
 }
 function setRating(r){ State.review.rating=r; $$('.star').forEach((s,i)=>s.classList.toggle('active', i<r)); }
 
+/* ===================== ROUTER ===================== */
 const NAV_OF = { home:'player', bookings:'player', account:'player', owner:'owner' };
 function showPage(name){
   $$('.page').forEach(p=>p.classList.remove('active'));
   const page=$('#page-'+name); if(page) page.classList.add('active');
+  // أشرطة التنقّل
   const nav=NAV_OF[name];
   $('#nav-player').classList.toggle('show', nav==='player');
   $('#nav-owner').classList.toggle('show', nav==='owner');
   $$('#nav-player .nitem').forEach(n=>n.classList.toggle('active', n.dataset.nav===name));
+  // خطافات الصفحات
   if (name==='home') renderPlaces();
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast('سجّل دخولك عشان تشوف حجوزاتك','warn'); return showPage('playerLogin'); } loadPlayerBookings(); }
   if (name==='account'){ if(!Session.player()){ return showPage('playerLogin'); } $('#accName').value=State.player?.name||''; $('#accPhone').value=State.player?.phone||''; }
@@ -1786,10 +1927,12 @@ function showPage(name){
   window.scrollTo({ top:0, behavior:'instant' });
 }
 
+/* تحديث تلقائي للأوقات على الصفحات الحيّة فقط */
 function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active'); }
 async function refreshVisible(){ if (document.hidden || !autoRefreshActive()) return; await loadData(); if($('#page-home').classList.contains('active')) renderPlaces(); if($('#page-detail').classList.contains('active')&&State.detail.field){ renderDetailDays(); renderDetailTimes(); } }
 function manageAutoRefresh(){ const run=autoRefreshActive()&&!document.hidden; if(run&&!State.refreshTimer)State.refreshTimer=setInterval(refreshVisible,CONFIG.AUTO_REFRESH_MS); if(!run&&State.refreshTimer){clearInterval(State.refreshTimer);State.refreshTimer=null;} }
 
+/* ===================== AUTH ===================== */
 async function browse(){
   State.guest=true; showPage('home'); placesSkeleton();
   await loadData(); renderPlaces();
@@ -1801,7 +1944,7 @@ async function playerLogin(btn){
     try{
       const res=await API.get('playerLogin',{phone,password});
       if(!res.success){ toast(res.message||'ما زبط الدخول، جرّب مرة ثانية','error'); return; }
-      Session.setOwner(''); Session.setPlayer(res.player_token);
+      Session.setOwner('') /* لا مالك */; Session.setPlayer(res.player_token);
       State.player=res.player; State.guest=false;
       setText('playerWelcome','أهلاً '+(State.player.name||'بك'));
       if(!State.places.length){ placesSkeleton(); await loadData(); }
@@ -1853,6 +1996,7 @@ async function saveAccount(btn){
   });
 }
 
+/* ---- booking confirm ---- */
 async function confirmBooking(btn){
   if(!Session.player()){ toast('لازم تسجل دخول أولاً','warn'); showPage('playerLogin'); return; }
   const name=$('#bkName').value.trim(), phone=$('#bkPhone').value.trim();
@@ -1915,14 +2059,16 @@ async function saveField(btn){
   });
 }
 
+/* ===================== THEME ===================== */
 function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
   $$('[data-action="toggleTheme"]').forEach(b=>b.textContent = dark?'☀️':'🌙');
-  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#050d09':'#04130b');
+  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#0a0f28':'#04130b');
 }
 function toggleTheme(){ const t = document.body.classList.contains('dark')?'light':'dark'; Session.setTheme(t); applyTheme(t); }
 
+/* ===================== EVENT DELEGATION ===================== */
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, toggleTheme,
   search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
@@ -1939,13 +2085,19 @@ document.addEventListener('click', (e)=>{
   const act=e.target.closest('[data-action]'); if(!act) return;
   const fn=Actions[act.dataset.action]; if(fn) fn(act, e);
 });
+// إغلاق النافذة عند الضغط على الخلفية
 document.addEventListener('click', (e)=>{ const o=e.target.closest('.modal-overlay,.success-overlay'); if(o&&e.target===o) o.classList.remove('show'); });
+// بحث مع تأخير (Debounce 300ms)
 $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
+// الفلاتر في لوحة المالك
 $('#ownerDateFilter')?.addEventListener('change', renderOwnerBookings);
 $('#ownerFieldFilter')?.addEventListener('change', renderOwnerBookings);
+// تحديث تلقائي عند العودة للتبويب
 document.addEventListener('visibilitychange', ()=>{ manageAutoRefresh(); if(!document.hidden&&autoRefreshActive()) refreshVisible(); });
+// تفعيل السحب لإغلاق كل النوافذ
 $$('.modal-overlay').forEach(enableSwipe);
 
+/* ===================== INIT ===================== */
 async function init(){
   applyTheme(Session.theme());
   loadData().then(updateTrust);
@@ -1957,13 +2109,14 @@ async function init(){
       const res=await API.get('getPlayerBookings',{ player_token:Session.player() });
       if (res.success){ State.player=res.player; State.guest=false; setText('playerWelcome','أهلاً '+(State.player.name||'بك')); showPage('home'); placesSkeleton(); await loadData(); renderPlaces(); return; }
       Session.clear();
-    }catch(_){}
+    }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
   }
   showPage('welcome');
 }
 init();
 
 })();
+
 </script>
 </body>
 </html>
