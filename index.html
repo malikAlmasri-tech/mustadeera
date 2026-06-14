@@ -2755,10 +2755,18 @@ async function updateBookingStatus(btn, rowNumber, status){
   });
 }
 function sendWhatsApp(b, status, reason=''){
-  const phone=normalizePhone(b.phone); if(!phone) return; let msg='';
-  if(status==='confirmed') msg=`مرحباً ${b.name||''} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: ${b.place_name}\n🥅 الملعب: ${b.field_name}\n📅 التاريخ: ${b.date}\n⏰ الوقت: ${b.time}\n📐 الحجم: ${b.players}\n💰 السعر: ${b.price} دينار\n\nبانتظارك!`;
-  if(status==='rejected') msg=`مرحباً ${b.name||''} ⚽\n\nتم رفض طلب الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'نعتذر، هذا الوقت غير متاح حالياً.'}`;
-  if(status==='cancelled') msg=`مرحباً ${b.name||''} ⚽\n\nتم إلغاء الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'تم إلغاء الحجز من إدارة الملعب.'}`;
+  const phone=normalizePhone(b.phone); if(!phone) return;
+  const en=State.lang==='en'; const nm=b.name||''; const price=formatCurrency(b.price);
+  let msg='';
+  if(status==='confirmed') msg = en
+    ? `Hi ${nm} ⚽\n\nYour booking is confirmed ✅\n\n🏟️ Venue: ${b.place_name}\n🥅 Field: ${b.field_name}\n📅 Date: ${b.date}\n⏰ Time: ${b.time}\n📐 Size: ${b.players}\n💰 Price: ${price}\n\nSee you there!`
+    : `مرحباً ${nm} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: ${b.place_name}\n🥅 الملعب: ${b.field_name}\n📅 التاريخ: ${b.date}\n⏰ الوقت: ${b.time}\n📐 الحجم: ${b.players}\n💰 السعر: ${price}\n\nبانتظارك!`;
+  if(status==='rejected') msg = en
+    ? `Hi ${nm} ⚽\n\nYour booking request was declined ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nReason:\n${reason||'Sorry, this time slot is currently unavailable.'}`
+    : `مرحباً ${nm} ⚽\n\nتم رفض طلب الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'نعتذر، هذا الوقت غير متاح حالياً.'}`;
+  if(status==='cancelled') msg = en
+    ? `Hi ${nm} ⚽\n\nYour booking was cancelled ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nReason:\n${reason||'The booking was cancelled by the venue management.'}`
+    : `مرحباً ${nm} ⚽\n\nتم إلغاء الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'تم إلغاء الحجز من إدارة الملعب.'}`;
   if(!msg) return; setTimeout(()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank'),500);
 }
 
