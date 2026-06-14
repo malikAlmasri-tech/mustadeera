@@ -7,8 +7,8 @@
 <title>المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- التسلسل الهرمي: Cairo للعناوين الثقيلة، Tajawal للنصوص -->
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<!-- التسلسل الهرمي: Cairo للعناوين، Tajawal للنصوص (عربي) · Inter (إنجليزي) -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* =============================================================
    المستديرة · style.css
@@ -19,81 +19,144 @@
 /* ---------- RESET ---------- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
-/* ---------- DESIGN TOKENS (light) ---------- */
+/* =============================================================
+   2 · DESIGN TOKENS   +   3 · LIGHT THEME
+   مصدر الحقيقة الوحيد للألوان. الأسماء القديمة (alias) تبقى معرّفة
+   كي يعمل كل class/id الحالي دون كسر، لكن بالباليتة الجديدة.
+   ============================================================= */
 :root{
-  --forest:#04130b; --forest-2:#0a2415; --emerald:#13a45a; --emerald-2:#1ec06b; --neon:#3ff08c;
-  --gold:#d8b552; --gold-2:#f4d77a; --gold-glow:rgba(216,181,82,.4);
-  --cream:#eaf0ea; --surface:#fff; --surface-soft:#f4f8f3; --surface-muted:#e7ede6;
-  --input-bg:#fff; --ink:#0a140e; --ink-2:#314037; --muted:#647165; --soft:#97a498;
-  --soft-green:#e3f6ea; --soft-blue:#ecf3ff; --soft-yellow:#fef3c7; --soft-red:#fee2e2;
-  --line:rgba(8,40,22,.07); --line-2:rgba(8,40,22,.12);
-  --glass:rgba(255,255,255,.72); --glass-brd:rgba(255,255,255,.6);
+  color-scheme:light;
 
-  --shadow-xs:0 1px 2px rgba(4,19,11,.06);
-  --shadow-sm:0 2px 10px rgba(4,19,11,.07),0 1px 2px rgba(4,19,11,.04);
-  --shadow-md:0 10px 28px rgba(4,19,11,.1),0 3px 8px rgba(4,19,11,.05);
-  --shadow-lg:0 24px 56px rgba(4,19,11,.16),0 8px 18px rgba(4,19,11,.08);
-  --shadow-card:0 12px 38px rgba(4,19,11,.09),0 3px 8px rgba(4,19,11,.04);
-  --shadow-green:0 12px 32px rgba(30,192,107,.3),0 4px 12px rgba(19,164,90,.18);
-  --shadow-green-lg:0 22px 50px rgba(30,192,107,.38),0 10px 22px rgba(19,164,90,.2);
+  /* ----- Brand palette (light) ----- */
+  --light-bg-primary:#F5F8F5; --light-bg-secondary:#EDF3EF;
+  --light-surface:#FFFFFF; --light-surface-soft:#F7FAF8; --light-surface-muted:#E8EFEA;
+  --light-primary:#159A57; --light-primary-hover:#0F8148; --light-primary-soft:#DFF4E7;
+  --light-accent:#C9A84C; --light-text-primary:#102018; --light-text-secondary:#52645A; --light-text-muted:#84938B;
+  --light-border:rgba(12,52,30,.10); --light-danger:#DC3545; --light-warning:#E59A20; --light-info:#2F6FED;
 
-  --r-sm:11px; --r-md:15px; --r-lg:19px; --r-xl:24px; --r-2xl:30px; --r-3xl:38px;
+  /* ----- Semantic tokens (active = light) ----- */
+  --bg-primary:var(--light-bg-primary); --bg-secondary:var(--light-bg-secondary);
+  --primary:var(--light-primary); --primary-hover:var(--light-primary-hover); --primary-soft:var(--light-primary-soft); --accent:var(--light-accent);
+  --danger:var(--light-danger); --warning:var(--light-warning); --info:var(--light-info);
+  --danger-soft:#FBE3E5; --warning-soft:#FBEFD0; --info-soft:#E8F0FE;
 
-  /* مساحات التنفّس (Negative space scale) */
-  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:28px;--s-8:36px;
+  /* خلفية التطبيق (mesh) — تُطبّق على body */
+  --bg-app:radial-gradient(46vw 42vh at 84% -10%,rgba(21,154,87,.10),transparent 60%),radial-gradient(40vw 36vh at 6% 2%,rgba(201,168,76,.09),transparent 60%),radial-gradient(58vw 48vh at 50% 116%,rgba(21,154,87,.07),transparent 62%),linear-gradient(180deg,var(--light-bg-primary),var(--light-bg-secondary) 56%,var(--light-bg-primary));
 
+  /* ----- Legacy aliases (توافق كامل مع كل المكوّنات الحالية) ----- */
+  --forest:#072019; --forest-2:#0C3322; --emerald:#159A57; --emerald-2:#1FB867; --neon:#3CE08C;
+  --gold:#C9A84C; --gold-2:#E2C268; --gold-glow:rgba(201,168,76,.34);
+  --cream:var(--light-bg-primary); --surface:var(--light-surface); --surface-soft:var(--light-surface-soft); --surface-muted:var(--light-surface-muted);
+  --input-bg:var(--light-surface); --ink:var(--light-text-primary); --ink-2:#33453B; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
+  --soft-green:var(--light-primary-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
+  --line:var(--light-border); --line-2:rgba(12,52,30,.14);
+  --glass:rgba(255,255,255,.74); --glass-brd:rgba(255,255,255,.6);
+
+  /* ----- Shadows (ناعمة) ----- */
+  --shadow-xs:0 1px 2px rgba(8,35,22,.05);
+  --shadow-sm:0 2px 8px rgba(8,35,22,.06),0 1px 2px rgba(8,35,22,.04);
+  --shadow-md:0 8px 24px rgba(8,35,22,.08),0 2px 6px rgba(8,35,22,.05);
+  --shadow-lg:0 20px 48px rgba(8,35,22,.13),0 6px 16px rgba(8,35,22,.07);
+  --shadow-card:0 8px 28px rgba(8,35,22,.07),0 2px 6px rgba(8,35,22,.04);
+  --shadow-green:0 10px 26px rgba(21,154,87,.26),0 3px 10px rgba(15,129,72,.16);
+  --shadow-green-lg:0 18px 42px rgba(21,154,87,.32),0 8px 18px rgba(15,129,72,.18);
+
+  /* ----- Radii (مقياس موحّد) ----- */
+  --radius-sm:10px; --radius-md:14px; --radius-lg:18px; --radius-xl:24px; --radius-2xl:28px; --radius-full:999px;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-2xl:28px; --r-3xl:32px;
+
+  /* ----- Spacing scale ----- */
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:32px;--s-8:40px;
+
+  /* ----- Motion ----- */
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
-  --t-fast:140ms; --t-base:240ms; --t-slow:360ms; --t-slower:520ms;
+  --t-fast:140ms; --t-base:220ms; --t-slow:320ms; --t-slower:520ms;
   --max:480px; --tap:48px; /* الحد الأدنى لمساحة اللمس */
 
   --g-gold:linear-gradient(135deg,var(--gold),var(--gold-2));
-  --g-btn:linear-gradient(135deg,#22cf74,#0c8a4b 92%);
+  --g-btn:linear-gradient(135deg,#1FB867,#0F8148 94%);
+  --ring:rgba(21,154,87,.18);           /* حلقة التركيز الموحّدة */
+  /* حبر الحالات — لون نص داكن بما يكفي للتباين على الخلفيات الناعمة */
+  --ok-ink:#0F7A43; --danger-ink:#B3261E; --warning-ink:#8A4F0E; --info-ink:#1D4ED8;
 }
 
+/* =============================================================
+   4 · DARK THEME — قاعدة Dark forest green ممزوجة بلمسة Navy، مريحة للعين
+   ============================================================= */
 body.dark{
-  /* قاعدة فحمية خضراء داكنة — متّسقة مع الهوية الخضراء/الذهبية (لا كحلي/نيلي) */
-  --forest:#06120c; --forest-2:#0c2014; --emerald:#1fb866; --emerald-2:#2bd07c; --neon:#4ff09a;
-  --gold:#d9bd6b; --gold-2:#eccf82; --gold-glow:rgba(217,189,107,.3);
-  --cream:#07110c; --surface:#101b14; --surface-soft:#16241a; --surface-muted:#0c160f;
-  --input-bg:#142019; --ink:#edf5ef; --ink-2:#c4d1c7; --muted:#8f9f93; --soft:#5d6c62;
-  --soft-green:#0f2618; --soft-blue:#10241f; --soft-yellow:#241d0b; --soft-red:#2a1212;
-  --line:rgba(255,255,255,.06); --line-2:rgba(255,255,255,.1);
-  --glass:rgba(16,27,20,.7); --glass-brd:rgba(255,255,255,.07);
+  color-scheme:dark;
+
+  /* ----- Brand palette (dark) ----- */
+  --dark-bg-primary:#06110C; --dark-bg-secondary:#0A1711;
+  --dark-surface:#101D16; --dark-surface-soft:#16251C; --dark-surface-muted:#0C1710;
+  --dark-primary:#24C875; --dark-primary-hover:#38DD8B; --dark-primary-soft:rgba(36,200,117,.14);
+  --dark-accent:#D9BB64; --dark-text-primary:#F3F8F5; --dark-text-secondary:#A7B7AD; --dark-text-muted:#718078;
+  --dark-border:rgba(255,255,255,.08); --dark-danger:#FF6B72; --dark-warning:#F7B955; --dark-info:#70A2FF;
+
+  /* ----- Semantic tokens (active = dark) ----- */
+  --bg-primary:var(--dark-bg-primary); --bg-secondary:var(--dark-bg-secondary);
+  --primary:var(--dark-primary); --primary-hover:var(--dark-primary-hover); --primary-soft:var(--dark-primary-soft); --accent:var(--dark-accent);
+  --danger:var(--dark-danger); --warning:var(--dark-warning); --info:var(--dark-info);
+  --danger-soft:rgba(255,107,114,.14); --warning-soft:rgba(247,185,85,.13); --info-soft:rgba(112,162,255,.14);
+
+  --bg-app:radial-gradient(46vw 42vh at 84% -10%,rgba(36,200,117,.11),transparent 62%),radial-gradient(40vw 36vh at 6% 4%,rgba(112,162,255,.05),transparent 62%),radial-gradient(58vw 48vh at 50% 116%,rgba(8,26,17,.55),transparent 60%),linear-gradient(180deg,#05100B,#0A1711 56%,#05100B);
+
+  /* ----- Legacy aliases ----- */
+  --forest:#06120C; --forest-2:#0C2014; --emerald:#24C875; --emerald-2:#2BD07C; --neon:#4FF09A;
+  --gold:#D9BB64; --gold-2:#ECCF82; --gold-glow:rgba(217,187,100,.3);
+  --cream:var(--dark-bg-primary); --surface:var(--dark-surface); --surface-soft:var(--dark-surface-soft); --surface-muted:var(--dark-surface-muted);
+  --input-bg:#142019; --ink:var(--dark-text-primary); --ink-2:#C4D1C7; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
+  --soft-green:var(--dark-primary-soft); --soft-blue:rgba(112,162,255,.14); --soft-yellow:rgba(247,185,85,.13); --soft-red:rgba(255,107,114,.14);
+  --line:var(--dark-border); --line-2:rgba(255,255,255,.1);
+  --glass:rgba(16,29,22,.72); --glass-brd:rgba(255,255,255,.07);
   --shadow-card:0 8px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.3);
   --shadow-lg:0 18px 44px rgba(0,0,0,.55),0 6px 14px rgba(0,0,0,.32);
+  --g-btn:linear-gradient(135deg,#24C875,#0F8C50 94%);
+  --ring:rgba(36,200,117,.24);
+  --ok-ink:#4FE0A0; --danger-ink:#FF8A90; --warning-ink:#F7B955; --info-ink:#9BC2FD;
 }
 
 /* ---------- BASE ---------- */
 html,body{height:100%;direction:rtl;color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{display:flex;justify-content:center;background:var(--cream);font-size:14px;line-height:1.6;overflow-x:hidden}
+body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.6;overflow-x:hidden;transition:background-color var(--t-base) var(--ease-out),color var(--t-base) var(--ease-out)}
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
 
-/* خلفية أورورا متحركة (transform/opacity فقط = 60fps) */
-#app::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(60vw 42vh at 85% -6%, rgba(30,192,107,.16), transparent 60%),
-    radial-gradient(50vw 38vh at 8% 8%, rgba(216,181,82,.12), transparent 58%),
-    radial-gradient(60vw 50vh at 50% 116%, rgba(19,164,90,.12), transparent 60%),
-    linear-gradient(180deg,#eef3ed,#f5f8f3 55%,#e9efe8)}
-#app::after{content:'';position:fixed;inset:-20% -10%;z-index:-1;pointer-events:none;opacity:.3;
-  background:
-    radial-gradient(38vw 38vw at 78% 12%, rgba(63,240,140,.12), transparent 62%),
-    radial-gradient(34vw 34vw at 16% 30%, rgba(216,181,82,.09), transparent 64%);
-  filter:blur(6px)}  /* خلفية شبه ثابتة وهادئة (أُزيلت حركة auroraDrift) */
-body.dark #app::before{background:
-    radial-gradient(60vw 40vh at 85% -6%, rgba(43,208,124,.10), transparent 62%),
-    radial-gradient(55vw 44vh at 50% 112%, rgba(12,32,20,.55), transparent 62%),
-    linear-gradient(180deg,#06110b,#091610 55%,#050d09)}
-body.dark #app::after{opacity:.22;background:
-    radial-gradient(36vw 36vw at 80% 14%, rgba(43,208,124,.12), transparent 62%)}
-@keyframes auroraDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-3%,2%,0) scale(1.08)}100%{transform:translate3d(3%,-2%,0) scale(1.04)}}
+/* =============================================================
+   6 · ANIMATED BACKGROUND — mesh على body + شبكة خفيفة + هالة عائمة
+   transform/opacity فقط (60fps) · pointer-events:none · خلف المحتوى
+   الطبقات: body(mesh) → #app::before(grid) → #app::after(orb) → content
+   ============================================================= */
+/* شبكة خفيفة جدًا تتلاشى للأعلى */
+#app::before{content:'';position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.7;
+  background-image:linear-gradient(rgba(12,52,30,.024) 1px,transparent 1px),linear-gradient(90deg,rgba(12,52,30,.024) 1px,transparent 1px);
+  background-size:40px 40px;
+  -webkit-mask-image:radial-gradient(125% 78% at 50% -6%,#000,transparent 78%);
+  mask-image:radial-gradient(125% 78% at 50% -6%,#000,transparent 78%)}
+/* هالة خضراء عائمة (drift بطيء) فوق الـmesh */
+#app::after{content:'';position:fixed;z-index:-2;pointer-events:none;top:-18vmax;right:-14vmax;width:50vmax;height:50vmax;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,rgba(31,184,103,.15),transparent 64%);filter:blur(38px);will-change:transform;
+  animation:bgDrift 22s var(--ease-out) infinite alternate}
+@keyframes bgDrift{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-4vmax,4vmax,0) scale(1.12)}}
+body.dark #app::before{opacity:.5;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)}
+body.dark #app::after{background:radial-gradient(circle at 40% 40%,rgba(36,200,117,.16),transparent 64%)}
+/* الجوال: قلّل الـblur وأوقف الحركة (هدوء + أداء) */
+@media(max-width:480px){
+  #app::before{opacity:.5}
+  #app::after{filter:blur(26px);opacity:.85;animation:none;width:60vmax;height:60vmax}
+}
 
 h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:900;letter-spacing:-.02em}
 input,select,button,textarea{font-family:inherit;color:var(--ink);font-size:14px}
 button{cursor:pointer;border:none;background:none}
 a{color:inherit;text-decoration:none}
-::selection{background:rgba(30,192,107,.25)}
+::selection{background:rgba(31,184,103,.25)}
+
+/* انتقال هادئ عند تبديل الثيم — :where() بتخصيص صفري كي لا يُلغي انتقالات
+   الـhover في المكوّنات (تلك تبقى أولى). فقط الأسطح الكبيرة تنتقل ألوانها. */
+:where(.card,.finput,.modal,.scard,.detail-section,.stat-card,.econ-item,.lp-feature,.lp-step,.lp-stat,.lp-nav,.bnav,.owner-tabs,.toast,.region-tabs,.filter-bar){
+  transition:background-color var(--t-base) var(--ease-out),border-color var(--t-base) var(--ease-out),color var(--t-base) var(--ease-out)}
 
 /* ---------- PAGES / ROUTER ---------- */
 .page{display:none;padding-bottom:calc(var(--tap) + 54px);min-height:100vh;position:relative;z-index:1}
@@ -115,11 +178,25 @@ a{color:inherit;text-decoration:none}
 .field-title{font-size:13.5px;font-weight:900;color:var(--ink);margin-bottom:11px;letter-spacing:-.01em}
 .finput{width:100%;min-height:var(--tap);border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:13px 15px;font-size:15px;color:var(--ink);outline:none;background:var(--input-bg);
   transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-fast)}
-.finput:focus{border-color:var(--emerald-2);box-shadow:0 0 0 4px rgba(30,192,107,.15),0 6px 16px rgba(19,164,90,.12);background:var(--surface)}
+.finput:focus{border-color:var(--emerald-2);box-shadow:0 0 0 4px var(--ring);background:var(--surface)}
 .finput::placeholder{color:var(--soft)}
 .finput:disabled{background:var(--surface-muted);color:var(--muted)}
+.finput.is-valid{border-color:rgba(21,154,87,.5)}
+.finput.is-valid:focus{box-shadow:0 0 0 4px var(--ring)}
+.field-help{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.5}
 textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+
+/* ---------- INPUT AFFIX (إظهار كلمة السر · مسح البحث) ---------- */
+.input-wrap{position:relative}
+.finput.has-affix{padding-inline-end:48px}
+.input-affix{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;display:grid;place-items:center;border-radius:11px;color:var(--soft);background:transparent;transition:color var(--t-fast),background var(--t-fast)}
+.input-affix:hover{color:var(--emerald);background:var(--surface-soft)}
+.input-affix:active{transform:translateY(-50%) scale(.92)}
+.input-affix svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.input-affix .eye-off{display:none}
+.input-affix.is-on .eye-on{display:none}
+.input-affix.is-on .eye-off{display:block}
 
 /* ---------- BUTTONS (tap target ≥ 48px) ---------- */
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);border-radius:var(--r-lg);font-weight:800;letter-spacing:.01em;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base),opacity var(--t-fast)}
@@ -129,8 +206,24 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .sbtn:active{transform:translate3d(0,1px,0) scale(.98);opacity:.95}
 .cbtn{width:100%;background:var(--surface);color:var(--ink-2);border:1.5px solid var(--line-2);border-radius:var(--r-lg);padding:14px;font-size:13px;font-weight:800;margin-top:10px;min-height:var(--tap);
   transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast)}
-.cbtn:hover{background:var(--surface-soft);border-color:rgba(30,192,107,.34);color:var(--emerald);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
+.cbtn:hover{background:var(--surface-soft);border-color:rgba(31,184,103,.34);color:var(--emerald);transform:translate3d(0,-1px,0);box-shadow:var(--shadow-sm)}
 .cbtn:active{transform:scale(.99);opacity:.9}
+
+/* نظام أزرار موحّد إضافي (ghost / outline / danger / icon / text) */
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);padding:13px 18px;border-radius:var(--r-lg);font-size:14px;font-weight:800;color:var(--ink-2);background:transparent;transition:background var(--t-fast),color var(--t-fast),transform var(--t-fast)}
+.btn-ghost:hover{background:var(--surface-soft);color:var(--emerald)}
+.btn-ghost:active{transform:scale(.97)}
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);padding:13px 18px;border-radius:var(--r-lg);font-size:14px;font-weight:800;color:var(--emerald);background:var(--surface);border:1.5px solid rgba(31,184,103,.36);transition:border-color var(--t-fast),background var(--t-fast),transform var(--t-fast)}
+.btn-outline:hover{border-color:var(--emerald-2);background:var(--surface-soft)}
+.btn-outline:active{transform:scale(.97)}
+.btn-danger{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);padding:14px 18px;border-radius:var(--r-lg);font-size:14px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--danger),#b02531);box-shadow:0 8px 20px rgba(220,53,69,.24);transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
+.btn-danger:hover{transform:translate3d(0,-2px,0);box-shadow:0 12px 26px rgba(220,53,69,.3)}
+.btn-danger:active{transform:scale(.97)}
+.btn-icon{width:var(--tap);height:var(--tap);display:grid;place-items:center;border-radius:14px;color:var(--ink-2);background:var(--surface);border:1.5px solid var(--line-2);transition:border-color var(--t-fast),color var(--t-fast),background var(--t-fast),transform var(--t-fast)}
+.btn-icon:hover{border-color:rgba(31,184,103,.4);color:var(--emerald)}
+.btn-icon:active{transform:scale(.92)}
+.btn-text{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:8px 10px;border-radius:10px;font-size:13px;font-weight:800;color:var(--emerald);background:transparent;transition:background var(--t-fast),color var(--t-fast)}
+.btn-text:hover{background:var(--surface-soft);color:var(--emerald-2)}
 
 /* مؤشّر تحميل على الأزرار (منع النقر المزدوج) */
 .is-loading{pointer-events:none;opacity:.9}
@@ -144,13 +237,13 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 
 /* ---------- BADGES ---------- */
 .badge{border-radius:999px;padding:6px 13px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.badge-green{background:var(--surface);color:#13954f;border:1.5px solid rgba(19,149,79,.25)}
-.badge-red{background:var(--surface);color:#dc2626;border:1.5px solid rgba(220,38,38,.22)}
-.badge-yellow{background:var(--surface);color:#92400e;border:1.5px solid rgba(245,158,11,.28)}
-.badge-blue{background:var(--soft-blue);color:#1d4ed8;border:1.5px solid rgba(29,78,216,.16)}
+.badge-green{background:var(--primary-soft);color:var(--ok-ink);border:1.5px solid transparent}
+.badge-red{background:var(--danger-soft);color:var(--danger-ink);border:1.5px solid transparent}
+.badge-yellow{background:var(--warning-soft);color:var(--warning-ink);border:1.5px solid transparent}
+.badge-blue{background:var(--info-soft);color:var(--info-ink);border:1.5px solid transparent}
 .badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;flex-shrink:0}
-.badge-green::before{background:#16c163;box-shadow:0 0 0 3px rgba(22,193,99,.18)}
-.badge-red::before{background:#dc2626}.badge-yellow::before{background:#f59e0b}
+.badge-green::before{background:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.badge-red::before{background:var(--danger)}.badge-yellow::before{background:var(--warning)}
 
 /* ---------- HEADERS ---------- */
 .app-header{color:#fff;position:relative;overflow:hidden;
@@ -191,7 +284,11 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 /* ---------- SEARCH + TABS ---------- */
 .search-bar{margin-top:18px;background:rgba(255,255,255,.98);border-radius:var(--r-lg);display:flex;align-items:center;padding:5px 5px 5px 16px;gap:8px;position:relative;z-index:1;
   box-shadow:0 10px 30px rgba(0,0,0,.2),0 2px 6px rgba(0,0,0,.08);border:1px solid rgba(255,255,255,.85);transition:box-shadow var(--t-base)}
-.search-bar:focus-within{box-shadow:0 12px 34px rgba(19,164,90,.26),0 0 0 3px rgba(30,192,107,.2)}
+.search-bar:focus-within{box-shadow:var(--shadow-md),0 0 0 3px var(--ring)}
+.search-clear{flex-shrink:0;width:36px;height:36px;display:none;place-items:center;border-radius:11px;color:var(--soft);background:var(--surface-soft);transition:color var(--t-fast),background var(--t-fast)}
+.search-clear.show{display:grid}
+.search-clear:hover{color:var(--danger);background:var(--surface-muted)}
+.search-clear svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
 .search-bar input{flex:1;border:none;outline:none;font-size:14px;color:var(--ink-2);background:transparent;padding:12px 0;font-weight:500;min-height:var(--tap)}
 .search-btn{background:var(--g-btn);color:#fff;border-radius:14px;padding:0 18px;min-height:42px;font-size:12px;font-weight:800;box-shadow:0 4px 12px rgba(19,164,90,.3);transition:transform var(--t-fast)}
 .search-btn:active{transform:scale(.96)}
@@ -305,6 +402,40 @@ body.dark .lp-nav{box-shadow:none}
 .lp-link-btn{background:none;cursor:pointer}
 .lp-footer-bottom{text-align:center;font-size:12px;color:var(--soft);font-weight:600;padding-top:22px}
 
+/* ---------- LANDING: REGIONS ---------- */
+.lp-regions{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.lp-region{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:18px 18px;box-shadow:var(--shadow-card);transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base),border-color var(--t-base)}
+.lp-region:hover{transform:translate3d(0,-3px,0);box-shadow:var(--shadow-md);border-color:rgba(31,184,103,.24)}
+.lp-region:active{transform:scale(.98)}
+.lp-region-ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:var(--emerald);background:var(--primary-soft);border:1px solid rgba(31,184,103,.16)}
+.lp-region-ic svg{width:20px;height:20px}
+.lp-region-name{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:-.015em}
+.lp-region-count{font-size:12px;font-weight:700;color:var(--muted)}
+
+/* ---------- LANDING: TESTIMONIALS ---------- */
+.lp-reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lp-review{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:24px 22px;box-shadow:var(--shadow-card)}
+.lp-review-stars{color:var(--accent);font-size:15px;letter-spacing:2px}
+.lp-review-text{font-size:14.5px;line-height:1.8;color:var(--ink-2);font-weight:600}
+.lp-review-by{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:var(--ink);margin-top:auto}
+.lp-review-av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--emerald);background:var(--primary-soft);flex-shrink:0}
+.lp-review-av svg{width:18px;height:18px}
+
+/* ---------- LANDING: FOR OWNERS ---------- */
+.lp-owners-card{position:relative;overflow:hidden;border-radius:var(--r-3xl);padding:44px var(--s-7);color:#fff;
+  background:radial-gradient(120% 90% at 88% -10%,rgba(63,224,140,.22),transparent 55%),linear-gradient(150deg,var(--forest),#0d3019 55%,#15673a);
+  box-shadow:var(--shadow-lg)}
+.lp-owners-card::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:radial-gradient(70% 80% at 80% 20%,#000,transparent);mask-image:radial-gradient(70% 80% at 80% 20%,#000,transparent);pointer-events:none}
+.lp-owners-text{position:relative;z-index:1;max-width:560px}
+.lp-owners-card .lp-eyebrow{color:var(--gold-2)}
+.lp-owners-card .lp-h2{color:#fff;margin-bottom:12px}
+.lp-owners-card .lp-sec-sub{color:rgba(255,255,255,.82);margin-top:0;margin-bottom:20px}
+.lp-owners-list{list-style:none;display:grid;gap:11px;margin-bottom:26px}
+.lp-owners-list li{display:flex;align-items:center;gap:11px;font-size:14.5px;font-weight:700;color:rgba(255,255,255,.92)}
+.lp-owners-check{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2)}
+.lp-owners-check svg{width:15px;height:15px}
+.lp-owners-card .lp-btn-primary{background:linear-gradient(135deg,#fff,#eaf6ee);color:var(--forest);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+
 /* ---------- LANDING: dark tweaks ---------- */
 body.dark .lp-badge{background:var(--surface);border-color:rgba(63,224,140,.22)}
 body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224,140,.18)}
@@ -313,13 +444,15 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 @media(max-width:760px){
   .lp-links{display:none}
   .lp-login{display:none}
-  .lp-features,.lp-steps{grid-template-columns:1fr}
-  .lp-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .lp-features,.lp-steps,.lp-reviews{grid-template-columns:1fr}
+  .lp-stats,.lp-regions{grid-template-columns:repeat(2,1fr);gap:12px}
   .lp-section{padding:48px var(--s-5)}
   .lp-hero{padding:44px var(--s-5) 40px}
+  .lp-owners-card{padding:32px var(--s-5)}
 }
 @media(min-width:761px) and (max-width:1023px){
   .lp-features{grid-template-columns:repeat(2,1fr)}
+  .lp-regions{grid-template-columns:repeat(3,1fr)}
 }
 
 /* ---------- BOTTOM NAV ---------- */
@@ -344,6 +477,10 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .day-btn.is-loading{opacity:.7;pointer-events:none}
 .times-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .times-grid.cols-2{grid-template-columns:repeat(2,1fr)}
+/* عنوان فترة اليوم (صباحاً/ظهراً/مساءً) يمتد عبر الصف */
+.time-period{grid-column:1/-1;display:flex;align-items:center;gap:9px;font-size:11px;font-weight:900;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 -1px}
+.time-period:first-child{margin-top:0}
+.time-period::after{content:'';flex:1;height:1px;background:var(--line)}
 .tbtn{border:1.5px solid rgba(30,192,107,.22);border-radius:15px;padding:0 5px;min-height:var(--tap);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:800;color:#13954f;background:var(--soft-green);line-height:1.35;position:relative;overflow:hidden;transition:all var(--t-base) var(--ease-out)}
 .tbtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.24),transparent 70%);pointer-events:none}
 .tbtn:not(.taken):hover{border-color:var(--emerald-2);transform:translate3d(0,-2px,0);box-shadow:0 8px 18px rgba(19,164,90,.22)}
@@ -581,6 +718,16 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 .otab.active{background:var(--g-btn);border-color:transparent;color:#fff;box-shadow:var(--shadow-green)}
 .owner-tab{animation:fadeUp var(--t-base) var(--ease-out) both}
 
+/* لوحة المالك على الكمبيوتر: Sidebar عمودي + منطقة محتوى */
+@media(min-width:1024px){
+  #page-owner{display:grid;grid-template-columns:248px minmax(0,1fr);grid-template-areas:"head head" "side main";column-gap:var(--s-6);align-items:start;max-width:1100px;margin:0 auto;padding-bottom:var(--s-8)}
+  #page-owner>.app-header{grid-area:head}
+  #page-owner>.owner-tabs{grid-area:side;position:sticky;top:20px;flex-direction:column;align-items:stretch;gap:6px;overflow:visible;margin-top:20px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-card);backdrop-filter:none}
+  #page-owner>.owner-tabs .otab{width:100%;justify-content:flex-start;text-align:start;border-radius:14px;min-height:48px;padding:12px 16px;font-size:13.5px}
+  #page-owner>.pad{grid-area:main;padding-top:20px}
+  #nav-owner{display:none!important}
+}
+
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .cal-title{font-size:15px;font-weight:900;color:var(--ink)}
 .cal-nav{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);font-size:20px;font-weight:900;transition:all var(--t-fast)}
@@ -617,8 +764,9 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 html[dir="ltr"] .lp-arrow{display:inline-block;transform:scaleX(-1)}        /* السهم يتبع اتجاه القراءة */
 html[dir="ltr"] .detail-back{transform:scaleX(-1)}
 html[dir="ltr"] .cal-nav{transform:scaleX(-1)}
-html[lang="en"]{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
-html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:inherit}
+html[lang="en"]{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+html[lang="en"] body{font-family:inherit}
+html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:'Inter',sans-serif;letter-spacing:-.025em}
 
 /* ---------- UTILITY CLASSES (تقليل الأنماط المضمّنة · المحور 13) ---------- */
 .mb-sm{margin-bottom:11px}.mb{margin-bottom:13px}.mb-md{margin-bottom:14px}.mb-lg{margin-bottom:18px}.mb-xl{margin-bottom:20px}.mb-card{margin-bottom:15px}.mb-0{margin-bottom:0}
@@ -640,14 +788,27 @@ html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:inherit}
 .success-overlay.show .scard{transform:scale(1);opacity:1}
 .scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(30,192,107,.18),transparent 65%);pointer-events:none}
 .scard-emoji{font-size:58px;margin-bottom:14px;animation:ballFloat 2s ease-in-out infinite}
+/* علامة نجاح متحركة بسيطة (رسم بصري بدل الإيموجي عند الحجز) */
+.scard-emoji.is-check{font-size:0;width:74px;height:74px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--primary-soft);border:2px solid var(--primary);animation:none}
+.scard-emoji.is-check svg{width:38px;height:38px;stroke:var(--primary);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:32;animation:checkDraw .55s var(--ease-out) .15s forwards}
+@keyframes checkDraw{to{stroke-dashoffset:0}}
 .scard-title{font-size:21px;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.02em}
-.scard-text{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7}
+.scard-text{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7}
+/* ملخّص الحجز داخل شاشة النجاح */
+.scard-summary{text-align:start;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:6px 16px 12px;margin-bottom:20px}
+.ss-status{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:800;color:var(--warning-ink);background:var(--warning-soft);border-radius:999px;padding:8px 14px;margin:12px 0}
+.ss-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.ss-row:first-of-type{border-top:none}
+.ss-lbl{color:var(--muted);font-weight:700;flex-shrink:0}
+.ss-val{color:var(--ink);font-weight:800;text-align:end}
+.scard-actions{display:flex;flex-direction:column}
+.scard-actions .cbtn{margin-top:10px}
 
 .toast{position:fixed;left:50%;bottom:108px;transform:translate3d(-50%,16px,0);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:14px 17px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);box-shadow:var(--shadow-md);opacity:0;pointer-events:none;backdrop-filter:blur(8px);transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);text-align:start;line-height:1.5;display:flex;align-items:center;gap:11px;color:var(--ink)}
 .toast.show{opacity:1;transform:translate3d(-50%,0,0)}
 .toast-icon{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;flex:0 0 26px;font-weight:900;font-size:13px}
-.toast.error .toast-icon{background:#fee2e2;color:#dc2626}.toast.success .toast-icon{background:#dcfce7;color:#13954f}.toast.warn .toast-icon{background:#fef3c7;color:#92400e}
-.toast.error{color:#7a1f1f}.toast.success{color:#0c5641}.toast.warn{color:#633806}
+.toast.error .toast-icon{background:var(--danger-soft);color:var(--danger-ink)}.toast.success .toast-icon{background:var(--primary-soft);color:var(--ok-ink)}.toast.warn .toast-icon{background:var(--warning-soft);color:var(--warning-ink)}
+.toast.error{color:var(--danger-ink)}.toast.success{color:var(--ok-ink)}.toast.warn{color:var(--warning-ink)}
 
 /* ---------- SKELETON ---------- */
 @keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
@@ -670,10 +831,10 @@ body.dark .sk{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255
 /* ---------- OWNER DASHBOARD ---------- */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:15px}
 .stat-card{background:var(--surface);border-radius:var(--r-xl);padding:16px;min-height:90px;box-shadow:var(--shadow-card);border:1px solid var(--line);position:relative;overflow:hidden;opacity:0;animation:fadeUp var(--t-base) var(--ease-out) forwards}
-.stat-card::after{content:'';position:absolute;top:-30px;right:-20px;width:84px;height:84px;border-radius:50%;opacity:.08}
-.stat-card.c-green{border-right:3px solid #16c163}.stat-card.c-green::after{background:#16c163}
-.stat-card.c-amber{border-right:3px solid #f59e0b}.stat-card.c-amber::after{background:#f59e0b}
-.stat-card.c-blue{border-right:3px solid #2563eb}.stat-card.c-blue::after{background:#2563eb}
+.stat-card::after{content:'';position:absolute;top:-30px;inset-inline-end:-20px;width:84px;height:84px;border-radius:50%;opacity:.08}
+.stat-card.c-green{border-inline-start:3px solid var(--primary)}.stat-card.c-green::after{background:var(--primary)}
+.stat-card.c-amber{border-inline-start:3px solid var(--warning)}.stat-card.c-amber::after{background:var(--warning)}
+.stat-card.c-blue{border-inline-start:3px solid var(--info)}.stat-card.c-blue::after{background:var(--info)}
 .stat-value{font-size:24px;font-weight:900;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .stat-label{font-size:11px;color:var(--muted);margin-top:5px;font-weight:800}
 .stat-hint{font-size:10px;color:var(--soft);margin-top:2px}
@@ -681,7 +842,7 @@ body.dark .sk{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255
 .kpi-val{font-size:19px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
 .kpi-lbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:3px}
 .section-title{font-size:14.5px;font-weight:900;color:var(--ink);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.mini-badge{background:var(--soft-blue);color:#1d4ed8;border-radius:999px;padding:4px 11px;font-size:10px;font-weight:800}
+.mini-badge{background:var(--info-soft);color:var(--info-ink);border-radius:999px;padding:4px 11px;font-size:10px;font-weight:800}
 .mini-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--ink-2);margin-bottom:9px}
 .progress{height:9px;background:var(--surface-muted);border-radius:999px;overflow:hidden}
 .progress>div{height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:999px;transition:width 800ms var(--ease-out)}
@@ -699,9 +860,9 @@ body.dark .econ-decision{color:#a7f3c9;background:rgba(19,164,90,.14)}
 .day-group.past{background:var(--surface-muted);color:var(--soft)}
 .day-group .pills{display:flex;gap:8px;font-size:11px;font-weight:800}
 .day-group .pills span{padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.18)}
-.booking-strip{border-right:4px solid transparent}
-.booking-strip.confirmed{border-right-color:#16c163}.booking-strip.pending{border-right-color:#f59e0b}
-.booking-strip.cancelled,.booking-strip.rejected{border-right-color:#ef4444}
+.booking-strip{border-inline-start:4px solid transparent}
+.booking-strip.confirmed{border-inline-start-color:var(--primary)}.booking-strip.pending{border-inline-start-color:var(--warning)}
+.booking-strip.cancelled,.booking-strip.rejected{border-inline-start-color:var(--danger)}
 .owner-action{min-height:44px;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:800;color:#fff;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-sm);transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
 .owner-action:hover{transform:translate3d(0,-2px,0);box-shadow:var(--shadow-md)}.owner-action:active{transform:scale(.95)}
 .owner-confirm{background:linear-gradient(135deg,#16c163,#0c7a42)}.owner-reject{background:linear-gradient(135deg,#f59e0b,#b45309)}
@@ -709,12 +870,27 @@ body.dark .econ-decision{color:#a7f3c9;background:rgba(19,164,90,.14)}
 .owner-wa{background:linear-gradient(135deg,#22c55e,#16a34a)}
 .info-line{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-2)}
 .info-line svg,.svg-sm{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:middle}
-.reason-box{font-size:12px;color:#dc2626;background:var(--soft-red);border-radius:10px;padding:10px 12px;margin-top:10px;font-weight:600}
+.reason-box{font-size:12px;color:var(--danger-ink);background:var(--danger-soft);border-radius:10px;padding:10px 12px;margin-top:10px;font-weight:600}
 .star{font-size:32px;color:#d6dcd4;cursor:pointer;padding:0 4px;min-width:44px;display:inline-block;transition:transform var(--t-base) var(--ease-spring),color var(--t-base)}
 .star.active{color:#f59e0b;text-shadow:0 2px 10px rgba(245,158,11,.45)}
 .star:hover{transform:scale(1.2);color:#fbbf24}
 .checkbox-row{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-2);font-weight:700;min-height:var(--tap);cursor:pointer}
 .checkbox-row input{width:18px;height:18px;accent-color:var(--emerald)}
+
+/* ---------- PROFILE / SETTINGS ---------- */
+.profile-head{display:flex;align-items:center;gap:14px;margin-bottom:var(--s-5)}
+.profile-avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;color:#fff;background:var(--g-btn);box-shadow:var(--shadow-green);flex-shrink:0;text-transform:uppercase}
+.profile-name{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.profile-phone{font-size:13px;color:var(--muted);font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.settings-row:first-of-type{padding-top:4px;border-top:none}
+.settings-row:last-of-type{padding-bottom:0}
+.settings-info{display:flex;align-items:center;gap:11px;font-size:14px;font-weight:800;color:var(--ink-2)}
+.settings-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--emerald);background:var(--primary-soft);flex-shrink:0}
+.settings-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.settings-toggle{min-width:48px;min-height:42px;padding:0 15px;display:inline-flex;align-items:center;justify-content:center;border-radius:13px;font-size:13px;font-weight:900;color:var(--ink-2);background:var(--surface-soft);border:1.5px solid var(--line-2);transition:border-color var(--t-fast),color var(--t-fast),background var(--t-fast),transform var(--t-fast)}
+.settings-toggle:hover{border-color:rgba(31,184,103,.4);color:var(--emerald);background:var(--surface)}
+.settings-toggle:active{transform:scale(.95)}
 
 /* ---------- DARK overrides for white-ish helpers ---------- */
 body.dark .search-bar{background:rgba(22,32,26,.97);border-color:rgba(255,255,255,.06)}
@@ -728,8 +904,7 @@ body.dark .tbtn{background:rgba(30,192,107,.1);color:#7ff0ad;border-color:rgba(6
 body.dark .tbtn.sel{background:linear-gradient(135deg,#27b569,#0c6a3d);border-color:transparent;color:#fff}
 body.dark .tbtn.taken{background:rgba(255,255,255,.03);color:#637463;border-color:var(--line)}
 body.dark .ftab.active-tab,body.dark .day-btn.active{background:linear-gradient(135deg,#27b569,#0c6a3d);border-color:transparent;color:#fff}
-body.dark .badge-blue,body.dark .mini-badge{background:rgba(29,78,216,.16);color:#9bc2fd}
-body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3fe08c}
+body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(--primary)}
 
 /* ---------- RESPONSIVE ---------- */
 @media(min-width:700px){
@@ -752,6 +927,8 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
 </style>
 </head>
 <body>
+<!-- منع وميض الثيم: يُطبّق الوضع قبل رسم الصفحة + يكتشف تفضيل النظام أول مرة -->
+<script>(function(){try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){document.body.classList.add('dark');}var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',v==='dark'?'#06110C':'#F5F8F5');}catch(e){}})();</script>
 <a href="#app" class="skip-link">تخطَّ إلى المحتوى الرئيسي</a>
 <div id="app" tabindex="-1">
 
@@ -850,6 +1027,58 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
     </section>
 
+    <!-- ---------- REGIONS (data-driven) ---------- -->
+    <section class="lp-section" id="lp-regions" hidden>
+      <div class="lp-sec-head">
+        <span class="lp-eyebrow" data-i18n="regionsEyebrow">المناطق</span>
+        <h2 class="lp-h2" data-i18n="regionsTitle">المناطق المتوفّرة</h2>
+        <p class="lp-sec-sub" data-i18n="regionsSub">اختر منطقتك وابدأ التصفّح مباشرة.</p>
+      </div>
+      <div class="lp-regions" id="lpRegions"></div>
+    </section>
+
+    <!-- ---------- TESTIMONIALS ---------- -->
+    <section class="lp-section lp-how" id="lp-reviews">
+      <div class="lp-sec-head">
+        <span class="lp-eyebrow" data-i18n="reviewsEyebrow">آراء</span>
+        <h2 class="lp-h2" data-i18n="reviewsTitle">وش بيقولوا المستخدمين</h2>
+      </div>
+      <div class="lp-reviews">
+        <figure class="lp-review">
+          <div class="lp-review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote class="lp-review-text" data-i18n="review1">أسهل بكثير من الاتصالات — بشوف الأوقات الفاضية وببعت طلب الحجز بثواني.</blockquote>
+          <figcaption class="lp-review-by"><span class="lp-review-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><span data-i18n="review1by">لاعب</span></figcaption>
+        </figure>
+        <figure class="lp-review">
+          <div class="lp-review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote class="lp-review-text" data-i18n="review2">نظّمت حجوزات ملاعبي وقلّ ضغط الردّ على كل اتصال.</blockquote>
+          <figcaption class="lp-review-by"><span class="lp-review-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg></span><span data-i18n="review2by">صاحب ملعب</span></figcaption>
+        </figure>
+        <figure class="lp-review">
+          <div class="lp-review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote class="lp-review-text" data-i18n="review3">الواجهة واضحة، وبعرف تفاصيل الملعب وسعره قبل ما أختار.</blockquote>
+          <figcaption class="lp-review-by"><span class="lp-review-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><span data-i18n="review3by">لاعب</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ---------- FOR OWNERS ---------- -->
+    <section class="lp-section" id="lp-owners">
+      <div class="lp-owners-card">
+        <div class="lp-owners-text">
+          <span class="lp-eyebrow" data-i18n="ownersEyebrow">لأصحاب الملاعب</span>
+          <h2 class="lp-h2" data-i18n="ownersTitle">أدِر ملاعبك باحتراف</h2>
+          <p class="lp-sec-sub" data-i18n="ownersSub">لوحة تحكم متكاملة لاستقبال الحجوزات وتنظيمها ومتابعة أداء ملاعبك.</p>
+          <ul class="lp-owners-list">
+            <li><span class="lp-owners-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ownersB1">كل حجوزاتك في لوحة واحدة</span></li>
+            <li><span class="lp-owners-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ownersB2">تأكيد أو رفض بضغطة مع إشعار واتساب</span></li>
+            <li><span class="lp-owners-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ownersB3">تقارير إيراد وإشغال تساعدك بالقرار</span></li>
+          </ul>
+          <button class="lp-btn-primary" data-go="ownerLogin"><span data-i18n="ownerCtaBtn">دخول المالك</span> <span class="lp-arrow">←</span></button>
+        </div>
+      </div>
+    </section>
+
     <!-- ---------- CALLOUT ---------- -->
     <section class="lp-callout">
       <div class="lp-callout-inner">
@@ -895,7 +1124,13 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <label class="form-label" for="playerPhone" data-i18n="phone">رقم الهاتف</label>
         <input class="finput" id="playerPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
         <label class="form-label" for="playerPassword" data-i18n="password">كلمة السر</label>
-        <input class="finput" id="playerPassword" type="password" placeholder="••••••" autocomplete="current-password" style="margin-bottom:18px">
+        <div class="input-wrap" style="margin-bottom:18px">
+          <input class="finput has-affix" id="playerPassword" type="password" placeholder="••••••" autocomplete="current-password">
+          <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
+            <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
+          </button>
+        </div>
         <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول ←</button>
         <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
@@ -917,7 +1152,13 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <label class="form-label" for="regPhone" data-i18n="phone">رقم الهاتف</label>
         <input class="finput" id="regPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
         <label class="form-label" for="regPass" data-i18n="password">كلمة السر</label>
-        <input class="finput" id="regPass" type="password" placeholder="4 خانات على الأقل" autocomplete="new-password" style="margin-bottom:18px">
+        <div class="input-wrap" style="margin-bottom:18px">
+          <input class="finput has-affix" id="regPass" type="password" placeholder="4 خانات على الأقل" autocomplete="new-password">
+          <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
+            <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
+          </button>
+        </div>
         <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب ←</button>
         <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
@@ -937,7 +1178,13 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
         <label class="form-label" for="ownerPhone" data-i18n="phone">رقم الهاتف</label>
         <input class="finput" id="ownerPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
         <label class="form-label" for="ownerPass" data-i18n="password">كلمة السر</label>
-        <input class="finput" id="ownerPass" type="password" placeholder="••••••" autocomplete="current-password" style="margin-bottom:18px">
+        <div class="input-wrap" style="margin-bottom:18px">
+          <input class="finput has-affix" id="ownerPass" type="password" placeholder="••••••" autocomplete="current-password">
+          <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
+            <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
+          </button>
+        </div>
         <button class="sbtn" data-action="ownerLogin" data-i18n="enter">دخول ←</button>
         <button class="cbtn" data-go="welcome" data-i18n="back">رجوع</button>
       </div>
@@ -963,6 +1210,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
       <div class="search-bar">
         <input type="search" id="searchInput" placeholder="ابحث عن مكان أو منطقة..." data-i18n-ph="searchPh" data-i18n-aria="search" aria-label="بحث">
+        <button type="button" class="search-clear" id="searchClear" data-action="clearSearch" data-i18n-aria="clearSearchAria" aria-label="مسح البحث"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
         <button class="search-btn" data-action="search" data-i18n="search">بحث</button>
       </div>
     </header>
@@ -1054,14 +1302,39 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       <div class="muted-white" data-i18n="accountSub">بيانات حساب اللاعب</div>
     </header>
     <div class="pad">
-      <div class="card">
+      <div class="profile-head">
+        <div class="profile-avatar" id="accAvatar" aria-hidden="true">م</div>
+        <div class="profile-meta">
+          <div class="profile-name" id="accNameDisplay">—</div>
+          <div class="profile-phone" id="accPhoneDisplay">—</div>
+        </div>
+      </div>
+      <div class="card mb-card">
+        <div class="section-title" data-i18n="editProfile">تعديل البيانات</div>
         <label class="form-label" for="accName" data-i18n="name">الاسم</label>
         <input class="finput" id="accName" type="text" placeholder="اسم اللاعب" style="margin-bottom:13px">
         <label class="form-label" for="accPhone" data-i18n="phone">رقم الهاتف</label>
-        <input class="finput" id="accPhone" type="tel" disabled style="margin-bottom:18px">
+        <input class="finput readonly-field" id="accPhone" type="tel" disabled style="margin-bottom:16px">
         <button class="sbtn" data-action="saveAccount" data-i18n="saveEdit">حفظ التعديل</button>
-        <button class="cbtn" data-action="logout" data-i18n="logout">تسجيل خروج</button>
       </div>
+      <div class="card settings-card mb-card">
+        <div class="section-title" data-i18n="prefsTitle">التفضيلات</div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
+            <span data-i18n="darkModeLbl">الوضع الليلي</span>
+          </div>
+          <button class="settings-toggle" data-action="toggleTheme" aria-label="تبديل الوضع">🌙</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg></span>
+            <span data-i18n="languageLbl">اللغة</span>
+          </div>
+          <button class="settings-toggle" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
+        </div>
+      </div>
+      <button class="cbtn danger-outline-btn" data-action="logout" data-i18n="logout">تسجيل خروج</button>
     </div>
   </section>
 
@@ -1350,10 +1623,13 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   <!-- ============ SUCCESS ============ -->
   <div class="success-overlay" id="success" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
     <div class="scard">
-      <div class="scard-emoji" aria-hidden="true">🎉</div>
+      <div class="scard-emoji" id="successIcon" aria-hidden="true">🎉</div>
       <div class="scard-title" id="successTitle" data-i18n="successDone">تمام!</div>
       <div class="scard-text" id="successText"></div>
-      <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام ✓</button>
+      <div class="scard-summary" id="successSummary" hidden></div>
+      <div class="scard-actions" id="successActions">
+        <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام ✓</button>
+      </div>
     </div>
   </div>
 
@@ -1515,6 +1791,17 @@ const I18N = {
     cancelBookingBtn:'✕ إلغاء الحجز', reasonPrefix:'السبب: ', reasonPlaceholder:'مثلاً: الوقت غير متاح أو يوجد صيانة...', reasonTitleDefault:'سبب التحديث', cancelWord:'إلغاء', backWord:'رجوع',
     rateModalTitle:'تقييم المكان', yourNamePh:'اسمك', phonePh:'رقم الهاتف', commentPh:'تعليق اختياري', submitReviewBtn:'إرسال التقييم',
     stAvailable:'متاح', stSelected:'محدد', stTaken:'محجوز', bookedTag:'محجوز',
+    showPass:'إظهار كلمة السر', hidePass:'إخفاء كلمة السر', clearSearchAria:'مسح البحث',
+    tmMorning:'صباحاً', tmNoon:'ظهراً', tmEvening:'مساءً',
+    bookingSuccessTitle:'تم إرسال طلب الحجز بنجاح', statusPendingVenue:'بانتظار تأكيد الملعب', bookingNo:'رقم الحجز', nextStepNote:'بنبلغك فور ما تأكّد إدارة الملعب حجزك.',
+    editProfile:'تعديل البيانات', prefsTitle:'التفضيلات', darkModeLbl:'الوضع الليلي', languageLbl:'اللغة',
+    regionsEyebrow:'المناطق', regionsTitle:'المناطق المتوفّرة', regionsSub:'اختر منطقتك وابدأ التصفّح مباشرة.', regionsOne:'ملعب', regionsMany:'ملعب',
+    reviewsEyebrow:'آراء', reviewsTitle:'وش بيقولوا المستخدمين',
+    review1:'أسهل بكثير من الاتصالات — بشوف الأوقات الفاضية وببعت طلب الحجز بثواني.', review1by:'لاعب',
+    review2:'نظّمت حجوزات ملاعبي وقلّ ضغط الردّ على كل اتصال.', review2by:'صاحب ملعب',
+    review3:'الواجهة واضحة، وبعرف تفاصيل الملعب وسعره قبل ما أختار.', review3by:'لاعب',
+    ownersEyebrow:'لأصحاب الملاعب', ownersTitle:'أدِر ملاعبك باحتراف', ownersSub:'لوحة تحكم متكاملة لاستقبال الحجوزات وتنظيمها ومتابعة أداء ملاعبك.',
+    ownersB1:'كل حجوزاتك في لوحة واحدة', ownersB2:'تأكيد أو رفض بضغطة مع إشعار واتساب', ownersB3:'تقارير إيراد وإشغال تساعدك بالقرار', ownerCtaBtn:'دخول المالك',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -1603,6 +1890,17 @@ const I18N = {
     cancelBookingBtn:'✕ Cancel booking', reasonPrefix:'Reason: ', reasonPlaceholder:'e.g., the time isn’t available or there is maintenance...', reasonTitleDefault:'Update reason', cancelWord:'Cancel', backWord:'Back',
     rateModalTitle:'Rate this place', yourNamePh:'Your name', phonePh:'Phone number', commentPh:'Optional comment', submitReviewBtn:'Send review',
     stAvailable:'Available', stSelected:'Selected', stTaken:'Booked', bookedTag:'Booked',
+    showPass:'Show password', hidePass:'Hide password', clearSearchAria:'Clear search',
+    tmMorning:'Morning', tmNoon:'Noon', tmEvening:'Evening',
+    bookingSuccessTitle:'Booking request sent', statusPendingVenue:'Awaiting venue confirmation', bookingNo:'Booking no.', nextStepNote:'We’ll notify you as soon as the venue confirms.',
+    editProfile:'Edit details', prefsTitle:'Preferences', darkModeLbl:'Dark mode', languageLbl:'Language',
+    regionsEyebrow:'Regions', regionsTitle:'Available regions', regionsSub:'Pick your area and start browsing right away.', regionsOne:'field', regionsMany:'fields',
+    reviewsEyebrow:'Reviews', reviewsTitle:'What users say',
+    review1:'Way easier than phone calls — I see the free slots and send my request in seconds.', review1by:'Player',
+    review2:'It organized my field bookings and cut the back-and-forth calls.', review2by:'Field owner',
+    review3:'The interface is clear — I see the field details and price before I choose.', review3by:'Player',
+    ownersEyebrow:'For field owners', ownersTitle:'Manage your fields professionally', ownersSub:'A complete dashboard to receive bookings, organize them, and track your fields’ performance.',
+    ownersB1:'All your bookings in one board', ownersB2:'Confirm or reject in a tap with a WhatsApp notice', ownersB3:'Revenue & occupancy reports to guide decisions', ownerCtaBtn:'Owner login',
   }
 };
 function t(key, params){
@@ -1753,7 +2051,7 @@ const Session = (() => {
     setPlayer: t => { setRaw('player_token', t); del('owner_token'); },   // دخول لاعب ⇒ احذف توكن المالك
     setOwner:  t => { setRaw('owner_token', t); del('player_token'); },   // دخول مالك ⇒ احذف توكن اللاعب
     clear:   () => { del('player_token'); del('owner_token'); },
-    theme:   () => { try { return localStorage.getItem('mustadaira:theme') || 'light'; } catch(_){ return 'light'; } },
+    theme:   () => { try { const v = localStorage.getItem('mustadaira:theme'); if(v==='light'||v==='dark') return v; return (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches) ? 'dark' : 'light'; } catch(_){ return 'light'; } },
     setTheme:t => { try { localStorage.setItem('mustadaira:theme', t); } catch(_){} },
   };
 })();
@@ -1852,11 +2150,11 @@ async function loadPublicBookings(){
   buildBookedSlots(Array.isArray(r) ? r : (r.bookings||[]));
 }
 async function loadData(opts={}){
-  try { await loadInitialData(!!opts.force); renderRegionTabs(); updateTrust(); return true; }
+  try { await loadInitialData(!!opts.force); renderRegionTabs(); renderLandingRegions(); updateTrust(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
     const cached = cacheRead();
-    if (cached && cached.length){ State.places = normalizePlaces(cached); buildBookedSlots([]); renderRegionTabs(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
+    if (cached && cached.length){ State.places = normalizePlaces(cached); buildBookedSlots([]); renderRegionTabs(); renderLandingRegions(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
     return false;
   }
 }
@@ -2000,6 +2298,24 @@ function renderRegionTabs(){
   regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)?' active-tab':''), onclick:()=>setFilter(r)}, r)));
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
+
+/* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
+function renderLandingRegions(){
+  const el=$('#lpRegions'); const sec=$('#lp-regions'); if(!el) return;
+  const regions=getRegions();
+  if(!regions.length){ if(sec) sec.hidden=true; return; }
+  if(sec) sec.hidden=false;
+  clear(el);
+  regions.forEach(r=>{
+    const count=State.places.filter(p=>normalizeText(p.region)===normalizeText(r)).length;
+    const card=h('button',{class:'lp-region', type:'button', 'aria-label':r},
+      h('span',{class:'lp-region-ic'}, ico('pin','svg-sm')),
+      h('span',{class:'lp-region-name'}, r),
+      h('span',{class:'lp-region-count'}, `${count} ${count===1?t('regionsOne'):t('regionsMany')}`));
+    card.addEventListener('click', ()=>{ State.filter=r; browse(); });
+    el.append(card);
+  });
+}
 
 /* تحليل مركزي للمرافق (يُستخدم في البطاقة والتفاصيل والفلاتر).
    الصيغة: "water|parking|vests:10" — القيمة بعد ':' تمثّل عدداً/تفصيلاً اختيارياً. */
@@ -2339,13 +2655,24 @@ function timeButton(slot, taken, selected, onClick){
   else b.addEventListener('click', onClick);
   return b;
 }
+/* تقسيم الأوقات لفترات اليوم (صباحاً/ظهراً/مساءً) — وضوح أعلى في تدفّق الحجز */
+const TIME_PERIODS=[
+  {key:'tmMorning', test:hr=>hr<12},
+  {key:'tmNoon',    test:hr=>hr>=12&&hr<17},
+  {key:'tmEvening', test:hr=>hr>=17},
+];
 function renderDetailTimes(){
   const el=$('#detailTimes'); clear(el);
   const slots=fieldSlots(State.detail.field);
   const taken=(State.bookedSlots[State.detail.field.field_id]?.[State.detail.date])||[];
   const free=slots.filter(s=>!taken.includes(s.hour)).length;
-  slots.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
-  if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, '🚫 ما في أوقات متاحة بهذا اليوم. جرّب يوماً ثانياً.'));
+  TIME_PERIODS.forEach(p=>{
+    const group=slots.filter(s=>p.test(Number(s.hour)));
+    if(!group.length) return;
+    el.append(h('div',{class:'time-period'}, t(p.key)));
+    group.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
+  });
+  if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, t('noTimesDay')));
   renderDetailSticky();
 }
 
@@ -2438,6 +2765,42 @@ function renderReview(){
       row(t('rvStatus'), logged?t('statusPlayer'):t('statusGuest'), 'person'))
   );
   updateBookingStep();
+}
+
+/* ===================== SUCCESS SCREEN (عام + حجز) ===================== */
+/* يعيد شاشة النجاح لوضعها البسيط (تُستخدم للحساب/التقييم) */
+function resetSuccessCard(){
+  const icon=$('#successIcon'); if(icon){ icon.classList.remove('is-check'); icon.textContent='🎉'; }
+  const sum=$('#successSummary'); if(sum){ sum.hidden=true; clear(sum); }
+  const act=$('#successActions'); if(act){ clear(act); act.append(h('button',{class:'sbtn','data-action':'closeSuccess'}, t('successOkBtn'))); }
+}
+function showSimpleSuccess(text){
+  resetSuccessCard();
+  setText('successTitle', t('successDone')); setText('successText', text);
+  Modal.open('success');
+}
+/* شاشة نجاح الحجز: علامة متحركة + ملخّص + حالة + رقم الحجز + إجراءات */
+function showBookingSuccess(info, bookingId){
+  const { place, field, date, hour } = info;
+  resetSuccessCard();
+  const icon=$('#successIcon'); if(icon){ icon.classList.add('is-check'); icon.innerHTML=ICON.check; }
+  setText('successTitle', t('bookingSuccessTitle')); setText('successText', t('nextStepNote'));
+  const slot=fieldSlots(field).find(s=>s.hour===hour);
+  const sum=$('#successSummary'); sum.hidden=false; clear(sum);
+  const row=(lbl,val)=> h('div',{class:'ss-row'}, h('span',{class:'ss-lbl'},lbl), h('span',{class:'ss-val'},val));
+  sum.append(h('div',{class:'ss-status'}, ico('clock','svg-sm'), h('span',{}, t('statusPendingVenue'))));
+  if(bookingId) sum.append(row(t('bookingNo'), '#'+bookingId));
+  sum.append(
+    row(t('stepField'), `${place.place_name} - ${field.field_name}`),
+    row(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`),
+    row(t('rvTime'), slot?slot.label:''),
+    row(t('rvPrice'), formatCurrency(field.price))
+  );
+  const act=$('#successActions'); clear(act);
+  const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
+  const goH=h('button',{class:'cbtn'}, t('navHome')); goH.addEventListener('click',()=>{ Modal.close('success'); showPage('home'); renderPlaces(); });
+  act.append(goB, goH);
+  Modal.open('success');
 }
 
 /* ===================== RENDER: PLAYER BOOKINGS ===================== */
@@ -2886,7 +3249,12 @@ function showPage(name){
   // خطافات الصفحات
   if (name==='home') renderPlaces();
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast('سجّل دخولك عشان تشوف حجوزاتك','warn'); return showPage('playerLogin'); } loadPlayerBookings(); }
-  if (name==='account'){ if(!Session.player()){ return showPage('playerLogin'); } $('#accName').value=State.player?.name||''; $('#accPhone').value=State.player?.phone||''; }
+  if (name==='account'){ if(!Session.player()){ return showPage('playerLogin'); }
+    const nm=State.player?.name||'', ph=State.player?.phone||'';
+    $('#accName').value=nm; $('#accPhone').value=ph;
+    setText('accNameDisplay', nm||t('welcomeYou')); setText('accPhoneDisplay', ph||'—');
+    const av=$('#accAvatar'); if(av) av.textContent=(nm.trim().charAt(0))||'م';
+  }
   if (name==='owner'){ if(!Session.owner()){ return showPage('ownerLogin'); } if(State.ownerData) renderOwnerDashboard(); }
   manageAutoRefresh();
   // الرجوع للرئيسية يستعيد آخر موضع تمرير؛ بقية الصفحات تبدأ من الأعلى
@@ -2969,7 +3337,7 @@ async function saveAccount(btn){
       const res=await API.post({action:'updatePlayerProfile',player_token:Session.player(),name});
       if(!res.success){ toast(apiMsg(res.message)||t('saveErr'),'error'); return; }
       State.player=res.player; setText('playerWelcome',t('welcomeHi')+' '+(State.player.name||t('welcomeYou')));
-      setText('successText',t('accSaved')); Modal.open('success');
+      showSimpleSuccess(t('accSaved'));
     }catch(_){ toast(t('saveErr'),'error'); }
   });
 }
@@ -2995,7 +3363,7 @@ async function confirmBooking(btn){
       const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:field.price, source:getSource() });
       if(!res.success){ toast(apiMsg(res.message)||t('bookingFailRetry'),'error'); await loadData(); return; }
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
-      Modal.close('modal-booking'); setText('successText',t('bookingSent')); Modal.open('success');
+      Modal.close('modal-booking'); showBookingSuccess({place,field,date,hour}, res.booking_id);
       if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
     }catch(_){ toast(t('bookingConnLag'),'error'); }
   });
@@ -3007,7 +3375,7 @@ async function submitReview(btn){
     try{
       const res=await API.post({ action:'createReview', place_id:id, field_id:State.detail.field?.field_id||'', user_name:$('#rvName').value.trim(), phone:$('#rvPhone').value.trim(), rating:State.review.rating, comment:$('#rvComment').value.trim() });
       if(!res.success){ toast(apiMsg(res.message)||t('reviewFail'),'error'); return; }
-      Modal.close('modal-review'); setText('successText',t('reviewOk')); Modal.open('success');
+      Modal.close('modal-review'); showSimpleSuccess(t('reviewOk'));
       await loadData({force:true});
       const updated=State.places.find(p=>String(p.place_id)===id); if(updated&&State.detail.place){ State.detail.place=updated; const b=$('#dBadges'); if(b&&$('#page-detail').classList.contains('active')){ clear(b); b.append(h('span',{class:'badge badge-green'},updated.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(updated))); renderPlaceStats(); } }
     }catch(_){ toast(t('reviewErr'),'error'); }
@@ -3050,7 +3418,7 @@ function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
   $$('[data-action="toggleTheme"]').forEach(b=>b.textContent = dark?'☀️':'🌙');
-  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#07110c':'#04130b');
+  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#06110C':'#F5F8F5');
 }
 function toggleTheme(){ const t = document.body.classList.contains('dark')?'light':'dark'; Session.setTheme(t); applyTheme(t); }
 
@@ -3070,7 +3438,7 @@ function setLanguage(lang){
   $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderRegionTabs(); updateFilterBar(); updateTrust();
+    renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
     if($('#page-home')?.classList.contains('active')) renderPlaces();
     if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
@@ -3095,7 +3463,11 @@ const Actions = {
   calPrev:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()-1, 1); renderOwnerCalendar(); },
   calNext:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()+1, 1); renderOwnerCalendar(); },
   closeModal:()=>Modal.close(), closeSuccess:()=>{ Modal.close('success'); renderPlaces(); },
+  togglePass:(btn)=>{ const wrap=btn.closest('.input-wrap'); const inp=wrap&&wrap.querySelector('input'); if(!inp) return; const show=inp.type==='password'; inp.type=show?'text':'password'; btn.classList.toggle('is-on',show); btn.setAttribute('aria-label', t(show?'hidePass':'showPass')); inp.focus(); },
+  clearSearch:()=>{ const s=$('#searchInput'); if(s){ s.value=''; updateSearchClear(); renderPlaces(); s.focus(); } },
 };
+/* إظهار/إخفاء زر مسح البحث حسب وجود نص */
+function updateSearchClear(){ const s=$('#searchInput'), c=$('#searchClear'); if(c) c.classList.toggle('show', !!(s&&s.value.trim())); }
 document.addEventListener('click', (e)=>{
   const nav=e.target.closest('[data-nav]'); if(nav){ showPage(nav.dataset.nav); return; }
   const otab=e.target.closest('[data-otab]'); if(otab){ showOwnerTab(otab.dataset.otab); return; }
@@ -3122,16 +3494,19 @@ document.addEventListener('keydown', (e)=>{
 document.addEventListener('change', (e)=>{ const sr=e.target.closest('.star-input'); if(sr) setRating(Number(sr.value)); });
 // أسهم لوحة المفاتيح في تبويبات المالك (←/→/Home/End) — يحترم اتجاه الصفحة
 $('#ownerTabs')?.addEventListener('keydown', (e)=>{
-  if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key)) return;
+  if(!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key)) return;
   e.preventDefault();
   const tabs=$$('#ownerTabs .otab'); const cur=tabs.findIndex(t=>t.dataset.otab===State.ownerTab); if(cur<0) return;
   const rtl=document.documentElement.dir==='rtl';
   let i=cur;
   if(e.key==='Home') i=0; else if(e.key==='End') i=tabs.length-1;
-  else { const fwd=(e.key==='ArrowLeft')===rtl ? 1 : -1; i=(cur+fwd+tabs.length)%tabs.length; }
+  else if(e.key==='ArrowDown') i=(cur+1)%tabs.length;                 // عمودي (Sidebar الكمبيوتر)
+  else if(e.key==='ArrowUp') i=(cur-1+tabs.length)%tabs.length;
+  else { const fwd=(e.key==='ArrowLeft')===rtl ? 1 : -1; i=(cur+fwd+tabs.length)%tabs.length; }   // أفقي (الجوال)
   const tab=tabs[i]; if(tab){ showOwnerTab(tab.dataset.otab); tab.focus(); }
 });
-// بحث مع تأخير (Debounce 300ms)
+// بحث مع تأخير (Debounce 300ms) + إظهار زر المسح فورياً
+$('#searchInput')?.addEventListener('input', updateSearchClear);
 $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
 // الفلاتر في لوحة المالك
 $('#ownerDateFilter')?.addEventListener('change', renderOwnerBookings);
