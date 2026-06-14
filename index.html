@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- التسلسل الهرمي: Cairo للعناوين الثقيلة، Tajawal للنصوص -->
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* =============================================================
    المستديرة · style.css
@@ -163,7 +163,8 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .app-header.auth{padding:58px var(--s-6) 40px;text-align:center;border-radius:0 0 var(--r-3xl) var(--r-3xl)}
 .app-header.compact{padding:var(--s-6) var(--s-5);border-radius:0 0 var(--r-2xl) var(--r-2xl)}
 .header-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:34px 34px;pointer-events:none;mask-image:linear-gradient(180deg,#000,transparent)}
-.header-emoji{font-size:46px;margin-bottom:14px;display:inline-block;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}
+.header-emoji{font-size:46px;margin-bottom:14px;display:inline-flex;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}
+.header-emoji svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .header-title{font-size:24px;font-weight:900;letter-spacing:-.025em;text-shadow:0 2px 10px rgba(0,0,0,.22)}
 .header-subtitle{font-size:12.5px;opacity:.74;margin-top:6px;font-weight:500}
@@ -360,9 +361,11 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
   .place-card:hover{transform:translate3d(0,-3px,0);box-shadow:0 16px 36px rgba(4,19,11,.14),0 6px 14px rgba(4,19,11,.08)}
 }
 .place-cover{height:190px;position:relative;display:flex;align-items:flex-end;overflow:hidden;background:linear-gradient(145deg,#13a45a,#0a2415)}
+@media(max-width:480px){.place-cover{height:168px}}
 .place-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .place-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.06) 35%,rgba(3,12,7,.86) 100%);z-index:1}
-.place-cover-emoji{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;z-index:0;filter:blur(2px) opacity(.55)}
+.place-cover-emoji{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;z-index:0;opacity:.5}
+.place-cover-emoji svg{width:76px;height:76px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:1.4}
 .place-top-badges{position:absolute;top:12px;right:12px;left:12px;z-index:3;display:flex;justify-content:space-between;align-items:flex-start}
 .avail-badge{border-radius:999px;padding:6px 13px;font-size:10px;font-weight:800;backdrop-filter:blur(12px);box-shadow:0 3px 10px rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3)}
 .avail-yes{background:rgba(220,252,231,.9);color:#15803d}.avail-no{background:rgba(254,226,226,.9);color:#991b1b}
@@ -388,6 +391,7 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .detail-back{position:absolute;top:14px;right:14px;z-index:5;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:18px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:grid;place-items:center;transition:transform var(--t-fast)}
 .detail-back:hover{transform:scale(1.08)}.detail-back:active{transform:scale(.94)}
 .detail-emoji{position:relative;z-index:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4))}
+.detail-emoji svg{width:74px;height:74px}
 .detail-body{padding:var(--s-6) var(--s-5)}
 .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:var(--s-4)}
 .detail-name{font-size:21px;font-weight:900;color:var(--ink);letter-spacing:-.025em}
@@ -403,7 +407,7 @@ body.dark .lp-feat-icon{background:rgba(30,192,107,.12);border-color:rgba(63,224
 .action-call{background:var(--soft-green);color:#13954f;border:1.5px solid rgba(19,164,90,.2)}
 .block{margin-bottom:var(--s-6)}
 .subfields{display:grid;gap:10px}
-.subfield-card{border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:14px 16px;background:var(--surface);box-shadow:var(--shadow-xs);cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:var(--tap);transition:all var(--t-base) var(--ease-out)}
+.subfield-card{width:100%;text-align:start;border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:14px 16px;background:var(--surface);box-shadow:var(--shadow-xs);cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:var(--tap);transition:all var(--t-base) var(--ease-out)}
 .subfield-card:hover:not(.active){border-color:rgba(30,192,107,.36);transform:translate3d(0,-1px,0)}
 .subfield-card.active{border-color:var(--emerald-2);background:var(--soft-green);box-shadow:0 0 0 3px rgba(30,192,107,.12),var(--shadow-sm)}
 .subfield-name{font-size:14px;font-weight:800;color:var(--ink)}
@@ -615,6 +619,19 @@ html[dir="ltr"] .detail-back{transform:scaleX(-1)}
 html[dir="ltr"] .cal-nav{transform:scaleX(-1)}
 html[lang="en"]{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:inherit}
+
+/* ---------- UTILITY CLASSES (تقليل الأنماط المضمّنة · المحور 13) ---------- */
+.mb-sm{margin-bottom:11px}.mb{margin-bottom:13px}.mb-md{margin-bottom:14px}.mb-lg{margin-bottom:18px}.mb-xl{margin-bottom:20px}.mb-card{margin-bottom:15px}.mb-0{margin-bottom:0}
+.mt-1{margin-top:var(--s-2)}.mt-2{margin-top:12px}.mt-3{margin-top:var(--s-4)}
+.text-center{text-align:center}.text-start{text-align:start}.text-end{text-align:end}
+.text-danger{color:#dc2626}.text-success{color:var(--emerald)}.text-muted{color:var(--muted)}
+.flex-between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.flex-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.flex-col{display:flex;flex-direction:column;gap:5px}
+.grid-col-full{grid-column:1/-1}
+.card-spaced{margin-bottom:var(--s-4)}
+.danger-outline-btn{color:#dc2626;border-color:rgba(220,38,38,.25)}
+.readonly-field{background:var(--surface-muted);color:var(--muted)}
 
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(3,16,9,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
@@ -869,7 +886,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   <!-- ============ PLAYER LOGIN ============ -->
   <section class="page" id="page-playerLogin">
     <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji">👤</div>
+      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div>
       <div class="header-title" data-i18n="loginTitle">دخول اللاعب</div>
       <div class="header-subtitle" data-i18n="loginSubtitle">ادخل عشان تشوف وتتابع حجوزاتك</div>
     </header>
@@ -889,7 +906,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   <!-- ============ PLAYER REGISTER ============ -->
   <section class="page" id="page-playerRegister">
     <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji">📝</div>
+      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
       <div class="header-title" data-i18n="regTitle">إنشاء حساب</div>
       <div class="header-subtitle" data-i18n="regSubtitle">احفظ حجوزاتك وتابعها بأي وقت</div>
     </header>
@@ -911,7 +928,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   <!-- ============ OWNER LOGIN ============ -->
   <section class="page" id="page-ownerLogin">
     <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji">🔐</div>
+      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
       <div class="header-title" data-i18n="ownerLoginTitle">دخول المالك</div>
       <div class="header-subtitle" data-i18n="ownerLoginSubtitle">لوحة تحكم الملاعب والحجوزات</div>
     </header>
@@ -965,7 +982,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   <section class="page" id="page-detail">
     <div class="detail-hero" id="detailHero">
       <button class="detail-back" data-go="home" aria-label="رجوع">←</button>
-      <span class="detail-emoji" id="detailEmoji">⚽</span>
+      <span class="detail-emoji" id="detailEmoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg></span>
     </div>
     <div class="detail-thumbs" id="detailThumbs" hidden></div>
     <div class="detail-body">
@@ -1066,16 +1083,16 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
     </header>
     <nav class="owner-tabs" id="ownerTabs" role="tablist" aria-label="أقسام لوحة المالك">
-      <button class="otab active" data-otab="today" role="tab" aria-selected="true" data-i18n="otabToday">اليوم</button>
-      <button class="otab" data-otab="bookings" role="tab" aria-selected="false" data-i18n="otabBookings">الحجوزات</button>
-      <button class="otab" data-otab="calendar" role="tab" aria-selected="false" data-i18n="otabCalendar">التقويم</button>
-      <button class="otab" data-otab="fields" role="tab" aria-selected="false" data-i18n="otabFields">الملاعب</button>
-      <button class="otab" data-otab="reports" role="tab" aria-selected="false" data-i18n="otabReports">التقارير</button>
+      <button class="otab active" id="otab-today" data-otab="today" role="tab" aria-selected="true" aria-controls="ownerTab-today" data-i18n="otabToday">اليوم</button>
+      <button class="otab" id="otab-bookings" data-otab="bookings" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-bookings" data-i18n="otabBookings">الحجوزات</button>
+      <button class="otab" id="otab-calendar" data-otab="calendar" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-calendar" data-i18n="otabCalendar">التقويم</button>
+      <button class="otab" id="otab-fields" data-otab="fields" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-fields" data-i18n="otabFields">الملاعب</button>
+      <button class="otab" id="otab-reports" data-otab="reports" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-reports" data-i18n="otabReports">التقارير</button>
     </nav>
     <div class="pad">
 
       <!-- ===== تبويب: اليوم ===== -->
-      <div class="owner-tab active" id="ownerTab-today" role="tabpanel">
+      <div class="owner-tab active" id="ownerTab-today" role="tabpanel" aria-labelledby="otab-today" tabindex="0">
         <div class="stat-grid">
           <div class="stat-card c-blue"><div class="stat-value" id="otToday">0</div><div class="stat-label" data-i18n="otTodayLbl">حجوزات اليوم</div><div class="stat-hint" data-i18n="hintByPlayDate">حسب تاريخ اللعب</div></div>
           <div class="stat-card c-amber"><div class="stat-value" id="otPending">0</div><div class="stat-label" data-i18n="otPendingLbl">بانتظار ردّك</div><div class="stat-hint" data-i18n="hintTodayReq">طلبات اليوم</div></div>
@@ -1092,8 +1109,8 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
 
       <!-- ===== تبويب: الحجوزات ===== -->
-      <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" hidden>
-        <div class="card" style="margin-bottom:15px">
+      <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" aria-labelledby="otab-bookings" tabindex="0" hidden>
+        <div class="card mb-card">
           <div class="section-title"><span data-i18n="filterBookings">فلترة الحجوزات</span></div>
           <input class="finput" id="ownerSearch" type="search" placeholder="بحث بالاسم أو رقم الهاتف..." data-i18n-ph="searchNamePhone" aria-label="بحث في الحجوزات" style="margin-bottom:11px">
           <div class="grid-2">
@@ -1115,7 +1132,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
 
       <!-- ===== تبويب: التقويم ===== -->
-      <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" hidden>
+      <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" aria-labelledby="otab-calendar" tabindex="0" hidden>
         <div class="cal-head">
           <button class="cal-nav" data-action="calPrev" aria-label="الشهر السابق">‹</button>
           <div class="cal-title" id="calTitle">—</div>
@@ -1127,20 +1144,20 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
       </div>
 
       <!-- ===== تبويب: الملاعب والأسعار ===== -->
-      <div class="owner-tab" id="ownerTab-fields" role="tabpanel" hidden>
+      <div class="owner-tab" id="ownerTab-fields" role="tabpanel" aria-labelledby="otab-fields" tabindex="0" hidden>
         <div class="sec-title" style="padding:0 0 12px"><span data-i18n="manageFields">إدارة الملاعب</span><span class="link" data-action="addField" data-i18n="addFieldBtn">+ إضافة ملعب</span></div>
         <div id="ownerFields"></div>
       </div>
 
       <!-- ===== تبويب: التقارير ===== -->
-      <div class="owner-tab" id="ownerTab-reports" role="tabpanel" hidden>
+      <div class="owner-tab" id="ownerTab-reports" role="tabpanel" aria-labelledby="otab-reports" tabindex="0" hidden>
         <div class="stat-grid">
           <div class="stat-card"><div class="stat-value" id="oTotal">0</div><div class="stat-label" data-i18n="allBookings">كل الحجوزات</div><div class="stat-hint" data-i18n="hintAllReq">جميع الطلبات</div></div>
           <div class="stat-card c-green"><div class="stat-value" id="oConfirmed">0</div><div class="stat-label" data-i18n="confirmedLbl">مؤكدة</div><div class="stat-hint" data-i18n="hintInRevenue">تدخل بالإيراد</div></div>
           <div class="stat-card c-amber"><div class="stat-value" id="oPending">0</div><div class="stat-label" data-i18n="pendingConfirm">بانتظار التأكيد</div><div class="stat-hint" data-i18n="hintNeedFollow">تحتاج متابعة</div></div>
           <div class="stat-card c-blue"><div class="stat-value" id="oToday">0</div><div class="stat-label" data-i18n="otTodayLbl">حجوزات اليوم</div><div class="stat-hint" data-i18n="hintByPlayDate">حسب تاريخ اللعب</div></div>
         </div>
-        <div class="card" style="margin-bottom:15px">
+        <div class="card mb-card">
           <div class="section-title"><span data-i18n="revenueSummary">ملخص الإيراد</span><span class="mini-badge" data-i18n="commission10">عمولة 10%</span></div>
           <div class="row-3">
             <div><div class="kpi-val" id="oRevenue">0</div><div class="kpi-lbl" data-i18n="siteRevenue">إيراد الموقع</div></div>
@@ -1148,7 +1165,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
             <div><div class="kpi-val" id="oNet" style="color:#13954f">0</div><div class="kpi-lbl" data-i18n="ownerNet">صافي المالك</div></div>
           </div>
         </div>
-        <div class="card" style="margin-bottom:15px">
+        <div class="card mb-card">
           <div class="section-title"><span data-i18n="perfTitle">مؤشرات الأداء</span><span class="mini-badge" id="oWeek">آخر 7 أيام: 0</span></div>
           <div class="mini-row"><span data-i18n="confirmRate">نسبة التأكيد</span><strong id="oRate">0%</strong></div>
           <div class="progress" style="margin-bottom:11px"><div id="oRateBar" style="width:0%"></div></div>
@@ -1232,10 +1249,10 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <!-- ============ REVIEW MODAL ============ -->
-  <div class="modal-overlay" id="modal-review">
+  <div class="modal-overlay" id="modal-review" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
     <div class="modal" data-modal="review">
       <div class="modal-grip"><div class="modal-handle"></div></div>
-      <div class="modal-title" data-i18n="rateModalTitle">تقييم المكان</div>
+      <div class="modal-title" id="rvTitle" data-i18n="rateModalTitle">تقييم المكان</div>
       <div class="modal-sub" id="rvPlace"></div>
       <fieldset class="stars-fieldset" id="starsBox">
         <legend class="sr-only">قيّم المكان من 1 إلى 5 نجوم</legend>
@@ -1261,10 +1278,10 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <!-- ============ MANUAL BOOKING MODAL ============ -->
-  <div class="modal-overlay" id="modal-manual">
+  <div class="modal-overlay" id="modal-manual" role="dialog" aria-modal="true" aria-labelledby="mTitle">
     <div class="modal" data-modal="manual">
       <div class="modal-grip"><div class="modal-handle"></div></div>
-      <div class="modal-title" data-i18n="manualTitle">إضافة حجز خارجي</div>
+      <div class="modal-title" id="mTitle" data-i18n="manualTitle">إضافة حجز خارجي</div>
       <div class="modal-sub" data-i18n="manualSub">يضاف كمؤكد مباشرة ويغلق الوقت أمام اللاعبين.</div>
       <label class="form-label" data-i18n="fieldLbl">الملعب</label>
       <select class="finput" id="mField" style="margin-bottom:13px"></select>
@@ -1284,7 +1301,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <!-- ============ FIELD MODAL ============ -->
-  <div class="modal-overlay" id="modal-field">
+  <div class="modal-overlay" id="modal-field" role="dialog" aria-modal="true" aria-labelledby="fieldTitle">
     <div class="modal" data-modal="field">
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="fieldTitle" data-i18n="editFieldTitle">تعديل ملعب</div>
@@ -1308,7 +1325,7 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <!-- ============ REASON MODAL ============ -->
-  <div class="modal-overlay" id="modal-reason">
+  <div class="modal-overlay" id="modal-reason" role="dialog" aria-modal="true" aria-labelledby="reasonTitle" aria-describedby="reasonHint">
     <div class="modal" data-modal="reason">
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="reasonTitle" data-i18n="reasonTitleDefault">سبب التحديث</div>
@@ -1331,10 +1348,10 @@ body.dark .subfield-card.active{background:rgba(30,192,107,.14);border-color:#3f
   </div>
 
   <!-- ============ SUCCESS ============ -->
-  <div class="success-overlay" id="success">
+  <div class="success-overlay" id="success" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
     <div class="scard">
-      <div class="scard-emoji">🎉</div>
-      <div class="scard-title" data-i18n="successDone">تمام!</div>
+      <div class="scard-emoji" aria-hidden="true">🎉</div>
+      <div class="scard-title" id="successTitle" data-i18n="successDone">تمام!</div>
       <div class="scard-text" id="successText"></div>
       <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام ✓</button>
     </div>
@@ -1497,6 +1514,7 @@ const I18N = {
     editFieldTitle:'تعديل ملعب', addFieldTitle:'إضافة ملعب جديد', fieldNameLbl:'اسم الملعب', sizeLbl:'الحجم', slotsLbl:'الأوقات', activeLbl:'نشط', saveBtn:'حفظ ←', slotFull:'Full — كل اليوم', slotMorning:'Morning — صباحي', slotEvening:'Evening — مسائي',
     cancelBookingBtn:'✕ إلغاء الحجز', reasonPrefix:'السبب: ', reasonPlaceholder:'مثلاً: الوقت غير متاح أو يوجد صيانة...', reasonTitleDefault:'سبب التحديث', cancelWord:'إلغاء', backWord:'رجوع',
     rateModalTitle:'تقييم المكان', yourNamePh:'اسمك', phonePh:'رقم الهاتف', commentPh:'تعليق اختياري', submitReviewBtn:'إرسال التقييم',
+    stAvailable:'متاح', stSelected:'محدد', stTaken:'محجوز', bookedTag:'محجوز',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -1584,6 +1602,7 @@ const I18N = {
     editFieldTitle:'Edit field', addFieldTitle:'Add new field', fieldNameLbl:'Field name', sizeLbl:'Size', slotsLbl:'Times', activeLbl:'Active', saveBtn:'Save →', slotFull:'Full — all day', slotMorning:'Morning', slotEvening:'Evening',
     cancelBookingBtn:'✕ Cancel booking', reasonPrefix:'Reason: ', reasonPlaceholder:'e.g., the time isn’t available or there is maintenance...', reasonTitleDefault:'Update reason', cancelWord:'Cancel', backWord:'Back',
     rateModalTitle:'Rate this place', yourNamePh:'Your name', phonePh:'Phone number', commentPh:'Optional comment', submitReviewBtn:'Send review',
+    stAvailable:'Available', stSelected:'Selected', stTaken:'Booked', bookedTag:'Booked',
   }
 };
 function t(key, params){
@@ -1604,6 +1623,13 @@ const API_MESSAGE_MAP = {
   'هذا الوقت غير متاح':'This time is not available.',
   'رقم الهاتف مستخدم':'This phone number is already in use.',
   'تم بنجاح':'Done successfully.',
+  'بيانات الحجز ناقصة':'Booking data is incomplete.',
+  'ما بنفع تحجز بتاريخ قديم':'You can’t book a past date.',
+  'هذا الملعب مش تابع لهذا المكان':'This field doesn’t belong to this place.',
+  'هذا الوقت مش متاح لهذا الملعب':'This time isn’t available for this field.',
+  'ما لقينا المكان':'Place not found.',
+  'هذا الوقت راح، اختار وقت ثاني':'This time is gone, choose another one.',
+  'صار خطأ بالخادم، حاول مرة ثانية':'A server error occurred, please try again.',
 };
 const apiMsg = (msg) => (State.lang==='en' && msg && API_MESSAGE_MAP[msg]) ? API_MESSAGE_MAP[msg] : msg;
 
@@ -1656,7 +1682,7 @@ function appendKids(e, kids){
     e.append(c.nodeType ? c : document.createTextNode(String(c)));
   }
 }
-const ico = (name, cls='svg-sm') => h('span', { class:cls, html:ICON[name], style:{display:'inline-flex'} });
+const ico = (name, cls='svg-sm') => h('span', { class:cls, html:ICON[name], 'aria-hidden':'true', style:{display:'inline-flex'} });
 const clear = (el) => { while (el && el.firstChild) el.removeChild(el.firstChild); };
 const setText = (id, val) => { const el = $('#'+id); if (el) el.textContent = val; };
 
@@ -2118,7 +2144,7 @@ function placeCard(p, eager){
   // الصورة الأولى الظاهرة (LCP): eager + أولوية عالية؛ الباقي lazy لتسريع التحميل
   if (img) cover.append(h('img',{ src:img, alt:p.place_name||'ملعب', width:'640', height:'360',
     loading: eager?'eager':'lazy', fetchpriority: eager?'high':'auto', decoding:'async' }));
-  else cover.append(h('div',{class:'place-cover-emoji'},'⚽'));
+  else cover.append(h('div',{class:'place-cover-emoji', html:ICON.ball, 'aria-hidden':'true'}));
   const AVAIL_KEY={today:'availToday',later:'availLater',full:'availFull',none:'availNone'};
   cover.append(
     h('div',{class:'place-top-badges'},
@@ -2279,7 +2305,7 @@ function renderSubFields(){
   const el=$('#subFields'); clear(el);
   State.detail.place.fields.forEach(f=>{
     const active = String(State.detail.field.field_id)===String(f.field_id);
-    const card=h('div',{class:'subfield-card'+(active?' active':'')},
+    const card=h('button',{class:'subfield-card'+(active?' active':''), type:'button', 'aria-pressed':active?'true':'false'},
       h('div',{},
         h('div',{class:'subfield-name'}, f.field_name),
         h('div',{class:'subfield-size'}, ico('resize','svg-sm'), ' '+f.size)),
@@ -2290,7 +2316,7 @@ function renderSubFields(){
 }
 function dayButton(date, i, active, onClick){
   const label = dayLabel(date);
-  const b=h('button',{class:'day-btn'+(active?' active':'')},
+  const b=h('button',{class:'day-btn'+(active?' active':''), type:'button', 'aria-pressed':active?'true':'false', 'aria-label':label+' '+shortDate(date)},
     h('div',{}, label), h('div',{class:'d-date'}, shortDate(date)));
   b.addEventListener('click', onClick); b.dataset.date=date;
   return b;
@@ -2306,8 +2332,10 @@ function renderDetailDays(){
   }
 }
 function timeButton(slot, taken, selected, onClick){
-  const b=h('button',{class:'tbtn'+(taken?' taken':'')+(selected&&!taken?' sel':'')}, slot.label);
-  if (taken){ b.setAttribute('disabled',''); b.append(h('span',{class:'t-tag'},'محجوز')); }
+  const stateLbl = taken ? t('stTaken') : (selected ? t('stSelected') : t('stAvailable'));
+  const b=h('button',{class:'tbtn'+(taken?' taken':'')+(selected&&!taken?' sel':''), type:'button',
+    'aria-pressed': (selected&&!taken)?'true':'false', 'aria-label': slot.label+' — '+stateLbl}, slot.label);
+  if (taken){ b.setAttribute('disabled',''); b.append(h('span',{class:'t-tag'}, t('bookedTag'))); }
   else b.addEventListener('click', onClick);
   return b;
 }
@@ -2522,7 +2550,7 @@ function renderOwnerDashboard(){
 /* ===================== OWNER TABS ===================== */
 function showOwnerTab(name){
   State.ownerTab=name;
-  $$('#ownerTabs .otab').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+  $$('#ownerTabs .otab').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
   $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
   if(name==='calendar') renderOwnerCalendar();
   if(name==='today') renderOwnerToday();
@@ -3064,6 +3092,17 @@ document.addEventListener('keydown', (e)=>{
 });
 // تقييم النجوم عبر الكيبورد/الراديو (Radio Group)
 document.addEventListener('change', (e)=>{ const sr=e.target.closest('.star-input'); if(sr) setRating(Number(sr.value)); });
+// أسهم لوحة المفاتيح في تبويبات المالك (←/→/Home/End) — يحترم اتجاه الصفحة
+$('#ownerTabs')?.addEventListener('keydown', (e)=>{
+  if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key)) return;
+  e.preventDefault();
+  const tabs=$$('#ownerTabs .otab'); const cur=tabs.findIndex(t=>t.dataset.otab===State.ownerTab); if(cur<0) return;
+  const rtl=document.documentElement.dir==='rtl';
+  let i=cur;
+  if(e.key==='Home') i=0; else if(e.key==='End') i=tabs.length-1;
+  else { const fwd=(e.key==='ArrowLeft')===rtl ? 1 : -1; i=(cur+fwd+tabs.length)%tabs.length; }
+  const tab=tabs[i]; if(tab){ showOwnerTab(tab.dataset.otab); tab.focus(); }
+});
 // بحث مع تأخير (Debounce 300ms)
 $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
 // الفلاتر في لوحة المالك
