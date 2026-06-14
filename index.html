@@ -2529,22 +2529,42 @@ async function playerCancelBooking(btn, rowNumber, label){
 async function loadOwnerDashboard(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
   const el=$('#ownerBookings'); clear(el); el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--muted)'}}, 'جاري تحميل الحجوزات...'));
+  // 1) جلب البيانات — فشل الشبكة فقط يُظهر "تعذّر جلب البيانات"
+  let res;
   try{
-    const res = await API.get('getOwnerData', { owner_token: Session.owner() }, 'ownerData');
-    if (!res.success){ toast(apiMsg(res.message)||'انتهت جلستك، ادخل من جديد','error'); doLogout(); return; }
-    State.ownerData = res; renderOwnerDashboard();
-  }catch(e){ if(isAbort(e)) return; clear(el); el.append(emptyState({icon:'📡',title:t('fetchFail'),sub:t('fetchFailSub')})); }
+    res = await API.get('getOwnerData', { owner_token: Session.owner() }, 'ownerData');
+  }catch(e){
+    if(isAbort(e)) return;
+    clear(el); el.append(emptyState({icon:'📡',title:t('fetchFail'),sub:t('fetchFailSub')}));
+    return;
+  }
+  if (!res || !res.success){ toast(apiMsg(res&&res.message)||'انتهت جلستك، ادخل من جديد','error'); doLogout(); return; }
+  // 2) الرسم — خطأ هنا لا يُلبَّس لباس فشل الشبكة، بل يُظهر الرسالة الحقيقية
+  State.ownerData = res;
+  try{
+    renderOwnerDashboard();
+  }catch(err){
+    console.error('renderOwnerDashboard failed:', err);
+    clear(el); el.append(emptyState({icon:'⚠️', title:'صار خطأ بعرض اللوحة', sub:String((err&&err.message)||err)}));
+  }
 }
+/* يشغّل خطوة رسم معزولة: خطؤها يُسجَّل ولا يُسقط بقية اللوحة */
+function safeRender(label, fn){ try{ fn(); }catch(err){ console.error('owner render ['+label+'] failed:', err); } }
 function renderOwnerDashboard(){
   const d=State.ownerData; if(!d) return;
   setText('ownerPlaceTitle', d.place ? d.place.place_name : t('unknownPlace'));
   const bookings = d.bookings || [];
-  renderOwnerStats(bookings); renderOwnerEcon(bookings);
-  const sel=$('#ownerFieldFilter'); const old=sel.value||'all';
-  clear(sel); sel.append(h('option',{value:'all'},t('allFields')));
-  (d.fields||[]).forEach(f=> sel.append(h('option',{value:f.field_id}, f.field_name)));
-  sel.value=old;
-  renderOwnerBookings(); renderOwnerFields(); renderOwnerToday();
+  safeRender('stats', ()=>renderOwnerStats(bookings));
+  safeRender('econ', ()=>renderOwnerEcon(bookings));
+  safeRender('fieldFilter', ()=>{
+    const sel=$('#ownerFieldFilter'); const old=sel.value||'all';
+    clear(sel); sel.append(h('option',{value:'all'},t('allFields')));
+    (d.fields||[]).forEach(f=> sel.append(h('option',{value:f.field_id}, f.field_name)));
+    sel.value=old;
+  });
+  safeRender('bookings', renderOwnerBookings);
+  safeRender('fields', renderOwnerFields);
+  safeRender('today', renderOwnerToday);
   showOwnerTab(State.ownerTab || 'today');
 }
 /* ===================== OWNER TABS ===================== */
