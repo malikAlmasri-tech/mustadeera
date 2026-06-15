@@ -814,6 +814,30 @@ html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:'Inter',san
 .card-spaced{margin-bottom:var(--s-4)}
 .danger-outline-btn{color:#dc2626;border-color:rgba(220,38,38,.25)}
 .readonly-field{background:var(--surface-muted);color:var(--muted)}
+/* --- تأثير لمعان الزجاج عند الـ Hover --- */
+.place-card, .card, .scard, .subfield-card, .stat-card, .econ-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.place-card::before, .card::before, .scard::before, .subfield-card::before, .stat-card::before, .econ-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.6s ease-out;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.place-card:hover::before, .card:hover::before, .scard:hover::before, .subfield-card:hover::before, .stat-card:hover::before, .econ-item:hover::before {
+  left: 200%;
+  transition: left 0.8s ease-in-out;
+}
 
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
@@ -2583,7 +2607,12 @@ function renderPlaces(){
       actionLabel: hasAny?t('clearFiltersBtn'):null, action: hasAny?()=>{ resetAllFilters(); renderRegionTabs(); renderPlaces(); }:null }));
     return;
   }
-  list.forEach((p,i) => el.append(placeCard(p, i===0)));   // أول بطاقة eager (LCP)
+  list.forEach((p, i) => {
+    const card = placeCard(p, i === 0);
+    // إضافة تأخير الحركة بناءً على الترتيب
+    card.style.animationDelay = `${i * 0.05}s`; 
+    el.append(card);
+  });
 }
 
 /* ===================== FILTERS SHEET (Bottom Sheet) ===================== */
@@ -2746,7 +2775,12 @@ function renderDetailTimes(){
     const group=slots.filter(s=>p.test(Number(s.hour)));
     if(!group.length) return;
     el.append(h('div',{class:'time-period'}, t(p.key)));
-    group.forEach(s=> el.append(timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); })));
+    group.forEach((s, i) => {
+      const btn = timeButton(s, taken.includes(s.hour), State.detail.hour === s.hour, () => { State.detail.hour = s.hour; renderDetailTimes(); });
+      // إضافة تأخير الحركة بناءً على الترتيب
+      btn.style.animationDelay = `${i * 0.04}s`; 
+      el.append(btn);
+    });
   });
   if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, t('noTimesDay')));
   renderDetailSticky();
