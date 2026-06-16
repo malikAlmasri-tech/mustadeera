@@ -137,36 +137,36 @@ body{display:flex;justify-content:center;background:var(--bg-app) fixed;backgrou
 /* بوكيه هندسي منجرف (مثلثات نُحاس + سداسيات + هالات نعناع + رخام) — شفافية منخفضة
    الأشكال تُعرَّف مرة واحدة، والثيمان يتحكّمان بشدّة الظهور عبر متغيّرات محلية فقط.
    الأقوى في الداكن · الأنعم في النهاري (رخام عاجي). لا يُحرَّك blur ولا box-shadow. */
-#app::before{content:'';position:fixed;inset:-25%;z-index:-3;pointer-events:none;will-change:transform;
+#app::before{content:'';position:fixed;inset:-25%;z-index:-3;pointer-events:none;will-change:transform,opacity;
   /* قيم النهار (رخام عاجي ناعم) — يعيد body.dark تعريفها لرفع الظهور */
-  --geo-c1:rgba(184,142,112,.05);   /* بوكيه نُحاسي */
-  --geo-c2:rgba(184,142,112,.045);  /* مثلثات نُحاسية */
-  --geo-m1:rgba(11,132,87,.035);    /* هالة نعناع */
-  --geo-m2:rgba(11,132,87,.03);     /* سداسيات نعناع */
-  --geo-marble:rgba(255,255,255,.05);/* إضاءة رخامية عضوية */
+  --geo-c1:rgba(184,142,112,.08);   /* بوكيه نُحاسي */
+  --geo-c2:rgba(184,142,112,.09);   /* مثلثات نُحاسية */
+  --geo-hex:rgba(184,142,112,.07);  /* انطباع سداسي نُحاسي */
+  --geo-m1:rgba(11,132,87,.05);     /* هالة نعناع */
+  --geo-marble:rgba(255,255,255,.07);/* إضاءة رخامية عضوية */
   background:
-    /* بوكيه ناعم (نُحاس + نعناع) */
-    radial-gradient(20% 24% at 18% 22%,var(--geo-c1),transparent 60%),
-    radial-gradient(16% 18% at 82% 28%,var(--geo-m1),transparent 60%),
-    radial-gradient(24% 28% at 72% 80%,var(--geo-c1),transparent 62%),
-    radial-gradient(12% 14% at 40% 66%,var(--geo-m1),transparent 60%),
-    /* مثلثات نُحاسية صامتة (أسافين conic ناعمة) */
-    conic-gradient(from 200deg at 26% 68%,var(--geo-c2) 0deg,transparent 52deg),
-    conic-gradient(from 24deg at 80% 56%,var(--geo-c2) 0deg,transparent 46deg),
-    /* تلميح سداسي نعناعي */
-    conic-gradient(from 90deg at 58% 24%,var(--geo-m2) 0deg 60deg,transparent 60deg 120deg,var(--geo-m2) 120deg 180deg,transparent 180deg 240deg,var(--geo-m2) 240deg 300deg,transparent 300deg),
+    /* بوكيه دائري ناعم لكنه واضح الحواف (نُحاس) — شكلان كبيران */
+    radial-gradient(circle at 17% 23%,var(--geo-c1) 0,var(--geo-c1) 15%,transparent 44%),
+    radial-gradient(circle at 76% 79%,var(--geo-c1) 0,var(--geo-c1) 13%,transparent 42%),
+    /* هالة نعناع جوية مقيّدة */
+    radial-gradient(34% 30% at 84% 25%,var(--geo-m1),transparent 64%),
+    /* مثلثان نُحاسيان (أسافين conic بحافة حادّة قبل الـblur) */
+    conic-gradient(from 196deg at 23% 67%,var(--geo-c2) 0deg,var(--geo-c2) 32deg,transparent 33deg),
+    conic-gradient(from 28deg at 82% 57%,var(--geo-c2) 0deg,var(--geo-c2) 27deg,transparent 28deg),
+    /* انطباع سداسي كبير (وردة 6 قطاعات نُحاسية) */
+    conic-gradient(from 90deg at 57% 20%,var(--geo-hex) 0deg 36deg,transparent 36deg 60deg,var(--geo-hex) 60deg 96deg,transparent 96deg 120deg,var(--geo-hex) 120deg 156deg,transparent 156deg 180deg,var(--geo-hex) 180deg 216deg,transparent 216deg 240deg,var(--geo-hex) 240deg 276deg,transparent 276deg 300deg,var(--geo-hex) 300deg 336deg,transparent 336deg),
     /* إضاءة رخامية عضوية واسعة */
-    radial-gradient(60% 50% at 50% 8%,var(--geo-marble),transparent 70%);
-  filter:blur(60px) saturate(115%);
-  animation:luxeDrift 24s var(--ease-out) infinite alternate}
+    radial-gradient(62% 52% at 50% 6%,var(--geo-marble),transparent 72%);
+  filter:blur(36px) saturate(122%);
+  animation:luxeDrift 26s var(--ease-out) infinite alternate}
 /* الداكن: ظهور أقوى للهندسة (تعديل المتغيّرات فقط — لا تكرار للخلفية) */
 body.dark #app::before{
-  --geo-c1:rgba(184,142,112,.07);
-  --geo-c2:rgba(184,142,112,.06);
-  --geo-m1:rgba(79,255,176,.055);
-  --geo-m2:rgba(79,255,176,.05);
-  --geo-marble:rgba(255,255,255,.03)}
-@keyframes luxeDrift{0%{transform:translate3d(-1.5%,1%,0) scale(1)}100%{transform:translate3d(2%,-2%,0) scale(1.08)}}
+  --geo-c1:rgba(184,142,112,.12);
+  --geo-c2:rgba(184,142,112,.13);
+  --geo-hex:rgba(184,142,112,.1);
+  --geo-m1:rgba(79,255,176,.075);
+  --geo-marble:rgba(255,255,255,.045)}
+@keyframes luxeDrift{0%{transform:translate3d(-1.5%,1%,0) scale(1)}100%{transform:translate3d(2%,-2%,0) scale(1.07)}}
 /* شبكة نُحاسية خافتة جداً وثابتة (لمسة أوبسيديان) */
 #app::after{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.5;
   background-image:linear-gradient(rgba(184,142,112,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,142,112,.03) 1px,transparent 1px);
@@ -174,7 +174,7 @@ body.dark #app::before{
   -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000,transparent 75%);
   mask-image:radial-gradient(120% 80% at 50% 0%,#000,transparent 75%)}
 @media(max-width:480px){
-  #app::before{filter:blur(48px) saturate(115%)}
+  #app::before{filter:blur(28px) saturate(122%)}
 }
 
 h1,h2,h3{font-family:'Cairo','Tajawal',sans-serif;font-weight:800;letter-spacing:-.02em}
@@ -334,7 +334,9 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
    LANDING PAGE (صفحة الهبوط الاحترافية) — navbar + hero + sections
    هوية خضراء/ذهبية بأسلوب SaaS حديث (فاتح/داكن)
    ============================================================= */
-#page-welcome{padding-bottom:0}
+#page-welcome{padding-bottom:0;position:relative;isolation:isolate}
+/* ملاحظة: قصّ الأشكال يتم داخل .lp-floating-shapes (overflow:hidden) لتفادي كسر
+   ثبات الـnav اللاصق لو وُضع overflow:hidden على #page-welcome نفسه. */
 
 /* ---------- NAVBAR ---------- */
 .lp-nav{position:sticky;top:0;z-index:90;background:var(--glass);backdrop-filter:blur(10px) saturate(150%);border-bottom:1px solid var(--line)}
@@ -490,6 +492,87 @@ body.dark .lp-feat-icon{background:rgba(184,142,112,.12);border-color:rgba(184,1
 @keyframes scrollFadeUp{from{opacity:0;transform:translate3d(0,24px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 html.reveal-ready .scroll-reveal{opacity:0;transform:translate3d(0,24px,0)}
 html.reveal-ready .scroll-reveal.visible{animation:scrollFadeUp .8s var(--ease-out) forwards;animation-delay:var(--reveal-delay,0ms)}
+
+/* =============================================================
+   LANDING FLOATING SHAPES — هندسة عائمة هادئة (صفحة الترحيب فقط)
+   طبقة زخرفية واحدة خلف المحتوى · pointer-events:none · CSS فقط.
+   الألوان: ~70% نُحاس · ~20% بلاتيني/رخام · ~10% نعناع.
+   ============================================================= */
+.lp-floating-shapes{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.lp-float-shape{position:absolute;pointer-events:none;opacity:.55;
+  /* توكنات افتراضية تُعاد لكل شكل */
+  --fs-ink:var(--copper-primary);
+  animation:floatShapeA 24s ease-in-out infinite}
+/* أشكال مملوءة بتدرّج داخلي خافت (سداسي/مثلث/حقل) */
+.fs-fill{background:
+    radial-gradient(120% 120% at 30% 20%,color-mix(in srgb,var(--fs-ink) 26%,transparent),transparent 70%);
+  border:1px solid color-mix(in srgb,var(--fs-ink) 32%,transparent)}
+/* سداسي */
+.fs-hex{clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)}
+/* مثلث */
+.fs-tri{clip-path:polygon(50% 4%,96% 96%,4% 96%)}
+/* دائرة ناعمة (هالة) */
+.fs-circle{border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--fs-ink) 22%,transparent),transparent 68%);
+  border:1px solid color-mix(in srgb,var(--fs-ink) 22%,transparent)}
+/* حلقة مدارية كاملة */
+.fs-ring{border-radius:50%;background:transparent;border:2px solid color-mix(in srgb,var(--fs-ink) 30%,transparent)}
+/* حلقة مدارية جزئية (قوس) */
+.fs-orbit{border-radius:50%;background:transparent;border:2px solid transparent;
+  border-top-color:color-mix(in srgb,var(--fs-ink) 40%,transparent);
+  border-inline-end-color:color-mix(in srgb,var(--fs-ink) 30%,transparent)}
+/* خط مستوحى من ملعب كرة قدم (مستطيل + خط منتصف + دائرة منتصف) */
+.fs-field{border:1.5px solid color-mix(in srgb,var(--fs-ink) 30%,transparent);border-radius:14px;background:transparent}
+.fs-field::before{content:'';position:absolute;inset-inline-start:50%;top:8%;bottom:8%;width:1.5px;background:color-mix(in srgb,var(--fs-ink) 26%,transparent);transform:translateX(-50%)}
+.fs-field::after{content:'';position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;border:1.5px solid color-mix(in srgb,var(--fs-ink) 26%,transparent);border-radius:50%;transform:translate(-50%,-50%)}
+
+/* ألوان الأشكال (نُحاس/بلاتيني/نعناع) */
+.fs-copper{--fs-ink:var(--copper-primary)}
+.fs-platinum{--fs-ink:#cdc7be}
+.fs-mint{--fs-ink:var(--mint-electric)}
+body.dark .fs-platinum{--fs-ink:#9aa0a6}
+.fs-mint{opacity:.42}
+body.dark .fs-mint{opacity:.5}
+
+/* ---- وضع كل شكل (بعيد عن منطقة القراءة المركزية) ---- */
+/* 1) سداسي نُحاسي كبير مقصوص أعلى اليسار */
+.fs-1{width:240px;height:240px;top:-56px;inset-inline-start:-60px;filter:blur(2px);opacity:.5;will-change:transform;animation-duration:27s;animation-delay:-6s}
+/* 2) دائرة نعناع ناعمة أعلى اليمين */
+.fs-2{width:130px;height:130px;top:74px;inset-inline-end:7%;filter:blur(3px);animation-name:floatShapeB;animation-duration:21s;animation-delay:-11s;will-change:transform}
+/* 3) مثلث نُحاسي جانبي (بعيد عن الـCTA) */
+.fs-3{width:108px;height:108px;top:520px;inset-inline-start:6%;filter:blur(1.5px);opacity:.5;animation-name:floatShapeC;animation-duration:16s;animation-delay:-4s}
+/* 4) حلقة مدارية كبيرة خلف منطقة الإحصائيات */
+.fs-4{width:210px;height:210px;top:380px;inset-inline-end:-44px;filter:blur(2px);opacity:.4;animation-duration:29s;animation-delay:-14s}
+/* 5) سداسي بلاتيني صغير قرب المميزات */
+.fs-5{width:74px;height:74px;top:1020px;inset-inline-end:12%;filter:blur(1px);opacity:.45;animation-name:floatShapeC;animation-duration:18s;animation-delay:-9s}
+/* 6) قوس مداري قرب «كيف يعمل» */
+.fs-6{width:150px;height:150px;top:1560px;inset-inline-start:4%;filter:blur(2px);opacity:.42;animation-name:floatShapeB;animation-duration:24s;animation-delay:-3s}
+/* 7) خط ملعب مجرّد قرب قسم المُلّاك/الدعوة */
+.fs-7{width:160px;height:104px;top:2300px;inset-inline-end:8%;filter:blur(1.5px);opacity:.4;animation-name:floatShapeA;animation-duration:26s;animation-delay:-16s}
+
+/* ---- أنماط الحركة (هادئة وغير متزامنة · transform/opacity فقط) ---- */
+@keyframes floatShapeA{
+  0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  50%{transform:translate3d(16px,-22px,0) rotate(8deg) scale(1.03)}
+  100%{transform:translate3d(-12px,14px,0) rotate(-5deg) scale(.98)}}
+@keyframes floatShapeB{
+  0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  50%{transform:translate3d(-20px,18px,0) rotate(-10deg) scale(1.04)}
+  100%{transform:translate3d(14px,-16px,0) rotate(6deg) scale(.97)}}
+@keyframes floatShapeC{
+  0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  50%{transform:translate3d(12px,20px,0) rotate(14deg) scale(1.02)}
+  100%{transform:translate3d(-10px,-12px,0) rotate(-8deg) scale(.99)}}
+
+/* ---- استجابة: أقل أشكالاً وحركة على الشاشات الصغيرة ---- */
+@media(max-width:480px){
+  .fs-4,.fs-6,.fs-7{display:none}           /* أبقِ 4 أشكال أساسية فقط */
+  .fs-1{width:170px;height:170px;top:-40px;inset-inline-start:-46px}
+  .fs-2{width:96px;height:96px}
+  .fs-3{width:84px;height:84px}
+  .fs-5{width:60px;height:60px}
+  .lp-float-shape{filter:blur(2px)}
+}
 
 /* ---------- BOTTOM NAV ---------- */
 .bnav{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:9px 12px max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
@@ -987,6 +1070,8 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
   .sk,body.dark .sk{animation:none!important}
   /* لا تترك أيّ محتوى كشف مخفيًا — أظهره فورًا بلا إزاحة */
   html.reveal-ready .scroll-reveal,html.reveal-ready .scroll-reveal.visible{opacity:1!important;transform:none!important;animation:none!important}
+  /* الأشكال العائمة: تبقى ظاهرة لكن ساكنة */
+  .lp-float-shape{animation:none!important;transform:none!important}
 }
 
 </style>
@@ -999,6 +1084,17 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
 
   <!-- ============ WELCOME / LANDING ============ -->
   <section class="page active" id="page-welcome">
+
+    <!-- ---------- FLOATING GEOMETRY (زخرفة · صفحة الترحيب فقط · خلف المحتوى) ---------- -->
+    <div class="lp-floating-shapes" aria-hidden="true">
+      <span class="lp-float-shape fs-fill fs-hex fs-copper fs-1"></span>
+      <span class="lp-float-shape fs-circle fs-mint fs-2"></span>
+      <span class="lp-float-shape fs-fill fs-tri fs-copper fs-3"></span>
+      <span class="lp-float-shape fs-ring fs-copper fs-4"></span>
+      <span class="lp-float-shape fs-fill fs-hex fs-platinum fs-5"></span>
+      <span class="lp-float-shape fs-orbit fs-copper fs-6"></span>
+      <span class="lp-float-shape fs-field fs-platinum fs-7"></span>
+    </div>
 
     <!-- ---------- NAVBAR ---------- -->
     <header class="lp-nav">
