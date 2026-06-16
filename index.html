@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#04130b">
-<title>المستديرة - احجز ملعبك</title>
+<title data-i18n="docTitle">المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- التسلسل الهرمي: Cairo للعناوين، Tajawal للنصوص (عربي) · Inter (إنجليزي) -->
@@ -994,7 +994,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
 <body>
 <!-- منع وميض الثيم: يُطبّق الوضع قبل رسم الصفحة + يكتشف تفضيل النظام أول مرة -->
 <script>(function(){try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){document.body.classList.add('dark');}var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',v==='dark'?'#06110C':'#F5F8F5');}catch(e){}})();</script>
-<a href="#app" class="skip-link">تخطَّ إلى المحتوى الرئيسي</a>
+<a href="#app" class="skip-link" data-i18n="skipLink">تخطَّ إلى المحتوى الرئيسي</a>
 <div id="app" tabindex="-1">
 
   <!-- ============ WELCOME / LANDING ============ -->
@@ -1003,18 +1003,18 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
     <!-- ---------- NAVBAR ---------- -->
     <header class="lp-nav">
       <div class="lp-nav-inner">
-        <button class="lp-brand" data-action="browse" aria-label="المستديرة">
+        <button class="lp-brand" data-action="browse" data-i18n-aria="ariaBrand" aria-label="المستديرة">
           <span class="lp-brand-logo"><svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="3"/><circle cx="16" cy="16" r="4.5"/><path d="M16 7v18"/></svg></span>
           <span class="lp-brand-name">ال<span>مستديرة</span></span>
         </button>
-        <nav class="lp-links" aria-label="روابط الصفحة">
+        <nav class="lp-links" data-i18n-aria="ariaPageLinks" aria-label="روابط الصفحة">
           <a class="lp-link" href="#lp-features" data-i18n="nav_features">المميزات</a>
           <a class="lp-link" href="#lp-how" data-i18n="nav_how">كيف يعمل</a>
           <a class="lp-link" href="#lp-stats" data-i18n="nav_stats">إحصائيات</a>
         </nav>
         <div class="lp-nav-actions">
           <button class="lp-icon" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
-          <button class="lp-icon" data-action="toggleTheme" aria-label="تبديل الوضع">🌙</button>
+          <button class="lp-icon" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع">🌙</button>
           <button class="lp-login" data-go="playerLogin" data-i18n="login">تسجيل الدخول</button>
           <button class="lp-cta-sm" data-action="browse" data-i18n="startNow">ابدأ الآن</button>
         </div>
@@ -1166,7 +1166,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
             <div class="lp-footer-tag" data-i18n="brandTag">احجز ملعبك بثوانٍ</div>
           </div>
         </div>
-        <nav class="lp-footer-links" aria-label="روابط أسفل الصفحة">
+        <nav class="lp-footer-links" data-i18n-aria="ariaFooterLinks" aria-label="روابط أسفل الصفحة">
           <a class="lp-link" href="#lp-features" data-i18n="nav_features">المميزات</a>
           <a class="lp-link" href="#lp-how" data-i18n="nav_how">كيف يعمل</a>
           <button class="lp-link lp-link-btn" data-go="playerLogin" data-i18n="footerLogin">تسجيل الدخول</button>
@@ -1214,12 +1214,12 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
     <div class="pad">
       <div class="card">
         <label class="form-label" for="regName" data-i18n="name">الاسم</label>
-        <input class="finput" id="regName" type="text" placeholder="محمد أحمد" autocomplete="name" style="margin-bottom:13px">
+        <input class="finput" id="regName" type="text" placeholder="محمد أحمد" data-i18n-ph="phRegName" autocomplete="name" style="margin-bottom:13px">
         <label class="form-label" for="regPhone" data-i18n="phone">رقم الهاتف</label>
         <input class="finput" id="regPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
         <label class="form-label" for="regPass" data-i18n="password">كلمة السر</label>
         <div class="input-wrap" style="margin-bottom:18px">
-          <input class="finput has-affix" id="regPass" type="password" placeholder="4 خانات على الأقل" autocomplete="new-password">
+          <input class="finput has-affix" id="regPass" type="password" placeholder="4 خانات على الأقل" data-i18n-ph="phRegPass" autocomplete="new-password">
           <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
             <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
@@ -1261,7 +1261,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
   <section class="page" id="page-home">
     <header class="app-header home"><div class="header-grid"></div>
       <div class="home-bar">
-        <div class="home-brand" data-go="welcome" role="button" tabindex="0" aria-label="الصفحة الرئيسية">
+        <div class="home-brand" data-go="welcome" role="button" tabindex="0" data-i18n-aria="ariaHome" aria-label="الصفحة الرئيسية">
           <div class="brand-logo"><svg viewBox="0 0 32 32" class="brand-mark" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="3"/><circle cx="16" cy="16" r="4.5"/><path d="M16 7v18"/></svg></div>
           <div>
             <div class="brand-name">المستديرة</div>
@@ -1270,8 +1270,8 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
         </div>
         <div class="home-tools">
           <button class="icon-btn" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
-          <button class="icon-btn" data-action="toggleTheme" aria-label="تبديل الوضع">🌙</button>
-          <span class="pill">📍 عمّان</span>
+          <button class="icon-btn" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع">🌙</button>
+          <span class="pill">📍 <span data-i18n="cityAmman">عمّان</span></span>
         </div>
       </div>
       <div class="search-bar">
@@ -1295,7 +1295,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
   <!-- ============ DETAIL ============ -->
   <section class="page" id="page-detail">
     <div class="detail-hero" id="detailHero">
-      <button class="detail-back" data-go="home" aria-label="رجوع">←</button>
+      <button class="detail-back" data-go="home" data-i18n-aria="back" aria-label="رجوع">←</button>
       <span class="detail-emoji" id="detailEmoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg></span>
     </div>
     <div class="detail-thumbs" id="detailThumbs" hidden></div>
@@ -1319,15 +1319,15 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
           <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
         </a>
       </div>
-      <section class="detail-section" aria-label="الخدمات والمرافق">
+      <section class="detail-section" data-i18n-aria="servicesTitle" aria-label="الخدمات والمرافق">
         <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title" data-i18n="servicesTitle">الخدمات والمرافق</h2></div>
         <div id="detailAmenities"></div>
       </section>
-      <section class="detail-section" aria-label="اختيار الملعب">
+      <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
         <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
         <div class="subfields" id="subFields"></div>
       </section>
-      <section class="detail-section" aria-label="اختيار الموعد">
+      <section class="detail-section" data-i18n-aria="ariaChooseDate" aria-label="اختيار الموعد">
         <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title" data-i18n="chooseDay">اختر اليوم</h2></div>
         <div class="days-row" id="detailDays" style="margin-bottom:18px"></div>
         <div class="dsec-head"><span class="dsec-num">3</span><h2 class="dsec-title" data-i18n="chooseTime">اختر الوقت</h2></div>
@@ -1336,7 +1336,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <details class="disclosure">
         <summary>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg>
-          إحصائيات الملعب
+          <span data-i18n="placeStatsTitle">إحصائيات الملعب</span>
         </summary>
         <div id="placeStats" style="margin-top:12px"></div>
       </details>
@@ -1378,7 +1378,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <div class="card mb-card">
         <div class="section-title" data-i18n="editProfile">تعديل البيانات</div>
         <label class="form-label" for="accName" data-i18n="name">الاسم</label>
-        <input class="finput" id="accName" type="text" placeholder="اسم اللاعب" style="margin-bottom:13px">
+        <input class="finput" id="accName" type="text" placeholder="اسم اللاعب" data-i18n-ph="phAccName" style="margin-bottom:13px">
         <label class="form-label" for="accPhone" data-i18n="phone">رقم الهاتف</label>
         <input class="finput readonly-field" id="accPhone" type="tel" disabled style="margin-bottom:16px">
         <button class="sbtn" data-action="saveAccount" data-i18n="saveEdit">حفظ التعديل</button>
@@ -1390,7 +1390,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
             <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
             <span data-i18n="darkModeLbl">الوضع الليلي</span>
           </div>
-          <button class="settings-toggle" data-action="toggleTheme" aria-label="تبديل الوضع">🌙</button>
+          <button class="settings-toggle" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع">🌙</button>
         </div>
         <div class="settings-row">
           <div class="settings-info">
@@ -1416,12 +1416,12 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
         </div>
         <div style="display:flex;gap:8px">
           <button class="ghost-btn" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
-          <button class="ghost-btn" data-action="toggleTheme" aria-label="الوضع">🌙</button>
+          <button class="ghost-btn" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="الوضع">🌙</button>
           <button class="ghost-btn" data-action="logout" data-i18n="logout">خروج</button>
         </div>
       </div>
     </header>
-    <nav class="owner-tabs" id="ownerTabs" role="tablist" aria-label="أقسام لوحة المالك">
+    <nav class="owner-tabs" id="ownerTabs" role="tablist" data-i18n-aria="ariaOwnerTabs" aria-label="أقسام لوحة المالك">
       <button class="otab active" id="otab-today" data-otab="today" role="tab" aria-selected="true" aria-controls="ownerTab-today" data-i18n="otabToday">اليوم</button>
       <button class="otab" id="otab-bookings" data-otab="bookings" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-bookings" data-i18n="otabBookings">الحجوزات</button>
       <button class="otab" id="otab-calendar" data-otab="calendar" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-calendar" data-i18n="otabCalendar">التقويم</button>
@@ -1439,7 +1439,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
           <div class="stat-card"><div class="stat-value" id="otFree">0</div><div class="stat-label" data-i18n="otFreeLbl">أوقات فارغة اليوم</div><div class="stat-hint" data-i18n="hintBookable">قابلة للحجز</div></div>
         </div>
         <div class="card" style="margin-bottom:15px;border-color:rgba(19,164,90,.18)">
-          <div class="section-title"><span data-i18n="externalBooking">حجز خارجي</span><span class="mini-badge">من خارج الموقع</span></div>
+          <div class="section-title"><span data-i18n="externalBooking">حجز خارجي</span><span class="mini-badge" data-i18n="offSiteBadge">من خارج الموقع</span></div>
           <p class="t-sub" style="line-height:1.75;margin-bottom:12px" data-i18n="externalDesc">حجوزات واتساب أو اتصال — أضفها هون لإغلاق الوقت أمام اللاعبين.</p>
           <button class="sbtn" data-action="openManual" data-i18n="addManual">+ إضافة حجز خارجي</button>
         </div>
@@ -1451,12 +1451,12 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" aria-labelledby="otab-bookings" tabindex="0" hidden>
         <div class="card mb-card">
           <div class="section-title"><span data-i18n="filterBookings">فلترة الحجوزات</span></div>
-          <input class="finput" id="ownerSearch" type="search" placeholder="بحث بالاسم أو رقم الهاتف..." data-i18n-ph="searchNamePhone" aria-label="بحث في الحجوزات" style="margin-bottom:11px">
+          <input class="finput" id="ownerSearch" type="search" placeholder="بحث بالاسم أو رقم الهاتف..." data-i18n-ph="searchNamePhone" data-i18n-aria="ariaSearchBookings" aria-label="بحث في الحجوزات" style="margin-bottom:11px">
           <div class="grid-2">
-            <input class="finput" type="date" id="ownerDateFilter" aria-label="فلترة بالتاريخ">
-            <select class="finput" id="ownerFieldFilter" aria-label="فلترة بالملعب"><option value="all" data-i18n="allFields">كل الملاعب</option></select>
+            <input class="finput" type="date" id="ownerDateFilter" data-i18n-aria="ariaFilterDate" aria-label="فلترة بالتاريخ">
+            <select class="finput" id="ownerFieldFilter" data-i18n-aria="ariaFilterField" aria-label="فلترة بالملعب"><option value="all" data-i18n="allFields">كل الملاعب</option></select>
           </div>
-          <select class="finput" id="ownerStatusFilter" aria-label="فلترة بالحالة" style="margin-top:11px">
+          <select class="finput" id="ownerStatusFilter" data-i18n-aria="ariaFilterStatus" aria-label="فلترة بالحالة" style="margin-top:11px">
             <option value="all" data-i18n="allStatuses">كل الحالات</option>
             <option value="pending" data-i18n="optPending">بانتظار التأكيد</option>
             <option value="confirmed" data-i18n="optConfirmed">مؤكدة</option>
@@ -1473,9 +1473,9 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <!-- ===== تبويب: التقويم ===== -->
       <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" aria-labelledby="otab-calendar" tabindex="0" hidden>
         <div class="cal-head">
-          <button class="cal-nav" data-action="calPrev" aria-label="الشهر السابق">‹</button>
+          <button class="cal-nav" data-action="calPrev" data-i18n-aria="calPrevAria" aria-label="الشهر السابق">‹</button>
           <div class="cal-title" id="calTitle">—</div>
-          <button class="cal-nav" data-action="calNext" aria-label="الشهر التالي">›</button>
+          <button class="cal-nav" data-action="calNext" data-i18n-aria="calNextAria" aria-label="الشهر التالي">›</button>
         </div>
         <div class="cal-weekdays" id="calWeekdays"></div>
         <div class="cal-grid" id="calGrid"></div>
@@ -1534,7 +1534,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="bkTitle" data-i18n="reviewTitle">مراجعة الحجز</div>
       <!-- مؤشّر الخطوات: 1 و2 مكتملتان، 3 (التأكيد) نشطة -->
-      <ol class="bk-steps" id="bkSteps" aria-label="خطوات الحجز">
+      <ol class="bk-steps" id="bkSteps" data-i18n-aria="ariaBookingSteps" aria-label="خطوات الحجز">
         <li class="bk-step done" data-step="1"><span class="bk-step-dot">1</span><span class="bk-step-lbl" data-i18n="stepField">الملعب</span></li>
         <li class="bk-step done" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl" data-i18n="stepDate">الموعد</span></li>
         <li class="bk-step active" data-step="3" aria-current="step"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepConfirm">التأكيد</span></li>
@@ -1594,18 +1594,18 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <div class="modal-title" id="rvTitle" data-i18n="rateModalTitle">تقييم المكان</div>
       <div class="modal-sub" id="rvPlace"></div>
       <fieldset class="stars-fieldset" id="starsBox">
-        <legend class="sr-only">قيّم المكان من 1 إلى 5 نجوم</legend>
+        <legend class="sr-only" data-i18n="ariaRateLegend">قيّم المكان من 1 إلى 5 نجوم</legend>
         <div class="stars-row">
           <input class="star-input sr-only" type="radio" name="rvRating" id="rvStar1" value="1">
-          <label class="star" for="rvStar1" data-star="1" aria-label="نجمة واحدة">★</label>
+          <label class="star" for="rvStar1" data-star="1" data-i18n-aria="star1" aria-label="نجمة واحدة">★</label>
           <input class="star-input sr-only" type="radio" name="rvRating" id="rvStar2" value="2">
-          <label class="star" for="rvStar2" data-star="2" aria-label="نجمتان">★</label>
+          <label class="star" for="rvStar2" data-star="2" data-i18n-aria="star2" aria-label="نجمتان">★</label>
           <input class="star-input sr-only" type="radio" name="rvRating" id="rvStar3" value="3">
-          <label class="star" for="rvStar3" data-star="3" aria-label="3 نجوم">★</label>
+          <label class="star" for="rvStar3" data-star="3" data-i18n-aria="star3" aria-label="3 نجوم">★</label>
           <input class="star-input sr-only" type="radio" name="rvRating" id="rvStar4" value="4">
-          <label class="star" for="rvStar4" data-star="4" aria-label="4 نجوم">★</label>
+          <label class="star" for="rvStar4" data-star="4" data-i18n-aria="star4" aria-label="4 نجوم">★</label>
           <input class="star-input sr-only" type="radio" name="rvRating" id="rvStar5" value="5">
-          <label class="star" for="rvStar5" data-star="5" aria-label="5 نجوم">★</label>
+          <label class="star" for="rvStar5" data-star="5" data-i18n-aria="star5" aria-label="5 نجوم">★</label>
         </div>
       </fieldset>
       <input class="finput" id="rvName" placeholder="اسمك" data-i18n-ph="yourNamePh" style="margin-bottom:11px">
@@ -1629,7 +1629,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <label class="form-label" data-i18n="timeLbl">الوقت</label>
       <div class="times-grid cols-2" id="mTimes" style="margin-bottom:16px"></div>
       <div class="grid-2" style="margin-bottom:13px">
-        <div><label class="form-label" data-i18n="ownerNameLbl">اسم صاحب الحجز</label><input class="finput" id="mName" placeholder="أبو أحمد"></div>
+        <div><label class="form-label" data-i18n="ownerNameLbl">اسم صاحب الحجز</label><input class="finput" id="mName" placeholder="أبو أحمد" data-i18n-ph="phManualName"></div>
         <div><label class="form-label" data-i18n="phone">رقم الهاتف</label><input class="finput" id="mPhone" type="tel" placeholder="079xxxxxxx"></div>
       </div>
       <label class="form-label" data-i18n="priceLbl">السعر</label>
@@ -1646,7 +1646,7 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
       <div class="modal-title" id="fieldTitle" data-i18n="editFieldTitle">تعديل ملعب</div>
       <input type="hidden" id="fieldId">
       <label class="form-label" data-i18n="fieldNameLbl">اسم الملعب</label>
-      <input class="finput" id="fieldName" placeholder="ملعب 1" style="margin-bottom:13px">
+      <input class="finput" id="fieldName" placeholder="ملعب 1" data-i18n-ph="phFieldName" style="margin-bottom:13px">
       <div class="grid-2" style="margin-bottom:13px">
         <div><label class="form-label" data-i18n="sizeLbl">الحجم</label><input class="finput" id="fieldSize" placeholder="6×6"></div>
         <div><label class="form-label" data-i18n="priceLbl">السعر</label><input class="finput" id="fieldPrice" type="number" inputmode="numeric" placeholder="40"></div>
@@ -1755,17 +1755,20 @@ const CONFIG = {
   API_TIMEOUT: 14000,   // مهلة الطلبات (14ث) قبل الإلغاء التلقائي
 };
 
+/* الأوقات الافتراضية — بيانات محايدة لغوياً: hour (مطابقة الحجز/الخادم) + startHour/endHour
+   لتوليد التسمية حسب اللغة. الحقل label هو القيمة الكنسية المُرسلة للخادم (بروتوكول حجز،
+   يطابقه الباكند العربي) فيبقى ثابتاً؛ العرض الإنجليزي يُولَّد من الساعات عبر slotDisplay(). */
 const DEFAULT_SLOTS = [
-  {label:'8:00 - 10:00 ص',hour:8},{label:'10:00 - 12:00 م',hour:10},{label:'12:00 - 2:00 م',hour:12},
-  {label:'2:00 - 4:00 م',hour:14},{label:'4:00 - 6:00 م',hour:16},{label:'6:00 - 8:00 م',hour:18},
-  {label:'8:00 - 10:00 م',hour:20},{label:'10:00 - 12:00 م',hour:22}
+  {label:'8:00 - 10:00 ص',hour:8,startHour:8,endHour:10},{label:'10:00 - 12:00 م',hour:10,startHour:10,endHour:12},{label:'12:00 - 2:00 م',hour:12,startHour:12,endHour:14},
+  {label:'2:00 - 4:00 م',hour:14,startHour:14,endHour:16},{label:'4:00 - 6:00 م',hour:16,startHour:16,endHour:18},{label:'6:00 - 8:00 م',hour:18,startHour:18,endHour:20},
+  {label:'8:00 - 10:00 م',hour:20,startHour:20,endHour:22},{label:'10:00 - 12:00 م',hour:22,startHour:22,endHour:24}
 ];
 
-/* خريطة المرافق (أيقونة SVG + تسمية) — مصدر واحد للبطاقة والتفاصيل والفلاتر.
-   icon = اسم أيقونة في ICON (تُحلّ وقت العرض، لا مراجع TDZ). "مواقف" بدل "مصفات". */
+/* خريطة المرافق (أيقونة SVG + مفتاح ترجمة) — مصدر واحد للبطاقة والتفاصيل والفلاتر.
+   icon = اسم أيقونة في ICON. كل التسميات الظاهرة تأتي من I18N عبر labelKey. */
 const AMENITY = {
-  water:{icon:'drop', label:'مياه', en:'Water'}, parking:{icon:'parking', label:'مواقف', en:'Parking'}, ball:{icon:'ball', label:'كرة', en:'Ball'},
-  vests:{icon:'vest', label:'بلوزات', en:'Vests'}, bathrooms:{icon:'bath', label:'حمامات', en:'Restrooms'}
+  water:{icon:'drop', labelKey:'amenity_water'}, parking:{icon:'parking', labelKey:'amenity_parking'}, ball:{icon:'ball', labelKey:'amenity_ball'},
+  vests:{icon:'vest', labelKey:'amenity_vests'}, bathrooms:{icon:'bath', labelKey:'amenity_bathrooms'}
 };
 
 /* ===================== I18N (عربي / إنجليزي) ===================== */
@@ -1868,6 +1871,28 @@ const I18N = {
     review3:'الواجهة واضحة، وبعرف تفاصيل الملعب وسعره قبل ما أختار.', review3by:'لاعب',
     ownersEyebrow:'لأصحاب الملاعب', ownersTitle:'أدِر ملاعبك باحتراف', ownersSub:'لوحة تحكم متكاملة لاستقبال الحجوزات وتنظيمها ومتابعة أداء ملاعبك.',
     ownersB1:'كل حجوزاتك في لوحة واحدة', ownersB2:'تأكيد أو رفض بضغطة مع إشعار واتساب', ownersB3:'تقارير إيراد وإشغال تساعدك بالقرار', ownerCtaBtn:'دخول المالك',
+    // ---- دفعة إكمال التوطين (نصوص ديناميكية + قوالب + وصولية) ----
+    bkFetchFail:'تعذّر جلب الحجوزات', tryAgain:'حاول مرة أخرى.', noBookingsToShow:'لا توجد حجوزات لعرضها حالياً.',
+    playerCancelTitle:'إلغاء الحجز', playerCancelHint:'{label} — اكتب سبب الإلغاء (اختياري)', confirmCancelBtn:'تأكيد الإلغاء', playerCancelledDefault:'ألغى اللاعب الحجز',
+    loadingBookings:'جاري تحميل الحجوزات...', sessionExpired:'انتهت جلستك، ادخل من جديد', dashRenderErr:'صار خطأ بعرض اللوحة',
+    econMore:'كلما زادت البيانات، بتصير القرارات أدق.', econLow:'الإشغال أقل من 40%: الأفضل التركيز على التسويق والعروض.', econGood:'الإشغال بين 60% و80%: الوضع جيد، حافظ على السعر وراقب أوقات الذروة.', econHigh:'الإشغال أعلى من 85%: في فرصة ترفع السعر خصوصاً بأوقات الطلب العالي.',
+    srcPrefix:'مصدر: ', cancelReasonPrefix:'سبب الإلغاء/الرفض: ',
+    ownerActiveUpcoming:'الحجوزات الحالية والقادمة', noActiveUpcoming:'لا توجد حجوزات حالية أو قادمة', ownerFinished:'الحجوزات المنتهية',
+    completeSelection:'اكمل اختيار الموعد أولاً.', loginToSeeBookings:'سجّل دخولك عشان تشوف حجوزاتك', avatarFallback:'م',
+    amenFree:'مجانية', amenPaid:'برسوم', amenNotAvail:'غير متوفرة',
+    kwFull:'كل اليوم', kwMorning:'صباحي', kwEvening:'مسائي',
+    amenity_water:'مياه', amenity_parking:'مواقف', amenity_ball:'كرة', amenity_vests:'بلوزات', amenity_bathrooms:'حمامات',
+    waRejectedDefault:'نعتذر، هذا الوقت غير متاح حالياً.', waCancelledDefault:'تم إلغاء الحجز من إدارة الملعب.',
+    waConfirmed:'مرحباً {name} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: {place}\n🥅 الملعب: {field}\n📅 التاريخ: {date}\n⏰ الوقت: {time}\n📐 الحجم: {size}\n💰 السعر: {price}\n\nبانتظارك!',
+    waRejected:'مرحباً {name} ⚽\n\nتم رفض طلب الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
+    waCancelled:'مرحباً {name} ⚽\n\nتم إلغاء الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
+    docTitle:'المستديرة - احجز ملعبك', ariaBrand:'المستديرة', ariaPageLinks:'روابط الصفحة', ariaFooterLinks:'روابط أسفل الصفحة', ariaToggleTheme:'تبديل الوضع', ariaHome:'الصفحة الرئيسية',
+    ariaChooseDate:'اختيار الموعد', ariaOwnerTabs:'أقسام لوحة المالك', ariaSearchBookings:'بحث في الحجوزات', ariaFilterDate:'فلترة بالتاريخ', ariaFilterField:'فلترة بالملعب', ariaFilterStatus:'فلترة بالحالة',
+    calPrevAria:'الشهر السابق', calNextAria:'الشهر التالي', ariaBookingSteps:'خطوات الحجز', ariaRateLegend:'قيّم المكان من 1 إلى 5 نجوم',
+    star1:'نجمة واحدة', star2:'نجمتان', star3:'3 نجوم', star4:'4 نجوم', star5:'5 نجوم',
+    phRegName:'محمد أحمد', phRegPass:'4 خانات على الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
+    placeStatsTitle:'إحصائيات الملعب',
+    skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -1967,6 +1992,28 @@ const I18N = {
     review3:'The interface is clear — I see the field details and price before I choose.', review3by:'Player',
     ownersEyebrow:'For field owners', ownersTitle:'Manage your fields professionally', ownersSub:'A complete dashboard to receive bookings, organize them, and track your fields’ performance.',
     ownersB1:'All your bookings in one board', ownersB2:'Confirm or reject in a tap with a WhatsApp notice', ownersB3:'Revenue & occupancy reports to guide decisions', ownerCtaBtn:'Owner login',
+    // ---- Localization completion batch (dynamic text + templates + a11y) ----
+    bkFetchFail:'Couldn’t fetch the bookings', tryAgain:'Please try again.', noBookingsToShow:'No bookings to show right now.',
+    playerCancelTitle:'Cancel booking', playerCancelHint:'{label} — write the cancellation reason (optional)', confirmCancelBtn:'Confirm cancellation', playerCancelledDefault:'The player cancelled the booking',
+    loadingBookings:'Loading bookings...', sessionExpired:'Your session expired, please log in again', dashRenderErr:'An error occurred displaying the dashboard',
+    econMore:'The more data, the more accurate the decisions.', econLow:'Occupancy below 40%: best to focus on marketing and offers.', econGood:'Occupancy between 60% and 80%: looking good — keep the price and watch peak times.', econHigh:'Occupancy above 85%: there’s room to raise the price, especially at peak demand.',
+    srcPrefix:'Source: ', cancelReasonPrefix:'Cancellation/Rejection reason: ',
+    ownerActiveUpcoming:'Current & upcoming bookings', noActiveUpcoming:'No current or upcoming bookings', ownerFinished:'Past bookings',
+    completeSelection:'Complete your selection first.', loginToSeeBookings:'Log in to see your bookings', avatarFallback:'M',
+    amenFree:'Free', amenPaid:'Paid', amenNotAvail:'Not available',
+    kwFull:'All day', kwMorning:'Morning', kwEvening:'Evening',
+    amenity_water:'Water', amenity_parking:'Parking', amenity_ball:'Ball', amenity_vests:'Vests', amenity_bathrooms:'Restrooms',
+    waRejectedDefault:'Sorry, this time slot is currently unavailable.', waCancelledDefault:'The booking was cancelled by the venue management.',
+    waConfirmed:'Hi {name} ⚽\n\nYour booking is confirmed ✅\n\n🏟️ Venue: {place}\n🥅 Field: {field}\n📅 Date: {date}\n⏰ Time: {time}\n📐 Size: {size}\n💰 Price: {price}\n\nSee you there!',
+    waRejected:'Hi {name} ⚽\n\nYour booking request was declined ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nReason:\n{reason}',
+    waCancelled:'Hi {name} ⚽\n\nYour booking was cancelled ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nReason:\n{reason}',
+    docTitle:'Al-Mustadira - Book your field', ariaBrand:'Al-Mustadira', ariaPageLinks:'Page links', ariaFooterLinks:'Footer links', ariaToggleTheme:'Toggle theme', ariaHome:'Home',
+    ariaChooseDate:'Choose the time', ariaOwnerTabs:'Owner dashboard sections', ariaSearchBookings:'Search bookings', ariaFilterDate:'Filter by date', ariaFilterField:'Filter by field', ariaFilterStatus:'Filter by status',
+    calPrevAria:'Previous month', calNextAria:'Next month', ariaBookingSteps:'Booking steps', ariaRateLegend:'Rate this place from 1 to 5 stars',
+    star1:'One star', star2:'Two stars', star3:'3 stars', star4:'4 stars', star5:'5 stars',
+    phRegName:'John Smith', phRegPass:'At least 4 characters', phAccName:'Player name', phManualName:'Booker name', phFieldName:'Field 1',
+    placeStatsTitle:'Field stats',
+    skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
   }
 };
 function t(key, params){
@@ -1974,10 +2021,30 @@ function t(key, params){
   let s = (I18N[lang] && I18N[lang][key]);
   if(s==null) s = (I18N.ar && I18N.ar[key]);
   if(s==null){ if(location.hostname==='localhost') console.warn('[i18n] missing key:', key); return key; }
-  if(params) for(const k in params) s = String(s).replace(new RegExp('\\{'+k+'\\}','g'), params[k]);
+  // استبدال {var} آمن: نص فقط (لا HTML/لا eval)، يحفظ الصفر، ويبقي المتغيّر الناقص كما هو.
+  if(params) s = String(s).replace(/\{(\w+)\}/g, (m,k)=> (params[k]!==undefined && params[k]!==null) ? String(params[k]) : m);
   return s;
 }
-const amenityLabel = (a) => State.lang==='en' ? (a.en || a.label) : a.label;
+/* تسمية المرفق من القاموس (labelKey) مع تراجع آمن لمفتاح المرفق نفسه */
+const amenityLabel = (a) => a && a.labelKey ? t(a.labelKey) : (a && a.key) || '';
+/* تسمية وقت إنجليزية مولّدة من الساعات (12 ساعة + AM/PM) */
+function enSlotLabel(s, e){
+  const f=(x)=>{ const hh=((Number(x)%24)+24)%24; const mer=hh<12?'AM':'PM'; let h=hh%12; if(h===0)h=12; return {h,mer}; };
+  const a=f(s), b=f(e);
+  return a.mer===b.mer ? `${a.h}:00 - ${b.h}:00 ${b.mer}` : `${a.h}:00 ${a.mer} - ${b.h}:00 ${b.mer}`;
+}
+/* عرض الوقت حسب اللغة — العربية تستخدم القيمة الكنسية (label) كما تُرسل للخادم؛
+   الإنجليزية تُولَّد من startHour/endHour. الأوقات المقروءة من الشيت (بلا ساعات) تعرض label. */
+function slotDisplay(slot){
+  if(!slot) return '';
+  if(State.lang==='en'){
+    // الساعات هي المصدر المحايد لغوياً (كل الفترات ساعتان). label يبقى القيمة الكنسية.
+    const s = slot.startHour!=null ? slot.startHour : slot.hour;
+    const e = slot.endHour!=null ? slot.endHour : (slot.hour!=null ? Number(slot.hour)+2 : null);
+    if(s!=null && e!=null) return enSlotLabel(s, e);
+  }
+  return slot.label || '';
+}
 /* ترجمة رسائل الخادم المعروفة (لا نغيّر رسائل Apps Script — نترجمها بالواجهة فقط) */
 const API_MESSAGE_MAP = {
   'وصل طلبك، بنأكدلك قريب':'Your request was sent. The field owner will confirm it soon.',
@@ -2399,8 +2466,8 @@ function parseAmenities(text){
   return String(text||'').split('|').map(s=>s.trim()).filter(Boolean).map(item=>{
     const [rawKey,...rest]=item.split(':');
     const key=(rawKey||'').trim(); const value=rest.join(':').trim();
-    const meta=AMENITY[key]||{icon:'dot', label:key};
-    return { key, icon:meta.icon||'dot', label:meta.label||key, en:meta.en, value };
+    const meta=AMENITY[key]||{icon:'dot'};
+    return { key, icon:meta.icon||'dot', labelKey:meta.labelKey, value };
   });
 }
 function amenityKeys(p){ return parseAmenities(p?.amenities).map(a=>a.key); }
@@ -2417,10 +2484,9 @@ function amenitiesRow(text, max){
 function amenityValueText(value, label){
   const v=String(value||'').trim(); if(!v) return t('available');
   if(/^\d+$/.test(v)) return `${v} ${label}`;                 // عدد: 10 بلوزات / 10 vests
-  const en = State.lang==='en';
-  const map = en ? { free:'Free', paid:'Paid', available:'Available', yes:'Available', no:'Not available', 'true':'Available', 'false':'Not available' }
-                 : { free:'مجانية', paid:'برسوم', available:'متوفرة', yes:'متوفرة', no:'غير متوفرة', 'true':'متوفرة', 'false':'غير متوفرة' };
-  return map[v.toLowerCase()] || v;
+  const map = { free:'amenFree', paid:'amenPaid', available:'available', yes:'available', no:'amenNotAvail', 'true':'available', 'false':'amenNotAvail' };
+  const key = map[v.toLowerCase()];
+  return key ? t(key) : v;
 }
 /* قسم "الخدمات والمرافق" الكامل في صفحة التفاصيل (كل الخدمات الفعلية بلا تكرار) */
 function renderAmenitiesFull(p){
@@ -2626,7 +2692,7 @@ function renderFiltersSheet(){
   $('#fxToday').checked = !!fx.availableToday;
   // المرافق
   const am=$('#fxAmenities'); clear(am); const ams=distinctAmenities();
-  ams.length ? ams.forEach(k=>{ const m=AMENITY[k]||{label:k}; const c=fxChip(m.label, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
+  ams.length ? ams.forEach(k=>{ const m=AMENITY[k]; const c=fxChip(m&&m.labelKey?t(m.labelKey):k, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
               : am.append(h('span',{class:'fx-empty'},t('noData')));
   // عدّاد المسودّة
   let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++; n+=fx.sizes.length+fx.types.length+fx.amenities.length; if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
@@ -2694,7 +2760,7 @@ function renderDetailSticky(){
   const ok = !!field && hour!=null;
   bar.hidden = !ok; if(!ok) return;
   const slot=fieldSlots(field).find(s=>s.hour===hour);
-  setText('dstickyLine', `${field.field_name} • ${dayLabel(date)} ${shortDate(date)} • ${slot?slot.label:''}`);
+  setText('dstickyLine', `${field.field_name} • ${dayLabel(date)} ${shortDate(date)} • ${slot?slotDisplay(slot):''}`);
   setText('dstickyPrice', formatCurrency(field.price));
 }
 function renderSubFields(){
@@ -2729,8 +2795,9 @@ function renderDetailDays(){
 }
 function timeButton(slot, taken, selected, onClick){
   const stateLbl = taken ? t('stTaken') : (selected ? t('stSelected') : t('stAvailable'));
+  const disp = slotDisplay(slot);
   const b=h('button',{class:'tbtn'+(taken?' taken':'')+(selected&&!taken?' sel':''), type:'button',
-    'aria-pressed': (selected&&!taken)?'true':'false', 'aria-label': slot.label+' — '+stateLbl}, slot.label);
+    'aria-pressed': (selected&&!taken)?'true':'false', 'aria-label': disp+' — '+stateLbl}, disp);
   if (taken){ b.setAttribute('disabled',''); b.append(h('span',{class:'t-tag'}, t('bookedTag'))); }
   else b.addEventListener('click', onClick);
   return b;
@@ -2836,7 +2903,7 @@ function renderReview(){
       h('div',{class:'rv-place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(place)+' • '+field.size)),
     h('div',{class:'rv-grid'},
       row(t('rvDay'), dayLabel(date)+' '+shortDate(date), 'cal'),
-      row(t('rvTime'), slot?slot.label:'', 'clock'),
+      row(t('rvTime'), slot?slotDisplay(slot):'', 'clock'),
       row(t('rvDuration'), t('twoHours'), 'clock'),
       row(t('rvPrice'), formatCurrency(field.price), 'money')),
     h('div',{class:'rv-user'},
@@ -2873,7 +2940,7 @@ function showBookingSuccess(info, bookingId){
   sum.append(
     row(t('stepField'), `${place.place_name} - ${field.field_name}`),
     row(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`),
-    row(t('rvTime'), slot?slot.label:''),
+    row(t('rvTime'), slot?slotDisplay(slot):''),
     row(t('rvPrice'), formatCurrency(field.price))
   );
   const act=$('#successActions'); clear(act);
@@ -2915,7 +2982,7 @@ async function loadPlayerBookings(){
   clear(stats); clear(list); list.append(...[0,1].map(()=>h('div',{class:'skeleton-card'}, h('div',{class:'sk-body'}, h('div',{class:'sk sk-line w70'}), h('div',{class:'sk sk-line w45'})))));
   try{
     const res = await API.get('getPlayerBookings', { player_token: Session.player() }, 'playerBookings');
-    if (!res.success){ clear(list); list.append(emptyState({icon:'⚠️',title:'تعذّر جلب الحجوزات',sub:apiMsg(res.message)||'حاول مرة أخرى.'})); return; }
+    if (!res.success){ clear(list); list.append(emptyState({icon:'⚠️',title:t('bkFetchFail'),sub:apiMsg(res.message)||t('tryAgain')})); return; }
     State.player = res.player || State.player;
     renderPlayerStats(res.bookings||[]);
     clear(list);
@@ -2931,7 +2998,7 @@ async function loadPlayerBookings(){
     group(t('grpPast'), recentFin);
     group(t('grpCancelled'), recentCan);
     if(!cats.upcoming.length && !cats.pending.length && !recentFin.length && !recentCan.length){
-      list.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)'}}, 'لا توجد حجوزات لعرضها حالياً.'));
+      list.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)'}}, t('noBookingsToShow')));
     }
     if (hidden>0 || State.showAllPlayer){
       const toggle=h('button',{class:'cbtn', style:{marginTop:'14px'}}, State.showAllPlayer?t('hideOld'):`${t('fullHistory')} (${hidden})`);
@@ -2955,11 +3022,11 @@ function categorizeBookings(list){
 function sectionTitle(title, count){ return h('div',{class:'sec-title', style:{padding:'8px 0 10px'}}, h('span',{}, title), h('span',{class:'mini-badge'}, String(count))); }
 
 async function playerCancelBooking(btn, rowNumber, label){
-  const reason = await askReason('إلغاء الحجز', `${label} — اكتب سبب الإلغاء (اختياري)`, 'تأكيد الإلغاء');
+  const reason = await askReason(t('playerCancelTitle'), t('playerCancelHint',{label}), t('confirmCancelBtn'));
   if (reason===null) return;
   await withLoading(btn, async()=>{
     try{
-      const res = await API.post({ action:'updateBookingStatus', player_token:Session.player(), row_number:rowNumber, status:'cancelled', cancel_reason: reason || 'ألغى اللاعب الحجز' });
+      const res = await API.post({ action:'updateBookingStatus', player_token:Session.player(), row_number:rowNumber, status:'cancelled', cancel_reason: reason || t('playerCancelledDefault') });
       if (!res.success){ toast(apiMsg(res.message)||t('cancelFail'),'error'); return; }
       toast(t('cancelOk'),'success');
       await loadPlayerBookings(); await loadData();
@@ -2971,7 +3038,7 @@ async function playerCancelBooking(btn, rowNumber, label){
 /* ===================== RENDER: OWNER DASHBOARD ===================== */
 async function loadOwnerDashboard(){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
-  const el=$('#ownerBookings'); clear(el); el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--muted)'}}, 'جاري تحميل الحجوزات...'));
+  const el=$('#ownerBookings'); clear(el); el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--muted)'}}, t('loadingBookings')));
   // 1) جلب البيانات — فشل الشبكة فقط يُظهر "تعذّر جلب البيانات"
   let res;
   try{
@@ -2981,14 +3048,14 @@ async function loadOwnerDashboard(){
     clear(el); el.append(emptyState({icon:'📡',title:t('fetchFail'),sub:t('fetchFailSub')}));
     return;
   }
-  if (!res || !res.success){ toast(apiMsg(res&&res.message)||'انتهت جلستك، ادخل من جديد','error'); doLogout(); return; }
+  if (!res || !res.success){ toast(apiMsg(res&&res.message)||t('sessionExpired'),'error'); doLogout(); return; }
   // 2) الرسم — خطأ هنا لا يُلبَّس لباس فشل الشبكة، بل يُظهر الرسالة الحقيقية
   State.ownerData = res;
   try{
     renderOwnerDashboard();
   }catch(err){
     console.error('renderOwnerDashboard failed:', err);
-    clear(el); el.append(emptyState({icon:'⚠️', title:'صار خطأ بعرض اللوحة', sub:String((err&&err.message)||err)}));
+    clear(el); el.append(emptyState({icon:'⚠️', title:t('dashRenderErr'), sub:String((err&&err.message)||err)}));
   }
 }
 /* يشغّل خطوة رسم معزولة: خطؤها يُسجَّل ولا يُسقط بقية اللوحة */
@@ -3022,8 +3089,8 @@ function showOwnerTab(name){
 /* ===================== OWNER · TODAY TAB ===================== */
 function renderOwnerToday(){
   const el=$('#ownerToday'); if(!el) return;
-  const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const t=today();
-  const todayB=all.filter(b=>String(b.date||'').split('T')[0]===t);
+  const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const td=today();
+  const todayB=all.filter(b=>String(b.date||'').split('T')[0]===td);
   const pend=todayB.filter(b=>String(b.status||'').toLowerCase()==='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
   const conf=todayB.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
   const revenue=conf.reduce((s,b)=>s+(Number(b.price)||0),0);
@@ -3046,25 +3113,25 @@ function ownerBookingsByDate(){
 function renderOwnerCalendar(){
   if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00');
   const month=State.calMonth, y=month.getFullYear(), mo=month.getMonth();
-  setText('calTitle', month.toLocaleDateString('ar', {month:'long', year:'numeric'}));
+  setText('calTitle', month.toLocaleDateString(State.lang==='en'?'en-GB':'ar', {month:'long', year:'numeric'}));
   const wd=$('#calWeekdays'); clear(wd);
   const wdFmt=new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar',{weekday:'short'});
   for(let i=0;i<7;i++){ wd.append(h('div',{class:'cal-wd'}, wdFmt.format(new Date(2024,8,1+i)))); }   // 2024-09-01 = الأحد
   const grid=$('#calGrid'); clear(grid);
   const startDay=new Date(y,mo,1).getDay();
   const daysInMonth=new Date(y,mo+1,0).getDate();
-  const byDate=ownerBookingsByDate(); const t=today();
+  const byDate=ownerBookingsByDate(); const td=today();
   for(let i=0;i<startDay;i++) grid.append(h('div',{class:'cal-cell empty'}));
   for(let d=1; d<=daysInMonth; d++){
     const ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const cnt=(byDate[ds]||[]).filter(b=>!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length;
-    const cell=h('button',{class:'cal-cell'+(ds===t?' today':'')+(cnt?' has':''), type:'button', dataset:{date:ds}},
+    const cell=h('button',{class:'cal-cell'+(ds===td?' today':'')+(cnt?' has':''), type:'button', dataset:{date:ds}},
       h('span',{class:'cal-d'}, String(d)), cnt?h('span',{class:'cal-dot'}, String(cnt)):null);
     cell.addEventListener('click', ()=>renderCalDay(ds));
     grid.append(cell);
   }
   // اعرض اليوم افتراضياً إن كان ضمن الشهر، وإلا أول يوم فيه حجوزات
-  const def = (t.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)) ? t : Object.keys(byDate).filter(k=>k.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)).sort()[0];
+  const def = (td.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)) ? td : Object.keys(byDate).filter(k=>k.startsWith(`${y}-${String(mo+1).padStart(2,'0')}`)).sort()[0];
   if(def) renderCalDay(def); else clear($('#calDayBookings'));
 }
 function renderCalDay(ds){
@@ -3080,9 +3147,9 @@ function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
   const fromWeb=confirmed.filter(b=>!isOwnerManual(b)); const manual=confirmed.filter(isOwnerManual);
   const pending=bookings.filter(b=>String(b.status||'').toLowerCase()==='pending');
-  const t=today(), weekStart=dateAfter(-6);
-  const todayCount=bookings.filter(b=>String(b.date)===t).length;
-  const weekCount=bookings.filter(b=>String(b.date||'')>=weekStart && String(b.date)<=t).length;
+  const td=today(), weekStart=dateAfter(-6);
+  const todayCount=bookings.filter(b=>String(b.date)===td).length;
+  const weekCount=bookings.filter(b=>String(b.date||'')>=weekStart && String(b.date)<=td).length;
   const webRev=fromWeb.reduce((s,b)=>s+(Number(b.price)||0),0);
   const manualRev=manual.reduce((s,b)=>s+(Number(b.price)||0),0);
   const profit=webRev*CONFIG.COMMISSION; const net=webRev-profit+manualRev;
@@ -3110,10 +3177,10 @@ function renderOwnerEcon(bookings){
   const phones={}; confAll.forEach(b=>{const k=normalizePhone(b.phone||'')||String(b.player_id||''); if(k)phones[k]=(phones[k]||0)+1;});
   const uniq=Object.keys(phones).length; const ret=Object.values(phones).filter(c=>c>1).length;
   const returnRate=calcPercent(ret,uniq);
-  let decision='كلما زادت البيانات، بتصير القرارات أدق.';
-  if(occ<40)decision='الإشغال أقل من 40%: الأفضل التركيز على التسويق والعروض.';
-  else if(occ>=60&&occ<=80)decision='الإشغال بين 60% و80%: الوضع جيد، حافظ على السعر وراقب أوقات الذروة.';
-  else if(occ>=85)decision='الإشغال أعلى من 85%: في فرصة ترفع السعر خصوصاً بأوقات الطلب العالي.';
+  let decision=t('econMore');
+  if(occ<40)decision=t('econLow');
+  else if(occ>=60&&occ<=80)decision=t('econGood');
+  else if(occ>=85)decision=t('econHigh');
   setText('oOccupancy',occ+'%'); setText('oLost',formatMoney(lost)); setText('oCancel',cancelRate+'%');
   setText('oBestTime',hourTop?hourTop.label:'-'); setText('oWebShare',webShare+'%'); setText('oReturn',returnRate+'%'); setText('oDecision',decision);
 }
@@ -3132,9 +3199,9 @@ function ownerBookingCard(b){
       h('span',{class:'info-line'}, ico('phone','svg-sm'), ' '+(b.phone||'-')),
       h('span',{class:'info-line'}, ico('resize','svg-sm'), ' '+(b.players||'-')),
       h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+formatCurrency(b.price||0)),
-      h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?'حجز خارجي':'مصدر: '+(b.source||'direct')))
+      h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct')))
   );
-  if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, 'سبب الإلغاء/الرفض: '+b.cancel_reason));
+  if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
   const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
   actions.append(mk('owner-confirm',t('actConfirm'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'));
@@ -3159,12 +3226,12 @@ function renderOwnerBookings(){
   const {active,finished}=splitFinished(bookings);
   const grouped=(list)=>{
     const g={}; list.forEach(b=>{(g[String(b.date)] ||= []).push(b);});
-    const t=today(), tm=dateAfter(1);
+    const td=today(), tm=dateAfter(1);
     Object.keys(g).sort().forEach(date=>{
       const dayB=g[date].sort((a,b)=>Number(a.hour)-Number(b.hour));
       const c=dayB.filter(b=>b.status==='confirmed').length, p=dayB.filter(b=>b.status==='pending').length, x=dayB.filter(b=>['cancelled','rejected'].includes(b.status)).length;
-      const isToday=date===t, isPast=date<t;
-      const lbl = date===t?`اليوم — ${arabicDay(date)} ${shortDate(date)}` : date===tm?`غداً — ${arabicDay(date)} ${shortDate(date)}` : `${arabicDay(date)} ${shortDate(date)}`;
+      const isToday=date===td, isPast=date<td;
+      const lbl = date===td?`${t('today')} — ${arabicDay(date)} ${shortDate(date)}` : date===tm?`${t('tomorrow')} — ${arabicDay(date)} ${shortDate(date)}` : `${arabicDay(date)} ${shortDate(date)}`;
       const pills=h('div',{class:'pills'});
       if(c)pills.append(h('span',{},`✓ ${c}`)); if(p)pills.append(h('span',{},`⏳ ${p}`)); if(x)pills.append(h('span',{},`✕ ${x}`));
       const wrap=h('div',{style:{marginBottom:'22px'}},
@@ -3173,9 +3240,9 @@ function renderOwnerBookings(){
       el.append(wrap);
     });
   };
-  if (active.length){ el.append(sectionTitle('الحجوزات الحالية والقادمة',active.length)); grouped(active); }
-  else el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--soft)',marginBottom:'11px'}},'لا توجد حجوزات حالية أو قادمة'));
-  if (finished.length){ el.append(sectionTitle('الحجوزات المنتهية',finished.length)); grouped(finished); }
+  if (active.length){ el.append(sectionTitle(t('ownerActiveUpcoming'),active.length)); grouped(active); }
+  else el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--soft)',marginBottom:'11px'}},t('noActiveUpcoming')));
+  if (finished.length){ el.append(sectionTitle(t('ownerFinished'),finished.length)); grouped(finished); }
 }
 function renderOwnerFields(){
   const el=$('#ownerFields'); const fields=State.ownerData.fields||[]; clear(el);
@@ -3189,7 +3256,7 @@ function renderOwnerFields(){
           h('div',{style:{display:'flex',gap:'10px',marginTop:'5px'}},
             h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+f.size),
             h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(f.price))),
-          h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, 'Slots: '+slotsToKeyword(f.slots))),
+          h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, t('slotsLbl')+': '+t({full:'kwFull',morning:'kwMorning',evening:'kwEvening'}[slotsToKeyword(f.slots)]||'kwFull'))),
         edit)));
   });
 }
@@ -3219,25 +3286,19 @@ async function updateBookingStatus(btn, rowNumber, status){
 }
 function sendWhatsApp(b, status, reason=''){
   const phone=normalizePhone(b.phone); if(!phone) return;
-  const en=State.lang==='en'; const nm=b.name||''; const price=formatCurrency(b.price);
+  const base={ name:b.name||'', place:b.place_name, field:b.field_name, date:b.date, time:b.time, size:b.players, price:formatCurrency(b.price) };
   let msg='';
-  if(status==='confirmed') msg = en
-    ? `Hi ${nm} ⚽\n\nYour booking is confirmed ✅\n\n🏟️ Venue: ${b.place_name}\n🥅 Field: ${b.field_name}\n📅 Date: ${b.date}\n⏰ Time: ${b.time}\n📐 Size: ${b.players}\n💰 Price: ${price}\n\nSee you there!`
-    : `مرحباً ${nm} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: ${b.place_name}\n🥅 الملعب: ${b.field_name}\n📅 التاريخ: ${b.date}\n⏰ الوقت: ${b.time}\n📐 الحجم: ${b.players}\n💰 السعر: ${price}\n\nبانتظارك!`;
-  if(status==='rejected') msg = en
-    ? `Hi ${nm} ⚽\n\nYour booking request was declined ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nReason:\n${reason||'Sorry, this time slot is currently unavailable.'}`
-    : `مرحباً ${nm} ⚽\n\nتم رفض طلب الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'نعتذر، هذا الوقت غير متاح حالياً.'}`;
-  if(status==='cancelled') msg = en
-    ? `Hi ${nm} ⚽\n\nYour booking was cancelled ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nReason:\n${reason||'The booking was cancelled by the venue management.'}`
-    : `مرحباً ${nm} ⚽\n\nتم إلغاء الحجز ❌\n\n🏟️ ${b.place_name} - ${b.field_name}\n📅 ${b.date} ⏰ ${b.time}\n\nالسبب:\n${reason||'تم إلغاء الحجز من إدارة الملعب.'}`;
+  if(status==='confirmed') msg = t('waConfirmed', base);
+  else if(status==='rejected') msg = t('waRejected', {...base, reason: reason || t('waRejectedDefault')});
+  else if(status==='cancelled') msg = t('waCancelled', {...base, reason: reason || t('waCancelledDefault')});
   if(!msg) return; setTimeout(()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank'),500);
 }
 
 /* ---- Reason modal as a Promise ---- */
-function askReason(title, hint, confirmLabel='تأكيد', required=false){
+function askReason(title, hint, confirmLabel, required=false){
   return new Promise(resolve=>{
     const input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
-    setText('reasonTitle',title); setText('reasonHint',hint); input.value=''; ok.textContent=confirmLabel; clearFieldError('reasonInput');
+    setText('reasonTitle',title); setText('reasonHint',hint); input.value=''; ok.textContent=confirmLabel||t('confirmWord'); clearFieldError('reasonInput');
     Modal.open('modal-reason'); setTimeout(()=>input.focus(),200);
     const done=(val)=>{ Modal.close('modal-reason'); ok.onclick=null; no.onclick=null; clearFieldError('reasonInput'); resolve(val); };
     ok.onclick=()=>{ const v=input.value.trim(); if(required && !v){ setFieldError('reasonInput',t('reasonRequired')); input.focus(); return; } done(v); };
@@ -3245,10 +3306,10 @@ function askReason(title, hint, confirmLabel='تأكيد', required=false){
   });
 }
 /* تأكيد إجراء (Promise<boolean>) — يُستخدم قبل تأكيد الحجز */
-function askConfirm(title, message, confirmLabel='تأكيد'){
+function askConfirm(title, message, confirmLabel){
   return new Promise(resolve=>{
     setText('confirmTitle',title); setText('confirmMessage',message);
-    const ok=$('#confirmOk'), no=$('#confirmCancel'); ok.textContent=confirmLabel;
+    const ok=$('#confirmOk'), no=$('#confirmCancel'); ok.textContent=confirmLabel||t('confirmWord');
     Modal.open('modal-confirm');
     const done=(v)=>{ Modal.close('modal-confirm'); ok.onclick=null; no.onclick=null; resolve(v); };
     ok.onclick=()=>done(true); no.onclick=()=>done(false);
@@ -3264,7 +3325,7 @@ async function openManual(){
   try{ await loadPublicBookings(); }catch(_){}
   State.manual={ fieldId:String(fields[0].field_id), date:today(), hour:null };
   $('#mName').value=''; $('#mPhone').value=''; $('#mPrice').value=fields[0].price||'';
-  const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${f.price} د.أ`))); sel.value=State.manual.fieldId;
+  const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${formatCurrency(f.price)}`))); sel.value=State.manual.fieldId;
   sel.onchange=()=>{ State.manual.fieldId=sel.value; State.manual.hour=null; const f=manualField(); if(f)$('#mPrice').value=f.price||''; renderManualTimes(); };
   renderManualDays(); renderManualTimes(); Modal.open('modal-manual');
 }
@@ -3328,12 +3389,12 @@ function showPage(name){
   $$('#nav-player .nitem').forEach(n=>{ const on=n.dataset.nav===name; n.classList.toggle('active', on); n.setAttribute('aria-current', on?'page':'false'); });
   // خطافات الصفحات
   if (name==='home') renderPlaces();
-  if (name==='bookings'){ if(!Session.player()&&State.guest){ toast('سجّل دخولك عشان تشوف حجوزاتك','warn'); return showPage('playerLogin'); } loadPlayerBookings(); }
+  if (name==='bookings'){ if(!Session.player()&&State.guest){ toast(t('loginToSeeBookings'),'warn'); return showPage('playerLogin'); } loadPlayerBookings(); }
   if (name==='account'){ if(!Session.player()){ return showPage('playerLogin'); }
     const nm=State.player?.name||'', ph=State.player?.phone||'';
     $('#accName').value=nm; $('#accPhone').value=ph;
     setText('accNameDisplay', nm||t('welcomeYou')); setText('accPhoneDisplay', ph||'—');
-    const av=$('#accAvatar'); if(av) av.textContent=(nm.trim().charAt(0))||'م';
+    const av=$('#accAvatar'); if(av) av.textContent=(nm.trim().charAt(0))||t('avatarFallback');
   }
   if (name==='owner'){ if(!Session.owner()){ return showPage('ownerLogin'); } if(State.ownerData) renderOwnerDashboard(); }
   manageAutoRefresh();
@@ -3425,7 +3486,7 @@ async function saveAccount(btn){
 /* ---- booking confirm (من نافذة المراجعة · المصدر = State.detail) ---- */
 async function confirmBooking(btn){
   const { place, field, date, hour } = State.detail;
-  if(!place || !field || !date || hour==null){ toast('اكمل اختيار الموعد أولاً.','warn'); Modal.close('modal-booking'); scrollToDetailSection('time'); return; }
+  if(!place || !field || !date || hour==null){ toast(t('completeSelection'),'warn'); Modal.close('modal-booking'); scrollToDetailSection('time'); return; }
   // ضيف؟ احفظ الاختيار وافتح خيار الدخول (تظهر المراجعة بعد الدخول)
   if(!Session.player()){ savePendingBooking(); openAuthChoice(); return; }
   const name=(State.player?.name||'').trim(), phone=(State.player?.phone||'').trim();
@@ -3508,6 +3569,19 @@ function applyTranslations(root){
   r.querySelectorAll('[data-i18n]').forEach(el=>{ const v=t(el.getAttribute('data-i18n')); if(v!=null) el.textContent=v; });
   r.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph'))); });
   r.querySelectorAll('[data-i18n-aria]').forEach(el=>{ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+  r.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
+  r.querySelectorAll('[data-i18n-alt]').forEach(el=>{ el.setAttribute('alt', t(el.getAttribute('data-i18n-alt'))); });
+  if(r===document) document.title = t('docTitle');   // عنوان المستند
+}
+/* مدقّق تكافؤ المفاتيح (وقت التطوير فقط) — يُحذّر بالكونسول دون تعطيل التطبيق */
+function validateI18nParity(){
+  try{
+    const ar=Object.keys(I18N.ar||{}), en=Object.keys(I18N.en||{});
+    const setAr=new Set(ar), setEn=new Set(en);
+    const missingEn=ar.filter(k=>!setEn.has(k)), missingAr=en.filter(k=>!setAr.has(k));
+    if(missingEn.length) console.warn('[i18n] keys missing in EN:', missingEn);
+    if(missingAr.length) console.warn('[i18n] keys missing in AR:', missingAr);
+  }catch(_){}
 }
 function setLanguage(lang){
   if(lang!=='ar' && lang!=='en') lang='ar';
@@ -3519,6 +3593,9 @@ function setLanguage(lang){
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
     renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
+    if(Session.player()) setText('playerWelcome', t('welcomeHi')+' '+(State.player?.name||t('welcomeYou')));
+    else setText('playerWelcome', t('welcomeGuest'));
     if($('#page-home')?.classList.contains('active')) renderPlaces();
     if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
@@ -3626,6 +3703,7 @@ function initLandingReveal(){
 async function init(){
   applyTheme(Session.theme());
   setLanguage(State.lang);   // يضبط lang/dir + يطبّق الترجمة على الواجهة الثابتة
+  validateI18nParity();      // تحقّق تكافؤ مفاتيح ar/en (تحذير كونسول فقط)
   initLandingReveal();       // تجهيز كشف أقسام الهبوط (الـDOM الثابت متاح الآن)
   loadData().then(updateTrust);
   if (Session.owner()){
