@@ -1228,6 +1228,75 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
 }
 @keyframes sheenSweep{0%{opacity:0;transform:skewX(-18deg) translateX(0)}18%{opacity:1}100%{opacity:0;transform:skewX(-18deg) translateX(500%)}}
 
+/* =============================================================
+   🎯 CLARITY & ICON PASS — أيقونات SVG بدل الرموز النصية + محاذاة
+   (النصوص في I18N صارت بلا رموز — الأيقونات هنا CSS فقط)
+   ============================================================= */
+:root{
+  --icon-arrow:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5'/%3E%3Cpath d='m12 19-7-7 7-7'/%3E%3C/svg%3E");
+  --icon-refresh:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E");
+  --icon-check:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  --icon-plus:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='M12 5v14'/%3E%3C/svg%3E");
+  --icon-star:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M12 2.5l2.9 6.1 6.6.6-5 4.3 1.5 6.5L12 16.6 6 20l1.5-6.5-5-4.3 6.6-.6L12 2.5Z'/%3E%3C/svg%3E");
+  --icon-cal:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E");
+}
+
+/* ---------- سهم «تقدّم» SVG على أزرار الإجراء الرئيسية (بدل ← النصية) ---------- */
+[data-i18n="enter"]::after,[data-i18n="createAccount"]::after,[data-i18n="continueBooking"]::after,[data-i18n="confirmBooking"]::after,[data-i18n="saveBookingBtn"]::after,[data-i18n="saveBtn"]::after,[data-i18n="ownerLink"]::after{
+  content:'';display:inline-block;width:15px;height:15px;background:currentColor;flex-shrink:0;
+  -webkit-mask:var(--icon-arrow) center/contain no-repeat;mask:var(--icon-arrow) center/contain no-repeat;
+  margin-inline-start:8px;vertical-align:-2.5px;transition:transform var(--t-base) var(--ease-out)}
+html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"])::after{transform:scaleX(-1)}
+@media(hover:hover) and (pointer:fine){
+  :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"]):hover::after{transform:translateX(-3px)}
+  html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"]):hover::after{transform:scaleX(-1) translateX(-3px)}
+}
+
+/* ---------- أيقونة تحديث تدور مع الـhover ---------- */
+.sec-title .link{display:inline-flex;align-items:center;gap:5px}
+[data-i18n="refresh"]::before{content:'';display:inline-block;width:13px;height:13px;background:currentColor;flex-shrink:0;
+  -webkit-mask:var(--icon-refresh) center/contain no-repeat;mask:var(--icon-refresh) center/contain no-repeat;
+  transition:transform .5s var(--ease-out)}
+@media(hover:hover) and (pointer:fine){ [data-i18n="refresh"]:hover::before{transform:rotate(-180deg)} }
+
+/* ---------- علامة صح على أزرار التأكيد ---------- */
+.owner-confirm::before,[data-i18n="successOkBtn"]::before{content:'';display:inline-block;width:14px;height:14px;background:currentColor;flex-shrink:0;
+  -webkit-mask:var(--icon-check) center/contain no-repeat;mask:var(--icon-check) center/contain no-repeat}
+[data-i18n="successOkBtn"]::before{margin-inline-end:7px;vertical-align:-2px}
+
+/* ---------- أيقونة + على أزرار الإضافة ---------- */
+[data-i18n="addManual"]::before,[data-i18n="addFieldBtn"]::before{content:'';display:inline-block;width:14px;height:14px;background:currentColor;flex-shrink:0;
+  -webkit-mask:var(--icon-plus) center/contain no-repeat;mask:var(--icon-plus) center/contain no-repeat;
+  margin-inline-end:7px;vertical-align:-2.5px}
+
+/* ---------- نجمة على زر إرسال التقييم ---------- */
+[data-i18n="submitReviewBtn"]::after{content:'';display:inline-block;width:15px;height:15px;background:currentColor;
+  -webkit-mask:var(--icon-star) center/contain no-repeat;mask:var(--icon-star) center/contain no-repeat;
+  margin-inline-start:8px;vertical-align:-2.5px}
+
+/* ---------- أيقونة تقويم لمجموعات الأيام (بدل 📅) ---------- */
+.day-group>span:first-child{display:inline-flex;align-items:center;gap:7px}
+.day-group>span:first-child::before{content:'';width:14px;height:14px;background:currentColor;flex-shrink:0;
+  -webkit-mask:var(--icon-cal) center/contain no-repeat;mask:var(--icon-cal) center/contain no-repeat}
+
+/* ---------- زر العودة وأسهم الهيرو والتقويم (SVG بدل المحارف) ---------- */
+.detail-back{width:46px;height:46px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.22)}
+.detail-back svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.lp-arrow{display:inline-flex;align-items:center}
+.lp-arrow svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;display:block}
+.cal-nav svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;display:block;margin:auto}
+
+/* ---------- لودر عصري: حلقة conic بدل حدود الدوران ---------- */
+.spinner{border:0;background:conic-gradient(from 0deg,transparent 12%,currentColor);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px));
+  animation:spin .8s linear infinite}
+.place-loader-orbit.o-outer{border:0;background:conic-gradient(from 0deg,transparent 22%,var(--primary));
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));
+  animation:spin 1s cubic-bezier(.62,.13,.39,.91) infinite}
+.place-loader-orbit.o-inner{border:0;background:conic-gradient(from 180deg,transparent 30%,var(--accent));
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+  animation:spin .8s cubic-bezier(.62,.13,.39,.91) infinite reverse}
+
 </style>
 </head>
 <body>
@@ -1278,10 +1347,10 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <h1 class="lp-title"><span data-i18n="heroTitlePre">احجز ملعبك بسهولة مع</span> <span data-i18n="brandName">المستديرة</span></h1>
       <p class="lp-sub" data-i18n="heroSub">تصفّح الملاعب القريبة منك، اطّلع على آخر الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — وتابع تأكيده مع إدارة الملعب.</p>
       <div class="lp-hero-cta">
-        <button class="lp-btn-primary" data-action="browse"><span data-i18n="browseFields">تصفّح الملاعب</span> <span class="lp-arrow">←</span></button>
+        <button class="lp-btn-primary" data-action="browse"><span data-i18n="browseFields">تصفّح الملاعب</span> <span class="lp-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></button>
         <button class="lp-btn-ghost" data-go="playerLogin" data-i18n="login">تسجيل الدخول</button>
       </div>
-      <button class="lp-owner-link" data-go="ownerLogin" data-i18n="ownerLink">عندك ملعب؟ ادخل كمالك ←</button>
+      <button class="lp-owner-link" data-go="ownerLogin" data-i18n="ownerLink">عندك ملعب؟ ادخل كمالك</button>
 
       <div class="lp-stats" id="lp-stats">
         <div class="lp-stat"><div class="lp-stat-num" id="trustPlaces">—</div><div class="lp-stat-lbl" data-i18n="statPlaces">ملعب متاح</div></div>
@@ -1389,7 +1458,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
             <li><span class="lp-owners-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ownersB2">تأكيد أو رفض بضغطة مع إشعار واتساب</span></li>
             <li><span class="lp-owners-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ownersB3">تقارير إيراد وإشغال تساعدك بالقرار</span></li>
           </ul>
-          <button class="lp-btn-primary" data-go="ownerLogin"><span data-i18n="ownerCtaBtn">دخول المالك</span> <span class="lp-arrow">←</span></button>
+          <button class="lp-btn-primary" data-go="ownerLogin"><span data-i18n="ownerCtaBtn">دخول المالك</span> <span class="lp-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></button>
         </div>
       </div>
     </section>
@@ -1400,7 +1469,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
         <h2 class="lp-callout-title" data-i18n="calloutTitle">جاهز تحجز ملعبك الجاي؟</h2>
         <p class="lp-callout-sub" data-i18n="calloutSub">صار حجز الملاعب أسهل من أي وقت. ابدأ بدون حساب أو سجّل دخولك لمتابعة حجوزاتك.</p>
         <div class="lp-callout-cta">
-          <button class="lp-btn-primary lp-btn-on-dark" data-action="browse"><span data-i18n="startFree">ابدأ مجاناً</span> <span class="lp-arrow">←</span></button>
+          <button class="lp-btn-primary lp-btn-on-dark" data-action="browse"><span data-i18n="startFree">ابدأ مجاناً</span> <span class="lp-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></button>
           <button class="lp-btn-outline-light" data-go="ownerLogin" data-i18n="haveField">عندي ملعب</button>
         </div>
       </div>
@@ -1447,7 +1516,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
-        <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول ←</button>
+        <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
       </div>
@@ -1475,7 +1544,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
-        <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب ←</button>
+        <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
         <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
       </div>
@@ -1501,7 +1570,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
-        <button class="sbtn" data-action="ownerLogin" data-i18n="enter">دخول ←</button>
+        <button class="sbtn" data-action="ownerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-go="welcome" data-i18n="back">رجوع</button>
       </div>
     </div>
@@ -1538,14 +1607,14 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       </button>
       <div class="sort-current" id="sortCurrent">الترتيب: الافتراضي</div>
     </div>
-    <div class="sec-title"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث ↺</span></div>
+    <div class="sec-title"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></div>
     <div class="places-list" id="placesList"></div>
   </section>
 
   <!-- ============ DETAIL ============ -->
   <section class="page" id="page-detail">
     <div class="detail-hero" id="detailHero">
-      <button class="detail-back" data-go="home" data-i18n-aria="back" aria-label="رجوع">←</button>
+      <button class="detail-back" data-go="home" data-i18n-aria="back" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
       <span class="detail-emoji" id="detailEmoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg></span>
     </div>
     <div class="detail-thumbs" id="detailThumbs" hidden></div>
@@ -1590,7 +1659,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
         </summary>
         <div id="placeStats" style="margin-top:12px"></div>
       </details>
-      <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز ←</button>
+      <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
       <button class="cbtn" data-action="openReview" data-i18n="rateThisPlace">قيّم هذا المكان</button>
     </div>
   </section>
@@ -1691,9 +1760,9 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
         <div class="card" style="margin-bottom:15px;border-color:rgba(19,164,90,.18)">
           <div class="section-title"><span data-i18n="externalBooking">حجز خارجي</span><span class="mini-badge" data-i18n="offSiteBadge">من خارج الموقع</span></div>
           <p class="t-sub" style="line-height:1.75;margin-bottom:12px" data-i18n="externalDesc">حجوزات واتساب أو اتصال — أضفها هون لإغلاق الوقت أمام اللاعبين.</p>
-          <button class="sbtn" data-action="openManual" data-i18n="addManual">+ إضافة حجز خارجي</button>
+          <button class="sbtn" data-action="openManual" data-i18n="addManual">إضافة حجز خارجي</button>
         </div>
-        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="todayRequests">طلبات وحجوزات اليوم</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث ↺</span></div>
+        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="todayRequests">طلبات وحجوزات اليوم</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث</span></div>
         <div id="ownerToday"></div>
       </div>
 
@@ -1715,7 +1784,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
           </select>
           <button class="cbtn" data-action="clearFilters" data-i18n="clearFilter">مسح الفلتر</button>
         </div>
-        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="bookingsWord">الحجوزات</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث ↺</span></div>
+        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="bookingsWord">الحجوزات</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث</span></div>
         <button class="cbtn" data-action="toggleOwnerHistory" id="ownerHistoryToggle" style="margin:0 0 12px" data-i18n="fullHistory">عرض السجل الكامل</button>
         <div id="ownerBookings"></div>
       </div>
@@ -1723,9 +1792,9 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <!-- ===== تبويب: التقويم ===== -->
       <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" aria-labelledby="otab-calendar" tabindex="0" hidden>
         <div class="cal-head">
-          <button class="cal-nav" data-action="calPrev" data-i18n-aria="calPrevAria" aria-label="الشهر السابق">‹</button>
+          <button class="cal-nav" data-action="calPrev" data-i18n-aria="calPrevAria" aria-label="الشهر السابق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
           <div class="cal-title" id="calTitle">—</div>
-          <button class="cal-nav" data-action="calNext" data-i18n-aria="calNextAria" aria-label="الشهر التالي">›</button>
+          <button class="cal-nav" data-action="calNext" data-i18n-aria="calNextAria" aria-label="الشهر التالي"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
         </div>
         <div class="cal-weekdays" id="calWeekdays"></div>
         <div class="cal-grid" id="calGrid"></div>
@@ -1734,7 +1803,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
 
       <!-- ===== تبويب: الملاعب والأسعار ===== -->
       <div class="owner-tab" id="ownerTab-fields" role="tabpanel" aria-labelledby="otab-fields" tabindex="0" hidden>
-        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="manageFields">إدارة الملاعب</span><span class="link" data-action="addField" data-i18n="addFieldBtn">+ إضافة ملعب</span></div>
+        <div class="sec-title" style="padding:0 0 12px"><span data-i18n="manageFields">إدارة الملاعب</span><span class="link" data-action="addField" data-i18n="addFieldBtn">إضافة ملعب</span></div>
         <div id="ownerFields"></div>
       </div>
 
@@ -1794,7 +1863,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <span data-i18n="bkNote">بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
       </div>
-      <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">تأكيد الحجز ←</button>
+      <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">تأكيد الحجز</button>
       <button class="cbtn" data-action="changeTime" data-i18n="changeTime">تغيير الموعد</button>
     </div>
   </div>
@@ -1806,7 +1875,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <div class="auth-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
       <div class="modal-title" id="authChoiceTitle" style="text-align:center" data-i18n="authTitle">خطوة أخيرة لإتمام الحجز</div>
       <div class="modal-sub" id="authChoiceDesc" style="text-align:center;justify-content:center" data-i18n="authDesc">سجّل دخولك أو أنشئ حساب — اختيارك (الملعب واليوم والوقت) محفوظ وبنكمّل من نفس المكان.</div>
-      <button class="sbtn" data-action="authLogin" style="margin-top:6px" data-i18n="login">تسجيل الدخول ←</button>
+      <button class="sbtn" data-action="authLogin" style="margin-top:6px" data-i18n="login">تسجيل الدخول</button>
       <button class="cbtn" data-action="authRegister" data-i18n="register">إنشاء حساب جديد</button>
       <button class="cbtn" data-action="closeModal" data-i18n="authBackEdit">رجوع لتعديل الموعد</button>
     </div>
@@ -1861,7 +1930,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <input class="finput" id="rvName" placeholder="اسمك" data-i18n-ph="yourNamePh" style="margin-bottom:11px">
       <input class="finput" id="rvPhone" type="tel" placeholder="رقم الهاتف" data-i18n-ph="phonePh" style="margin-bottom:11px">
       <textarea class="finput" id="rvComment" placeholder="تعليق اختياري" data-i18n-ph="commentPh" style="margin-bottom:18px"></textarea>
-      <button class="sbtn" data-action="submitReview" data-i18n="submitReviewBtn">إرسال التقييم ⭐</button>
+      <button class="sbtn" data-action="submitReview" data-i18n="submitReviewBtn">إرسال التقييم</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
   </div>
@@ -1884,7 +1953,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       </div>
       <label class="form-label" data-i18n="priceLbl">السعر</label>
       <input class="finput" id="mPrice" type="number" inputmode="numeric" placeholder="40" style="margin-bottom:18px">
-      <button class="sbtn" data-action="saveManual" data-i18n="saveBookingBtn">حفظ الحجز ←</button>
+      <button class="sbtn" data-action="saveManual" data-i18n="saveBookingBtn">حفظ الحجز</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
   </div>
@@ -1908,7 +1977,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
         <option value="evening" data-i18n="slotEvening">Evening — مسائي</option>
       </select>
       <label class="checkbox-row"><input type="checkbox" id="fieldActive" checked> <span data-i18n="activeLbl">نشط</span></label>
-      <button class="sbtn" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ ←</button>
+      <button class="sbtn" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
   </div>
@@ -1944,7 +2013,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <div class="scard-text" id="successText"></div>
       <div class="scard-summary" id="successSummary" hidden></div>
       <div class="scard-actions" id="successActions">
-        <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام ✓</button>
+        <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام</button>
       </div>
     </div>
   </div>
@@ -1957,7 +2026,7 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
       <div class="dsticky-line" id="dstickyLine"></div>
       <div class="dsticky-meta"><span class="dsticky-price" id="dstickyPrice"></span><span class="dsticky-unit" data-i18n="perTwoHours">/ ساعتان</span></div>
     </div>
-    <button class="dsticky-btn" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز ←</button>
+    <button class="dsticky-btn" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
   </div>
 
   <!-- ============ BOTTOM NAV ============ -->
@@ -2028,7 +2097,7 @@ const I18N = {
     login:'فوت عالملعب', register:'سجّل وانزل عالساحة', startNow:'يلا نبلّش', browseFields:'لِفّ عالملاعب',
     heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك ع راحتك مع',
     heroSub:'لِفّ عالملاعب القريبة منك، شوف آخر الأوقات الفاضية، وابعت طلب حجزك بثواني — وتابع تأكيده مع إدارة الملعب.',
-    ownerLink:'عندك ملعب؟ فوت من هون كمالك ←', statPlaces:'ملعب جاهز إلك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا لفّ',
+    ownerLink:'عندك ملعب؟ فوت من هون كمالك', statPlaces:'ملعب جاهز إلك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا لفّ',
     statAnytime:'لِفّ بأي وقت', statFree:'ببلاش', statFreeLbl:'بلا رسوم تصفّح',
     featuresEyebrow:'المميزات', featuresTitlePre:'ليش', featuresTitleBrand:'المستديرة؟',
     featuresSub:'كل اللي بتحتاجه عشان تحجز ملعبك بلا لفّ ودوران — وكل اللي بيحتاجه المالك عشان يدير ملاعبه زي المحترفين.',
@@ -2043,10 +2112,10 @@ const I18N = {
     startFree:'بلّش ببلاش', haveField:'عندي ملعب', footerLogin:'فوت عالملعب', footerOwner:'دخول المالك',
     footerCopy:'© 2026 المستديرة — كل الحقوق محفوظة.',
     loginTitle:'دخول اللاعب', loginSubtitle:'فوت عشان تشوف وتتابع حجوزاتك', phone:'رقم الهاتف', password:'كلمة السر',
-    enter:'فوت ←', browseNoAccount:'بدّي بس ألِفّ بلا حساب', haveAccount:'عندي حساب', name:'الاسم',
-    regTitle:'سجّل وانزل عالساحة', regSubtitle:'خزّن حجوزاتك وتابعها وقت ما بدّك', createAccount:'سوّي الحساب ←',
+    enter:'فوت', browseNoAccount:'بدّي بس ألِفّ بلا حساب', haveAccount:'عندي حساب', name:'الاسم',
+    regTitle:'سجّل وانزل عالساحة', regSubtitle:'خزّن حجوزاتك وتابعها وقت ما بدّك', createAccount:'سوّي الحساب',
     ownerLoginTitle:'دخول المالك', ownerLoginSubtitle:'لوحة تحكم الملاعب والحجوزات', back:'رجوع',
-    searchPh:'دوّر على مكان أو منطقة...', search:'دوّر', availableFields:'الملاعب الجاهزة', refresh:'تحديث ↺',
+    searchPh:'اكتب اسم المكان أو المنطقة…', search:'دوّر', availableFields:'الملاعب الجاهزة', refresh:'تحديث',
     filters:'الفلاتر', sortLabel:'الترتيب', all:'الكل', allRegions:'كل المناطق', priceJod:'السعر (دينار)',
     from:'من', to:'إلى', fieldSize:'حجم الملعب', type:'النوع', rating:'التقييم', availableToday:'الجاهز اليوم بس',
     amenities:'المرافق', apply:'طبّق', clearAll:'فضّيها كلها', noData:'ما في بيانات',
@@ -2055,11 +2124,11 @@ const I18N = {
     viewTimes:'ورّيني الأوقات →', chooseField:'اختار الملعب →', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختار الملعب', chooseDay:'اختار اليوم', chooseTime:'اختار الوقت',
     available:'متوفرة', noServices:'لسا ما تنحطّت معلومات عن الخدمات.', noTimesDay:'🚫 ما في أوقات فاضية بهاليوم. جرّب يوم تاني.',
-    locationBtn:'الموقع', callBtn:'دقّ تلفون', rateThisPlace:'قيّم هالمكان', continueBooking:'كمّل الحجز ←', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
+    locationBtn:'الموقع', callBtn:'دقّ تلفون', rateThisPlace:'قيّم هالمكان', continueBooking:'كمّل الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
     reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'الموعد', stepConfirm:'التأكيد',
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
     twoHours:'ساعتين', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
-    bkNote:'بعد ما تبعت، بيصير طلبك مستنّي تأكيد إدارة الملعب.', confirmBooking:'توكل على الله وأكّد ←', changeTime:'غيّر الموعد',
+    bkNote:'بس تبعت الطلب بيوصل إدارة الملعب — الحجز بينأكّد بعد موافقتهم، وبتقدر تتابع حالته من «حجوزاتي».', confirmBooking:'توكل على الله وأكّد', changeTime:'غيّر الموعد',
     authTitle:'هانت! ضايل هالتكة وبتصير بالملعب', authDesc:'سجّل دخولك أو سوّي حساب — اختيارك (الملعب واليوم والوقت) محفوظ وبنكمّل من نفس المحل.',
     authBackEdit:'رجوع لتعديل الموعد',
     navHome:'الرئيسية', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
@@ -2071,7 +2140,7 @@ const I18N = {
     bookingConflict:'يا للخسارة، الوقت اللي اخترته انحجز قبل شوي. اختار غيره.',
     bookingSent:'وصل طلبك! الحجز هلأ مستنّي تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'بكرا',
     noResultsTitle:'يا خسارة، الملاعب مفلّلة أو مش موجودة', noResultsSub:'ما لقينا إشي بهالمواصفات. غيّر المنطقة أو السعر، أو فضّي الفلاتر وجرّب كمان مرة.', noResultsSubPlain:'ما في ملاعب جاهزة هلأ.', clearFiltersBtn:'فضّي كل الفلاتر',
-    regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'فلتر حسب البيانات المتوفّرة للملاعب.', addManual:'+ زيد حجز خارجي', externalBooking:'حجز خارجي',
+    regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'ضيّق نتائجك: منطقة، سعر، حجم، نوع أرضية، أو تقييم.', addManual:'زيد حجز خارجي', externalBooking:'حجز خارجي',
     apiTimeout:'النت دلّع وأخد وقت أطول من اللازم. جرّب كمان مرة.', apiError:'صار في خربطة بالاتصال، جرّب كمان مرة.', apiCached:'عم نوّريك بيانات مخزّنة مؤقتاً، يمكن الأوقات بدها تحديث.', timesUpdateFail:'ما قدرنا نجدّد الأوقات هلأ.',
     statusConfirmed:'مؤكد', statusPending:'قيد المعالجة', statusCancelled:'ملغى', statusRejected:'مرفوض', statusInProgress:'عم يلعبوا هلأ',
     ownerTitle:'لوحة المالك', exit:'خروج',
@@ -2081,13 +2150,13 @@ const I18N = {
     filterBookings:'فلترة الحجوزات', searchNamePhone:'دوّر بالاسم أو رقم التلفون...', allStatuses:'كل الحالات', allFields:'كل الملاعب',
     optPending:'مستنّية التأكيد', optConfirmed:'مؤكدة', optCancelled:'ملغاة', optRejected:'مرفوضة',
     bookingsWord:'الحجوزات', fullHistory:'ورّيني السجل كامل', hideOld:'خبّي القديمة', clearFilter:'شيل الفلتر',
-    manageFields:'إدارة الملاعب', addFieldBtn:'+ زيد ملعب',
+    manageFields:'إدارة الملاعب', addFieldBtn:'زيد ملعب',
     allBookings:'كل الحجوزات', hintAllReq:'كل الطلبات', confirmedLbl:'مؤكدة', hintInRevenue:'بتدخل بالإيراد', pendingConfirm:'مستنّية التأكيد', hintNeedFollow:'بدها متابعة',
     revenueSummary:'ملخّص الإيراد', commission10:'عمولة 10%', siteRevenue:'إيراد الموقع', platformProfit:'ربح المنصة', ownerNet:'صافي المالك',
     perfTitle:'مؤشّرات الأداء', confirmRate:'نسبة التأكيد', topField:'الملعب الأكثر حجزاً', topSource:'أحسن مصدر للحجوزات',
     econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد راح عليك', hintEmptyPrice:'الأوقات الفاضية × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كل ما قلّت أحسن', bestTime:'أكثر وقت عليه طلب', hintForPricing:'بيفيدك بالتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل الرجوع', hintSameNumber:'نفس الرقم أكثر من مرة',
     pendingReply:'مستنّية ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'اليوم صفر حجوزات', noBookingsTodaySub:'ما في ولا حجز أو طلب اليوم. ارتاح وخُد يومك، أو زيد حجز خارجي.', noBookingsDay:'ما في حجوزات بهاليوم',
-    actConfirm:'أكّد ✓', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
+    actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
     confirmBookingTitle:'تأكيد الحجز', confirmBookingMsg:'بدك تأكّد هالحجز؟ رح يوصل اللاعب إشعار واتساب.', reasonRequired:'السبب لازم — اكتب سبب واضح للاعب',
     cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب اللي رح يشوفه اللاعب، ورح يتجهّز برسالة واتساب (إلزامي).', confirmWord:'تأكيد',
     last7:'آخر 7 أيام', unknownPlace:'مكان مش معروف', loadingWord:'لحظة عم نجيبها...', loadingFields:'عم نجيب تفاصيل الملاعب...',
@@ -2101,12 +2170,12 @@ const I18N = {
     reviewNeed:'اختار عدد النجوم الأول', reviewOk:'يسلمو، تقييمك وصل.', reviewFail:'ما قدرنا نبعت التقييم', reviewErr:'صار في خربطة ببعث التقييم',
     bookingFailRetry:'ما زبط الحجز، جرّب كمان مرة', bookingConnLag:'الاتصال مع الشيت علّق شوي، جرّب كمان مرة.',
     welcomeHi:'أهلين', welcomeYou:'فيك',
-    successDone:'تمام!', successOkBtn:'تمام ✓',
+    successDone:'تمام!', successOkBtn:'تمام',
     noBookingsYet:'لسا ما عندك حجوزات', noBookingsYetSub:'لِفّ عالملاعب واحجز أول ملعب إلك — بياخد ثواني!',
     loginToSee:'فوت الأول', loginToSeeSub:'لازم تفوت عشان تشوف حجوزاتك وتتابعها.', connProblem:'في خربطة بالاتصال', connProblemSub:'ما قدرنا نجيب الحجوزات. تأكّد من النت وجرّب تاني.',
     noFieldsTitle:'ما في ملاعب', noFieldsSub:'زيد أول ملعب إلك وبلّش استقبل حجوزات.', noMatchBookings:'ما في حجوزات بهالمواصفات', noMatchBookingsSub:'غيّر الفلتر أو التاريخ عشان تطلع حجوزات تانية.', fetchFail:'ما قدرنا نجيب البيانات', fetchFailSub:'تأكّد من اتصالك وجرّب تاني.',
-    manualTitle:'زيادة حجز خارجي', manualSub:'بينضاف مؤكّد ع طول وبيسكّر الوقت بوجه اللاعبين.', fieldLbl:'الملعب', dayLbl:'اليوم', timeLbl:'الوقت', ownerNameLbl:'اسم صاحب الحجز', priceLbl:'السعر', saveBookingBtn:'خزّن الحجز ←',
-    editFieldTitle:'تعديل ملعب', addFieldTitle:'زيادة ملعب جديد', fieldNameLbl:'اسم الملعب', sizeLbl:'الحجم', slotsLbl:'الأوقات', activeLbl:'شغّال', saveBtn:'خزّن ←', slotFull:'Full — كل اليوم', slotMorning:'Morning — صباحي', slotEvening:'Evening — مسائي',
+    manualTitle:'زيادة حجز خارجي', manualSub:'بينضاف مؤكّد ع طول وبيسكّر الوقت بوجه اللاعبين.', fieldLbl:'الملعب', dayLbl:'اليوم', timeLbl:'الوقت', ownerNameLbl:'اسم صاحب الحجز', priceLbl:'السعر', saveBookingBtn:'خزّن الحجز',
+    editFieldTitle:'تعديل ملعب', addFieldTitle:'زيادة ملعب جديد', fieldNameLbl:'اسم الملعب', sizeLbl:'الحجم', slotsLbl:'الأوقات', activeLbl:'شغّال', saveBtn:'خزّن', slotFull:'Full — كل اليوم', slotMorning:'Morning — صباحي', slotEvening:'Evening — مسائي',
     cancelBookingBtn:'✕ إلغاء الحجز', reasonPrefix:'السبب: ', reasonPlaceholder:'مثلاً: الوقت مش فاضي أو في صيانة...', reasonTitleDefault:'سبب التحديث', cancelWord:'إلغاء', backWord:'رجوع',
     rateModalTitle:'قيّم المكان', yourNamePh:'اسمك', phonePh:'رقم التلفون', commentPh:'تعليق إذا بدك', submitReviewBtn:'ابعت التقييم',
     stAvailable:'فاضي', stSelected:'مختار', stTaken:'محجوز', bookedTag:'محجوز',
@@ -2144,13 +2213,14 @@ const I18N = {
     placeStatsTitle:'إحصائيات الملعب',
     skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من برّا الموقع', welcomeGuest:'أهلين فيك',
     brandName:'المستديرة',
+    firstVisitWelcome:'يا هلا فيك بالمستديرة! 👋 لِفّ عالملاعب، اختار يومك ووقتك، واحجز بثواني.',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
     login:'Log in', register:'Create account', startNow:'Get started', browseFields:'Browse fields',
     heroBadge:'Football field booking platform', heroTitlePre:'Book your field easily with',
     heroSub:'Browse fields near you, check the latest available times, and send your booking request in seconds — then follow up its confirmation with the field staff.',
-    ownerLink:'Own a field? Sign in as owner →', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
+    ownerLink:'Own a field? Sign in as owner', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
     statAnytime:'Browse anytime', statFree:'Free', statFreeLbl:'No browsing fees',
     featuresEyebrow:'Features', featuresTitlePre:'Why', featuresTitleBrand:'Al-Mostadeera?',
     featuresSub:'Everything you need to book easily — and everything an owner needs to manage fields professionally.',
@@ -2165,10 +2235,10 @@ const I18N = {
     startFree:'Start free', haveField:'I own a field', footerLogin:'Log in', footerOwner:'Owner login',
     footerCopy:'© 2026 Al-Mostadeera — All rights reserved.',
     loginTitle:'Player login', loginSubtitle:'Log in to see and track your bookings', phone:'Phone number', password:'Password',
-    enter:'Log in →', browseNoAccount:'Browse without an account', haveAccount:'I have an account', name:'Name',
-    regTitle:'Create account', regSubtitle:'Save your bookings and track them anytime', createAccount:'Create account →',
+    enter:'Log in', browseNoAccount:'Browse without an account', haveAccount:'I have an account', name:'Name',
+    regTitle:'Create account', regSubtitle:'Save your bookings and track them anytime', createAccount:'Create account',
     ownerLoginTitle:'Owner login', ownerLoginSubtitle:'Fields and bookings dashboard', back:'Back',
-    searchPh:'Search for a place or area...', search:'Search', availableFields:'Available fields', refresh:'Refresh ↺',
+    searchPh:'Type a place or area name…', search:'Search', availableFields:'Available fields', refresh:'Refresh',
     filters:'Filters', sortLabel:'Sort', all:'All', allRegions:'All regions', priceJod:'Price (JOD)',
     from:'From', to:'To', fieldSize:'Field size', type:'Type', rating:'Rating', availableToday:'Available today only',
     amenities:'Amenities', apply:'Apply', clearAll:'Clear all', noData:'No data',
@@ -2177,11 +2247,11 @@ const I18N = {
     viewTimes:'View times →', chooseField:'Choose field →', oneField:'One field', fieldsCount:'{n} fields',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
     available:'Available', noServices:'No services information has been added yet.', noTimesDay:'🚫 No available times on this day. Try another day.',
-    locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking →', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
+    locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
     reviewTitle:'Review booking', stepField:'Field', stepDate:'Time', stepConfirm:'Confirm',
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status',
     twoHours:'2 hours', statusGuest:'Guest', statusPlayer:'Registered player',
-    bkNote:'After sending, your request awaits the field’s confirmation.', confirmBooking:'Confirm booking →', changeTime:'Change time',
+    bkNote:'Once sent, your request goes to the field management — it’s confirmed after their approval, and you can track it under “My bookings”.', confirmBooking:'Confirm booking', changeTime:'Change time',
     authTitle:'One last step to finish booking', authDesc:'Log in or create an account — your selection (field, day and time) is saved and we’ll continue from the same point.',
     authBackEdit:'Back to edit time',
     navHome:'Home', navBookings:'Bookings', navAccount:'Account', navOwner:'Dashboard',
@@ -2193,7 +2263,7 @@ const I18N = {
     bookingConflict:'Unfortunately, the selected time was booked a moment ago. Please choose another time.',
     bookingSent:'Your request was sent! It awaits the field’s confirmation.', langSwitch:'العربية', today:'Today', tomorrow:'Tomorrow',
     noResultsTitle:'No matching fields', noResultsSub:'No matching fields found. Try changing the area or price, or clear the filters.', noResultsSubPlain:'No fields available right now.', clearFiltersBtn:'Clear all filters',
-    regionLbl:'Region', filtersTitle:'Filters & sorting', filtersSub:'Filter by the available field data.', addManual:'+ Add external booking', externalBooking:'External booking',
+    regionLbl:'Region', filtersTitle:'Filters & sorting', filtersSub:'Narrow your results: region, price, size, surface type, or rating.', addManual:'Add external booking', externalBooking:'External booking',
     apiTimeout:'The connection took longer than expected. Please try again.', apiError:'A connection error occurred, please try again.', apiCached:'Showing temporarily cached data; times may need refreshing.', timesUpdateFail:'Couldn’t update the times right now.',
     statusConfirmed:'Confirmed', statusPending:'Processing', statusCancelled:'Cancelled', statusRejected:'Rejected', statusInProgress:'Playing now',
     ownerTitle:'Owner dashboard', exit:'Exit',
@@ -2203,13 +2273,13 @@ const I18N = {
     filterBookings:'Filter bookings', searchNamePhone:'Search by name or phone...', allStatuses:'All statuses', allFields:'All fields',
     optPending:'Awaiting confirmation', optConfirmed:'Confirmed', optCancelled:'Cancelled', optRejected:'Rejected',
     bookingsWord:'Bookings', fullHistory:'Show full history', hideOld:'Hide old bookings', clearFilter:'Clear filter',
-    manageFields:'Manage fields', addFieldBtn:'+ Add field',
+    manageFields:'Manage fields', addFieldBtn:'Add field',
     allBookings:'All bookings', hintAllReq:'All requests', confirmedLbl:'Confirmed', hintInRevenue:'Counted in revenue', pendingConfirm:'Awaiting confirmation', hintNeedFollow:'Need follow-up',
     revenueSummary:'Revenue summary', commission10:'10% commission', siteRevenue:'Site revenue', platformProfit:'Platform profit', ownerNet:'Owner net',
     perfTitle:'Performance', confirmRate:'Confirmation rate', topField:'Most booked field', topSource:'Top booking source',
     econTitle:'Economic stats', smartDecisions:'Smart decisions', occupancy:'Occupancy', hintBookedAvail:'Booked ÷ available', lostRevenue:'Lost revenue', hintEmptyPrice:'Empty slots × price', cancelRateLbl:'Cancel / reject', hintLessBetter:'The lower the better', bestTime:'Peak time', hintForPricing:'Useful for pricing', siteShare:'Site bookings', hintDirectVsExt:'Direct vs external', returnRate:'Return rate', hintSameNumber:'Same number more than once',
     pendingReply:'Awaiting your reply', restToday:'Rest of today’s bookings', noBookingsToday:'No bookings today', noBookingsTodaySub:'No bookings or requests for today. Enjoy your day or add an external booking.', noBookingsDay:'No bookings on this day',
-    actConfirm:'Confirm ✓', actReject:'Reject', actCancel:'Cancel', actWhatsapp:'WhatsApp', edit:'Edit',
+    actConfirm:'Confirm', actReject:'Reject', actCancel:'Cancel', actWhatsapp:'WhatsApp', edit:'Edit',
     confirmBookingTitle:'Confirm booking', confirmBookingMsg:'Confirm this booking? The player will get a WhatsApp notification.', reasonRequired:'A reason is required — write a clear reason for the player',
     cancelReasonTitle:'Cancellation reason', rejectReasonTitle:'Rejection reason', reasonHint:'Write the reason shown to the player (prepared as a WhatsApp message, required).', confirmWord:'Confirm',
     last7:'Last 7 days', unknownPlace:'Unknown place', loadingWord:'Loading...', loadingFields:'Loading field details...',
@@ -2223,12 +2293,12 @@ const I18N = {
     reviewNeed:'Choose the number of stars first', reviewOk:'Thanks, your review was sent.', reviewFail:'Couldn’t send the review', reviewErr:'An error occurred sending the review',
     bookingFailRetry:'Booking failed, please try again', bookingConnLag:'The connection to the sheet lagged, please try again.',
     welcomeHi:'Hi', welcomeYou:'there',
-    successDone:'Done!', successOkBtn:'OK ✓',
+    successDone:'Done!', successOkBtn:'OK',
     noBookingsYet:'No bookings yet', noBookingsYetSub:'Browse fields and book your first one — it takes seconds!',
     loginToSee:'Log in', loginToSeeSub:'You need to log in to see and track your bookings.', connProblem:'Connection problem', connProblemSub:'Couldn’t fetch the bookings. Check your network and try again.',
     noFieldsTitle:'No fields', noFieldsSub:'Add your first field to start receiving bookings.', noMatchBookings:'No matching bookings', noMatchBookingsSub:'Try changing the filter or date to view other bookings.', fetchFail:'Couldn’t fetch the data', fetchFailSub:'Check your connection and try again.',
-    manualTitle:'Add external booking', manualSub:'Added as confirmed directly and blocks the time for players.', fieldLbl:'Field', dayLbl:'Day', timeLbl:'Time', ownerNameLbl:'Booker’s name', priceLbl:'Price', saveBookingBtn:'Save booking →',
-    editFieldTitle:'Edit field', addFieldTitle:'Add new field', fieldNameLbl:'Field name', sizeLbl:'Size', slotsLbl:'Times', activeLbl:'Active', saveBtn:'Save →', slotFull:'Full — all day', slotMorning:'Morning', slotEvening:'Evening',
+    manualTitle:'Add external booking', manualSub:'Added as confirmed directly and blocks the time for players.', fieldLbl:'Field', dayLbl:'Day', timeLbl:'Time', ownerNameLbl:'Booker’s name', priceLbl:'Price', saveBookingBtn:'Save booking',
+    editFieldTitle:'Edit field', addFieldTitle:'Add new field', fieldNameLbl:'Field name', sizeLbl:'Size', slotsLbl:'Times', activeLbl:'Active', saveBtn:'Save', slotFull:'Full — all day', slotMorning:'Morning', slotEvening:'Evening',
     cancelBookingBtn:'✕ Cancel booking', reasonPrefix:'Reason: ', reasonPlaceholder:'e.g., the time isn’t available or there is maintenance...', reasonTitleDefault:'Update reason', cancelWord:'Cancel', backWord:'Back',
     rateModalTitle:'Rate this place', yourNamePh:'Your name', phonePh:'Phone number', commentPh:'Optional comment', submitReviewBtn:'Send review',
     stAvailable:'Available', stSelected:'Selected', stTaken:'Booked', bookedTag:'Booked',
@@ -2266,6 +2336,7 @@ const I18N = {
     placeStatsTitle:'Field stats',
     skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
+    firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Browse the fields, pick your day and time, and book in seconds.',
   }
 };
 function t(key, params){
@@ -2546,7 +2617,7 @@ async function loadData(opts={}){
 function updateTrust(){ const el=$('#trustPlaces'); if(el && State.places.length) el.textContent = State.places.reduce((s,p)=>s+(p.fields||[]).length,0)+'+'; }
 
 /* ===================== UI: TOAST / LOADING ===================== */
-function toast(message, type='error'){
+function toast(message, type='error', ms=3400){
   const el = $('#toast'); if(!el) return;
   const icons = { success:'✓', error:'✕', warn:'!' };
   clear(el);
@@ -2554,7 +2625,7 @@ function toast(message, type='error'){
   el.className = 'toast ' + type;
   clearTimeout(toast._t);
   requestAnimationFrame(() => el.classList.add('show'));
-  toast._t = setTimeout(() => el.classList.remove('show'), 3400);
+  toast._t = setTimeout(() => el.classList.remove('show'), ms);
 }
 
 /* مؤشّر تحميل على الزر + تعطيله (يمنع النقر المزدوج Double-Submit) */
@@ -2877,7 +2948,7 @@ function placeCard(p, eager){
       h('div',{class:'place-name'}, p.place_name),
       h('div',{class:'place-meta'},
         h('div',{class:'place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(p)),
-        h('div',{class:'place-rating'}, '⭐ '+ratingText(p))))
+        h('div',{class:'place-rating'}, '★ '+ratingText(p))))
   );
 
   const bookBtn = h('button',{class:'place-book-btn'}, oneField?t('viewTimes'):t('chooseField'));
@@ -2952,7 +3023,7 @@ function renderFiltersSheet(){
   types.length ? types.forEach(t=>{ const c=fxChip(t, fx.types.includes(t)); c.addEventListener('click',()=>{ toggleArr(fx.types,t); renderFiltersSheet(); }); tp.append(c); })
                : tp.append(h('span',{class:'fx-empty'},t('noData')));
   // التقييم
-  const rt=$('#fxRating'); clear(rt); [4,3,2].forEach(r=>{ const c=fxChip('⭐ '+r+'+', fx.minRating===r); c.addEventListener('click',()=>{ fx.minRating = fx.minRating===r?0:r; renderFiltersSheet(); }); rt.append(c); });
+  const rt=$('#fxRating'); clear(rt); [4,3,2].forEach(r=>{ const c=fxChip('★ '+r+'+', fx.minRating===r); c.addEventListener('click',()=>{ fx.minRating = fx.minRating===r?0:r; renderFiltersSheet(); }); rt.append(c); });
   // متاح اليوم
   $('#fxToday').checked = !!fx.availableToday;
   // المرافق
@@ -2991,7 +3062,7 @@ async function openDetail(placeId){
   setText('dPrice', formatCurrency(place.fields[0].price));
 
   const badges=$('#dBadges'); clear(badges);
-  badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(place)));
+  badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '★ '+ratingText(place)));
 
   // الغلاف + معرض صور (جاهز لعدة صور؛ صورة واحدة تبقى مفردة بلا تكرار وهمي)
   const hero=$('#detailHero'); $$('#detailHero img').forEach(n=>n.remove());
@@ -3500,7 +3571,7 @@ function renderOwnerBookings(){
       const pills=h('div',{class:'pills'});
       if(c)pills.append(h('span',{},`✓ ${c}`)); if(p)pills.append(h('span',{},`⏳ ${p}`)); if(x)pills.append(h('span',{},`✕ ${x}`));
       const wrap=h('div',{style:{marginBottom:'22px'}},
-        h('div',{class:'day-group '+(isToday?'today':isPast?'past':'future')}, h('span',{}, '📅 '+lbl), pills));
+        h('div',{class:'day-group '+(isToday?'today':isPast?'past':'future')}, h('span',{}, lbl), pills));
       dayB.forEach(b=>wrap.append(ownerBookingCard(b)));
       el.append(wrap);
     });
@@ -3783,7 +3854,7 @@ async function submitReview(btn){
       if(!res.success){ toast(apiMsg(res.message)||t('reviewFail'),'error'); return; }
       Modal.close('modal-review'); showSimpleSuccess(t('reviewOk'));
       await loadData({force:true});
-      const updated=State.places.find(p=>String(p.place_id)===id); if(updated&&State.detail.place){ State.detail.place=updated; const b=$('#dBadges'); if(b&&$('#page-detail').classList.contains('active')){ clear(b); b.append(h('span',{class:'badge badge-green'},updated.type||''), h('span',{class:'badge badge-blue'}, '⭐ '+ratingText(updated))); renderPlaceStats(); } }
+      const updated=State.places.find(p=>String(p.place_id)===id); if(updated&&State.detail.place){ State.detail.place=updated; const b=$('#dBadges'); if(b&&$('#page-detail').classList.contains('active')){ clear(b); b.append(h('span',{class:'badge badge-green'},updated.type||''), h('span',{class:'badge badge-blue'}, '★ '+ratingText(updated))); renderPlaceStats(); } }
     }catch(_){ toast(t('reviewErr'),'error'); }
   });
 }
@@ -3982,6 +4053,13 @@ async function init(){
     }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
   }
   showPage('welcome');
+  // رسالة ترحيبية لأول زيارة فقط (لا تظهر بعدها)
+  try{
+    if(!localStorage.getItem('mustadaira:welcomed')){
+      localStorage.setItem('mustadaira:welcomed','1');
+      setTimeout(()=>toast(t('firstVisitWelcome'),'success',6500), 1100);
+    }
+  }catch(_){}
 }
 init();
 
