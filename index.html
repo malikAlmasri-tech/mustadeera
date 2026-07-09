@@ -132,7 +132,7 @@ body.dark{
 
 /* ---------- BASE ---------- */
 html,body{height:100%;direction:rtl;color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.6;overflow-x:hidden;transition:background-color var(--t-base) var(--ease-out),color var(--t-base) var(--ease-out)}
+body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.6;overflow-x:hidden;transition:background-color .45s var(--ease-out),color .45s var(--ease-out)}
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
 
@@ -189,10 +189,11 @@ button{cursor:pointer;border:none;background:none}
 a{color:inherit;text-decoration:none}
 ::selection{background:rgba(18,158,90,.25)}
 
-/* انتقال هادئ عند تبديل الثيم — :where() بتخصيص صفري كي لا يُلغي انتقالات
-   الـhover في المكوّنات (تلك تبقى أولى). فقط الأسطح الكبيرة تنتقل ألوانها. */
-:where(.card,.finput,.modal,.scard,.detail-section,.stat-card,.econ-item,.lp-feature,.lp-step,.lp-stat,.lp-nav,.bnav,.owner-tabs,.toast,.region-tabs,.filter-bar){
-  transition:background-color var(--t-base) var(--ease-out),border-color var(--t-base) var(--ease-out),color var(--t-base) var(--ease-out)}
+/* انتقال ثيم سلس جداً وشامل — :where() بتخصيص صفري كي لا يُلغي انتقالات
+   الـhover الخاصة بالمكوّنات (أي قاعدة مكوّن تتفوق عليه تلقائياً).
+   يشمل كل الوسوم الشائعة فتتحوّل ألوان الصفحة كلها بتزامن ناعم واحد. */
+:where(body,section,header,footer,nav,main,aside,div,p,span,a,li,ul,ol,h1,h2,h3,h4,figure,figcaption,blockquote,button,input,select,textarea,label,legend,fieldset,details,summary,strong,em,small,td,th){
+  transition:background-color .45s var(--ease-out),border-color .45s var(--ease-out),color .45s var(--ease-out),fill .45s var(--ease-out),stroke .45s var(--ease-out),box-shadow .45s var(--ease-out)}
 
 /* ---------- PAGES / ROUTER ---------- */
 .page{display:none;padding-bottom:calc(var(--tap) + 54px);min-height:100vh;position:relative;z-index:1}
@@ -1206,11 +1207,13 @@ input[type=number].finput{-moz-appearance:textfield;appearance:textfield}
    ⚡ STADIUM ENERGY — هوية «ملعب Volt» الحيوية (CSS فقط)
    ============================================================= */
 
-/* ---------- أيقونة الثيم قمر/شمس SVG بدل الإيموجي (JS يكتب النص — نخفيه ونرسم فوقه) ---------- */
-button[data-action="toggleTheme"]{font-size:0!important;line-height:0}
-button[data-action="toggleTheme"]::before{content:'';width:19px;height:19px;display:inline-block;background:currentColor;
-  -webkit-mask:var(--icon-moon) center/contain no-repeat;mask:var(--icon-moon) center/contain no-repeat}
-body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--icon-sun);mask-image:var(--icon-sun)}
+/* ---------- أيقونة الثيم قمر/شمس SVG بدل الإيموجي (JS يكتب النص — نخفيه ونرسم فوقه)
+   inline-grid + place-items يضمنان تمركزاً تاماً مهما كان نوع الزر (grid/flex/عادي) ---------- */
+button[data-action="toggleTheme"]{display:inline-grid;place-items:center;font-size:0!important;line-height:0}
+button[data-action="toggleTheme"]::before{content:'';width:19px;height:19px;display:block;background:currentColor;
+  -webkit-mask:var(--icon-moon) center/contain no-repeat;mask:var(--icon-moon) center/contain no-repeat;
+  transition:transform .5s var(--ease-spring)}
+body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--icon-sun);mask-image:var(--icon-sun);transform:rotate(180deg)}
 
 /* ---------- نبضة «مباشر» على شارة الهيرو (طاقة ملعب) ---------- */
 .lp-badge{gap:8px}
@@ -1290,12 +1293,23 @@ html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="
 .spinner{border:0;background:conic-gradient(from 0deg,transparent 12%,currentColor);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2.5px));
   animation:spin .8s linear infinite}
-.place-loader-orbit.o-outer{border:0;background:conic-gradient(from 0deg,transparent 22%,var(--primary));
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));
-  animation:spin 1s cubic-bezier(.62,.13,.39,.91) infinite}
-.place-loader-orbit.o-inner{border:0;background:conic-gradient(from 180deg,transparent 30%,var(--accent));
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
-  animation:spin .8s cubic-bezier(.62,.13,.39,.91) infinite reverse}
+/* لودر «الكرة النطّاطة» — كرة بهوية المنصة تقفز فوق ظل يتنفّس (أدفأ من الحلقات) */
+.place-loader-orbit.o-inner{display:none}
+.place-loader-orbit.o-outer{border:0;width:30px;height:7px;border-radius:50%;
+  background:color-mix(in srgb,var(--ink) 24%,transparent);-webkit-mask:none;mask:none;filter:blur(1px);
+  transform:translateY(19px);animation:ballShadow .58s cubic-bezier(.45,0,1,1) infinite alternate}
+.place-loader-core{width:20px;height:20px;border-radius:50%;box-shadow:none;
+  background:radial-gradient(circle at 32% 28%,var(--copper-hover) 0 16%,var(--primary) 62%);
+  animation:ballBounce .58s cubic-bezier(.45,0,1,1) infinite alternate}
+@keyframes ballBounce{0%{transform:translateY(-17px) scale(1,1)}88%{transform:translateY(7px) scale(1,1)}100%{transform:translateY(9px) scale(1.18,.8)}}
+@keyframes ballShadow{0%{transform:translateY(19px) scale(.45);opacity:.35}100%{transform:translateY(19px) scale(1.1);opacity:.75}}
+
+/* ---------- سلاسة الثيم للأسطح ذات انتقالات hover خاصة ----------
+   قوائم انتقالها الأصلية تفتقد ألوان الخلفية/النص فتقفز عند تبديل الثيم؛
+   هنا نعيد تعريفها: الحركة تبقى سريعة والألوان تنتقل بنعومة .45s */
+.lp-feature,.lp-step,.lp-stat,.lp-region,.lp-review,.place-card{
+  transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base) var(--ease-out),
+    border-color .45s var(--ease-out),background-color .45s var(--ease-out),color .45s var(--ease-out)}
 
 </style>
 </head>
@@ -2093,127 +2107,127 @@ const AMENITY = {
 /* ===================== I18N (عربي / إنجليزي) ===================== */
 const I18N = {
   ar: {
-    brandTag:'احجز ملعبك بثواني، بلا وجع راس', nav_features:'المميزات', nav_how:'كيف بيشتغل', nav_stats:'الأرقام',
-    login:'فوت عالملعب', register:'سجّل وانزل عالساحة', startNow:'يلا نبلّش', browseFields:'لِفّ عالملاعب',
-    heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك ع راحتك مع',
-    heroSub:'لِفّ عالملاعب القريبة منك، شوف آخر الأوقات الفاضية، وابعت طلب حجزك بثواني — وتابع تأكيده مع إدارة الملعب.',
-    ownerLink:'عندك ملعب؟ فوت من هون كمالك', statPlaces:'ملعب جاهز إلك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا لفّ',
-    statAnytime:'لِفّ بأي وقت', statFree:'ببلاش', statFreeLbl:'بلا رسوم تصفّح',
-    featuresEyebrow:'المميزات', featuresTitlePre:'ليش', featuresTitleBrand:'المستديرة؟',
-    featuresSub:'كل اللي بتحتاجه عشان تحجز ملعبك بلا لفّ ودوران — وكل اللي بيحتاجه المالك عشان يدير ملاعبه زي المحترفين.',
-    feat1Title:'اختيار وحجز أسهل', feat1Text:'شوف الأوقات الفاضية، اختار اليوم والوقت، وابعت طلب الحجز — كله بخطوات واضحة ومعدودة.',
-    feat2Title:'اعرف الملعب قبل ما تروح', feat2Text:'الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — كل شي قدّامك قبل ما تقرّر.',
-    feat3Title:'متابعة واضحة للحجز', feat3Text:'من حسابك بتتابع حالة الحجز وردّ إدارة الملعب، وبتتواصل معهم لما تتوفّر وسيلة التواصل.',
-    howEyebrow:'كيف بيشتغل', howTitlePre:'3 خطوات وبتكون', howTitleHi:'جاهز تلعب',
-    step1Title:'لِفّ واختار', step1Text:'افتح قائمة الملاعب واختار اللي بيناسبك حسب المنطقة والسعر.',
-    step2Title:'حدّد الموعد', step2Text:'اختار اليوم والوقت الفاضي اللي بيزبط معك من جدول الأوقات.',
-    step3Title:'ابعت وتابع', step3Text:'ابعت طلب الحجز وتابع تأكيده مع إدارة الملعب — وجهّز جزمتك!',
-    calloutTitle:'جاهز تحجز ملعبك الجاي؟', calloutSub:'صار حجز الملاعب أسهل من أي وقت. بلّش بلا حساب، أو سجّل دخولك وتابع حجوزاتك ع راحتك.',
-    startFree:'بلّش ببلاش', haveField:'عندي ملعب', footerLogin:'فوت عالملعب', footerOwner:'دخول المالك',
-    footerCopy:'© 2026 المستديرة — كل الحقوق محفوظة.',
-    loginTitle:'دخول اللاعب', loginSubtitle:'فوت عشان تشوف وتتابع حجوزاتك', phone:'رقم الهاتف', password:'كلمة السر',
-    enter:'فوت', browseNoAccount:'بدّي بس ألِفّ بلا حساب', haveAccount:'عندي حساب', name:'الاسم',
-    regTitle:'سجّل وانزل عالساحة', regSubtitle:'خزّن حجوزاتك وتابعها وقت ما بدّك', createAccount:'سوّي الحساب',
+    brandTag:'احجز ملعبك في ثوانٍ وبكل سهولة', nav_features:'المميزات', nav_how:'كيف يعمل', nav_stats:'الأرقام',
+    login:'تسجيل الدخول', register:'إنشاء حساب', startNow:'ابدأ الآن', browseFields:'تصفّح الملاعب',
+    heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك بكل سهولة مع',
+    heroSub:'تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — ثم تابع تأكيده مع إدارة الملعب.',
+    ownerLink:'تملك ملعباً؟ ادخل من هنا كمالك', statPlaces:'ملعب متاح لك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا عناء',
+    statAnytime:'تصفّح في أي وقت', statFree:'مجاني', statFreeLbl:'بلا رسوم تصفّح',
+    featuresEyebrow:'المميزات', featuresTitlePre:'لماذا', featuresTitleBrand:'المستديرة؟',
+    featuresSub:'كل ما تحتاجه لحجز ملعبك بسهولة — وكل ما يحتاجه المالك لإدارة ملاعبه باحتراف.',
+    feat1Title:'اختيار وحجز أسهل', feat1Text:'اطّلع على الأوقات المتاحة، اختر اليوم والوقت، وأرسل طلب الحجز — كل ذلك بخطوات واضحة ومعدودة.',
+    feat2Title:'اعرف الملعب قبل الذهاب', feat2Text:'الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — كل المعلومات أمامك قبل أن تقرر.',
+    feat3Title:'متابعة واضحة للحجز', feat3Text:'من حسابك تتابع حالة الحجز وردّ إدارة الملعب، وتتواصل معهم عند توفر وسيلة التواصل.',
+    howEyebrow:'كيف يعمل', howTitlePre:'3 خطوات وتكون', howTitleHi:'جاهزاً للعب',
+    step1Title:'تصفّح واختر', step1Text:'افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.',
+    step2Title:'حدّد الموعد', step2Text:'اختر اليوم والوقت المتاح الذي يناسبك من جدول الأوقات.',
+    step3Title:'أرسل وتابع', step3Text:'أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — واستعدّ للمباراة!',
+    calloutTitle:'جاهز لحجز ملعبك القادم؟', calloutSub:'أصبح حجز الملاعب أسهل من أي وقت مضى. ابدأ بلا حساب، أو سجّل دخولك لمتابعة حجوزاتك بسهولة.',
+    startFree:'ابدأ مجاناً', haveField:'أملك ملعباً', footerLogin:'تسجيل الدخول', footerOwner:'دخول المالك',
+    footerCopy:'© 2026 المستديرة — جميع الحقوق محفوظة.',
+    loginTitle:'دخول اللاعب', loginSubtitle:'سجّل دخولك لعرض حجوزاتك ومتابعتها', phone:'رقم الهاتف', password:'كلمة السر',
+    enter:'دخول', browseNoAccount:'أريد التصفّح بلا حساب', haveAccount:'لديّ حساب', name:'الاسم',
+    regTitle:'إنشاء حساب', regSubtitle:'احفظ حجوزاتك وتابعها في أي وقت', createAccount:'إنشاء الحساب',
     ownerLoginTitle:'دخول المالك', ownerLoginSubtitle:'لوحة تحكم الملاعب والحجوزات', back:'رجوع',
-    searchPh:'اكتب اسم المكان أو المنطقة…', search:'دوّر', availableFields:'الملاعب الجاهزة', refresh:'تحديث',
+    searchPh:'اكتب اسم المكان أو المنطقة…', search:'ابحث', availableFields:'الملاعب المتاحة', refresh:'تحديث',
     filters:'الفلاتر', sortLabel:'الترتيب', all:'الكل', allRegions:'كل المناطق', priceJod:'السعر (دينار)',
-    from:'من', to:'إلى', fieldSize:'حجم الملعب', type:'النوع', rating:'التقييم', availableToday:'الجاهز اليوم بس',
-    amenities:'المرافق', apply:'طبّق', clearAll:'فضّيها كلها', noData:'ما في بيانات',
-    sortDefault:'الافتراضي', sortPriceAsc:'الأرخص', sortPriceDesc:'الأغلى', sortRating:'الأعلى تقييماً', sortReviews:'الأكثر مراجعات', sortSoonest:'الأقرب وقتاً',
-    availToday:'جاهز اليوم', availLater:'جاهز لاحقاً', availFull:'كومبليه اليوم', availNone:'ما في أوقات',
-    viewTimes:'ورّيني الأوقات →', chooseField:'اختار الملعب →', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
-    servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختار الملعب', chooseDay:'اختار اليوم', chooseTime:'اختار الوقت',
-    available:'متوفرة', noServices:'لسا ما تنحطّت معلومات عن الخدمات.', noTimesDay:'🚫 ما في أوقات فاضية بهاليوم. جرّب يوم تاني.',
-    locationBtn:'الموقع', callBtn:'دقّ تلفون', rateThisPlace:'قيّم هالمكان', continueBooking:'كمّل الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
+    from:'من', to:'إلى', fieldSize:'حجم الملعب', type:'النوع', rating:'التقييم', availableToday:'المتاح اليوم فقط',
+    amenities:'المرافق', apply:'تطبيق', clearAll:'مسح الكل', noData:'لا توجد بيانات',
+    sortDefault:'الافتراضي', sortPriceAsc:'الأقل سعراً', sortPriceDesc:'الأعلى سعراً', sortRating:'الأعلى تقييماً', sortReviews:'الأكثر مراجعات', sortSoonest:'الأقرب وقتاً',
+    availToday:'متاح اليوم', availLater:'متاح لاحقاً', availFull:'مكتمل اليوم', availNone:'لا توجد أوقات',
+    viewTimes:'عرض الأوقات →', chooseField:'اختر الملعب →', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
+    servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
+    available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'🚫 لا توجد أوقات متاحة في هذا اليوم. جرّب يوماً آخر.',
+    locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
     reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'الموعد', stepConfirm:'التأكيد',
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
-    twoHours:'ساعتين', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
-    bkNote:'بس تبعت الطلب بيوصل إدارة الملعب — الحجز بينأكّد بعد موافقتهم، وبتقدر تتابع حالته من «حجوزاتي».', confirmBooking:'توكل على الله وأكّد', changeTime:'غيّر الموعد',
-    authTitle:'هانت! ضايل هالتكة وبتصير بالملعب', authDesc:'سجّل دخولك أو سوّي حساب — اختيارك (الملعب واليوم والوقت) محفوظ وبنكمّل من نفس المحل.',
-    authBackEdit:'رجوع لتعديل الموعد',
+    twoHours:'ساعتان', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
+    bkNote:'بعد إرسال الطلب يصل إلى إدارة الملعب — يتأكد الحجز بعد موافقتهم، ويمكنك متابعة حالته من «حجوزاتي».', confirmBooking:'تأكيد الحجز', changeTime:'تغيير الموعد',
+    authTitle:'خطوة أخيرة ويكتمل حجزك', authDesc:'سجّل دخولك أو أنشئ حساباً — اختيارك (الملعب واليوم والوقت) محفوظ وسنكمل من النقطة نفسها.',
+    authBackEdit:'عودة لتعديل الموعد',
     navHome:'الرئيسية', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
-    accountTitle:'حسابي', accountSub:'بيانات حساب اللاعب', saveEdit:'خزّن التعديل', logout:'سكّر وطلّع',
-    bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك بمحل واحد',
-    grpUpcoming:'الحجوزات الجاية', grpPending:'مستنّي التأكيد', grpPast:'الحجوزات اللي راحت', grpCancelled:'ملغاة / مرفوضة',
+    accountTitle:'حسابي', accountSub:'بيانات حساب اللاعب', saveEdit:'حفظ التعديل', logout:'تسجيل الخروج',
+    bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك في مكان واحد',
+    grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
-    chooseFirst:'اختار الملعب الأول.', chooseDayMsg:'اختار اليوم اللي بيزبط.', chooseTimeMsg:'اختار وقت فاضي عشان تكمّل.',
-    bookingConflict:'يا للخسارة، الوقت اللي اخترته انحجز قبل شوي. اختار غيره.',
-    bookingSent:'وصل طلبك! الحجز هلأ مستنّي تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'بكرا',
-    noResultsTitle:'يا خسارة، الملاعب مفلّلة أو مش موجودة', noResultsSub:'ما لقينا إشي بهالمواصفات. غيّر المنطقة أو السعر، أو فضّي الفلاتر وجرّب كمان مرة.', noResultsSubPlain:'ما في ملاعب جاهزة هلأ.', clearFiltersBtn:'فضّي كل الفلاتر',
-    regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'ضيّق نتائجك: منطقة، سعر، حجم، نوع أرضية، أو تقييم.', addManual:'زيد حجز خارجي', externalBooking:'حجز خارجي',
-    apiTimeout:'النت دلّع وأخد وقت أطول من اللازم. جرّب كمان مرة.', apiError:'صار في خربطة بالاتصال، جرّب كمان مرة.', apiCached:'عم نوّريك بيانات مخزّنة مؤقتاً، يمكن الأوقات بدها تحديث.', timesUpdateFail:'ما قدرنا نجدّد الأوقات هلأ.',
-    statusConfirmed:'مؤكد', statusPending:'قيد المعالجة', statusCancelled:'ملغى', statusRejected:'مرفوض', statusInProgress:'عم يلعبوا هلأ',
+    chooseFirst:'اختر الملعب أولاً.', chooseDayMsg:'اختر اليوم المناسب.', chooseTimeMsg:'اختر وقتاً متاحاً للمتابعة.',
+    bookingConflict:'للأسف، حُجز هذا الوقت قبل قليل. اختر وقتاً آخر.',
+    bookingSent:'وصل طلبك! الحجز الآن بانتظار تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'غداً',
+    noResultsTitle:'لا توجد نتائج مطابقة', noResultsSub:'لم نجد ملاعب بهذه المواصفات. غيّر المنطقة أو السعر، أو امسح الفلاتر وحاول مجدداً.', noResultsSubPlain:'لا توجد ملاعب متاحة حالياً.', clearFiltersBtn:'مسح كل الفلاتر',
+    regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'ضيّق نتائجك: المنطقة، السعر، الحجم، نوع الأرضية، أو التقييم.', addManual:'إضافة حجز خارجي', externalBooking:'حجز خارجي',
+    apiTimeout:'استغرق الاتصال وقتاً أطول من المعتاد. حاول مرة أخرى.', apiError:'حدث خطأ في الاتصال، حاول مرة أخرى.', apiCached:'نعرض بيانات محفوظة مؤقتاً — قد تحتاج الأوقات إلى تحديث.', timesUpdateFail:'تعذّر تحديث الأوقات حالياً.',
+    statusConfirmed:'مؤكد', statusPending:'قيد المعالجة', statusCancelled:'ملغى', statusRejected:'مرفوض', statusInProgress:'المباراة جارية الآن',
     ownerTitle:'لوحة المالك', exit:'خروج',
-    otTodayLbl:'حجوزات اليوم', otPendingLbl:'مستنّية ردّك', otRevenueLbl:'إيراد اليوم المتوقّع', otFreeLbl:'أوقات فاضية اليوم',
-    hintByPlayDate:'حسب تاريخ اللعب', hintTodayReq:'طلبات اليوم', hintConfToday:'المؤكّد اليوم', hintBookable:'بتنحجز',
-    externalDesc:'حجوزات واتساب أو تلفون — زيدها هون عشان تسكّر الوقت بوجه اللاعبين.', todayRequests:'طلبات وحجوزات اليوم',
-    filterBookings:'فلترة الحجوزات', searchNamePhone:'دوّر بالاسم أو رقم التلفون...', allStatuses:'كل الحالات', allFields:'كل الملاعب',
-    optPending:'مستنّية التأكيد', optConfirmed:'مؤكدة', optCancelled:'ملغاة', optRejected:'مرفوضة',
-    bookingsWord:'الحجوزات', fullHistory:'ورّيني السجل كامل', hideOld:'خبّي القديمة', clearFilter:'شيل الفلتر',
-    manageFields:'إدارة الملاعب', addFieldBtn:'زيد ملعب',
-    allBookings:'كل الحجوزات', hintAllReq:'كل الطلبات', confirmedLbl:'مؤكدة', hintInRevenue:'بتدخل بالإيراد', pendingConfirm:'مستنّية التأكيد', hintNeedFollow:'بدها متابعة',
+    otTodayLbl:'حجوزات اليوم', otPendingLbl:'بانتظار ردّك', otRevenueLbl:'إيراد اليوم المتوقّع', otFreeLbl:'أوقات متاحة اليوم',
+    hintByPlayDate:'حسب تاريخ اللعب', hintTodayReq:'طلبات اليوم', hintConfToday:'المؤكد اليوم', hintBookable:'قابلة للحجز',
+    externalDesc:'حجوزات واتساب أو الهاتف — أضفها هنا لإغلاق الوقت أمام اللاعبين.', todayRequests:'طلبات وحجوزات اليوم',
+    filterBookings:'فلترة الحجوزات', searchNamePhone:'ابحث بالاسم أو رقم الهاتف…', allStatuses:'كل الحالات', allFields:'كل الملاعب',
+    optPending:'بانتظار التأكيد', optConfirmed:'مؤكدة', optCancelled:'ملغاة', optRejected:'مرفوضة',
+    bookingsWord:'الحجوزات', fullHistory:'عرض السجل الكامل', hideOld:'إخفاء القديمة', clearFilter:'مسح الفلتر',
+    manageFields:'إدارة الملاعب', addFieldBtn:'إضافة ملعب',
+    allBookings:'كل الحجوزات', hintAllReq:'كل الطلبات', confirmedLbl:'مؤكدة', hintInRevenue:'تدخل في الإيراد', pendingConfirm:'بانتظار التأكيد', hintNeedFollow:'تحتاج متابعة',
     revenueSummary:'ملخّص الإيراد', commission10:'عمولة 10%', siteRevenue:'إيراد الموقع', platformProfit:'ربح المنصة', ownerNet:'صافي المالك',
-    perfTitle:'مؤشّرات الأداء', confirmRate:'نسبة التأكيد', topField:'الملعب الأكثر حجزاً', topSource:'أحسن مصدر للحجوزات',
-    econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد راح عليك', hintEmptyPrice:'الأوقات الفاضية × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كل ما قلّت أحسن', bestTime:'أكثر وقت عليه طلب', hintForPricing:'بيفيدك بالتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل الرجوع', hintSameNumber:'نفس الرقم أكثر من مرة',
-    pendingReply:'مستنّية ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'اليوم صفر حجوزات', noBookingsTodaySub:'ما في ولا حجز أو طلب اليوم. ارتاح وخُد يومك، أو زيد حجز خارجي.', noBookingsDay:'ما في حجوزات بهاليوم',
+    perfTitle:'مؤشّرات الأداء', confirmRate:'نسبة التأكيد', topField:'الملعب الأكثر حجزاً', topSource:'أفضل مصدر للحجوزات',
+    econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد ضائع', hintEmptyPrice:'الأوقات الفارغة × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كلما قلّت كان أفضل', bestTime:'الوقت الأكثر طلباً', hintForPricing:'مفيد للتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل العودة', hintSameNumber:'الرقم نفسه أكثر من مرة',
+    pendingReply:'بانتظار ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'لا حجوزات اليوم', noBookingsTodaySub:'لا توجد حجوزات أو طلبات اليوم. يمكنك إضافة حجز خارجي عند الحاجة.', noBookingsDay:'لا حجوزات في هذا اليوم',
     actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
-    confirmBookingTitle:'تأكيد الحجز', confirmBookingMsg:'بدك تأكّد هالحجز؟ رح يوصل اللاعب إشعار واتساب.', reasonRequired:'السبب لازم — اكتب سبب واضح للاعب',
-    cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب اللي رح يشوفه اللاعب، ورح يتجهّز برسالة واتساب (إلزامي).', confirmWord:'تأكيد',
-    last7:'آخر 7 أيام', unknownPlace:'مكان مش معروف', loadingWord:'لحظة عم نجيبها...', loadingFields:'عم نجيب تفاصيل الملاعب...',
-    vName:'اكتب اسمك يا بطل', vPhone:'الرقم مش مظبوط', vPhoneEmpty:'اكتب رقم تلفون صحيح', vPass:'اكتب كلمة السر', vNameAcc:'اكتب الاسم',
-    loginNeed:'حطّ رقمك وكلمة السر', loginFailRetry:'ما زبط الدخول، جرّب كمان مرة', loginBadData:'متأكد من الرقم والباسورد؟ ركّز وجرّب كمان مرة', regFailRetry:'ما زبط إنشاء الحساب', regFail:'ما قدرنا نسوّي الحساب', connLag:'النت علّق شوي، جرّب كمان مرة',
-    accSaved:'تمام، خزّنّا تعديلات حسابك.', saveErr:'صار في خربطة بالحفظ',
-    cancelOk:'تمام، انلغى الحجز', cancelFail:'ما زبط الإلغاء', cancelErr:'صار في خربطة بالإلغاء',
-    updateFail:'ما زبط التحديث', updateErr:'صار في خربطة بتحديث الحجز',
-    manualNeed:'اختار الملعب واليوم والوقت', manualName:'اكتب اسم صاحب الحجز', manualPrice:'اكتب سعر مظبوط', manualOk:'تمام، زدنا الحجز الخارجي', manualFail:'ما زبطت زيادة الحجز', manualErr:'صار في خربطة بزيادة الحجز الخارجي', noFieldsAdded:'ما في ملاعب مزيودة',
-    fieldNeed:'كمّل بيانات الملعب', fieldOk:'تمام، خزّنّا الملعب', fieldFail:'ما زبط الحفظ', fieldErr:'صار في خربطة وقت حفظ الملعب',
-    reviewNeed:'اختار عدد النجوم الأول', reviewOk:'يسلمو، تقييمك وصل.', reviewFail:'ما قدرنا نبعت التقييم', reviewErr:'صار في خربطة ببعث التقييم',
-    bookingFailRetry:'ما زبط الحجز، جرّب كمان مرة', bookingConnLag:'الاتصال مع الشيت علّق شوي، جرّب كمان مرة.',
-    welcomeHi:'أهلين', welcomeYou:'فيك',
+    confirmBookingTitle:'تأكيد الحجز', confirmBookingMsg:'هل تريد تأكيد هذا الحجز؟ سيصل اللاعب إشعار عبر واتساب.', reasonRequired:'السبب إلزامي — اكتب سبباً واضحاً للاعب',
+    cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب الذي سيظهر للاعب، وسيُجهَّز في رسالة واتساب (إلزامي).', confirmWord:'تأكيد',
+    last7:'آخر 7 أيام', unknownPlace:'مكان غير معروف', loadingWord:'لحظة من فضلك…', loadingFields:'نجلب تفاصيل الملاعب…',
+    vName:'يرجى كتابة اسمك', vPhone:'رقم الهاتف غير صحيح', vPhoneEmpty:'اكتب رقم هاتف صحيحاً', vPass:'اكتب كلمة السر', vNameAcc:'اكتب الاسم',
+    loginNeed:'أدخل رقمك وكلمة السر', loginFailRetry:'تعذّر تسجيل الدخول، حاول مرة أخرى', loginBadData:'تأكد من الرقم وكلمة السر ثم حاول مجدداً', regFailRetry:'تعذّر إنشاء الحساب، حاول مرة أخرى', regFail:'تعذّر إنشاء الحساب', connLag:'تأخر الاتصال قليلاً، حاول مرة أخرى',
+    accSaved:'تم حفظ تعديلات حسابك بنجاح.', saveErr:'حدث خطأ أثناء الحفظ',
+    cancelOk:'تم إلغاء الحجز', cancelFail:'تعذّر الإلغاء', cancelErr:'حدث خطأ أثناء الإلغاء',
+    updateFail:'تعذّر التحديث', updateErr:'حدث خطأ أثناء تحديث الحجز',
+    manualNeed:'اختر الملعب واليوم والوقت', manualName:'اكتب اسم صاحب الحجز', manualPrice:'اكتب سعراً صحيحاً', manualOk:'تمت إضافة الحجز الخارجي', manualFail:'تعذّرت إضافة الحجز', manualErr:'حدث خطأ أثناء إضافة الحجز الخارجي', noFieldsAdded:'لا توجد ملاعب مضافة',
+    fieldNeed:'أكمل بيانات الملعب', fieldOk:'تم حفظ الملعب', fieldFail:'تعذّر الحفظ', fieldErr:'حدث خطأ أثناء حفظ الملعب',
+    reviewNeed:'اختر عدد النجوم أولاً', reviewOk:'شكراً لك، وصل تقييمك.', reviewFail:'تعذّر إرسال التقييم', reviewErr:'حدث خطأ أثناء إرسال التقييم',
+    bookingFailRetry:'تعذّر إتمام الحجز، حاول مرة أخرى', bookingConnLag:'تأخر الاتصال قليلاً، حاول مرة أخرى.',
+    welcomeHi:'أهلاً', welcomeYou:'بك',
     successDone:'تمام!', successOkBtn:'تمام',
-    noBookingsYet:'لسا ما عندك حجوزات', noBookingsYetSub:'لِفّ عالملاعب واحجز أول ملعب إلك — بياخد ثواني!',
-    loginToSee:'فوت الأول', loginToSeeSub:'لازم تفوت عشان تشوف حجوزاتك وتتابعها.', connProblem:'في خربطة بالاتصال', connProblemSub:'ما قدرنا نجيب الحجوزات. تأكّد من النت وجرّب تاني.',
-    noFieldsTitle:'ما في ملاعب', noFieldsSub:'زيد أول ملعب إلك وبلّش استقبل حجوزات.', noMatchBookings:'ما في حجوزات بهالمواصفات', noMatchBookingsSub:'غيّر الفلتر أو التاريخ عشان تطلع حجوزات تانية.', fetchFail:'ما قدرنا نجيب البيانات', fetchFailSub:'تأكّد من اتصالك وجرّب تاني.',
-    manualTitle:'زيادة حجز خارجي', manualSub:'بينضاف مؤكّد ع طول وبيسكّر الوقت بوجه اللاعبين.', fieldLbl:'الملعب', dayLbl:'اليوم', timeLbl:'الوقت', ownerNameLbl:'اسم صاحب الحجز', priceLbl:'السعر', saveBookingBtn:'خزّن الحجز',
-    editFieldTitle:'تعديل ملعب', addFieldTitle:'زيادة ملعب جديد', fieldNameLbl:'اسم الملعب', sizeLbl:'الحجم', slotsLbl:'الأوقات', activeLbl:'شغّال', saveBtn:'خزّن', slotFull:'Full — كل اليوم', slotMorning:'Morning — صباحي', slotEvening:'Evening — مسائي',
-    cancelBookingBtn:'✕ إلغاء الحجز', reasonPrefix:'السبب: ', reasonPlaceholder:'مثلاً: الوقت مش فاضي أو في صيانة...', reasonTitleDefault:'سبب التحديث', cancelWord:'إلغاء', backWord:'رجوع',
-    rateModalTitle:'قيّم المكان', yourNamePh:'اسمك', phonePh:'رقم التلفون', commentPh:'تعليق إذا بدك', submitReviewBtn:'ابعت التقييم',
-    stAvailable:'فاضي', stSelected:'مختار', stTaken:'محجوز', bookedTag:'محجوز',
-    showPass:'ورّي كلمة السر', hidePass:'خبّي كلمة السر', clearSearchAria:'مسح البحث',
+    noBookingsYet:'لا حجوزات لديك بعد', noBookingsYetSub:'تصفّح الملاعب واحجز ملعبك الأول — لن يستغرق سوى ثوانٍ!',
+    loginToSee:'سجّل دخولك أولاً', loginToSeeSub:'يلزم تسجيل الدخول لعرض حجوزاتك ومتابعتها.', connProblem:'مشكلة في الاتصال', connProblemSub:'تعذّر جلب الحجوزات. تأكد من اتصالك بالإنترنت وحاول مجدداً.',
+    noFieldsTitle:'لا توجد ملاعب', noFieldsSub:'أضف ملعبك الأول وابدأ باستقبال الحجوزات.', noMatchBookings:'لا حجوزات بهذه المواصفات', noMatchBookingsSub:'غيّر الفلتر أو التاريخ لعرض حجوزات أخرى.', fetchFail:'تعذّر جلب البيانات', fetchFailSub:'تأكد من اتصالك وحاول مجدداً.',
+    manualTitle:'إضافة حجز خارجي', manualSub:'يُضاف مؤكداً مباشرة ويُغلق الوقت أمام اللاعبين.', fieldLbl:'الملعب', dayLbl:'اليوم', timeLbl:'الوقت', ownerNameLbl:'اسم صاحب الحجز', priceLbl:'السعر', saveBookingBtn:'حفظ الحجز',
+    editFieldTitle:'تعديل ملعب', addFieldTitle:'إضافة ملعب جديد', fieldNameLbl:'اسم الملعب', sizeLbl:'الحجم', slotsLbl:'الأوقات', activeLbl:'نشط', saveBtn:'حفظ', slotFull:'Full — كل اليوم', slotMorning:'Morning — صباحي', slotEvening:'Evening — مسائي',
+    cancelBookingBtn:'إلغاء الحجز', reasonPrefix:'السبب: ', reasonPlaceholder:'مثلاً: الوقت غير متاح أو لدينا صيانة…', reasonTitleDefault:'سبب التحديث', cancelWord:'إلغاء', backWord:'رجوع',
+    rateModalTitle:'قيّم المكان', yourNamePh:'اسمك', phonePh:'رقم الهاتف', commentPh:'تعليق اختياري', submitReviewBtn:'إرسال التقييم',
+    stAvailable:'متاح', stSelected:'مختار', stTaken:'محجوز', bookedTag:'محجوز',
+    showPass:'إظهار كلمة السر', hidePass:'إخفاء كلمة السر', clearSearchAria:'مسح البحث',
     tmMorning:'صباحاً', tmNoon:'ظهراً', tmEvening:'مساءً',
-    bookingSuccessTitle:'يا سلام! وصل طلب حجزك', statusPendingVenue:'مستنّي تأكيد الملعب', bookingNo:'رقم الحجز', nextStepNote:'رح نبلّغك أول ما إدارة الملعب تأكّد حجزك.',
+    bookingSuccessTitle:'رائع! وصل طلب حجزك', statusPendingVenue:'بانتظار تأكيد الملعب', bookingNo:'رقم الحجز', nextStepNote:'سنعلمك فور تأكيد إدارة الملعب لحجزك.',
     editProfile:'تعديل البيانات', prefsTitle:'التفضيلات', darkModeLbl:'الوضع الليلي', languageLbl:'اللغة',
-    regionsEyebrow:'المناطق', regionsTitle:'المناطق المتوفّرة', regionsSub:'اختار منطقتك وبلّش لِفّ ع طول.', regionsOne:'ملعب', regionsMany:'ملعب',
-    reviewsEyebrow:'آراء', reviewsTitle:'شو بيحكوا الناس',
-    review1:'أسهل بمراحل من التلفونات — بشوف الأوقات الفاضية وببعت طلب الحجز بثواني.', review1by:'لاعب',
-    review2:'رتّبت حجوزات ملاعبي وخفّ ضغط الردّ ع كل تلفون.', review2by:'صاحب ملعب',
-    review3:'الواجهة واضحة، وبعرف تفاصيل الملعب وسعره قبل ما اختار.', review3by:'لاعب',
-    ownersEyebrow:'لأصحاب الملاعب', ownersTitle:'دير ملاعبك زي المحترفين', ownersSub:'لوحة تحكم متكاملة عشان تستقبل الحجوزات وترتّبها وتتابع أداء ملاعبك.',
-    ownersB1:'كل حجوزاتك بلوحة وحدة', ownersB2:'أكّد أو ارفض بضغطة مع إشعار واتساب', ownersB3:'تقارير إيراد وإشغال بتساعدك تقرّر', ownerCtaBtn:'دخول المالك',
+    regionsEyebrow:'المناطق', regionsTitle:'المناطق المتوفّرة', regionsSub:'اختر منطقتك وابدأ التصفّح مباشرة.', regionsOne:'ملعب', regionsMany:'ملعب',
+    reviewsEyebrow:'آراء', reviewsTitle:'ماذا يقول مستخدمونا',
+    review1:'أسهل بكثير من الاتصالات — أرى الأوقات المتاحة وأرسل طلب الحجز خلال ثوانٍ.', review1by:'لاعب',
+    review2:'نظّمتُ حجوزات ملاعبي وقلّ ضغط الرد على الاتصالات.', review2by:'صاحب ملعب',
+    review3:'الواجهة واضحة، وأعرف تفاصيل الملعب وسعره قبل الاختيار.', review3by:'لاعب',
+    ownersEyebrow:'لأصحاب الملاعب', ownersTitle:'أدِر ملاعبك باحتراف', ownersSub:'لوحة تحكم متكاملة لاستقبال الحجوزات وتنظيمها ومتابعة أداء ملاعبك.',
+    ownersB1:'كل حجوزاتك في لوحة واحدة', ownersB2:'تأكيد أو رفض بضغطة واحدة مع إشعار واتساب', ownersB3:'تقارير إيراد وإشغال تساعدك على القرار', ownerCtaBtn:'دخول المالك',
     // ---- دفعة إكمال التوطين (نصوص ديناميكية + قوالب + وصولية) ----
-    bkFetchFail:'ما قدرنا نجيب الحجوزات', tryAgain:'جرّب كمان مرة.', noBookingsToShow:'ما في حجوزات نوّريك ياها هلأ.',
-    playerCancelTitle:'إلغاء الحجز', playerCancelHint:'{label} — اكتب سبب الإلغاء (إذا بدك)', confirmCancelBtn:'أكّد الإلغاء', playerCancelledDefault:'اللاعب لغى الحجز',
-    loadingBookings:'عم نجيب الحجوزات...', sessionExpired:'خلصت جلستك، فوت من جديد', dashRenderErr:'صار في خربطة بعرض اللوحة',
-    econMore:'كل ما زادت البيانات، بتصير قراراتك أدقّ.', econLow:'الإشغال أقل من 40%: ركّز ع التسويق والعروض.', econGood:'الإشغال بين 60% و80%: الوضع تمام، ثبّت السعر وراقب أوقات الذروة.', econHigh:'الإشغال فوق 85%: في مجال ترفع السعر، خصوصاً بأوقات الطلب العالي.',
+    bkFetchFail:'تعذّر جلب الحجوزات', tryAgain:'حاول مرة أخرى.', noBookingsToShow:'لا توجد حجوزات لعرضها حالياً.',
+    playerCancelTitle:'إلغاء الحجز', playerCancelHint:'{label} — اكتب سبب الإلغاء (اختياري)', confirmCancelBtn:'تأكيد الإلغاء', playerCancelledDefault:'ألغى اللاعب الحجز',
+    loadingBookings:'نجلب الحجوزات…', sessionExpired:'انتهت جلستك، سجّل دخولك من جديد', dashRenderErr:'حدث خطأ أثناء عرض اللوحة',
+    econMore:'كلما زادت البيانات أصبحت قراراتك أدق.', econLow:'الإشغال أقل من 40%: ركّز على التسويق والعروض.', econGood:'الإشغال بين 60% و80%: الوضع جيد، ثبّت السعر وراقب أوقات الذروة.', econHigh:'الإشغال فوق 85%: يمكنك رفع السعر، خصوصاً في أوقات الطلب المرتفع.',
     srcPrefix:'مصدر: ', cancelReasonPrefix:'سبب الإلغاء/الرفض: ',
-    ownerActiveUpcoming:'الحجوزات الحالية والجاية', noActiveUpcoming:'ما في حجوزات حالية أو جاية', ownerFinished:'الحجوزات اللي خلصت',
-    completeSelection:'كمّل اختيار الموعد الأول.', loginToSeeBookings:'فوت عشان تشوف حجوزاتك', avatarFallback:'م',
-    amenFree:'ببلاش', amenPaid:'برسوم', amenNotAvail:'مش متوفرة',
+    ownerActiveUpcoming:'الحجوزات الحالية والقادمة', noActiveUpcoming:'لا حجوزات حالية أو قادمة', ownerFinished:'الحجوزات المنتهية',
+    completeSelection:'أكمل اختيار الموعد أولاً.', loginToSeeBookings:'سجّل دخولك لعرض حجوزاتك', avatarFallback:'م',
+    amenFree:'مجاناً', amenPaid:'برسوم', amenNotAvail:'غير متوفرة',
     kwFull:'كل اليوم', kwMorning:'صباحي', kwEvening:'مسائي',
     amenity_water:'مياه', amenity_parking:'مواقف', amenity_ball:'كرة', amenity_vests:'بلايز', amenity_bathrooms:'حمامات',
-    waRejectedDefault:'بعتذر منك، هالوقت مش متاح هلأ.', waCancelledDefault:'انلغى الحجز من إدارة الملعب.',
-    waConfirmed:'أهلين {name} ⚽\n\nتأكّد حجزك ✅\n\n🏟️ المكان: {place}\n🥅 الملعب: {field}\n📅 التاريخ: {date}\n⏰ الوقت: {time}\n📐 الحجم: {size}\n💰 السعر: {price}\n\nمستنّينك!',
-    waRejected:'أهلين {name} ⚽\n\nانرفض طلب الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
-    waCancelled:'أهلين {name} ⚽\n\nانلغى الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
+    waRejectedDefault:'نعتذر منك، هذا الوقت غير متاح حالياً.', waCancelledDefault:'أُلغي الحجز من إدارة الملعب.',
+    waConfirmed:'مرحباً {name} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: {place}\n🥅 الملعب: {field}\n📅 التاريخ: {date}\n⏰ الوقت: {time}\n📐 الحجم: {size}\n💰 السعر: {price}\n\nبانتظارك!',
+    waRejected:'مرحباً {name} ⚽\n\nنعتذر، رُفض طلب الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
+    waCancelled:'مرحباً {name} ⚽\n\nأُلغي الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
     docTitle:'المستديرة - احجز ملعبك', ariaBrand:'المستديرة', ariaPageLinks:'روابط الصفحة', ariaFooterLinks:'روابط أسفل الصفحة', ariaToggleTheme:'تبديل الوضع', ariaHome:'الصفحة الرئيسية',
     ariaChooseDate:'اختيار الموعد', ariaOwnerTabs:'أقسام لوحة المالك', ariaSearchBookings:'بحث في الحجوزات', ariaFilterDate:'فلترة بالتاريخ', ariaFilterField:'فلترة بالملعب', ariaFilterStatus:'فلترة بالحالة',
     calPrevAria:'الشهر السابق', calNextAria:'الشهر التالي', ariaBookingSteps:'خطوات الحجز', ariaRateLegend:'قيّم المكان من 1 إلى 5 نجوم',
     star1:'نجمة واحدة', star2:'نجمتان', star3:'3 نجوم', star4:'4 نجوم', star5:'5 نجوم',
     phRegName:'محمد أحمد', phRegPass:'4 خانات ع الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
     placeStatsTitle:'إحصائيات الملعب',
-    skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من برّا الموقع', welcomeGuest:'أهلين فيك',
+    skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
-    firstVisitWelcome:'يا هلا فيك بالمستديرة! 👋 لِفّ عالملاعب، اختار يومك ووقتك، واحجز بثواني.',
+    firstVisitWelcome:'أهلاً بك في المستديرة! 👋 تصفّح الملاعب، اختر يومك ووقتك، واحجز خلال ثوانٍ.',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
