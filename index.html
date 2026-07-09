@@ -1226,8 +1226,9 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
 /* ---------- لمعة انزلاقية على الأزرار الرئيسية عند الـhover ---------- */
 .sbtn,.lp-btn-primary,.lp-cta-sm,.place-book-btn,.dsticky-btn{position:relative;overflow:hidden}
 @media(hover:hover) and (pointer:fine){
-  .sbtn::after,.lp-btn-primary::after,.lp-cta-sm::after,.place-book-btn::after,.dsticky-btn::after{content:'';display:block;position:absolute;top:-25%;bottom:-25%;left:-45%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);opacity:0;pointer-events:none}
-  .sbtn:hover::after,.lp-btn-primary:hover::after,.lp-cta-sm:hover::after,.place-book-btn:hover::after,.dsticky-btn:hover::after{animation:sheenSweep .9s var(--ease-out)}
+  /* (زر البطاقة .place-book-btn خارج اللمعة — ::after محجوز لسهم التقدّم) */
+  .sbtn::after,.lp-btn-primary::after,.lp-cta-sm::after,.dsticky-btn::after{content:'';display:block;position:absolute;top:-25%;bottom:-25%;left:-45%;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);opacity:0;pointer-events:none}
+  .sbtn:hover::after,.lp-btn-primary:hover::after,.lp-cta-sm:hover::after,.dsticky-btn:hover::after{animation:sheenSweep .9s var(--ease-out)}
 }
 @keyframes sheenSweep{0%{opacity:0;transform:skewX(-18deg) translateX(0)}18%{opacity:1}100%{opacity:0;transform:skewX(-18deg) translateX(500%)}}
 
@@ -1245,14 +1246,15 @@ body.dark button[data-action="toggleTheme"]::before{-webkit-mask-image:var(--ico
 }
 
 /* ---------- سهم «تقدّم» SVG على أزرار الإجراء الرئيسية (بدل ← النصية) ---------- */
-[data-i18n="enter"]::after,[data-i18n="createAccount"]::after,[data-i18n="continueBooking"]::after,[data-i18n="confirmBooking"]::after,[data-i18n="saveBookingBtn"]::after,[data-i18n="saveBtn"]::after,[data-i18n="ownerLink"]::after{
+[data-i18n="enter"]::after,[data-i18n="createAccount"]::after,[data-i18n="continueBooking"]::after,[data-i18n="confirmBooking"]::after,[data-i18n="saveBookingBtn"]::after,[data-i18n="saveBtn"]::after,[data-i18n="ownerLink"]::after,.place-book-btn::after{
   content:'';display:inline-block;width:15px;height:15px;background:currentColor;flex-shrink:0;
   -webkit-mask:var(--icon-arrow) center/contain no-repeat;mask:var(--icon-arrow) center/contain no-repeat;
   margin-inline-start:8px;vertical-align:-2.5px;transition:transform var(--t-base) var(--ease-out)}
-html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"])::after{transform:scaleX(-1)}
+.place-book-btn::after{width:13px;height:13px;margin-inline-start:6px;vertical-align:-2px}
+html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"],.place-book-btn)::after{transform:scaleX(-1)}
 @media(hover:hover) and (pointer:fine){
-  :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"]):hover::after{transform:translateX(-3px)}
-  html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"]):hover::after{transform:scaleX(-1) translateX(-3px)}
+  :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"],.place-book-btn):hover::after{transform:translateX(-3px)}
+  html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="continueBooking"],[data-i18n="confirmBooking"],[data-i18n="saveBookingBtn"],[data-i18n="saveBtn"],[data-i18n="ownerLink"],.place-book-btn):hover::after{transform:scaleX(-1) translateX(-3px)}
 }
 
 /* ---------- أيقونة تحديث تدور مع الـhover ---------- */
@@ -1303,6 +1305,35 @@ html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="
   animation:ballBounce .58s cubic-bezier(.45,0,1,1) infinite alternate}
 @keyframes ballBounce{0%{transform:translateY(-17px) scale(1,1)}88%{transform:translateY(7px) scale(1,1)}100%{transform:translateY(9px) scale(1.18,.8)}}
 @keyframes ballShadow{0%{transform:translateY(19px) scale(.45);opacity:.35}100%{transform:translateY(19px) scale(1.1);opacity:.75}}
+
+/* ---------- بطاقات ألطف وأجمل: زوايا أندى + ظل أنعم + غلاف أدفأ + زر حبّي ---------- */
+.place-card,.skeleton-card{border-radius:var(--r-2xl)}
+.card,.lp-feature,.lp-step,.lp-stat,.lp-region,.lp-review,.detail-section{border-radius:var(--r-2xl)}
+.place-card{box-shadow:0 16px 36px -20px rgba(15,30,20,.15),0 2px 8px -5px rgba(15,30,20,.06)}
+body.dark .place-card{box-shadow:var(--shadow-card)}
+/* غلاف بلا صورة: أخضر ملعبي دافئ بدل الأسود الثقيل */
+.place-cover{background:linear-gradient(165deg,#24422E 0%,#14261A 55%,#0D1810 100%)}
+.place-cover::after{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.04) 40%,rgba(0,0,0,.76) 100%)}
+.place-cover-emoji{opacity:.35}
+.place-book-btn{border-radius:999px;padding:0 22px}
+.amenities-row{padding:14px 18px 0}
+.place-strip{padding:14px 18px 16px}
+.place-footer{padding:16px 18px}
+
+/* ---------- توازن الإنجليزية: خطوط وأيقونات مضبوطة للحروف اللاتينية ---------- */
+html[lang="en"] .lp-title{font-size:clamp(30px,6.8vw,52px);line-height:1.08}
+html[lang="en"] .lp-h2{font-size:clamp(24px,4.2vw,36px)}
+html[lang="en"] .header-title{font-size:22px}
+html[lang="en"] :is(.sbtn,.lp-btn-primary,.lp-cta-sm,.place-book-btn,.dsticky-btn,.search-btn){letter-spacing:.02em}
+html[lang="en"] .tbtn{font-size:11.5px}
+html[lang="en"] .day-btn{font-size:11.5px}
+html[lang="en"] .nitem{font-size:10.5px}
+html[lang="en"] .lp-stat-lbl{font-size:12px}
+html[lang="en"] :is(.search-btn,.place-book-btn,.ftab,.otab,.filter-btn){font-size:13px}
+html[lang="en"] .sec-title .link{font-size:12.5px}
+html[lang="en"] .place-strip-info{font-size:12px}
+html[lang="en"] .stat-label{font-size:11.5px}
+html[lang="en"] .form-label{letter-spacing:.02em}
 
 /* ---------- المفضّلة: زر قلب على البطاقة + تبويب المفضّلة ---------- */
 .ptb-side{display:flex;align-items:center;gap:8px}
@@ -2151,7 +2182,7 @@ const I18N = {
     amenities:'المرافق', apply:'تطبيق', clearAll:'مسح الكل', noData:'لا توجد بيانات',
     sortDefault:'الافتراضي', sortPriceAsc:'الأقل سعراً', sortPriceDesc:'الأعلى سعراً', sortRating:'الأعلى تقييماً', sortReviews:'الأكثر مراجعات', sortSoonest:'الأقرب وقتاً',
     availToday:'متاح اليوم', availLater:'متاح لاحقاً', availFull:'مكتمل اليوم', availNone:'لا توجد أوقات',
-    viewTimes:'عرض الأوقات →', chooseField:'اختر الملعب →', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
+    viewTimes:'عرض الأوقات', chooseField:'اختر الملعب', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
     available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'🚫 لا توجد أوقات متاحة في هذا اليوم. جرّب يوماً آخر.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
@@ -2230,7 +2261,7 @@ const I18N = {
     completeSelection:'أكمل اختيار الموعد أولاً.', loginToSeeBookings:'سجّل دخولك لعرض حجوزاتك', avatarFallback:'م',
     amenFree:'مجاناً', amenPaid:'برسوم', amenNotAvail:'غير متوفرة',
     kwFull:'كل اليوم', kwMorning:'صباحي', kwEvening:'مسائي',
-    amenity_water:'مياه', amenity_parking:'مواقف', amenity_ball:'كرة', amenity_vests:'بلايز', amenity_bathrooms:'حمامات',
+    amenity_water:'مياه', amenity_parking:'مواقف', amenity_ball:'كرة', amenity_vests:'فيزتات', amenity_bathrooms:'حمامات',
     waRejectedDefault:'نعتذر منك، هذا الوقت غير متاح حالياً.', waCancelledDefault:'أُلغي الحجز من إدارة الملعب.',
     waConfirmed:'مرحباً {name} ⚽\n\nتم تأكيد حجزك ✅\n\n🏟️ المكان: {place}\n🥅 الملعب: {field}\n📅 التاريخ: {date}\n⏰ الوقت: {time}\n📐 الحجم: {size}\n💰 السعر: {price}\n\nبانتظارك!',
     waRejected:'مرحباً {name} ⚽\n\nنعتذر، رُفض طلب الحجز ❌\n\n🏟️ {place} - {field}\n📅 {date} ⏰ {time}\n\nالسبب:\n{reason}',
@@ -2279,7 +2310,7 @@ const I18N = {
     amenities:'Amenities', apply:'Apply', clearAll:'Clear all', noData:'No data',
     sortDefault:'Default', sortPriceAsc:'Lowest price', sortPriceDesc:'Highest price', sortRating:'Top rated', sortReviews:'Most reviews', sortSoonest:'Soonest time',
     availToday:'Available today', availLater:'Available later', availFull:'Fully booked today', availNone:'No times',
-    viewTimes:'View times →', chooseField:'Choose field →', oneField:'One field', fieldsCount:'{n} fields',
+    viewTimes:'View times', chooseField:'Choose field', oneField:'One field', fieldsCount:'{n} fields',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
     available:'Available', noServices:'No services information has been added yet.', noTimesDay:'🚫 No available times on this day. Try another day.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
