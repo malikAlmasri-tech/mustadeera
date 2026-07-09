@@ -1304,6 +1304,20 @@ html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="
 @keyframes ballBounce{0%{transform:translateY(-17px) scale(1,1)}88%{transform:translateY(7px) scale(1,1)}100%{transform:translateY(9px) scale(1.18,.8)}}
 @keyframes ballShadow{0%{transform:translateY(19px) scale(.45);opacity:.35}100%{transform:translateY(19px) scale(1.1);opacity:.75}}
 
+/* ---------- المفضّلة: زر قلب على البطاقة + تبويب المفضّلة ---------- */
+.ptb-side{display:flex;align-items:center;gap:8px}
+.fav-btn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  background:rgba(10,14,10,.45);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);
+  transition:transform var(--t-fast),color var(--t-fast),background var(--t-fast),border-color var(--t-fast)}
+.fav-btn svg{width:17px;height:17px;display:block}
+.fav-btn:active{transform:scale(.86)}
+.fav-btn.on{color:#FF5D73;background:rgba(255,93,115,.16);border-color:rgba(255,93,115,.5)}
+.fav-btn.on svg{fill:currentColor;animation:favPop .35s var(--ease-spring)}
+@keyframes favPop{0%{transform:scale(.55)}60%{transform:scale(1.28)}100%{transform:scale(1)}}
+.ftab-fav{display:inline-flex;align-items:center;gap:5px}
+.ftab-fav svg{width:14px;height:14px}
+.ftab-fav.active-tab svg{fill:currentColor}
+
 /* ---------- سلاسة الثيم للأسطح ذات انتقالات hover خاصة ----------
    قوائم انتقالها الأصلية تفتقد ألوان الخلفية/النص فتقفز عند تبديل الثيم؛
    هنا نعيد تعريفها: الحركة تبقى سريعة والألوان تنتقل بنعومة .45s */
@@ -1966,7 +1980,9 @@ html[dir="ltr"] :is([data-i18n="enter"],[data-i18n="createAccount"],[data-i18n="
         <div><label class="form-label" data-i18n="phone">رقم الهاتف</label><input class="finput" id="mPhone" type="tel" placeholder="079xxxxxxx"></div>
       </div>
       <label class="form-label" data-i18n="priceLbl">السعر</label>
-      <input class="finput" id="mPrice" type="number" inputmode="numeric" placeholder="40" style="margin-bottom:18px">
+      <input class="finput" id="mPrice" type="number" inputmode="numeric" placeholder="40" style="margin-bottom:13px">
+      <label class="form-label" for="mRepeat" data-i18n="repeatWeeksLbl">كرّر أسبوعياً</label>
+      <select class="finput" id="mRepeat" style="margin-bottom:18px"></select>
       <button class="sbtn" data-action="saveManual" data-i18n="saveBookingBtn">حفظ الحجز</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
@@ -2228,6 +2244,11 @@ const I18N = {
     skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
     firstVisitWelcome:'أهلاً بك في المستديرة! 👋 تصفّح الملاعب، اختر يومك ووقتك، واحجز خلال ثوانٍ.',
+    addToCalendar:'أضِف إلى التقويم',
+    favTab:'المفضّلة', favAdd:'أضِف إلى المفضّلة', favRemove:'أزل من المفضّلة',
+    noFavsTitle:'لا ملاعب في المفضّلة بعد', noFavsSub:'اضغط رمز القلب على أي ملعب لحفظه هنا والوصول إليه بسرعة.',
+    repeatWeeksLbl:'كرّر أسبوعياً', repeatNone:'بلا تكرار (مرة واحدة)', repeatFor:'لمدة {n} أسابيع (نفس اليوم والوقت)',
+    repeatSummary:'أُضيف {added} من الحجوزات، وتُخطّي {skipped} (وقت محجوز أو تعذّرت إضافته).',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -2351,6 +2372,11 @@ const I18N = {
     skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
     firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Browse the fields, pick your day and time, and book in seconds.',
+    addToCalendar:'Add to calendar',
+    favTab:'Favorites', favAdd:'Add to favorites', favRemove:'Remove from favorites',
+    noFavsTitle:'No favorite fields yet', noFavsSub:'Tap the heart icon on any field to save it here for quick access.',
+    repeatWeeksLbl:'Repeat weekly', repeatNone:'No repeat (one time)', repeatFor:'For {n} weeks (same day & time)',
+    repeatSummary:'Added {added} bookings, skipped {skipped} (time taken or failed).',
   }
 };
 function t(key, params){
@@ -2419,7 +2445,8 @@ const ICON = {
   bath:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M6 19v2M18 19v2"/></svg>',
   dot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>'
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>'
 };
 
 /* ===================== DOM UTILS ===================== */
@@ -2456,10 +2483,12 @@ const setText = (id, val) => { const el = $('#'+id); if (el) el.textContent = va
 
 /* ===================== UTILS ===================== */
 function debounce(fn, wait){
-  let t; return function(...a){ clearTimeout(t); t = setTimeout(() => fn.apply(this, a), wait); };
+  let tm; return function(...a){ clearTimeout(tm); tm = setTimeout(() => fn.apply(this, a), wait); };
 }
-const today = () => new Date().toISOString().split('T')[0];
-const dateAfter = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; };
+/* تاريخ محلي YYYY-MM-DD — بديل toISOString (التي ترجع UTC فتُزيح اليوم بين منتصف الليل و3 فجراً بتوقيت الأردن) */
+function ymd(d = new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+const today = () => ymd();
+const dateAfter = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return ymd(d); };
 /* اسم اليوم حسب اللغة (Intl). يبقى الاسم arabicDay للتوافق مع الاستدعاءات. */
 const arabicDay = (s) => { try{ return new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar', {weekday:'long'}).format(new Date(s+"T12:00:00")); }catch(_){ return ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date(s+"T12:00:00").getDay()]; } };
 const dayLabel = (s) => { const d=String(s).split('T')[0]; if(d===today()) return t('today'); if(d===dateAfter(1)) return t('tomorrow'); return arabicDay(d); };
@@ -2467,10 +2496,18 @@ const shortDate = (s) => { const d = new Date(s+"T12:00:00"); return `${d.getDat
 /* تنسيق العملة الموحّد حسب اللغة: د.أ (عربي) / JOD (إنجليزي) */
 const formatCurrency = (v) => { const n = Number(v||0); const a = Number.isNaN(n)?0:Math.round(n*100)/100; return (State.lang==='en') ? `${a} JOD` : `${a} د.أ`; };
 const formatMoney = formatCurrency;   // توافق مع الاستدعاءات الحالية
-const calcPercent = (p, t) => t ? Math.round((p/t)*100) : 0;
+const calcPercent = (part, total) => total ? Math.round((part/total)*100) : 0;
 function normalizePhone(p){ p = String(p||'').trim().replace(/\s+/g,''); if(p.startsWith('+'))p=p.slice(1); if(p.startsWith('00962'))p='962'+p.slice(5); if(p.startsWith('07'))p='962'+p.slice(1); return p; }
 function normalizeText(v){ return String(v||'').trim().toLowerCase().replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ـ/g,'').replace(/\s+/g,''); }
+/* تطبيع حجم الملعب للمقارنة: 6×6 و 6x6 و "6 X 6" كلها قيمة واحدة */
+const normSize = (v) => String(v||'').trim().toLowerCase().replace(/[×X]/g,'x').replace(/\s+/g,'');
 const getSource = () => new URLSearchParams(location.search).get('source') || 'direct';
+
+/* ===================== FAVORITES (محلي فقط — localStorage، بلا باكند) ===================== */
+const FAV_KEY = 'mustadaira:favorites';
+function favGet(){ try{ const a=JSON.parse(localStorage.getItem(FAV_KEY)||'[]'); return new Set(Array.isArray(a)?a.map(String):[]); }catch(_){ return new Set(); } }
+function favHas(id){ return favGet().has(String(id)); }
+function favToggle(id){ const s=favGet(); const k=String(id); if(s.has(k)) s.delete(k); else s.add(k); try{ localStorage.setItem(FAV_KEY, JSON.stringify([...s])); }catch(_){} return s.has(k); }
 
 function safeRating(v){ const n = Number(v); return (Number.isNaN(n)||n<0||n>5) ? 0 : Math.round(n*10)/10; }
 function safeReviews(v){ const n = Number(v); return (Number.isNaN(n)||n<0||n>1e5) ? 0 : Math.round(n); }
@@ -2480,22 +2517,24 @@ function ratingText(place){
   const reviews = (Number.isFinite(c)&&c>=0) ? Math.round(c) : 0;
   return `${rating} (${reviews})`;
 }
-function normalizeSlotsKeyword(t){ t=String(t||'').trim().toLowerCase();
-  if(t==='full')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م|14=2:00 - 4:00 م|16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
-  if(t==='morning')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م";
-  if(t==='evening')return "16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
-  return t; }
+function normalizeSlotsKeyword(kw){ kw=String(kw||'').trim().toLowerCase();
+  if(kw==='full')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م|14=2:00 - 4:00 م|16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
+  if(kw==='morning')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م";
+  if(kw==='evening')return "16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
+  return kw; }
 function slotsToKeyword(s){ s=String(s||'').toLowerCase(); if(s==='full'||s.includes('22=10:00'))return 'full'; if(s==='morning'||s.includes('12=12:00'))return 'morning'; if(s==='evening'||s.includes('16=4:00'))return 'evening'; return 'full'; }
 function parseSlots(text){ const clean=normalizeSlotsKeyword(text); if(!clean||!clean.includes('='))return DEFAULT_SLOTS;
   const arr=clean.split('|').map(s=>{const[h,...l]=s.split('=');return{hour:Number(h),label:l.join('=').trim()};}).filter(s=>!Number.isNaN(s.hour)&&s.label);
   return arr.length?arr:DEFAULT_SLOTS; }
 const fieldSlots = (f) => parseSlots(f?.slots);
 
+/* قراءة موحّدة لحالة الحجز (تتسامح مع الحالة الفارغة أو بحروف كبيرة من الخادم) */
+function normStatus(b){ return String((b && b.status) || 'pending').toLowerCase(); }
 const isFinished = (b) => { const h=Number(b.hour); if(!b.date||Number.isNaN(h))return false; const s=new Date(`${b.date}T${String(h).padStart(2,'0')}:00:00`); const e=new Date(s); e.setHours(e.getHours()+2); return new Date()>=e; };
-const isOld = (s, keep=14) => { const t=new Date(today()+"T00:00:00"); const d=new Date(String(s||'').split('T')[0]+"T00:00:00"); if(Number.isNaN(d.getTime()))return false; return Math.floor((t-d)/864e5)>keep; };
+const isOld = (s, keep=14) => { const base=new Date(today()+"T00:00:00"); const d=new Date(String(s||'').split('T')[0]+"T00:00:00"); if(Number.isNaN(d.getTime()))return false; return Math.floor((base-d)/864e5)>keep; };
 function splitFinished(list){ const a=[],f=[]; (list||[]).forEach(b=>(isFinished(b)?f:a).push(b)); return {active:a,finished:f}; }
 const visibleBookings = (list, keep, all) => all ? list : (list||[]).filter(b=>!isOld(b.date,keep));
-function runtimeStatus(b){ const s=String(b.status||'').toLowerCase(); if(s!=='confirmed')return s; const h=Number(b.hour); if(Number.isNaN(h)||!b.date)return s; const st=new Date(`${b.date}T${String(h).padStart(2,'0')}:00:00`); const e=new Date(st); e.setHours(e.getHours()+2); const now=new Date(); return (now>=st&&now<e)?'in_progress':s; }
+function runtimeStatus(b){ const s=normStatus(b); if(s!=='confirmed')return s; const h=Number(b.hour); if(Number.isNaN(h)||!b.date)return s; const st=new Date(`${b.date}T${String(h).padStart(2,'0')}:00:00`); const e=new Date(st); e.setHours(e.getHours()+2); const now=new Date(); return (now>=st&&now<e)?'in_progress':s; }
 function statusLabel(s){ const m={confirmed:{t:t('statusConfirmed'),c:'badge-green'},pending:{t:t('statusPending'),c:'badge-yellow'},cancelled:{t:t('statusCancelled'),c:'badge-red'},rejected:{t:t('statusRejected'),c:'badge-red'},in_progress:{t:t('statusInProgress'),c:'badge-blue'}}; return m[String(s||'pending').toLowerCase()]||m.pending; }
 const isOwnerManual = (b) => String(b.source||'').trim().toLowerCase()==='owner_manual';
 const isWebsite = (b) => !isOwnerManual(b);
@@ -2566,6 +2605,8 @@ const API = {
 /* ===================== STATE (حالة مغلّفة) ===================== */
 const State = {
   places: [], publicBookings: [], bookedSlots: {},
+  publicBookingsFetchedAt: 0,                                 // آخر جلب ناجح للحجوزات العامة (كاش قصير)
+  favOnly: false,                                             // عرض المفضّلة فقط (محلي)
   player: null, owner: null, ownerData: null, guest: false,
   filter: 'all',                                              // المنطقة (تبويبات)
   // فلاتر متقدّمة (ورقة الفلاتر) + الترتيب — تعتمد فقط على البيانات الموجودة
@@ -2598,7 +2639,7 @@ function buildBookedSlots(remote){
   State.bookedSlots = {};
   State.places.forEach(p => p.fields.forEach(f => State.bookedSlots[f.field_id] = {}));
   State.publicBookings.forEach(b => {
-    const s = String(b.status||'pending').toLowerCase(); if (s==='cancelled'||s==='rejected') return;
+    const s = normStatus(b); if (s==='cancelled'||s==='rejected') return;
     const fid = String(b.field_id||'').trim(); const hour = Number(b.hour); const date = String(b.date||'').trim().split('T')[0];
     if (!fid||!date||Number.isNaN(hour)) return;
     (State.bookedSlots[fid] ||= {});(State.bookedSlots[fid][date] ||= []);
@@ -2614,10 +2655,18 @@ async function loadInitialData(force=false){
   State.places = normalizePlaces(remote);
   if (State.places.length) cacheSave(State.places);
   buildBookedSlots(r.bookings||[]);
+  State.publicBookingsFetchedAt = Date.now();                 // بيانات حجوزات طازجة من الخادم
 }
 async function loadPublicBookings(){
   const r = await API.get('getBookings', {}, 'publicBookings');
   buildBookedSlots(Array.isArray(r) ? r : (r.bookings||[]));
+  State.publicBookingsFetchedAt = Date.now();
+}
+/* كاش قصير: يجلب الحجوزات فقط إذا مرّ أكثر من maxAgeMs منذ آخر جلب ناجح.
+   التحقق النهائي قبل الحفظ (confirmBooking/saveManual) يبقى جلباً مباشراً طازجاً. */
+async function ensurePublicBookings(maxAgeMs = 45000){
+  if (Date.now() - (State.publicBookingsFetchedAt||0) < maxAgeMs) return;
+  await loadPublicBookings();
 }
 async function loadData(opts={}){
   try { await loadInitialData(!!opts.force); renderRegionTabs(); renderLandingRegions(); updateTrust(); return true; }
@@ -2774,8 +2823,11 @@ function renderRegionTabs(){
   const regions = getRegions();
   if (State.filter!=='all' && !regions.some(r=>normalizeText(r)===normalizeText(State.filter))) State.filter='all';
   clear(el);
-  el.append(h('button',{class:'ftab'+(State.filter==='all'?' active-tab':''), onclick:()=>setFilter('all')}, t('all')));
-  regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)?' active-tab':''), onclick:()=>setFilter(r)}, r)));
+  el.append(h('button',{class:'ftab'+(State.filter==='all'&&!State.favOnly?' active-tab':''), onclick:()=>{ State.favOnly=false; setFilter('all'); }}, t('all')));
+  // تبويب المفضّلة (محلي) — مستقل عن فلتر المنطقة
+  el.append(h('button',{class:'ftab ftab-fav'+(State.favOnly?' active-tab':''), 'aria-pressed':State.favOnly?'true':'false',
+    onclick:()=>{ State.favOnly=!State.favOnly; renderRegionTabs(); renderPlaces(); }}, ico('heart','svg-sm'), ' '+t('favTab')));
+  regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)&&!State.favOnly?' active-tab':''), onclick:()=>{ State.favOnly=false; setFilter(r); }}, r)));
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
 
@@ -2843,11 +2895,11 @@ function renderAmenitiesFull(p){
 /* ===================== AVAILABILITY (حالات دقيقة) + SORT + FILTERS ===================== */
 /* حالة المكان: متاح اليوم / متاح لاحقاً / مكتمل اليوم / لا أوقات — بحساب فعلي للخانات */
 function placeAvailability(p){
-  const t=today(); let todayTotal=0, todayFree=0, weekFree=0;
+  const td=today(); let todayTotal=0, todayFree=0, weekFree=0;   // td كي لا تُظلَّل دالة الترجمة t()
   (p.fields||[]).forEach(f=>{
     if(f.active===false) return;
     const slots=fieldSlots(f);
-    const bToday=(State.bookedSlots[f.field_id]?.[t])||[];
+    const bToday=(State.bookedSlots[f.field_id]?.[td])||[];
     todayTotal+=slots.length;
     slots.forEach(s=>{ if(!bToday.includes(s.hour)) todayFree++; });
     for(let i=0;i<7;i++){ const d=dateAfter(i); const bk=(State.bookedSlots[f.field_id]?.[d])||[]; slots.forEach(s=>{ if(!bk.includes(s.hour)) weekFree++; }); }
@@ -2871,7 +2923,7 @@ function soonestSlotTs(p){
 }
 function soonestSlotLabel(p){
   const ts=soonestSlotTs(p); if(!isFinite(ts)) return '';
-  const d=new Date(ts); const dateStr=d.toISOString().split('T')[0];
+  const d=new Date(ts); const dateStr=ymd(d);
   const day = dayLabel(dateStr);
   const hour=d.getHours(); const en=State.lang==='en';
   const ampm = en ? (hour<12?'AM':'PM') : (hour<12?'ص':'م'); const h12=((hour+11)%12)+1;
@@ -2891,7 +2943,7 @@ function placeHours(p){
   return `${fmtHour12(start)} - ${fmtHour12(end)}`;
 }
 /* قيم مميّزة من البيانات الفعلية (بلا اختراع) */
-function distinctSizes(){ const s=new Set(); State.places.forEach(p=>(p.fields||[]).forEach(f=>{const v=String(f.size||'').trim(); if(v)s.add(v);})); return [...s]; }
+function distinctSizes(){ const seen=new Set(), out=[]; State.places.forEach(p=>(p.fields||[]).forEach(f=>{ const v=String(f.size||'').trim(); if(!v) return; const k=normSize(v); if(seen.has(k)) return; seen.add(k); out.push(v); })); return out; }
 function distinctTypes(){ const s=new Set(); State.places.forEach(p=>{const v=String(p.type||'').trim(); if(v)s.add(v);}); return [...s]; }
 function distinctAmenities(){ const s=new Set(); State.places.forEach(p=>amenityKeys(p).forEach(k=>s.add(k))); return [...s]; }
 
@@ -2900,7 +2952,7 @@ function passesFilters(p){
   const pmin=minPrice(p), pmax=maxPrice(p);
   if(fx.minPrice!=null && pmax>0 && pmax<fx.minPrice) return false;
   if(fx.maxPrice!=null && pmin>0 && pmin>fx.maxPrice) return false;
-  if(fx.sizes.length && !(p.fields||[]).some(f=>fx.sizes.includes(String(f.size||'').trim()))) return false;
+  if(fx.sizes.length){ const want=new Set(fx.sizes.map(normSize)); if(!(p.fields||[]).some(f=>want.has(normSize(f.size)))) return false; }
   if(fx.types.length && !fx.types.includes(String(p.type||'').trim())) return false;
   if(fx.minRating>0 && safeRating(p.rating)<fx.minRating) return false;
   if(fx.availableToday && placeAvailability(p).state!=='today') return false;
@@ -2954,10 +3006,19 @@ function placeCard(p, eager){
     loading: eager?'eager':'lazy', fetchpriority: eager?'high':'auto', decoding:'async' }));
   else cover.append(h('div',{class:'place-cover-emoji', html:ICON.ball, 'aria-hidden':'true'}));
   const AVAIL_KEY={today:'availToday',later:'availLater',full:'availFull',none:'availNone'};
+  // زر مفضّلة (قلب) — تخزين محلي فقط
+  const isFav=favHas(p.place_id);
+  const favB=h('button',{class:'fav-btn'+(isFav?' on':''), type:'button', html:ICON.heart,
+    'aria-pressed':isFav?'true':'false', 'aria-label':t(isFav?'favRemove':'favAdd')});
+  favB.addEventListener('click',(e)=>{ e.stopPropagation();
+    const on=favToggle(p.place_id);
+    favB.classList.toggle('on',on); favB.setAttribute('aria-pressed',on?'true':'false'); favB.setAttribute('aria-label',t(on?'favRemove':'favAdd'));
+    if(State.favOnly) renderPlaces();
+  });
   cover.append(
     h('div',{class:'place-top-badges'},
       h('span',{class:'avail-badge '+av.cls}, t(AVAIL_KEY[av.state]||'availNone')),
-      h('span',{class:'price-badge'}, price)),
+      h('span',{class:'ptb-side'}, favB, h('span',{class:'price-badge'}, price))),
     h('div',{class:'place-footer'},
       h('div',{class:'place-name'}, p.place_name),
       h('div',{class:'place-meta'},
@@ -2985,14 +3046,21 @@ function renderPlaces(){
   const el = $('#placesList'); if(!el) return;
   updateFilterBar();
   const q = normalizeText($('#searchInput')?.value || '');
+  const favs = State.favOnly ? favGet() : null;
   let list = State.places.filter(p=>{
     const regionOk = State.filter==='all' || normalizeText(p.region)===normalizeText(State.filter);
     const searchOk = !q || [p.place_name,p.city,p.region,p.type].some(x=>normalizeText(x).includes(q));
-    return regionOk && searchOk && passesFilters(p);
+    const favOk = !favs || favs.has(String(p.place_id));
+    return regionOk && searchOk && favOk && passesFilters(p);
   });
   list = sortPlaces(list);
   clear(el);
   if (!list.length){
+    if (State.favOnly){
+      el.append(emptyState({ icon:'🤍', title:t('noFavsTitle'), sub:t('noFavsSub'),
+        actionLabel:t('browseFields'), action:()=>{ State.favOnly=false; renderRegionTabs(); renderPlaces(); } }));
+      return;
+    }
     const hasAny = q || State.filter!=='all' || activeFilterCount()>0;
     el.append(emptyState({ icon:'🔍', title:t('noResultsTitle'),
       sub: hasAny ? t('noResultsSub') : t('noResultsSubPlain'),
@@ -3030,11 +3098,11 @@ function renderFiltersSheet(){
   $('#fxMin').value = fx.minPrice ?? ''; $('#fxMax').value = fx.maxPrice ?? '';
   // الحجم
   const sz=$('#fxSizes'); clear(sz); const sizes=distinctSizes();
-  sizes.length ? sizes.forEach(s=>{ const c=fxChip(s, fx.sizes.includes(s)); c.addEventListener('click',()=>{ toggleArr(fx.sizes,s); renderFiltersSheet(); }); sz.append(c); })
+  sizes.length ? sizes.forEach(szv=>{ const c=fxChip(szv, fx.sizes.includes(szv)); c.addEventListener('click',()=>{ toggleArr(fx.sizes,szv); renderFiltersSheet(); }); sz.append(c); })
                : sz.append(h('span',{class:'fx-empty'},t('noData')));
-  // النوع
+  // النوع (ty — لا تُظلِّل دالة الترجمة t)
   const tp=$('#fxTypes'); clear(tp); const types=distinctTypes();
-  types.length ? types.forEach(t=>{ const c=fxChip(t, fx.types.includes(t)); c.addEventListener('click',()=>{ toggleArr(fx.types,t); renderFiltersSheet(); }); tp.append(c); })
+  types.length ? types.forEach(ty=>{ const c=fxChip(ty, fx.types.includes(ty)); c.addEventListener('click',()=>{ toggleArr(fx.types,ty); renderFiltersSheet(); }); tp.append(c); })
                : tp.append(h('span',{class:'fx-empty'},t('noData')));
   // التقييم
   const rt=$('#fxRating'); clear(rt); [4,3,2].forEach(r=>{ const c=fxChip('★ '+r+'+', fx.minRating===r); c.addEventListener('click',()=>{ fx.minRating = fx.minRating===r?0:r; renderFiltersSheet(); }); rt.append(c); });
@@ -3051,7 +3119,7 @@ function renderFiltersSheet(){
 function applyFilters(){
   const fx=State.fxDraft; if(!fx) return;
   fx.minPrice=numOrNull($('#fxMin').value); fx.maxPrice=numOrNull($('#fxMax').value);
-  if(fx.minPrice!=null && fx.maxPrice!=null && fx.minPrice>fx.maxPrice){ const t=fx.minPrice; fx.minPrice=fx.maxPrice; fx.maxPrice=t; }
+  if(fx.minPrice!=null && fx.maxPrice!=null && fx.minPrice>fx.maxPrice){ const tmp=fx.minPrice; fx.minPrice=fx.maxPrice; fx.maxPrice=tmp; }
   fx.availableToday=$('#fxToday').checked;
   State.fx=fx; State.sort=State.sortDraft; State.fxDraft=null;
   const reg=$('#fxRegion').value; State.filter = reg==='all'?'all':reg;
@@ -3098,9 +3166,9 @@ function renderDetailThumbs(imgs){
   if(!imgs || imgs.length<2){ el.hidden=true; return; }
   el.hidden=false;
   imgs.forEach((src,i)=>{
-    const t=h('button',{class:'thumb'+(i===0?' active':''), type:'button', 'aria-label':'عرض الصورة '+(i+1)}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
-    t.addEventListener('click', ()=>{ const main=$('#detailHeroImg'); if(main) main.src=src; $$('#detailThumbs .thumb').forEach(x=>x.classList.remove('active')); t.classList.add('active'); });
-    el.append(t);
+    const th=h('button',{class:'thumb'+(i===0?' active':''), type:'button', 'aria-label':'عرض الصورة '+(i+1)}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
+    th.addEventListener('click', ()=>{ const main=$('#detailHeroImg'); if(main) main.src=src; $$('#detailThumbs .thumb').forEach(x=>x.classList.remove('active')); th.classList.add('active'); });
+    el.append(th);
   });
 }
 /* الملخّص اللاصق أسفل صفحة التفاصيل (يظهر بعد اختيار ملعب+يوم+وقت) */
@@ -3138,7 +3206,7 @@ function renderDetailDays(){
   for(let i=0;i<7;i++){ const d=dateAfter(i);
     el.append(dayButton(d, i, d===State.detail.date, async()=>{
       State.detail.date=d; State.detail.hour=null; renderDetailDays(); renderDetailSticky(); timeSkeleton($('#detailTimes'),6);
-      try{ await loadPublicBookings(); }catch(_){}
+      try{ await ensurePublicBookings(); }catch(_){}
       renderDetailDays(); renderDetailTimes();
     }));
   }
@@ -3176,7 +3244,7 @@ function renderDetailTimes(){
 /* ===================== RENDER: ECONOMIC (place / player) ===================== */
 const bookingsForPlace = (id) => (State.publicBookings||[]).filter(b=>String(b.place_id)===String(id));
 const placeWeeklySlots = (p) => (p?.fields||[]).reduce((s,f)=>s+fieldSlots(f).length,0)*7;
-function placeTakenThisWeek(p){ const ids=new Set((p?.fields||[]).map(f=>String(f.field_id))); const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i))); return (State.publicBookings||[]).filter(b=>ids.has(String(b.field_id))&&days.has(String(b.date).split('T')[0])&&!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length; }
+function placeTakenThisWeek(p){ const ids=new Set((p?.fields||[]).map(f=>String(f.field_id))); const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i))); return (State.publicBookings||[]).filter(b=>ids.has(String(b.field_id))&&days.has(String(b.date).split('T')[0])&&!['cancelled','rejected'].includes(normStatus(b))).length; }
 function econCard(title, badge, items, decision){
   const grid=h('div',{class:'econ-grid'});
   items.forEach(it=> grid.append(h('div',{class:'econ-item'}, h('div',{class:'econ-value'}, it.v), h('div',{class:'econ-label'}, it.l), it.h&&h('div',{class:'econ-hint'}, it.h))));
@@ -3188,7 +3256,7 @@ function renderPlaceStats(){
   const el=$('#placeStats'); if(!el) return; const p=State.detail.place; clear(el);
   const pb=bookingsForPlace(p.place_id); const total=placeWeeklySlots(p); const taken=placeTakenThisWeek(p);
   const availRate=calcPercent(Math.max(total-taken,0), total);
-  const confirmed=pb.filter(b=>String(b.status||'').toLowerCase()==='confirmed').length;
+  const confirmed=pb.filter(b=>normStatus(b)==='confirmed').length;
   const confirmRate=calcPercent(confirmed, pb.length);
   const quality = !pb.length ? 'بيانات قليلة' : (confirmRate>=80?'ممتاز':confirmRate>=60?'جيد':'بحاجة متابعة');
   const decision = (confirmRate&&confirmRate<80) ? 'تنبيه: معدل التأكيد أقل من 80%.' : 'المؤشرات تساعدك تعرف إذا الملعب مناسب قبل الحجز.';
@@ -3201,8 +3269,8 @@ function renderPlaceStats(){
 }
 function renderPlayerStats(list){
   const el=$('#playerStats'); if(!el) return; list=list||[]; clear(el);
-  const confirmed=list.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
-  const rejected=list.filter(b=>['rejected','cancelled'].includes(String(b.status||'').toLowerCase()));
+  const confirmed=list.filter(b=>normStatus(b)==='confirmed');
+  const rejected=list.filter(b=>['rejected','cancelled'].includes(normStatus(b)));
   const spent=confirmed.reduce((s,b)=>s+(Number(b.price)||0),0);
   if(!list.length) return;
   el.append(econCard('💸 ملخصك كلاعب', null, [
@@ -3276,6 +3344,27 @@ function showSimpleSuccess(text){
   setText('successTitle', t('successDone')); setText('successText', text);
   Modal.open('success');
 }
+/* توليد ملف تقويم .ics لحدث الحجز (ساعتان، توقيت محلي) — تنزيل عبر Blob بلا أي HTML */
+function icsStamp(d){ return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}T${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}00`; }
+function downloadBookingIcs({ place, field, date, hour }){
+  try{
+    const st=new Date(`${date}T${String(hour).padStart(2,'0')}:00:00`); if(Number.isNaN(st.getTime())) return;
+    const en=new Date(st); en.setHours(en.getHours()+2);
+    const esc=(s)=>String(s||'').replace(/[\\;,]/g, m=>'\\'+m).replace(/\r?\n/g,'\\n');
+    const ics=[
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mustadaira//Booking//AR','BEGIN:VEVENT',
+      `UID:${Date.now()}-${String(field.field_id||'')}@mustadaira`,
+      `DTSTAMP:${icsStamp(new Date())}`,`DTSTART:${icsStamp(st)}`,`DTEND:${icsStamp(en)}`,
+      `SUMMARY:${esc(`${place.place_name} - ${field.field_name}`)}`,
+      `LOCATION:${esc(placeLocation(place))}`,
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mustadaira-booking.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  }catch(_){}
+}
 /* شاشة نجاح الحجز: علامة متحركة + ملخّص + حالة + رقم الحجز + إجراءات */
 function showBookingSuccess(info, bookingId){
   const { place, field, date, hour } = info;
@@ -3295,15 +3384,16 @@ function showBookingSuccess(info, bookingId){
   );
   const act=$('#successActions'); clear(act);
   const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
+  const goC=h('button',{class:'cbtn'}, ico('cal','svg-sm'), ' '+t('addToCalendar')); goC.addEventListener('click',()=>downloadBookingIcs(info));
   const goH=h('button',{class:'cbtn'}, t('navHome')); goH.addEventListener('click',()=>{ Modal.close('success'); showPage('home'); renderPlaces(); });
-  act.append(goB, goH);
+  act.append(goB, goC, goH);
   Modal.open('success');
 }
 
 /* ===================== RENDER: PLAYER BOOKINGS ===================== */
 function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
-  const status = String(b.status||'pending').toLowerCase();
+  const status = normStatus(b);
   const canCancel = !isFinished(b) && status!=='cancelled' && status!=='rejected' && rt!=='in_progress';
   const card = h('div',{class:'card booking-strip '+status, style:{marginBottom:'11px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px',marginBottom:'8px'}},
@@ -3361,7 +3451,7 @@ async function loadPlayerBookings(){
 function categorizeBookings(list){
   const g={ upcoming:[], pending:[], finished:[], cancelled:[] };
   (list||[]).forEach(b=>{
-    const s=String(b.status||'pending').toLowerCase();
+    const s=normStatus(b);
     if(s==='cancelled'||s==='rejected'){ g.cancelled.push(b); return; }
     if(isFinished(b)){ g.finished.push(b); return; }
     if(s==='pending'){ g.pending.push(b); return; }
@@ -3441,18 +3531,18 @@ function renderOwnerToday(){
   const el=$('#ownerToday'); if(!el) return;
   const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const td=today();
   const todayB=all.filter(b=>String(b.date||'').split('T')[0]===td);
-  const pend=todayB.filter(b=>String(b.status||'').toLowerCase()==='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
-  const conf=todayB.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const pend=todayB.filter(b=>normStatus(b)==='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
+  const conf=todayB.filter(b=>normStatus(b)==='confirmed');
   const revenue=conf.reduce((s,b)=>s+(Number(b.price)||0),0);
   // أوقات اليوم الفارغة (من بيانات المالك مباشرة)
   const bookedToday={};
-  todayB.forEach(b=>{ const s=String(b.status||'').toLowerCase(); if(s==='cancelled'||s==='rejected') return; const fid=String(b.field_id); const hr=Number(b.hour); if(!Number.isNaN(hr)){ (bookedToday[fid] ||= new Set()).add(hr); } });
+  todayB.forEach(b=>{ const s=normStatus(b); if(s==='cancelled'||s==='rejected') return; const fid=String(b.field_id); const hr=Number(b.hour); if(!Number.isNaN(hr)){ (bookedToday[fid] ||= new Set()).add(hr); } });
   let totalSlots=0, booked=0;
   fields.forEach(f=>{ if(f.active===false) return; const slots=fieldSlots(f); totalSlots+=slots.length; const set=bookedToday[String(f.field_id)]||new Set(); booked+=slots.filter(s=>set.has(s.hour)).length; });
   setText('otToday', todayB.length); setText('otPending', pend.length); setText('otRevenue', formatMoney(revenue)); setText('otFree', Math.max(totalSlots-booked,0));
   clear(el);
   if(!todayB.length){ el.append(emptyState({icon:'📅', title:t('noBookingsToday'), sub:t('noBookingsTodaySub')})); return; }
-  const rest=todayB.filter(b=>String(b.status||'').toLowerCase()!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
+  const rest=todayB.filter(b=>normStatus(b)!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
   if(pend.length){ el.append(sectionTitle(t('pendingReply'), pend.length)); pend.forEach(b=>el.append(ownerBookingCard(b))); }
   if(rest.length){ el.append(sectionTitle(t('restToday'), rest.length)); rest.forEach(b=>el.append(ownerBookingCard(b))); }
 }
@@ -3474,7 +3564,7 @@ function renderOwnerCalendar(){
   for(let i=0;i<startDay;i++) grid.append(h('div',{class:'cal-cell empty'}));
   for(let d=1; d<=daysInMonth; d++){
     const ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const cnt=(byDate[ds]||[]).filter(b=>!['cancelled','rejected'].includes(String(b.status||'').toLowerCase())).length;
+    const cnt=(byDate[ds]||[]).filter(b=>!['cancelled','rejected'].includes(normStatus(b))).length;
     const cell=h('button',{class:'cal-cell'+(ds===td?' today':'')+(cnt?' has':''), type:'button', dataset:{date:ds}},
       h('span',{class:'cal-d'}, String(d)), cnt?h('span',{class:'cal-dot'}, String(cnt)):null);
     cell.addEventListener('click', ()=>renderCalDay(ds));
@@ -3494,9 +3584,9 @@ function renderCalDay(ds){
   list.forEach(b=> el.append(ownerBookingCard(b)));
 }
 function renderOwnerStats(bookings){
-  const confirmed=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const confirmed=bookings.filter(b=>normStatus(b)==='confirmed');
   const fromWeb=confirmed.filter(b=>!isOwnerManual(b)); const manual=confirmed.filter(isOwnerManual);
-  const pending=bookings.filter(b=>String(b.status||'').toLowerCase()==='pending');
+  const pending=bookings.filter(b=>normStatus(b)==='pending');
   const td=today(), weekStart=dateAfter(-6);
   const todayCount=bookings.filter(b=>String(b.date)===td).length;
   const weekCount=bookings.filter(b=>String(b.date||'')>=weekStart && String(b.date)<=td).length;
@@ -3514,14 +3604,14 @@ function renderOwnerStats(bookings){
 function renderOwnerEcon(bookings){
   const fields=State.ownerData?.fields||[]; const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i)));
   const week=bookings.filter(b=>days.has(String(b.date||'').split('T')[0]));
-  const confW=week.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const confW=week.filter(b=>normStatus(b)==='confirmed');
   const totalSlots=fields.reduce((s,f)=>s+fieldSlots(f).length,0)*7;
   const occ=calcPercent(confW.length,totalSlots);
   const avgPrice=fields.length?fields.reduce((s,f)=>s+(Number(f.price)||0),0)/fields.length:0;
   const lost=Math.round(Math.max(totalSlots-confW.length,0)*avgPrice);
-  const cancelled=bookings.filter(b=>['cancelled','rejected'].includes(String(b.status||'').toLowerCase()));
+  const cancelled=bookings.filter(b=>['cancelled','rejected'].includes(normStatus(b)));
   const cancelRate=calcPercent(cancelled.length,bookings.length);
-  const confAll=bookings.filter(b=>String(b.status||'').toLowerCase()==='confirmed');
+  const confAll=bookings.filter(b=>normStatus(b)==='confirmed');
   const webShare=calcPercent(confAll.filter(isWebsite).length, confAll.length);
   const hourTop=getTopBy(confAll,b=>String(b.hour||''),b=>b.time||((b.hour||'-')+':00'));
   const phones={}; confAll.forEach(b=>{const k=normalizePhone(b.phone||'')||String(b.player_id||''); if(k)phones[k]=(phones[k]||0)+1;});
@@ -3536,7 +3626,7 @@ function renderOwnerEcon(bookings){
 }
 function ownerBookingCard(b){
   const lbl=statusLabel(runtimeStatus(b));
-  const card=h('div',{class:'card booking-strip '+String(b.status||'pending').toLowerCase(), style:{marginBottom:'10px'}},
+  const card=h('div',{class:'card booking-strip '+normStatus(b), style:{marginBottom:'10px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',gap:'8px',alignItems:'flex-start',marginBottom:'9px'}},
       h('div',{},
         h('div',{style:{fontSize:'14px',fontWeight:'900',color:'var(--ink)'}}, b.field_name),
@@ -3568,7 +3658,7 @@ function renderOwnerBookings(){
   if (!State.showAllOwner) bookings=visibleBookings(bookings,30,false);
   if (date) bookings=bookings.filter(b=>String(b.date)===date);
   if (fieldId&&fieldId!=='all') bookings=bookings.filter(b=>String(b.field_id)===String(fieldId));
-  if (status!=='all') bookings=bookings.filter(b=>String(b.status||'').toLowerCase()===status);
+  if (status!=='all') bookings=bookings.filter(b=>normStatus(b)===status);
   if (raw) bookings=bookings.filter(b=> normalizeText(b.name).includes(q) || (qd && String(b.phone||'').replace(/\D/g,'').includes(qd)) );
   const tgl=$('#ownerHistoryToggle'); if(tgl) tgl.textContent=State.showAllOwner?t('hideOld'):t('fullHistory');
   const el=$('#ownerBookings'); clear(el);
@@ -3579,7 +3669,7 @@ function renderOwnerBookings(){
     const td=today(), tm=dateAfter(1);
     Object.keys(g).sort().forEach(date=>{
       const dayB=g[date].sort((a,b)=>Number(a.hour)-Number(b.hour));
-      const c=dayB.filter(b=>b.status==='confirmed').length, p=dayB.filter(b=>b.status==='pending').length, x=dayB.filter(b=>['cancelled','rejected'].includes(b.status)).length;
+      const c=dayB.filter(b=>normStatus(b)==='confirmed').length, p=dayB.filter(b=>normStatus(b)==='pending').length, x=dayB.filter(b=>['cancelled','rejected'].includes(normStatus(b))).length;
       const isToday=date===td, isPast=date<td;
       const lbl = date===td?`${t('today')} — ${arabicDay(date)} ${shortDate(date)}` : date===tm?`${t('tomorrow')} — ${arabicDay(date)} ${shortDate(date)}` : `${arabicDay(date)} ${shortDate(date)}`;
       const pills=h('div',{class:'pills'});
@@ -3675,6 +3765,8 @@ async function openManual(){
   try{ await loadPublicBookings(); }catch(_){}
   State.manual={ fieldId:String(fields[0].field_id), date:today(), hour:null };
   $('#mName').value=''; $('#mPhone').value=''; $('#mPrice').value=fields[0].price||'';
+  // خيار التكرار الأسبوعي (تعبئة بترجمة حيّة)
+  const rep=$('#mRepeat'); if(rep){ clear(rep); rep.append(h('option',{value:'1'}, t('repeatNone'))); [2,3,4,5,6,8].forEach(n=> rep.append(h('option',{value:String(n)}, t('repeatFor',{n})))); rep.value='1'; }
   const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${formatCurrency(f.price)}`))); sel.value=State.manual.fieldId;
   sel.onchange=()=>{ State.manual.fieldId=sel.value; State.manual.hour=null; const f=manualField(); if(f)$('#mPrice').value=f.price||''; renderManualTimes(); };
   renderManualDays(); renderManualTimes(); Modal.open('modal-manual');
@@ -3682,7 +3774,7 @@ async function openManual(){
 function renderManualDays(){
   const el=$('#mDays'); clear(el);
   for(let i=0;i<14;i++){ const d=dateAfter(i);
-    el.append(dayButton(d, i, d===State.manual.date, async()=>{ State.manual.date=d; State.manual.hour=null; renderManualDays(); timeSkeleton($('#mTimes'),6); try{await loadPublicBookings();}catch(_){} renderManualDays(); renderManualTimes(); }));
+    el.append(dayButton(d, i, d===State.manual.date, async()=>{ State.manual.date=d; State.manual.hour=null; renderManualDays(); timeSkeleton($('#mTimes'),6); try{await ensurePublicBookings();}catch(_){} renderManualDays(); renderManualTimes(); }));
   }
 }
 function renderManualTimes(){
@@ -3755,7 +3847,15 @@ function showPage(name){
 
 /* تحديث تلقائي للأوقات على الصفحات الحيّة فقط */
 function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active'); }
-async function refreshVisible(){ if (document.hidden || !autoRefreshActive()) return; await loadData(); if($('#page-home').classList.contains('active')) renderPlaces(); if($('#page-detail').classList.contains('active')&&State.detail.field){ renderDetailDays(); renderDetailTimes(); } }
+async function refreshVisible(){
+  if (document.hidden || !autoRefreshActive()) return;
+  if (document.body.classList.contains('modal-open')) return;                              // مودال مفتوح — لا تُعد الرسم تحته
+  const onDetail = $('#page-detail')?.classList.contains('active');
+  if (onDetail && State.detail.hour != null) return;                                       // المستخدم اختار وقتاً — لا تقاطعه
+  await loadData();
+  if($('#page-home').classList.contains('active')) renderPlaces();
+  if(onDetail && State.detail.field){ renderDetailDays(); renderDetailTimes(); }
+}
 function manageAutoRefresh(){ const run=autoRefreshActive()&&!document.hidden; if(run&&!State.refreshTimer)State.refreshTimer=setInterval(refreshVisible,CONFIG.AUTO_REFRESH_MS); if(!run&&State.refreshTimer){clearInterval(State.refreshTimer);State.refreshTimer=null;} }
 
 /* ===================== AUTH ===================== */
@@ -3878,11 +3978,31 @@ async function saveManual(btn){
   if(!name){ toast(t('manualName'),'warn'); return; }
   if(!price||Number.isNaN(price)){ toast(t('manualPrice'),'warn'); return; }
   const slot=fieldSlots(f).find(s=>s.hour===State.manual.hour);
+  const weeks=Math.max(1, Math.min(12, Number($('#mRepeat')?.value||1)||1));
   await withLoading(btn, async()=>{
     try{
-      const res=await API.post({ action:'ownerCreateManualBooking', owner_token:Session.owner(), field_id:f.field_id, date:State.manual.date, hour:State.manual.hour, time:slot?slot.label:'', name, phone, players:f.size, price });
-      if(!res.success){ toast(apiMsg(res.message)||t('manualFail'),'error'); await loadPublicBookings().catch(()=>{}); renderManualTimes(); return; }
-      Modal.close('modal-manual'); toast(t('manualOk'),'success');
+      if(weeks===1){
+        const res=await API.post({ action:'ownerCreateManualBooking', owner_token:Session.owner(), field_id:f.field_id, date:State.manual.date, hour:State.manual.hour, time:slot?slot.label:'', name, phone, players:f.size, price });
+        if(!res.success){ toast(apiMsg(res.message)||t('manualFail'),'error'); await loadPublicBookings().catch(()=>{}); renderManualTimes(); return; }
+        Modal.close('modal-manual'); toast(t('manualOk'),'success');
+        await loadOwnerDashboard(); await loadData({force:true});
+        return;
+      }
+      // تكرار أسبوعي: تحقّق طازج مرة واحدة، ثم استدعاءات متتابعة بنفس الـAPI مع تخطّي الأوقات المحجوزة
+      try{ await loadPublicBookings(); }catch(_){}
+      let added=0, skipped=0;
+      for(let w=0; w<weeks; w++){
+        const d0=new Date(`${State.manual.date}T12:00:00`); d0.setDate(d0.getDate()+7*w); const dt=ymd(d0);
+        const takenArr=(State.bookedSlots[f.field_id]?.[dt])||[];
+        if(takenArr.includes(Number(State.manual.hour))){ skipped++; continue; }
+        try{
+          const res=await API.post({ action:'ownerCreateManualBooking', owner_token:Session.owner(), field_id:f.field_id, date:dt, hour:State.manual.hour, time:slot?slot.label:'', name, phone, players:f.size, price });
+          if(res.success){ added++; ((State.bookedSlots[f.field_id] ||= {})[dt] ||= []).push(Number(State.manual.hour)); }
+          else skipped++;
+        }catch(_){ skipped++; }
+      }
+      Modal.close('modal-manual');
+      toast(t('repeatSummary',{added, skipped}), added>0?'success':'error', 5200);
       await loadOwnerDashboard(); await loadData({force:true});
     }catch(_){ toast(t('manualErr'),'error'); }
   });
@@ -3909,7 +4029,7 @@ function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
   $$('[data-action="toggleTheme"]').forEach(b=>b.textContent = dark?'☀️':'🌙');
-  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#06110C':'#F5F8F5');
+  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#0A0F0B':'#F6F8F4');
 }
 function toggleTheme(){ const t = document.body.classList.contains('dark')?'light':'dark'; Session.setTheme(t); applyTheme(t); }
 
