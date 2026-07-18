@@ -1442,6 +1442,28 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 #ownerBookings,#ownerToday,#ownerFields,#calDayBookings,#aiInsights,#aiReviews{
   overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 
+/* ---------- صور منفصلة لكل ملعب داخل المكان ---------- */
+.subfield-card{gap:10px;align-items:center}
+.subfield-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--line);background:var(--surface-soft)}
+.subfield-thumb.ph{display:grid;place-items:center;color:var(--soft)}
+.subfield-thumb.ph svg{width:22px;height:22px}
+.subfield-card .subfield-main{flex:1 1 auto;min-width:0;text-align:start}
+
+/* ---------- مؤقّت عمر الطلب المعلّق (يشتد لونه مع التأخر) ---------- */
+.age-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.age-chip.age-ok{background:var(--mint-soft);color:var(--ok-ink)}
+.age-chip.age-warn{background:var(--warning-soft);color:var(--warning-ink)}
+.age-chip.age-late{background:var(--danger-soft);color:var(--danger-ink)}
+
+/* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
+.otab{position:relative}
+.tab-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;display:grid;place-items:center;
+  background:var(--danger);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:0 4px;
+  box-shadow:0 0 0 2px var(--cream)}
+
+/* ---------- الشريط اللاصق قبل اكتمال الاختيار: تلميح هادئ ---------- */
+.detail-sticky.incomplete .dsticky-line{color:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -2404,6 +2426,10 @@ const I18N = {
     aiReviewsCount:'{n} تقييم · متوسط {avg}★', aiUpdatedAt:'آخر تحديث: {time}',
     aiWeatherFail:'تعذّر جلب توقّعات الطقس.', aiRetry:'إعادة المحاولة',
     aiAutoAdvice:'نصيحة تلقائية', aiRainShort:'أمطار {n}%',
+    // ---- تحسينات UX (السعر الدائم · عمر الطلب · أكّد+واتساب · شارة الجديد) ----
+    chooseDayTimeHint:'اختر اليوم والوقت', actConfirmWa:'أكّد + واتساب',
+    ageNow:'وصل الآن', ageMin:'منذ {n} د', ageHr:'منذ {n} س', ageDay:'منذ {n} يوم',
+    newPendingToast:'🔔 وصل {n} طلب حجز جديد',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -2545,6 +2571,10 @@ const I18N = {
     aiReviewsCount:'{n} reviews · {avg}★ average', aiUpdatedAt:'Last updated: {time}',
     aiWeatherFail:'Couldn’t fetch the weather forecast.', aiRetry:'Retry',
     aiAutoAdvice:'Automatic advice', aiRainShort:'Rain {n}%',
+    // ---- UX polish (always-price · request age · confirm+WA · new badge) ----
+    chooseDayTimeHint:'Pick a day & time', actConfirmWa:'Confirm + WhatsApp',
+    ageNow:'just now', ageMin:'{n}m ago', ageHr:'{n}h ago', ageDay:'{n}d ago',
+    newPendingToast:'🔔 {n} new booking request(s)',
   }
 };
 function t(key, params){
@@ -2669,6 +2699,9 @@ function normalizePhone(p){ p = String(p||'').trim().replace(/\s+/g,''); if(p.st
 function normalizeText(v){ return String(v||'').trim().toLowerCase().replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ـ/g,'').replace(/\s+/g,''); }
 /* تطبيع حجم الملعب للمقارنة: 6×6 و 6x6 و "6 X 6" كلها قيمة واحدة */
 const normSize = (v) => String(v||'').trim().toLowerCase().replace(/[×X]/g,'x').replace(/\s+/g,'');
+/* صور الملعب: خلية image_url في شيت Fields تقبل عدة روابط مفصولة بفواصل أو أسطر
+   (الرابط الأول = الصورة الرئيسية). تُقبل روابط http(s) فقط. */
+function fieldImages(f){ return [...new Set(String((f&&f.image_url)||'').split(/[,\n|]+/).map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s)))]; }
 const getSource = () => new URLSearchParams(location.search).get('source') || 'direct';
 
 /* ===================== FAVORITES (محلي فقط — localStorage، بلا باكند) ===================== */
@@ -3174,7 +3207,7 @@ function placeCard(p, eager){
   const unit = State.lang==='en' ? 'JOD' : 'د.أ';
   const price = mn===mx ? `${mn} ${unit}` : `${mn}-${mx} ${unit}`;
   const oneField=(p.fields||[]).length===1;
-  const img = p.fields?.[0]?.image_url;
+  const img = (p.fields||[]).map(f=>fieldImages(f)[0]).find(Boolean);
   const hours = placeHours(p);                                    // أوقات الدوام (بدل أقرب وقت متاح)
 
   const cover = h('div',{class:'place-cover'});
@@ -3323,19 +3356,27 @@ async function openDetail(placeId){
   const badges=$('#dBadges'); clear(badges);
   badges.append(h('span',{class:'badge badge-green'}, place.type||''), h('span',{class:'badge badge-blue'}, '★ '+ratingText(place)));
 
-  // الغلاف + معرض صور (جاهز لعدة صور؛ صورة واحدة تبقى مفردة بلا تكرار وهمي)
-  const hero=$('#detailHero'); $$('#detailHero img').forEach(n=>n.remove());
-  const emoji=$('#detailEmoji');
-  const imgs=[...new Set((place.fields||[]).map(f=>f.image_url).filter(Boolean))];
-  if (imgs.length){ emoji.style.display='none'; hero.insertBefore(h('img',{id:'detailHeroImg',src:imgs[0],alt:place.place_name,decoding:'async',fetchpriority:'high'}), hero.firstChild); }
-  else { emoji.style.display=''; hero.style.background='var(--forest-2)'; }
-  renderDetailThumbs(imgs);
+  // الغلاف + المعرض: صور الملعب المحدَّد (تتبدّل مع تبديل الملعب داخل المكان)
+  renderDetailHero();
 
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
 
   renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
   showPage('detail');
+}
+/* غلاف التفاصيل: صور الملعب المحدَّد أولاً (فصل بصري لكل ملعب)؛
+   إن لم تكن له صور ⇒ كل صور المكان؛ وإلا ⇒ الأيقونة الاحتياطية */
+function renderDetailHero(){
+  const place=State.detail.place, field=State.detail.field; if(!place) return;
+  const hero=$('#detailHero'); if(!hero) return;
+  $$('#detailHero img').forEach(n=>n.remove());
+  const emoji=$('#detailEmoji');
+  const own=field?fieldImages(field):[];
+  const imgs=own.length?own:[...new Set((place.fields||[]).flatMap(f=>fieldImages(f)))];
+  if (imgs.length){ emoji.style.display='none'; hero.insertBefore(h('img',{id:'detailHeroImg',src:imgs[0],alt:(own.length&&field?field.field_name:place.place_name)||'',decoding:'async',fetchpriority:'high'}), hero.firstChild); }
+  else { emoji.style.display=''; hero.style.background='var(--forest-2)'; }
+  renderDetailThumbs(imgs);
 }
 /* معرض مصغّرات (يظهر فقط عند وجود أكثر من صورة فعلية) */
 function renderDetailThumbs(imgs){
@@ -3348,26 +3389,36 @@ function renderDetailThumbs(imgs){
     el.append(th);
   });
 }
-/* الملخّص اللاصق أسفل صفحة التفاصيل (يظهر بعد اختيار ملعب+يوم+وقت) */
+/* الملخّص اللاصق أسفل التفاصيل — يظهر دائماً مع السعر (تقليل المفاجآت):
+   قبل اكتمال الاختيار: اسم الملعب + «اختر اليوم والوقت» والسعر/ساعتين؛ بعده: الملخّص الكامل */
 function renderDetailSticky(){
   const bar=$('#detailSticky'); if(!bar) return;
   const { field, date, hour } = State.detail;
-  const ok = !!field && hour!=null;
-  bar.hidden = !ok; if(!ok) return;
-  const slot=fieldSlots(field).find(s=>s.hour===hour);
-  setText('dstickyLine', `${field.field_name} • ${dayLabel(date)} ${shortDate(date)} • ${slot?slotDisplay(slot):''}`);
+  if(!field){ bar.hidden=true; return; }
+  bar.hidden=false;
+  const done = hour!=null;
+  bar.classList.toggle('incomplete', !done);
+  if(done){
+    const slot=fieldSlots(field).find(s=>s.hour===hour);
+    setText('dstickyLine', `${field.field_name} • ${dayLabel(date)} ${shortDate(date)} • ${slot?slotDisplay(slot):''}`);
+  } else {
+    setText('dstickyLine', `${field.field_name} • ${t('chooseDayTimeHint')}`);
+  }
   setText('dstickyPrice', formatCurrency(field.price));
 }
 function renderSubFields(){
   const el=$('#subFields'); clear(el);
   State.detail.place.fields.forEach(f=>{
     const active = String(State.detail.field.field_id)===String(f.field_id);
+    const fi=fieldImages(f)[0];   // صورة مصغّرة خاصة بكل ملعب — فصل بصري داخل المكان
     const card=h('button',{class:'subfield-card'+(active?' active':''), type:'button', 'aria-pressed':active?'true':'false'},
-      h('div',{},
+      fi ? h('img',{class:'subfield-thumb', src:fi, alt:'', loading:'lazy', decoding:'async'})
+         : h('span',{class:'subfield-thumb ph', html:ICON.ball, 'aria-hidden':'true'}),
+      h('div',{class:'subfield-main'},
         h('div',{class:'subfield-name'}, f.field_name),
         h('div',{class:'subfield-size'}, ico('resize','svg-sm'), ' '+f.size)),
       h('div',{class:'subfield-price'}, formatCurrency(f.price)));
-    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); });
+    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); renderDetailSticky(); });
     el.append(card);
   });
 }
@@ -3707,6 +3758,7 @@ function showOwnerTab(name){
   if(name==='calendar') renderOwnerCalendar();
   if(name==='today') renderOwnerToday();
   if(name==='reports' && State.ownerData){ loadAiInsights(); loadAiReviews(); }   // 🤖 جلب كسول أول مرة فقط
+  if(name==='bookings'){ State.ownerNewCount=0; updateOwnerTabBadge(); }          // فتح التبويب يصفّر شارة الجديد
   window.scrollTo({ top:0, behavior:'instant' });
 }
 /* ===================== OWNER · TODAY TAB ===================== */
@@ -3840,8 +3892,18 @@ function renderOwnerEcon(bookings){
   setText('oOccupancy',occ+'%'); setText('oLost',formatMoney(lost)); setText('oCancel',cancelRate+'%');
   setText('oBestTime',hourTop?hourTop.label:'-'); setText('oWebShare',webShare+'%'); setText('oReturn',returnRate+'%'); setText('oDecision',decision);
 }
+/* عمر الطلب المعلّق «منذ …» — لون يشتد مع التأخر لتحفيز سرعة الردّ */
+function bookingAge(b){
+  if(normStatus(b)!=='pending') return null;
+  const d=new Date(String(b.timestamp||'').replace(' ','T'));
+  if(Number.isNaN(d.getTime())) return null;
+  const mins=Math.max(0, Math.floor((Date.now()-d.getTime())/60000));
+  const label = mins<1 ? t('ageNow') : mins<60 ? t('ageMin',{n:mins}) : mins<1440 ? t('ageHr',{n:Math.floor(mins/60)}) : t('ageDay',{n:Math.floor(mins/1440)});
+  return { label, cls: mins<15?'age-ok' : mins<60?'age-warn' : 'age-late' };
+}
 function ownerBookingCard(b){
   const lbl=statusLabel(runtimeStatus(b));
+  const age=bookingAge(b);
   const card=h('div',{class:'card booking-strip '+normStatus(b), style:{marginBottom:'10px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',gap:'8px',alignItems:'flex-start',marginBottom:'9px'}},
       h('div',{},
@@ -3849,7 +3911,9 @@ function ownerBookingCard(b){
         h('div',{style:{display:'flex',gap:'10px',marginTop:'4px',flexWrap:'wrap'}},
           h('span',{class:'info-line muted'}, ico('cal','svg-sm'), ' '+b.date),
           h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time))),
-      h('span',{class:'badge '+lbl.c}, lbl.t)),
+      h('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'5px'}},
+        h('span',{class:'badge '+lbl.c}, lbl.t),
+        age && h('span',{class:'age-chip '+age.cls}, '⏱ '+age.label))),
     h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px',marginBottom:'11px'}},
       h('span',{class:'info-line'}, ico('person','svg-sm'), ' '+(b.name||'-')),
       h('span',{class:'info-line'}, ico('phone','svg-sm'), ' '+(b.phone||'-')),
@@ -3860,7 +3924,7 @@ function ownerBookingCard(b){
   if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
   const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
-  actions.append(mk('owner-confirm',t('actConfirm'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'));
+  actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'));
   const wa=h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
   actions.append(wa); card.append(actions);
   return card;
@@ -3960,6 +4024,7 @@ async function loadAi(kind, targetSel, render, force){
     const action = kind==='insights'?'aiInsights' : kind==='reviews'?'aiReviews' : 'aiWeather';
     const res = await API.getAi(action, { owner_token:Session.owner(), lang, force:force?'1':'0' }, 'ai_'+kind);
     ai[kind]=res; ai[kind+'Lang']=lang;
+    if(res && !res.success) console.warn('AI ['+kind+'] failed — code:', res.code||'(none)', res.detail?('· detail: '+res.detail):'');
   }catch(e){
     if(isAbort(e)){ ai[kind+'Loading']=false; return; }
     ai[kind]={ success:false, code:isTimeout(e)?'timeout':'network' }; ai[kind+'Lang']=lang;
@@ -4053,24 +4118,31 @@ async function updateBookingStatus(btn, rowNumber, status){
     const r=await askReason(status==='cancelled'?t('cancelReasonTitle'):t('rejectReasonTitle'), t('reasonHint'), t('confirmWord'), true);
     if (r===null) return; reason=r;
   }
+  // فتح تبويب واتساب الآن (ضمن إيماءة المستخدم ⇒ لا يحظره المتصفح) وتوجيهه بعد نجاح التحديث
+  const waWin = (booking && normalizePhone(booking.phone)) ? window.open('about:blank','_blank') : null;
   await withLoading(btn, async()=>{
     try{
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(), row_number:rowNumber, status, cancel_reason:reason });
-      if (!res.success){ toast(apiMsg(res.message)||t('updateFail'),'error'); return; }
-      if (booking) sendWhatsApp(booking, status, reason);
+      if (!res.success){ try{ waWin&&waWin.close(); }catch(_){} toast(apiMsg(res.message)||t('updateFail'),'error'); return; }
+      if (booking) sendWhatsApp(booking, status, reason, waWin);
       await loadOwnerDashboard(); await loadData();
       if ($('#page-home').classList.contains('active')) renderPlaces();
-    }catch(_){ toast(t('updateErr'),'error'); }
+    }catch(_){ try{ waWin&&waWin.close(); }catch(_){} toast(t('updateErr'),'error'); }
   });
 }
-function sendWhatsApp(b, status, reason=''){
-  const phone=normalizePhone(b.phone); if(!phone) return;
+function sendWhatsApp(b, status, reason='', win=null){
+  const phone=normalizePhone(b.phone);
+  if(!phone){ try{ win&&win.close(); }catch(_){} return; }
   const base={ name:b.name||'', place:b.place_name, field:b.field_name, date:b.date, time:b.time, size:b.players, price:formatCurrency(b.price) };
   let msg='';
   if(status==='confirmed') msg = t('waConfirmed', base);
   else if(status==='rejected') msg = t('waRejected', {...base, reason: reason || t('waRejectedDefault')});
   else if(status==='cancelled') msg = t('waCancelled', {...base, reason: reason || t('waCancelledDefault')});
-  if(!msg) return; setTimeout(()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank'),500);
+  if(!msg){ try{ win&&win.close(); }catch(_){} return; }
+  const url=`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  // التبويب المفتوح مسبقاً ضمن الإيماءة أضمن؛ وإلا المحاولة القديمة (تعمل ضمن مهلة سماح المتصفح)
+  if(win && !win.closed){ try{ win.location.href=url; return; }catch(_){} }
+  setTimeout(()=>window.open(url,'_blank'),500);
 }
 
 /* ---- Reason modal as a Promise ---- */
@@ -4184,16 +4256,48 @@ function showPage(name){
   else window.scrollTo({ top:0, behavior:'instant' });
 }
 
-/* تحديث تلقائي للأوقات على الصفحات الحيّة فقط */
-function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active'); }
+/* تحديث تلقائي للأوقات على الصفحات الحيّة فقط (+ لوحة المالك بتحديث صامت) */
+function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active') || ($('#page-owner')?.classList.contains('active') && !!Session.owner()); }
 async function refreshVisible(){
   if (document.hidden || !autoRefreshActive()) return;
   if (document.body.classList.contains('modal-open')) return;                              // مودال مفتوح — لا تُعد الرسم تحته
+  if ($('#page-owner')?.classList.contains('active')){ await refreshOwnerSilent(); return; }
   const onDetail = $('#page-detail')?.classList.contains('active');
   if (onDetail && State.detail.hour != null) return;                                       // المستخدم اختار وقتاً — لا تقاطعه
   await loadData();
   if($('#page-home').classList.contains('active')) renderPlaces();
   if(onDetail && State.detail.field){ renderDetailDays(); renderDetailTimes(); }
+}
+/* بصمة الحجوزات: أي إضافة أو تغيير حالة يغيّرها ⇒ نعيد الرسم فقط عند تغيّر فعلي */
+const bookingsSig = (bs)=> (bs||[]).map(b=>b.row_number+':'+normStatus(b)).join('|');
+/* تحديث صامت للوحة المالك: بلا تغيير تبويب ولا تمرير ولا مقاطعة —
+   يعيد رسم الأقسام عند تغيّر البيانات فقط + شارة/تنبيه عند وصول طلب معلّق جديد */
+async function refreshOwnerSilent(){
+  if(!Session.owner() || !State.ownerData) return;
+  let res; try{ res = await API.get('getOwnerData', { owner_token:Session.owner() }, 'ownerPoll'); }catch(_){ return; }
+  if(!res || !res.success) return;
+  const oldB=State.ownerData.bookings||[], newB=res.bookings||[];
+  if(bookingsSig(oldB)===bookingsSig(newB)){ State.ownerData=res; return; }
+  const known=new Set(oldB.map(b=>Number(b.row_number)));
+  const freshPending=newB.filter(b=>!known.has(Number(b.row_number)) && normStatus(b)==='pending').length;
+  State.ownerData=res;
+  safeRender('stats', ()=>renderOwnerStats(newB));
+  safeRender('econ', ()=>renderOwnerEcon(newB));
+  safeRender('bookings', renderOwnerBookings);
+  safeRender('today', renderOwnerToday);
+  if(freshPending>0){
+    if(State.ownerTab!=='bookings'){ State.ownerNewCount=(State.ownerNewCount||0)+freshPending; updateOwnerTabBadge(); }
+    toast(t('newPendingToast',{n:freshPending}),'success');
+  }
+}
+/* شارة عدّاد الطلبات الجديدة على تبويب «الحجوزات» — تُصفَّر عند فتح التبويب */
+function updateOwnerTabBadge(){
+  const tab=$('#otab-bookings'); if(!tab) return;
+  let bd=tab.querySelector('.tab-badge');
+  const n=State.ownerNewCount||0;
+  if(!n){ if(bd) bd.remove(); return; }
+  if(!bd){ bd=h('span',{class:'tab-badge','aria-hidden':'true'}); tab.append(bd); }
+  bd.textContent=String(Math.min(n,99));
 }
 function manageAutoRefresh(){ const run=autoRefreshActive()&&!document.hidden; if(run&&!State.refreshTimer)State.refreshTimer=setInterval(refreshVisible,CONFIG.AUTO_REFRESH_MS); if(!run&&State.refreshTimer){clearInterval(State.refreshTimer);State.refreshTimer=null;} }
 
