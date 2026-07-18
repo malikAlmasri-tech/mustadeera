@@ -1356,6 +1356,74 @@ html[lang="en"] .form-label{letter-spacing:.02em}
   transition:transform var(--t-base) var(--ease-out),box-shadow var(--t-base) var(--ease-out),
     border-color .45s var(--ease-out),background-color .45s var(--ease-out),color .45s var(--ease-out)}
 
+/* ============================================================
+   🤖 AI — لوحة المالك (مستشار الأعمال · ملخّص التقييمات · الطقس)
+   كلها بتوكنات الثيم فقط ⇒ تعمل في الفاتح والداكن بلا استثناءات
+   ============================================================ */
+.ai-card{position:relative;overflow:hidden}
+.ai-card::before{content:'';position:absolute;top:0;bottom:0;inset-inline-start:0;width:3px;
+  background:linear-gradient(180deg,var(--copper-primary),var(--mint-electric));opacity:.85}
+.ai-title{display:inline-flex;align-items:center;gap:7px}
+.ai-title svg{width:15px;height:15px;color:var(--emerald);flex-shrink:0}
+.ai-badge{background:var(--mint-soft);color:var(--ok-ink);border:1px solid rgba(18,183,106,.22)}
+.ai-sub{line-height:1.7;margin-bottom:12px}
+.ai-meta{font-size:10px;color:var(--soft);font-weight:700;text-align:center;margin-top:8px}
+
+/* بند توصية واحد — لون الحافة حسب النوع (تسعير/تسويق/جدولة/تحذير/فرصة) */
+.ai-insight{display:flex;gap:10px;align-items:flex-start;background:var(--surface-soft);border:1px solid var(--line);
+  border-inline-start:3px solid var(--info);border-radius:12px;padding:12px 13px;margin-bottom:9px}
+.ai-insight:last-child{margin-bottom:0}
+.ai-i-ico{font-size:15px;line-height:1.4;flex-shrink:0}
+.ai-i-title{font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.ai-i-text{font-size:12px;font-weight:600;color:var(--ink-2);line-height:1.7}
+.ai-insight.t-pricing{border-inline-start-color:var(--warning)}
+.ai-insight.t-marketing{border-inline-start-color:var(--info)}
+.ai-insight.t-schedule{border-inline-start-color:var(--info)}
+.ai-insight.t-warning{border-inline-start-color:var(--danger)}
+.ai-insight.t-opportunity{border-inline-start-color:var(--mint-electric)}
+
+/* رسائل الحالة: خطأ/غير مفعّل/فارغ + تنبيه شكوى متكررة */
+.ai-alert{font-size:12px;font-weight:700;line-height:1.7;border-radius:10px;padding:11px 13px;
+  background:var(--warning-soft);color:var(--warning-ink);border:1px solid rgba(224,163,60,.25)}
+.ai-alert.info{background:var(--surface-soft);color:var(--ink-2);border-color:var(--line)}
+.ai-alert.danger{background:var(--danger-soft);color:var(--danger-ink);border-color:rgba(214,69,60,.25)}
+.ai-alert .link{color:var(--emerald);cursor:pointer;font-weight:800;margin-inline-start:6px}
+
+/* ملخّص التقييمات: شارة الانطباع + رقاقات المديح/الشكاوى */
+.ai-sentiment{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;
+  font-size:11px;font-weight:800;margin-bottom:10px}
+.ai-sentiment.positive{background:var(--mint-soft);color:var(--ok-ink)}
+.ai-sentiment.mixed{background:var(--warning-soft);color:var(--warning-ink)}
+.ai-sentiment.negative{background:var(--danger-soft);color:var(--danger-ink)}
+.ai-summary{font-size:12.5px;font-weight:600;color:var(--ink-2);line-height:1.8;margin-bottom:10px}
+.ai-chip-lbl{font-size:11px;font-weight:800;color:var(--soft);margin-bottom:6px}
+.ai-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.ai-chip{font-size:11px;font-weight:700;border-radius:999px;padding:5px 11px;border:1px solid transparent}
+.ai-chip.good{background:var(--mint-soft);color:var(--ok-ink);border-color:rgba(18,183,106,.2)}
+.ai-chip.bad{background:var(--danger-soft);color:var(--danger-ink);border-color:rgba(214,69,60,.2)}
+
+/* بانر الطقس (تبويب اليوم) — حافة جانبية بلون الشدة */
+.ai-weather{background:var(--surface);border:1px solid var(--line);border-inline-start:3px solid var(--info);
+  border-radius:var(--r-xl);padding:14px 16px;margin-bottom:15px;box-shadow:var(--shadow-card);
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
+.ai-weather.warn{border-inline-start-color:var(--warning)}
+.ai-weather.danger{border-inline-start-color:var(--danger)}
+.ai-w-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.ai-w-title{font-size:13px;font-weight:800;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
+.ai-w-title .ai-w-emoji{font-size:15px}
+.ai-w-days{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ai-w-day{flex:1;min-width:86px;text-align:center;background:var(--surface-soft);border:1px solid var(--line);
+  border-radius:12px;padding:9px 8px}
+.ai-w-ico{font-size:17px;line-height:1.3}
+.ai-w-t{font-size:12px;font-weight:800;color:var(--ink);margin-top:2px}
+.ai-w-sub{font-size:10px;font-weight:700;color:var(--soft);margin-top:2px}
+.ai-w-advice{font-size:12px;font-weight:700;line-height:1.75;color:var(--ink-2);
+  background:var(--surface-soft);border-radius:10px;padding:10px 12px}
+
+/* هيكل تحميل داخل بطاقات AI — يعيد استخدام لمعان .sk الموجود */
+.ai-skel .sk-line{margin-bottom:9px}
+.ai-skel .sk-line:last-child{margin-bottom:0}
+
 </style>
 </head>
 <body>
@@ -1810,6 +1878,8 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 
       <!-- ===== تبويب: اليوم ===== -->
       <div class="owner-tab active" id="ownerTab-today" role="tabpanel" aria-labelledby="otab-today" tabindex="0">
+        <!-- 🤖 تنبيه الطقس والتسعير (يُرسم بالكامل من app.js) -->
+        <div id="aiWeatherWrap" aria-live="polite"></div>
         <div class="stat-grid">
           <div class="stat-card c-blue"><div class="stat-value" id="otToday">0</div><div class="stat-label" data-i18n="otTodayLbl">حجوزات اليوم</div><div class="stat-hint" data-i18n="hintByPlayDate">حسب تاريخ اللعب</div></div>
           <div class="stat-card c-amber"><div class="stat-value" id="otPending">0</div><div class="stat-label" data-i18n="otPendingLbl">بانتظار ردّك</div><div class="stat-hint" data-i18n="hintTodayReq">طلبات اليوم</div></div>
@@ -1900,6 +1970,28 @@ html[lang="en"] .form-label{letter-spacing:.02em}
             <div class="econ-item"><div class="econ-value" id="oReturn">0%</div><div class="econ-label" data-i18n="returnRate">معدل العودة</div><div class="econ-hint" data-i18n="hintSameNumber">نفس الرقم أكثر من مرة</div></div>
           </div>
           <div class="econ-decision" id="oDecision">كلما زادت البيانات، بتصير القرارات أدق.</div>
+        </div>
+
+        <!-- ===== 🤖 AI: المستشار الذكي ===== -->
+        <div class="card ai-card mb-card" id="aiAdvisorCard">
+          <div class="section-title">
+            <span class="ai-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m5.6 18.4 2.1-2.1"/><path d="m16.3 7.7 2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg><span data-i18n="aiAdvisorTitle">المستشار الذكي</span></span>
+            <span class="mini-badge ai-badge" data-i18n="aiBadge">ذكاء اصطناعي</span>
+          </div>
+          <p class="t-sub ai-sub" data-i18n="aiAdvisorSub">تحليل لحجوزاتك وإشغالك وأسعارك يقترح خطوات عملية لزيادة أرباحك.</p>
+          <div id="aiInsights"></div>
+          <button class="cbtn" data-action="refreshAiInsights" style="margin:10px 0 0" data-i18n="aiRegenerate">تحديث التحليل</button>
+        </div>
+
+        <!-- ===== 🤖 AI: ملخّص التقييمات ===== -->
+        <div class="card ai-card" id="aiReviewsCard" style="margin-bottom:15px">
+          <div class="section-title">
+            <span class="ai-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"/></svg><span data-i18n="aiReviewTitle">ملخّص التقييمات</span></span>
+            <span class="mini-badge ai-badge" data-i18n="aiBadge">ذكاء اصطناعي</span>
+          </div>
+          <p class="t-sub ai-sub" data-i18n="aiReviewSub">قراءة ذكية لتقييمات اللاعبين: ما الذي يعجبهم وما الذي يشتكون منه.</p>
+          <div id="aiReviews"></div>
+          <button class="cbtn" data-action="refreshAiReviews" style="margin:10px 0 0" data-i18n="aiRegenerate">تحديث التحليل</button>
         </div>
       </div>
 
@@ -2133,6 +2225,7 @@ const CONFIG = {
   SEARCH_DEBOUNCE: 300,
   COMMISSION: 0.10,
   API_TIMEOUT: 14000,   // مهلة الطلبات (14ث) قبل الإلغاء التلقائي
+  AI_TIMEOUT: 45000,    // مهلة طلبات AI (نموذج + طقس عبر الخادم — أبطأ من الطلبات العادية)
 };
 
 /* الأوقات الافتراضية — بيانات محايدة لغوياً: hour (مطابقة الحجز/الخادم) + startHour/endHour
@@ -2280,6 +2373,19 @@ const I18N = {
     noFavsTitle:'لا ملاعب في المفضّلة بعد', noFavsSub:'اضغط رمز القلب على أي ملعب لحفظه هنا والوصول إليه بسرعة.',
     repeatWeeksLbl:'كرّر أسبوعياً', repeatNone:'بلا تكرار (مرة واحدة)', repeatFor:'لمدة {n} أسابيع (نفس اليوم والوقت)',
     repeatSummary:'أُضيف {added} من الحجوزات، وتُخطّي {skipped} (وقت محجوز أو تعذّرت إضافته).',
+    // ---- 🤖 ميزات الذكاء الاصطناعي (لوحة المالك) ----
+    aiAdvisorTitle:'المستشار الذكي', aiBadge:'ذكاء اصطناعي', aiAdvisorSub:'تحليل لحجوزاتك وإشغالك وأسعارك يقترح خطوات عملية لزيادة أرباحك.',
+    aiReviewTitle:'ملخّص التقييمات', aiReviewSub:'قراءة ذكية لتقييمات اللاعبين: ما الذي يعجبهم وما الذي يشتكون منه.',
+    aiRegenerate:'تحديث التحليل', aiWeatherTitle:'تنبيه الطقس والتسعير',
+    aiFail:'تعذّر توليد التحليل حالياً — جرّب «تحديث التحليل» بعد قليل.',
+    aiNotConfigured:'ميزات الذكاء الاصطناعي غير مفعّلة بعد — أضِف GEMINI_API_KEY (أو OPENAI_API_KEY) في Script Properties على Apps Script.',
+    aiNoInsights:'لا توصيات بعد — كلما زادت الحجوزات صارت التوصيات أدق.',
+    aiNoReviews:'لا تقييمات بعد — عندما يقيّم اللاعبون مكانك سيظهر الملخّص هنا.',
+    aiPraises:'ما يمدحه اللاعبون', aiComplaints:'ما يشتكون منه',
+    aiSentiment_positive:'انطباع إيجابي', aiSentiment_mixed:'انطباع متفاوت', aiSentiment_negative:'انطباع سلبي',
+    aiReviewsCount:'{n} تقييم · متوسط {avg}★', aiUpdatedAt:'آخر تحديث: {time}',
+    aiWeatherFail:'تعذّر جلب توقّعات الطقس.', aiRetry:'إعادة المحاولة',
+    aiAutoAdvice:'نصيحة تلقائية', aiRainShort:'أمطار {n}%',
   },
   en: {
     brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -2408,6 +2514,19 @@ const I18N = {
     noFavsTitle:'No favorite fields yet', noFavsSub:'Tap the heart icon on any field to save it here for quick access.',
     repeatWeeksLbl:'Repeat weekly', repeatNone:'No repeat (one time)', repeatFor:'For {n} weeks (same day & time)',
     repeatSummary:'Added {added} bookings, skipped {skipped} (time taken or failed).',
+    // ---- 🤖 AI features (owner dashboard) ----
+    aiAdvisorTitle:'AI Business Advisor', aiBadge:'AI', aiAdvisorSub:'Analyzes your bookings, occupancy and prices, then suggests practical steps to grow your profit.',
+    aiReviewTitle:'AI Review Summary', aiReviewSub:'A smart read of player reviews: what they love and what they complain about.',
+    aiRegenerate:'Refresh analysis', aiWeatherTitle:'Weather & Pricing Alert',
+    aiFail:'Couldn’t generate the analysis right now — try “Refresh analysis” in a bit.',
+    aiNotConfigured:'AI features aren’t enabled yet — add GEMINI_API_KEY (or OPENAI_API_KEY) to Script Properties in Apps Script.',
+    aiNoInsights:'No recommendations yet — the more bookings, the sharper the advice.',
+    aiNoReviews:'No reviews yet — once players rate your venue, the summary appears here.',
+    aiPraises:'What players praise', aiComplaints:'What they complain about',
+    aiSentiment_positive:'Positive sentiment', aiSentiment_mixed:'Mixed sentiment', aiSentiment_negative:'Negative sentiment',
+    aiReviewsCount:'{n} reviews · {avg}★ average', aiUpdatedAt:'Last updated: {time}',
+    aiWeatherFail:'Couldn’t fetch the weather forecast.', aiRetry:'Retry',
+    aiAutoAdvice:'Automatic advice', aiRainShort:'Rain {n}%',
   }
 };
 function t(key, params){
@@ -2629,6 +2748,13 @@ const API = {
   async post(data, key) {
     const res = await fetchWithTimeout(CONFIG.API_URL, { method:'POST', body: JSON.stringify(data) }, CONFIG.API_TIMEOUT, key);
     if (!res.ok) throw new Error('API POST failed');
+    return res.json();
+  },
+  /* طلبات AI: نفس GET لكن بمهلة أطول (النموذج + الطقس يحتاجان وقتاً أكبر) */
+  async getAi(action, extra={}, key) {
+    const params = new URLSearchParams({ action, ...extra });
+    const res = await fetchWithTimeout(`${CONFIG.API_URL}?${params}`, {}, CONFIG.AI_TIMEOUT, key);
+    if (!res.ok) throw new Error('API GET failed');
     return res.json();
   }
 };
@@ -3522,6 +3648,9 @@ async function loadOwnerDashboard(){
   if (!res || !res.success){ toast(apiMsg(res&&res.message)||t('sessionExpired'),'error'); doLogout(); return; }
   // 2) الرسم — خطأ هنا لا يُلبَّس لباس فشل الشبكة، بل يُظهر الرسالة الحقيقية
   State.ownerData = res;
+  // مالك مختلف (مكان مختلف) ⇒ تصفير كاش AI للجلسة حتى لا تظهر تحليلات مكان سابق
+  const aiPid = res.place ? String(res.place.place_id||'') : '';
+  if (aiState().placeId !== aiPid) State.ai = { placeId: aiPid };
   try{
     renderOwnerDashboard();
   }catch(err){
@@ -3546,6 +3675,8 @@ function renderOwnerDashboard(){
   safeRender('bookings', renderOwnerBookings);
   safeRender('fields', renderOwnerFields);
   safeRender('today', renderOwnerToday);
+  // 🤖 لوحات AI: الطقس فوراً (تبويب اليوم الافتراضي)، والتقارير كسولة عند فتح تبويبها
+  safeRender('ai', ()=>{ loadAiWeather(); if((State.ownerTab||'today')==='reports'){ loadAiInsights(); loadAiReviews(); } });
   showOwnerTab(State.ownerTab || 'today');
 }
 /* ===================== OWNER TABS ===================== */
@@ -3555,6 +3686,7 @@ function showOwnerTab(name){
   $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
   if(name==='calendar') renderOwnerCalendar();
   if(name==='today') renderOwnerToday();
+  if(name==='reports' && State.ownerData){ loadAiInsights(); loadAiReviews(); }   // 🤖 جلب كسول أول مرة فقط
   window.scrollTo({ top:0, behavior:'instant' });
 }
 /* ===================== OWNER · TODAY TAB ===================== */
@@ -3730,6 +3862,124 @@ function renderOwnerFields(){
           h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, t('slotsLbl')+': '+t({full:'kwFull',morning:'kwMorning',evening:'kwEvening'}[slotsToKeyword(f.slots)]||'kwFull'))),
         edit)));
   });
+}
+
+/* ===================== OWNER · AI (مستشار الأعمال · التقييمات · الطقس) =====================
+   ثلاث لوحات تُجلب من الباكند (aiInsights/aiReviews/aiWeather) بكاش خادمي 3-6 ساعات.
+   هنا: كاش جلسة حسب اللغة + هيكل تحميل + عزل كامل للأخطاء (فشل AI لا يمسّ بقية اللوحة). */
+const AI_TYPE_ICON = { pricing:'💰', marketing:'📣', schedule:'🗓️', warning:'⚠️', opportunity:'✨' };
+const WEATHER_EMOJI = { sunny:'☀️', cloudy:'⛅', fog:'🌫️', rain:'🌧️', snow:'❄️', storm:'⛈️' };
+function aiState(){ return (State.ai ||= {}); }
+function aiSkeleton(n=3){
+  const box=h('div',{class:'ai-skel','aria-hidden':'true'}); const w=['w88','w70','w45'];
+  for(let i=0;i<n;i++) box.append(h('div',{class:'sk sk-line '+w[i%3]}));
+  return box;
+}
+/* رسالة فشل موحّدة + زر إعادة محاولة (لا زر عند غياب مفتاح الـAPI — الحل عند المالك لا هنا) */
+function aiErrorBox(res, retry){
+  const code=res&&res.code;
+  const msg = code==='ai_not_configured' ? t('aiNotConfigured')
+            : code==='weather_failed' ? t('aiWeatherFail')
+            : code==='timeout' ? t('apiTimeout') : t('aiFail');
+  const box=h('div',{class:'ai-alert'+(code==='ai_not_configured'?' info':'')}, msg);
+  if(retry && code!=='ai_not_configured'){
+    const l=h('span',{class:'link',role:'button',tabindex:'0'}, t('aiRetry'));
+    l.addEventListener('click',retry);
+    l.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); retry(); } });
+    box.append(l);
+  }
+  return box;
+}
+/* جالب موحّد للوحات الثلاث: يتخطّى الجلب إن كانت النتيجة محفوظة بنفس اللغة */
+async function loadAi(kind, targetSel, render, force){
+  const el=$(targetSel); if(!el || !Session.owner()) return;
+  const ai=aiState(), lang=(State.lang==='en'?'en':'ar');
+  if(ai[kind] && ai[kind+'Lang']===lang && !force){ render(); return; }
+  if(ai[kind+'Loading']) return;
+  ai[kind+'Loading']=true;
+  clear(el); el.append(kind==='weather' ? h('div',{class:'ai-weather'}, aiSkeleton()) : aiSkeleton());
+  try{
+    const action = kind==='insights'?'aiInsights' : kind==='reviews'?'aiReviews' : 'aiWeather';
+    const res = await API.getAi(action, { owner_token:Session.owner(), lang, force:force?'1':'0' }, 'ai_'+kind);
+    ai[kind]=res; ai[kind+'Lang']=lang;
+  }catch(e){
+    if(isAbort(e)){ ai[kind+'Loading']=false; return; }
+    ai[kind]={ success:false, code:isTimeout(e)?'timeout':'network' }; ai[kind+'Lang']=lang;
+  }
+  ai[kind+'Loading']=false;
+  try{ render(); }catch(err){ console.error('ai render ['+kind+'] failed:', err); }
+}
+const loadAiInsights=(force)=>loadAi('insights','#aiInsights',renderAiInsights,force);
+const loadAiReviews=(force)=>loadAi('reviews','#aiReviews',renderAiReviews,force);
+const loadAiWeather=(force)=>loadAi('weather','#aiWeatherWrap',renderAiWeather,force);
+/* سطر «آخر تحديث» أسفل كل لوحة */
+function aiMetaLine(res){
+  let s='';
+  try{ if(res && res.generated_at) s=t('aiUpdatedAt',{time:new Date(res.generated_at).toLocaleString(State.lang==='en'?'en-GB':'ar',{dateStyle:'short',timeStyle:'short'})}); }catch(_){}
+  return s ? h('div',{class:'ai-meta'}, s) : null;
+}
+function renderAiInsights(){
+  const el=$('#aiInsights'); if(!el) return; clear(el);
+  const res=aiState().insights; if(!res) return;
+  if(!res.success){ el.append(aiErrorBox(res, ()=>loadAiInsights(true))); return; }
+  const list=res.insights||[];
+  if(!list.length){ el.append(h('div',{class:'ai-alert info'}, t('aiNoInsights'))); return; }
+  list.forEach(it=>{
+    el.append(h('div',{class:'ai-insight t-'+String(it.type||'opportunity')},
+      h('span',{class:'ai-i-ico','aria-hidden':'true'}, AI_TYPE_ICON[it.type]||'🤖'),
+      h('div',{},
+        h('div',{class:'ai-i-title'}, String(it.title||'')),
+        h('div',{class:'ai-i-text'}, String(it.advice||'')))));
+  });
+  el.append(aiMetaLine(res)||'');
+}
+function renderAiReviews(){
+  const el=$('#aiReviews'); if(!el) return; clear(el);
+  const res=aiState().reviews; if(!res) return;
+  if(res.empty){ el.append(h('div',{class:'ai-alert info'}, t('aiNoReviews'))); return; }
+  if(!res.success){ el.append(aiErrorBox(res, ()=>loadAiReviews(true))); return; }
+  const sent=['positive','mixed','negative'].includes(res.sentiment)?res.sentiment:'mixed';
+  el.append(h('div',{class:'ai-sentiment '+sent},
+    h('span',{}, t('aiSentiment_'+sent)),
+    h('span',{'aria-hidden':'true'}, '·'),
+    h('span',{}, t('aiReviewsCount',{n:res.total||0, avg:res.avg_rating!=null?String(res.avg_rating):'-'}))));
+  if(res.summary) el.append(h('div',{class:'ai-summary'}, String(res.summary)));
+  const chips=(arr,cls,lbl)=>{
+    if(!Array.isArray(arr)||!arr.length) return;
+    el.append(h('div',{class:'ai-chip-lbl'}, lbl));
+    const c=h('div',{class:'ai-chips'}); arr.forEach(x=>c.append(h('span',{class:'ai-chip '+cls}, String(x)))); el.append(c);
+  };
+  chips(res.praises,'good',t('aiPraises'));
+  chips(res.complaints,'bad',t('aiComplaints'));
+  if(res.alert) el.append(h('div',{class:'ai-alert danger'}, '⚠️ '+String(res.alert)));
+  el.append(aiMetaLine(res)||'');
+}
+function renderAiWeather(){
+  const el=$('#aiWeatherWrap'); if(!el) return; clear(el);
+  const res=aiState().weather; if(!res) return;
+  if(!res.success){ el.append(h('div',{class:'ai-weather'}, aiErrorBox(res, ()=>loadAiWeather(true)))); return; }
+  const sev=['warn','danger'].includes(res.severity)?res.severity:'';
+  const banner=h('div',{class:('ai-weather '+sev).trim()});
+  banner.append(h('div',{class:'ai-w-head'},
+    h('span',{class:'ai-w-title'},
+      h('span',{class:'ai-w-emoji','aria-hidden':'true'}, sev==='danger'?'🌧️':sev==='warn'?'🌦️':'☀️'),
+      h('span',{}, t('aiWeatherTitle'))),
+    h('span',{class:'mini-badge ai-badge'}, res.ai===false?t('aiAutoAdvice'):t('aiBadge'))));
+  const daysBox=h('div',{class:'ai-w-days'});
+  const fmt=new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar',{weekday:'short'});
+  (res.days||[]).forEach(d=>{
+    let wd=''; try{ wd=fmt.format(new Date(d.date+'T12:00:00')); }catch(_){}
+    daysBox.append(h('div',{class:'ai-w-day'},
+      h('div',{class:'ai-w-ico','aria-hidden':'true'}, WEATHER_EMOJI[d.category]||'⛅'),
+      h('div',{class:'ai-w-t'}, wd+' · '+(d.tmax!=null?d.tmax+'°':'-')),
+      h('div',{class:'ai-w-sub'}, t('aiRainShort',{n:d.rain_prob||0}))));
+  });
+  banner.append(daysBox);
+  const adv=h('div',{class:'ai-w-advice'});
+  if(res.title) adv.append(h('strong',{}, String(res.title)+' — '));
+  adv.append(String(res.advice||''));
+  banner.append(adv);
+  el.append(banner);
 }
 
 /* ===================== ACTIONS (controllers) ===================== */
@@ -4118,6 +4368,7 @@ const Actions = {
   openManual, saveManual, addField:openAddField, saveField,
   clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
+  refreshAiInsights:()=>loadAiInsights(true), refreshAiReviews:()=>loadAiReviews(true), refreshAiWeather:()=>loadAiWeather(true),
   calPrev:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()-1, 1); renderOwnerCalendar(); },
   calNext:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()+1, 1); renderOwnerCalendar(); },
   closeModal:()=>Modal.close(), closeSuccess:()=>{ Modal.close('success'); renderPlaces(); },
