@@ -1424,6 +1424,24 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 .ai-skel .sk-line{margin-bottom:9px}
 .ai-skel .sk-line:last-child{margin-bottom:0}
 
+/* ============================================================
+   ✨ UX POLISH PASS — سباركلاين · حالات فراغ فعّالة · احتواء التمرير
+   ============================================================ */
+/* سباركلاين أسفل بطاقات الإحصاء — z-index سالب يرسمه خلف المحتوى
+   (يعمل لأن .stat-card تنشئ stacking context عبر backdrop-filter) */
+.sparkline{position:absolute;inset-inline:0;bottom:0;height:24px;z-index:-1;opacity:.5;color:var(--primary);pointer-events:none}
+.sparkline svg{width:100%;height:100%;display:block}
+.spark-line{fill:none;stroke:currentColor;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.spark-fill{fill:currentColor;opacity:.10}
+.sparkline.spark-ok{color:var(--mint-electric)}
+/* أزرار حالة الفراغ: الأساسي بارز بعرض كامل + الثانوي هادئ ملتصق تحته */
+.empty .sbtn{width:100%}
+.empty .cbtn.empty-2nd{margin-top:-6px}
+/* قوائم لوحة المالك: منع سلسلة تمرير القائمة الداخلية إلى الـbody على الجوال
+   + زخم iOS الأصلي عند أي تمرير داخلي */
+#ownerBookings,#ownerToday,#ownerFields,#calDayBookings,#aiInsights,#aiReviews{
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+
 </style>
 </head>
 <body>
@@ -2000,7 +2018,7 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 
   <!-- ============ BOOKING REVIEW MODAL (مراجعة فقط — لا اختيار يوم/وقت هنا) ============ -->
   <div class="modal-overlay" id="modal-booking" role="dialog" aria-modal="true" aria-labelledby="bkTitle" aria-describedby="bkReview">
-    <div class="modal" data-modal="booking">
+    <div class="modal" data-modal="booking" data-safe-close="true">
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="bkTitle" data-i18n="reviewTitle">مراجعة الحجز</div>
       <!-- مؤشّر الخطوات: 1 و2 مكتملتان، 3 (التأكيد) نشطة -->
@@ -2882,13 +2900,14 @@ function timeSkeleton(el, count=6){ if(!el) return; clear(el);
 }
 
 /* حالة فراغ جذّابة (Empty State) بدل النص العادي */
-function emptyState({icon='🗂️', title, sub, actionLabel, action}){
+function emptyState({icon='🗂️', title, sub, actionLabel, action, secondaryLabel, secondaryAction}){
   const box = h('div',{class:'empty'},
     h('div',{class:'empty-icon'}, icon),
     h('div',{class:'empty-title'}, title),
     sub && h('div',{class:'empty-sub'}, sub)
   );
   if (actionLabel && action) box.append(h('button',{class:'sbtn',onclick:action}, actionLabel));
+  if (secondaryLabel && secondaryAction) box.append(h('button',{class:'cbtn empty-2nd',onclick:secondaryAction}, secondaryLabel));
   return box;
 }
 
@@ -2968,8 +2987,9 @@ function enableSwipe(overlay){
   const grip = $('.modal-grip', modal) || modal;
   let startY = 0, dy = 0, active = false;
   grip.addEventListener('touchstart', e => { startY = e.touches[0].clientY; active = true; dy = 0; modal.classList.add('dragging'); }, { passive:true });
-  grip.addEventListener('touchmove', e => { if(!active) return; dy = Math.max(0, e.touches[0].clientY - startY); modal.style.transform = `translate3d(0,${dy}px,0)`; }, { passive:true });
-  const end = () => { if(!active) return; active = false; modal.classList.remove('dragging'); modal.style.transform = ''; if (dy > 110){ overlay.classList.remove('show'); Modal._afterClose(); } dy = 0; };
+  // النوافذ الحرجة (data-safe-close كنافذة مراجعة الحجز): مقاومة بصرية + مسافة إغلاق أكبر بكثير
+  grip.addEventListener('touchmove', e => { if(!active) return; dy = Math.max(0, e.touches[0].clientY - startY); const damp = modal.dataset.safeClose ? 0.45 : 1; modal.style.transform = `translate3d(0,${dy*damp}px,0)`; }, { passive:true });
+  const end = () => { if(!active) return; active = false; modal.classList.remove('dragging'); modal.style.transform = ''; const limit = modal.dataset.safeClose ? 250 : 110; if (dy > limit){ overlay.classList.remove('show'); Modal._afterClose(); } dy = 0; };
   grip.addEventListener('touchend', end); grip.addEventListener('touchcancel', end);
 }
 
@@ -3703,6 +3723,8 @@ function renderOwnerToday(){
   let totalSlots=0, booked=0;
   fields.forEach(f=>{ if(f.active===false) return; const slots=fieldSlots(f); totalSlots+=slots.length; const set=bookedToday[String(f.field_id)]||new Set(); booked+=slots.filter(s=>set.has(s.hour)).length; });
   setText('otToday', todayB.length); setText('otPending', pend.length); setText('otRevenue', formatMoney(revenue)); setText('otFree', Math.max(totalSlots-booked,0));
+  // اتجاه آخر 7 أيام على بطاقة «حجوزات اليوم» (بلا الملغاة/المرفوضة)
+  setSpark('otToday', [...Array(7)].map((_,i)=>{ const ds=dateAfter(i-6); return all.filter(b=>String(b.date||'').split('T')[0]===ds && !['cancelled','rejected'].includes(normStatus(b))).length; }));
   clear(el);
   if(!todayB.length){ el.append(emptyState({icon:'📅', title:t('noBookingsToday'), sub:t('noBookingsTodaySub')})); return; }
   const rest=todayB.filter(b=>normStatus(b)!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
@@ -3746,6 +3768,33 @@ function renderCalDay(ds){
   if(!list.length){ el.append(h('div',{class:'card', style:{textAlign:'center',color:'var(--soft)'}}, t('noBookingsDay'))); return; }
   list.forEach(b=> el.append(ownerBookingCard(b)));
 }
+/* ===================== SPARKLINES (SVG خفيف — بلا مكتبات) =====================
+   منحنى اتجاه صغير أسفل بطاقات الإحصاء. المدخلات تُطهَّر بـNumber (أرقام فقط)
+   ⇒ حقن الـSVG كسلسلة آمن تماماً (لا بيانات مستخدم). */
+function createSparkline(points, cls){
+  const data=(points||[]).map(Number).filter(n=>Number.isFinite(n));
+  if(data.length<2 || !data.some(n=>n>0)) return null;      // لا نرسم خطاً مسطّحاً على أصفار
+  const W=100,H=26,P=2, max=Math.max(...data), min=Math.min(...data), span=(max-min)||1;
+  const step=(W-P*2)/(data.length-1);
+  const pts=data.map((v,i)=>[P+i*step, H-P-((v-min)/span)*(H-P*2)]);
+  let dPath='M'+pts[0][0].toFixed(1)+','+pts[0][1].toFixed(1);
+  for(let i=1;i<pts.length;i++){                            // تنعيم بمنحنيات ربعية عبر نقاط المنتصف
+    const mx=((pts[i-1][0]+pts[i][0])/2).toFixed(1), my=((pts[i-1][1]+pts[i][1])/2).toFixed(1);
+    dPath+=' Q'+pts[i-1][0].toFixed(1)+','+pts[i-1][1].toFixed(1)+' '+mx+','+my;
+  }
+  const last=pts[pts.length-1];
+  dPath+=' L'+last[0].toFixed(1)+','+last[1].toFixed(1);
+  return h('span',{class:'sparkline'+(cls?' '+cls:''), 'aria-hidden':'true',
+    html:'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+         '<path class="spark-fill" d="'+dPath+' L'+(W-P)+','+H+' L'+P+','+H+' Z"/>'+
+         '<path class="spark-line" d="'+dPath+'"/></svg>'});
+}
+/* يثبّت سباركلاين أسفل بطاقة .stat-card الحاوية للعنصر المعطى (يستبدل القديم) */
+function setSpark(anchorId, points, cls){
+  const card=$('#'+anchorId)?.closest('.stat-card'); if(!card) return;
+  card.querySelector('.sparkline')?.remove();
+  const s=createSparkline(points, cls); if(s) card.append(s);
+}
 function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>normStatus(b)==='confirmed');
   const fromWeb=confirmed.filter(b=>!isOwnerManual(b)); const manual=confirmed.filter(isOwnerManual);
@@ -3763,6 +3812,10 @@ function renderOwnerStats(bookings){
   setText('oWeek',`${t('last7')}: ${weekCount}`); setText('oRevenue',formatMoney(webRev)); setText('oProfit',formatMoney(profit)); setText('oNet',formatMoney(net));
   setText('oRate',rate+'%'); requestAnimationFrame(()=>{ const bar=$('#oRateBar'); if(bar)bar.style.width=Math.min(rate,100)+'%'; });
   setText('oTopField', topField?`${topField.label} (${topField.count})`:'-'); setText('oTopSource', topSource?`${topSource.label} (${topSource.count})`:'-');
+  // اتجاه آخر 14 يوماً: كل الطلبات (بطاقة الكل) + المؤكدة (بطاقتها، بلون النعناع)
+  const days14=[...Array(14)].map((_,i)=>dateAfter(i-13));
+  setSpark('oTotal', days14.map(ds=>bookings.filter(b=>String(b.date)===ds).length));
+  setSpark('oConfirmed', days14.map(ds=>confirmed.filter(b=>String(b.date)===ds).length), 'spark-ok');
 }
 function renderOwnerEcon(bookings){
   const fields=State.ownerData?.fields||[]; const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i)));
@@ -3825,7 +3878,12 @@ function renderOwnerBookings(){
   if (raw) bookings=bookings.filter(b=> normalizeText(b.name).includes(q) || (qd && String(b.phone||'').replace(/\D/g,'').includes(qd)) );
   const tgl=$('#ownerHistoryToggle'); if(tgl) tgl.textContent=State.showAllOwner?t('hideOld'):t('fullHistory');
   const el=$('#ownerBookings'); clear(el);
-  if(!bookings.length){ el.append(emptyState({icon:'🗓️',title:t('noMatchBookings'),sub:t('noMatchBookingsSub')})); return; }
+  if(!bookings.length){
+    el.append(emptyState({icon:'🗓️', title:t('noMatchBookings'), sub:t('noMatchBookingsSub'),
+      actionLabel:t('clearFilter'), action:()=>Actions.clearFilters(),
+      secondaryLabel:State.showAllOwner?null:t('fullHistory'), secondaryAction:()=>{ State.showAllOwner=true; renderOwnerBookings(); }}));
+    return;
+  }
   const {active,finished}=splitFinished(bookings);
   const grouped=(list)=>{
     const g={}; list.forEach(b=>{(g[String(b.date)] ||= []).push(b);});
@@ -4419,6 +4477,31 @@ $('#ownerTabs')?.addEventListener('keydown', (e)=>{
 // بحث مع تأخير (Debounce 300ms) + إظهار زر المسح فورياً
 $('#searchInput')?.addEventListener('input', updateSearchClear);
 $('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
+/* قناع رقم الهاتف الأردني (079 123 4567) — لكل type="tel" عبر التفويض.
+   تنسيق بصري فقط: normalizePhone/validPhone يتجاهلان الفراغات فلا يتأثر التحقق ولا المُرسَل للخادم.
+   يقنّع أرقام 07 المحلية فقط؛ الصيغ الدولية (962…) تبقى أرقاماً متصلة بلا قناع. */
+document.addEventListener('input', (e)=>{
+  const inp=e.target;
+  if(!(inp && inp.tagName==='INPUT' && inp.type==='tel') || inp.disabled) return;
+  const caret = inp.selectionStart==null ? inp.value.length : inp.selectionStart;
+  let digitsBefore = inp.value.slice(0,caret).replace(/\D/g,'').length;
+  let d = inp.value.replace(/\D/g,'');
+  // Backspace أزال فراغ القناع فقط (الأرقام كما هي) ⇒ نحذف الرقم الذي قبله ليبقى الحذف طبيعياً
+  if(e.inputType==='deleteContentBackward' && inp.dataset.pdg===d && digitsBefore>0){
+    d = d.slice(0,digitsBefore-1)+d.slice(digitsBefore); digitsBefore--;
+  }
+  const isLocal = d.startsWith('07');
+  d = d.slice(0, isLocal?10:14);
+  const out = !isLocal ? d
+    : d.length>6 ? d.slice(0,3)+' '+d.slice(3,6)+' '+d.slice(6)
+    : d.length>3 ? d.slice(0,3)+' '+d.slice(3) : d;
+  inp.dataset.pdg = d;
+  if(inp.value!==out){
+    inp.value = out;
+    let ci=0,seen=0; while(ci<out.length && seen<digitsBefore){ if(/\d/.test(out[ci])) seen++; ci++; }
+    try{ inp.setSelectionRange(ci,ci); }catch(_){}
+  }
+});
 // الفلاتر في لوحة المالك
 $('#ownerDateFilter')?.addEventListener('change', renderOwnerBookings);
 $('#ownerFieldFilter')?.addEventListener('change', renderOwnerBookings);
