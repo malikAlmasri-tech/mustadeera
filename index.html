@@ -1464,6 +1464,75 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 /* ---------- الشريط اللاصق قبل اكتمال الاختيار: تلميح هادئ ---------- */
 .detail-sticky.incomplete .dsticky-line{color:var(--muted)}
 
+/* =============================================================
+   SPORTS TABS + FIELD PHOTOS + LIGHTBOX (تعديلات 2026-07-19)
+   ============================================================= */
+/* ---------- تقسيمة الرياضات أعلى الرئيسية ----------
+   تصميم مميّز عن تبويبات المناطق: بلاطات عمودية بفقاعة أيقونة —
+   الأيقونة فوق والاسم تحتها، والنشطة بتدرّج Volt مع توهّج ورفعة خفيفة */
+.sport-tabs{display:flex;gap:4px;padding:16px var(--s-4) 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:var(--s-4)}
+.sport-tabs::-webkit-scrollbar{display:none}
+.sport-tabs>*{scroll-snap-align:start}
+.sport-tab{display:flex;flex-direction:column;align-items:center;gap:8px;background:transparent;border:0;box-shadow:none;
+  padding:8px 10px 6px;min-width:74px;flex-shrink:0;white-space:nowrap;color:var(--muted);
+  font-size:11px;font-weight:800;transition:color var(--t-base) var(--ease-out)}
+.sport-tab .sport-ic{position:relative;display:grid;place-items:center;width:50px;height:50px;border-radius:17px;
+  background:var(--surface);border:1.5px solid var(--line-2);box-shadow:var(--shadow-xs);color:var(--ink-2);
+  transition:background var(--t-base),border-color var(--t-base),color var(--t-base),transform var(--t-base) var(--ease-spring),box-shadow var(--t-base)}
+.sport-tab .sport-ic svg{width:23px;height:23px}
+.sport-tab .sport-name{transition:color var(--t-base)}
+.sport-tab.active{color:var(--primary)}
+.sport-tab.active .sport-name{font-weight:900}
+.sport-tab.active .sport-ic{background:var(--g-btn);border-color:transparent;color:#0A0A0C;box-shadow:var(--shadow-green);transform:translateY(-3px)}
+.sport-tab:active .sport-ic{transform:scale(.93)}
+@media(hover:hover){.sport-tab:not(.active):hover .sport-ic{border-color:rgba(18,158,90,.42);color:var(--emerald)}
+  .sport-tab:not(.active):hover{color:var(--ink-2)}}
+/* شارة «قريباً» — على كتف فقاعة الأيقونة */
+.sport-soon{position:absolute;top:-7px;inset-inline-end:-9px;background:var(--surface);border:1px solid var(--line-2);
+  color:var(--muted);font-size:8.5px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px;box-shadow:var(--shadow-xs)}
+.sport-tab.active .sport-soon{background:var(--cream);color:var(--ink);border-color:var(--line-2)}
+/* فاصل ناعم بين الرياضات وتبويبات المناطق */
+.sport-tabs + .region-tabs{padding-top:12px;position:relative}
+.sport-tabs + .region-tabs::before{content:'';position:absolute;top:0;inset-inline:var(--s-5);height:1px;
+  background:linear-gradient(90deg,transparent,var(--line-2) 20%,var(--line-2) 80%,transparent)}
+
+/* ---------- صور الملعب المحدَّد (أسفل اختيار الملعب) ---------- */
+.field-photos{margin-top:14px}
+.field-photos-title{font-size:12px;font-weight:800;color:var(--soft);margin-bottom:9px}
+.field-photos .detail-thumbs{padding:0;margin-top:0}
+.field-photos .thumb{width:86px;height:64px;cursor:zoom-in}
+#detailHeroImg{cursor:zoom-in}
+
+/* ---------- المعرض المكبّر (Lightbox) ---------- */
+.lightbox-overlay{align-items:center;padding:0 12px;background:rgba(0,0,0,.82)}
+.lightbox{background:transparent;border:0;box-shadow:none;padding:0;border-radius:0;width:auto;max-width:min(94vw,900px);
+  max-height:none;overflow:visible;position:relative;transform:scale(.95)}
+.lightbox::before{display:none}
+.modal-overlay.show .lightbox{transform:scale(1)}
+.lb-stage{position:relative;display:flex;align-items:center;justify-content:center}
+#lbImg{max-width:100%;max-height:78vh;object-fit:contain;border-radius:16px;display:block;
+  box-shadow:0 25px 60px rgba(0,0,0,.55);user-select:none;-webkit-user-drag:none}
+.lb-nav,.lb-close{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(10,10,12,.55);color:#fff;
+  border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);flex-shrink:0;padding:0;
+  transition:background var(--t-fast),transform var(--t-fast)}
+.lb-nav svg,.lb-close svg{width:20px;height:20px}
+.lb-nav:active,.lb-close:active{transform:scale(.92)}
+@media(hover:hover){.lb-nav:hover,.lb-close:hover{background:rgba(10,10,12,.8)}}
+.lb-nav{position:absolute;top:50%;translate:0 -50%;z-index:2}
+.lb-prev{inset-inline-start:10px}
+.lb-next{inset-inline-end:10px}
+/* الأسهم مرسومة لاتجاه RTL — تُقلب تلقائياً بالإنجليزية */
+html[dir="ltr"] .lb-nav svg{transform:scaleX(-1)}
+.lb-close{position:absolute;top:-52px;inset-inline-end:0;z-index:3;width:40px;height:40px}
+.lb-count{margin-top:12px;text-align:center;color:#fff;font-weight:800;font-size:13px;letter-spacing:.06em;opacity:.85}
+@media(max-width:480px){
+  .lb-nav{width:38px;height:38px}
+  .lb-prev{inset-inline-start:6px}
+  .lb-next{inset-inline-end:6px}
+  #lbImg{max-height:68vh}
+}
+
 </style>
 </head>
 <body>
@@ -1766,6 +1835,8 @@ html[lang="en"] .form-label{letter-spacing:.02em}
         <button class="search-btn" data-action="search" data-i18n="search">بحث</button>
       </div>
     </header>
+    <!-- تقسيمة الرياضات — كرة القدم متاحة، والبقية «قريباً» -->
+    <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
     <nav class="region-tabs" id="regionTabs"></nav>
     <div class="filter-bar">
       <button class="filter-btn" id="filterBtn" data-action="openFilters" aria-haspopup="dialog" aria-controls="modal-filters">
@@ -1784,7 +1855,6 @@ html[lang="en"] .form-label{letter-spacing:.02em}
       <button class="detail-back" data-go="home" data-i18n-aria="back" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
       <span class="detail-emoji" id="detailEmoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg></span>
     </div>
-    <div class="detail-thumbs" id="detailThumbs" hidden></div>
     <div class="detail-body">
       <div class="detail-head">
         <div>
@@ -1812,6 +1882,11 @@ html[lang="en"] .form-label{letter-spacing:.02em}
       <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
         <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
         <div class="subfields" id="subFields"></div>
+        <!-- صور الملعب المحدَّد — مصغّرات تفتح المعرض المكبّر -->
+        <div class="field-photos" id="fieldPhotos" hidden>
+          <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
+          <div class="detail-thumbs" id="detailThumbs"></div>
+        </div>
       </section>
       <section class="detail-section" data-i18n-aria="ariaChooseDate" aria-label="اختيار الموعد">
         <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title" data-i18n="chooseDay">اختر اليوم</h2></div>
@@ -2198,6 +2273,19 @@ html[lang="en"] .form-label{letter-spacing:.02em}
     </div>
   </div>
 
+  <!-- ============ LIGHTBOX (معرض صور الملعب المكبّر) ============ -->
+  <div class="modal-overlay lightbox-overlay" id="modal-lightbox" role="dialog" aria-modal="true" data-i18n-aria="fieldPhotos" aria-label="صور الملعب">
+    <div class="modal lightbox" data-modal="lightbox" data-safe-close="1">
+      <button class="lb-close" type="button" data-action="closeModal" data-i18n-aria="lbClose" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <div class="lb-stage" id="lbStage">
+        <button class="lb-nav lb-prev" type="button" id="lbPrev" data-action="lbPrev" data-i18n-aria="lbPrev" aria-label="الصورة السابقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        <img id="lbImg" alt="" data-i18n-alt="fieldPhotos" decoding="async">
+        <button class="lb-nav lb-next" type="button" id="lbNext" data-action="lbNext" data-i18n-aria="lbNext" aria-label="الصورة التالية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+      </div>
+      <div class="lb-count" id="lbCount"></div>
+    </div>
+  </div>
+
   <!-- ============ SUCCESS ============ -->
   <div class="success-overlay" id="success" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
     <div class="scard">
@@ -2316,6 +2404,10 @@ const I18N = {
     sortDefault:'الافتراضي', sortPriceAsc:'الأقل سعراً', sortPriceDesc:'الأعلى سعراً', sortRating:'الأعلى تقييماً', sortReviews:'الأكثر مراجعات', sortSoonest:'الأقرب وقتاً',
     availToday:'متاح اليوم', availLater:'متاح لاحقاً', availFull:'مكتمل اليوم', availNone:'لا توجد أوقات',
     viewTimes:'عرض الأوقات', chooseField:'اختر الملعب', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
+    bookCta:'احجز الآن',
+    fieldPhotos:'صور الملعب', lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
+    sportsAria:'اختر الرياضة', sportFootball:'كرة القدم', sportPadel:'بادل', sportBasket:'كرة السلة', sportTennis:'تنس', sportVolley:'كرة الطائرة', soonBadge:'قريباً',
+    comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} في طريقها إلينا — سنضيفها قريباً.', backToFootball:'عرض ملاعب كرة القدم',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
     available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'🚫 لا توجد أوقات متاحة في هذا اليوم. جرّب يوماً آخر.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
@@ -2461,6 +2553,10 @@ const I18N = {
     sortDefault:'Default', sortPriceAsc:'Lowest price', sortPriceDesc:'Highest price', sortRating:'Top rated', sortReviews:'Most reviews', sortSoonest:'Soonest time',
     availToday:'Available today', availLater:'Available later', availFull:'Fully booked today', availNone:'No times',
     viewTimes:'View times', chooseField:'Choose field', oneField:'One field', fieldsCount:'{n} fields',
+    bookCta:'Book now',
+    fieldPhotos:'Field photos', lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
+    sportsAria:'Choose a sport', sportFootball:'Football', sportPadel:'Padel', sportBasket:'Basketball', sportTennis:'Tennis', sportVolley:'Volleyball', soonBadge:'Soon',
+    comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are on the way — we will add them soon.', backToFootball:'Show football fields',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
     available:'Available', noServices:'No services information has been added yet.', noTimesDay:'🚫 No available times on this day. Try another day.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
@@ -2639,6 +2735,11 @@ const ICON = {
   drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11Z"/></svg>',
   parking:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M9 17V8h3.5a2.5 2.5 0 0 1 0 5H9"/></svg>',
   ball:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4.5 3.3-1.7 5.2H9.2l-1.7-5.2L12 7Z"/></svg>',
+  /* أيقونات الرياضات (نفس أسلوب الـstroke) */
+  padel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="14.5" cy="8.2" rx="5" ry="6.2" transform="rotate(45 14.5 8.2)"/><path d="m9.4 14.6-5 5"/></svg>',
+  basket:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3v18"/><path d="M5.8 5.8a12.6 12.6 0 0 1 0 12.4M18.2 5.8a12.6 12.6 0 0 0 0 12.4"/></svg>',
+  tennis:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5 5.5a13 13 0 0 1 0 13M19 5.5a13 13 0 0 0 0 13"/></svg>',
+  volley:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9"/><path d="m12 12-7.8 4.6"/><path d="m12 12 7.8 4.6"/></svg>',
   vest:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 6v14h16V6l-4-3-4 3-4-3Z"/><path d="M12 6v14"/></svg>',
   bath:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M6 19v2M18 19v2"/></svg>',
   dot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
@@ -2815,6 +2916,7 @@ const State = {
   places: [], publicBookings: [], bookedSlots: {},
   publicBookingsFetchedAt: 0,                                 // آخر جلب ناجح للحجوزات العامة (كاش قصير)
   favOnly: false,                                             // عرض المفضّلة فقط (محلي)
+  sport: 'football',                                          // الرياضة المختارة (كرة القدم متاحة، والبقية قريباً)
   player: null, owner: null, ownerData: null, guest: false,
   filter: 'all',                                              // المنطقة (تبويبات)
   // فلاتر متقدّمة (ورقة الفلاتر) + الترتيب — تعتمد فقط على البيانات الموجودة
@@ -3041,6 +3143,38 @@ function renderRegionTabs(){
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
 
+/* ===================== الرياضات (تقسيمة أعلى الرئيسية) =====================
+   كرة القدم هي المتاحة حالياً؛ باقي الرياضات تعرض حالة «سيتم إضافتها قريباً» */
+const SPORTS=[
+  {key:'football', label:'sportFootball', icon:'ball',   ready:true},
+  {key:'padel',    label:'sportPadel',    icon:'padel',  ready:false},
+  {key:'basket',   label:'sportBasket',   icon:'basket', ready:false},
+  {key:'tennis',   label:'sportTennis',   icon:'tennis', ready:false},
+  {key:'volley',   label:'sportVolley',   icon:'volley', ready:false},
+];
+function renderSportTabs(){
+  const el=$('#sportTabs'); if(!el) return; clear(el);
+  SPORTS.forEach(s=>{
+    const active=State.sport===s.key;
+    // فقاعة أيقونة + شارة «قريباً» للرياضات غير المتوفرة بعد
+    const ic=h('span',{class:'sport-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'});
+    if(!s.ready) ic.append(h('span',{class:'sport-soon'}, t('soonBadge')));
+    const b=h('button',{class:'sport-tab'+(active?' active':''), type:'button',
+      'aria-pressed':active?'true':'false',
+      'aria-label': s.ready ? t(s.label) : t(s.label)+' — '+t('soonBadge')},
+      ic,
+      h('span',{class:'sport-name'}, t(s.label)));
+    b.addEventListener('click', ()=>setSport(s.key));
+    el.append(b);
+  });
+}
+function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); updateSportSections(); renderPlaces(); }
+/* إخفاء أدوات كرة القدم (المناطق/الفلاتر/العنوان) عند اختيار رياضة غير متوفرة بعد */
+function updateSportSections(){
+  const off=State.sport!=='football';
+  ['#regionTabs','#page-home .filter-bar','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
+}
+
 /* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
 function renderLandingRegions(){
   const el=$('#lpRegions'); const sec=$('#lp-regions'); if(!el) return;
@@ -3236,7 +3370,7 @@ function placeCard(p, eager){
         h('div',{class:'place-rating'}, '★ '+ratingText(p))))
   );
 
-  const bookBtn = h('button',{class:'place-book-btn'}, oneField?t('viewTimes'):t('chooseField'));
+  const bookBtn = h('button',{class:'place-book-btn'}, t('bookCta'));   // زر موحّد لكل الأماكن
   bookBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(p.place_id); });
 
   const card = h('div',{class:'place-card'},
@@ -3254,6 +3388,14 @@ function placeCard(p, eager){
 }
 function renderPlaces(){
   const el = $('#placesList'); if(!el) return;
+  // رياضة غير متوفرة بعد ⇒ حالة «قريباً» بدل القائمة
+  if(State.sport && State.sport!=='football'){
+    clear(el);
+    const s=SPORTS.find(x=>x.key===State.sport);
+    el.append(emptyState({ icon:'⏳', title:t('comingSoonTitle'), sub:t('comingSoonSub',{sport:t(s?s.label:'sportFootball')}),
+      actionLabel:t('backToFootball'), action:()=>setSport('football') }));
+    return;
+  }
   updateFilterBar();
   const q = normalizeText($('#searchInput')?.value || '');
   const favs = State.favOnly ? favGet() : null;
@@ -3374,21 +3516,42 @@ function renderDetailHero(){
   const emoji=$('#detailEmoji');
   const own=field?fieldImages(field):[];
   const imgs=own.length?own:[...new Set((place.fields||[]).flatMap(f=>fieldImages(f)))];
-  if (imgs.length){ emoji.style.display='none'; hero.insertBefore(h('img',{id:'detailHeroImg',src:imgs[0],alt:(own.length&&field?field.field_name:place.place_name)||'',decoding:'async',fetchpriority:'high'}), hero.firstChild); }
+  if (imgs.length){
+    emoji.style.display='none';
+    const heroImg=h('img',{id:'detailHeroImg',src:imgs[0],alt:(own.length&&field?field.field_name:place.place_name)||'',decoding:'async',fetchpriority:'high'});
+    heroImg.addEventListener('click', ()=>Lightbox.open(imgs,0));
+    hero.insertBefore(heroImg, hero.firstChild);
+  }
   else { emoji.style.display=''; hero.style.background='var(--forest-2)'; }
   renderDetailThumbs(imgs);
 }
-/* معرض مصغّرات (يظهر فقط عند وجود أكثر من صورة فعلية) */
+/* مصغّرات صور الملعب المحدَّد — تظهر أسفل اختيار الملعب؛ الضغط يفتح المعرض المكبّر */
 function renderDetailThumbs(imgs){
-  const el=$('#detailThumbs'); if(!el) return; clear(el);
-  if(!imgs || imgs.length<2){ el.hidden=true; return; }
-  el.hidden=false;
-  imgs.forEach((src,i)=>{
-    const th=h('button',{class:'thumb'+(i===0?' active':''), type:'button', 'aria-label':'عرض الصورة '+(i+1)}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
-    th.addEventListener('click', ()=>{ const main=$('#detailHeroImg'); if(main) main.src=src; $$('#detailThumbs .thumb').forEach(x=>x.classList.remove('active')); th.classList.add('active'); });
+  const wrap=$('#fieldPhotos'); const el=$('#detailThumbs'); if(!el) return; clear(el);
+  const list=imgs||[];
+  if(wrap) wrap.hidden=!list.length;
+  if(!list.length) return;
+  list.forEach((src,i)=>{
+    const th=h('button',{class:'thumb', type:'button', 'aria-label':t('lbOpen',{i:i+1})}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
+    th.addEventListener('click', ()=>Lightbox.open(list,i));
     el.append(th);
   });
 }
+/* ===================== LIGHTBOX (تكبير صور الملعب + تنقّل) ===================== */
+const Lightbox = {
+  imgs:[], idx:0,
+  open(imgs, i){ if(!imgs||!imgs.length) return; this.imgs=imgs; this.show(i||0); Modal.open('modal-lightbox'); },
+  show(i){
+    const n=this.imgs.length; this.idx=((i%n)+n)%n;
+    const img=$('#lbImg'); if(img) img.src=this.imgs[this.idx];
+    setText('lbCount', (this.idx+1)+' / '+n);
+    const multi=n>1;
+    const p=$('#lbPrev'), x=$('#lbNext'); if(p) p.hidden=!multi; if(x) x.hidden=!multi;
+    // تجهيز الصورتين المجاورتين مسبقاً لتنقّل سلس
+    if(multi) [this.idx+1,this.idx-1].forEach(k=>{ const im=new Image(); im.src=this.imgs[((k%n)+n)%n]; });
+  },
+  nav(d){ if(this.imgs.length>1) this.show(this.idx+d); },
+};
 /* الملخّص اللاصق أسفل التفاصيل — يظهر دائماً مع السعر (تقليل المفاجآت):
    قبل اكتمال الاختيار: اسم الملعب + «اختر اليوم والوقت» والسعر/ساعتين؛ بعده: الملخّص الكامل */
 function renderDetailSticky(){
@@ -4505,12 +4668,12 @@ function setLanguage(lang){
   $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    renderSportTabs(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     if(Session.player()) setText('playerWelcome', t('welcomeHi')+' '+(State.player?.name||t('welcomeYou')));
     else setText('playerWelcome', t('welcomeGuest'));
     if($('#page-home')?.classList.contains('active')) renderPlaces();
-    if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
+    if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
   }catch(_){}
@@ -4534,6 +4697,7 @@ const Actions = {
   calPrev:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()-1, 1); renderOwnerCalendar(); },
   calNext:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()+1, 1); renderOwnerCalendar(); },
   closeModal:()=>Modal.close(), closeSuccess:()=>{ Modal.close('success'); renderPlaces(); },
+  lbPrev:()=>Lightbox.nav(-1), lbNext:()=>Lightbox.nav(1),
   togglePass:(btn)=>{ const wrap=btn.closest('.input-wrap'); const inp=wrap&&wrap.querySelector('input'); if(!inp) return; const show=inp.type==='password'; inp.type=show?'text':'password'; btn.classList.toggle('is-on',show); btn.setAttribute('aria-label', t(show?'hidePass':'showPass')); inp.focus(); },
   clearSearch:()=>{ const s=$('#searchInput'); if(s){ s.value=''; updateSearchClear(); renderPlaces(); s.focus(); } },
 };
@@ -4553,6 +4717,26 @@ document.addEventListener('keydown', (e)=>{ if(e.key!=='Enter' && e.key!==' ') r
 document.addEventListener('click', (e)=>{ const o=e.target.closest('.modal-overlay,.success-overlay'); if(o&&e.target===o){ o.classList.remove('show'); Modal._afterClose(); } });
 // إغلاق بزر Escape (وصولية)
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const o=$('.modal-overlay.show, .success-overlay.show'); if(o){ o.classList.remove('show'); Modal._afterClose(); } } });
+// تنقّل المعرض المكبّر بأسهم الكيبورد (يحترم اتجاه الصفحة)
+document.addEventListener('keydown', (e)=>{
+  if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+  const o=$('#modal-lightbox'); if(!o || !o.classList.contains('show')) return;
+  e.preventDefault();
+  const rtl=document.documentElement.dir==='rtl';
+  Lightbox.nav(e.key==='ArrowRight' ? (rtl?-1:1) : (rtl?1:-1));
+});
+// سحب أفقي على صورة المعرض = تنقّل (اللمس)
+(function(){
+  const st=$('#lbStage'); if(!st) return;
+  let sx=0, sy=0;
+  st.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  st.addEventListener('touchend', e=>{
+    const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)<50 || Math.abs(dx)<Math.abs(dy)) return;
+    const rtl=document.documentElement.dir==='rtl';
+    Lightbox.nav(dx<0 ? (rtl?-1:1) : (rtl?1:-1));
+  }, {passive:true});
+})();
 // حصر التركيز داخل النافذة المفتوحة (Focus Trap) — Tab / Shift+Tab
 document.addEventListener('keydown', (e)=>{
   if(e.key!=='Tab') return;
