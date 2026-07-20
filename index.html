@@ -133,7 +133,9 @@ body.dark{
 }
 
 /* ---------- BASE ---------- */
-html,body{height:100%;direction:rtl;color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* الاتجاه يأتي من السمة dir على <html> (يضبطها setLanguage: ar⇒rtl · en⇒ltr).
+   لا تُثبّت direction هنا — تثبيتها كانت تُبقي التخطيط RTL حتى في الإنجليزية. */
+html,body{height:100%;color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.6;overflow-x:hidden;transition:background-color .45s var(--ease-out),color .45s var(--ease-out)}
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
@@ -306,7 +308,13 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .header-title{font-size:24px;font-weight:800;letter-spacing:-.025em;text-shadow:0 2px 10px rgba(0,0,0,.22)}
 .header-subtitle{font-size:12.5px;opacity:.74;margin-top:6px;font-weight:500}
 
-.home-bar{display:flex;justify-content:space-between;align-items:center}
+/* الأدوات لا تتقلّص (أهداف لمس)، والعلامة تتقلّص ويُقصّ نصّها —
+   وإلا فاض الصفّ عند اسم مستخدم طويل («أهلاً مالك مؤيد المصري») أو نصوص إنجليزية أعرض */
+.home-bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.home-tools{flex-shrink:0}
+.home-brand{min-width:0}
+.home-brand>div:last-child{min-width:0}
+.brand-name,.brand-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-brand{display:flex;align-items:center;gap:11px;cursor:pointer;transition:opacity var(--t-fast)}
 @media(hover:hover){.home-brand:hover{opacity:.85}}
 .home-brand:active{transform:scale(.98)}
@@ -381,7 +389,8 @@ body.dark .lp-nav{box-shadow:none}
 .lp-title{font-family:'Montserrat','Changa','Cairo',sans-serif;font-size:clamp(32px,7.5vw,58px);font-weight:800;line-height:1.12;letter-spacing:-.035em;color:var(--ink);margin-bottom:20px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:40ms}
 .lp-title span{position:relative;color:var(--primary)}  /* أكسنت صلب واحد بدل التدرّج */
 .lp-sub{font-size:clamp(15px,2.4vw,18px);line-height:1.75;color:var(--muted);max-width:620px;margin:0 auto 34px;font-weight:500;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:80ms}
-.lp-hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:120ms}
+/* الهامش ≥ 20px = مقدار translateY في بداية fadeUp، وإلا تداخلت الأزرار مع رابط المالك خلال التأخير 120ms */
+.lp-hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;animation:fadeUp var(--t-slow) var(--ease-out) both;animation-delay:120ms}
 /* تماثل بصري: الزرّان (الأساسي والشبح) بنفس الارتفاع تمامًا مهما اختلف حجم الخط/الحدّ */
 .lp-hero-cta .lp-btn-primary,.lp-hero-cta .lp-btn-ghost{height:var(--cta-h);min-height:var(--cta-h);padding-block:0}
 .lp-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--g-btn);color:#0B2227;font-size:15.5px;font-weight:900;letter-spacing:.05em;padding:16px 30px;border-radius:12px;min-height:var(--tap);box-shadow:var(--shadow-green);position:relative;overflow:hidden;transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)}
@@ -662,7 +671,7 @@ body.dark .fs-mint{opacity:.5}
 .detail-hero{height:216px;display:grid;place-items:center;font-size:66px;position:relative;border-radius:0 0 var(--r-3xl) var(--r-3xl);overflow:hidden;background:#0E3D45}
 .detail-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .detail-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04) 0%,transparent 30%,rgba(0,0,0,.5) 100%)}
-.detail-back{position:absolute;top:14px;right:14px;z-index:5;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:18px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:grid;place-items:center;transition:transform var(--t-fast)}
+.detail-back{position:absolute;top:14px;inset-inline-start:14px;z-index:5;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:18px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:grid;place-items:center;transition:transform var(--t-fast)}
 .detail-back:hover{opacity:.9}.detail-back:active{transform:scale(.94)}
 .detail-emoji{position:relative;z-index:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4))}
 .detail-emoji svg{width:74px;height:74px}
@@ -671,7 +680,7 @@ body.dark .fs-mint{opacity:.5}
 .detail-name{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.025em}
 .detail-city{font-size:13px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;font-weight:500}
 .price-tag{display:inline-block;padding:8px 13px;background:var(--primary-soft);border:1.5px solid var(--line);border-radius:12px;box-shadow:none;font-weight:800;color:var(--emerald);font-size:18px;font-variant-numeric:tabular-nums}
-.price-unit{font-size:10px;color:var(--soft);margin-top:5px;text-align:left}
+.price-unit{font-size:10px;color:var(--soft);margin-top:5px;text-align:end}
 .detail-badges{display:flex;gap:8px;margin-bottom:var(--s-5);flex-wrap:wrap}
 .detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--s-5)}
 .action-link{display:flex;align-items:center;justify-content:center;gap:6px;min-height:var(--tap);padding:11px 13px;border-radius:14px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:transform var(--t-fast)}
@@ -731,7 +740,7 @@ body.dark .chosen-box{border-color:var(--line);background:var(--primary-soft)}
 /* ---------- STEP INDICATOR (مؤشّر خطوات الحجز) ---------- */
 .bk-steps{display:flex;align-items:center;justify-content:space-between;gap:6px;list-style:none;margin:0 0 16px;padding:0;counter-reset:none}
 .bk-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;color:var(--soft);font-weight:800}
-.bk-step:not(:last-child)::after{content:'';position:absolute;top:15px;left:-50%;width:100%;height:2px;background:var(--line-2);z-index:0}
+.bk-step:not(:last-child)::after{content:'';position:absolute;top:15px;inset-inline-start:-50%;width:100%;height:2px;background:var(--line-2);z-index:0}
 .bk-step.done:not(:last-child)::after,.bk-step.active:not(:last-child)::after{background:var(--emerald-2)}
 .bk-step-dot{position:relative;z-index:1;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:var(--surface);border:1.5px solid var(--line-2);color:var(--soft);transition:background var(--t-base),color var(--t-base),border-color var(--t-base)}
 .bk-step-lbl{font-size:11px;letter-spacing:-.01em}
@@ -780,7 +789,19 @@ body.modal-open{overflow:hidden}
 .finput:focus-visible{outline:none}
 
 /* ---------- FILTER BAR + SHEET (المرحلة 2) ---------- */
-.filter-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px var(--s-5) 10px}
+/* شريط التصفّح: مجموعة الفلاتر مثبّتة على حافة var(--s-5) + شريط المناطق ينزلق بجانبها.
+   استبدل صفّين (مناطق 62px + فلاتر 56px) بصفّ واحد ⇒ توفير ~60px من الطول. */
+.browse-bar{display:flex;align-items:center;gap:10px;padding:8px var(--s-5) 10px;min-width:0}
+.browse-bar .region-tabs{flex:1;min-width:0;padding:0;margin-inline-start:2px;
+  /* تلاشٍ عند الطرف البعيد فقط (حيث تنزلق الحبوب خارج الشاشة) — لا عند الطرف الملاصق
+     لزرّ الفلاتر، وإلا قُصّت حافة الحبّة النشطة الخضراء */
+  mask-image:linear-gradient(to left,#000 calc(100% - 20px),transparent 100%)}
+html[dir="ltr"] .browse-bar .region-tabs{mask-image:linear-gradient(to right,#000 calc(100% - 20px),transparent 100%)}
+.browse-bar .sport-tabs+.region-tabs::before{display:none}
+/* مجموعة مثبّتة على حافة var(--s-5) — زر الفلاتر فقط (سطر الترتيب انتقل لصفّ العنوان) */
+.filter-bar{display:flex;align-items:center;flex-shrink:0;padding:0}
+.sec-title-end{display:inline-flex;align-items:center;gap:12px;min-width:0}
+.sort-current{font-size:11.5px;font-weight:700;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .filter-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 15px;min-height:42px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}
 .filter-btn:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}
 .filter-btn:active{transform:scale(.97)}
@@ -1174,8 +1195,9 @@ html{scroll-behavior:smooth}
 select.finput{appearance:none;-webkit-appearance:none;padding-inline-end:42px;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A08A6E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:left 14px center;background-size:16px}
-/* ملاحظة: التخطيط محسوب RTL دائمًا (direction:rtl على html,body حتى في الإنجليزية —
-   سلوك النظام الحالي) ⇒ السهم يسارًا يطابق padding-inline-end في اللغتين. */
+/* التخطيط يتبع اتجاه اللغة: عربي ⇒ RTL · إنجليزي ⇒ LTR (السمة dir على <html>).
+   لذا استعمل الخصائص المنطقية (inset-inline-start · padding-inline · text-align:start|end)
+   لا الفيزيائية (left/right)، والأسهم تُقلب بـ html[dir="ltr"] … {transform:scaleX(-1)}. */
 
 /* ---------- 10 · حقول الأرقام بلا أسهم زيادة/نقصان (أنظف) ---------- */
 .finput::-webkit-outer-spin-button,.finput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -1473,30 +1495,28 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 /* ---------- تقسيمة الرياضات أعلى الرئيسية ----------
    تصميم مميّز عن تبويبات المناطق: بلاطات عمودية بفقاعة أيقونة —
    الأيقونة فوق والاسم تحتها، والنشطة بتدرّج Volt مع توهّج ورفعة خفيفة */
-/* الحشوة = var(--s-5) ناقص 12px يبتلعها .sport-tab (10px حشوة + 2px توسيط الأيقونة داخل min-width:74px)
-   ⇒ حافة فقاعة الرياضة النشطة (الخضراء) تقع على var(--s-5) بالضبط، محاذية لزرّ الفلاتر والبطاقات أسفلها */
-.sport-tabs{display:flex;gap:4px;padding:16px calc(var(--s-5) - 12px) 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-  overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:calc(var(--s-5) - 12px)}
+/* الرياضات كحبوب أفقية مضغوطة (أيقونة + اسم على سطر واحد) بدل عمود أيقونة‑فوق‑اسم.
+   الطول: ~109px ⇒ ~60px. الحبّة نفسها هي العنصر الخارجي ⇒ حافتها على var(--s-5) مباشرة. */
+.sport-tabs{display:flex;gap:8px;padding:12px var(--s-5) 6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:var(--s-5)}
 .sport-tabs::-webkit-scrollbar{display:none}
 .sport-tabs>*{scroll-snap-align:start}
-.sport-tab{display:flex;flex-direction:column;align-items:center;gap:8px;background:transparent;border:0;box-shadow:none;
-  padding:8px 10px 6px;min-width:74px;flex-shrink:0;white-space:nowrap;color:var(--muted);
-  font-size:11px;font-weight:800;transition:color var(--t-base) var(--ease-out)}
-.sport-tab .sport-ic{position:relative;display:grid;place-items:center;width:50px;height:50px;border-radius:17px;
-  background:var(--surface);border:1.5px solid var(--line-2);box-shadow:var(--shadow-xs);color:var(--ink-2);
-  transition:background var(--t-base),border-color var(--t-base),color var(--t-base),transform var(--t-base) var(--ease-spring),box-shadow var(--t-base)}
-.sport-tab .sport-ic svg{width:23px;height:23px}
-.sport-tab .sport-name{transition:color var(--t-base)}
-.sport-tab.active{color:var(--primary)}
+.sport-tab{position:relative;display:inline-flex;flex-direction:row;align-items:center;gap:8px;
+  background:var(--surface);border:1.5px solid var(--line-2);border-radius:999px;box-shadow:var(--shadow-xs);
+  padding:7px 14px 7px 9px;min-height:42px;flex-shrink:0;white-space:nowrap;color:var(--ink-2);
+  font-size:12.5px;font-weight:800;transition:background var(--t-base),border-color var(--t-base),color var(--t-base),transform var(--t-fast)}
+.sport-tab .sport-ic{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;flex-shrink:0;
+  background:var(--primary-soft);color:var(--emerald);transition:background var(--t-base),color var(--t-base)}
+.sport-tab .sport-ic svg{width:17px;height:17px}
+.sport-tab.active{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}
+.sport-tab.active .sport-ic{background:rgba(0,0,0,.14);color:#0B2227}
 .sport-tab.active .sport-name{font-weight:900}
-.sport-tab.active .sport-ic{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green);transform:translateY(-3px)}
-.sport-tab:active .sport-ic{transform:scale(.93)}
-@media(hover:hover){.sport-tab:not(.active):hover .sport-ic{border-color:rgba(15,75,83,.42);color:var(--emerald)}
-  .sport-tab:not(.active):hover{color:var(--ink-2)}}
-/* شارة «قريباً» — على كتف فقاعة الأيقونة */
-.sport-soon{position:absolute;top:-7px;inset-inline-end:-9px;background:var(--surface);border:1px solid var(--line-2);
-  color:var(--muted);font-size:8.5px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px;box-shadow:var(--shadow-xs)}
-.sport-tab.active .sport-soon{background:var(--cream);color:var(--ink);border-color:var(--line-2)}
+.sport-tab:active{transform:scale(.97)}
+@media(hover:hover){.sport-tab:not(.active):hover{border-color:rgba(15,75,83,.42);color:var(--emerald)}}
+/* «قريباً» — وسم صغير داخل الحبّة بعد الاسم (كان معلّقًا على كتف الأيقونة) */
+.sport-soon{background:var(--surface-muted);border:1px solid var(--line-2);
+  color:var(--muted);font-size:8.5px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px}
+.sport-tab.active .sport-soon{background:rgba(0,0,0,.12);color:#0B2227;border-color:transparent}
 /* فاصل ناعم بين الرياضات وتبويبات المناطق */
 .sport-tabs + .region-tabs{padding-top:12px;position:relative}
 .sport-tabs + .region-tabs::before{content:'';position:absolute;top:0;inset-inline:var(--s-5);height:1px;
@@ -1563,7 +1583,8 @@ a.home-brand{text-decoration:none;color:inherit}
 .lp-footer-brand .brand-img{height:48px}
 /* بحث الهيرو (صفحة الهبوط) — سطح أبيض مسطّح + زر Lime */
 /* بروز أعلى: ظل أوضح + حدّ بتباين كافٍ كي لا يذوب في الخلفية الفاتحة */
-.lp-hero-search{display:flex;gap:8px;width:100%;max-width:520px;margin:18px auto 0;padding:8px;background:var(--surface);border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-md)}
+/* هامش سفلي 22px: كان صفرًا فيلتصق بأزرار CTA — ومع ظلّ --shadow-md ينزل الظلّ فوقها فتبدو متداخلة */
+.lp-hero-search{display:flex;gap:8px;width:100%;max-width:520px;margin:18px auto 22px;padding:8px;background:var(--surface);border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-md)}
 .lp-hero-search input{flex:1;min-width:0;border:0;background:transparent;padding:10px 14px;font-size:15px;color:var(--ink)}
 .lp-hero-search input:focus{outline:none}
 .lp-hero-search:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
@@ -1877,15 +1898,17 @@ a.home-brand{text-decoration:none;color:inherit}
     </header>
     <!-- تقسيمة الرياضات — كرة القدم متاحة، والبقية «قريباً» -->
     <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
-    <nav class="region-tabs" id="regionTabs"></nav>
-    <div class="filter-bar">
-      <button class="filter-btn" id="filterBtn" data-action="openFilters" aria-haspopup="dialog" aria-controls="modal-filters">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
-        <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
-      </button>
-      <div class="sort-current" id="sortCurrent">الترتيب: الافتراضي</div>
+    <!-- شريط تصفّح واحد: الفلاتر مثبّتة + المناطق تنزلق أفقيًا (بدل صفّين منفصلين) -->
+    <div class="browse-bar" id="browseBar">
+      <div class="filter-bar">
+        <button class="filter-btn" id="filterBtn" data-action="openFilters" aria-haspopup="dialog" aria-controls="modal-filters">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+          <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
+        </button>
+      </div>
+      <nav class="region-tabs" id="regionTabs"></nav>
     </div>
-    <div class="sec-title"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></div>
+    <div class="sec-title"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-title-end"><span class="sort-current" id="sortCurrent">الترتيب: الافتراضي</span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></span></div>
     <div class="places-list" id="placesList"></div>
   </section>
 
@@ -3198,14 +3221,14 @@ function renderSportTabs(){
   const el=$('#sportTabs'); if(!el) return; clear(el);
   SPORTS.forEach(s=>{
     const active=State.sport===s.key;
-    // فقاعة أيقونة + شارة «قريباً» للرياضات غير المتوفرة بعد
+    // حبّة مضغوطة: أيقونة + اسم على سطر واحد، وشارة «قريباً» داخل الحبّة بعد الاسم
     const ic=h('span',{class:'sport-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'});
-    if(!s.ready) ic.append(h('span',{class:'sport-soon'}, t('soonBadge')));
     const b=h('button',{class:'sport-tab'+(active?' active':''), type:'button',
       'aria-pressed':active?'true':'false',
       'aria-label': s.ready ? t(s.label) : t(s.label)+' — '+t('soonBadge')},
       ic,
       h('span',{class:'sport-name'}, t(s.label)));
+    if(!s.ready) b.append(h('span',{class:'sport-soon','aria-hidden':'true'}, t('soonBadge')));
     b.addEventListener('click', ()=>setSport(s.key));
     el.append(b);
   });
@@ -3214,7 +3237,7 @@ function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs
 /* إخفاء أدوات كرة القدم (المناطق/الفلاتر/العنوان) عند اختيار رياضة غير متوفرة بعد */
 function updateSportSections(){
   const off=State.sport!=='football';
-  ['#regionTabs','#page-home .filter-bar','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
+  ['#browseBar','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
 }
 
 /* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
