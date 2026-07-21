@@ -411,50 +411,6 @@ body.dark .lp-nav{box-shadow:none}
 .lp-btn-ghost:active{transform:scale(.98)}
 .lp-owner-link{display:inline-block;background:none;color:var(--muted);font-size:13px;font-weight:700;padding:8px;min-height:40px;transition:color var(--t-fast)}
 .lp-owner-link:hover{color:var(--emerald)}
-/* =============================================================
-   إضافة صورة خلفية للقسم الترحيبي (Hero Image) بدمج سلس
-   ============================================================= */
-
-/* 1. جعل القسم العلوي يأخذ العرض بالكامل ويحتوي الصورة */
-.lp-hero {
-  max-width: 100%;
-  padding-top: 80px; /* مساحة علوية إضافية لظهور الصورة */
-  /* استبدل الرابط أدناه برابط صورة الملعب التي تريدها */
-  background: url('https://www.aljazeera.net/sport/2022/2/21/%D8%B9%D8%B4%D8%A8-%D9%85%D9%84%D8%A7%D8%B9%D8%A8-%D9%83%D8%A3%D8%B3-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D9%8A%D8%AD%D8%AA%D8%A7%D8%AC') center/cover no-repeat;
-  position: relative;
-}
-
-/* 2. غلاف لوني (Overlay) متدرج يضمن وضوح النصوص ويندمج مع خلفية التطبيق في الأسفل */
-.lp-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  /* التدرج يبدأ بلون داكن من الأعلى، وينتهي بلون خلفية التطبيق (var(--bg-app)) ليختفي الخط الفاصل */
-  background: linear-gradient(to bottom, rgba(8, 29, 34, 0.85) 0%, rgba(8, 29, 34, 0.6) 55%, var(--bg-app) 100%);
-  z-index: 0;
-}
-
-/* 3. إبقاء المحتوى في المنتصف وفوق الغلاف اللوني */
-.lp-hero > * {
-  position: relative;
-  z-index: 1;
-  max-width: 880px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 4. إجبار نصوص الهيرو على اللون الأبيض لضمان التباين العالي دائماً فوق الصورة */
-.lp-hero .lp-title,
-.lp-hero .lp-sub,
-.lp-hero .lp-owner-link {
-  color: #ffffff !important;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.8); /* ظل أقوى للنصوص لسهولة القراءة */
-}
-
-/* إخفاء الهالة اللونية القديمة لأن الصورة حلت مكانها */
-.lp-hero-glow { 
-  display: none !important; 
-}
 
 /* ---------- HERO STATS ---------- */
 .lp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:46px auto 0;animation:fadeUp var(--t-slower) var(--ease-out) both;animation-delay:160ms}
@@ -1813,6 +1769,27 @@ html[lang="en"] .place-sub{font-size:12px}
 @media(hover:hover){
   .fx-chip:not(.on):hover,.ftab:not(.active-tab):hover{border-color:var(--line-2);color:var(--ink)}
 }
+
+/* ===================== HERO IMAGE — صورة ملعب خلف هيرو الترحيب =====================
+   الهيرو ينضم لعائلة «الألواح الداكنة في الوضعين» (كالهيدر/الـcallout): صورة Pexels
+   تحت تعتيم teal متدرّج يذوب في #081D22، مع لون احتياطي صلب إن تعذّر تحميلها. */
+.lp-hero{position:relative;isolation:isolate;overflow:hidden}
+.lp-hero::before{content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(8,29,34,.74) 0%,rgba(8,29,34,.86) 60%,#081D22 100%),
+  url('https://images.pexels.com/photos/114296/pexels-photo-114296.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat #0E3D45}
+@media(max-width:600px){
+  .lp-hero::before{background:linear-gradient(180deg,rgba(8,29,34,.74) 0%,rgba(8,29,34,.86) 60%,#081D22 100%),
+    url('https://images.pexels.com/photos/114296/pexels-photo-114296.jpeg?auto=compress&cs=tinysrgb&w=900') center/cover no-repeat #0E3D45}
+}
+/* نصوص الهيرو فوق الصورة: فاتحة دائمًا (الهيرو داكن في الوضعين) */
+.lp-hero .lp-title,.lp-hero .lp-title span,.lp-hero .lp-sub,.lp-hero .lp-owner-link{color:#fff}
+.lp-hero .lp-title [data-i18n="brandName"]{color:#A5DA5B}
+.lp-hero .lp-sub{opacity:.92}
+.lp-hero .lp-owner-link{opacity:.85}
+.lp-hero .lp-badge{color:#A5DA5B;border-color:rgba(140,198,62,.4);background:rgba(8,29,34,.55)}
+.lp-hero .lp-stat{background:rgba(10,32,38,.62);border:1px solid rgba(127,189,199,.2)}
+.lp-hero .lp-stat-num{color:#A5DA5B}
+.lp-hero .lp-stat-lbl{color:rgba(255,255,255,.85)}
 </style>
 </head>
 <body>
@@ -1859,8 +1836,8 @@ html[lang="en"] .place-sub{font-size:12px}
     <div class="lp-hero">
       <div class="lp-hero-glow" aria-hidden="true"></div>
       <span class="lp-badge" data-i18n="heroBadge">منصّة حجز ملاعب كرة القدم</span>
-      <h1 class="lp-title"><span data-i18n="heroTitlePre">احجز ملعبك بسهولة مع</span> <span data-i18n="brandName">المستديرة</span></h1>
-      <p class="lp-sub" data-i18n="heroSub">تصفّح الملاعب القريبة منك، اطّلع على آخر الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — وتابع تأكيده مع إدارة الملعب.</p>
+      <h1 class="lp-title"><span data-i18n="heroTitlePre">احجز ملعبك بلا مكالمات مع</span> <span data-i18n="brandName">المستديرة</span></h1>
+      <p class="lp-sub" data-i18n="heroSub">تصفّح ملاعب منطقتك، قارن الأسعار والأوقات المتاحة، وأرسل طلب حجزك في ثوانٍ — ثم تابع تأكيده خطوة بخطوة من حسابك.</p>
       <form class="lp-hero-search" id="heroSearchForm" role="search">
         <!-- placeholder فارغ عمداً: النصّ المتبدّل يُعرض عبر طبقة .lp-hs-hint أسفله (السمة لا تقبل الانتقالات) -->
         <input id="heroSearchInput" type="search" enterkeyhint="search" autocomplete="off" placeholder="" data-i18n-aria="heroSearchPh" aria-label="ابحث عن ملعب أو منطقة">
@@ -1874,7 +1851,7 @@ html[lang="en"] .place-sub{font-size:12px}
         <button class="lp-btn-primary" data-action="browse"><span data-i18n="browseFields">تصفّح الملاعب</span> <span class="lp-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></button>
         <button class="lp-btn-ghost" data-go="playerLogin" data-i18n="login">تسجيل الدخول</button>
       </div>
-      <button class="lp-owner-link" data-go="ownerLogin" data-i18n="ownerLink">عندك ملعب؟ ادخل كمالك</button>
+      <button class="lp-owner-link" data-go="ownerLogin" data-i18n="ownerLink">تملك ملعباً؟ لوحة تحكّمك جاهزة من هنا</button>
 
       <div class="lp-stats" id="lp-stats">
         <div class="lp-stat"><div class="lp-stat-num" id="trustPlaces">—</div><div class="lp-stat-lbl" data-i18n="statPlaces">ملعب متاح</div></div>
@@ -2662,26 +2639,26 @@ const AMENITY = {
 /* ===================== I18N (عربي / إنجليزي) ===================== */
 const I18N = {
   ar: {
-    brandTag:'احجز ملعبك في ثوانٍ وبكل سهولة', nav_features:'المميزات', nav_how:'كيف يعمل', nav_stats:'الأرقام',
+    brandTag:'ملعبك على بُعد ثوانٍ', nav_features:'المميزات', nav_how:'كيف يعمل', nav_stats:'الأرقام',
     login:'تسجيل الدخول', register:'إنشاء حساب', startNow:'ابدأ الآن', browseFields:'تصفّح الملاعب',
-    heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك بكل سهولة مع',
+    heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك بلا مكالمات مع',
     heroSearchPh:'ابحث عن ملعب أو منطقة…', heroSearchBtn:'ابحث',
     /* النائب المتحرّك: بادئة ثابتة تُثبّت العين + كلمات متبدّلة (مصفوفة — t() تمرّرها كما هي) */
     heroSearchPrefix:'ابحث عن',
     heroSearchWords:['ملعب قريب','منطقة','وقت متاح','ملعب خماسي','ملعب سباعي'],
-    heroSub:'تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — ثم تابع تأكيده مع إدارة الملعب.',
-    ownerLink:'تملك ملعباً؟ ادخل من هنا كمالك', statPlaces:'ملعب متاح لك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا عناء',
+    heroSub:'تصفّح ملاعب منطقتك، قارن الأسعار والأوقات المتاحة، وأرسل طلب حجزك في ثوانٍ — ثم تابع تأكيده خطوة بخطوة من حسابك.',
+    ownerLink:'تملك ملعباً؟ لوحة تحكّمك جاهزة من هنا', statPlaces:'ملعب متاح لك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا عناء',
     statAnytime:'تصفّح في أي وقت', statFree:'مجاني', statFreeLbl:'بلا رسوم تصفّح',
     featuresEyebrow:'المميزات', featuresTitlePre:'لماذا', featuresTitleBrand:'المستديرة؟',
     featuresSub:'كل ما تحتاجه لحجز ملعبك بسهولة — وكل ما يحتاجه المالك لإدارة ملاعبه باحتراف.',
-    feat1Title:'اختيار وحجز أسهل', feat1Text:'اطّلع على الأوقات المتاحة، اختر اليوم والوقت، وأرسل طلب الحجز — كل ذلك بخطوات واضحة ومعدودة.',
+    feat1Title:'من التصفّح إلى الطلب في دقيقة', feat1Text:'اطّلع على الأوقات المتاحة، اختر اليوم والوقت، وأرسل طلب الحجز — خطوات واضحة ومعدودة بلا مكالمة واحدة.',
     feat2Title:'اعرف الملعب قبل الذهاب', feat2Text:'الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — كل المعلومات أمامك قبل أن تقرر.',
     feat3Title:'متابعة واضحة للحجز', feat3Text:'من حسابك تتابع حالة الحجز وردّ إدارة الملعب، وتتواصل معهم عند توفر وسيلة التواصل.',
     howEyebrow:'كيف يعمل', howTitlePre:'3 خطوات وتكون', howTitleHi:'جاهزاً للعب',
-    step1Title:'تصفّح واختر', step1Text:'افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.',
+    step1Title:'تصفّح واختر', step1Text:'افتح قائمة الملاعب وقارن حسب المنطقة والسعر والتقييم — ثم اختر ملعبك.',
     step2Title:'حدّد الموعد', step2Text:'اختر اليوم والوقت المتاح الذي يناسبك من جدول الأوقات.',
     step3Title:'أرسل وتابع', step3Text:'أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — واستعدّ للمباراة!',
-    calloutTitle:'جاهز لحجز ملعبك القادم؟', calloutSub:'أصبح حجز الملاعب أسهل من أي وقت مضى. ابدأ بلا حساب، أو سجّل دخولك لمتابعة حجوزاتك بسهولة.',
+    calloutTitle:'جاهز لحجز ملعبك القادم؟', calloutSub:'صار حجز الملعب أسهل من تسجيل هدف في مرمى خالٍ. ابدأ بلا حساب، أو سجّل دخولك لتتابع حجوزاتك أولاً بأول.',
     startFree:'ابدأ مجاناً', haveField:'أملك ملعباً', footerLogin:'تسجيل الدخول', footerOwner:'دخول المالك',
     footerCopy:'© 2026 المستديرة — جميع الحقوق محفوظة.',
     loginTitle:'دخول اللاعب', loginSubtitle:'سجّل دخولك لعرض حجوزاتك ومتابعتها', phone:'رقم الهاتف', password:'كلمة السر',
@@ -2700,9 +2677,9 @@ const I18N = {
     bookCta:'احجز الآن',
     fieldPhotos:'صور الملعب', lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
     sportsAria:'اختر الرياضة', sportFootball:'كرة القدم', sportPadel:'بادل', sportBasket:'كرة السلة', sportTennis:'تنس', sportVolley:'كرة الطائرة', soonBadge:'قريباً',
-    comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} في طريقها إلينا — سنضيفها قريباً.', backToFootball:'عرض ملاعب كرة القدم',
+    comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} تُحمّي في غرفة الملابس — وستنزل أرض الملعب قريباً.', backToFootball:'عرض ملاعب كرة القدم',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
-    available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'🚫 لا توجد أوقات متاحة في هذا اليوم. جرّب يوماً آخر.',
+    available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'اكتمل جدول هذا اليوم بالكامل — جرّب يوماً آخر قريباً منه.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
     reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'الموعد', stepConfirm:'التأكيد',
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
@@ -2717,9 +2694,9 @@ const I18N = {
     grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
     chooseFirst:'اختر الملعب أولاً.', chooseDayMsg:'اختر اليوم المناسب.', chooseTimeMsg:'اختر وقتاً متاحاً للمتابعة.',
-    bookingConflict:'للأسف، حُجز هذا الوقت قبل قليل. اختر وقتاً آخر.',
+    bookingConflict:'سبقك إليه فريق آخر قبل لحظات! اختر وقتاً آخر — ولا تتردد هذه المرة.',
     bookingSent:'وصل طلبك! الحجز الآن بانتظار تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'غداً',
-    noResultsTitle:'لا توجد نتائج مطابقة', noResultsSub:'لم نجد ملاعب بهذه المواصفات. غيّر المنطقة أو السعر، أو امسح الفلاتر وحاول مجدداً.', noResultsSubPlain:'لا توجد ملاعب متاحة حالياً.', clearFiltersBtn:'مسح كل الفلاتر',
+    noResultsTitle:'لا توجد نتائج مطابقة', noResultsSub:'حتى أفضل المهاجمين تفوتهم تسديدة — غيّر المنطقة أو السعر، أو امسح الفلاتر وحاول مجدداً.', noResultsSubPlain:'لا توجد ملاعب متاحة حالياً.', clearFiltersBtn:'مسح كل الفلاتر',
     regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'ضيّق نتائجك: المنطقة، السعر، الحجم، نوع الأرضية، أو التقييم.', addManual:'إضافة حجز خارجي', externalBooking:'حجز خارجي',
     apiTimeout:'استغرق الاتصال وقتاً أطول من المعتاد. حاول مرة أخرى.', apiError:'حدث خطأ في الاتصال، حاول مرة أخرى.', apiCached:'نعرض بيانات محفوظة مؤقتاً — قد تحتاج الأوقات إلى تحديث.', timesUpdateFail:'تعذّر تحديث الأوقات حالياً.',
     statusConfirmed:'مؤكد', statusPending:'قيد المعالجة', statusCancelled:'ملغى', statusRejected:'مرفوض', statusInProgress:'المباراة جارية الآن',
@@ -2735,7 +2712,7 @@ const I18N = {
     revenueSummary:'ملخّص الإيراد', commission10:'عمولة 10%', siteRevenue:'إيراد الموقع', platformProfit:'ربح المنصة', ownerNet:'صافي المالك',
     perfTitle:'مؤشّرات الأداء', confirmRate:'نسبة التأكيد', topField:'الملعب الأكثر حجزاً', topSource:'أفضل مصدر للحجوزات',
     econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد ضائع', hintEmptyPrice:'الأوقات الفارغة × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كلما قلّت كان أفضل', bestTime:'الوقت الأكثر طلباً', hintForPricing:'مفيد للتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل العودة', hintSameNumber:'الرقم نفسه أكثر من مرة',
-    pendingReply:'بانتظار ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'لا حجوزات اليوم', noBookingsTodaySub:'لا توجد حجوزات أو طلبات اليوم. يمكنك إضافة حجز خارجي عند الحاجة.', noBookingsDay:'لا حجوزات في هذا اليوم',
+    pendingReply:'بانتظار ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'لا حجوزات اليوم', noBookingsTodaySub:'لا حجوزات أو طلبات اليوم — استمتع بيومك، أو أضف حجزاً خارجياً عند الحاجة.', noBookingsDay:'لا حجوزات في هذا اليوم',
     actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
     confirmBookingTitle:'تأكيد الحجز', confirmBookingMsg:'هل تريد تأكيد هذا الحجز؟ سيصل اللاعب إشعار عبر واتساب.', reasonRequired:'السبب إلزامي — اكتب سبباً واضحاً للاعب',
     cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب الذي سيظهر للاعب، وسيُجهَّز في رسالة واتساب (إلزامي).', confirmWord:'تأكيد',
@@ -2751,7 +2728,7 @@ const I18N = {
     bookingFailRetry:'تعذّر إتمام الحجز، حاول مرة أخرى', bookingConnLag:'تأخر الاتصال قليلاً، حاول مرة أخرى.',
     welcomeHi:'أهلاً', welcomeYou:'بك',
     successDone:'تمام!', successOkBtn:'تمام',
-    noBookingsYet:'لا حجوزات لديك بعد', noBookingsYetSub:'تصفّح الملاعب واحجز ملعبك الأول — لن يستغرق سوى ثوانٍ!',
+    noBookingsYet:'لا حجوزات لديك بعد', noBookingsYetSub:'ملعبك الأول بانتظارك، والشباك تنتظر أهدافك — ابدأ التصفّح!',
     loginToSee:'سجّل دخولك أولاً', loginToSeeSub:'يلزم تسجيل الدخول لعرض حجوزاتك ومتابعتها.', connProblem:'مشكلة في الاتصال', connProblemSub:'تعذّر جلب الحجوزات. تأكد من اتصالك بالإنترنت وحاول مجدداً.',
     noFieldsTitle:'لا توجد ملاعب', noFieldsSub:'أضف ملعبك الأول وابدأ باستقبال الحجوزات.', noMatchBookings:'لا حجوزات بهذه المواصفات', noMatchBookingsSub:'غيّر الفلتر أو التاريخ لعرض حجوزات أخرى.', fetchFail:'تعذّر جلب البيانات', fetchFailSub:'تأكد من اتصالك وحاول مجدداً.',
     manualTitle:'إضافة حجز خارجي', manualSub:'يُضاف مؤكداً مباشرة ويُغلق الوقت أمام اللاعبين.', fieldLbl:'الملعب', dayLbl:'اليوم', timeLbl:'الوقت', ownerNameLbl:'اسم صاحب الحجز', priceLbl:'السعر', saveBookingBtn:'حفظ الحجز',
@@ -2789,14 +2766,14 @@ const I18N = {
     ariaChooseDate:'اختيار الموعد', ariaOwnerTabs:'أقسام لوحة المالك', ariaSearchBookings:'بحث في الحجوزات', ariaFilterDate:'فلترة بالتاريخ', ariaFilterField:'فلترة بالملعب', ariaFilterStatus:'فلترة بالحالة',
     calPrevAria:'الشهر السابق', calNextAria:'الشهر التالي', ariaBookingSteps:'خطوات الحجز', ariaRateLegend:'قيّم المكان من 1 إلى 5 نجوم',
     star1:'نجمة واحدة', star2:'نجمتان', star3:'3 نجوم', star4:'4 نجوم', star5:'5 نجوم',
-    phRegName:'محمد أحمد', phRegPass:'4 خانات ع الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
+    phRegName:'محمد أحمد', phRegPass:'4 خانات على الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
     placeStatsTitle:'إحصائيات الملعب',
     skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
-    firstVisitWelcome:'أهلاً بك في المستديرة! 👋 تصفّح الملاعب، اختر يومك ووقتك، واحجز خلال ثوانٍ.',
+    firstVisitWelcome:'أهلاً بك في المستديرة! 👋 اختر الملعب واليوم والوقت، وأرسل طلبك في ثوانٍ — بلا مكالمة واحدة.',
     addToCalendar:'أضِف إلى التقويم',
     favTab:'المفضّلة', favAdd:'أضِف إلى المفضّلة', favRemove:'أزل من المفضّلة',
-    noFavsTitle:'لا ملاعب في المفضّلة بعد', noFavsSub:'اضغط رمز القلب على أي ملعب لحفظه هنا والوصول إليه بسرعة.',
+    noFavsTitle:'لا ملاعب في المفضّلة بعد', noFavsSub:'لم يفز ملعبٌ بقلبك حتى الآن؟ اضغط رمز القلب على أي ملعب وسيحجز مكانه هنا.',
     repeatWeeksLbl:'كرّر أسبوعياً', repeatNone:'بلا تكرار (مرة واحدة)', repeatFor:'لمدة {n} أسابيع (نفس اليوم والوقت)',
     repeatSummary:'أُضيف {added} من الحجوزات، وتُخطّي {skipped} (وقت محجوز أو تعذّرت إضافته).',
     // ---- 🤖 ميزات الذكاء الاصطناعي (لوحة المالك) ----
@@ -2818,25 +2795,25 @@ const I18N = {
     newPendingToast:'🔔 وصل {n} طلب حجز جديد',
   },
   en: {
-    brandTag:'Book your field in seconds', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
+    brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
     login:'Log in', register:'Create account', startNow:'Get started', browseFields:'Browse fields',
-    heroBadge:'Football field booking platform', heroTitlePre:'Book your field easily with',
+    heroBadge:'Football field booking platform', heroTitlePre:'Skip the calls — book your field with',
     heroSearchPh:'Search for a field or area…', heroSearchBtn:'Search',
     heroSearchPrefix:'Search for',
     heroSearchWords:['a nearby field','an area','an available time','a 5-a-side field','a 7-a-side field'],
-    heroSub:'Browse fields near you, check the latest available times, and send your booking request in seconds — then follow up its confirmation with the field staff.',
-    ownerLink:'Own a field? Sign in as owner', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
+    heroSub:'Browse fields near you, compare prices and open times, and send your booking request in seconds — then track its confirmation step by step from your account.',
+    ownerLink:'Own a field? Your dashboard is ready here', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
     statAnytime:'Browse anytime', statFree:'Free', statFreeLbl:'No browsing fees',
     featuresEyebrow:'Features', featuresTitlePre:'Why', featuresTitleBrand:'Al-Mostadeera?',
     featuresSub:'Everything you need to book easily — and everything an owner needs to manage fields professionally.',
-    feat1Title:'Easier choosing & booking', feat1Text:'See available times, pick the day and time, and send your request — all in a few clear steps.',
+    feat1Title:'From browsing to booking in a minute', feat1Text:'See available times, pick the day and time, and send your request — a few clear steps, zero phone calls.',
     feat2Title:'Know the field before you go', feat2Text:'Location, price, amenities, surface type and player ratings — clear info before you choose.',
     feat3Title:'Clear booking follow-up', feat3Text:'From your account, track the booking status and the field’s confirmation, and contact them when a channel is available.',
     howEyebrow:'How it works', howTitlePre:'3 steps and you are', howTitleHi:'ready to play',
-    step1Title:'Browse & choose', step1Text:'Open the fields list and pick the best one by area and price.',
+    step1Title:'Browse & choose', step1Text:'Open the fields list and compare by area, price and rating — then pick your field.',
     step2Title:'Pick the time', step2Text:'Choose the day and available time that suits you from the times table.',
     step3Title:'Send & follow up', step3Text:'Send the booking request and follow up its confirmation with the field — ready to play!',
-    calloutTitle:'Ready to book your next field?', calloutSub:'Booking fields is easier than ever. Start without an account or log in to track your bookings.',
+    calloutTitle:'Ready to book your next field?', calloutSub:'Booking a field is now easier than scoring into an open net. Start without an account, or log in to keep track of your bookings.',
     startFree:'Start free', haveField:'I own a field', footerLogin:'Log in', footerOwner:'Owner login',
     footerCopy:'© 2026 Al-Mostadeera — All rights reserved.',
     loginTitle:'Player login', loginSubtitle:'Log in to see and track your bookings', phone:'Phone number', password:'Password',
@@ -2855,9 +2832,9 @@ const I18N = {
     bookCta:'Book now',
     fieldPhotos:'Field photos', lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
     sportsAria:'Choose a sport', sportFootball:'Football', sportPadel:'Padel', sportBasket:'Basketball', sportTennis:'Tennis', sportVolley:'Volleyball', soonBadge:'Soon',
-    comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are on the way — we will add them soon.', backToFootball:'Show football fields',
+    comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are warming up in the locker room — hitting the pitch soon.', backToFootball:'Show football fields',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
-    available:'Available', noServices:'No services information has been added yet.', noTimesDay:'🚫 No available times on this day. Try another day.',
+    available:'Available', noServices:'No services information has been added yet.', noTimesDay:'This day is fully booked — try another one nearby.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
     reviewTitle:'Review booking', stepField:'Field', stepDate:'Time', stepConfirm:'Confirm',
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status',
@@ -2872,9 +2849,9 @@ const I18N = {
     grpUpcoming:'Upcoming bookings', grpPending:'Awaiting confirmation', grpPast:'Past bookings', grpCancelled:'Cancelled / Rejected',
     otabToday:'Today', otabBookings:'Bookings', otabCalendar:'Calendar', otabFields:'Fields', otabReports:'Reports',
     chooseFirst:'Choose the field first.', chooseDayMsg:'Choose a suitable day.', chooseTimeMsg:'Choose an available time to continue.',
-    bookingConflict:'Unfortunately, the selected time was booked a moment ago. Please choose another time.',
+    bookingConflict:'Another team beat you to it moments ago! Pick another time — and don’t hesitate twice.',
     bookingSent:'Your request was sent! It awaits the field’s confirmation.', langSwitch:'العربية', today:'Today', tomorrow:'Tomorrow',
-    noResultsTitle:'No matching fields', noResultsSub:'No matching fields found. Try changing the area or price, or clear the filters.', noResultsSubPlain:'No fields available right now.', clearFiltersBtn:'Clear all filters',
+    noResultsTitle:'No matching fields', noResultsSub:'Even the best strikers miss a shot — change the area or price, or clear the filters and try again.', noResultsSubPlain:'No fields available right now.', clearFiltersBtn:'Clear all filters',
     regionLbl:'Region', filtersTitle:'Filters & sorting', filtersSub:'Narrow your results: region, price, size, surface type, or rating.', addManual:'Add external booking', externalBooking:'External booking',
     apiTimeout:'The connection took longer than expected. Please try again.', apiError:'A connection error occurred, please try again.', apiCached:'Showing temporarily cached data; times may need refreshing.', timesUpdateFail:'Couldn’t update the times right now.',
     statusConfirmed:'Confirmed', statusPending:'Processing', statusCancelled:'Cancelled', statusRejected:'Rejected', statusInProgress:'Playing now',
@@ -2906,12 +2883,12 @@ const I18N = {
     bookingFailRetry:'Booking failed, please try again', bookingConnLag:'The connection to the sheet lagged, please try again.',
     welcomeHi:'Hi', welcomeYou:'there',
     successDone:'Done!', successOkBtn:'OK',
-    noBookingsYet:'No bookings yet', noBookingsYetSub:'Browse fields and book your first one — it takes seconds!',
+    noBookingsYet:'No bookings yet', noBookingsYetSub:'Your first field is waiting — and so is the net. Start browsing!',
     loginToSee:'Log in', loginToSeeSub:'You need to log in to see and track your bookings.', connProblem:'Connection problem', connProblemSub:'Couldn’t fetch the bookings. Check your network and try again.',
     noFieldsTitle:'No fields', noFieldsSub:'Add your first field to start receiving bookings.', noMatchBookings:'No matching bookings', noMatchBookingsSub:'Try changing the filter or date to view other bookings.', fetchFail:'Couldn’t fetch the data', fetchFailSub:'Check your connection and try again.',
     manualTitle:'Add external booking', manualSub:'Added as confirmed directly and blocks the time for players.', fieldLbl:'Field', dayLbl:'Day', timeLbl:'Time', ownerNameLbl:'Booker’s name', priceLbl:'Price', saveBookingBtn:'Save booking',
     editFieldTitle:'Edit field', addFieldTitle:'Add new field', fieldNameLbl:'Field name', sizeLbl:'Size', slotsLbl:'Times', activeLbl:'Active', saveBtn:'Save', slotFull:'Full — all day', slotMorning:'Morning', slotEvening:'Evening',
-    cancelBookingBtn:'✕ Cancel booking', reasonPrefix:'Reason: ', reasonPlaceholder:'e.g., the time isn’t available or there is maintenance...', reasonTitleDefault:'Update reason', cancelWord:'Cancel', backWord:'Back',
+    cancelBookingBtn:'Cancel booking', reasonPrefix:'Reason: ', reasonPlaceholder:'e.g., the time isn’t available or there is maintenance...', reasonTitleDefault:'Update reason', cancelWord:'Cancel', backWord:'Back',
     rateModalTitle:'Rate this place', yourNamePh:'Your name', phonePh:'Phone number', commentPh:'Optional comment', submitReviewBtn:'Send review',
     stAvailable:'Available', stSelected:'Selected', stTaken:'Booked', bookedTag:'Booked',
     showPass:'Show password', hidePass:'Hide password', clearSearchAria:'Clear search',
@@ -2948,10 +2925,10 @@ const I18N = {
     placeStatsTitle:'Field stats',
     skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
-    firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Browse the fields, pick your day and time, and book in seconds.',
+    firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Pick your field, day and time, and send your request in seconds — not a single phone call.',
     addToCalendar:'Add to calendar',
     favTab:'Favorites', favAdd:'Add to favorites', favRemove:'Remove from favorites',
-    noFavsTitle:'No favorite fields yet', noFavsSub:'Tap the heart icon on any field to save it here for quick access.',
+    noFavsTitle:'No favorite fields yet', noFavsSub:'No field has won your heart yet? Tap the heart icon on any field and it will save its spot here.',
     repeatWeeksLbl:'Repeat weekly', repeatNone:'No repeat (one time)', repeatFor:'For {n} weeks (same day & time)',
     repeatSummary:'Added {added} bookings, skipped {skipped} (time taken or failed).',
     // ---- 🤖 AI features (owner dashboard) ----
