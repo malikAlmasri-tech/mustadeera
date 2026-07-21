@@ -52,6 +52,8 @@
   --forest:#071A1E; --forest-2:#0C2A31; --emerald:#0F4B53; --emerald-2:#136069; --neon:#12B76A;
   --gold:#8CC63E; --gold-2:#A5DA5B; --gold-glow:rgba(140,198,62,.25);
   --cream:var(--light-bg-primary); --surface:var(--light-surface); --surface-soft:var(--light-surface-soft); --surface-muted:var(--light-surface-muted);
+  /* سطح صلب (بلا شفافية) — للعناصر المتكرّرة التي أُزيل منها backdrop-filter كي لا تُنشئ طبقة دمج لكل بطاقة */
+  --surface-solid:#FFFFFF;
   --input-bg:rgba(255,255,255,.88); --ink:var(--light-text-primary); --ink-2:#2C3A30; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
   --line:var(--light-border); --line-2:rgba(15,70,78,.3);
@@ -79,12 +81,15 @@
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --t-fast:110ms; --t-base:170ms; --t-slow:240ms; --t-slower:360ms;
   --max:480px; --tap:48px; /* الحد الأدنى لمساحة اللمس */
+  /* ارتفاع شريط التنقّل السفلي بلا منطقة الأمان — مقيس حيًّا: 6px أعلى + 57px محتوى (.nitem)
+     + 8px أسفل + 1px حدّ = 72px. يُعرَّف هنا لا على .bnav كي تستطيع .page قراءته (شقيقان لا يتوارثان). */
+  --bnav-h:72px;
   --cta-h:56px;            /* ارتفاع موحّد لزرّي CTA في الهيرو (تماثل بصري) */
 
   --g-gold:var(--copper-primary);
   --g-btn:#8CC63E;  /* زر primary — Lime مسطّح صلب (بلا تدرّجات) */
   --g-btn-solid:#8CC63E; --btn-ink:#0B2227;  /* حبر الزر — Teal شبه أسود للتباين على الـLime */
-  --ring:rgba(15,75,83,.35);          /* حلقة تركيز Teal (نهاري) */
+  --ring:rgba(15,75,83,.6);           /* حلقة تركيز Teal (نهاري) — .35 كانت تعطي 1.9:1 على الأبيض (دون حدّ 3:1)؛ .6 ⇒ ~3.3:1 */
   /* حبر الحالات (نهاري) — داكن بما يكفي للتباين على الفاتح */
   --ok-ink:#0B7A43; --danger-ink:#B02718; --warning-ink:#7A5210; --info-ink:#1D4ED8;
   /* أيقونات الثيم (قمر/شمس) — CSS فقط فوق زرّ الإيموجي الحالي */
@@ -118,6 +123,8 @@ body.dark{
   --forest:#04141A; --forest-2:#0A272E; --emerald:#8CC63E; --emerald-2:#A5DA5B; --neon:#4ADE80;
   --gold:#8CC63E; --gold-2:#A5DA5B; --gold-glow:rgba(140,198,62,.22);
   --cream:var(--dark-bg-primary); --surface:var(--dark-surface); --surface-soft:var(--dark-surface-soft); --surface-muted:var(--dark-surface-muted);
+  /* مكافئ صلب لـ rgba(15,45,52,.72) فوق خلفية #081D22 — نفس الوزن البصري بلا طبقة blur */
+  --surface-solid:#0D2830;
   --input-bg:rgba(12,38,45,.62); --ink:var(--dark-text-primary); --ink-2:#D3DEDC; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
   --line:var(--dark-border); --line-2:rgba(140,198,62,.24);
@@ -128,7 +135,7 @@ body.dark{
   --shadow-green:0 8px 24px -6px rgba(140,198,62,.3); --shadow-green-lg:0 14px 38px -8px rgba(140,198,62,.42);
   --g-btn:#8CC63E;  /* زر primary ليلي — نفس الـLime المسطّح (اتساق الهوية) */
   --g-btn-solid:#8CC63E; --btn-ink:#0B2227;
-  --ring:rgba(95,183,196,.42);  /* حلقة تركيز Teal فاتح (ليلي) */
+  --ring:rgba(95,183,196,.6);   /* حلقة تركيز Teal فاتح (ليلي) — .42 ⇒ 2.35:1 على #081D22؛ .6 ⇒ ~3.5:1 */
   --ok-ink:#4ADE80; --danger-ink:#FF8A90; --warning-ink:#F0C070; --info-ink:#9BC2FD;
 }
 
@@ -148,12 +155,12 @@ body{display:flex;justify-content:center;background:var(--bg-app) fixed;backgrou
    الأشكال تُعرَّف مرة واحدة، والثيمان يتحكّمان بشدّة الظهور عبر متغيّرات محلية فقط.
    الأقوى في الداكن · الأنعم في النهاري (رخام عاجي). لا يُحرَّك blur ولا box-shadow. */
 #app::before{content:'';position:fixed;inset:-25%;z-index:-3;pointer-events:none;will-change:transform,opacity;
-  /* قيم النهار (رخام عاجي ناعم) — يعيد body.dark تعريفها لرفع الظهور */
-  --geo-c1:rgba(15,75,83,.08);   /* بوكيه نُحاسي */
-  --geo-c2:rgba(15,75,83,.09);   /* مثلثات نُحاسية */
-  --geo-hex:rgba(15,75,83,.07);  /* انطباع سداسي نُحاسي */
+  /* قيم النهار — رُفعت الشدّة كي تُرى الأشكال فعلاً على خلفية #FAFAF7 (كانت .05–.09 = غير مرئية) */
+  --geo-c1:rgba(15,75,83,.15);   /* بوكيه Teal */
+  --geo-c2:rgba(15,75,83,.16);   /* مثلثات Teal */
+  --geo-hex:rgba(15,75,83,.12);  /* انطباع سداسي Teal */
   --geo-m1:rgba(11,132,87,.05);     /* هالة نعناع */
-  --geo-marble:rgba(255,255,255,.07);/* إضاءة رخامية عضوية */
+  --geo-marble:rgba(95,183,196,.16);/* إضاءة رخامية — Teal فاتح جداً (الأبيض كان يذوب في الخلفية) */
   background:
     /* بوكيه دائري ناعم لكنه واضح الحواف (نُحاس) — شكلان كبيران */
     radial-gradient(circle at 17% 23%,var(--geo-c1) 0,var(--geo-c1) 15%,transparent 44%),
@@ -200,7 +207,9 @@ a{color:inherit;text-decoration:none}
   transition:background-color .45s var(--ease-out),border-color .45s var(--ease-out),color .45s var(--ease-out),fill .45s var(--ease-out),stroke .45s var(--ease-out),box-shadow .45s var(--ease-out)}
 
 /* ---------- PAGES / ROUTER ---------- */
-.page{display:none;padding-bottom:calc(var(--tap) + 54px);min-height:100vh;position:relative;z-index:1}
+/* المساحة السفلية تتبع ارتفاع شريط التنقّل الحقيقي + منطقة الأمان (iOS) + 24px تنفّس،
+   بدل الرقم السحري 54px الذي كان يقصّ آخر بطاقة (صفّ المرافق وزر الحجز). */
+.page{display:none;padding-bottom:calc(var(--bnav-h) + env(safe-area-inset-bottom) + 24px);min-height:100vh;position:relative;z-index:1}
 .page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
 @keyframes pageIn{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 .pad{padding:var(--s-6) var(--s-5)}              /* مساحة تنفّس قياسية */
@@ -602,7 +611,9 @@ body.dark .fs-mint{opacity:.5}
 }
 
 /* ---------- BOTTOM NAV ---------- */
-.bnav{position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:6px 12px max(8px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+/* الارتفاع مصدره --bnav-h في :root (كي تقرأه .page أيضاً — الشقيق لا يرث متغيّرات الشقيق).
+   min-height يثبّت القيمة على الواقع، والحشوة السفلية تنمو وحدها مع منطقة الأمان. */
+.bnav{min-height:var(--bnav-h);position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:6px 12px max(8px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
 .bnav.show{display:flex}
 .nitem{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--soft);min-width:64px;min-height:var(--tap);font-weight:800;border-radius:16px;padding:6px 14px;position:relative;transition:all var(--t-base) var(--ease-out)}
 .nitem.active{color:var(--emerald-2)}
@@ -637,7 +648,11 @@ body.dark .fs-mint{opacity:.5}
 
 /* ---------- PLACE CARDS ---------- */
 .places-list{padding:0 var(--s-5);display:flex;flex-direction:column;gap:var(--s-4)}
-.place-card{background:var(--surface);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;box-shadow:var(--shadow-card);position:relative;border:1px solid var(--line);opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards;transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow)}
+/* أداء: أُزيل backdrop-filter من البطاقة (عنصر متكرّر — 10 بطاقات = 10 طبقات دمج ⇒ تقطيع تمرير
+   على أجهزة أندرويد المتوسطة). البديل سطح صلب بنفس الوزن البصري في الثيمين.
+   content-visibility:auto يجعل البطاقات خارج الشاشة تتخطّى الرسم؛ contain-intrinsic-size
+   يحجز ارتفاعاً تقديرياً (auto = يتذكّر المقاس الحقيقي بعد أول رسم) فلا يقفز شريط التمرير. */
+.place-card{background:var(--surface-solid);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;box-shadow:var(--shadow-card);position:relative;border:1px solid var(--line);opacity:0;animation:fadeUp var(--t-slower) var(--ease-out) forwards;transition:transform var(--t-slow) var(--ease-out),box-shadow var(--t-slow);content-visibility:auto;contain-intrinsic-size:auto 310px}
 @keyframes fadeUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 .place-card:active{transform:scale(.99)}
 @media (hover:hover) and (pointer:fine){
@@ -650,20 +665,29 @@ body.dark .fs-mint{opacity:.5}
 .place-cover-emoji{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;z-index:0;opacity:.5}
 .place-cover-emoji svg{width:76px;height:76px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:1.4}
 .place-top-badges{position:absolute;top:12px;right:12px;left:12px;z-index:3;display:flex;justify-content:space-between;align-items:flex-start}
-.avail-badge{border-radius:999px;padding:6px 13px;font-size:10px;font-weight:800;backdrop-filter:blur(12px);box-shadow:0 3px 10px rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.3)}
-.avail-yes{background:var(--mint-soft);color:var(--mint-electric)}.avail-no{background:var(--danger-soft);color:var(--danger-ink)}
-.price-badge{background:rgba(10,10,12,.6);backdrop-filter:blur(8px);border-radius:999px;padding:6px 13px;font-size:11px;font-weight:800;color:var(--copper-primary);box-shadow:0 3px 12px rgba(0,0,0,.4);border:1px solid var(--border-copper-faint)}
+/* الشارات العلوية تجلس عند top:12px حيث تدرّج .place-cover::after ما يزال شفافاً — أي فوق الصورة
+   الخام مباشرة. لذلك بعد إزالة backdrop-filter صارت خلفياتها صلبة معتمة (لا تعتمد على ضبابية
+   ما خلفها) كي يبقى النص مقروءاً فوق أي صورة، فاتحة كانت أم داكنة، وفي الثيمين معاً. */
+.avail-badge{border-radius:999px;padding:6px 13px;font-size:10px;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.22)}
+.avail-yes{background:#063A26;color:#8CF0BE}.avail-no{background:#3A0E0B;color:#FFB4AD}
+/* السعر أهم رقم على البطاقة: خلفية معتمة داكنة + Lime أفتح (--copper-hover) ⇒ تباين ~11:1،
+   و12px + tabular-nums كي لا تتراقص عروض الأرقام بين بطاقة وأخرى. */
+.price-badge{background:#0A1712;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--copper-hover);box-shadow:0 3px 12px rgba(0,0,0,.45);border:1px solid rgba(140,198,62,.5)}
 .place-footer{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:16px}
 .place-name{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.025em;text-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1.2}
 .place-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
 .place-loc{font-size:11px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:3px;font-weight:600}
-.place-rating{font-size:11px;color:#fff;font-weight:800;background:rgba(0,0,0,.3);border-radius:999px;padding:4px 9px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12)}
+/* أُزيل blur(6px): التقييم يجلس فوق أسفل التدرّج الداكن (.86) أصلاً، فرُفعت العتامة .3→.5 لتعويض الوزن */
+.place-rating{font-size:11px;color:#fff;font-weight:800;background:rgba(0,0,0,.5);border-radius:999px;padding:4px 9px;border:1px solid rgba(255,255,255,.14)}
 .amenities-row{display:flex;gap:7px;flex-wrap:wrap;padding:14px 16px 0}
 .amenity-chip{background:var(--primary-soft);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:10px;font-weight:800;color:var(--emerald);display:inline-flex;align-items:center;gap:4px;min-height:30px}
 .place-strip{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:12px}
 .place-strip-info{display:flex;align-items:center;gap:8px;flex:1;min-width:0;font-size:11.5px}
 .place-strip-type{color:var(--ink-2);font-weight:800}.place-strip-fields{color:var(--muted)}
-.place-book-btn{background:var(--g-btn)!important;color:#0B2227!important;border-radius:12px;padding:0 19px;min-height:44px;font-size:12px;font-weight:900;letter-spacing:.05em;white-space:nowrap;flex-shrink:0;box-shadow:var(--shadow-green);position:relative;overflow:hidden;transition:transform .2s var(--ease-spring),box-shadow var(--t-base)}
+/* بلا !important: المتنازعان هما إعادتا ضبط العناصر أعلاه — button{background:none} و
+   input,select,button,textarea{color:var(--ink)} — وكلاهما محدِّد وسم (0,0,1) بينما .place-book-btn
+   محدِّد صنف (0,1,0) فيفوز بالتخصيص وحده. لا قاعدة أخرى تضبط خلفية/لون هذا الزر. */
+.place-book-btn{background:var(--g-btn);color:#0B2227;border-radius:12px;padding:0 19px;min-height:44px;font-size:12px;font-weight:900;letter-spacing:.05em;white-space:nowrap;flex-shrink:0;box-shadow:var(--shadow-green);position:relative;overflow:hidden;transition:transform .2s var(--ease-spring),box-shadow var(--t-base)}
 .place-book-btn:hover{box-shadow:var(--shadow-green-lg)}
 .place-book-btn:active{transform:scale(.96)}
 
@@ -785,7 +809,12 @@ body.dark .field-err{color:#fca5a5}
 
 /* ---------- MODAL SCROLL LOCK + FOCUS VISIBLE (وصولية) ---------- */
 body.modal-open{overflow:hidden}
-:focus-visible{outline:2.5px solid var(--emerald-2);outline-offset:2px;border-radius:4px}
+/* حلقة تركيز موحّدة لكل العناصر التفاعلية (زر/رابط/حقل/قائمة/نص/أي [tabindex]).
+   :where() بتخصيص صفري ⇒ التخصيص الكلي (0,1,0) كالقاعدة السابقة، فتبقى تجاوزات المكوّنات تعمل.
+   ملاحظة: أُسقط border-radius (كان 4px) — ضبطه هنا كان يشوّه شكل العنصر نفسه عند التركيز
+   (يحوّل الأزرار الحبّية 999px إلى شبه مربّعة)، و`inherit` كان سيسحب نصف قطر الأب لا العنصر.
+   الـoutline في المتصفّحات الحديثة يتبع border-radius الخاص بالعنصر تلقائياً — وهو المطلوب. */
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .finput:focus-visible{outline:none}
 
 /* ---------- FILTER BAR + SHEET (المرحلة 2) ---------- */
@@ -1076,7 +1105,7 @@ body.dark .econ-decision{color:var(--ok-ink);background:var(--primary-soft)}
 
 /* ---------- DARK overrides for white-ish helpers ---------- */
 body.dark .search-bar{background:var(--surface-soft);border-color:var(--line-2)}
-body.dark .price-badge{background:rgba(10,10,12,.6);color:var(--copper-primary)}
+body.dark .price-badge{background:#071310;color:var(--copper-hover)}
 body.dark .place-cover{filter:saturate(.82) brightness(.85)}
 body.dark .action-map{background:rgba(29,78,216,.14);border-color:rgba(29,78,216,.2);color:#9bc2fd}
 body.dark .action-call{background:rgba(15,75,83,.14);border-color:rgba(15,75,83,.2);color:#86EFAC}
@@ -1120,6 +1149,8 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
   html.reveal-ready .scroll-reveal,html.reveal-ready .scroll-reveal.visible{opacity:1!important;transform:none!important;animation:none!important}
   /* الأشكال العائمة: تبقى ظاهرة لكن ساكنة */
   .lp-float-shape{animation:none!important;transform:none!important}
+  /* النائب المتحرّك: بلا حركة إطلاقاً — يعرض نصّاً واحداً ثابتاً (والـJS يوقف المؤقّت أصلاً) */
+  .lp-hs-word{transition:none!important;transform:none!important;opacity:1!important}
   html{scroll-behavior:auto}
 }
 
@@ -1584,12 +1615,38 @@ a.home-brand{text-decoration:none;color:inherit}
 /* بحث الهيرو (صفحة الهبوط) — سطح أبيض مسطّح + زر Lime */
 /* بروز أعلى: ظل أوضح + حدّ بتباين كافٍ كي لا يذوب في الخلفية الفاتحة */
 /* هامش سفلي 22px: كان صفرًا فيلتصق بأزرار CTA — ومع ظلّ --shadow-md ينزل الظلّ فوقها فتبدو متداخلة */
-.lp-hero-search{display:flex;gap:8px;width:100%;max-width:520px;margin:18px auto 22px;padding:8px;background:var(--surface);border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-md)}
-.lp-hero-search input{flex:1;min-width:0;border:0;background:transparent;padding:10px 14px;font-size:15px;color:var(--ink)}
+/* الحقل والزر يقرآن كوحدة بحث واحدة: gap:0 + حشوة 6px، والنص يبدأ على 22px (6+16)
+   وينتهي على 8px قبل الزر بدل 22px+ من الفراغ الميّت. position:relative لطبقة النائب المتحرّك. */
+.lp-hero-search{position:relative;display:flex;align-items:center;gap:0;width:100%;max-width:520px;margin:18px auto 22px;padding:6px;background:var(--surface);border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-md)}
+.lp-hero-search input{flex:1;min-width:0;border:0;background:transparent;padding-block:10px;padding-inline:16px 8px;font-size:15px;color:var(--ink)}
 .lp-hero-search input:focus{outline:none}
 .lp-hero-search:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
-.lp-hs-btn{flex-shrink:0;background:var(--g-btn);color:var(--btn-ink);font-weight:900;letter-spacing:.03em;font-size:14px;padding:0 22px;min-height:44px;border-radius:12px;transition:transform var(--t-fast) var(--ease-spring)}
+/* z-index:1 كي يغطّي الزرُّ طبقةَ النائب إن امتدّ نصّها تحته */
+.lp-hs-btn{position:relative;z-index:1;flex-shrink:0;margin-inline-start:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--g-btn);color:var(--btn-ink);font-weight:900;letter-spacing:.03em;font-size:14px;padding:0 22px;min-height:44px;border-radius:12px;transition:transform var(--t-fast) var(--ease-spring)}
 .lp-hs-btn:active{transform:scale(.96)}
+.lp-hs-ico{width:20px;height:20px;flex-shrink:0;display:none}
+/* الشاشات الضيّقة: الزر يصير أيقونة فقط (44×44 = حدّ اللمس) — الاسم المتاح يبقى عبر aria-label */
+@media(max-width:520px){
+  .lp-hs-btn{padding:0;width:44px;min-width:44px;gap:0}
+  .lp-hs-ico{display:block}
+  .lp-hs-txt{display:none}
+}
+
+/* ---------- عنصر نائب متحرّك (كلمات متبدّلة) ----------
+   لا تُحرَّك السمة placeholder (لا تقبل الانتقالات وتقفز قفزاً)؛ بديلها طبقة span معروضة فوق
+   الحقل، aria-hidden + pointer-events:none فتمرّ النقرات إلى الحقل ولا يراها قارئ الشاشة
+   (الحقل نفسه يحمل aria-label). المواضع منطقية فتصحّ في RTL وLTR معاً. */
+/* تدفّق سطري عادي (لا flex): عناصر الـflex تُحوَّل قسراً إلى block فتضيع inline-block المطلوبة،
+   والتدفّق السطري هو ما يجعل ترتيب البادئة والكلمة يصحّ تلقائياً في RTL وLTR. */
+.lp-hs-hint{position:absolute;top:50%;transform:translateY(-50%);inset-inline-start:22px;inset-inline-end:8px;
+  overflow:hidden;pointer-events:none;line-height:1.5;
+  font-size:15px;font-weight:500;color:var(--soft);white-space:nowrap;
+  transition:opacity var(--t-base) var(--ease-out)}
+.lp-hs-hint.hide{opacity:0}
+/* inline-block شرط كي يعمل الـtransform دون أن يخلّ بتدفّق السطر */
+.lp-hs-word{display:inline-block;margin-inline-start:.35em;transition:transform 350ms var(--ease-out),opacity 350ms var(--ease-out)}
+.lp-hs-word.out{opacity:0;transform:translateY(-70%)}   /* الخارجة تصعد وتتلاشى */
+.lp-hs-word.in{opacity:0;transform:translateY(70%)}     /* الداخلة تبدأ من الأسفل */
 /* Flat Identity — إيقاف هالات الخلفية المتحركة والتوهّجات المتبقية */
 #app::before{content:none}
 .lp-hero-glow{display:none}
@@ -1643,8 +1700,13 @@ a.home-brand{text-decoration:none;color:inherit}
       <h1 class="lp-title"><span data-i18n="heroTitlePre">احجز ملعبك بسهولة مع</span> <span data-i18n="brandName">المستديرة</span></h1>
       <p class="lp-sub" data-i18n="heroSub">تصفّح الملاعب القريبة منك، اطّلع على آخر الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — وتابع تأكيده مع إدارة الملعب.</p>
       <form class="lp-hero-search" id="heroSearchForm" role="search">
-        <input id="heroSearchInput" type="search" enterkeyhint="search" autocomplete="off" data-i18n-ph="heroSearchPh" placeholder="ابحث عن ملعب أو منطقة…" data-i18n-aria="heroSearchPh" aria-label="ابحث عن ملعب أو منطقة">
-        <button type="submit" class="lp-hs-btn" data-i18n="heroSearchBtn">ابحث</button>
+        <!-- placeholder فارغ عمداً: النصّ المتبدّل يُعرض عبر طبقة .lp-hs-hint أسفله (السمة لا تقبل الانتقالات) -->
+        <input id="heroSearchInput" type="search" enterkeyhint="search" autocomplete="off" placeholder="" data-i18n-aria="heroSearchPh" aria-label="ابحث عن ملعب أو منطقة">
+        <span class="lp-hs-hint" id="heroSearchHint" aria-hidden="true"><span data-i18n="heroSearchPrefix">ابحث عن</span><span class="lp-hs-word" id="heroSearchWord">ملعب قريب</span></span>
+        <button type="submit" class="lp-hs-btn" data-i18n-aria="heroSearchBtn" aria-label="ابحث">
+          <svg class="lp-hs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+          <span class="lp-hs-txt" data-i18n="heroSearchBtn">ابحث</span>
+        </button>
       </form>
       <div class="lp-hero-cta">
         <button class="lp-btn-primary" data-action="browse"><span data-i18n="browseFields">تصفّح الملاعب</span> <span class="lp-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></button>
@@ -2442,6 +2504,9 @@ const I18N = {
     login:'تسجيل الدخول', register:'إنشاء حساب', startNow:'ابدأ الآن', browseFields:'تصفّح الملاعب',
     heroBadge:'منصّة حجز ملاعب كرة القدم', heroTitlePre:'احجز ملعبك بكل سهولة مع',
     heroSearchPh:'ابحث عن ملعب أو منطقة…', heroSearchBtn:'ابحث',
+    /* النائب المتحرّك: بادئة ثابتة تُثبّت العين + كلمات متبدّلة (مصفوفة — t() تمرّرها كما هي) */
+    heroSearchPrefix:'ابحث عن',
+    heroSearchWords:['ملعب قريب','منطقة','وقت متاح','ملعب خماسي','ملعب سباعي'],
     heroSub:'تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ — ثم تابع تأكيده مع إدارة الملعب.',
     ownerLink:'تملك ملعباً؟ ادخل من هنا كمالك', statPlaces:'ملعب متاح لك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا عناء',
     statAnytime:'تصفّح في أي وقت', statFree:'مجاني', statFreeLbl:'بلا رسوم تصفّح',
@@ -2592,6 +2657,8 @@ const I18N = {
     login:'Log in', register:'Create account', startNow:'Get started', browseFields:'Browse fields',
     heroBadge:'Football field booking platform', heroTitlePre:'Book your field easily with',
     heroSearchPh:'Search for a field or area…', heroSearchBtn:'Search',
+    heroSearchPrefix:'Search for',
+    heroSearchWords:['a nearby field','an area','an available time','a 5-a-side field','a 7-a-side field'],
     heroSub:'Browse fields near you, check the latest available times, and send your booking request in seconds — then follow up its confirmation with the field staff.',
     ownerLink:'Own a field? Sign in as owner', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
     statAnytime:'Browse anytime', statFree:'Free', statFreeLbl:'No browsing fees',
@@ -4479,6 +4546,7 @@ function showPage(name){
   }
   if (name==='owner'){ if(!Session.owner()){ return showPage('ownerLogin'); } if(State.ownerData) renderOwnerDashboard(); }
   manageAutoRefresh();
+  HeroPh.sync();   // يوقف دوران النائب خارج صفحة الهبوط ويستأنفه عند العودة إليها
   // الرجوع للرئيسية يستعيد آخر موضع تمرير؛ بقية الصفحات تبدأ من الأعلى
   if(name==='home' && State.homeScroll>0){ const y=State.homeScroll; requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'instant'})); }
   else window.scrollTo({ top:0, behavior:'instant' });
@@ -4734,6 +4802,7 @@ function setLanguage(lang){
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
     renderSportTabs(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     if(Session.player()) setText('playerWelcome', t('welcomeHi')+' '+(State.player?.name||t('welcomeYou')));
     else setText('playerWelcome', t('welcomeGuest'));
@@ -4779,6 +4848,72 @@ document.addEventListener('click', (e)=>{
 /* بحث الهيرو بصفحة الهبوط — يعبّئ بحث الرئيسية ثم يتصفّح كضيف */
 const heroForm=$('#heroSearchForm');
 if(heroForm){ heroForm.addEventListener('submit',(e)=>{ e.preventDefault(); const hi=$('#heroSearchInput'); const v=hi?hi.value.trim():''; const s=$('#searchInput'); if(s) s.value=v; updateSearchClear(); browse(); }); }
+
+/* ===================== النائب المتحرّك لبحث الهيرو =====================
+   طبقة نصّية فوق الحقل: بادئة ثابتة («ابحث عن») تُثبّت العين + كلمة متبدّلة كل 2.4s
+   بانزلاق رأسي وتلاشٍ. مؤقّت واحد فقط، وكل مزامنة تُلغي السابق ⇒ لا تتراكم المؤقّتات
+   عند تبديل اللغة أو التنقّل بين الصفحات. */
+const HeroPh = (()=>{
+  const PERIOD=2400, FADE=350;                 // FADE يطابق مدّة الانتقال في CSS
+  let timer=null, fadeTimer=null, idx=0;
+  const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion:reduce)') : null;
+  const reduced = ()=> !!(mq && mq.matches);
+  const input = ()=> $('#heroSearchInput');
+  const hint  = ()=> $('#heroSearchHint');
+  const word  = ()=> $('#heroSearchWord');
+  const words = ()=>{ const w=t('heroSearchWords'); return Array.isArray(w)&&w.length ? w : []; };
+
+  /* الطبقة تظهر فقط إن كان الحقل فارغاً وغير مركَّز */
+  const shouldShow = ()=>{ const i=input(); return !!i && !i.value && document.activeElement!==i; };
+  function paint(){ const w=hint(); if(w) w.classList.toggle('hide', !shouldShow()); }
+
+  /* شروط التشغيل: حركة مسموحة + تبويب ظاهر + صفحة الهبوط نشطة + الحقل غير مركَّز */
+  function canRun(){
+    if(reduced() || document.hidden) return false;
+    if(!$('#page-welcome')?.classList.contains('active')) return false;
+    const i=input(); if(!i || document.activeElement===i) return false;
+    return words().length>1;
+  }
+  function step(){
+    const el=word(), list=words(); if(!el || !list.length) return;
+    el.classList.add('out');                                 // الكلمة الحالية تصعد وتتلاشى
+    fadeTimer=setTimeout(()=>{
+      fadeTimer=null;
+      idx=(idx+1)%list.length;
+      el.style.transition='none';                            // قفزة صامتة إلى موضع البداية (أسفل)
+      el.classList.remove('out'); el.classList.add('in');
+      el.textContent=list[idx];
+      void el.offsetWidth;                                   // reflow يثبّت حالة البداية قبل الانتقال
+      el.style.transition='';
+      el.classList.remove('in');                             // تنزلق للأعلى وتظهر
+    }, FADE);
+  }
+  function stop(){
+    if(timer){ clearInterval(timer); timer=null; }
+    if(fadeTimer){ clearTimeout(fadeTimer); fadeTimer=null; }
+  }
+  /* مزامنة كاملة — تُستدعى عند التهيئة/تبديل اللغة/تبديل الصفحة/التركيز/إخفاء التبويب */
+  function sync(){
+    const el=word(); if(!el) return;
+    stop();
+    const list=words(); if(!list.length) return;
+    if(idx>=list.length) idx=0;
+    el.classList.remove('out','in'); el.style.transition='';
+    el.textContent = reduced() ? list[0] : list[idx];         // حركة مخفّضة ⇒ نصّ واحد ثابت
+    paint();
+    if(canRun()) timer=setInterval(step, PERIOD);
+  }
+  return { sync, stop, paint };
+})();
+if(heroForm){
+  const hin=$('#heroSearchInput');
+  if(hin){
+    hin.addEventListener('focus', ()=>HeroPh.sync());   // يُخفي الطبقة ويوقف الحركة أثناء الكتابة
+    hin.addEventListener('blur',  ()=>HeroPh.sync());   // تعود إن بقي الحقل فارغاً
+    hin.addEventListener('input', ()=>HeroPh.paint());  // إظهار/إخفاء فوري حسب وجود قيمة
+  }
+}
+document.addEventListener('visibilitychange', ()=>HeroPh.sync());   // لا يحرق دورات في الخلفية
 // تفعيل عناصر التنقّل غير-الأزرار (مثل الشعار) بلوحة المفاتيح (Enter/Space)
 document.addEventListener('keydown', (e)=>{ if(e.key!=='Enter' && e.key!==' ') return; const el=e.target.closest('[data-go],[data-nav]'); if(el && el.getAttribute('role')==='button'){ e.preventDefault(); el.click(); } });
 // إغلاق النافذة عند الضغط على الخلفية
