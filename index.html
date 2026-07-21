@@ -1802,6 +1802,14 @@ body.dark .ftab.active-tab{background:rgba(140,198,62,.13);border-color:rgba(140
 .filter-btn::before{content:'';position:absolute;inset:-3px 0}
 .browse-bar{padding-block:6px 8px}
 .region-tabs{gap:7px}
+
+/* ===================== SCROLL OWNER FIX — التمرير للمستند لا لحاوية #app =====================
+   السبب: body{display:flex;height:100%} كان يمطّط #app على ارتفاع الشاشة بالضبط، و overflow-x:hidden
+   يجعله scroll container ⇒ تمرير داخلي متداخل: تعليق عند الأطراف على الجوال، وخاصية «اضغط أعلى
+   الشاشة» في iOS لا تعمل (تشتغل مع متمرّر المستند فقط). الحل: ارتفاع حر + overflow-x:clip
+   (يقصّ أفقيًا دون إنشاء حاوية تمرير — والأجهزة الأقدم تسقط للسلوك السابق hidden بلا ضرر). */
+html,body{height:auto;min-height:100%}
+#app{height:auto;overflow-x:hidden;overflow-x:clip}
 </style>
 </head>
 <body>
