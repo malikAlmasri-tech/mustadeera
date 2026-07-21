@@ -1790,6 +1790,18 @@ html[lang="en"] .place-sub{font-size:12px}
 .lp-hero .lp-stat{background:rgba(10,32,38,.62);border:1px solid rgba(127,189,199,.2)}
 .lp-hero .lp-stat-num{color:#A5DA5B}
 .lp-hero .lp-stat-lbl{color:rgba(255,255,255,.85)}
+
+/* ===================== BROWSE HIERARCHY POLISH — هرمية تصفّح بروح الـbrand kit =====================
+   المستوى 1 (الرياضات): يبقى lime مصمت. المستوى 2 (المناطق/المفضلة/الفلاتر): chips أنحف وأهدأ،
+   والنشطة = صبغة lime/teal خفيفة + حد — فلا يتكرر الـlime المصمت في المشهد. */
+.ftab{position:relative;min-height:40px;padding:8px 15px;font-size:11.5px;background:transparent;border:1.5px solid var(--line);box-shadow:none;color:var(--muted)}
+.ftab::before{content:'';position:absolute;inset:-3px 0}   /* منطقة لمس ≥44px عموديًا */
+.ftab.active-tab{background:var(--primary-soft);border-color:var(--primary);color:var(--primary);box-shadow:none;font-weight:900}
+body.dark .ftab.active-tab{background:rgba(140,198,62,.13);border-color:rgba(140,198,62,.55);color:var(--copper-hover)}
+.filter-btn{position:relative;min-height:40px;padding:8px 14px;background:transparent;box-shadow:none;border-color:var(--line)}
+.filter-btn::before{content:'';position:absolute;inset:-3px 0}
+.browse-bar{padding-block:6px 8px}
+.region-tabs{gap:7px}
 </style>
 </head>
 <body>
