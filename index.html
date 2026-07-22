@@ -636,12 +636,16 @@ body.dark .fs-mint{opacity:.5}
 .bnav.show{display:flex}
 .nitem{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--soft);min-width:64px;min-height:var(--tap);font-weight:800;border-radius:16px;padding:6px 14px;position:relative;transition:all var(--t-base) var(--ease-out)}
 .nitem.active{color:var(--emerald-2)}
-.nitem.active::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:999px;background:var(--primary);box-shadow:none}
-.nitem.active .nicon{background:var(--primary-soft);border-radius:14px;box-shadow:none}
+/* المؤشّر العلوي يتمدّد أفقيًا عند تفعيل التبويب */
+.nitem.active::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:999px;background:var(--primary);box-shadow:none;animation:navBar var(--t-base) var(--ease-spring)}
+/* الأيقونة النشطة تنبض نبضة لطيفة عند الانتقال بين التبويبات */
+.nitem.active .nicon{background:var(--primary-soft);border-radius:14px;box-shadow:none;animation:navPop var(--t-base) var(--ease-spring)}
 .nicon{width:42px;height:28px;display:grid;place-items:center;transition:transform var(--t-base) var(--ease-spring)}
-.nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width var(--t-base)}
 .nitem:active .nicon{transform:scale(.84)}
 .nitem.active .nicon svg{stroke-width:2.2}
+@keyframes navBar{from{transform:translateX(-50%) scaleX(0);opacity:0}to{transform:translateX(-50%) scaleX(1);opacity:1}}
+@keyframes navPop{0%{transform:scale(.82)}55%{transform:scale(1.12)}100%{transform:scale(1)}}
 
 /* ---------- DAY & TIME (tap ≥ 48px) ---------- */
 .days-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -844,17 +848,20 @@ body.modal-open{overflow:hidden}
 .browse-sticky{position:sticky;top:0;z-index:40;background:var(--glass);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .browse-sticky{background:var(--surface)} }
 
-/* شريط التصفّح: مجموعة الفلاتر مثبّتة على حافة var(--s-5) + شريط المناطق ينزلق بجانبها.
-   استبدل صفّين (مناطق 62px + فلاتر 56px) بصفّ واحد ⇒ توفير ~60px من الطول. */
-.browse-bar{display:flex;align-items:center;gap:10px;padding:6px var(--s-5) 9px;min-width:0}
-.browse-bar .region-tabs{flex:1;min-width:0;padding:0;margin-inline-start:2px;
-  /* تلاشٍ عند الطرف البعيد فقط (حيث تنزلق الحبوب خارج الشاشة) — لا عند الطرف الملاصق
-     لزرّ الفلاتر، وإلا قُصّت حافة الحبّة النشطة الخضراء */
-  mask-image:linear-gradient(to left,#000 calc(100% - 20px),transparent 100%)}
-html[dir="ltr"] .browse-bar .region-tabs{mask-image:linear-gradient(to right,#000 calc(100% - 20px),transparent 100%)}
-.browse-bar .sport-tabs+.region-tabs::before{display:none}
-/* مجموعة مثبّتة على حافة var(--s-5) — زر الفلاتر فقط (سطر الترتيب انتقل لصفّ العنوان) */
-.filter-bar{display:flex;align-items:center;flex-shrink:0;padding:0}
+/* ===================== BROWSE RAIL — مسار تصفّح موحّد =====================
+   صفّ انزلاق أفقي واحد: [الفلاتر مثبّت] + الرياضات + فاصل + المناطق. يستبدل صفّين منفصلين
+   (رياضات ~60px + فلاتر/مناطق ~54px) بصفّ واحد ~52px ⇒ توفير رأسي كبير على الهاتف. */
+.browse-rail{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:9px var(--s-5);scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+.browse-rail::-webkit-scrollbar{display:none}
+/* الرياضات والمناطق تتدفّق داخل مسار الانزلاق الواحد بلا تمرير مستقل ولا حشوة */
+.browse-rail>nav{display:flex;align-items:center;gap:8px;padding:0;margin:0;overflow:visible;flex-shrink:0}
+.browse-rail>nav>*{scroll-snap-align:start}
+/* زرّ الفلاتر مثبّت على حافة البدء أثناء الانزلاق (نمط Airbnb) + تلاشٍ يذيب الحبوب تحته */
+.browse-rail .filter-btn{position:sticky;inset-inline-start:0;z-index:3;flex-shrink:0;background:var(--surface)}
+.browse-rail .filter-btn::after{content:'';position:absolute;top:0;bottom:0;inset-inline-end:-13px;width:13px;background:linear-gradient(to left,var(--surface),transparent);pointer-events:none}
+html[dir="ltr"] .browse-rail .filter-btn::after{background:linear-gradient(to right,var(--surface),transparent)}
+/* فاصل رفيع بين الرياضات والمناطق */
+.browse-div{flex-shrink:0;width:1px;height:26px;background:var(--line-2);margin-inline:3px;border-radius:1px}
 .sec-title-end{display:inline-flex;align-items:center;gap:12px;min-width:0}
 .sort-current{font-size:11.5px;font-weight:700;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .filter-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 15px;min-height:42px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}
@@ -1768,7 +1775,24 @@ html[lang="en"] .place-sub{font-size:12px}
    هنا: تصليب الجوال (التفاف آمن بلا تداخل) + توازن رأسي على الكمبيوتر. */
 .app-header.home .home-bar{flex-wrap:wrap;row-gap:10px;min-width:0}
 .app-header.home .home-tools{min-width:0}
-@media(max-width:345px){ .app-header.home .pill{display:none} }   /* ضيّق جدًا: مؤشّر الموقع يُخفى بدل أن يتداخل */
+/* الهاتف: يُخفى مؤشّر المدينة (سياق ثانوي) + نصّ الترتيب المكرّر (متاح داخل الفلاتر)
+   ⇒ صفّ الهيدر لا يلتفّ لسطرين وشريط العنوان يبقى سطرًا واحدًا — تقليل التكدّس الرأسي. */
+@media(max-width:480px){
+  .app-header.home .pill{display:none}
+  .sec-title .sort-current{display:none}
+}
+/* شاشات صغيرة جدًا: يُخفى الترحيب الثانوي + يُصغَّر البراند والأدوات كي يبقى صفّ الهيدر سطرًا واحدًا */
+@media(max-width:380px){
+  .app-header.home .brand-sub{display:none}
+  .app-header.home .brand-logo{width:40px;height:40px}
+  .app-header.home .brand-name{font-size:16px}
+  .app-header.home .home-brand{gap:8px}
+  .app-header.home .home-tools{gap:6px}
+  .app-header.home .home-tools .icon-btn{min-width:40px;padding-inline:8px}
+  .sec-title{gap:8px;font-size:15px}
+  .sec-title-end{gap:10px}
+  .sec-title .link{display:none}   /* التحديث اليدوي يُخفى (تحديث تلقائي كل 90ث) — يبقى العنوان والعدّاد وتبديل العرض */
+}
 @media(min-width:1024px){
   .app-header.home{padding-top:28px}
   .app-header.home .search-bar{margin-top:22px}
@@ -1810,7 +1834,9 @@ html[lang="en"] .place-sub{font-size:12px}
 
 /* ===================== MOTION POLISH (م5) — انتقالات مضبوطة (transform/opacity/ألوان فقط، لا width/height) =====================
    إعادة تعريف pageIn هنا تفوز على التعريف الأول: حركة أنعم وأقصر + scale خفيف جدًا */
-@keyframes pageIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.996)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+/* تلاشٍ فقط (بلا transform) — أي transform ثابت على .page يكسر position:sticky/fixed لأبنائها
+   (الشريط اللاصق + شريط التفاصيل السفلي). التلاشي يعطي انتقالًا لطيفًا بين التبويبات دون هذا الكسر. */
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
 .ftab,.fx-chip,.tbtn,.day-btn,.nitem{
   transition:transform .18s var(--ease-out),box-shadow var(--t-base),background-color var(--t-base),border-color var(--t-base),color var(--t-base)}
 .ftab:active,.fx-chip:active,.day-btn:active{transform:scale(.95)}
@@ -2176,18 +2202,16 @@ html,body{height:auto;min-height:100%}
         <button class="search-btn" data-action="search" data-i18n="search">بحث</button>
       </div>
     </header>
-    <!-- شريط تصفّح لاصق (نمط Airbnb): الرياضات + الفلاتر + المناطق يبقى ظاهراً أثناء تمرير البطاقات -->
+    <!-- شريط تصفّح لاصق موحّد (نمط Airbnb/Careem): زرّ الفلاتر مثبّت + الرياضات + فاصل + المناطق
+         في مسار انزلاق أفقي واحد — بدل صفّين منفصلين يستهلكان مساحة رأسية على الهاتف. -->
     <div class="browse-sticky" id="browseSticky">
-      <!-- تقسيمة الرياضات — كرة القدم متاحة، والبقية «قريباً» -->
-      <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
-      <!-- شريط تصفّح واحد: الفلاتر مثبّتة + المناطق تنزلق أفقيًا (بدل صفّين منفصلين) -->
-      <div class="browse-bar" id="browseBar">
-        <div class="filter-bar">
-          <button class="filter-btn" id="filterBtn" data-action="openFilters" aria-haspopup="dialog" aria-controls="modal-filters">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
-            <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
-          </button>
-        </div>
+      <div class="browse-rail" id="browseRail">
+        <button class="filter-btn" id="filterBtn" data-action="openFilters" aria-haspopup="dialog" aria-controls="modal-filters">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+          <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
+        </button>
+        <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
+        <span class="browse-div" id="browseDiv" aria-hidden="true"></span>
         <nav class="region-tabs" id="regionTabs"></nav>
       </div>
     </div>
@@ -3555,10 +3579,11 @@ function renderSportTabs(){
   });
 }
 function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); updateSportSections(); renderPlaces(); }
-/* إخفاء أدوات كرة القدم (المناطق/الفلاتر/العنوان) عند اختيار رياضة غير متوفرة بعد */
+/* إخفاء أدوات كرة القدم (الفلاتر/الفاصل/المناطق/العنوان) عند اختيار رياضة غير متوفرة بعد
+   — تبقى حبوب الرياضات ظاهرة في المسار للرجوع لكرة القدم */
 function updateSportSections(){
   const off=State.sport!=='football';
-  ['#browseBar','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
+  ['#filterBtn','#browseDiv','#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
 }
 
 /* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
