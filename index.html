@@ -824,6 +824,14 @@ body.dark .bk-note{background:rgba(255,255,255,.04);color:var(--muted);border-co
 .detail-book-inline{display:none}   /* على الجوال: الإجراء الرئيسي هو الملخّص اللاصق */
 @media(min-width:700px){ .detail-book-inline{display:flex} }
 
+/* ---------- REMEMBER ME (تذكّرني) ---------- */
+/* غير مؤشّر ⇒ الجلسة تنتهي بإغلاق المتصفّح (لا دخول تلقائي دائم) */
+.remember-row{display:flex;align-items:center;gap:9px;margin-bottom:16px;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ink-2);min-height:var(--tap);user-select:none}
+.remember-box{appearance:none;-webkit-appearance:none;flex-shrink:0;width:20px;height:20px;border:1.8px solid var(--line-2);border-radius:6px;background:var(--surface);display:grid;place-items:center;cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast)}
+.remember-box::after{content:'';width:10px;height:6px;border-inline-start:2.2px solid #0B2227;border-bottom:2.2px solid #0B2227;transform:rotate(-45deg) scale(0);transition:transform var(--t-fast) var(--ease-spring);margin-top:-2px}
+.remember-box:checked{background:var(--g-btn);border-color:transparent}
+.remember-box:checked::after{transform:rotate(-45deg) scale(1)}
+
 /* ---------- INLINE FIELD ERRORS (تحقّق الحقول) ---------- */
 .field-err{color:#dc2626;font-size:11.5px;font-weight:700;margin-top:6px;display:flex;align-items:center;gap:5px;line-height:1.5}
 .field-err::before{content:'⚠';font-size:12px}
@@ -1593,6 +1601,8 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 .sport-tab.active .sport-name{font-weight:900}
 .sport-tab:active{transform:scale(.97)}
 @media(hover:hover){.sport-tab:not(.active):hover{border-color:rgba(15,75,83,.42);color:var(--emerald)}}
+/* مُبدِّل الرياضات انتقل إلى ورقة الفلاتر: يلتفّ على أسطر بدل الانزلاق الأفقي (بلا حشوة/تمرير) */
+.fx-group .sport-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;overflow:visible}
 /* «قريباً» — وسم صغير داخل الحبّة بعد الاسم (كان معلّقًا على كتف الأيقونة) */
 .sport-soon{background:var(--surface-muted);border:1px solid var(--line-2);
   color:var(--muted);font-size:8.5px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px}
@@ -1982,7 +1992,8 @@ html,body{height:auto;min-height:100%}
           </div>
         </div>
         <div class="lp-feature">
-          <div class="lp-feat-media"><img src="https://images.pexels.com/photos/3641377/pexels-photo-3641377.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="380"></div>
+          <!-- لاعبون على المقعد يتابعون هواتفهم — يطابق «متابعة واضحة للحجز» (الصورة السابقة كانت مصنعاً ودخاناً بالخطأ) -->
+          <div class="lp-feat-media"><img src="https://images.pexels.com/photos/9519505/pexels-photo-9519505.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="380"></div>
           <div class="lp-feat-body">
             <div class="lp-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
             <div class="lp-feat-title" data-i18n="feat3Title">متابعة واضحة للحجز</div>
@@ -2119,6 +2130,10 @@ html,body{height:auto;min-height:100%}
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
+        <label class="remember-row" for="playerRemember">
+          <input type="checkbox" id="playerRemember" class="remember-box">
+          <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
+        </label>
         <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
@@ -2147,6 +2162,10 @@ html,body{height:auto;min-height:100%}
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
+        <label class="remember-row" for="regRemember">
+          <input type="checkbox" id="regRemember" class="remember-box">
+          <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
+        </label>
         <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
         <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
         <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
@@ -2173,6 +2192,10 @@ html,body{height:auto;min-height:100%}
             <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
           </button>
         </div>
+        <label class="remember-row" for="ownerRemember">
+          <input type="checkbox" id="ownerRemember" class="remember-box">
+          <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
+        </label>
         <button class="sbtn" data-action="ownerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-action="navBack" data-fallback="welcome" data-i18n="back">رجوع</button>
       </div>
@@ -2210,8 +2233,6 @@ html,body{height:auto;min-height:100%}
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
           <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
         </button>
-        <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
-        <span class="browse-div" id="browseDiv" aria-hidden="true"></span>
         <nav class="region-tabs" id="regionTabs"></nav>
       </div>
     </div>
@@ -2523,6 +2544,9 @@ html,body{height:auto;min-height:100%}
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="fxTitle" data-i18n="filtersTitle">الفلاتر والترتيب</div>
       <div class="modal-sub" data-i18n="filtersSub">فلترة حسب البيانات المتاحة للملاعب.</div>
+      <fieldset class="fx-group"><legend class="fx-label" data-i18n="sportLbl">الرياضة</legend>
+        <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
+      </fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sortLabel">الترتيب</legend><div class="fx-chips" id="fxSort"></div></fieldset>
       <div class="fx-group"><label class="fx-label" for="fxRegion" data-i18n="regionLbl">المنطقة</label><select class="finput" id="fxRegion"></select></div>
       <div class="fx-group"><div class="fx-label" data-i18n="priceJod">السعر (دينار)</div>
@@ -2772,7 +2796,7 @@ const I18N = {
     regTitle:'إنشاء حساب', regSubtitle:'احفظ حجوزاتك وتابعها في أي وقت', createAccount:'إنشاء الحساب',
     ownerLoginTitle:'دخول المالك', ownerLoginSubtitle:'لوحة تحكم الملاعب والحجوزات', back:'رجوع',
     searchPh:'اكتب اسم المكان أو المنطقة…', search:'ابحث', availableFields:'الملاعب المتاحة', refresh:'تحديث',
-    filters:'الفلاتر', sortLabel:'الترتيب', all:'الكل', allRegions:'كل المناطق', priceJod:'السعر (دينار)',
+    filters:'الفلاتر', sortLabel:'الترتيب', sportLbl:'الرياضة', all:'الكل', allRegions:'كل المناطق', priceJod:'السعر (دينار)',
     from:'من', to:'إلى', fieldSize:'حجم الملعب', type:'النوع', rating:'التقييم', availableToday:'المتاح اليوم فقط',
     amenities:'المرافق', apply:'تطبيق', clearAll:'مسح الكل', noData:'لا توجد بيانات',
     sortDefault:'الافتراضي', sortPriceAsc:'الأقل سعراً', sortPriceDesc:'الأعلى سعراً', sortRating:'الأعلى تقييماً', sortReviews:'الأكثر مراجعات', sortSoonest:'الأقرب وقتاً',
@@ -2795,7 +2819,7 @@ const I18N = {
     authTitle:'خطوة أخيرة ويكتمل حجزك', authDesc:'سجّل دخولك أو أنشئ حساباً — اختيارك (الملعب واليوم والوقت) محفوظ وسنكمل من النقطة نفسها.',
     authBackEdit:'عودة لتعديل الموعد',
     navHome:'الرئيسية', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
-    accountTitle:'حسابي', accountSub:'بيانات حساب اللاعب', saveEdit:'حفظ التعديل', logout:'تسجيل الخروج',
+    accountTitle:'حسابي', accountSub:'بيانات حساب اللاعب', saveEdit:'حفظ التعديل', logout:'تسجيل الخروج', rememberMe:'تذكّرني على هذا الجهاز',
     bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك في مكان واحد',
     grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
@@ -2927,7 +2951,7 @@ const I18N = {
     regTitle:'Create account', regSubtitle:'Save your bookings and track them anytime', createAccount:'Create account',
     ownerLoginTitle:'Owner login', ownerLoginSubtitle:'Fields and bookings dashboard', back:'Back',
     searchPh:'Type a place or area name…', search:'Search', availableFields:'Available fields', refresh:'Refresh',
-    filters:'Filters', sortLabel:'Sort', all:'All', allRegions:'All regions', priceJod:'Price (JOD)',
+    filters:'Filters', sortLabel:'Sort', sportLbl:'Sport', all:'All', allRegions:'All regions', priceJod:'Price (JOD)',
     from:'From', to:'To', fieldSize:'Field size', type:'Type', rating:'Rating', availableToday:'Available today only',
     amenities:'Amenities', apply:'Apply', clearAll:'Clear all', noData:'No data',
     sortDefault:'Default', sortPriceAsc:'Lowest price', sortPriceDesc:'Highest price', sortRating:'Top rated', sortReviews:'Most reviews', sortSoonest:'Soonest time',
@@ -2950,7 +2974,7 @@ const I18N = {
     authTitle:'One last step to finish booking', authDesc:'Log in or create an account — your selection (field, day and time) is saved and we’ll continue from the same point.',
     authBackEdit:'Back to edit time',
     navHome:'Home', navBookings:'Bookings', navAccount:'Account', navOwner:'Dashboard',
-    accountTitle:'My account', accountSub:'Player account details', saveEdit:'Save changes', logout:'Log out',
+    accountTitle:'My account', accountSub:'Player account details', saveEdit:'Save changes', logout:'Log out', rememberMe:'Remember me on this device',
     bookingsTitle:'My bookings', bookingsSub:'All your bookings in one place',
     grpUpcoming:'Upcoming bookings', grpPending:'Awaiting confirmation', grpPast:'Past bookings', grpCancelled:'Cancelled / Rejected',
     otabToday:'Today', otabBookings:'Bookings', otabCalendar:'Calendar', otabFields:'Fields', otabReports:'Reports',
@@ -3244,15 +3268,21 @@ const placeLocation = (p) => { const c=String(p?.city||'').trim(), r=String(p?.r
 /* توافق كامل مع النسخة الأصلية المنشورة: التوكنات تُخزَّن بالمفاتيح القديمة
    player_token / owner_token كنص مباشر بلا TTL (حتى لا يُسجَّل خروج المستخدمين
    الحاليين). الثيم/اللغة فقط تحت namespace. لا تغيير لأي شيء في الخادم. */
+/* «تذكّرني»: مؤشّر ⇒ التوكن في localStorage (يبقى بعد إغلاق المتصفّح)،
+   غير مؤشّر ⇒ في sessionStorage (ينتهي بإغلاق المتصفّح فلا دخول تلقائي دائم).
+   القراءة تبدأ من localStorage ⇒ المستخدمون الحاليون يبقون داخلين بلا خروج قسري. */
 const Session = (() => {
-  const getRaw = (k) => { try { return localStorage.getItem(k) || ''; } catch(_){ return ''; } };
-  const setRaw = (k,v) => { try { if(v) localStorage.setItem(k,v); else localStorage.removeItem(k); } catch(_){} };
-  const del = (k) => { try { localStorage.removeItem(k); } catch(_){} };
+  const getRaw = (k) => { try { return localStorage.getItem(k) || sessionStorage.getItem(k) || ''; } catch(_){ return ''; } };
+  const setRaw = (k,v,remember) => { try {
+    localStorage.removeItem(k); sessionStorage.removeItem(k);
+    if(v) (remember ? localStorage : sessionStorage).setItem(k,v);
+  } catch(_){} };
+  const del = (k) => { try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch(_){} };
   return {
     player:  () => getRaw('player_token'),
     owner:   () => getRaw('owner_token'),
-    setPlayer: t => { setRaw('player_token', t); del('owner_token'); },   // دخول لاعب ⇒ احذف توكن المالك
-    setOwner:  t => { setRaw('owner_token', t); del('player_token'); },   // دخول مالك ⇒ احذف توكن اللاعب
+    setPlayer: (t,remember) => { setRaw('player_token', t, remember); del('owner_token'); },   // دخول لاعب ⇒ احذف توكن المالك
+    setOwner:  (t,remember) => { setRaw('owner_token', t, remember); del('player_token'); },   // دخول مالك ⇒ احذف توكن اللاعب
     clear:   () => { del('player_token'); del('owner_token'); },
     theme:   () => { try { const v = localStorage.getItem('mustadaira:theme'); if(v==='light'||v==='dark') return v; return (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches) ? 'dark' : 'light'; } catch(_){ return 'light'; } },
     setTheme:t => { try { localStorage.setItem('mustadaira:theme', t); } catch(_){} },
@@ -3579,11 +3609,11 @@ function renderSportTabs(){
   });
 }
 function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); updateSportSections(); renderPlaces(); }
-/* إخفاء أدوات كرة القدم (الفلاتر/الفاصل/المناطق/العنوان) عند اختيار رياضة غير متوفرة بعد
-   — تبقى حبوب الرياضات ظاهرة في المسار للرجوع لكرة القدم */
+/* إخفاء أدوات كرة القدم (المناطق/العنوان) عند اختيار رياضة غير متوفرة بعد.
+   زرّ الفلاتر يبقى ظاهرًا لأن مُبدِّل الرياضات صار داخل ورقة الفلاتر (وإلا انحبس المستخدم). */
 function updateSportSections(){
   const off=State.sport!=='football';
-  ['#filterBtn','#browseDiv','#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
+  ['#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
 }
 
 /* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
@@ -4944,7 +4974,8 @@ async function playerLogin(btn){
     try{
       const res=await API.get('playerLogin',{phone,password});
       if(!res.success){ toast(apiMsg(res.message)||t('loginFailRetry'),'error'); setFieldError('playerPassword', apiMsg(res.message)||t('loginBadData')); return; }
-      Session.setOwner('') /* لا مالك */; Session.setPlayer(res.player_token);
+      const remember = !!$('#playerRemember')?.checked;
+      Session.setOwner('') /* لا مالك */; Session.setPlayer(res.player_token, remember);
       State.player=res.player; State.guest=false;
       setText('playerWelcome',t('welcomeHi')+' '+(State.player.name||t('welcomeYou')));
       if(!State.places.length){ placesSkeleton(); await loadData(); }
@@ -4965,7 +4996,7 @@ async function playerRegister(btn){
     try{
       const res=await API.post({action:'playerRegister',name,phone,password});
       if(!res.success){ toast(apiMsg(res.message)||t('regFailRetry'),'error'); setFieldError('regPhone', apiMsg(res.message)||t('regFail')); return; }
-      Session.setPlayer(res.player_token); State.player=res.player; State.guest=false;
+      Session.setPlayer(res.player_token, !!$('#regRemember')?.checked); State.player=res.player; State.guest=false;
       setText('playerWelcome',t('welcomeHi')+' '+(State.player.name||t('welcomeYou')));
       if(!State.places.length){ placesSkeleton(); await loadData(); }
       if(await resumePendingBooking()) return;          // استئناف حجز الضيف إن وُجد
@@ -4980,7 +5011,7 @@ async function ownerLogin(btn){
     try{
       const res=await API.get('ownerLogin',{phone,password});
       if(!res.success){ toast(apiMsg(res.message)||t('loginFailRetry'),'error'); return; }
-      Session.setOwner(res.owner_token); State.player=null;
+      Session.setOwner(res.owner_token, !!$('#ownerRemember')?.checked); State.player=null;
       showPage('owner'); await loadOwnerDashboard();
     }catch(_){ toast(t('connLag'),'error'); }
   });
