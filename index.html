@@ -1043,7 +1043,7 @@ html[lang="ar"] :is(.sbtn,.btn,.search-btn,.lp-cta-sm,.lp-btn-primary,.place-boo
 /* ---------- SUCCESS + TOAST ---------- */
 .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}
 .success-overlay.show{display:flex;opacity:1}
-.scard{background:var(--surface);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-2xl);padding:36px var(--s-6);text-align:center;width:100%;max-width:330px;box-shadow:var(--shadow-lg);border:1px solid var(--line);position:relative;overflow:hidden;transform:scale(.86);opacity:0;transition:transform var(--t-slow) var(--ease-spring),opacity var(--t-base)}
+.scard{background:var(--surface);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-2xl);padding:36px var(--s-6);text-align:center;width:100%;max-width:340px;max-height:90vh;box-shadow:var(--shadow-lg);border:1px solid var(--line);position:relative;overflow:hidden auto;transform:scale(.86);opacity:0;transition:transform var(--t-slow) var(--ease-spring),opacity var(--t-base)}
 .success-overlay.show .scard{transform:scale(1);opacity:1}
 .scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(15,75,83,.18),transparent 65%);pointer-events:none}
 .scard-emoji{font-size:58px;margin-bottom:14px;animation:ballFloat 2.2s ease-in-out infinite;display:inline-block}
@@ -1950,6 +1950,61 @@ body.dark .ftab.active-tab{background:rgba(140,198,62,.13);border-color:rgba(140
    (يقصّ أفقيًا دون إنشاء حاوية تمرير — والأجهزة الأقدم تسقط للسلوك السابق hidden بلا ضرر). */
 html,body{height:auto;min-height:100%}
 #app{height:auto;overflow-x:hidden;overflow-x:clip}
+
+/* ============================================================
+   REFERENCE-INSPIRED UI PASS (2026-07-23)
+   تبويبات التفاصيل · توزيع التقييمات · إبراز قبول/رفض · FAB · مبدّل الملعب
+   بهوية Teal+Lime وتوكنات المشروع (--g-btn هو الـlime المصمت)
+   ============================================================ */
+
+/* --- تبويبات صفحة التفاصيل (segmented) --- */
+.detail-tabs{display:flex;gap:6px;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:5px;margin:16px 0 18px}
+.dtab-btn{flex:1;min-height:40px;border-radius:10px;font-size:13px;font-weight:800;color:var(--ink-2);background:transparent;transition:background var(--t-fast),color var(--t-fast)}
+.dtab-btn:hover{color:var(--emerald)}
+.dtab-btn.active{background:var(--g-btn);color:#0B2227;box-shadow:var(--shadow-green)}
+.dtab-panel{animation:dtabIn .24s var(--ease-out)}
+.dtab-panel[hidden]{display:none}
+@keyframes dtabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* --- توزيع التقييمات بأشرطة --- */
+.rd-head{display:flex;align-items:center;gap:16px;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px}
+.rd-avg{font-size:40px;font-weight:900;line-height:1;color:var(--ink)}
+.rd-avg-side{display:flex;flex-direction:column;gap:4px}
+.rd-stars{color:#f59e0b;font-size:16px;letter-spacing:2px}
+.rd-count{font-size:12px;color:var(--muted);font-weight:700}
+.rd-bars{display:flex;flex-direction:column;gap:8px}
+.rd-row{display:flex;align-items:center;gap:10px}
+.rd-star-lbl{font-size:12px;font-weight:800;color:var(--ink-2);width:28px;flex-shrink:0}
+.rd-track{flex:1;height:8px;border-radius:999px;background:var(--surface-muted);overflow:hidden}
+.rd-fill{display:block;height:100%;border-radius:999px;background:var(--g-btn);transition:width var(--t-slow) var(--ease-out)}
+.rd-num{font-size:12px;font-weight:700;color:var(--muted);width:28px;text-align:end;flex-shrink:0}
+.rd-empty{display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted);background:var(--surface-soft);border:1px dashed var(--line-2);border-radius:var(--r-lg);padding:22px 16px;text-align:center}
+.rd-empty-star{color:#f59e0b;font-size:16px}
+.detail-loc-text{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--ink-2);margin-bottom:14px}
+
+/* --- إبراز قبول/رفض للطلب المعلّق --- */
+.owner-decide{display:flex;gap:9px;margin-bottom:8px}
+.owner-decide .owner-action{flex:1;justify-content:center;min-height:46px;font-size:13px}
+.owner-approve{background:var(--g-btn);color:#0B2227}
+.owner-decline{background:transparent;color:var(--danger-ink);border:1.5px solid var(--danger);box-shadow:none}
+.owner-actions-sec{display:flex;gap:7px;flex-wrap:wrap}
+.owner-wa-link{display:inline-flex}
+
+/* --- FAB إضافة ملعب (تبويب الملاعب فقط) --- */
+.owner-fab{position:fixed;inset-inline-end:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 20px;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:14px;font-weight:900;box-shadow:var(--shadow-lg),var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring)}
+.owner-fab svg{width:20px;height:20px}
+.owner-fab:hover{transform:translateY(-2px)}
+.owner-fab:active{transform:scale(.95)}
+.owner-fab[hidden]{display:none}
+
+/* --- مبدّل تشغيل/إيقاف الملعب --- */
+.field-switch{width:46px;height:27px;border-radius:999px;background:var(--surface-muted);border:1.5px solid var(--line-2);position:relative;flex-shrink:0;cursor:pointer;padding:0;min-height:0;transition:background var(--t-base),border-color var(--t-base)}
+.field-switch-knob{position:absolute;top:2px;inset-inline-start:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:inset-inline-start var(--t-base) var(--ease-spring)}
+.field-switch.on{background:var(--g-btn);border-color:transparent}
+.field-switch.on .field-switch-knob{inset-inline-start:calc(100% - 21px)}
+.field-switch:disabled{opacity:.6;cursor:default}
+.field-card.field-off{opacity:.62}
+.field-off-badge{font-size:10.5px;font-weight:800;color:var(--danger-ink);background:var(--danger-soft);border-radius:999px;padding:2px 9px}
 </style>
 </head>
 <body>
@@ -2340,42 +2395,68 @@ html,body{height:auto;min-height:100%}
         </div>
       </div>
       <div class="detail-badges" id="dBadges"></div>
-      <div class="detail-actions">
-        <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
-        </a>
-        <a class="action-link action-call" id="callBtn">
-          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
-        </a>
+
+      <!-- تبويبات التفاصيل (مرجع Court Detail): احجز · المرافق · التقييمات · الموقع -->
+      <div class="detail-tabs" id="detailTabs" role="tablist" data-i18n-aria="ariaDetailTabs" aria-label="أقسام الملعب">
+        <button type="button" class="dtab-btn active" role="tab" data-action="setDetailTab" data-dtab="book" aria-selected="true" data-i18n="dtabBook">احجز</button>
+        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="amenities" aria-selected="false" data-i18n="dtabAmenities">المرافق</button>
+        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="reviews" aria-selected="false" data-i18n="dtabReviews">التقييمات</button>
+        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="location" aria-selected="false" data-i18n="dtabLocation">الموقع</button>
       </div>
-      <section class="detail-section" data-i18n-aria="servicesTitle" aria-label="الخدمات والمرافق">
-        <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title" data-i18n="servicesTitle">الخدمات والمرافق</h2></div>
-        <div id="detailAmenities"></div>
-      </section>
-      <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
-        <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
-        <div class="subfields" id="subFields"></div>
-        <!-- صور الملعب المحدَّد — مصغّرات تفتح المعرض المكبّر -->
-        <div class="field-photos" id="fieldPhotos" hidden>
-          <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
-          <div class="detail-thumbs" id="detailThumbs"></div>
+
+      <!-- ===== تبويب: احجز ===== -->
+      <div class="dtab-panel active" data-dtab-panel="book" role="tabpanel">
+        <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
+          <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
+          <div class="subfields" id="subFields"></div>
+          <!-- صور الملعب المحدَّد — مصغّرات تفتح المعرض المكبّر -->
+          <div class="field-photos" id="fieldPhotos" hidden>
+            <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
+            <div class="detail-thumbs" id="detailThumbs"></div>
+          </div>
+        </section>
+        <section class="detail-section" data-i18n-aria="ariaChooseDate" aria-label="اختيار الموعد">
+          <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title" data-i18n="chooseDay">اختر اليوم</h2></div>
+          <div class="days-row" id="detailDays" style="margin-bottom:18px"></div>
+          <div class="dsec-head"><span class="dsec-num">3</span><h2 class="dsec-title" data-i18n="chooseTime">اختر الوقت</h2></div>
+          <div class="times-grid" id="detailTimes"></div>
+        </section>
+        <details class="disclosure">
+          <summary>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg>
+            <span data-i18n="placeStatsTitle">إحصائيات الملعب</span>
+          </summary>
+          <div id="placeStats" style="margin-top:12px"></div>
+        </details>
+        <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
+      </div>
+
+      <!-- ===== تبويب: المرافق ===== -->
+      <div class="dtab-panel" data-dtab-panel="amenities" role="tabpanel" hidden>
+        <section class="detail-section" data-i18n-aria="servicesTitle" aria-label="الخدمات والمرافق">
+          <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title" data-i18n="servicesTitle">الخدمات والمرافق</h2></div>
+          <div id="detailAmenities"></div>
+        </section>
+      </div>
+
+      <!-- ===== تبويب: التقييمات ===== -->
+      <div class="dtab-panel" data-dtab-panel="reviews" role="tabpanel" hidden>
+        <div id="ratingDist"></div>
+        <button class="sbtn" data-action="openReview" data-i18n="rateThisPlace" style="margin-top:14px">قيّم هذا المكان</button>
+      </div>
+
+      <!-- ===== تبويب: الموقع ===== -->
+      <div class="dtab-panel" data-dtab-panel="location" role="tabpanel" hidden>
+        <div class="detail-loc-text" id="dLocationText"></div>
+        <div class="detail-actions">
+          <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
+          </a>
+          <a class="action-link action-call" id="callBtn">
+            <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
+          </a>
         </div>
-      </section>
-      <section class="detail-section" data-i18n-aria="ariaChooseDate" aria-label="اختيار الموعد">
-        <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title" data-i18n="chooseDay">اختر اليوم</h2></div>
-        <div class="days-row" id="detailDays" style="margin-bottom:18px"></div>
-        <div class="dsec-head"><span class="dsec-num">3</span><h2 class="dsec-title" data-i18n="chooseTime">اختر الوقت</h2></div>
-        <div class="times-grid" id="detailTimes"></div>
-      </section>
-      <details class="disclosure">
-        <summary>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg>
-          <span data-i18n="placeStatsTitle">إحصائيات الملعب</span>
-        </summary>
-        <div id="placeStats" style="margin-top:12px"></div>
-      </details>
-      <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
-      <button class="cbtn" data-action="openReview" data-i18n="rateThisPlace">قيّم هذا المكان</button>
+      </div>
     </div>
   </section>
 
@@ -2599,6 +2680,11 @@ html,body{height:auto;min-height:100%}
       </div>
 
     </div>
+    <!-- زر عائم لإضافة ملعب (يظهر فقط في تبويب الملاعب) -->
+    <button class="owner-fab" id="ownerAddFab" data-action="addField" data-i18n-aria="addFieldBtn" aria-label="إضافة ملعب" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+      <span data-i18n="addFieldBtn">إضافة ملعب</span>
+    </button>
   </section>
 
   <!-- ============ BOOKING REVIEW MODAL (مراجعة فقط — لا اختيار يوم/وقت هنا) ============ -->
@@ -2944,6 +3030,10 @@ const I18N = {
     econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد ضائع', hintEmptyPrice:'الأوقات الفارغة × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كلما قلّت كان أفضل', bestTime:'الوقت الأكثر طلباً', hintForPricing:'مفيد للتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل العودة', hintSameNumber:'الرقم نفسه أكثر من مرة',
     pendingReply:'بانتظار ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'لا حجوزات اليوم', noBookingsTodaySub:'لا حجوزات أو طلبات اليوم — استمتع بيومك، أو أضف حجزاً خارجياً عند الحاجة.', noBookingsDay:'لا حجوزات في هذا اليوم',
     actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
+    actApprove:'قبول الطلب', actDecline:'رفض',
+    fieldActive:'مُفعّل', fieldInactive:'موقوف', fieldEnabled:'تم تفعيل الملعب للاعبين', fieldDisabled:'تم إيقاف الملعب — لن يظهر للاعبين',
+    dtabBook:'احجز', dtabAmenities:'المرافق', dtabReviews:'التقييمات', dtabLocation:'الموقع', ariaDetailTabs:'أقسام الملعب',
+    noReviewsYet:'لا تقييمات بعد — كن أول من يقيّم', ratingsCount:'{n} تقييم',
     confirmBookingTitle:'تأكيد الحجز', confirmBookingMsg:'هل تريد تأكيد هذا الحجز؟ سيصل اللاعب إشعار عبر واتساب.', reasonRequired:'السبب إلزامي — اكتب سبباً واضحاً للاعب',
     cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب الذي سيظهر للاعب، وسيُجهَّز في رسالة واتساب (إلزامي).', confirmWord:'تأكيد',
     last7:'آخر 7 أيام', unknownPlace:'مكان غير معروف', loadingWord:'لحظة من فضلك…', loadingFields:'نجلب تفاصيل الملاعب…',
@@ -3101,6 +3191,10 @@ const I18N = {
     econTitle:'Economic stats', smartDecisions:'Smart decisions', occupancy:'Occupancy', hintBookedAvail:'Booked ÷ available', lostRevenue:'Lost revenue', hintEmptyPrice:'Empty slots × price', cancelRateLbl:'Cancel / reject', hintLessBetter:'The lower the better', bestTime:'Peak time', hintForPricing:'Useful for pricing', siteShare:'Site bookings', hintDirectVsExt:'Direct vs external', returnRate:'Return rate', hintSameNumber:'Same number more than once',
     pendingReply:'Awaiting your reply', restToday:'Rest of today’s bookings', noBookingsToday:'No bookings today', noBookingsTodaySub:'No bookings or requests for today. Enjoy your day or add an external booking.', noBookingsDay:'No bookings on this day',
     actConfirm:'Confirm', actReject:'Reject', actCancel:'Cancel', actWhatsapp:'WhatsApp', edit:'Edit',
+    actApprove:'Approve', actDecline:'Decline',
+    fieldActive:'Active', fieldInactive:'Off', fieldEnabled:'Field is now visible to players', fieldDisabled:'Field turned off — hidden from players',
+    dtabBook:'Book', dtabAmenities:'Facilities', dtabReviews:'Reviews', dtabLocation:'Location', ariaDetailTabs:'Venue sections',
+    noReviewsYet:'No reviews yet — be the first to rate', ratingsCount:'{n} reviews',
     confirmBookingTitle:'Confirm booking', confirmBookingMsg:'Confirm this booking? The player will get a WhatsApp notification.', reasonRequired:'A reason is required — write a clear reason for the player',
     cancelReasonTitle:'Cancellation reason', rejectReasonTitle:'Rejection reason', reasonHint:'Write the reason shown to the player (prepared as a WhatsApp message, required).', confirmWord:'Confirm',
     last7:'Last 7 days', unknownPlace:'Unknown place', loadingWord:'Loading...', loadingFields:'Loading field details...',
@@ -4071,9 +4165,45 @@ async function openDetail(placeId){
 
   const map=$('#mapLink'); map.href = place.map_link || '#';
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
+  const locTxt=$('#dLocationText'); if(locTxt){ clear(locTxt); locTxt.append(ico('pin','svg-sm'), ' '+placeLocation(place)); }
 
-  renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
+  setDetailTab('book');                                   // ابدأ دائماً على تبويب الحجز
+  renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderRatingDist(place); renderDetailSticky();
   showPage('detail');
+}
+/* تبديل تبويبات صفحة التفاصيل (احجز/المرافق/التقييمات/الموقع) */
+function setDetailTab(name){
+  State.detailTab=name;
+  $$('#detailTabs .dtab-btn').forEach(b=>{ const on=b.dataset.dtab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
+  $$('#page-detail .dtab-panel').forEach(p=>{ const on=p.dataset.dtabPanel===name; p.hidden=!on; p.classList.toggle('active', on); });
+}
+/* توزيع تقييمات حقيقي بأشرطة (من place.reviews_dist إن نُشر الباكند)؛ وإلا ملخّص المتوسط؛ و«لا تقييمات» عند 0 */
+function renderRatingDist(place){
+  const el=$('#ratingDist'); if(!el) return; clear(el);
+  const avg=safeRating(place.rating), count=safeReviews(place.reviews);
+  const dist=place.reviews_dist;   // مصفوفة/كائن عدد لكل نجمة 1..5 (اختياري — من الباكند)
+  if(!count){ el.append(h('div',{class:'rd-empty'}, h('span',{class:'rd-empty-star'},'★'), ' '+t('noReviewsYet'))); return; }
+  // رأس: المتوسط الكبير + النجوم (تعكس المتوسط) + العدد
+  const filled=Math.max(0,Math.min(5,Math.round(avg)));
+  el.append(h('div',{class:'rd-head'},
+    h('div',{class:'rd-avg'}, String(avg).replace('.0','')),
+    h('div',{class:'rd-avg-side'},
+      h('div',{class:'rd-stars'}, '★'.repeat(filled)+'☆'.repeat(5-filled)),
+      h('div',{class:'rd-count'}, t('ratingsCount',{n:count})))));
+  // أشرطة لكل نجمة إن توفّر التوزيع
+  const get=(s)=> dist ? Number((Array.isArray(dist)?dist[s-1]:dist[s]) || 0) : null;
+  const total=dist ? [1,2,3,4,5].reduce((a,s)=>a+get(s),0) : 0;
+  if(dist && total>0){
+    const bars=h('div',{class:'rd-bars'});
+    for(let s=5;s>=1;s--){
+      const c=get(s), pct=Math.round(c/total*100);
+      bars.append(h('div',{class:'rd-row'},
+        h('span',{class:'rd-star-lbl'}, s+'★'),
+        h('span',{class:'rd-track'}, h('span',{class:'rd-fill', style:{width:pct+'%'}})),
+        h('span',{class:'rd-num'}, String(c))));
+    }
+    el.append(bars);
+  }
 }
 /* غلاف التفاصيل: صور الملعب المحدَّد أولاً (فصل بصري لكل ملعب)؛
    إن لم تكن له صور ⇒ كل صور المكان؛ وإلا ⇒ الأيقونة الاحتياطية */
@@ -4336,14 +4466,11 @@ function downloadBookingIcs({ place, field, date, hour }){
 /* شاشة نجاح الحجز: علامة متحركة + ملخّص + حالة + رقم الحجز + إجراءات */
 function showBookingSuccess(info, bookingId){
   const { place, field, date, hour } = info;
-  resetSuccessCard();
-  $('#success')?.classList.add('success-full');            // شاشة كاملة (نمط App) — بترتيب جديد
+  resetSuccessCard();                                       // بطاقة مركزية صغيرة (لا شاشة كاملة)
   // reflow يفصل إزالة is-check (في resetSuccessCard) عن إعادتها ⇒ أنيميشن النجاح يعيد التشغيل لكل حجز
   const icon=$('#successIcon'); if(icon){ void icon.offsetWidth; icon.classList.add('is-check'); icon.innerHTML=ICON.check; }
-  // ترتيب App: سطر «تم الحجز» ← اسم المكان ← (الملعب · الموقع)
-  const eb=$('#successEyebrow'); if(eb){ eb.hidden=false; eb.textContent=t('bookingSuccessTitle'); }
-  setText('successTitle', place.place_name);
-  setText('successText', `${field.field_name} · ${placeLocation(place)}`);
+  setText('successTitle', t('bookingSuccessTitle'));
+  setText('successText', `${place.place_name} · ${field.field_name}`);
   const slot=fieldSlots(field).find(s=>s.hour===hour);
   // بطاقة الإيصال: حالة «بانتظار التأكيد» ← شبكة (يوم/وقت/مدة/سعر) ← رقم الحجز monospace
   const sum=$('#successSummary'); sum.hidden=false; clear(sum);
@@ -4501,6 +4628,7 @@ function showOwnerTab(name){
   State.ownerTab=name;
   $$('#ownerTabs .otab').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
   $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
+  const fab=$('#ownerAddFab'); if(fab) fab.hidden = (name!=='fields');   // FAB إضافة ملعب — تبويب الملاعب فقط
   if(name==='calendar') renderOwnerCalendar();
   if(name==='today') renderOwnerToday();
   if(name==='reports' && State.ownerData){ loadAiInsights(); loadAiReviews(); }   // 🤖 جلب كسول أول مرة فقط
@@ -4713,11 +4841,19 @@ function ownerBookingCard(b){
       h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct')))
   );
   if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
-  const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
-  actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'));
-  const wa=h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
-  actions.append(wa); card.append(actions);
+  const waBtn=()=>h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener',class:'owner-wa-link'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
+  if (normStatus(b)==='pending'){
+    // طلب معلّق: قبول/رفض بارزان بعرض كامل (مرجع لوحة المالك) + واتساب ثانوي
+    card.append(h('div',{class:'owner-decide'},
+      mk('owner-approve','✓ '+t('actApprove'),'confirmed'),
+      mk('owner-decline','✕ '+t('actDecline'),'rejected')));
+    card.append(h('div',{class:'owner-actions-sec'}, waBtn()));
+  } else {
+    const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
+    actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'), waBtn());
+    card.append(actions);
+  }
   return card;
 }
 function renderOwnerBookings(){
@@ -4764,17 +4900,37 @@ function renderOwnerFields(){
   const el=$('#ownerFields'); const fields=State.ownerData.fields||[]; clear(el);
   if(!fields.length){ el.append(emptyState({icon:'🥅',title:t('noFieldsTitle'),sub:t('noFieldsSub'),actionLabel:t('addFieldBtn'),action:openAddField})); return; }
   fields.forEach(f=>{
+    const isOn = f.active!==false;
     const edit=h('button',{class:'owner-action owner-edit'}, t('edit')); edit.addEventListener('click',()=>openEditField(f.field_id));
-    el.append(h('div',{class:'card', style:{marginBottom:'10px'}},
+    // مبدّل تشغيل/إيقاف الملعب (مرجع لوحة المالك) — يستدعي ownerUpdateField الموجود
+    const sw=h('button',{class:'field-switch'+(isOn?' on':''), type:'button', role:'switch', 'aria-checked':isOn?'true':'false', 'aria-label':t(isOn?'fieldActive':'fieldInactive')}, h('span',{class:'field-switch-knob'}));
+    sw.addEventListener('click',()=>toggleFieldActive(f, sw));
+    el.append(h('div',{class:'card field-card'+(isOn?'':' field-off'), style:{marginBottom:'10px'}},
       h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'10px'}},
-        h('div',{},
-          h('div',{style:{fontSize:'14px',fontWeight:'900',color:'var(--ink)'}}, f.field_name),
+        h('div',{style:{minWidth:'0'}},
+          h('div',{style:{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap'}},
+            h('div',{style:{fontSize:'14px',fontWeight:'900',color:'var(--ink)'}}, f.field_name),
+            !isOn && h('span',{class:'field-off-badge'}, t('fieldInactive'))),
           h('div',{style:{display:'flex',gap:'10px',marginTop:'5px'}},
             h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+f.size),
             h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(f.price))),
           h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, t('slotsLbl')+': '+t({full:'kwFull',morning:'kwMorning',evening:'kwEvening'}[slotsToKeyword(f.slots)]||'kwFull'))),
-        edit)));
+        h('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'8px',flexShrink:'0'}}, sw, edit))));
   });
+}
+/* تبديل تشغيل/إيقاف ملعب مباشرة (بلا فتح نافذة) عبر ownerUpdateField القائم */
+function toggleFieldActive(f, sw){
+  const next=!(f.active!==false);
+  sw.disabled=true;
+  API.post({ action:'ownerUpdateField', owner_token:Session.owner(), field_id:f.field_id, price:f.price, slots:slotsToKeyword(f.slots), active:next })
+    .then(res=>{
+      if(res && res.success){
+        f.active=next; try{ localStorage.removeItem(CONFIG.CACHE_KEY); }catch(_){}
+        toast(t(next?'fieldEnabled':'fieldDisabled'),'success');
+        renderOwnerFields(); loadData({force:true});
+      } else { toast(apiMsg(res&&res.message)||t('fieldFail'),'error'); sw.disabled=false; }
+    })
+    .catch(err=>{ if(!isAbort(err)) toast(t('fieldErr'),'error'); sw.disabled=false; });
 }
 
 /* ===================== OWNER · AI (مستشار الأعمال · التقييمات · الطقس) =====================
@@ -5350,6 +5506,7 @@ const Actions = {
   togglePass:(btn)=>{ const wrap=btn.closest('.input-wrap'); const inp=wrap&&wrap.querySelector('input'); if(!inp) return; const show=inp.type==='password'; inp.type=show?'text':'password'; btn.classList.toggle('is-on',show); btn.setAttribute('aria-label', t(show?'hidePass':'showPass')); inp.focus(); },
   clearSearch:()=>{ const s=$('#searchInput'); if(s){ s.value=''; updateSearchClear(); renderPlaces(); s.focus(); } },
   setView:(btn)=>setViewMode(btn.dataset.view||'grid'),
+  setDetailTab:(btn)=>setDetailTab(btn.dataset.dtab||'book'),
   navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
 };
 /* إظهار/إخفاء زر مسح البحث حسب وجود نص */
