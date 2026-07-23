@@ -143,7 +143,7 @@ body.dark{
 /* الاتجاه يأتي من السمة dir على <html> (يضبطها setLanguage: ar⇒rtl · en⇒ltr).
    لا تُثبّت direction هنا — تثبيتها كانت تُبقي التخطيط RTL حتى في الإنجليزية. */
 html,body{height:100%;color:var(--ink);font-family:'Tajawal','Cairo',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.6;overflow-x:hidden;transition:background-color .45s var(--ease-out),color .45s var(--ease-out)}
+body{display:flex;justify-content:center;background:var(--bg-app) fixed;background-color:var(--bg-primary);font-size:14px;line-height:1.65;overflow-x:hidden;transition:background-color .45s var(--ease-out),color .45s var(--ease-out)}
 #app{width:100%;max-width:var(--max);min-height:100vh;background:transparent;position:relative;overflow-x:hidden;isolation:isolate}
 [hidden]{display:none!important}
 
@@ -212,14 +212,14 @@ a{color:inherit;text-decoration:none}
 .page{display:none;padding-bottom:calc(var(--bnav-h) + env(safe-area-inset-bottom) + 24px);min-height:100vh;position:relative;z-index:1}
 .page.active{display:block;animation:pageIn var(--t-slow) var(--ease-out) both}
 @keyframes pageIn{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-.pad{padding:var(--s-6) var(--s-5)}              /* مساحة تنفّس قياسية */
+.pad{padding:28px var(--s-5)}              /* مساحة تنفّس قياسية (رأسي أوسع) */
 .stack{display:flex;flex-direction:column;gap:var(--s-4)}
 
 /* ---------- TYPOGRAPHY UTILITIES (التسلسل الهرمي) ---------- */
 .t-title{font-family:'Montserrat','Changa','Cairo',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--ink)}
 .t-sub{font-size:13px;color:var(--muted);font-weight:500}
 .muted{color:var(--muted)}
-.sec-title{font-size:16px;font-weight:800;color:var(--ink);padding:var(--s-4) var(--s-5) var(--s-4);display:flex;justify-content:space-between;align-items:center;letter-spacing:-.015em}
+.sec-title{font-size:16px;font-weight:800;color:var(--ink);padding:var(--s-5) var(--s-5) var(--s-4);display:flex;justify-content:space-between;align-items:center;letter-spacing:-.015em}
 .sec-title-main{display:inline-flex;align-items:baseline;gap:8px;min-width:0}
 .sec-count{font-size:12.5px;font-weight:800;color:var(--emerald);background:var(--soft-green);border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums;letter-spacing:0}
 body.dark .sec-count{background:rgba(15,75,83,.16)}
@@ -288,8 +288,8 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ---------- CARD ---------- */
-.card{background:var(--surface);border-radius:var(--r-xl);padding:var(--s-5);box-shadow:var(--shadow-card);color:var(--ink);border:1px solid var(--line);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
-.card + .card{margin-top:var(--s-4)}
+.card{background:var(--surface);border-radius:var(--r-xl);padding:22px var(--s-5);box-shadow:var(--shadow-card);color:var(--ink);border:1px solid var(--line);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
+.card + .card{margin-top:var(--s-5)}
 
 /* ---------- BADGES ---------- */
 .badge{border-radius:999px;padding:6px 13px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -931,7 +931,7 @@ body.dark .avail-soon{background:rgba(245,158,11,.22);color:#fcd34d;border-color
 .thumb.active{border-color:var(--emerald-2);box-shadow:0 0 0 2px rgba(15,75,83,.2)}
 .thumb:active{transform:scale(.95)}
 
-.detail-section{background:var(--surface);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line);border-radius:var(--r-xl);padding:var(--s-5);margin-bottom:var(--s-4);box-shadow:var(--shadow-card)}
+.detail-section{background:var(--surface);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line);border-radius:var(--r-xl);padding:22px var(--s-5);margin-bottom:var(--s-5);box-shadow:var(--shadow-card)}
 .dsec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .dsec-head:not(:first-child){margin-top:20px}
 .dsec-num{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:900;color:#0B2227;background:var(--g-btn);box-shadow:none}
@@ -1028,7 +1028,8 @@ html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{font-family:'Montserrat
 html[lang="ar"] :is(.sbtn,.btn,.search-btn,.lp-cta-sm,.lp-btn-primary,.place-book-btn,.dsticky-btn,.form-label,.lp-eyebrow,.time-period,.cal-dot,.filter-count,.profile-avatar,.bk-step-lbl,.brand-name,.lp-brand-name,.header-title,.title-row,.lp-title,.lp-h2,.detail-name,.place-name,.t-title,.sec-title,.modal-title,.scard-title){letter-spacing:normal}
 
 /* ---------- UTILITY CLASSES (تقليل الأنماط المضمّنة · المحور 13) ---------- */
-.mb-sm{margin-bottom:11px}.mb{margin-bottom:13px}.mb-md{margin-bottom:14px}.mb-lg{margin-bottom:18px}.mb-xl{margin-bottom:20px}.mb-card{margin-bottom:15px}.mb-0{margin-bottom:0}
+/* إيقاع رأسي موحّد على شبكة الـ4 (تنفّس أوسع وأكثر انتظامًا) */
+.mb-sm{margin-bottom:12px}.mb{margin-bottom:16px}.mb-md{margin-bottom:16px}.mb-lg{margin-bottom:20px}.mb-xl{margin-bottom:24px}.mb-card{margin-bottom:16px}.mb-0{margin-bottom:0}
 .mt-1{margin-top:var(--s-2)}.mt-2{margin-top:12px}.mt-3{margin-top:var(--s-4)}
 .text-center{text-align:center}.text-start{text-align:start}.text-end{text-align:end}
 .text-danger{color:#dc2626}.text-success{color:var(--emerald)}.text-muted{color:var(--muted)}
@@ -1135,7 +1136,7 @@ body.dark .sk{background:linear-gradient(90deg,rgba(255,255,255,.045) 0%,rgba(25
 .empty .sbtn,.empty .cbtn{max-width:260px}
 
 /* ---------- OWNER DASHBOARD ---------- */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:15px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
 .stat-card{background:var(--surface);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-radius:var(--r-xl);padding:16px;min-height:90px;box-shadow:var(--shadow-card);border:1px solid var(--line);position:relative;overflow:hidden;opacity:0;animation:fadeUp var(--t-base) var(--ease-out) forwards}
 .stat-card::after{content:'';position:absolute;top:-30px;inset-inline-end:-20px;width:84px;height:84px;border-radius:50%;opacity:.13;filter:blur(6px)}
 .stat-card.c-green{border-inline-start:3px solid var(--primary)}.stat-card.c-green::after{background:var(--primary)}
@@ -4559,7 +4560,7 @@ function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
   const status = normStatus(b);
   const canCancel = !isFinished(b) && status!=='cancelled' && status!=='rejected' && rt!=='in_progress';
-  const card = h('div',{class:'card booking-strip '+status, style:{marginBottom:'11px'}},
+  const card = h('div',{class:'card booking-strip '+status, style:{marginBottom:'14px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px',marginBottom:'8px'}},
       h('div',{style:{fontSize:'14px',fontWeight:'800',color:'var(--ink)'}}, b.place_name+' - '+b.field_name),
       h('span',{class:'badge '+lbl.c}, lbl.t)),
@@ -4887,7 +4888,7 @@ function bookingAge(b){
 function ownerBookingCard(b){
   const lbl=statusLabel(runtimeStatus(b));
   const age=bookingAge(b);
-  const card=h('div',{class:'card booking-strip '+normStatus(b), style:{marginBottom:'10px'}},
+  const card=h('div',{class:'card booking-strip '+normStatus(b), style:{marginBottom:'14px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',gap:'8px',alignItems:'flex-start',marginBottom:'9px'}},
       h('div',{},
         h('div',{style:{fontSize:'14px',fontWeight:'900',color:'var(--ink)'}}, b.field_name),
@@ -4969,7 +4970,7 @@ function renderOwnerFields(){
     // مبدّل تشغيل/إيقاف الملعب (مرجع لوحة المالك) — يستدعي ownerUpdateField الموجود
     const sw=h('button',{class:'field-switch'+(isOn?' on':''), type:'button', role:'switch', 'aria-checked':isOn?'true':'false', 'aria-label':t(isOn?'fieldActive':'fieldInactive')}, h('span',{class:'field-switch-knob'}));
     sw.addEventListener('click',()=>toggleFieldActive(f, sw));
-    el.append(h('div',{class:'card field-card'+(isOn?'':' field-off'), style:{marginBottom:'10px'}},
+    el.append(h('div',{class:'card field-card'+(isOn?'':' field-off'), style:{marginBottom:'14px'}},
       h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'10px'}},
         h('div',{style:{minWidth:'0'}},
           h('div',{style:{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap'}},
