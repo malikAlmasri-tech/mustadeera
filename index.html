@@ -506,6 +506,27 @@ body.dark .lp-nav{box-shadow:none}
 .lp-review-by{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:var(--ink);margin-top:auto}
 .lp-review-av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--emerald);background:var(--primary-soft);flex-shrink:0}
 .lp-review-av svg{width:18px;height:18px}
+/* ===== شريط القيم المتحرّك (Ticker) — قيم حقيقية بلا نشاط وهمي ===== */
+.lp-ticker{margin:0 0 6px;overflow:hidden;border-block:1px solid var(--line);background:var(--surface-soft);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.lp-ticker-track{display:inline-flex;align-items:center;gap:22px;white-space:nowrap;padding:11px 0;animation:tickerScroll 34s linear infinite;will-change:transform}
+.lp-ti{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--ink-2)}
+.lp-ti-dot{width:7px;height:7px;border-radius:50%;background:var(--g-btn);flex-shrink:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--emerald) 22%,transparent)}
+.lp-ti-sep{color:var(--emerald);opacity:.45;font-size:8px}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.lp-ticker-track{animation:none}}
+/* ===== كيف يعمل: خط زمني عمودي (مرجع ux pilot) ===== */
+.lp-timeline{display:flex;flex-direction:column;gap:0;max-width:620px;margin-inline:auto;text-align:start}
+.lp-timeline .lp-step{display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:start;background:none;border:0;box-shadow:none;padding:0 0 26px;text-align:start;position:relative}
+.lp-timeline .lp-step:last-child{padding-bottom:0}
+.lp-timeline .lp-step::after{display:none!important}
+.lp-timeline .lp-step:not(:last-child)::before{content:'';position:absolute;inset-inline-start:25px;top:54px;bottom:-2px;width:2px;background:var(--line-2);z-index:0}
+.lp-timeline .lp-step-num{margin:0;z-index:1}
+.lp-timeline .lp-step-body{padding-top:5px;min-width:0}
+.lp-timeline .lp-step-title{margin-bottom:5px}
+/* ===== الآراء: تمرير أفقي بمحاذاة snap (مرجع ux pilot) ===== */
+.lp-reviews{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+.lp-reviews::-webkit-scrollbar{display:none}
+.lp-reviews .lp-review{scroll-snap-align:start;flex:0 0 clamp(250px,80%,318px);min-width:0}
 
 /* ---------- LANDING: FOR OWNERS ---------- */
 .lp-owners-card{position:relative;overflow:hidden;border-radius:var(--r-3xl);padding:44px var(--s-7);color:#fff;border:1px solid rgba(140,198,62,.2);
@@ -1042,6 +1063,37 @@ html[lang="ar"] :is(.sbtn,.btn,.search-btn,.lp-cta-sm,.lp-btn-primary,.place-boo
 .ss-val{color:var(--ink);font-weight:800;text-align:end}
 .scard-actions{display:flex;flex-direction:column}
 .scard-actions .cbtn{margin-top:10px}
+/* ===== شاشة تأكيد كاملة (نمط مرجع App — بترتيب جديد وبألوان Teal+Lime) ===== */
+.success-overlay.success-full{padding:0;background:var(--cream);backdrop-filter:none;-webkit-backdrop-filter:none}
+.success-overlay.success-full .scard{width:100%;max-width:none;height:100%;border:0;border-radius:0;box-shadow:none;background:transparent;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;justify-content:safe center;padding:44px 22px calc(28px + env(safe-area-inset-bottom))}
+.success-overlay.success-full .scard::before{content:none}
+.success-overlay.success-full .scard>*{width:100%;max-width:430px;margin-inline:auto}
+.success-overlay.success-full .scard-title{font-size:26px;margin-bottom:6px}
+.success-overlay.success-full .scard-text{margin-bottom:22px}
+.ss-eyebrow{font-size:11.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--emerald);margin-bottom:10px}
+html[lang="ar"] .ss-eyebrow{letter-spacing:.02em}
+.ss-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.ss-cell{background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:11px 13px;text-align:start;min-width:0}
+.ss-cell-lbl{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.ss-cell-val{font-size:14px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.ss-ref{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:13px;margin-top:2px}
+.ss-ref-lbl{font-size:11.5px;font-weight:700;color:var(--muted)}
+.ss-ref-val{font-family:'SF Mono','Cascadia Mono',Consolas,ui-monospace,monospace;font-size:15px;font-weight:800;color:var(--emerald);letter-spacing:.02em}
+/* ===== رسوم لوحة المالك (SVG فانيلا) ===== */
+.chart-cap{font-size:11.5px;font-weight:800;color:var(--muted);margin:8px 0 8px}
+.chart-area{width:100%;overflow:hidden}
+.chart-svg svg,.chart-donut-svg svg{display:block;max-width:100%;height:auto}
+.chart-svg .bar-r{fill:var(--g-btn)}
+.chart-svg .bar-v{fill:var(--ink-2);font-size:10px;font-weight:800;font-family:inherit}
+.chart-svg .bar-x{fill:var(--muted);font-size:10px;font-weight:700;font-family:inherit}
+.chart-2col{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-top:16px}
+.chart-donut-wrap{display:flex;justify-content:center;flex-shrink:0}
+.donut-bg{fill:none;stroke:var(--line);stroke-width:10}
+.donut-fg{fill:none;stroke:var(--g-btn);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s var(--ease-out)}
+.donut-num{fill:var(--ink);font-size:22px;font-weight:900;font-family:inherit}
+.donut-lbl{fill:var(--muted);font-size:10px;font-weight:700;font-family:inherit}
+.chart-empty{font-size:12px;color:var(--soft);text-align:center;padding:20px 0}
+@media(prefers-reduced-motion:reduce){.donut-fg{transition:none}}
 
 .toast{position:fixed;left:50%;bottom:108px;transform:translate3d(-50%,16px,0);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:14px 17px;font-size:13px;font-weight:700;z-index:500;max-width:min(92%,420px);box-shadow:var(--shadow-md);opacity:0;pointer-events:none;backdrop-filter:blur(8px);transition:opacity var(--t-base),transform var(--t-base) var(--ease-out);text-align:start;line-height:1.5;display:flex;align-items:center;gap:11px;color:var(--ink)}
 .toast.show{opacity:1;transform:translate3d(-50%,0,0)}
@@ -1758,6 +1810,8 @@ html[lang="en"] .place-sub{font-size:12px}
 /* وضع القائمة: بطاقة أفقية مدمجة — نفس markup البطاقة، التخطيط CSS فقط */
 .places-list[data-view="list"]{display:flex;flex-direction:column;gap:14px}
 .places-list[data-view="list"] .place-card{display:grid;grid-template-columns:118px 1fr;grid-template-rows:1fr auto;contain-intrinsic-size:auto 172px}
+/* شريط أكسنت جانبي (مرجع App #6) — اللمسة المميّزة المضافة على بطاقة القائمة الموجودة */
+.places-list[data-view="list"] .place-card::before{content:'';position:absolute;inset-block:0;inset-inline-start:0;width:4px;background:var(--g-btn);z-index:4;border-start-start-radius:inherit;border-end-start-radius:inherit}
 .places-list[data-view="list"] .place-cover{grid-row:1/3;height:100%;min-height:150px}
 .places-list[data-view="list"] .place-top-badges{top:8px;right:8px;left:8px}
 .places-list[data-view="list"] .fav-btn{width:30px;height:30px}
@@ -1967,6 +2021,59 @@ html,body{height:auto;min-height:100%}
       </div>
     </div>
 
+    <!-- ---------- LIVE TICKER (شريط قيم — بلا نشاط وهمي، احترامًا لقاعدة الصدق م5) ---------- -->
+    <div class="lp-ticker" aria-hidden="true">
+      <div class="lp-ticker-track">
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerNoCall">احجز بدون مكالمات</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerClear">أوقات وأسعار واضحة</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerFollow">تابع حجزك خطوة بخطوة</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerNoAccount">تصفّح بدون حساب</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerNoCall">احجز بدون مكالمات</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerClear">أوقات وأسعار واضحة</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerFollow">تابع حجزك خطوة بخطوة</span></span>
+        <span class="lp-ti-sep">◆</span>
+        <span class="lp-ti"><i class="lp-ti-dot"></i><span data-i18n="tickerNoAccount">تصفّح بدون حساب</span></span>
+        <span class="lp-ti-sep">◆</span>
+      </div>
+    </div>
+
+    <!-- ---------- HOW IT WORKS (خط زمني) ---------- -->
+    <section class="lp-section lp-how" id="lp-how">
+      <div class="lp-sec-head">
+        <span class="lp-eyebrow" data-i18n="howEyebrow">كيف يعمل</span>
+        <h2 class="lp-h2"><span data-i18n="howTitlePre">3 خطوات وبتكون</span> <span data-i18n="howTitleHi">جاهز تلعب</span></h2>
+      </div>
+      <div class="lp-steps lp-timeline">
+        <div class="lp-step">
+          <div class="lp-step-num">1</div>
+          <div class="lp-step-body">
+            <div class="lp-step-title" data-i18n="step1Title">تصفّح واختر</div>
+            <div class="lp-step-text" data-i18n="step1Text">افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.</div>
+          </div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">2</div>
+          <div class="lp-step-body">
+            <div class="lp-step-title" data-i18n="step2Title">حدّد الموعد</div>
+            <div class="lp-step-text" data-i18n="step2Text">اختر اليوم والوقت المتاح اللي بناسبك من جدول الأوقات المتاحة.</div>
+          </div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">3</div>
+          <div class="lp-step-body">
+            <div class="lp-step-title" data-i18n="step3Title">أرسل وتابع</div>
+            <div class="lp-step-text" data-i18n="step3Text">أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — وجاهز تلعب!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ---------- FEATURES ---------- -->
     <section class="lp-section" id="lp-features">
       <div class="lp-sec-head">
@@ -1999,31 +2106,6 @@ html,body{height:auto;min-height:100%}
             <div class="lp-feat-title" data-i18n="feat3Title">متابعة واضحة للحجز</div>
             <div class="lp-feat-text" data-i18n="feat3Text">من حسابك تتابع حالة الحجز وتأكيد إدارة الملعب، وتتواصل معها عند توفّر وسيلة التواصل.</div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ---------- HOW IT WORKS ---------- -->
-    <section class="lp-section lp-how" id="lp-how">
-      <div class="lp-sec-head">
-        <span class="lp-eyebrow" data-i18n="howEyebrow">كيف يعمل</span>
-        <h2 class="lp-h2"><span data-i18n="howTitlePre">3 خطوات وبتكون</span> <span data-i18n="howTitleHi">جاهز تلعب</span></h2>
-      </div>
-      <div class="lp-steps">
-        <div class="lp-step">
-          <div class="lp-step-num">1</div>
-          <div class="lp-step-title" data-i18n="step1Title">تصفّح واختر</div>
-          <div class="lp-step-text" data-i18n="step1Text">افتح قائمة الملاعب واختر الأنسب لك حسب المنطقة والسعر.</div>
-        </div>
-        <div class="lp-step">
-          <div class="lp-step-num">2</div>
-          <div class="lp-step-title" data-i18n="step2Title">حدّد الموعد</div>
-          <div class="lp-step-text" data-i18n="step2Text">اختر اليوم والوقت المتاح اللي بناسبك من جدول الأوقات المتاحة.</div>
-        </div>
-        <div class="lp-step">
-          <div class="lp-step-num">3</div>
-          <div class="lp-step-title" data-i18n="step3Title">أرسل وتابع</div>
-          <div class="lp-step-text" data-i18n="step3Text">أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — وجاهز تلعب!</div>
         </div>
       </div>
     </section>
@@ -2459,6 +2541,21 @@ html,body{height:auto;min-height:100%}
           </div>
         </div>
         <div class="card mb-card">
+          <div class="section-title"><span data-i18n="chartsTitle">رسوم بيانية</span><span class="mini-badge" data-i18n="last7short">آخر 7 أيام</span></div>
+          <div class="chart-cap" data-i18n="chartRevenue">الإيراد اليومي (مؤكّد)</div>
+          <div id="ownerRevChart" class="chart-area"></div>
+          <div class="chart-2col">
+            <div class="chart-cell">
+              <div class="chart-cap" data-i18n="chartOccupancy">الإشغال</div>
+              <div id="ownerOccChart" class="chart-donut-wrap"></div>
+            </div>
+            <div class="chart-cell">
+              <div class="chart-cap" data-i18n="chartHours">حسب الساعة</div>
+              <div id="ownerHoursChart" class="chart-area"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-card">
           <div class="section-title"><span data-i18n="perfTitle">مؤشرات الأداء</span><span class="mini-badge" id="oWeek">آخر 7 أيام: 0</span></div>
           <div class="mini-row"><span data-i18n="confirmRate">نسبة التأكيد</span><strong id="oRate">0%</strong></div>
           <div class="progress" style="margin-bottom:11px"><div id="oRateBar" style="width:0%"></div></div>
@@ -2684,6 +2781,7 @@ html,body{height:auto;min-height:100%}
   <div class="success-overlay" id="success" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
     <div class="scard">
       <div class="scard-emoji" id="successIcon" aria-hidden="true">🎉</div>
+      <div class="ss-eyebrow" id="successEyebrow" hidden></div>
       <div class="scard-title" id="successTitle" data-i18n="successDone">تمام!</div>
       <div class="scard-text" id="successText"></div>
       <div class="scard-summary" id="successSummary" hidden></div>
@@ -2785,6 +2883,8 @@ const I18N = {
     feat2Title:'اعرف الملعب قبل الذهاب', feat2Text:'الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — كل المعلومات أمامك قبل أن تقرر.',
     feat3Title:'متابعة واضحة للحجز', feat3Text:'من حسابك تتابع حالة الحجز وردّ إدارة الملعب، وتتواصل معهم عند توفر وسيلة التواصل.',
     howEyebrow:'كيف يعمل', howTitlePre:'3 خطوات وتكون', howTitleHi:'جاهزاً للعب',
+    tickerNoCall:'احجز بدون مكالمات', tickerClear:'أوقات وأسعار واضحة', tickerFollow:'تابع حجزك خطوة بخطوة', tickerNoAccount:'تصفّح بدون حساب',
+    chartsTitle:'رسوم بيانية', chartRevenue:'الإيراد اليومي (مؤكّد)', chartOccupancy:'الإشغال', chartHours:'حسب الساعة', last7short:'آخر 7 أيام',
     step1Title:'تصفّح واختر', step1Text:'افتح قائمة الملاعب وقارن حسب المنطقة والسعر والتقييم — ثم اختر ملعبك.',
     step2Title:'حدّد الموعد', step2Text:'اختر اليوم والوقت المتاح الذي يناسبك من جدول الأوقات.',
     step3Title:'أرسل وتابع', step3Text:'أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — واستعدّ للمباراة!',
@@ -2940,6 +3040,8 @@ const I18N = {
     feat2Title:'Know the field before you go', feat2Text:'Location, price, amenities, surface type and player ratings — clear info before you choose.',
     feat3Title:'Clear booking follow-up', feat3Text:'From your account, track the booking status and the field’s confirmation, and contact them when a channel is available.',
     howEyebrow:'How it works', howTitlePre:'3 steps and you are', howTitleHi:'ready to play',
+    tickerNoCall:'Book without phone calls', tickerClear:'Clear times & prices', tickerFollow:'Track your booking step by step', tickerNoAccount:'Browse without an account',
+    chartsTitle:'Charts', chartRevenue:'Daily revenue (confirmed)', chartOccupancy:'Occupancy', chartHours:'By hour', last7short:'Last 7 days',
     step1Title:'Browse & choose', step1Text:'Open the fields list and compare by area, price and rating — then pick your field.',
     step2Title:'Pick the time', step2Text:'Choose the day and available time that suits you from the times table.',
     step3Title:'Send & follow up', step3Text:'Send the booking request and follow up its confirmation with the field — ready to play!',
@@ -4199,6 +4301,8 @@ function renderReview(){
 /* ===================== SUCCESS SCREEN (عام + حجز) ===================== */
 /* يعيد شاشة النجاح لوضعها البسيط (تُستخدم للحساب/التقييم) */
 function resetSuccessCard(){
+  $('#success')?.classList.remove('success-full');           // ارجع للبطاقة المركزية البسيطة
+  const eb=$('#successEyebrow'); if(eb){ eb.hidden=true; eb.textContent=''; }
   const icon=$('#successIcon'); if(icon){ icon.classList.remove('is-check'); icon.textContent='🎉'; }
   const sum=$('#successSummary'); if(sum){ sum.hidden=true; clear(sum); }
   const act=$('#successActions'); if(act){ clear(act); act.append(h('button',{class:'sbtn','data-action':'closeSuccess'}, t('successOkBtn'))); }
@@ -4233,20 +4337,24 @@ function downloadBookingIcs({ place, field, date, hour }){
 function showBookingSuccess(info, bookingId){
   const { place, field, date, hour } = info;
   resetSuccessCard();
+  $('#success')?.classList.add('success-full');            // شاشة كاملة (نمط App) — بترتيب جديد
   // reflow يفصل إزالة is-check (في resetSuccessCard) عن إعادتها ⇒ أنيميشن النجاح يعيد التشغيل لكل حجز
   const icon=$('#successIcon'); if(icon){ void icon.offsetWidth; icon.classList.add('is-check'); icon.innerHTML=ICON.check; }
-  setText('successTitle', t('bookingSuccessTitle')); setText('successText', t('nextStepNote'));
+  // ترتيب App: سطر «تم الحجز» ← اسم المكان ← (الملعب · الموقع)
+  const eb=$('#successEyebrow'); if(eb){ eb.hidden=false; eb.textContent=t('bookingSuccessTitle'); }
+  setText('successTitle', place.place_name);
+  setText('successText', `${field.field_name} · ${placeLocation(place)}`);
   const slot=fieldSlots(field).find(s=>s.hour===hour);
+  // بطاقة الإيصال: حالة «بانتظار التأكيد» ← شبكة (يوم/وقت/مدة/سعر) ← رقم الحجز monospace
   const sum=$('#successSummary'); sum.hidden=false; clear(sum);
-  const row=(lbl,val)=> h('div',{class:'ss-row'}, h('span',{class:'ss-lbl'},lbl), h('span',{class:'ss-val'},val));
+  const cell=(lbl,val,icn)=> h('div',{class:'ss-cell'}, h('div',{class:'ss-cell-lbl'}, ico(icn,'svg-sm'), ' '+lbl), h('div',{class:'ss-cell-val'}, val));
   sum.append(h('div',{class:'ss-status'}, ico('clock','svg-sm'), h('span',{}, t('statusPendingVenue'))));
-  if(bookingId) sum.append(row(t('bookingNo'), '#'+bookingId));
-  sum.append(
-    row(t('stepField'), `${place.place_name} - ${field.field_name}`),
-    row(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`),
-    row(t('rvTime'), slot?slotDisplay(slot):''),
-    row(t('rvPrice'), formatCurrency(field.price))
-  );
+  sum.append(h('div',{class:'ss-grid'},
+    cell(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`, 'cal'),
+    cell(t('rvTime'), slot?slotDisplay(slot):'', 'clock'),
+    cell(t('rvDuration'), t('twoHours'), 'clock'),
+    cell(t('rvPrice'), formatCurrency(field.price), 'money')));
+  if(bookingId) sum.append(h('div',{class:'ss-ref'}, h('span',{class:'ss-ref-lbl'}, t('bookingNo')), h('span',{class:'ss-ref-val'}, '#'+bookingId)));
   const act=$('#successActions'); clear(act);
   const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
   const goC=h('button',{class:'cbtn'}, ico('cal','svg-sm'), ' '+t('addToCalendar')); goC.addEventListener('click',()=>downloadBookingIcs(info));
@@ -4374,6 +4482,7 @@ function renderOwnerDashboard(){
   const bookings = d.bookings || [];
   safeRender('stats', ()=>renderOwnerStats(bookings));
   safeRender('econ', ()=>renderOwnerEcon(bookings));
+  safeRender('charts', ()=>renderOwnerCharts(bookings));
   safeRender('fieldFilter', ()=>{
     const sel=$('#ownerFieldFilter'); const old=sel.value||'all';
     clear(sel); sel.append(h('option',{value:'all'},t('allFields')));
@@ -4483,6 +4592,51 @@ function setSpark(anchorId, points, cls){
   const card=$('#'+anchorId)?.closest('.stat-card'); if(!card) return;
   card.querySelector('.sparkline')?.remove();
   const s=createSparkline(points, cls); if(s) card.append(s);
+}
+/* ===================== OWNER CHARTS (SVG فانيلا — بلا مكتبات) =====================
+   القيم تُطهَّر بـNumber والتسميات مُولّدة داخليًا (أيام/ساعات) ⇒ حقن SVG آمن تماماً. */
+function sanTxt(s){ return String(s).replace(/[<>&]/g,''); }
+function createBarChart(data, opts){
+  opts=opts||{};
+  const n=data.length||1, vals=data.map(d=>Number(d.value)||0), max=Math.max(1,...vals);
+  const W=Math.max(n*38,220), H=126, padB=22, padT=opts.showVal?18:8, slot=W/n, bw=Math.min(30, slot-12);
+  let s='';
+  data.forEach((d,i)=>{
+    const cx=(i+0.5)*slot, v=Number(d.value)||0, bh=v/max*(H-padB-padT), y=H-padB-bh;
+    s+='<rect class="bar-r" x="'+(cx-bw/2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(bh,2).toFixed(1)+'" rx="4"/>';
+    if(opts.showVal && v>0) s+='<text class="bar-v" x="'+cx.toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle">'+Math.round(v)+'</text>';
+    s+='<text class="bar-x" x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+sanTxt(d.label)+'</text>';
+  });
+  return h('div',{class:'chart-svg', html:'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-hidden="true">'+s+'</svg>'});
+}
+function createDonut(pct, label){
+  pct=Math.max(0,Math.min(100,Math.round(Number(pct)||0)));
+  const r=42, c=2*Math.PI*r, off=c*(1-pct/100);
+  return h('div',{class:'chart-donut-svg', html:
+    '<svg viewBox="0 0 110 110" width="104" height="104" role="img" aria-hidden="true">'+
+    '<circle class="donut-bg" cx="55" cy="55" r="'+r+'"/>'+
+    '<circle class="donut-fg" cx="55" cy="55" r="'+r+'" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 55 55)"/>'+
+    '<text class="donut-num" x="55" y="53" text-anchor="middle">'+pct+'%</text>'+
+    (label?'<text class="donut-lbl" x="55" y="69" text-anchor="middle">'+sanTxt(label)+'</text>':'')+
+    '</svg>'});
+}
+function renderOwnerCharts(bookings){
+  const fields=State.ownerData?.fields||[];
+  const wd=new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar',{weekday:'short'});
+  const days=[...Array(7)].map((_,i)=>dateAfter(i-6));
+  // 1) الإيراد اليومي (المؤكّد فقط)
+  const revData=days.map(ds=>({ label: wd.format(new Date(ds+'T12:00:00')),
+    value: bookings.filter(b=>String(b.date||'').split('T')[0]===ds && normStatus(b)==='confirmed').reduce((s,b)=>s+(Number(b.price)||0),0) }));
+  const rc=$('#ownerRevChart'); if(rc){ clear(rc); rc.append( revData.some(d=>d.value>0) ? createBarChart(revData,{showVal:false}) : h('div',{class:'chart-empty'}, t('noData')) ); }
+  // 2) إشغال الأسبوع (نفس منطق renderOwnerEcon)
+  const dset=new Set(days);
+  const confW=bookings.filter(b=>dset.has(String(b.date||'').split('T')[0]) && normStatus(b)==='confirmed');
+  const totalSlots=fields.reduce((s,f)=>s+fieldSlots(f).length,0)*7;
+  const oc=$('#ownerOccChart'); if(oc){ clear(oc); oc.append(createDonut(calcPercent(confW.length,totalSlots), t('occupancy'))); }
+  // 3) التوزيع حسب الساعة (المؤكّد)
+  const byHour={}; bookings.filter(b=>normStatus(b)==='confirmed').forEach(b=>{ const hr=Number(b.hour); if(!Number.isNaN(hr)) byHour[hr]=(byHour[hr]||0)+1; });
+  const hrs=Object.keys(byHour).map(Number).sort((a,b)=>a-b);
+  const hc=$('#ownerHoursChart'); if(hc){ clear(hc); hc.append( hrs.length ? createBarChart(hrs.map(hr=>({label:hr+':00', value:byHour[hr]})),{showVal:true}) : h('div',{class:'chart-empty'}, t('noData')) ); }
 }
 function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>normStatus(b)==='confirmed');
