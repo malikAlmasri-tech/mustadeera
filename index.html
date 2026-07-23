@@ -874,13 +874,13 @@ body.modal-open{overflow:hidden}
 /* ===================== BROWSE STICKY — حاوية تصفّح لاصقة (نمط Airbnb) =====================
    تضمّ الرياضات + الفلاتر + المناطق وتبقى ملتصقة أعلى الشاشة أثناء تمرير البطاقات.
    زجاجية (blur) لتفرِس ما خلفها + حدّ سفلي خفيف يفصلها عن القائمة. */
-.browse-sticky{position:sticky;top:0;z-index:40;background:var(--glass);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line)}
+.browse-sticky{position:sticky;top:0;z-index:40;display:flex;align-items:center;background:var(--glass);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .browse-sticky{background:var(--surface)} }
 
 /* ===================== BROWSE RAIL — مسار تصفّح موحّد =====================
    صفّ انزلاق أفقي واحد: [الفلاتر مثبّت] + الرياضات + فاصل + المناطق. يستبدل صفّين منفصلين
    (رياضات ~60px + فلاتر/مناطق ~54px) بصفّ واحد ~52px ⇒ توفير رأسي كبير على الهاتف. */
-.browse-rail{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:9px var(--s-5);scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+.browse-rail{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:9px var(--s-5);scroll-snap-type:x proximity;overscroll-behavior-x:contain}
 .browse-rail::-webkit-scrollbar{display:none}
 /* الرياضات والمناطق تتدفّق داخل مسار الانزلاق الواحد بلا تمرير مستقل ولا حشوة */
 .browse-rail>nav{display:flex;align-items:center;gap:8px;padding:0;margin:0;overflow:visible;flex-shrink:0}
@@ -2015,6 +2015,26 @@ html,body{height:auto;min-height:100%}
 .stat-card.c-green .stat-ic{background:var(--primary-soft);color:var(--primary)}
 .stat-card.c-amber .stat-ic{background:var(--warning-soft);color:var(--warning-ink)}
 .stat-card.c-blue .stat-ic{background:var(--info-soft);color:var(--info-ink)}
+
+/* ---------- SPORT DROPDOWN (شريط التصفّح — الطرف المقابل للفلاتر) ---------- */
+.sport-dd{position:relative;flex-shrink:0;padding-inline:8px var(--s-5);align-self:stretch;display:flex;align-items:center}
+.sport-dd-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:8px 12px;min-height:42px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);cursor:pointer;white-space:nowrap;transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}
+.sport-dd-btn:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}
+.sport-dd-btn:active{transform:scale(.97)}
+.sport-dd-ic{display:inline-flex;width:17px;height:17px;flex-shrink:0}
+.sport-dd-ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sport-dd-name{white-space:nowrap}
+.sport-dd-chev{flex-shrink:0;transition:transform var(--t-fast)}
+.sport-dd.open .sport-dd-chev{transform:rotate(180deg)}
+.sport-dd.open .sport-dd-btn{border-color:var(--emerald-2);color:var(--emerald)}
+.sport-dd-menu{position:absolute;top:calc(100% + 6px);inset-inline-end:var(--s-5);min-width:186px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:6px;z-index:50;display:flex;flex-direction:column;gap:2px;animation:dtabIn .16s var(--ease-out)}
+.sport-dd-menu[hidden]{display:none}
+.sport-dd-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:700;color:var(--ink-2);cursor:pointer;text-align:start;transition:background var(--t-fast),color var(--t-fast)}
+.sport-dd-item:hover{background:var(--surface-soft)}
+.sport-dd-item.active{background:var(--primary-soft);color:var(--emerald)}
+.sport-dd-item .sport-dd-ic{color:currentColor}
+.sport-dd-lbl{white-space:nowrap}
+.sport-dd-soon{margin-inline-start:auto;font-size:9.5px;font-weight:800;color:var(--warning-ink);background:var(--warning-soft);border-radius:999px;padding:2px 7px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -2381,6 +2401,15 @@ html,body{height:auto;min-height:100%}
           <span data-i18n="filters">الفلاتر</span> <span class="filter-count" id="filterCount" hidden>0</span>
         </button>
         <nav class="region-tabs" id="regionTabs"></nav>
+      </div>
+      <!-- قائمة منسدلة للرياضات على الطرف المقابل للفلاتر (وصول سريع لتبديل الرياضة) -->
+      <div class="sport-dd" id="sportDD">
+        <button class="sport-dd-btn" id="sportDDBtn" type="button" data-action="toggleSportDD" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="sportsAria" aria-label="اختر الرياضة">
+          <span class="sport-dd-ic" id="sportDDIc" aria-hidden="true"></span>
+          <span class="sport-dd-name" id="sportDDName">كرة القدم</span>
+          <svg class="sport-dd-chev" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="sport-dd-menu" id="sportDDMenu" role="listbox" hidden></div>
       </div>
     </div>
     <div class="sec-title"><span class="sec-title-main"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="sec-title-end"><span class="sort-current" id="sortCurrent">الترتيب: الافتراضي</span><span class="view-toggle" role="group" data-i18n-aria="viewModeAria" aria-label="طريقة العرض"><button type="button" class="vt-btn active" data-action="setView" data-view="grid" data-i18n-aria="viewGrid" aria-label="عرض شبكي" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></button><button type="button" class="vt-btn" data-action="setView" data-view="list" data-i18n-aria="viewList" aria-label="عرض قائمة" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="4.5" rx="1"/><path d="M11.5 6.2H21"/><rect x="3.5" y="13.5" width="4.5" height="4.5" rx="1"/><path d="M11.5 15.7H21"/></svg></button></span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></span></div>
@@ -3814,7 +3843,32 @@ function renderSportTabs(){
     el.append(b);
   });
 }
-function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); updateSportSections(); renderPlaces(); }
+function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); renderSportDropdown(); updateSportSections(); renderPlaces(); }
+/* قائمة الرياضات المنسدلة في شريط التصفّح (مزامنة مع مبدّل الفلاتر عبر setSport) */
+function renderSportDropdown(){
+  const cur=SPORTS.find(s=>s.key===State.sport)||SPORTS[0];
+  const ic=$('#sportDDIc'); if(ic) ic.innerHTML=ICON[cur.icon]||ICON.ball;   // SVG ثابت موثوق
+  setText('sportDDName', t(cur.label));
+  const menu=$('#sportDDMenu'); if(!menu) return; clear(menu);
+  SPORTS.forEach(s=>{
+    const active=State.sport===s.key;
+    const item=h('button',{class:'sport-dd-item'+(active?' active':''), type:'button', role:'option', 'aria-selected':active?'true':'false'},
+      h('span',{class:'sport-dd-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'}),
+      h('span',{class:'sport-dd-lbl'}, t(s.label)));
+    if(!s.ready) item.append(h('span',{class:'sport-dd-soon'}, t('soonBadge')));
+    item.addEventListener('click',()=>{ setSport(s.key); closeSportDD(); });
+    menu.append(item);
+  });
+}
+function toggleSportDD(){
+  const dd=$('#sportDD'); if(!dd) return;
+  const open=dd.classList.toggle('open');
+  $('#sportDDMenu').hidden=!open; $('#sportDDBtn')?.setAttribute('aria-expanded', open?'true':'false');
+}
+function closeSportDD(){
+  const dd=$('#sportDD'); if(!dd || !dd.classList.contains('open')) return;
+  dd.classList.remove('open'); $('#sportDDMenu').hidden=true; $('#sportDDBtn')?.setAttribute('aria-expanded','false');
+}
 /* إخفاء أدوات كرة القدم (المناطق/العنوان) عند اختيار رياضة غير متوفرة بعد.
    زرّ الفلاتر يبقى ظاهرًا لأن مُبدِّل الرياضات صار داخل ورقة الفلاتر (وإلا انحبس المستخدم). */
 function updateSportSections(){
@@ -5482,7 +5536,7 @@ function setLanguage(lang){
   $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderSportTabs(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    renderSportTabs(); renderSportDropdown(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
     HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     if(Session.player()) setText('playerWelcome', t('welcomeHi')+' '+(State.player?.name||t('welcomeYou')));
@@ -5517,6 +5571,7 @@ const Actions = {
   clearSearch:()=>{ const s=$('#searchInput'); if(s){ s.value=''; updateSearchClear(); renderPlaces(); s.focus(); } },
   setView:(btn)=>setViewMode(btn.dataset.view||'grid'),
   setDetailTab:(btn)=>setDetailTab(btn.dataset.dtab||'book'),
+  toggleSportDD:()=>toggleSportDD(),
   navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
 };
 /* إظهار/إخفاء زر مسح البحث حسب وجود نص */
@@ -5529,6 +5584,9 @@ document.addEventListener('click', (e)=>{
   const act=e.target.closest('[data-action]'); if(!act) return;
   const fn=Actions[act.dataset.action]; if(fn) fn(act, e);
 });
+/* إغلاق قائمة الرياضات المنسدلة عند النقر خارجها أو بمفتاح Escape */
+document.addEventListener('click', (e)=>{ if(!e.target.closest('#sportDD')) closeSportDD(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSportDD(); });
 /* بحث الهيرو بصفحة الهبوط — يعبّئ بحث الرئيسية ثم يتصفّح كضيف */
 const heroForm=$('#heroSearchForm');
 if(heroForm){ heroForm.addEventListener('submit',(e)=>{ e.preventDefault(); const hi=$('#heroSearchInput'); const v=hi?hi.value.trim():''; const s=$('#searchInput'); if(s) s.value=v; updateSearchClear(); browse(); }); }
