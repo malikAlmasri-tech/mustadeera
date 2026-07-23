@@ -5288,6 +5288,14 @@ function showPage(name, opts){
   requestAnimationFrame(()=>pageScrollSet(y));
 }
 
+/* جسر التطبيق (Capacitor): خامل تمامًا على المتصفح — يُنشأ فقط داخل التطبيق المُغلَّف.
+   يتيح لطبقة native.js تشغيل «الرجوع» الداخلي دون كسر تغليف الوحدة (IIFE). */
+try{
+  if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()){
+    window.__native = { back: navigateBack, page: activePageName };
+  }
+}catch(_){}
+
 /* تحديث تلقائي للأوقات على الصفحات الحيّة فقط (+ لوحة المالك بتحديث صامت) */
 function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active') || ($('#page-owner')?.classList.contains('active') && !!Session.owner()); }
 async function refreshVisible(){
@@ -5808,6 +5816,120 @@ async function init(){
 }
 init();
 
+})();
+
+</script>
+<style>
+/* ===== NATIVE LAYER (app only) ===== */
+/* ============================================================
+   NATIVE LAYER — CSS  (نسخة تطبيق الهاتف فقط)
+   يُحقَن هذا الملف فقط داخل www/index.html عبر build.ps1.
+   كل القواعد مقيّدة بـ body.native ⇒ صفر أثر على نسخة المتصفح.
+   ============================================================ */
+
+/* حواف آمنة (نتوء الكاميرا / شريط الإيماءات) — القيم 0 افتراضيًا فآمنة */
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* ===== إحساس تطبيق أصيل ===== */
+/* إزالة وميض اللمس الرمادي + قائمة الضغط المطوّل على العناصر التفاعلية */
+body.native{ -webkit-tap-highlight-color: transparent; }
+body.native button,
+body.native a,
+body.native .place-card,
+body.native [role="button"]{ -webkit-touch-callout: none; }
+/* منع توهّج السحب العمودي (overscroll) خارج حدود الصفحة */
+body.native{ overscroll-behavior-y: contain; }
+
+/* ============================================================
+   أنيميشن الكبسات — مستوحى من «مراجع/4»:
+   .almus-slot:hover{ transform: translateY(-2px) }
+   .almus-venue-card:hover{ box-shadow: 0 12px 24px rgba(0,0,0,.12) }
+   حوّلناه من hover (ماوس) إلى :active (لمس) لأنه تطبيق هاتف.
+   ============================================================ */
+
+/* أزرار الأوقات + الأيام + الرياضات: رفعة خفيفة عند اللمس */
+body.native .tbtn,
+body.native .day-btn,
+body.native .sport-tab{
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+}
+body.native .tbtn:not(.taken):active,
+body.native .day-btn:active,
+body.native .sport-tab:active{
+  transform: translateY(-2px);
+}
+
+/* بطاقات الملاعب: رفعة + تعمّق الظلّ عند اللمس (روح البطاقة في المرجع) */
+body.native .place-card{
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+body.native .place-card:active{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.16);
+}
+
+/* احترام تفضيل تقليل الحركة */
+@media (prefers-reduced-motion: reduce){
+  body.native .tbtn:active,
+  body.native .day-btn:active,
+  body.native .sport-tab:active,
+  body.native .place-card:active{ transform: none; }
+}
+
+</style>
+<script>
+/* ============================================================
+   NATIVE LAYER — JS  (نسخة تطبيق الهاتف فقط)
+   يُحقَن هذا الملف فقط داخل www/index.html عبر build.ps1.
+   خامل تمامًا على المتصفح: يخرج فورًا إن لم يكن Capacitor موجودًا.
+   يعتمد على جسر window.__native الذي يُنشئه app.js داخل التطبيق.
+   ============================================================ */
+(function(){
+  var Cap = window.Capacitor;
+  if(!Cap || typeof Cap.isNativePlatform !== 'function' || !Cap.isNativePlatform()) return; // متصفح ⇒ لا شيء
+  var P = Cap.Plugins || {};
+  var StatusBar = P.StatusBar, App = P.App;
+
+  document.body.classList.add('native');
+
+  /* ---- شريط الحالة: لون الهوية + أيقونات فاتحة، ويتزامن مع الثيم ---- */
+  function syncStatusBar(){
+    if(!StatusBar) return;
+    var dark = document.body.classList.contains('dark');
+    try{
+      StatusBar.setOverlaysWebView({ overlay: false });   // المحتوى تحت الشريط لا خلفه
+      StatusBar.setStyle({ style: 'DARK' });               // DARK = أيقونات/نص فاتح (لخلفية داكنة)
+      StatusBar.setBackgroundColor({ color: dark ? '#0A0F0B' : '#0F4B53' }); // ليلي: فحمي · نهاري: Teal
+    }catch(_){}
+  }
+  syncStatusBar();
+  try{ new MutationObserver(syncStatusBar).observe(document.body, { attributes:true, attributeFilter:['class'] }); }catch(_){}
+
+  /* ---- زر الرجوع الفيزيائي (Android) ---- */
+  if(App && App.addListener){
+    App.addListener('backButton', function(){
+      // 1) نافذة/شاشة نجاح مفتوحة ⇒ أغلقها أولًا (Escape مُلتقَط في app.js)
+      if(document.body.classList.contains('modal-open') ||
+         document.querySelector('.modal-overlay.show, .success-overlay.show')){
+        document.dispatchEvent(new KeyboardEvent('keydown', { key:'Escape', bubbles:true }));
+        return;
+      }
+      // 2) رجوع داخلي عبر مكدّس التنقّل (NavStack) في app.js
+      var br = window.__native;
+      var page = (br && br.page) ? br.page() : null;
+      if(page && page !== 'home' && page !== 'welcome'){
+        if(br && br.back) br.back('home');
+        return;
+      }
+      // 3) على الصفحة الجذر ⇒ اخرج من التطبيق
+      try{ App.exitApp(); }catch(_){}
+    });
+  }
 })();
 
 </script>
