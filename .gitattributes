@@ -1,0 +1,9 @@
+# Cloudflare Pages parses _headers/_redirects line by line. Windows CRLF has
+# been known to trip that parser, and git would otherwise store whatever the
+# working copy has. Pin these four to LF; everything else keeps its behaviour
+# (deliberately narrow - normalising the whole repo would rewrite the 638k-char
+# generated index.html for no reason).
+public/_headers        text eol=lf
+public/_redirects      text eol=lf
+site/static/_headers   text eol=lf
+site/static/_redirects text eol=lf

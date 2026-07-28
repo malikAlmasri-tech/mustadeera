@@ -1,0 +1,131 @@
+# =========================================================
+#  Site copy - English
+#  Line format:  key = value      (# comment · blank lines ignored)
+#
+#  Same honesty rule as the Arabic file: no "instant booking"
+#  (the venue confirms), no invented numbers, no online payment.
+#  Keys MUST stay in parity with ar.txt - the build warns on any
+#  placeholder it cannot resolve.
+# =========================================================
+
+# ---------- Brand & navigation ----------
+brandName = AL-Mustadira
+skipLink = Skip to content
+ariaMainNav = Main navigation
+ariaBrandHome = AL-Mustadira - home
+ariaThemeToggle = Toggle dark mode
+ariaLangSwitch = التبديل إلى العربية
+langSwitchLabel = ع
+navHome = Home
+navDownload = Download
+navOwners = For pitch owners
+navAbout = About
+navContact = Contact
+navCta = Book now
+
+# ---------- Hero ----------
+heroBadge = Football pitch booking
+heroTitleA = Your pitch is ready.
+heroTitleHi = Without a single call.
+heroSub = Browse pitches near you, see the hours that are actually free, and send your booking request in under a minute.
+heroCtaPrimary = Download the app
+heroCtaSecondary = Book in your browser
+heroNote = Free · Android · No card, no online payment
+
+# ---------- Proof strip (every line is verifiable) ----------
+trust1 = Booked hours never show up for you
+trust2 = You pay the pitch price - no extra fee on you
+trust3 = Ratings come from players who actually booked
+
+# ---------- Product showcase ----------
+showcaseEyebrow = Inside the app
+showcaseTitle = The part that matters: the time.
+showcaseDesc = Pick a day, then an hour. Booked slots are not shown, and the price is in front of you before you send. No runaround.
+mockPickDay = Pick a day
+mockPickTime = Pick a time
+mockDay1 = Sat
+mockDay2 = Sun
+mockDay3 = Mon
+mockDay4 = Tue
+mockSlot1 = 5:00 PM
+mockSlot2 = 6:00 PM
+mockSlot3 = 7:00 PM
+mockSlot4 = 8:00 PM
+mockSlot5 = 9:00 PM
+mockSlot6 = 10:00 PM
+mockBooked = Booked
+mockSelected = Selected
+mockSend = Send booking request
+mockCaption = A sample of the app interface
+
+# ---------- Features (bento) ----------
+featuresEyebrow = Why AL-Mustadira
+featuresTitle = Everything a booking needs, and nothing it doesn't.
+featBookTitle = A clear booking request
+featBookDesc = You pick the day and hour, the pitch confirms. You see where your request stands at every step: awaiting confirmation, confirmed, or declined with a reason.
+featTimesTitle = Real availability
+featTimesDesc = Booked hours disappear from the grid. You won't find out the pitch is taken after you get there.
+featRatingsTitle = Real ratings only
+featRatingsDesc = We don't write ratings ourselves. A pitch nobody has rated yet shows no stars at all - which is more honest than a pretty number.
+featPriceTitle = Price before you ask
+featPriceDesc = The hourly price is on the pitch card, and the total is in front of you before you send.
+featLangTitle = Arabic and English
+featLangDesc = The full interface in both directions, with a dark mode that's easy on the eyes.
+featNoCardTitle = No cards
+featNoCardDesc = No online payment, no card number. The app books you the time; the rest is between you and the pitch.
+
+# ---------- How it works ----------
+howEyebrow = How it works
+howTitle = Three steps, one minute.
+howStep1Title = Pick a pitch
+howStep1Desc = Browse by area and sport. Photos, amenities, price and surface type are all there.
+howStep2Title = Pick a time
+howStep2Desc = The right day, then a free hour. Booked slots aren't shown at all.
+howStep3Title = Send the request
+howStep3Desc = It reaches the pitch straight away and their decision comes back to you. Track it any time from My Bookings.
+
+# ---------- Pitch owners ----------
+ownersEyebrow = For pitch owners
+ownersTitle = A fuller pitch, and a ledger that keeps itself.
+ownersDesc = A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper.
+ownersB1 = Every request on one screen - no more scattered calls
+ownersB2 = Revenue, occupancy and busiest-hours reports
+ownersB3 = You control your hours, prices and amenities yourself
+ownersCta = Register your pitch
+ownersCtaNote = Registration is free, and we'll be in touch to activate your dashboard.
+
+# ---------- Closing call ----------
+finalTitle = Ready to book?
+finalDesc = Download the Android app, or start in your browser right now.
+finalPrimary = Download the app
+finalSecondary = Book in your browser
+
+# ---------- Footer ----------
+footerTagline = Football pitch booking - without the phone calls.
+footerColProduct = Product
+footerColCompany = Platform
+footerColLegal = Legal
+linkDownload = Download the app
+linkWebApp = Web app
+linkOwners = For pitch owners
+linkAbout = About us
+linkContact = Contact
+linkPrivacy = Privacy policy
+linkTerms = Terms of use
+footerRights = © {{year}} AL-Mustadira - all rights reserved.
+
+# ---------- Page titles & descriptions (search + sharing) ----------
+metaHomeTitle = AL-Mustadira - book a football pitch without the calls
+metaHomeDesc = Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.
+metaDownloadTitle = Download the AL-Mustadira app for Android
+metaDownloadDesc = Download and install AL-Mustadira on Android in three steps, with a plain explanation of the outside-the-store install warning.
+metaOwnersTitle = Register your pitch on AL-Mustadira - for owners
+metaOwnersDesc = A dashboard that gathers booking requests and confirms them with one tap, plus revenue and occupancy reports. Free to register.
+metaAboutTitle = About us - AL-Mustadira
+metaAboutDesc = Why we built AL-Mustadira, and exactly what the platform does for players and for pitch owners.
+metaContactTitle = Contact us - AL-Mustadira
+metaContactDesc = Questions, a problem with a booking, or a request to register a pitch - how to reach us.
+metaPrivacyTitle = Privacy policy - AL-Mustadira
+metaPrivacyDesc = What data we collect, why, how we store it, and how to request deletion of your account.
+metaTermsTitle = Terms of use - AL-Mustadira
+metaTermsDesc = Terms for using the AL-Mustadira platform, for players and for pitch owners.

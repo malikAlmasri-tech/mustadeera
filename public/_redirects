@@ -1,0 +1,20 @@
+# Cloudflare Pages redirects. Format: <from> <to> <status>
+# First match wins, so keep the specific rules above the general ones.
+
+# Convenience aliases people type or that older links may point at.
+/app.apk            /download/    302
+/apk                /download/    302
+/install            /download/    302
+/download.html      /download/    301
+/privacy.html       /privacy/     301
+/terms.html         /terms/       301
+
+# The Arabic site is the default. A visitor landing on /ar/... came from a
+# guess, not from us - send them to the real path.
+/ar/*               /:splat       301
+
+# Stage C will point this at the signed APK on GitHub Releases, so the file
+# itself never enters the repository (7MB per release, and git keeps every one).
+# Kept commented until a release exists - a 302 to a missing asset is worse
+# than a 404 on a path nobody links to yet.
+# /latest.apk       https://github.com/malikAlmasri-tech/mustadeera/releases/latest/download/mustadeera.apk  302

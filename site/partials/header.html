@@ -1,0 +1,30 @@
+<a class="skip" href="#main">{{t.skipLink}}</a>
+
+<header class="hd">
+  <div class="wrap hd-in">
+
+    <a class="hd-brand" href="{{base}}/" aria-label="{{t.ariaBrandHome}}">
+      <img class="hd-logo lt" src="/assets/logo-nav.png" alt="{{t.brandName}}" width="93" height="34" fetchpriority="high">
+      <img class="hd-logo dk" src="/assets/logo-nav-dark.png" alt="" aria-hidden="true" width="93" height="34">
+    </a>
+
+    <nav class="hd-nav" aria-label="{{t.ariaMainNav}}">
+      <a href="{{base}}/"{{cur_index}}>{{t.navHome}}</a>
+      <a href="{{base}}/owners/"{{cur_owners}}>{{t.navOwners}}</a>
+      <a href="{{base}}/about/"{{cur_about}}>{{t.navAbout}}</a>
+      <a href="{{base}}/contact/"{{cur_contact}}>{{t.navContact}}</a>
+    </nav>
+
+    <div class="hd-tools">
+      <!-- مبدّل اللغة رابط حقيقي إلى الصفحة المقابلة، لا زرّ JS: يُفهرَس ويُشارَك ويعمل بلا سكربت -->
+      <a class="tool lang" href="{{altBase}}{{path}}" hreflang="{{altLang}}" lang="{{altLang}}" aria-label="{{t.ariaLangSwitch}}">{{t.langSwitchLabel}}</a>
+
+      <button class="tool thm" type="button" data-theme-toggle aria-label="{{t.ariaThemeToggle}}">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="thm-p" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+
+      <a class="btn btn-pri hd-cta" href="{{base}}/download/"{{cur_download}}>{{t.navDownload}}</a>
+    </div>
+
+  </div>
+</header>

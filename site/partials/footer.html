@@ -1,0 +1,59 @@
+<footer class="ft">
+  <div class="wrap ft-in">
+
+    <div class="ft-brand">
+      <img class="ft-logo lt" src="/assets/logo-nav.png" alt="{{t.brandName}}" width="110" height="40" loading="lazy">
+      <img class="ft-logo dk" src="/assets/logo-nav-dark.png" alt="" aria-hidden="true" width="110" height="40" loading="lazy">
+      <p class="ft-tag">{{t.footerTagline}}</p>
+    </div>
+
+    <nav class="ft-col" aria-labelledby="ft-c1">
+      <h2 class="ft-h" id="ft-c1">{{t.footerColProduct}}</h2>
+      <a href="{{base}}/download/">{{t.linkDownload}}</a>
+      <a href="/app/">{{t.linkWebApp}}</a>
+      <a href="{{base}}/owners/">{{t.linkOwners}}</a>
+    </nav>
+
+    <nav class="ft-col" aria-labelledby="ft-c2">
+      <h2 class="ft-h" id="ft-c2">{{t.footerColCompany}}</h2>
+      <a href="{{base}}/about/">{{t.linkAbout}}</a>
+      <a href="{{base}}/contact/">{{t.linkContact}}</a>
+    </nav>
+
+    <nav class="ft-col" aria-labelledby="ft-c3">
+      <h2 class="ft-h" id="ft-c3">{{t.footerColLegal}}</h2>
+      <a href="{{base}}/privacy/">{{t.linkPrivacy}}</a>
+      <a href="{{base}}/terms/">{{t.linkTerms}}</a>
+    </nav>
+
+  </div>
+
+  <div class="wrap ft-btm">
+    <p>{{t.footerRights}}</p>
+    <a class="ft-lang" href="{{altBase}}{{path}}" hreflang="{{altLang}}" lang="{{altLang}}">{{t.ariaLangSwitch}}</a>
+  </div>
+</footer>
+
+<!-- السلوك الوحيد في الصفحة. المحتوى كلّه يعمل بلا سكربت (والثيم يُطبَّق في <head> قبل الرسم). -->
+<script>
+(function(){
+  var K='mustadaira:theme',
+      MOON='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z',
+      SUN='M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4';
+  var root=document.documentElement;
+  function paint(){
+    var dark=root.classList.contains('dark');
+    // رسم واحد يبدّل السمة d — لا عنصران متراكبان (درس «الشمسين» في التطبيق)
+    var p=document.querySelectorAll('.thm-p');
+    for(var i=0;i<p.length;i++){p[i].setAttribute('d',dark?SUN:MOON);}
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-theme-toggle]');
+    if(!b)return;
+    root.classList.toggle('dark');
+    try{localStorage.setItem(K,root.classList.contains('dark')?'dark':'light');}catch(_){}
+    paint();
+  });
+  paint();
+})();
+</script>

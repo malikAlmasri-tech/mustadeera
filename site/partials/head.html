@@ -1,0 +1,45 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{title}}</title>
+<meta name="description" content="{{desc}}">
+<link rel="canonical" href="{{canonical}}">
+
+<!-- كل صفحة تشير إلى شقيقتها في اللغة الأخرى، و x-default إلى العربية (لغة الجمهور الأساسي) -->
+<link rel="alternate" hreflang="ar" href="{{arUrl}}">
+<link rel="alternate" hreflang="en" href="{{enUrl}}">
+<link rel="alternate" hreflang="x-default" href="{{arUrl}}">
+
+<meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#081D22" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{t.brandName}}">
+<meta property="og:locale" content="{{lang}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{desc}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{origin}}/assets/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/logo-fav.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/logo-mark.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="{{fontHref}}">
+
+<!-- الثيم يُطبَّق قبل أوّل رسم كي لا يومض الأبيض على مستخدم الوضع الليلي.
+     نفس مفتاح التخزين المستعمل في التطبيق ⇒ من بدّل الثيم هناك يجده هنا. -->
+<script>(function(){try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();</script>
+
+<style>{{css}}</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"Organization","@id":"{{origin}}/#org","name":"{{t.brandName}}","url":"{{origin}}/","logo":"{{origin}}/assets/logo-mark.png"},
+{"@type":"WebSite","@id":"{{origin}}/#site","url":"{{origin}}/","name":"{{t.brandName}}","publisher":{"@id":"{{origin}}/#org"},"inLanguage":"{{lang}}"}
+]}
+</script>
