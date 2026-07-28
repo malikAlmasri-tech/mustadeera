@@ -10,7 +10,7 @@
     <nav class="ft-col" aria-labelledby="ft-c1">
       <h2 class="ft-h" id="ft-c1">{{t.footerColProduct}}</h2>
       <a href="{{base}}/download/">{{t.linkDownload}}</a>
-      <a href="/app/">{{t.linkWebApp}}</a>
+      <a href="{{base}}/places/">{{t.linkWebApp}}</a>
       <a href="{{base}}/owners/">{{t.linkOwners}}</a>
     </nav>
 
@@ -57,14 +57,15 @@
   paint();
 })();
 
-/* تسجيل الـService Worker — يجعل «التثبيت من المتصفّح» ممكنًا (بديل الآيفون
-   للـAPK) ويُبقي الصفحات تفتح عند انقطاع لحظي. مؤجَّل إلى load كي لا ينافس
-   أوّل رسم على الشبكات البطيئة. */
-/* لا حاجة لفحص البروتوكول: المتصفّح لا يُتيح serviceWorker أصلًا خارج السياق
-   الآمن (https أو localhost)، وفحصه يدويًّا كان سيمنع الاختبار محليًّا. */
+/* لا service worker — المشروع له وجهان فقط: هذا الموقع، والتطبيق.
+   وإن كان مسجَّلًا من زيارة سابقة فلا بدّ من إلغائه، وإلّا بقي يخدم نسخة
+   قديمة من الصفحات إلى الأبد على أجهزة من زاروا قبل اليوم. */
 if ('serviceWorker' in navigator) {
-  addEventListener('load', function(){
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  });
+  navigator.serviceWorker.getRegistrations().then(function(rs){
+    rs.forEach(function(r){ r.unregister(); });
+  }).catch(function(){});
+  if (window.caches && caches.keys) {
+    caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }).catch(function(){});
+  }
 }
 </script>

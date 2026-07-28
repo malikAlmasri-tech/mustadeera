@@ -174,22 +174,78 @@ html.dark .dk{display:block}
   .hd-cta{min-height:44px;padding:0 20px;font-size:15px}
 }
 
-/* ---------- 5 · الهيرو ---------- */
-.hero{position:relative;padding-block:clamp(44px,7vw,88px) clamp(48px,8vw,96px);overflow:hidden}
+/* ---------- 5 · الهيرو — لوح داكن ----------
+   الهيرو الداكن ليس ذوقًا: النصّ الأبيض على Teal عميق يرفع التباين ويجعل
+   الـLime يصدح، والصفحة كلّها تُقرأ «منتَجًا» لا «صفحة». وهو الجزء الوحيد
+   الذي لا يتبع الثيم — يبقى داكنًا في النهاري والليلي كي لا تتغيّر الهوية. */
+.hero{position:relative;overflow:hidden;isolation:isolate;
+  padding-block:clamp(40px,6vw,72px) clamp(36px,5vw,64px);
+  background:#08262C;color:#EAF3F1;
+  border-radius:0 0 clamp(20px,3vw,34px) clamp(20px,3vw,34px)}
+.hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 82% 0%, rgba(140,198,62,.22) 0%, transparent 55%),
+    radial-gradient(90% 80% at 10% 100%, rgba(23,116,128,.45) 0%, transparent 60%),
+    linear-gradient(158deg, #0B333B 0%, #08262C 52%, #061D22 100%)}
+/* شبكة ملعب خافتة — عمق بلا صورة وبلا بايت واحد إضافي */
+.hero-bg::after{content:'';position:absolute;inset:0;opacity:.35;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(80% 60% at 50% 20%,#000 0%,transparent 78%);
+          mask-image:radial-gradient(80% 60% at 50% 20%,#000 0%,transparent 78%)}
+
+.hero-grid{display:grid;gap:clamp(30px,5vw,56px);align-items:center;grid-template-columns:1fr}
+@media (min-width:920px){.hero-grid{grid-template-columns:1.08fr .92fr}}
+.hero-copy{text-align:center}
+@media (min-width:920px){.hero-copy{text-align:start}}
+.hero h1{font-size:clamp(33px,6.6vw,64px);margin-bottom:18px;color:#fff}
+.hero h1 .hi{color:var(--lime);display:block}
+.hero .lead{color:rgba(234,243,241,.78);font-size:clamp(16.5px,2vw,20px);margin-inline:auto}
+@media (min-width:920px){.hero .lead{margin-inline:0}}
+.hero .eyebrow{background:rgba(140,198,62,.14);color:var(--lime)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;justify-content:center}
+@media (min-width:920px){.hero-cta{justify-content:flex-start}}
+.hero .btn-pri{background:var(--lime);color:var(--on-lime)}
+.btn-ghost{background:rgba(255,255,255,.07);color:#EAF3F1;border-color:rgba(255,255,255,.22)}
+@media (hover:hover){
+  .hero .btn-pri:hover{background:var(--lime-hi)}
+  .btn-ghost:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.4)}
+}
+.hero-note{margin-top:16px;font-size:14.5px;color:rgba(234,243,241,.58)}
+
+/* الجهاز: ميلة خفيفة تعطي عمقًا، وتُلغى على اللمس حيث المساحة أضيق */
+.hero-device{display:flex;flex-direction:column;align-items:center}
+@media (min-width:920px){
+  .hero-device .phone{transform:perspective(1400px) rotateY(-9deg) rotateX(3deg) translateZ(0)}
+}
+/* .5 أعطت 4.52:1 على خلفية الهيرو — تمرّ AA بالكاد لنصّ 13px. .66 ⇒ ~6.4:1 */
+.hero .mock-cap{color:rgba(234,243,241,.66)}
+
+/* شريط الحقائق داخل الهيرو */
+.hero .trust{margin-top:clamp(34px,5vw,52px)}
+.hero .trust li{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);
+  color:#EAF3F1;box-shadow:none;backdrop-filter:blur(6px)}
+
+/* لوح الختام — يغلق الصفحة بنفس ثقل الهيرو */
+.cta-band{position:relative;overflow:hidden;isolation:isolate;color:#EAF3F1;
+  background:#08262C;border-radius:clamp(20px,3vw,34px) clamp(20px,3vw,34px) 0 0;margin-top:clamp(30px,5vw,60px)}
+.cta-band-bg{position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(100% 120% at 50% 120%, rgba(140,198,62,.22) 0%, transparent 58%),
+             linear-gradient(20deg,#061D22 0%,#0B333B 100%)}
+.cta-band h2{color:#fff}
+.cta-band .lead{color:rgba(234,243,241,.78)}
+.cta-band .btn-pri{background:var(--lime);color:var(--on-lime)}
+
+/* ---------- 5ب · بقايا تخطيط الهيرو القديم ---------- */
+.hero-old{position:relative;padding-block:clamp(44px,7vw,88px) clamp(48px,8vw,96px);overflow:hidden}
 /* ⚠️ التمركز هنا بـ inset-inline:0 + margin-inline:auto لا بـ 50%+translateX(-50%):
    التحويل **غير مدرك للاتجاه**، فيزيح العنصر إلى الجهة نفسها في العربية والإنجليزية
    ⇒ مقيس قبل الإصلاح: مركز التوهّج 200px بدل 640px على شاشة 1280 في RTL. */
-.hero::before{content:'';position:absolute;inset-inline:0;margin-inline:auto;top:-28%;
-  width:min(880px,120%);aspect-ratio:1;
-  border-radius:50%;pointer-events:none;z-index:0;
-  background:radial-gradient(circle,var(--lime-soft) 0%,transparent 62%)}
-.hero-in{position:relative;z-index:1;text-align:center}
-.hero h1{font-size:clamp(34px,7.4vw,72px);margin-bottom:20px}
-.hero h1 .hi{color:var(--teal);display:block}
-html.dark .hero h1 .hi{color:var(--lime)}
-.hero .lead{margin-inline:auto;font-size:clamp(17px,2.2vw,21px)}
-.hero-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:32px}
-.hero-note{margin-top:18px;font-size:14.5px;color:var(--muted)}
+/* (قواعد الهيرو الفاتح القديمة أُزيلت — الهيرو صار لوحًا داكنًا أعلاه.
+   بقيت .hero-cta معرَّفة هناك لأن صفحات أخرى تستعملها كصفّ أزرار.) */
+.sec .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;justify-content:center}
+.sec .hero-cta.cta-start{justify-content:flex-start}
 
 /* شريط الحقائق — كل سطر فيه قابل للإثبات (قاعدة الصدق م5) */
 .trust{display:grid;gap:12px;margin-top:clamp(36px,6vw,60px);
@@ -227,6 +283,22 @@ html.dark .chip.on{background:var(--lime);border-color:var(--lime);color:var(--o
   background:var(--btn-bg);color:var(--btn-ink);font-size:13px;font-weight:800}
 .mock-cap{text-align:center;font-size:13px;color:var(--muted);margin-top:14px}
 
+/* ---------- 6ب · صقل فاخر: حركة عند التحويم، وخطّ يمتدّ تحت روابط التنقّل ----------
+   كلّها transform/opacity ⇒ مركَّبة على الـGPU، وصفر أثر على التخطيط. */
+@media (hover:hover){
+  .hd-nav a{position:relative}
+  .hd-nav a::after{content:'';position:absolute;inset-inline-start:0;bottom:0;height:2px;width:100%;
+    background:var(--lime);transform:scaleX(0);transform-origin:inline-end;
+    transition:transform .28s var(--ease)}
+  .hd-nav a:hover::after{transform:scaleX(1);transform-origin:inline-start}
+  .hd-nav a[aria-current]::after{transform:scaleX(1)}
+  .bt,.pl-card,.note-card,.ct-card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s}
+  .bt:hover,.note-card:hover,.ct-card:hover{transform:translateY(-3px);box-shadow:var(--sh)}
+  .pl-card:hover{transform:translateY(-3px)}
+}
+/* الخطّ السفلي للتبويب النشط يبقى بلا hover أيضًا */
+.hd-nav a[aria-current]{border-bottom-color:transparent}
+
 /* ---------- 7 · شبكة Bento ---------- */
 .bento{display:grid;gap:14px;grid-template-columns:1fr;margin-top:clamp(28px,4vw,44px)}
 .bt{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
@@ -252,6 +324,14 @@ html.dark .bt-ic{color:var(--lime)}
 /* ---------- 8 · كيف يعمل ---------- */
 .steps{display:grid;gap:clamp(20px,3vw,28px);grid-template-columns:1fr;margin-top:clamp(28px,4vw,44px);counter-reset:s}
 @media (min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+/* خطّ زمني يربط الخطوات الثلاث على الشاشات الواسعة — يشرح التسلسل بلا كلمة */
+@media (min-width:820px){
+  .steps{position:relative}
+  .steps::before{content:'';position:absolute;inset-inline:6%;top:24px;height:2px;z-index:0;
+    background:linear-gradient(90deg,transparent,var(--line-2) 12%,var(--line-2) 88%,transparent)}
+  .step{padding-inline-start:0;padding-top:66px;text-align:center}
+  .step::before{inset-inline:0;margin-inline:auto}
+}
 .step{position:relative;padding-inline-start:64px}
 .step::before{counter-increment:s;content:counter(s);position:absolute;inset-inline-start:0;top:0;
   width:48px;height:48px;border-radius:var(--r-full);display:grid;place-items:center;

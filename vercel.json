@@ -28,6 +28,8 @@
     }
   ],
   "redirects": [
+    { "source": "/app", "destination": "/download/", "permanent": true },
+    { "source": "/app/:path*", "destination": "/download/", "permanent": true },
     { "source": "/apk", "destination": "/download/", "permanent": false },
     { "source": "/install", "destination": "/download/", "permanent": false },
     { "source": "/app.apk", "destination": "/download/", "permanent": false },

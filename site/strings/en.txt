@@ -29,7 +29,7 @@ heroTitleA = Your pitch is ready.
 heroTitleHi = Without a single call.
 heroSub = Browse pitches near you, see the hours that are actually free, and send your booking request in under a minute.
 heroCtaPrimary = Download the app
-heroCtaSecondary = Book in your browser
+heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
 
 # ---------- Proof strip (every line is verifiable) ----------
@@ -96,9 +96,9 @@ ownersCtaNote = Registration is free, and we'll be in touch to activate your das
 
 # ---------- Closing call ----------
 finalTitle = Ready to book?
-finalDesc = Download the Android app, or start in your browser right now.
+finalDesc = Download the Android app, or browse the available pitches first.
 finalPrimary = Download the app
-finalSecondary = Book in your browser
+finalSecondary = Browse the pitches
 
 # ---------- Footer ----------
 footerTagline = Football pitch booking - without the phone calls.
@@ -106,7 +106,7 @@ footerColProduct = Product
 footerColCompany = Platform
 footerColLegal = Legal
 linkDownload = Download the app
-linkWebApp = Web app
+linkWebApp = Venue directory
 linkOwners = For pitch owners
 linkAbout = About us
 linkContact = Contact
@@ -126,8 +126,8 @@ dlSub = Free, and it asks for exactly one permission: internet access.
 # State: nothing published yet (empty url in release.txt)
 dlSoonTitle = The signed release isn't published yet
 dlSoonBody = We're preparing the first signed build. The link and its hash go here the moment it's ready - and not one moment before.
-dlSoonCta = Use the platform in your browser
-dlSoonNote = Works on Android, iPhone and desktop with nothing to install.
+dlSoonCta = Browse the available pitches
+dlSoonNote = We announce here the moment the signed build is ready.
 
 # State: published
 dlBtn = Download the file (APK)
@@ -167,10 +167,10 @@ dlPermBody = One permission: internet. No location, no camera, no microphone, no
 dlPermBody2 = It never asks for a card and never takes a payment - there is no online payment anywhere in the platform.
 
 # The alternative: iPhone and desktop
-dlIosEyebrow = iPhone or desktop
-dlIosTitle = Don't want to install anything? You don't have to.
-dlIosBody = There's no iPhone build yet, and the browser version is the same product: browse, pick a time, send your request, and follow its status.
-dlIosCta = Open in the browser
+dlIosEyebrow = iPhone
+dlIosTitle = The iPhone build is not ready yet.
+dlIosBody = Booking happens in the Android app only for now. If you are on iPhone, tell us - how many people ask is what decides when we build it.
+dlIosCta = Tell us you want it
 
 # =========================================================
 #  About  /about

@@ -29,6 +29,12 @@ $BuildStamp = Get-Date -Format 'yyyy-MM-dd'
 
 $Utf8NoBom = New-Object System.Text.UTF8Encoding $false
 
+# ---- start from a clean output tree ----
+# Without this, a page or asset that stops being generated lingers in public/
+# and keeps getting served. That is how a withdrawn service worker or an old
+# route can outlive the decision to remove it.
+if (Test-Path $Out) { Remove-Item (Join-Path $Out '*') -Recurse -Force }
+
 function Read-Text([string]$p) { [IO.File]::ReadAllText($p) }
 
 function Write-Text([string]$p, [string]$s) {
@@ -298,7 +304,7 @@ function Render-PlaceBody($p, $T, [string]$base) {
         [void]$sb.Append('</ul>')
     }
 
-    [void]$sb.Append('<div class="hero-cta cta-start"><a class="btn btn-pri btn-lg" href="/app/">' + (Tx $T 'plBookCta') + '</a>')
+    [void]$sb.Append('<div class="hero-cta cta-start"><a class="btn btn-pri btn-lg" href="' + $base + '/download/">' + (Tx $T 'plBookCta') + '</a>')
     if ($p.map) { [void]$sb.Append('<a class="btn btn-sec btn-lg" href="' + (HtmlEnc $p.map) + '" rel="noopener nofollow">' + (Tx $T 'plMapCta') + '</a>') }
     [void]$sb.Append('</div>')
     [void]$sb.Append('<p class="pl-updated">' + (Tx $T 'plUpdated') + ' ' + $BuildStamp + ' &middot; ' + (Tx $T 'plLiveNote') + '</p>')
@@ -467,19 +473,16 @@ if (Test-Path $adminSrc) {
     Write-Text (Join-Path $Out 'admin\index.html') (Expand-Tpl (Read-Text $adminSrc) $av $Strings['ar'])
 }
 
-# ---- service worker: written here rather than copied, so the cache name
-# carries the build stamp and every deploy retires the previous cache ----
-$swSrc = Join-Path $SiteDir 'sw.js'
-if (Test-Path $swSrc) {
-    Write-Text (Join-Path $Out 'sw.js') ((Read-Text $swSrc).Replace('{{buildStamp}}', $BuildStamp))
-}
+# ---- no service worker, no web-app manifest ----
+# Owner decision (2026-07-28): the project has exactly two faces - this
+# marketing site, and the Android app. A PWA would have been a third,
+# installable thing to keep in step with both.
 
 # ---- robots.txt ----
 Write-Text (Join-Path $Out 'robots.txt') @"
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /app/
 
 Sitemap: $SiteOrigin/sitemap.xml
 "@
@@ -503,13 +506,13 @@ foreach ($f in @('logo-nav.png', 'logo-nav-dark.png', 'logo-mark.png', 'logo-mar
     if (Test-Path $src) { Copy-Item $src (Join-Path $assetsOut $f) -Force }
 }
 
-# ---- the SPA lives at /app (the root build stays untouched for the old host) ----
-$spa = Join-Path $Root 'index.html'
-if (Test-Path $spa) {
-    $appDir = Join-Path $Out 'app'
-    if (-not (Test-Path $appDir)) { New-Item -ItemType Directory -Path $appDir -Force | Out-Null }
-    Copy-Item $spa (Join-Path $appDir 'index.html') -Force
-}
+# ---- the SPA is NOT published here ----
+# Owner decision (2026-07-28): booking happens in the Android app only.
+# A browser copy would be a second front-end writing to a second database
+# (it still speaks to Apps Script/Sheets while the app speaks to Postgres),
+# which is exactly the double-booking hazard stage (D) existed to close.
+# Removing it closes that hazard without touching the live app.
+# /app/* now redirects to the download page - see site/static/_redirects.
 
 # ---- report ----
 $totalBytes = (Get-ChildItem $Out -Recurse -File | Measure-Object Length -Sum).Sum

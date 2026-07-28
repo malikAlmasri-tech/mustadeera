@@ -1,37 +1,24 @@
-<!-- ============ الهيرو ============ -->
+<!-- ============ الهيرو — لوح داكن + المنتج بجانبه ============ -->
 <section class="hero">
-  <div class="wrap hero-in">
-    <span class="eyebrow">{{t.heroBadge}}</span>
-    <h1>{{t.heroTitleA}} <span class="hi">{{t.heroTitleHi}}</span></h1>
-    <p class="lead">{{t.heroSub}}</p>
+  <div class="hero-bg" aria-hidden="true"></div>
 
-    <div class="hero-cta">
-      <a class="btn btn-pri btn-lg" href="{{base}}/download/">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
-        {{t.heroCtaPrimary}}
-      </a>
-      <a class="btn btn-sec btn-lg" href="/app/">{{t.heroCtaSecondary}}</a>
-    </div>
-    <p class="hero-note">{{t.heroNote}}</p>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">{{t.heroBadge}}</span>
+      <h1>{{t.heroTitleA}} <span class="hi">{{t.heroTitleHi}}</span></h1>
+      <p class="lead">{{t.heroSub}}</p>
 
-    <ul class="trust">
-      <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust1}}</span></li>
-      <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust2}}</span></li>
-      <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust3}}</span></li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============ عرض المنتج ============ -->
-<section class="sec sec-alt">
-  <div class="wrap show-in rv">
-    <div>
-      <span class="eyebrow">{{t.showcaseEyebrow}}</span>
-      <h2 class="h2">{{t.showcaseTitle}}</h2>
-      <p class="lead">{{t.showcaseDesc}}</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri btn-lg" href="{{base}}/download/">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
+          {{t.heroCtaPrimary}}
+        </a>
+        <a class="btn btn-ghost btn-lg" href="{{base}}/places/">{{t.heroCtaSecondary}}</a>
+      </div>
+      <p class="hero-note">{{t.heroNote}}</p>
     </div>
 
-    <div>
+    <div class="hero-device">
       <!-- هيكل الهاتف مبنيّ بالـCSS ومحتواه DOM حقيقي: صفر صور، صفر انزياح تخطيط.
            لا يعرض اسم ملعب ولا سعرًا — لأن أيّ منهما سيكون رقمًا مصنوعًا. -->
       <div class="phone" role="img" aria-label="{{t.mockCaption}}">
@@ -58,6 +45,12 @@
       <p class="mock-cap">{{t.mockCaption}}</p>
     </div>
   </div>
+
+  <ul class="trust wrap">
+    <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust1}}</span></li>
+    <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust2}}</span></li>
+    <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust3}}</span></li>
+  </ul>
 </section>
 
 <!-- ============ المميزات · Bento ============ -->
@@ -141,14 +134,15 @@
   </div>
 </section>
 
-<!-- ============ نداء الختام ============ -->
-<section class="sec final rv">
+<!-- ============ نداء الختام — لوح داكن يغلق الصفحة كما فتحها الهيرو ============ -->
+<section class="sec final cta-band rv">
+  <div class="cta-band-bg" aria-hidden="true"></div>
   <div class="wrap">
     <h2>{{t.finalTitle}}</h2>
     <p class="lead">{{t.finalDesc}}</p>
     <div class="hero-cta">
       <a class="btn btn-pri btn-lg" href="{{base}}/download/">{{t.finalPrimary}}</a>
-      <a class="btn btn-sec btn-lg" href="/app/">{{t.finalSecondary}}</a>
+      <a class="btn btn-sec btn-lg" href="{{base}}/places/">{{t.finalSecondary}}</a>
     </div>
   </div>
 </section>

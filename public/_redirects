@@ -1,6 +1,13 @@
 # Cloudflare Pages redirects. Format: <from> <to> <status>
 # First match wins, so keep the specific rules above the general ones.
 
+# The browser build of the booking app used to live here. It was withdrawn
+# on 2026-07-28: booking is app-only now, so a second front-end on a second
+# database could double-book the same hour. Anyone holding an old link lands
+# on the download page instead of a 404.
+/app                /download/    301
+/app/*              /download/    301
+
 # Convenience aliases people type or that older links may point at.
 /app.apk            /download/    302
 /apk                /download/    302

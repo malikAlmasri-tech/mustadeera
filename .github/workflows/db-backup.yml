@@ -7,12 +7,21 @@
 #  ─── إعداد لمرّة واحدة (دقيقتان) ────────────────────────────────────────
 #  GitHub ← Settings ← Secrets and variables ← Actions ← New repository secret
 #
-#  ① SUPABASE_DB_URL
-#     من لوحة Supabase ← زرّ «Connect» أعلى الصفحة ← تبويب **Session pooler**
-#     ⚠️ **Session pooler وليس Direct connection.** سبب تقني: الاتصال المباشر
-#        صار IPv6 فقط، ومشغّلات GitHub لا تملك IPv6 ⇒ الاتصال المباشر يفشل
-#        بـ«could not translate host name». الـpooler يعمل على IPv4.
-#     الشكل: postgresql://postgres.<ref>:<كلمة-السرّ>@aws-0-<region>.pooler.supabase.com:5432/postgres
+#  ① SUPABASE_DB_PASSWORD  ← **كلمة سرّ القاعدة وحدها. لا رابط.**
+#     من لوحة Supabase ← Project Settings ← Database ← Database password.
+#     الصقها كما هي: بلا `postgresql://`، وبلا `@`، وبلا ترميز، وبلا أي شيء حولها.
+#
+#     ⚠️ لماذا تغيّر هذا: النسخة السابقة طلبت رابطًا كاملًا، وفشلت ثلاث مرّات
+#        بـ«password authentication failed for user postgres». السبب أن نصّ
+#        **Direct connection** مستخدمه `postgres`، بينما الـpooler يخدم آلاف
+#        المشاريع على مضيف واحد ولا يعرف مشروعك إلّا من `postgres.<ref>`.
+#        وسبب ثانٍ محتمل: حرف مثل @ أو # في كلمة السرّ يقطع الرابط عند تحليله.
+#        ⇒ أُزيل الرابط من المعادلة كلّها: المضيف والمستخدم والمنفذ تُبنى هنا
+#          من معرّف المشروع (وهو **ليس سرًّا** — مضمَّن أصلًا في التطبيق والموقع)،
+#          وكلمة السرّ تمرّ عبر PGPASSWORD فلا تمرّ بتحليل URL إطلاقًا.
+#
+#     (التوافق: إن كان SUPABASE_DB_URL القديم موجودًا وحده، يُستخرَج منه ما بين
+#      أوّل «:» بعد المستخدم وآخر «@» ويُستعمل ككلمة سرّ.)
 #
 #  ② BACKUP_PASSPHRASE
 #     عبارة سرّ طويلة عشوائية **احفظها في مدير كلمات السرّ**.
@@ -21,7 +30,10 @@
 #     والنسخة فيها أرقام هواتف مستخدمين حقيقيين.
 #
 #  ─── الاسترجاع (جرّبه مرّة قبل أن تحتاجه) ───────────────────────────────
-#    gpg -d backup.sql.gz.gpg | gunzip | psql "$SUPABASE_DB_URL"
+#    export PGPASSWORD='<كلمة-سرّ-القاعدة>'
+#    gpg -d backup.sql.gz.gpg | gunzip | psql \
+#      -h aws-0-eu-central-1.pooler.supabase.com -p 5432 \
+#      -U postgres.nxqddfuwtrsabprxcfez -d postgres
 #
 #  ملاحظة: GitHub يوقف الجداول الزمنية في مستودع بلا نشاط 60 يومًا.
 #          أي دفعة أو تشغيل يدوي يعيد تفعيلها.
@@ -36,6 +48,12 @@ on:
 permissions:
   contents: read
 
+# معرّف المشروع والمنطقة — ليسا سرًّا (المعرّف مضمَّن في التطبيق والموقع).
+# وجودهما هنا هو ما يجعل بناء الاتصال صحيحًا دائمًا بلا اعتماد على صياغة يدوية.
+env:
+  PROJECT_REF: nxqddfuwtrsabprxcfez
+  DB_REGION: aws-0-eu-central-1
+
 jobs:
   dump:
     runs-on: ubuntu-latest
@@ -43,11 +61,23 @@ jobs:
       - name: تخطٍّ إن لم تُضبط الأسرار بعد
         id: guard
         env:
+          DB_PASS: ${{ secrets.SUPABASE_DB_PASSWORD }}
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           PASS: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
-          if [ -z "$DB_URL" ] || [ -z "$PASS" ]; then
-            echo "::notice::لم تُضبط SUPABASE_DB_URL و/أو BACKUP_PASSPHRASE — تخطٍّ بلا فشل."
+          # كلمة السرّ: من السرّ الجديد، أو مستخرَجة من الرابط القديم للتوافق.
+          PW="$DB_PASS"
+          if [ -z "$PW" ] && [ -n "$DB_URL" ]; then
+            # كل ما بين أوّل «:» بعد المستخدم وآخر «@» — يحتمل أن تحوي كلمة السرّ «:»
+            PW=$(printf '%s' "$DB_URL" | sed -E 's#^[a-z]+://[^:]+:(.*)@[^@]*$#\1#')
+            echo "::warning::تُستعمل كلمة السرّ المستخرَجة من SUPABASE_DB_URL. الأفضل ضبط SUPABASE_DB_PASSWORD وحذف الرابط."
+          fi
+          # إخفاؤها من السجلّ قبل أي استعمال — لو ظهرت في رسالة خطأ لاحقًا تبقى مموّهة.
+          if [ -n "$PW" ]; then echo "::add-mask::$PW"; fi
+          echo "PGPASSWORD=$PW" >> "$GITHUB_ENV"
+
+          if [ -z "$PW" ] || [ -z "$PASS" ]; then
+            echo "::notice::لم تُضبط SUPABASE_DB_PASSWORD و/أو BACKUP_PASSPHRASE — تخطٍّ بلا فشل."
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
@@ -67,18 +97,43 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client-17
 
+      # فحص الاتصال وحده قبل التفريغ: إن فشل، الرسالة تقول أين الخلل بالضبط
+      # بدل «password authentication failed» المبهمة.
+      - name: التحقّق من الاتصال
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          PGPASSWORD: ${{ env.PGPASSWORD }}
+        run: |
+          set -euo pipefail
+          PGHOST="${DB_REGION}.pooler.supabase.com"
+          PGUSER="postgres.${PROJECT_REF}"
+          echo "المضيف:   $PGHOST:5432"
+          echo "المستخدم: $PGUSER"
+          if ! psql -h "$PGHOST" -p 5432 -U "$PGUSER" -d postgres -c 'select 1' >/dev/null 2>err.txt; then
+            echo "::error::فشل الاتصال. تحقّق من SUPABASE_DB_PASSWORD (كلمة سرّ القاعدة، لا كلمة سرّ حسابك في Supabase)."
+            sed -E 's/password=[^ ]*/password=***/g' err.txt || true
+            exit 1
+          fi
+          echo "الاتصال سليم."
+
       - name: تفريغ القاعدة وضغطها وتشفيرها
         if: steps.guard.outputs.ready == 'true'
         env:
-          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGPASSWORD: ${{ env.PGPASSWORD }}
           PASS: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
           set -euo pipefail
           STAMP=$(date -u +%Y-%m-%d)
+          # الاتصال بأعلام صريحة لا برابط URI: كلمة السرّ تصل عبر PGPASSWORD
+          # فلا تمرّ بتحليل URL ⇒ يستحيل أن يكسرها حرف مثل @ أو # أو :.
+          # واسم المستخدم مبنيّ هنا (postgres.<ref>) وهو ما يطلبه الـpooler —
+          # وكان `postgres` وحده سبب الفشل ثلاث مرّات.
           # --no-owner/--no-privileges: الاسترجاع في مشروع جديد لا يعرف أدوار المشروع القديم.
           # المخططات: public (بياناتنا) + auth (الحسابات وكلمات السرّ المجزّأة) — بلا auth
           # تسترجع البيانات بلا أصحابها.
-          pg_dump "$DB_URL" \
+          pg_dump \
+            -h "${DB_REGION}.pooler.supabase.com" -p 5432 \
+            -U "postgres.${PROJECT_REF}" -d postgres \
             --schema=public --schema=auth \
             --no-owner --no-privileges --clean --if-exists \
             | gzip -9 > dump.sql.gz
