@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  نبضة يومية — تمنع Supabase من إيقاف المشروع
+#
+#  لماذا: الخطة المجانية **توقف المشروع بعد سبعة أيام بلا أي نشاط**.
+#  استعلام قراءة واحد يوميًّا يكفي لإبقائه حيًّا. لا إعداد ولا أسرار.
+#
+#  المفتاح أدناه هو `anon` وهو **عامّ بالتصميم** (مضمَّن أصلًا في التطبيق
+#  وفي بناء الموقع) — الأمان قائم على RLS لا على إخفائه.
+# ═══════════════════════════════════════════════════════════════════════════
+name: Supabase keepalive
+
+on:
+  schedule:
+    - cron: '17 7 * * *'      # يوميًّا 07:17 UTC (وقت غير مستدير عمدًا: الدقائق المستديرة مزدحمة عند GitHub فتتأخّر)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: استعلام قراءة خفيف
+        env:
+          SB_URL: https://nxqddfuwtrsabprxcfez.supabase.co
+          SB_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWRkZnV3dHJzYWJwcnhjZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNDkwNDcsImV4cCI6MjEwMDYyNTA0N30.SOL5yoyeDZpJOEneH9rgqGc5P6HswMw5fR9d76Uh0wA
+        run: |
+          set -euo pipefail
+          # limit=1 على جدول عام ⇒ يمسّ القاعدة فعلًا (لا يكفي طلب لا يصل إليها)
+          CODE=$(curl -s -o /tmp/out.json -w '%{http_code}' \
+            -H "apikey: $SB_KEY" -H "Authorization: Bearer $SB_KEY" \
+            "$SB_URL/rest/v1/places?select=id&limit=1")
+          echo "HTTP $CODE"
+          head -c 200 /tmp/out.json; echo
+          if [ "$CODE" != "200" ]; then
+            echo "::error::النبضة فشلت (HTTP $CODE) — المشروع قد يكون موقوفًا أو المفتاح تغيّر."
+            exit 1
+          fi

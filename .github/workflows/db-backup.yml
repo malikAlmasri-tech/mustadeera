@@ -1,0 +1,107 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  نسخة احتياطية يومية لقاعدة بيانات Supabase — مشفّرة
+#
+#  لماذا: الخطة المجانية في Supabase **بلا نسخ احتياطية إطلاقًا**.
+#  خطأ `delete` واحد أو مشروع محذوف = فقدان كل شيء بلا رجعة.
+#
+#  ─── إعداد لمرّة واحدة (دقيقتان) ────────────────────────────────────────
+#  GitHub ← Settings ← Secrets and variables ← Actions ← New repository secret
+#
+#  ① SUPABASE_DB_URL
+#     من لوحة Supabase ← زرّ «Connect» أعلى الصفحة ← تبويب **Session pooler**
+#     ⚠️ **Session pooler وليس Direct connection.** سبب تقني: الاتصال المباشر
+#        صار IPv6 فقط، ومشغّلات GitHub لا تملك IPv6 ⇒ الاتصال المباشر يفشل
+#        بـ«could not translate host name». الـpooler يعمل على IPv4.
+#     الشكل: postgresql://postgres.<ref>:<كلمة-السرّ>@aws-0-<region>.pooler.supabase.com:5432/postgres
+#
+#  ② BACKUP_PASSPHRASE
+#     عبارة سرّ طويلة عشوائية **احفظها في مدير كلمات السرّ**.
+#     ⚠️ إن ضاعت فالنسخ الاحتياطية **غير قابلة للاسترجاع** — لا نسخة منها عندي ولا عند GitHub.
+#     التشفير ليس زينة: مخرجات Actions قابلة للتنزيل من أي شخص إن كان المستودع عامًّا،
+#     والنسخة فيها أرقام هواتف مستخدمين حقيقيين.
+#
+#  ─── الاسترجاع (جرّبه مرّة قبل أن تحتاجه) ───────────────────────────────
+#    gpg -d backup.sql.gz.gpg | gunzip | psql "$SUPABASE_DB_URL"
+#
+#  ملاحظة: GitHub يوقف الجداول الزمنية في مستودع بلا نشاط 60 يومًا.
+#          أي دفعة أو تشغيل يدوي يعيد تفعيلها.
+# ═══════════════════════════════════════════════════════════════════════════
+name: DB backup (daily, encrypted)
+
+on:
+  schedule:
+    - cron: '0 2 * * *'      # 02:00 UTC = 05:00 بتوقيت عمّان
+  workflow_dispatch:          # تشغيل يدوي من تبويب Actions
+
+permissions:
+  contents: read
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: تخطٍّ إن لم تُضبط الأسرار بعد
+        id: guard
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DB_URL" ] || [ -z "$PASS" ]; then
+            echo "::notice::لم تُضبط SUPABASE_DB_URL و/أو BACKUP_PASSPHRASE — تخطٍّ بلا فشل."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # عميل Postgres 17: عميل أقدم من الخادم يرفض العمل («server version mismatch»).
+      # مستودع أوبونتو يشحن 16، وSupabase على 15/17 ⇒ نأخذه من مستودع PGDG الرسمي.
+      - name: تثبيت عميل postgresql-17
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] \
+            https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: تفريغ القاعدة وضغطها وتشفيرها
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y-%m-%d)
+          # --no-owner/--no-privileges: الاسترجاع في مشروع جديد لا يعرف أدوار المشروع القديم.
+          # المخططات: public (بياناتنا) + auth (الحسابات وكلمات السرّ المجزّأة) — بلا auth
+          # تسترجع البيانات بلا أصحابها.
+          pg_dump "$DB_URL" \
+            --schema=public --schema=auth \
+            --no-owner --no-privileges --clean --if-exists \
+            | gzip -9 > dump.sql.gz
+
+          SIZE=$(stat -c%s dump.sql.gz)
+          echo "حجم التفريغ المضغوط: $SIZE بايت"
+          # حارس «نجحت النسخة لكنها فارغة» — أخطر من فشل صريح لأنه صامت.
+          if [ "$SIZE" -lt 20000 ]; then
+            echo "::error::التفريغ أصغر من 20KB ($SIZE) — على الأرجح فشل صامت أو قاعدة فارغة."
+            exit 1
+          fi
+
+          gpg --batch --yes --symmetric --cipher-algo AES256 \
+              --passphrase "$PASS" \
+              -o "mustadeera-$STAMP.sql.gz.gpg" dump.sql.gz
+          rm -f dump.sql.gz
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+
+      - name: رفع النسخة كمخرَج
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ env.STAMP }}
+          path: mustadeera-*.sql.gz.gpg
+          retention-days: 90
+          if-no-files-found: error
