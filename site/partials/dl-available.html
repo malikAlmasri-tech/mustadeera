@@ -1,0 +1,20 @@
+<!-- حالة «الإصدار منشور» — تُختار آليًّا حين يُملأ url في site/release.txt.
+     كل رقم هنا يأتي من ذلك الملفّ، فلا يوجد رقم مكتوب يدويًّا في الصفحة. -->
+<div class="dl-box">
+  <a class="btn btn-pri btn-lg dl-btn" href="{{relUrl}}" download>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
+    {{t.dlBtn}}
+  </a>
+
+  <dl class="dl-meta">
+    <div><dt>{{t.dlMetaVersion}}</dt><dd>{{relVersion}}</dd></div>
+    <div><dt>{{t.dlMetaDate}}</dt><dd>{{relDate}}</dd></div>
+    <div><dt>{{t.dlMetaSize}}</dt><dd>{{relSize}}</dd></div>
+  </dl>
+
+  <div class="dl-sha">
+    <p class="dl-sha-h">{{t.dlMetaSha}}</p>
+    <code class="dl-sha-v">{{relSha}}</code>
+    <p class="dl-sha-n">{{t.dlShaNote}}</p>
+  </div>
+</div>

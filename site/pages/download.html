@@ -1,7 +1,74 @@
-<!-- STUB - real content lands in stage (E) of PLAN-2-website.md -->
-<section class="sec">
+<section class="sec dl-top">
   <div class="wrap">
-    <h1 class="h2">{{t.metaDownloadTitle}}</h1>
-    <p class="lead">{{t.metaDownloadDesc}}</p>
+    <span class="eyebrow">{{t.dlEyebrow}}</span>
+    <h1 class="h1-page">{{t.dlTitle}}</h1>
+    <p class="lead">{{t.dlSub}}</p>
+
+    {{include:release}}
+
+    <ul class="dl-specs">
+      <li><span class="k">{{t.dlSpecOS}}</span><span class="v">{{t.dlSpecOSVal}}</span></li>
+      <li><span class="k">{{t.dlSpecPerm}}</span><span class="v">{{t.dlSpecPermVal}}</span></li>
+      <li><span class="k">{{t.dlSpecPrice}}</span><span class="v">{{t.dlSpecPriceVal}}</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ خطوات التثبيت ============ -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">{{t.dlStepsEyebrow}}</span>
+      <h2 class="h2">{{t.dlStepsTitle}}</h2>
+      <p class="lead">{{t.dlStepsLead}}</p>
+    </div>
+
+    <div class="steps dl-steps">
+      <div class="step rv">
+        <h3>{{t.dlStep1Title}}</h3>
+        <p>{{t.dlStep1Desc}}</p>
+      </div>
+      <div class="step rv">
+        <h3>{{t.dlStep2Title}}</h3>
+        <p>{{t.dlStep2Desc}}</p>
+        <p class="dl-quote">{{t.dlStep2Quote}}</p>
+      </div>
+      <div class="step rv">
+        <h3>{{t.dlStep3Title}}</h3>
+        <p>{{t.dlStep3Desc}}</p>
+        <p class="dl-quote">{{t.dlStep3Quote}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ لماذا يحذّرك أندرويد ============ -->
+<section class="sec">
+  <div class="wrap dl-two rv">
+    <article class="note-card">
+      <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5Z"/><path d="M12 8.5v4"/><path d="M12 16h.01"/></svg></span>
+      <h2 class="h3-card">{{t.dlWhyTitle}}</h2>
+      <p>{{t.dlWhyBody}}</p>
+      <p>{{t.dlWhyBody2}}</p>
+    </article>
+
+    <article class="note-card">
+      <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <h2 class="h3-card">{{t.dlPermTitle}}</h2>
+      <p>{{t.dlPermBody}}</p>
+      <p>{{t.dlPermBody2}}</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ آيفون / بديل المتصفّح ============ -->
+<section class="sec sec-alt">
+  <div class="wrap rv">
+    <div class="own-card">
+      <span class="eyebrow">{{t.dlIosEyebrow}}</span>
+      <h2>{{t.dlIosTitle}}</h2>
+      <p>{{t.dlIosBody}}</p>
+      <a class="btn btn-pri" href="/app/">{{t.dlIosCta}}</a>
+    </div>
   </div>
 </section>

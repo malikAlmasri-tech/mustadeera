@@ -296,7 +296,69 @@ html[lang="ar"] .ft-h{font-family:var(--f-body)}
   color:var(--muted);font-size:14px}
 .ft-lang{font-weight:700;color:var(--ink-2)}
 
-/* ---------- 12 · الحركة ---------- */
+/* ---------- 12 · صفحة التنزيل ---------- */
+.h1-page{font-size:clamp(29px,4.6vw,46px);margin-bottom:14px}
+.dl-top{padding-block:clamp(40px,6vw,72px) clamp(32px,4vw,48px)}
+
+.dl-box{margin-top:clamp(26px,4vw,36px);background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:clamp(22px,3vw,32px);box-shadow:var(--sh);max-width:640px}
+.dl-btn{width:100%}
+.dl-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.dl-meta dt{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:3px}
+.dl-meta dd{font-size:15.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.dl-sha{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.dl-sha-h{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:7px}
+/* البصمة 64 محرفًا: تُكسر داخل الصندوق ولا تدفع الصفحة أفقيًّا */
+.dl-sha-v{display:block;font-family:ui-monospace,'Cascadia Mono',Consolas,monospace;font-size:12.5px;
+  line-height:1.6;word-break:break-all;overflow-wrap:anywhere;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;color:var(--ink-2)}
+.dl-sha-n{margin-top:9px;font-size:13.5px;color:var(--muted);line-height:1.7}
+
+.dl-box-soon{border-style:dashed;border-color:var(--line-2);background:var(--surface-2)}
+.dl-soon-h{font-family:var(--f-head);font-weight:800;font-size:19px;margin-bottom:8px}
+html[lang="ar"] .dl-soon-h{font-family:var(--f-body)}
+.dl-soon-b{color:var(--muted);font-size:15.5px;margin-bottom:20px;max-width:52ch}
+.dl-soon-n{margin-top:12px;font-size:13.5px;color:var(--muted)}
+
+.dl-specs{list-style:none;display:grid;gap:10px;margin-top:26px;max-width:640px}
+.dl-specs li{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+  padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm)}
+.dl-specs .k{color:var(--muted);font-size:14.5px}
+.dl-specs .v{font-weight:700;font-size:15px;text-align:end}
+
+/* اقتباس نصّ التحذير كما يظهر على الجهاز حرفيًّا — التعرّف عليه هو الفائدة */
+.dl-quote{margin-top:10px;padding:11px 14px;border-inline-start:3px solid var(--lime);
+  background:var(--surface);border-radius:0 var(--r-sm) var(--r-sm) 0;
+  font-size:14px;color:var(--ink-2);font-weight:600;line-height:1.65}
+html[dir="ltr"] .dl-quote{border-radius:var(--r-sm) 0 0 var(--r-sm)}
+.dl-steps .step p{max-width:46ch}
+
+.dl-two{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:820px){.dl-two{grid-template-columns:1fr 1fr}}
+.note-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:clamp(22px,2.8vw,30px);box-shadow:var(--sh-sm)}
+.h3-card{font-size:clamp(18px,2vw,21px);margin-bottom:10px}
+.note-card p{color:var(--muted);font-size:15.5px;line-height:1.75}
+.note-card p+p{margin-top:11px}
+
+/* ---------- 13 · صفحات النصّ الطويل (من نحن · الخصوصية · الشروط) ---------- */
+/* عرض السطر محكوم بعدد المحارف لا بالبكسل: 68 محرفًا هو ما يقرأه العين
+   بلا أن تضيع بداية السطر التالي. العربية أعرض قليلًا لأن محرفها أضيق. */
+.prose{max-width:68ch}
+.prose h2{font-size:clamp(20px,2.4vw,25px);margin:clamp(28px,3.4vw,40px) 0 12px}
+.prose p{color:var(--ink-2);margin-bottom:14px}
+.prose .lead{color:var(--muted);margin-bottom:8px}
+.prose ul{margin:0 0 16px;padding-inline-start:0;list-style:none}
+.prose li{position:relative;padding-inline-start:26px;margin-bottom:11px;color:var(--ink-2);line-height:1.8}
+.prose li::before{content:'';position:absolute;inset-inline-start:6px;top:.72em;
+  width:7px;height:7px;border-radius:50%;background:var(--lime)}
+.prose strong{font-weight:800;color:var(--ink)}
+.legal-date{font-size:14px;color:var(--muted);margin-bottom:18px}
+.in-link{color:var(--teal);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+html.dark .in-link{color:var(--lime)}
+.cta-start{justify-content:flex-start}
+
+/* ---------- 14 · الحركة ---------- */
 /* كشف عند التمرير بلا سطر JS واحد: animation-timeline مدعوم ⇒ يعمل،
    غير مدعوم ⇒ المحتوى ظاهر كاملًا. لا حالة يختفي فيها نصّ. */
 @supports (animation-timeline:view()){

@@ -114,6 +114,162 @@ linkPrivacy = Privacy policy
 linkTerms = Terms of use
 footerRights = © {{year}} AL-Mustadira - all rights reserved.
 
+# =========================================================
+#  Download page  /download
+#  Never write a version, size or hash here - all of it comes from
+#  site/release.txt, and the page switches state on its own.
+# =========================================================
+dlEyebrow = Android app
+dlTitle = Get AL-Mustadira on your phone
+dlSub = Free, and it asks for exactly one permission: internet access.
+
+# State: nothing published yet (empty url in release.txt)
+dlSoonTitle = The signed release isn't published yet
+dlSoonBody = We're preparing the first signed build. The link and its hash go here the moment it's ready - and not one moment before.
+dlSoonCta = Use the platform in your browser
+dlSoonNote = Works on Android, iPhone and desktop with nothing to install.
+
+# State: published
+dlBtn = Download the file (APK)
+dlMetaVersion = Version
+dlMetaDate = Released
+dlMetaSize = Size
+dlMetaSha = SHA-256 fingerprint
+dlShaNote = To confirm the file wasn't tampered with, run certutil -hashfile filename.apk SHA256 and compare the result with the value above.
+
+# Specs
+dlSpecOS = Operating system
+dlSpecOSVal = Android 7.0 or newer
+dlSpecPerm = Permissions
+dlSpecPermVal = One only: internet
+dlSpecPrice = Price
+dlSpecPriceVal = Free
+
+# Install steps - warn before the wall, not after
+dlStepsEyebrow = Installing
+dlStepsTitle = Three steps - and know in advance what your phone will say
+dlStepsLead = The app is distributed outside the Play Store, so two warnings will stop you. Both are normal, and here is exactly what they say.
+dlStep1Title = Download the file
+dlStep1Desc = Tap the download button. Your browser will ask you to confirm because it's an APK - accept.
+dlStep2Title = Allow the install once
+dlStep2Desc = Android blocks the first attempt. Tap "Settings" inside that message and allow the browser you downloaded with. You do this once and never again.
+dlStep2Quote = "For your security, your phone isn't allowed to install unknown apps from this source"
+dlStep3Title = Get past the Play Protect scan
+dlStep3Desc = You may see a message saying Google couldn't scan the app. Tap "Install anyway". Every app distributed outside the store shows this, and it does not mean a scan found something.
+dlStep3Quote = "App not scanned" · "Install anyway"
+
+# Explaining the warning and the permissions
+dlWhyTitle = Why does Android warn you at all?
+dlWhyBody = Because the file doesn't come from the Play Store. Google doesn't know it, so it warns by default - the warning is about where the file came from, not what's inside it.
+dlWhyBody2 = That's why we publish a SHA-256 fingerprint with every release: you can check for yourself that what you downloaded is exactly what we published.
+dlPermTitle = What can the app do on your phone?
+dlPermBody = One permission: internet. No location, no camera, no microphone, no contacts, no files.
+dlPermBody2 = It never asks for a card and never takes a payment - there is no online payment anywhere in the platform.
+
+# The alternative: iPhone and desktop
+dlIosEyebrow = iPhone or desktop
+dlIosTitle = Don't want to install anything? You don't have to.
+dlIosBody = There's no iPhone build yet, and the browser version is the same product: browse, pick a time, send your request, and follow its status.
+dlIosCta = Open in the browser
+
+# =========================================================
+#  About  /about
+# =========================================================
+aboutEyebrow = About us
+aboutTitle = AL-Mustadira started with a call nobody answered.
+aboutP1 = Booking a pitch usually goes like this: you ask a friend for a number, you call and nobody picks up, you call again and someone says "come at eight", and when you arrive the pitch is taken. Nobody is at fault - the problem is that the free hours live in a paper notebook or in a busy person's memory.
+aboutP2 = AL-Mustadira moves that notebook somewhere everyone can see at the same time: the player sees what is genuinely free, and the owner sees every request on one screen.
+aboutWhatTitle = What the platform actually does
+aboutWhat1 = **For players:** browse pitches and their free hours, send a booking request, and follow it through to confirmation.
+aboutWhat2 = **For owners:** a dashboard that collects requests and confirms or declines them with one tap, plus revenue and occupancy reports.
+aboutNotTitle = And what it doesn't do
+aboutNot1 = It takes no online payment and stores no cards - there is no payment in the platform at all.
+aboutNot2 = It does not guarantee a booking on the pitch's behalf: confirmation is always the owner's decision, and what you send is a **request**, not a confirmed booking.
+aboutHonestTitle = One rule we hold to
+aboutHonestBody = We show no invented numbers. No ratings written by us, no "thousands of bookings", and no "instant booking" while confirmation genuinely needs the owner. A pitch nobody has rated yet shows no stars - that is deliberate.
+
+# =========================================================
+#  For pitch owners  /owners
+# =========================================================
+ownPageEyebrow = For pitch owners
+ownPageTitle = Your pitch where people look, and your ledger on one screen.
+ownPageLead = Registering is free. You control your hours and prices, and you confirm or decline every request yourself.
+ownProblemTitle = What changes for you
+ownP1Title = The calls stop
+ownP1Desc = Instead of ten scattered calls while you're working, requests arrive in writing in one place, with the time, the pitch and who asked.
+ownP2Title = No double booking
+ownP2Desc = A confirmed hour disappears from every other player's screen immediately, so there is no clash and no awkward apology.
+ownP3Title = You know your numbers
+ownP3Desc = Today's and this week's revenue, occupancy rate, busiest hours and your most-booked pitch - all worked out for you.
+ownP4Title = The decision stays yours
+ownP4Desc = Nothing books itself. Every request waits for your confirmation, and you can decline with a reason.
+ownHowTitle = How to register
+ownHow1 = Get in touch with your pitch details: name, area, number of pitches, hours and prices.
+ownHow2 = We create your account and add your pitch with its photos and amenities.
+ownHow3 = You sign in to your dashboard and start receiving requests - and change your hours and prices whenever you like.
+ownCostTitle = What does it cost?
+ownCostBody = Registering and running your dashboard are free. The platform takes a commission only on bookings that come through it, and nothing on the direct bookings you enter yourself.
+ownPageCta = Register your pitch
+
+# =========================================================
+#  Privacy  /privacy   ·   Terms  /terms
+#  Every sentence matches what the code actually does. If the code
+#  changes, change these.
+# =========================================================
+legalUpdated = Last updated
+privTitle = Privacy policy
+privIntro = This page says exactly what we collect and why, in plain language rather than lawyer's language.
+privCollectTitle = What we collect
+privCollect1 = **Your name and phone number** - because the pitch owner needs both to confirm your booking and reach you.
+privCollect2 = **Your password** - stored as a one-way encrypted fingerprint (bcrypt). We cannot see it or recover it, and neither can anyone else - which is why there is no "send me my password", only a reset.
+privCollect3 = **Your bookings** - the pitch, date, time, price and request status.
+privCollect4 = **Your ratings and comments**, if you write any.
+privLocalTitle = What stays on your device and never reaches us
+privLocalBody = Favourites, language, dark mode and your session token all live in your browser's storage on your own device. Clearing your browser data erases them.
+privShareTitle = Who we share it with
+privShare1 = **The pitch owner you sent a request to** sees your name, phone number and request details. That is the core of the service, and sending the request is your agreement to it.
+privShare2 = **We do not sell your data and do not share it with advertisers.** There are no ads in the platform and no tracking tools on this site.
+privAiTitle = Artificial intelligence
+privAiBody = The owner dashboard has an analysis feature that uses Google Gemini. What gets sent is **aggregated numbers about the venue** (booking counts, revenue, occupancy, pitch names, weekdays and hours) and **review text without the reviewer's name**. No player names and no phone numbers are ever sent.
+privPayTitle = Payment
+privPayBody = We collect no payment data because there is no online payment in the platform. We never ask for a card and never store a card number.
+privWhereTitle = Where it is stored
+privWhereBody = In a managed database (Supabase / PostgreSQL) protected by row-level security, so no account can read another account's data. All traffic is encrypted over HTTPS.
+privRightsTitle = Your rights
+privRights1 = You can change your name, phone number and password from My Account in the app.
+privRights2 = You can ask us to delete your account and data - we carry it out and confirm it to you.
+privRights3 = You can ask for a copy of your data.
+privKeepTitle = How long we keep it
+privKeepBody = For as long as your account exists. On deletion your personal data is removed; booking records may remain de-identified (a figure and a date with no name) for settling accounts with the pitches.
+privContactTitle = Questions or a deletion request
+privContactBody = Write to us from the contact page and we'll reply.
+
+termsTitle = Terms of use
+termsIntro = By using AL-Mustadira you agree to the following. We've kept it short and clear.
+termsNatureTitle = What the service is
+termsNature1 = AL-Mustadira is an **intermediary** between you and the pitch. What you send is a **booking request** that the owner accepts or declines - it is not a confirmed booking the moment you send it.
+termsNature2 = The pitch is the actual service provider and is responsible for the condition of the pitch and its facilities, and for honouring the time and the advertised price.
+termsAccTitle = Your account
+termsAcc1 = You agree to give a correct name and phone number - the pitch will use them to reach you.
+termsAcc2 = You are responsible for your password and for what happens through your account.
+termsAcc3 = One account per person. Fake bookings, or flooding pitches with requests you don't intend to honour, are not allowed.
+termsBookTitle = Bookings and cancellation
+termsBook1 = You can cancel your request from My Bookings. Repeated cancellations or no-shows may lead to your account being suspended.
+termsBook2 = The pitch may decline or cancel your request with a reason (a clash, maintenance, weather and so on).
+termsBook3 = Payment happens directly between you and the pitch. The platform neither receives money nor refunds it.
+termsRevTitle = Ratings
+termsRev1 = Rate from your own experience. Paid, abusive, or personal-data-containing reviews are not allowed.
+termsRev2 = We remove reviews that break these rules, and we do not remove a review merely for being negative.
+termsOwnTitle = Pitch owners
+termsOwn1 = You agree that the details shown (prices, hours, amenities, photos) are accurate and kept up to date.
+termsOwn2 = You agree to honour a booking you confirmed, and to use the player's details for that booking only.
+termsLiabTitle = Limits of liability
+termsLiabBody = We do what we can to keep the service accurate and available, but we do not guarantee it will be free of interruption or error, and we are not party to a dispute between you and a pitch. Our liability is limited to what the law allows.
+termsChangeTitle = Changes to these terms
+termsChangeBody = We may update these terms, and the last-updated date sits at the top of the page. Continuing to use the service after an update means you accept it.
+termsLawTitle = Governing law
+termsLawBody = These terms are governed by the laws of the Hashemite Kingdom of Jordan.
+
 # ---------- Page titles & descriptions (search + sharing) ----------
 metaHomeTitle = AL-Mustadira - book a football pitch without the calls
 metaHomeDesc = Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.

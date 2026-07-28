@@ -54,9 +54,14 @@ function Read-Strings([string]$p) {
 $script:Missing = New-Object System.Collections.ArrayList
 
 function Expand-Tpl([string]$tpl, [hashtable]$vars, [hashtable]$T) {
+    # Copy may use **bold**; it is the only markup allowed inside a string.
+    # Everything else must stay plain text - the strings are injected raw, so
+    # a literal angle bracket in ar.txt/en.txt would become markup.
     $tpl = [regex]::Replace($tpl, '\{\{t\.([A-Za-z0-9_]+)\}\}', {
         $k = $args[0].Groups[1].Value
-        if ($T.ContainsKey($k)) { $T[$k] } else { [void]$script:Missing.Add("t.$k"); "[[$k]]" }
+        if ($T.ContainsKey($k)) {
+            [regex]::Replace($T[$k], '\*\*(.+?)\*\*', '<strong>$1</strong>')
+        } else { [void]$script:Missing.Add("t.$k"); "[[$k]]" }
     })
     $tpl = [regex]::Replace($tpl, '\{\{([A-Za-z0-9_]+)\}\}', {
         $k = $args[0].Groups[1].Value
@@ -90,6 +95,12 @@ $Langs = @(
 # ---- load shared parts ----
 $Strings  = @{}
 foreach ($l in $Langs) { $Strings[$l.code] = Read-Strings (Join-Path $SiteDir "strings\$($l.code).txt") }
+
+# Release metadata for /download. An empty 'url' means "not published yet",
+# and the page renders the honest unavailable state instead of inventing a
+# version or a hash. See site/release.txt.
+$Rel = Read-Strings (Join-Path $SiteDir 'release.txt')
+$RelLive = ($Rel.ContainsKey('url') -and $Rel['url'] -ne '')
 
 $TplHead   = Read-Text (Join-Path $SiteDir 'partials\head.html')
 $TplHeader = Read-Text (Join-Path $SiteDir 'partials\header.html')
@@ -142,7 +153,21 @@ foreach ($lang in $Langs) {
             $vars["cur_$($p.name)"] = $(if ($p.name -eq $page.name) { ' aria-current="page"' } else { '' })
         }
 
+        $vars['relVersion'] = $(if ($Rel.ContainsKey('version')) { $Rel['version'] } else { '' })
+        $vars['relDate']    = $(if ($Rel.ContainsKey('date'))    { $Rel['date'] }    else { '' })
+        $vars['relSize']    = $(if ($Rel.ContainsKey('size'))    { $Rel['size'] }    else { '' })
+        $vars['relSha']     = $(if ($Rel.ContainsKey('sha256'))  { $Rel['sha256'] }  else { '' })
+        $vars['relUrl']     = $(if ($Rel.ContainsKey('url'))     { $Rel['url'] }     else { '' })
+
         $body = Read-Text $bodyFile
+
+        # Partial includes run BEFORE expansion so the included markup's own
+        # {{t.key}} placeholders are resolved in the same pass.
+        $body = $body.Replace('{{include:release}}', $(if ($RelLive) { '{{include:dl-available}}' } else { '{{include:dl-unavailable}}' }))
+        $body = [regex]::Replace($body, '\{\{include:([a-z0-9-]+)\}\}', {
+            $f = Join-Path $SiteDir ("partials\" + $args[0].Groups[1].Value + '.html')
+            if (Test-Path $f) { [IO.File]::ReadAllText($f) } else { '' }
+        })
         $html = "<!DOCTYPE html>`r`n<html lang=`"$($lang.code)`" dir=`"$($lang.dir)`">`r`n<head>`r`n" +
                 $TplHead + "`r`n</head>`r`n<body class=`"p-$($page.name)`">`r`n" +
                 $TplHeader + "`r`n<main id=`"main`">`r`n" + $body + "`r`n</main>`r`n" +
@@ -150,9 +175,11 @@ foreach ($lang in $Langs) {
 
         $html = Expand-Tpl $html $vars $T
 
-        $rel = ($lang.base + $page.path).TrimStart('/')
-        if ($rel -eq '') { $rel = 'index.html' } else { $rel = $rel.TrimEnd('/') + '/index.html' }
-        Write-Text (Join-Path $Out $rel) $html
+        # NOTE: not $rel - PowerShell variable names are case-insensitive, so
+        # $rel and the release hashtable $Rel are the same variable.
+        $relPath = ($lang.base + $page.path).TrimStart('/')
+        if ($relPath -eq '') { $relPath = 'index.html' } else { $relPath = $relPath.TrimEnd('/') + '/index.html' }
+        Write-Text (Join-Path $Out $relPath) $html
         $written++
 
         [void]$sitemap.Add(@{ loc = $canonical; prio = $page.prio; ar = $vars.arUrl; en = $vars.enUrl })
@@ -183,8 +210,8 @@ Write-Text (Join-Path $Out 'robots.txt') "User-agent: *`nAllow: /`n`nSitemap: $S
 $staticDir = Join-Path $SiteDir 'static'
 if (Test-Path $staticDir) {
     Get-ChildItem -Path $staticDir -File -Recurse | ForEach-Object {
-        $rel = $_.FullName.Substring($staticDir.Length).TrimStart('\')
-        $dst = Join-Path $Out $rel
+        $relFile = $_.FullName.Substring($staticDir.Length).TrimStart('\')
+        $dst = Join-Path $Out $relFile
         $dstDir = Split-Path -Parent $dst
         if (-not (Test-Path $dstDir)) { New-Item -ItemType Directory -Path $dstDir -Force | Out-Null }
         Copy-Item $_.FullName $dst -Force
