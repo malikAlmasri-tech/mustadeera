@@ -1,0 +1,13 @@
+<section class="sec">
+  <div class="wrap">
+    <span class="eyebrow">{{t.plEyebrow}}</span>
+    <h1 class="h1-page">{{t.plTitle}}</h1>
+    <p class="lead">{{t.plLead}}</p>
+
+    <!-- القائمة مولَّدة وقت البناء من قاعدة البيانات — لا استعلام وقت الزيارة،
+         ولا JS. ما تراه هنا هو ما في القاعدة لحظة آخر نشر. -->
+    {{placesList}}
+
+    <p class="pl-updated">{{t.plUpdated}} {{buildStamp}} &middot; {{t.plLiveNote}}</p>
+  </div>
+</section>

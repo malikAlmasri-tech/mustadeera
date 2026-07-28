@@ -294,7 +294,42 @@ ctTopic4 = **Reporting content:** an abusive review, or incorrect pitch details.
 waMsgGeneral = Hello, I have a question about AL-Mustadira:
 waMsgOwner = Hello, I'd like to register my pitch on AL-Mustadira. Pitch name:
 
+# =========================================================
+#  Venue directory  /places  and the per-venue pages
+#  Everything else comes from the database at build time - never write a
+#  venue name or a price in here.
+# =========================================================
+plEyebrow = Venue directory
+plTitle = Football pitches available to book
+plLead = Every venue with its area, surface, number of pitches and hourly price. Open any venue for the detail, and book from the app.
+plPitchOne = 1 pitch
+plPitchTwo = 2 pitches
+plPitchesFew = pitches
+plPitchesMany = pitches
+plPitches = Pitches
+plPriceFrom = from
+plPriceHour = Price per hour
+plCurrency = JOD
+plSurface = Surface
+plFieldsTitle = Pitches and prices
+plAmenities = Amenities
+plBookCta = Book in the app
+plMapCta = Open in Maps
+plBackToList = Back to the directory
+plUpdated = Last updated
+plLiveNote = live availability is shown inside the app
+plMetaDescA = Book at
+plMetaDescB = in
+# Amenities - only shown when the database says they exist
+amWater = Drinking water
+amVests = Bibs
+amBall = Ball
+amBathrooms = Toilets
+amParking = Parking
+
 # ---------- Page titles & descriptions (search + sharing) ----------
+metaPlacesTitle = Football pitch directory - AL-Mustadira
+metaPlacesDesc = Football pitches available to book: area, surface type, number of pitches and the hourly price for each venue.
 metaHomeTitle = AL-Mustadira - book a football pitch without the calls
 metaHomeDesc = Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.
 metaDownloadTitle = Download the AL-Mustadira app for Android

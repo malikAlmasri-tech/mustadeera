@@ -1,0 +1,677 @@
+{
+    "places":  {
+                   "value":  [
+                                 {
+                                     "id":  "8a86898f-b488-4a12-adf6-8902fc7f023e",
+                                     "legacy_id":  "6",
+                                     "name":  "ملاعب اكسفورد",
+                                     "city":  "عمان",
+                                     "region":  "المدينة الرياضية",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#22c55e",
+                                     "phone":  "962786666666",
+                                     "map_link":  "https://maps.app.goo.gl/MpChpWE9Mqa35Pvg7?g_st=ic",
+                                     "amenity_water":  null,
+                                     "amenity_vests":  null,
+                                     "amenity_ball":  null,
+                                     "amenity_bathrooms":  null,
+                                     "amenity_parking":  null,
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 },
+                                 {
+                                     "id":  "830302ac-6162-4642-8782-e3b2dc200685",
+                                     "legacy_id":  "10",
+                                     "name":  "ملاعب القوات المسلحة",
+                                     "city":  "عمان",
+                                     "region":  "طبربور",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#cffafe",
+                                     "phone":  "962791111110",
+                                     "map_link":  "https://maps.app.goo.gl/SZkjtCXDUePnBLC16?g_st=ic",
+                                     "amenity_water":  null,
+                                     "amenity_vests":  null,
+                                     "amenity_ball":  null,
+                                     "amenity_bathrooms":  null,
+                                     "amenity_parking":  null,
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 },
+                                 {
+                                     "id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                     "legacy_id":  "1",
+                                     "name":  "ملعب الخطوة الأولى",
+                                     "city":  "عمان",
+                                     "region":  "عرجان",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#dcfce7",
+                                     "phone":  "962781111111",
+                                     "map_link":  "https://maps.app.goo.gl/JQJHf6fmLE9zBAhc8?g_st=ic",
+                                     "amenity_water":  "Paid",
+                                     "amenity_vests":  "Available",
+                                     "amenity_ball":  "Free",
+                                     "amenity_bathrooms":  "Available",
+                                     "amenity_parking":  "Paid",
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 },
+                                 {
+                                     "id":  "9625dfca-8629-44cd-a5ea-7f40ed08284f",
+                                     "legacy_id":  "4",
+                                     "name":  "ملعب المنهل",
+                                     "city":  "عمان",
+                                     "region":  "ضاحية الرشيد",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#86efac",
+                                     "phone":  "962784444444",
+                                     "map_link":  "https://maps.app.goo.gl/MQtMTL6iChquSGju6?g_st=ic",
+                                     "amenity_water":  null,
+                                     "amenity_vests":  null,
+                                     "amenity_ball":  null,
+                                     "amenity_bathrooms":  null,
+                                     "amenity_parking":  null,
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 },
+                                 {
+                                     "id":  "d5cf356d-db11-4696-b9ab-9255367015bb",
+                                     "legacy_id":  "3",
+                                     "name":  "ملعب كلية المجتمع",
+                                     "city":  "عمان",
+                                     "region":  "شارع الجامعة",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#a7f3d0",
+                                     "phone":  "962783333333",
+                                     "map_link":  "https://maps.app.goo.gl/EcYnJJrFH4oq9jWi8?g_st=ic",
+                                     "amenity_water":  "Free",
+                                     "amenity_vests":  "Available",
+                                     "amenity_ball":  "Free",
+                                     "amenity_bathrooms":  null,
+                                     "amenity_parking":  null,
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 },
+                                 {
+                                     "id":  "62f21ab8-6a2c-4167-8db6-adcefd661563",
+                                     "legacy_id":  "2",
+                                     "name":  "ملعب ميار",
+                                     "city":  "عمان",
+                                     "region":  "تلاع العلي",
+                                     "type":  "عشب صناعي",
+                                     "color":  "#bbf7d0",
+                                     "phone":  "962782222222",
+                                     "map_link":  "https://maps.app.goo.gl/rHKjwoEEguigQYkYA?g_st=ic",
+                                     "amenity_water":  "Free",
+                                     "amenity_vests":  "Available",
+                                     "amenity_ball":  "Free",
+                                     "amenity_bathrooms":  "Available",
+                                     "amenity_parking":  "Available",
+                                     "active":  true,
+                                     "created_at":  "2026-07-26T09:48:58.895914+00:00"
+                                 }
+                             ],
+                   "Count":  6
+               },
+    "stats":  {
+                  "value":  [
+                                {
+                                    "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                    "rating":  5.0,
+                                    "reviews_count":  5,
+                                    "reviews_dist":  [
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         5
+                                                     ]
+                                },
+                                {
+                                    "place_id":  "62f21ab8-6a2c-4167-8db6-adcefd661563",
+                                    "rating":  5.0,
+                                    "reviews_count":  1,
+                                    "reviews_dist":  [
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         0,
+                                                         1
+                                                     ]
+                                }
+                            ],
+                  "Count":  2
+              },
+    "fields":  {
+                   "value":  [
+                                 {
+                                     "id":  "da8df8d7-eb45-47fc-b59b-868f0bf3af1f",
+                                     "legacy_id":  "101",
+                                     "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                     "name":  "ملعب 1",
+                                     "size":  "5×5",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/186239/pexels-photo-186239.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "1378546a-f84a-4c11-8015-d62de70cc0a8",
+                                     "legacy_id":  "102",
+                                     "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                     "name":  "ملعب 2",
+                                     "size":  "6×6",
+                                     "price":  45.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/186240/pexels-photo-186240.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "48eadb79-1243-4680-887a-01fb305caa4e",
+                                     "legacy_id":  "103",
+                                     "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                     "name":  "ملعب VIP",
+                                     "size":  "7×7",
+                                     "price":  60.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "9bf49812-a8fd-492a-9f19-2204a064f851",
+                                     "legacy_id":  "201",
+                                     "place_id":  "62f21ab8-6a2c-4167-8db6-adcefd661563",
+                                     "name":  "ملعب 1",
+                                     "size":  "5×5",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/1657324/pexels-photo-1657324.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "1a40824d-95c8-4832-aa6d-4d31869f4e85",
+                                     "legacy_id":  "202",
+                                     "place_id":  "62f21ab8-6a2c-4167-8db6-adcefd661563",
+                                     "name":  "ملعب 2",
+                                     "size":  "6×6",
+                                     "price":  45.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/17617391/pexels-photo-17617391.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "f05823ba-d82d-45d5-982a-183d0cfb840b",
+                                     "legacy_id":  "301",
+                                     "place_id":  "d5cf356d-db11-4696-b9ab-9255367015bb",
+                                     "name":  "ملعب 1",
+                                     "size":  "6×6",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/4122451/pexels-photo-4122451.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "9ea61478-1125-44a9-974c-060e57231516",
+                                     "legacy_id":  "302",
+                                     "place_id":  "d5cf356d-db11-4696-b9ab-9255367015bb",
+                                     "name":  "ملعب 2",
+                                     "size":  "6×6",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/1657322/pexels-photo-1657322.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "f049f707-3acf-4996-8a34-1f6dd6519384",
+                                     "legacy_id":  "401",
+                                     "place_id":  "9625dfca-8629-44cd-a5ea-7f40ed08284f",
+                                     "name":  "ملعب 1",
+                                     "size":  "6×6",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/15779126/pexels-photo-15779126.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "fbc35f54-9d1e-46a9-9ecf-8269bd9e626d",
+                                     "legacy_id":  "601",
+                                     "place_id":  "8a86898f-b488-4a12-adf6-8902fc7f023e",
+                                     "name":  "ملعب 1",
+                                     "size":  "6×6",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/1646735/pexels-photo-1646735.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "51e725d0-ede4-44b6-a3ec-7288de9738e0",
+                                     "legacy_id":  "1001",
+                                     "place_id":  "830302ac-6162-4642-8782-e3b2dc200685",
+                                     "name":  "ملعب 1",
+                                     "size":  "6×6",
+                                     "price":  40.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "https://images.pexels.com/photos/3158350/pexels-photo-3158350.jpeg",
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "dffc3f20-387c-414d-b888-beb371a11333",
+                                     "legacy_id":  "field_138d6200f0084f07",
+                                     "place_id":  "d5cf356d-db11-4696-b9ab-9255367015bb",
+                                     "name":  "ملعب ٣",
+                                     "size":  "8x8",
+                                     "price":  60.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  null,
+                                     "active":  true
+                                 },
+                                 {
+                                     "id":  "d3228b20-a45d-417c-8ba3-c3f586950f6f",
+                                     "legacy_id":  "field_630c74d9c9144ffe",
+                                     "place_id":  "62f21ab8-6a2c-4167-8db6-adcefd661563",
+                                     "name":  "ملعب vip",
+                                     "size":  "6×6",
+                                     "price":  60.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  8,
+                                                       "label":  "8:00 - 10:00 ص"
+                                                   },
+                                                   {
+                                                       "h":  10,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   },
+                                                   {
+                                                       "h":  12,
+                                                       "label":  "12:00 - 2:00 م"
+                                                   },
+                                                   {
+                                                       "h":  14,
+                                                       "label":  "2:00 - 4:00 م"
+                                                   },
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  null,
+                                     "active":  true
+                                 }
+                             ],
+                   "Count":  12
+               }
+}

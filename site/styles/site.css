@@ -369,7 +369,51 @@ html.dark .in-link{color:var(--lime)}
   color:var(--ink);margin:14px 0 18px;text-align:start;word-break:break-all}
 .ct-card .btn{margin-top:auto}
 
-/* ---------- 15 · الحركة ---------- */
+/* ---------- 15 · دليل الملاعب ---------- */
+.pl-grid{display:grid;gap:14px;grid-template-columns:1fr;margin-top:clamp(26px,4vw,36px)}
+@media (min-width:640px){.pl-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.pl-grid{grid-template-columns:repeat(3,1fr)}}
+.pl-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:20px;box-shadow:var(--sh-sm);display:flex;flex-direction:column;gap:8px}
+.pl-name{font-size:19px;margin:0}
+/* الرابط يغطّي البطاقة كلّها فتصير منطقة اللمس كبيرة، والعنوان يبقى هو الرابط
+   المقروء لقارئ الشاشة ولمحرّك البحث. */
+.pl-link{display:block}
+.pl-link::after{content:'';position:absolute;inset:0}
+.pl-card{position:relative}
+@media (hover:hover){.pl-card:hover{border-color:var(--line-2);box-shadow:var(--sh)}}
+.pl-meta{color:var(--muted);font-size:14.5px;margin:0}
+.pl-tags{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 0}
+.pl-tag{font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:var(--r-full);
+  background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.pl-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin:auto 0 0;padding-top:12px;border-top:1px solid var(--line)}
+.pl-price{font-weight:800;font-size:15px}
+.pl-rate{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:14.5px;color:#B7791F}
+html.dark .pl-rate{color:#F0C070}
+.pl-rate-n{color:var(--muted);font-weight:600;font-size:13px}
+.pl-rate-row{margin-top:10px}
+
+.pl-back{display:inline-block;margin-bottom:14px;font-size:14.5px;font-weight:700;color:var(--muted)}
+@media (hover:hover){.pl-back:hover{color:var(--ink)}}
+.pl-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;
+  margin-top:clamp(22px,3vw,30px);max-width:660px}
+.pl-fact{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px}
+.pl-fact .k{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.pl-fact .v{font-weight:800;font-size:16px}
+.pl-h2{margin-top:clamp(28px,4vw,40px);font-size:clamp(20px,2.4vw,25px)}
+.pl-fields{list-style:none;display:grid;gap:9px;max-width:660px;margin-top:14px}
+.pl-fields li{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-sm);font-size:15px}
+.pl-fields .fn{font-weight:700}
+.pl-fields .fs{color:var(--muted);font-size:14px}
+.pl-fields .fp{margin-inline-start:auto;font-weight:800}
+.pl-am{list-style:none;display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.pl-am li{font-size:14px;font-weight:600;padding:8px 14px;border-radius:var(--r-full);
+  background:var(--lime-soft);border:1px solid var(--line);color:var(--ink-2)}
+.pl-updated{margin-top:clamp(24px,3vw,32px);font-size:13.5px;color:var(--muted)}
+
+/* ---------- 16 · الحركة ---------- */
 /* كشف عند التمرير بلا سطر JS واحد: animation-timeline مدعوم ⇒ يعمل،
    غير مدعوم ⇒ المحتوى ظاهر كاملًا. لا حالة يختفي فيها نصّ. */
 @supports (animation-timeline:view()){

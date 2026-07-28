@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>سياسة الخصوصية — المستديرة</title>
-<meta name="description" content="ما البيانات التي نجمعها، ولماذا، وكيف نحفظها، وكيف تطلب حذف حسابك.">
-<link rel="canonical" href="https://mustadeera.vercel.app/privacy/">
+<title>دليل ملاعب كرة القدم — المستديرة</title>
+<meta name="description" content="ملاعب كرة القدم المتاحة للحجز: المنطقة، نوع الأرضية، عدد الملاعب، وسعر الساعة لكل ملعب.">
+<link rel="canonical" href="https://mustadeera.vercel.app/places/">
 
 <!-- كل صفحة تشير إلى شقيقتها في اللغة الأخرى، و x-default إلى العربية (لغة الجمهور الأساسي) -->
-<link rel="alternate" hreflang="ar" href="https://mustadeera.vercel.app/privacy/">
-<link rel="alternate" hreflang="en" href="https://mustadeera.vercel.app/en/privacy/">
-<link rel="alternate" hreflang="x-default" href="https://mustadeera.vercel.app/privacy/">
+<link rel="alternate" hreflang="ar" href="https://mustadeera.vercel.app/places/">
+<link rel="alternate" hreflang="en" href="https://mustadeera.vercel.app/en/places/">
+<link rel="alternate" hreflang="x-default" href="https://mustadeera.vercel.app/places/">
 
 <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#081D22" media="(prefers-color-scheme: dark)">
@@ -19,9 +19,9 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="المستديرة">
 <meta property="og:locale" content="ar">
-<meta property="og:title" content="سياسة الخصوصية — المستديرة">
-<meta property="og:description" content="ما البيانات التي نجمعها، ولماذا، وكيف نحفظها، وكيف تطلب حذف حسابك.">
-<meta property="og:url" content="https://mustadeera.vercel.app/privacy/">
+<meta property="og:title" content="دليل ملاعب كرة القدم — المستديرة">
+<meta property="og:description" content="ملاعب كرة القدم المتاحة للحجز: المنطقة، نوع الأرضية، عدد الملاعب، وسعر الساعة لكل ملعب.">
+<meta property="og:url" content="https://mustadeera.vercel.app/places/">
 <meta property="og:image" content="https://mustadeera.vercel.app/assets/og-default.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -49,7 +49,7 @@
 </script>
 
 </head>
-<body class="p-privacy">
+<body class="p-places">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>
 
 <header class="hd">
@@ -69,7 +69,7 @@
 
     <div class="hd-tools">
       <!-- مبدّل اللغة رابط حقيقي إلى الصفحة المقابلة، لا زرّ JS: يُفهرَس ويُشارَك ويعمل بلا سكربت -->
-      <a class="tool lang" href="/en/privacy/" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
+      <a class="tool lang" href="/en/places/" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
 
       <button class="tool thm" type="button" data-theme-toggle aria-label="تبديل الوضع الليلي">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="thm-p" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
@@ -83,51 +83,19 @@
 
 <main id="main">
 <section class="sec">
-  <div class="wrap prose">
-    <h1 class="h1-page">سياسة الخصوصية</h1>
-    <p class="legal-date">آخر تحديث: 2026-07-28</p>
-    <p class="lead">هذه الصفحة تقول بالضبط ما نجمعه ولماذا. مكتوبة بلغة مفهومة لا بلغة محامين.</p>
+  <div class="wrap">
+    <span class="eyebrow">دليل الملاعب</span>
+    <h1 class="h1-page">ملاعب كرة القدم المتاحة للحجز</h1>
+    <p class="lead">كل ملعب بمنطقته ونوع أرضيته وعدد ملاعبه وسعر ساعته. اضغط على أي ملعب لتفاصيله، واحجز من التطبيق.</p>
 
-    <h2>ما الذي نجمعه</h2>
-    <ul>
-      <li><strong>اسمك ورقم هاتفك</strong> — لأن صاحب الملعب يحتاجهما ليؤكّد حجزك ويتواصل معك.</li>
-      <li><strong>كلمة سرّك</strong> — مخزّنة كبصمة مشفّرة أحادية الاتجاه (bcrypt). لا نستطيع رؤيتها ولا استرجاعها، ولا أحد يستطيع — لهذا لا يوجد «إرسال كلمة السرّ»، بل إعادة تعيينها.</li>
-      <li><strong>حجوزاتك</strong> — الملعب والتاريخ والوقت والسعر وحالة الطلب.</li>
-      <li><strong>تقييماتك وتعليقاتك</strong> إن كتبتها.</li>
-    </ul>
+    <!-- القائمة مولَّدة وقت البناء من قاعدة البيانات — لا استعلام وقت الزيارة،
+         ولا JS. ما تراه هنا هو ما في القاعدة لحظة آخر نشر. -->
+    <div class="pl-grid"><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%A7%D8%B9%D8%A8-%D8%A7%D9%83%D8%B3%D9%81%D9%88%D8%B1%D8%AF/"><h2 class="pl-name">ملاعب اكسفورد</h2></a><p class="pl-meta">المدينة الرياضية &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">ملعب واحد</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span></p></article><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%A7%D8%B9%D8%A8-%D8%A7%D9%84%D9%82%D9%88%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D8%B3%D9%84%D8%AD%D8%A9/"><h2 class="pl-name">ملاعب القوات المسلحة</h2></a><p class="pl-meta">طبربور &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">ملعب واحد</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span></p></article><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%B9%D8%A8-%D8%A7%D9%84%D8%AE%D8%B7%D9%88%D8%A9-%D8%A7%D9%84%D8%A3%D9%88%D9%84%D9%89/"><h2 class="pl-name">ملعب الخطوة الأولى</h2></a><p class="pl-meta">عرجان &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">3 ملاعب</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span><span class="pl-rate"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9Z"/></svg>5<span class="pl-rate-n">(5)</span></span></p></article><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%B9%D8%A8-%D8%A7%D9%84%D9%85%D9%86%D9%87%D9%84/"><h2 class="pl-name">ملعب المنهل</h2></a><p class="pl-meta">ضاحية الرشيد &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">ملعب واحد</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span></p></article><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%B9%D8%A8-%D9%83%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/"><h2 class="pl-name">ملعب كلية المجتمع</h2></a><p class="pl-meta">شارع الجامعة &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">3 ملاعب</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span></p></article><article class="pl-card"><a class="pl-link" href="/places/%D9%85%D9%84%D8%B9%D8%A8-%D9%85%D9%8A%D8%A7%D8%B1/"><h2 class="pl-name">ملعب ميار</h2></a><p class="pl-meta">تلاع العلي &middot; عمان</p><p class="pl-tags"><span class="pl-tag">عشب صناعي</span><span class="pl-tag">3 ملاعب</span></p><p class="pl-foot"><span class="pl-price">من 40 د.أ</span><span class="pl-rate"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9Z"/></svg>5<span class="pl-rate-n">(1)</span></span></p></article></div>
 
-    <h2>ما يبقى على جهازك ولا يصلنا</h2>
-    <p>المفضّلة، واللغة، والوضع الليلي، ورمز جلستك — كلّها في ذاكرة المتصفّح على جهازك. حذف بيانات المتصفّح يمحوها.</p>
-
-    <h2>مع من نشاركها</h2>
-    <ul>
-      <li><strong>صاحب الملعب الذي أرسلت له طلبًا</strong> يرى اسمك ورقم هاتفك وتفاصيل الطلب. هذا هو جوهر الخدمة، وبإرسالك الطلب توافق عليه.</li>
-      <li><strong>لا نبيع بياناتك ولا نشاركها مع معلنين.</strong> لا توجد إعلانات في المنصّة ولا أدوات تتبّع في هذا الموقع.</li>
-    </ul>
-
-    <h2>الذكاء الاصطناعي</h2>
-    <p>لوحة صاحب الملعب فيها ميزة تحليل تستعين بخدمة Google Gemini. المُرسَل إليها <strong>أرقام مجمّعة عن الملعب</strong> (عدد الحجوزات، الإيراد، الإشغال، أسماء الملاعب، الأيام والساعات) و<strong>نصوص التقييمات بلا اسم كاتبها</strong>. لا تُرسَل أسماء اللاعبين ولا أرقام هواتفهم إطلاقًا.</p>
-
-    <h2>الدفع</h2>
-    <p>لا نجمع أي بيانات دفع لأنه لا يوجد دفع إلكتروني في المنصّة. لا نطلب بطاقة ولا نحفظ رقمها.</p>
-
-    <h2>أين تُحفَظ</h2>
-    <p>في قاعدة بيانات مُدارة (Supabase / PostgreSQL) محميّة بصلاحيات على مستوى الصفّ، بحيث لا يستطيع حساب أن يقرأ بيانات حساب آخر. والاتصال مشفّر عبر HTTPS.</p>
-
-    <h2>حقوقك</h2>
-    <ul>
-      <li>تستطيع تعديل اسمك ورقمك وتغيير كلمة سرّك من «حسابي» في التطبيق.</li>
-      <li>تستطيع طلب حذف حسابك وبياناتك بالتواصل معنا — ننفّذه ونؤكّده لك.</li>
-      <li>تستطيع طلب نسخة من بياناتك.</li>
-    </ul>
-
-    <h2>كم نحتفظ بها</h2>
-    <p>ما دام حسابك قائمًا. عند الحذف تُزال بياناتك الشخصية، وقد تبقى سجلّات الحجوزات بلا هويّة (رقم وتاريخ بلا اسم) لأغراض المحاسبة مع الملاعب.</p>
-
-    <h2>أسئلة أو طلب حذف</h2>
-    <p>راسلنا من صفحة التواصل ونردّ عليك. <a class="in-link" href="/contact/">تواصل معنا</a></p>
+    <p class="pl-updated">آخر تحديث 2026-07-28 &middot; الأوقات المتاحة تظهر لحظيًّا داخل التطبيق</p>
   </div>
 </section>
+
 </main>
 <footer class="ft">
   <div class="wrap ft-in">
@@ -161,7 +129,7 @@
 
   <div class="wrap ft-btm">
     <p>© 2026 المستديرة — جميع الحقوق محفوظة.</p>
-    <a class="ft-lang" href="/en/privacy/" hreflang="en" lang="en">Switch to English</a>
+    <a class="ft-lang" href="/en/places/" hreflang="en" lang="en">Switch to English</a>
   </div>
 </footer>
 

@@ -11,5 +11,5 @@
 #  بعد التعديل شغّل البناء:  powershell -ExecutionPolicy Bypass -File app\build.ps1
 # =========================================================
 
-whatsapp =
-email =
+whatsapp = 962795097771
+email = malik.m.masri@gmail.com

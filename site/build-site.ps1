@@ -75,6 +75,7 @@ $Pages = @(
     @{ name = 'index';    path = '/';          title = 'metaHomeTitle';     desc = 'metaHomeDesc';     prio = '1.0' },
     @{ name = 'download'; path = '/download/'; title = 'metaDownloadTitle'; desc = 'metaDownloadDesc'; prio = '0.9' },
     @{ name = 'owners';   path = '/owners/';   title = 'metaOwnersTitle';   desc = 'metaOwnersDesc';   prio = '0.8' },
+    @{ name = 'places';   path = '/places/';   title = 'metaPlacesTitle';   desc = 'metaPlacesDesc';   prio = '0.9' },
     @{ name = 'about';    path = '/about/';    title = 'metaAboutTitle';    desc = 'metaAboutDesc';    prio = '0.5' },
     @{ name = 'contact';  path = '/contact/';  title = 'metaContactTitle';  desc = 'metaContactDesc';  prio = '0.5' },
     @{ name = 'privacy';  path = '/privacy/';  title = 'metaPrivacyTitle';  desc = 'metaPrivacyDesc';  prio = '0.3' },
@@ -109,6 +110,111 @@ $WaDigits  = $(if ($Contact.ContainsKey('whatsapp')) { $Contact['whatsapp'] -rep
 $MailAddr  = $(if ($Contact.ContainsKey('email'))    { $Contact['email'] }                        else { '' })
 $ContactLive = ($WaDigits -ne '' -or $MailAddr -ne '')
 
+# ---- venue directory data, pulled from Postgres at build time ----
+# The anon key is public by design: it is already shipped inside the APK and
+# the SPA, and every table behind it is governed by row-level security.
+# Only rows the database itself exposes anonymously can be read here.
+$SbUrl = 'https://nxqddfuwtrsabprxcfez.supabase.co/rest/v1'
+$SbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWRkZnV3dHJzYWJwcnhjZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNDkwNDcsImV4cCI6MjEwMDYyNTA0N30.SOL5yoyeDZpJOEneH9rgqGc5P6HswMw5fR9d76Uh0wA'
+$DataCache = Join-Path $SiteDir 'data\places.json'
+
+function Get-Sb([string]$q) {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $r = Invoke-WebRequest -Uri ($SbUrl + $q) -Headers @{ apikey = $SbKey; Authorization = "Bearer $SbKey" } -UseBasicParsing -TimeoutSec 25
+    # Decode explicitly as UTF-8: PowerShell 5.1 otherwise falls back to
+    # Latin-1 for a body it is unsure about, which mangles every Arabic name.
+    $txt = [Text.Encoding]::UTF8.GetString($r.RawContentStream.ToArray())
+    $txt | ConvertFrom-Json
+}
+
+$PlacesData = $null
+try {
+    $pl = Get-Sb '/places?select=*&active=is.true&order=name'
+    $fl = Get-Sb '/fields?select=*&active=is.true'
+    $st = Get-Sb '/place_stats?select=*'
+    $PlacesData = @{ places = $pl; fields = $fl; stats = $st }
+    $dd = Split-Path -Parent $DataCache
+    if (-not (Test-Path $dd)) { New-Item -ItemType Directory -Path $dd -Force | Out-Null }
+    Write-Text $DataCache ($PlacesData | ConvertTo-Json -Depth 8)
+    Write-Host ("  [db]     {0} places, {1} fields fetched" -f @($pl).Count, @($fl).Count) -ForegroundColor DarkGray
+} catch {
+    # A build must never fail because the database blinked. Fall back to the
+    # last good snapshot; only warn if there isn't one.
+    if (Test-Path $DataCache) {
+        $PlacesData = (Read-Text $DataCache) | ConvertFrom-Json
+        Write-Warning ("database unreachable - using cached snapshot ({0})" -f (Get-Item $DataCache).LastWriteTime)
+    } else {
+        Write-Warning 'database unreachable and no cached snapshot - /places will be skipped'
+    }
+}
+
+# ---- normalise the directory into one model, shared by both languages ----
+function HtmlEnc([string]$s) {
+    if ($null -eq $s) { return '' }
+    $s.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;')
+}
+
+function New-Slug([string]$s) {
+    $x = ([string]$s).Trim()
+    $x = $x -replace '[\\/:*?"<>|#%&+.,()\[\]]', ''
+    $x = $x -replace '\s+', '-'
+    $x = $x -replace '-+', '-'
+    $x.Trim('-')
+}
+
+function Fmt-Price($n) {
+    $d = [double]$n
+    if ($d -eq [math]::Floor($d)) { [string][int]$d } else { $d.ToString('0.##') }
+}
+
+$PlaceModel = @()
+if ($null -ne $PlacesData) {
+    $statBy = @{}
+    foreach ($s in @($PlacesData.stats)) { $statBy[[string]$s.place_id] = $s }
+    $fieldBy = @{}
+    foreach ($f in @($PlacesData.fields)) {
+        $k = [string]$f.place_id
+        if (-not $fieldBy.ContainsKey($k)) { $fieldBy[$k] = @() }
+        $fieldBy[$k] += $f
+    }
+    $usedSlugs = @{}
+    foreach ($p in @($PlacesData.places)) {
+        # NOT $pid - that is a read-only automatic variable (the process id).
+        $placeId = [string]$p.id
+        $fs      = @($fieldBy[$placeId])
+        # Same rule the app applies: a venue with no bookable pitch is not shown.
+        if ($fs.Count -eq 0) { continue }
+
+        $slug = New-Slug $p.name
+        if ($usedSlugs.ContainsKey($slug)) { $slug = $slug + '-' + [string]$p.legacy_id }
+        $usedSlugs[$slug] = $true
+
+        $prices = @($fs | ForEach-Object { [double]$_.price })
+        $st = $statBy[$placeId]
+        # hasRating: a venue nobody has rated shows no stars at all - the same
+        # decision made in the app (item 6), repeated here on purpose.
+        $hasRating = ($null -ne $st -and [int]$st.reviews_count -gt 0)
+
+        $am = @()
+        if ($p.amenity_water)     { $am += 'amWater' }
+        if ($p.amenity_vests)     { $am += 'amVests' }
+        if ($p.amenity_ball)      { $am += 'amBall' }
+        if ($p.amenity_bathrooms) { $am += 'amBathrooms' }
+        if ($p.amenity_parking)   { $am += 'amParking' }
+
+        $PlaceModel += @{
+            id = $placeId; name = [string]$p.name; city = [string]$p.city; region = [string]$p.region
+            type = [string]$p.type; map = [string]$p.map_link; slug = $slug
+            fields = $fs; priceMin = ($prices | Measure-Object -Minimum).Minimum
+            priceMax = ($prices | Measure-Object -Maximum).Maximum
+            hasRating = $hasRating
+            rating = $(if ($hasRating) { [double]$st.rating } else { 0 })
+            reviews = $(if ($hasRating) { [int]$st.reviews_count } else { 0 })
+            amenities = $am
+        }
+    }
+}
+
 $TplHead   = Read-Text (Join-Path $SiteDir 'partials\head.html')
 $TplHeader = Read-Text (Join-Path $SiteDir 'partials\header.html')
 $TplFooter = Read-Text (Join-Path $SiteDir 'partials\footer.html')
@@ -124,6 +230,81 @@ $CssMin = $CssMin -replace ';\}', '}' -replace '\s*([{}:;,>])\s*', '$1'
 
 $sitemap = New-Object System.Collections.ArrayList
 $written = 0
+
+# ---- directory markup (generated from data, so it holds no placeholders) ----
+function Tx($T, [string]$k) { if ($T.ContainsKey($k)) { $T[$k] } else { "[[$k]]" } }
+
+# Arabic changes the counted noun with the number, so "1 pitches" is not a
+# typo to shrug at - it reads as broken Arabic. 1 = singular, 2 = dual,
+# 3-10 = plural, 11+ = singular accusative. English just needs 1 vs many.
+function Pitches([int]$n, $T) {
+    if ($n -eq 1)  { return (Tx $T 'plPitchOne') }
+    if ($n -eq 2)  { return (Tx $T 'plPitchTwo') }
+    if ($n -le 10) { return "$n " + (Tx $T 'plPitchesFew') }
+    "$n " + (Tx $T 'plPitchesMany')
+}
+
+function Render-Stars($p, $T) {
+    if (-not $p.hasRating) { return '' }
+    $r = ('{0:0.#}' -f $p.rating)
+    '<span class="pl-rate"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9Z"/></svg>' +
+    $r + '<span class="pl-rate-n">(' + $p.reviews + ')</span></span>'
+}
+
+function Render-PlacesList($model, $T, [string]$base) {
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<div class="pl-grid">')
+    foreach ($p in $model) {
+        $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
+        [void]$sb.Append('<article class="pl-card"><a class="pl-link" href="' + $href + '">')
+        [void]$sb.Append('<h2 class="pl-name">' + (HtmlEnc $p.name) + '</h2></a>')
+        [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
+        [void]$sb.Append('<p class="pl-tags"><span class="pl-tag">' + (HtmlEnc $p.type) + '</span>')
+        [void]$sb.Append('<span class="pl-tag">' + (Pitches $p.fields.Count $T) + '</span></p>')
+        [void]$sb.Append('<p class="pl-foot"><span class="pl-price">' + (Tx $T 'plPriceFrom') + ' ' + (Fmt-Price $p.priceMin) + ' ' + (Tx $T 'plCurrency') + '</span>')
+        [void]$sb.Append((Render-Stars $p $T) + '</p>')
+        [void]$sb.Append('</article>')
+    }
+    [void]$sb.Append('</div>')
+    $sb.ToString()
+}
+
+function Render-PlaceBody($p, $T, [string]$base) {
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<section class="sec"><div class="wrap">')
+    [void]$sb.Append('<a class="pl-back" href="' + $base + '/places/">' + (Tx $T 'plBackToList') + '</a>')
+    [void]$sb.Append('<h1 class="h1-page">' + (HtmlEnc $p.name) + '</h1>')
+    [void]$sb.Append('<p class="lead">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + ' &middot; ' + (HtmlEnc $p.type) + '</p>')
+    if ($p.hasRating) { [void]$sb.Append('<p class="pl-rate-row">' + (Render-Stars $p $T) + '</p>') }
+
+    [void]$sb.Append('<div class="pl-facts">')
+    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPitches') + '</span><span class="v">' + $p.fields.Count + '</span></div>')
+    $priceTxt = $(if ($p.priceMin -eq $p.priceMax) { (Fmt-Price $p.priceMin) } else { (Fmt-Price $p.priceMin) + ' - ' + (Fmt-Price $p.priceMax) })
+    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPriceHour') + '</span><span class="v">' + $priceTxt + ' ' + (Tx $T 'plCurrency') + '</span></div>')
+    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plSurface') + '</span><span class="v">' + (HtmlEnc $p.type) + '</span></div>')
+    [void]$sb.Append('</div>')
+
+    [void]$sb.Append('<h2 class="h2 pl-h2">' + (Tx $T 'plFieldsTitle') + '</h2><ul class="pl-fields">')
+    foreach ($f in $p.fields) {
+        [void]$sb.Append('<li><span class="fn">' + (HtmlEnc $f.name) + '</span>')
+        if ($f.size) { [void]$sb.Append('<span class="fs">' + (HtmlEnc $f.size) + '</span>') }
+        [void]$sb.Append('<span class="fp">' + (Fmt-Price $f.price) + ' ' + (Tx $T 'plCurrency') + '</span></li>')
+    }
+    [void]$sb.Append('</ul>')
+
+    if ($p.amenities.Count -gt 0) {
+        [void]$sb.Append('<h2 class="h2 pl-h2">' + (Tx $T 'plAmenities') + '</h2><ul class="pl-am">')
+        foreach ($a in $p.amenities) { [void]$sb.Append('<li>' + (Tx $T $a) + '</li>') }
+        [void]$sb.Append('</ul>')
+    }
+
+    [void]$sb.Append('<div class="hero-cta cta-start"><a class="btn btn-pri btn-lg" href="/app/">' + (Tx $T 'plBookCta') + '</a>')
+    if ($p.map) { [void]$sb.Append('<a class="btn btn-sec btn-lg" href="' + (HtmlEnc $p.map) + '" rel="noopener nofollow">' + (Tx $T 'plMapCta') + '</a>') }
+    [void]$sb.Append('</div>')
+    [void]$sb.Append('<p class="pl-updated">' + (Tx $T 'plUpdated') + ' ' + $BuildStamp + ' &middot; ' + (Tx $T 'plLiveNote') + '</p>')
+    [void]$sb.Append('</div></section>')
+    $sb.ToString()
+}
 
 foreach ($lang in $Langs) {
     $T = $Strings[$lang.code]
@@ -184,6 +365,9 @@ foreach ($lang in $Langs) {
         }
         if ($MailAddr -ne '') { $vars['mailUrl'] = 'mailto:' + $MailAddr }
 
+        $vars['placesList']  = $(if ($PlaceModel.Count -gt 0) { Render-PlacesList $PlaceModel $T $lang.base } else { '' })
+        $vars['placesCount'] = [string]$PlaceModel.Count
+
         $body = Read-Text $bodyFile
         $body = $body.Replace('{{include:contact}}', $(if ($ContactLive) { '{{include:contact-live}}' } else { '{{include:contact-soon}}' }))
 
@@ -210,6 +394,44 @@ foreach ($lang in $Langs) {
 
         [void]$sitemap.Add(@{ loc = $canonical; prio = $page.prio; ar = $vars.arUrl; en = $vars.enUrl })
     }
+
+    # ---- one page per venue: the only pages here with content search engines
+    # cannot get anywhere else (name, area, surface, pitch sizes, real prices).
+    foreach ($p in $PlaceModel) {
+        $enc      = [uri]::EscapeDataString($p.slug)
+        $pPath    = '/places/' + $enc + '/'
+        $pTitle   = $p.name + ' - ' + $p.region + ' | ' + (Tx $T 'brandName')
+        $pDesc    = (Tx $T 'plMetaDescA') + ' ' + $p.name + ' ' + (Tx $T 'plMetaDescB') + ' ' + $p.region + ' - ' +
+                    $p.type + ', ' + (Pitches $p.fields.Count $T) + ', ' +
+                    (Tx $T 'plPriceFrom') + ' ' + (Fmt-Price $p.priceMin) + ' ' + (Tx $T 'plCurrency') + '.'
+
+        $pv = @{}
+        foreach ($k in $vars.Keys) { $pv[$k] = $vars[$k] }
+        $pv['title']     = HtmlEnc $pTitle
+        $pv['desc']      = HtmlEnc $pDesc
+        $pv['path']      = $pPath
+        $pv['canonical'] = $SiteOrigin + $lang.base + $pPath
+        $pv['altUrl']    = $SiteOrigin + $lang.altBase + $pPath
+        $pv['arUrl']     = $SiteOrigin + $pPath
+        $pv['enUrl']     = $SiteOrigin + '/en' + $pPath
+        $pv['pageName']  = 'place'
+        foreach ($q in $Pages) { $pv["cur_$($q.name)"] = $(if ($q.name -eq 'places') { ' aria-current="page"' } else { '' }) }
+
+        $pBody = Render-PlaceBody $p $T $lang.base
+        $pHtml = "<!DOCTYPE html>`r`n<html lang=`"$($lang.code)`" dir=`"$($lang.dir)`">`r`n<head>`r`n" +
+                 $TplHead + "`r`n</head>`r`n<body class=`"p-place`">`r`n" +
+                 $TplHeader + "`r`n<main id=`"main`">`r`n" + $pBody + "`r`n</main>`r`n" +
+                 $TplFooter + "`r`n</body>`r`n</html>`r`n"
+        $pHtml = Expand-Tpl $pHtml $pv $T
+
+        # On disk the folder carries the RAW slug, never the percent-encoded one:
+        # a server decodes the request path before it looks for the file, so an
+        # encoded folder name would only ever be reachable by double-encoding.
+        $diskDir = ($lang.base + '/places/' + $p.slug).TrimStart('/')
+        Write-Text (Join-Path $Out ($diskDir.Replace('/', '\') + '\index.html')) $pHtml
+        $written++
+        [void]$sitemap.Add(@{ loc = $pv['canonical']; prio = '0.7'; ar = $pv['arUrl']; en = $pv['enUrl'] })
+    }
 }
 
 # ---- sitemap.xml (with reciprocal hreflang on every entry) ----
@@ -228,6 +450,13 @@ foreach ($u in $sitemap) {
 }
 [void]$sb.AppendLine('</urlset>')
 Write-Text (Join-Path $Out 'sitemap.xml') $sb.ToString()
+
+# ---- service worker: written here rather than copied, so the cache name
+# carries the build stamp and every deploy retires the previous cache ----
+$swSrc = Join-Path $SiteDir 'sw.js'
+if (Test-Path $swSrc) {
+    Write-Text (Join-Path $Out 'sw.js') ((Read-Text $swSrc).Replace('{{buildStamp}}', $BuildStamp))
+}
 
 # ---- robots.txt ----
 Write-Text (Join-Path $Out 'robots.txt') "User-agent: *`nAllow: /`n`nSitemap: $SiteOrigin/sitemap.xml`n"
