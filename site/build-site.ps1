@@ -451,6 +451,22 @@ foreach ($u in $sitemap) {
 [void]$sb.AppendLine('</urlset>')
 Write-Text (Join-Path $Out 'sitemap.xml') $sb.ToString()
 
+# ---- /admin: a standalone page, deliberately outside the site template.
+# It shares the stylesheet but none of the marketing chrome, and it is
+# excluded from the sitemap and from robots.txt. The exclusion is tidiness,
+# not security - the actual guard is row-level security in the database.
+$adminSrc = Join-Path $SiteDir 'admin.html'
+if (Test-Path $adminSrc) {
+    $av = @{
+        css        = $CssMin
+        sbBase     = $SbUrl -replace '/rest/v1$', ''
+        sbKey      = $SbKey
+        buildStamp = $BuildStamp
+        year       = (Get-Date -Format 'yyyy')
+    }
+    Write-Text (Join-Path $Out 'admin\index.html') (Expand-Tpl (Read-Text $adminSrc) $av $Strings['ar'])
+}
+
 # ---- service worker: written here rather than copied, so the cache name
 # carries the build stamp and every deploy retires the previous cache ----
 $swSrc = Join-Path $SiteDir 'sw.js'
@@ -459,7 +475,14 @@ if (Test-Path $swSrc) {
 }
 
 # ---- robots.txt ----
-Write-Text (Join-Path $Out 'robots.txt') "User-agent: *`nAllow: /`n`nSitemap: $SiteOrigin/sitemap.xml`n"
+Write-Text (Join-Path $Out 'robots.txt') @"
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /app/
+
+Sitemap: $SiteOrigin/sitemap.xml
+"@
 
 # ---- static passthrough: _headers, _redirects, assets ----
 $staticDir = Join-Path $SiteDir 'static'

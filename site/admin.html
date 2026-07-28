@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- صفحة إدارة: لا تُفهرَس ولا تُتبَع، ومستثناة في robots.txt أيضًا.
+     ⚠️ الإخفاء ليس أمانًا — الأمان في القاعدة: كل جدول محكوم بـRLS و is_admin()،
+     ومن يفتح هذه الصفحة بلا الدور لا يحصل على صفّ واحد مهما فعل بأدوات المطوّر. -->
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة الإدارة — المستديرة</title>
+<link rel="icon" href="/assets/logo-fav.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@700;800;900&display=swap">
+<script>(function(){try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<style>
+{{css}}
+
+/* ===== لوحة الإدارة ===== */
+.ad-wrap{max-width:1240px;margin-inline:auto;padding:clamp(16px,3vw,28px)}
+.ad-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:14px;
+  border-bottom:1px solid var(--line);margin-bottom:clamp(20px,3vw,28px)}
+.ad-bar h1{font-size:20px;margin:0}
+.ad-who{margin-inline-start:auto;font-size:14px;color:var(--muted)}
+.ad-out{padding:8px 14px;font-size:14px;font-weight:700;border:1px solid var(--line);
+  background:var(--surface);border-radius:var(--r-sm);cursor:pointer;color:var(--ink)}
+
+.ad-login{max-width:400px;margin:clamp(40px,10vh,90px) auto;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh)}
+.ad-login h1{font-size:22px;margin-bottom:6px}
+.ad-login p{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+.ad-f{display:block;margin-bottom:14px}
+.ad-f span{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px}
+.ad-f input{width:100%;min-height:48px;padding:0 14px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink);font-size:16px}
+.ad-f input:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.ad-err{background:rgba(214,48,58,.1);border:1px solid rgba(214,48,58,.35);color:#B02718;
+  padding:11px 14px;border-radius:var(--r-sm);font-size:14.5px;font-weight:600;margin-bottom:14px}
+html.dark .ad-err{color:#FF8A90}
+.ad-ok{background:var(--lime-soft);border:1px solid var(--line-2);color:var(--ink-2);
+  padding:11px 14px;border-radius:var(--r-sm);font-size:14.5px;font-weight:600;margin-bottom:14px}
+
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:26px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.kpi .k{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.kpi .v{font-family:var(--f-head);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.kpi .s{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+
+.ad-sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:clamp(16px,2.4vw,24px);margin-bottom:20px}
+.ad-sec h2{font-size:17px;margin-bottom:14px}
+.ad-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+th,td{text-align:start;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;color:var(--muted);font-weight:700}
+td{font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+.num{font-weight:700}
+.pos{color:var(--ok-ink,#0B7A43);font-weight:700}
+.neg{color:#B02718;font-weight:700}
+html.dark .neg{color:#FF8A90}
+
+.feed{list-style:none;display:grid;gap:8px;max-height:420px;overflow-y:auto}
+.feed li{display:flex;gap:10px;align-items:baseline;padding:9px 12px;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--r-sm);font-size:13.5px}
+.feed .a{font-weight:800}
+.feed .e{color:var(--muted)}
+.feed .t{margin-inline-start:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
+
+.usr-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.usr-row .ad-f{margin-bottom:0;flex:1;min-width:200px}
+.usr-card{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:10px}
+.usr-card .nm{font-weight:800}
+.usr-card .ph{color:var(--muted);font-size:14px}
+.badge{font-size:12px;font-weight:800;padding:4px 10px;border-radius:var(--r-full);
+  background:var(--teal-soft);color:var(--teal)}
+html.dark .badge{color:var(--lime)}
+.badge.off{background:rgba(214,48,58,.12);color:#B02718}
+html.dark .badge.off{color:#FF8A90}
+.usr-card .btn{margin-inline-start:auto;min-height:40px;padding:0 16px;font-size:14px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.75;margin-top:12px}
+.hide{display:none!important}
+.muted-row{text-align:center;color:var(--muted);padding:18px;font-size:14.5px}
+</style>
+</head>
+<body>
+
+<!-- ── الدخول ── -->
+<section id="login" class="ad-login">
+  <h1>لوحة الإدارة</h1>
+  <p>ادخل برقم حساب الأدمن. الحسابات الأخرى لن ترى شيئًا حتى لو دخلت.</p>
+  <div id="loginErr" class="ad-err hide"></div>
+  <form id="loginForm">
+    <label class="ad-f"><span>رقم الهاتف</span>
+      <input id="phone" type="tel" inputmode="tel" autocomplete="username" dir="ltr" required></label>
+    <label class="ad-f"><span>كلمة السرّ</span>
+      <input id="pass" type="password" autocomplete="current-password" required></label>
+    <button class="btn btn-pri" type="submit" id="loginBtn" style="width:100%">دخول</button>
+  </form>
+</section>
+
+<!-- ── اللوحة ── -->
+<main id="panel" class="ad-wrap hide">
+  <div class="ad-bar">
+    <h1>لوحة الإدارة</h1>
+    <span class="ad-who" id="who"></span>
+    <button class="ad-out" id="out">خروج</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="ad-sec">
+    <h2>آخر 14 يومًا</h2>
+    <div class="ad-scroll">
+      <table id="daily"><thead><tr>
+        <th>التاريخ</th><th>الحجوزات</th><th>مؤكّدة</th><th>ملغاة/مرفوضة</th><th>الإيراد</th><th>عمولتك 10%</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <section class="ad-sec">
+    <h2>الأماكن — مرتّبة بالإيراد</h2>
+    <div class="ad-scroll">
+      <table id="places"><thead><tr>
+        <th>المكان</th><th>المدينة</th><th>الحجوزات</th><th>مؤكّدة</th><th>الإيراد</th><th>التقييم</th><th>الحالة</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <section class="ad-sec">
+    <h2>إدارة المستخدمين</h2>
+    <div class="usr-row">
+      <label class="ad-f"><span>ابحث برقم الهاتف</span>
+        <input id="usrQ" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
+      <button class="btn btn-pri" id="usrGo">بحث</button>
+    </div>
+    <div id="usrOut"></div>
+    <p class="note">⛔ <strong>عرض كلمة السرّ مستحيل</strong> — المخزَّن بصمة bcrypt أحادية الاتجاه.
+      وإعادة التعيين لا تجري من هذه الصفحة عمدًا: تحتاج مفتاح <code>service_role</code>،
+      ووضعه في صفحة يفتحها المتصفّح يعني تسليم القاعدة كاملةً لأي شخص يقرأ المصدر.
+      نفّذها من محرّر SQL في Supabase — الوصفة في <code>migration/RECIPES.sql</code> §8.</p>
+  </section>
+
+  <section class="ad-sec">
+    <h2>سجلّ التدقيق — آخر 50 حدثًا</h2>
+    <ul class="feed" id="feed"></ul>
+    <p class="note">يُكتب بـtrigger داخل القاعدة، فلا يستطيع أي عميل تجاوزه أو تزويره.</p>
+  </section>
+
+  <p class="note">بناء {{buildStamp}}</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+var SB = '{{sbBase}}', KEY = '{{sbKey}}', MAIL = '@mustadeera.app';
+var $ = function(s){ return document.querySelector(s); };
+var S = null;   // الجلسة
+
+/* توحيد الرقم — نفس منطق التطبيق حرفيًّا كي يطابق البريد المشتقّ المخزَّن */
+function normPhone(p){
+  p = String(p||'').trim().replace(/\s+/g,'');
+  if (p.startsWith('+')) p = p.slice(1);
+  if (p.startsWith('00962')) p = '962' + p.slice(5);
+  if (p.startsWith('07')) p = '962' + p.slice(1);
+  return p;
+}
+function api(path, opts){
+  opts = opts || {};
+  var h = { apikey: KEY, Authorization: 'Bearer ' + ((S && S.at) || KEY) };
+  if (opts.body !== undefined) h['Content-Type'] = 'application/json';
+  if (opts.prefer) h['Prefer'] = opts.prefer;
+  return fetch(SB + path, {
+    method: opts.method || 'GET', headers: h,
+    body: opts.body === undefined ? undefined : JSON.stringify(opts.body)
+  }).then(function(r){
+    return r.text().then(function(t){
+      var d = null; try { d = t ? JSON.parse(t) : null; } catch(e){}
+      return { ok: r.ok, status: r.status, data: d };
+    });
+  });
+}
+var esc = function(s){ var d = document.createElement('span'); d.textContent = s == null ? '' : s; return d.innerHTML; };
+var money = function(n){ return (Math.round((+n||0)*100)/100).toLocaleString('en') + ' د.أ'; };
+
+/* ── الدخول ── */
+$('#loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = $('#loginErr'), btn = $('#loginBtn');
+  err.classList.add('hide'); btn.disabled = true; btn.textContent = 'لحظة…';
+  var email = normPhone($('#phone').value) + MAIL;
+
+  api('/auth/v1/token?grant_type=password', { method:'POST', body:{ email: email, password: $('#pass').value } })
+  .then(function(r){
+    if (!r.ok || !r.data || !r.data.access_token) throw new Error('الرقم أو كلمة السرّ غير صحيحة');
+    S = { at: r.data.access_token, uid: r.data.user && r.data.user.id };
+    return api('/rest/v1/profiles?select=id,name,phone,role,active&id=eq.' + S.uid);
+  })
+  .then(function(r){
+    var p = (r.data || [])[0];
+    // الدور يُفحَص هنا للتجربة فقط؛ الحاجز الحقيقي هو RLS في القاعدة.
+    if (!p || p.role !== 'admin') throw new Error('هذا الحساب ليس أدمن');
+    if (!p.active) throw new Error('هذا الحساب موقوف');
+    S.name = p.name; S.phone = p.phone;
+    try { sessionStorage.setItem('mustadaira:admin', JSON.stringify(S)); } catch(_){}
+    start();
+  })
+  .catch(function(ex){
+    S = null; err.textContent = ex.message || 'تعذّر الدخول'; err.classList.remove('hide');
+  })
+  .then(function(){ btn.disabled = false; btn.textContent = 'دخول'; });
+});
+
+$('#out').addEventListener('click', function(){
+  try { sessionStorage.removeItem('mustadaira:admin'); } catch(_){}
+  location.reload();
+});
+
+/* ── اللوحة ── */
+function start(){
+  $('#login').classList.add('hide');
+  $('#panel').classList.remove('hide');
+  $('#who').textContent = (S.name || '') + ' · ' + (S.phone || '');
+  loadDaily(); loadPlaces(); loadFeed();
+}
+
+function loadDaily(){
+  api('/rest/v1/admin_daily?select=*&limit=14').then(function(r){
+    var rows = r.data || [], tb = $('#daily tbody');
+    if (!rows.length){ tb.innerHTML = '<tr><td colspan="6" class="muted-row">لا حجوزات بعد</td></tr>'; renderKpis([]); return; }
+    tb.innerHTML = rows.map(function(d){
+      return '<tr><td>' + esc(d.booking_date) + '</td><td class="num">' + d.bookings + '</td>' +
+             '<td class="pos">' + d.confirmed + '</td><td class="neg">' + d.lost + '</td>' +
+             '<td class="num">' + money(d.revenue) + '</td><td class="num">' + money(d.commission) + '</td></tr>';
+    }).join('');
+    renderKpis(rows);
+  });
+}
+
+function renderKpis(rows){
+  var today = new Date().toISOString().slice(0,10);
+  var t = rows.filter(function(r){ return r.booking_date === today; })[0];
+  var last7 = rows.slice(0,7);
+  var sum = function(k){ return last7.reduce(function(a,r){ return a + (+r[k]||0); }, 0); };
+  var bk = sum('bookings'), cf = sum('confirmed');
+  var rate = bk ? Math.round(cf / bk * 100) : 0;
+  var k = [
+    ['حجوزات اليوم', t ? t.bookings : 0, today],
+    ['حجوزات 7 أيام', bk, cf + ' مؤكّدة'],
+    ['إيراد 7 أيام', money(sum('revenue')), 'المؤكّد فقط'],
+    ['عمولتك 10%', money(sum('commission')), 'من المؤكّد'],
+    ['نسبة التأكيد', rate + '%', bk ? (bk - cf) + ' غير مؤكّد' : '—'],
+    ['ملغاة/مرفوضة', sum('lost'), 'آخر 7 أيام']
+  ];
+  $('#kpis').innerHTML = k.map(function(x){
+    return '<div class="kpi"><span class="k">' + x[0] + '</span><span class="v">' + esc(String(x[1])) +
+           '</span><span class="s">' + esc(String(x[2])) + '</span></div>';
+  }).join('');
+}
+
+function loadPlaces(){
+  api('/rest/v1/admin_places?select=*').then(function(r){
+    var rows = r.data || [], tb = $('#places tbody');
+    if (!rows.length){ tb.innerHTML = '<tr><td colspan="7" class="muted-row">لا بيانات</td></tr>'; return; }
+    tb.innerHTML = rows.map(function(p){
+      // بلا تقييم حقيقي ⇒ شرطة، لا صفر. نفس قاعدة hasRating في التطبيق والموقع.
+      var rate = (p.rating === null || p.rating === undefined) ? '—' : (Math.round(p.rating*10)/10);
+      return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.city) + '</td>' +
+             '<td class="num">' + p.bookings + '</td><td class="pos">' + p.confirmed + '</td>' +
+             '<td class="num">' + money(p.revenue) + '</td><td>' + rate + '</td>' +
+             '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
+    }).join('');
+  });
+}
+
+function loadFeed(){
+  api('/rest/v1/audit_log?select=at,actor_role,action,entity,entity_id&order=at.desc&limit=50').then(function(r){
+    var rows = r.data || [], ul = $('#feed');
+    if (!rows.length){ ul.innerHTML = '<li class="muted-row">لا أحداث بعد</li>'; return; }
+    var AC = { insert:'إضافة', update:'تعديل', delete:'حذف' };
+    var EN = { bookings:'حجز', reviews:'تقييم', fields:'ملعب', places:'مكان', profiles:'حساب' };
+    ul.innerHTML = rows.map(function(a){
+      var d = new Date(a.at);
+      return '<li><span class="a">' + (AC[a.action] || esc(a.action)) + '</span>' +
+             '<span class="e">' + (EN[a.entity] || esc(a.entity)) + '</span>' +
+             '<span class="e">' + esc(a.actor_role || '—') + '</span>' +
+             '<span class="t">' + d.toLocaleString('ar-JO') + '</span></li>';
+    }).join('');
+  });
+}
+
+/* ── إدارة المستخدمين ── */
+$('#usrGo').addEventListener('click', function(){
+  var q = normPhone($('#usrQ').value);
+  var out = $('#usrOut');
+  if (!q){ out.innerHTML = '<p class="muted-row">اكتب رقمًا</p>'; return; }
+  out.innerHTML = '<p class="muted-row">جارٍ البحث…</p>';
+  api('/rest/v1/profiles?select=id,name,phone,role,active&phone=eq.' + encodeURIComponent(q)).then(function(r){
+    var rows = r.data || [];
+    if (!rows.length){ out.innerHTML = '<p class="muted-row">لا حساب بهذا الرقم</p>'; return; }
+    out.innerHTML = rows.map(function(u){
+      return '<div class="usr-card" data-id="' + esc(u.id) + '">' +
+        '<span class="nm">' + esc(u.name || '(بلا اسم)') + '</span>' +
+        '<span class="ph" dir="ltr">' + esc(u.phone) + '</span>' +
+        '<span class="badge">' + esc(u.role) + '</span>' +
+        (u.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') +
+        '<button class="btn ' + (u.active ? 'btn-sec' : 'btn-pri') + '" data-act="' + (u.active ? '0' : '1') + '">' +
+        (u.active ? 'إيقاف الحساب' : 'إعادة التفعيل') + '</button></div>';
+    }).join('');
+  });
+});
+
+$('#usrOut').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-act]'); if (!btn) return;
+  var card = btn.closest('.usr-card'), id = card.getAttribute('data-id');
+  var to = btn.getAttribute('data-act') === '1';
+  if (!confirm(to ? 'إعادة تفعيل هذا الحساب؟' : 'إيقاف هذا الحساب؟ لن يستطيع الدخول.')) return;
+  btn.disabled = true;
+  api('/rest/v1/profiles?id=eq.' + encodeURIComponent(id), {
+    method: 'PATCH', body: { active: to }, prefer: 'return=representation'
+  }).then(function(r){
+    btn.disabled = false;
+    if (!r.ok){ alert('تعذّر التعديل — تأكّد أن حسابك أدمن'); return; }
+    $('#usrGo').click();
+  });
+});
+
+/* استئناف جلسة قائمة في نفس التبويب */
+try {
+  var saved = JSON.parse(sessionStorage.getItem('mustadaira:admin') || 'null');
+  if (saved && saved.at) { S = saved; start(); }
+} catch(_){}
+})();
+</script>
+</body>
+</html>
