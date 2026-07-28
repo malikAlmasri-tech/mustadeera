@@ -72,8 +72,28 @@ jobs:
             PW=$(printf '%s' "$DB_URL" | sed -E 's#^[a-z]+://[^:]+:(.*)@[^@]*$#\1#')
             echo "::warning::تُستعمل كلمة السرّ المستخرَجة من SUPABASE_DB_URL. الأفضل ضبط SUPABASE_DB_PASSWORD وحذف الرابط."
           fi
+
+          # قصّ المسافات وأسطر النهاية: أشيع خطأ لصق، ويُنتج «كلمة سرّ خاطئة»
+          # لا يمكن تمييزها عن كلمة سرّ خاطئة فعلًا. والسطر الجديد تحديدًا يكسر
+          # كتابة المتغيّر في GITHUB_ENV (صيغته سطر واحد).
+          PW=$(printf '%s' "$PW" | tr -d '\r\n' | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
+
           # إخفاؤها من السجلّ قبل أي استعمال — لو ظهرت في رسالة خطأ لاحقًا تبقى مموّهة.
           if [ -n "$PW" ]; then echo "::add-mask::$PW"; fi
+
+          # تشخيص بلا كشف: الطول والشكل وحدهما يكفيان لتمييز أشيع ثلاثة أخطاء.
+          if [ -n "$PW" ]; then
+            echo "طول القيمة المضبوطة: ${#PW} محرفًا"
+            case "$PW" in
+              *://*)   echo "::error::القيمة تبدو **رابط اتصال كاملًا** لا كلمة سرّ. الصق كلمة السرّ وحدها." ;;
+              eyJ*)    echo "::error::القيمة تبدو **مفتاح API (JWT)** لا كلمة سرّ قاعدة." ;;
+              *@*)     echo "::warning::القيمة تحوي @ — إن كنت لصقت جزءًا من الرابط فأعد ضبطها." ;;
+            esac
+            if [ "${#PW}" -lt 8 ]; then
+              echo "::warning::القيمة أقصر من 8 محارف — كلمات سرّ Supabase المولَّدة أطول بكثير."
+            fi
+          fi
+
           echo "PGPASSWORD=$PW" >> "$GITHUB_ENV"
 
           if [ -z "$PW" ] || [ -z "$PASS" ]; then
@@ -110,8 +130,15 @@ jobs:
           echo "المضيف:   $PGHOST:5432"
           echo "المستخدم: $PGUSER"
           if ! psql -h "$PGHOST" -p 5432 -U "$PGUSER" -d postgres -c 'select 1' >/dev/null 2>err.txt; then
-            echo "::error::فشل الاتصال. تحقّق من SUPABASE_DB_PASSWORD (كلمة سرّ القاعدة، لا كلمة سرّ حسابك في Supabase)."
             sed -E 's/password=[^ ]*/password=***/g' err.txt || true
+            if grep -q 'password authentication failed' err.txt; then
+              echo "::error::التوجيه سليم وكلمة السرّ مرفوضة."
+              echo "ملاحظة مهمّة: الـpooler يجرّد اللاحقة ويصادق باسم postgres، فذكرُه في الرسالة **لا يعني** أن اسم المستخدم خاطئ."
+              echo "الحلّ: Supabase ← Project Settings ← Database ← Reset database password،"
+              echo "ثمّ الصق الكلمة الجديدة في السرّ SUPABASE_DB_PASSWORD (وحدها، بلا رابط)."
+            else
+              echo "::error::فشل الاتصال لسبب غير المصادقة — راجع الرسالة أعلاه."
+            fi
             exit 1
           fi
           echo "الاتصال سليم."
