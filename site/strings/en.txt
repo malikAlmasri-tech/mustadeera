@@ -270,6 +270,30 @@ termsChangeBody = We may update these terms, and the last-updated date sits at t
 termsLawTitle = Governing law
 termsLawBody = These terms are governed by the laws of the Hashemite Kingdom of Jordan.
 
+# =========================================================
+#  Contact  /contact
+#  The number and the address come from site/contact.txt - never here.
+# =========================================================
+contactEyebrow = Contact
+contactTitle = How to reach us
+contactLead = A question, a problem with a booking, or you want to register your pitch - write to us and we'll reply.
+ctWhatsTitle = WhatsApp
+ctWhatsDesc = The fastest route. The chat opens with a message already written; edit it and send.
+ctWhatsCta = Open WhatsApp
+ctMailTitle = Email
+ctMailDesc = For anything that needs a written record: account deletion, a copy of your data, or a formal report.
+ctMailCta = Send an email
+ctSoonTitle = Contact channels go live shortly
+ctSoonBody = We haven't published a number or an address yet, and we won't put up one that doesn't actually reach us. In the meantime, booking and its requests work as usual inside the platform.
+ctTopicsTitle = What we can help with
+ctTopic1 = **A booking problem:** a request that never arrived, a late confirmation, or a cancellation you didn't understand.
+ctTopic2 = **Registering a pitch:** send the name, area, number of pitches, hours and prices, and we'll take it from there.
+ctTopic3 = **Your account:** changing your number, recovering access, or deleting your account and data.
+ctTopic4 = **Reporting content:** an abusive review, or incorrect pitch details.
+# Prefilled WhatsApp opener (URL-encoded automatically by the build)
+waMsgGeneral = Hello, I have a question about AL-Mustadira:
+waMsgOwner = Hello, I'd like to register my pitch on AL-Mustadira. Pitch name:
+
 # ---------- Page titles & descriptions (search + sharing) ----------
 metaHomeTitle = AL-Mustadira - book a football pitch without the calls
 metaHomeDesc = Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.

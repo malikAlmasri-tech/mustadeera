@@ -102,6 +102,13 @@ foreach ($l in $Langs) { $Strings[$l.code] = Read-Strings (Join-Path $SiteDir "s
 $Rel = Read-Strings (Join-Path $SiteDir 'release.txt')
 $RelLive = ($Rel.ContainsKey('url') -and $Rel['url'] -ne '')
 
+# Contact channels, same idea: empty file means the page says so rather than
+# printing a made-up number. See site/contact.txt.
+$Contact   = Read-Strings (Join-Path $SiteDir 'contact.txt')
+$WaDigits  = $(if ($Contact.ContainsKey('whatsapp')) { $Contact['whatsapp'] -replace '[^0-9]', '' } else { '' })
+$MailAddr  = $(if ($Contact.ContainsKey('email'))    { $Contact['email'] }                        else { '' })
+$ContactLive = ($WaDigits -ne '' -or $MailAddr -ne '')
+
 $TplHead   = Read-Text (Join-Path $SiteDir 'partials\head.html')
 $TplHeader = Read-Text (Join-Path $SiteDir 'partials\header.html')
 $TplFooter = Read-Text (Join-Path $SiteDir 'partials\footer.html')
@@ -159,7 +166,26 @@ foreach ($lang in $Langs) {
         $vars['relSha']     = $(if ($Rel.ContainsKey('sha256'))  { $Rel['sha256'] }  else { '' })
         $vars['relUrl']     = $(if ($Rel.ContainsKey('url'))     { $Rel['url'] }     else { '' })
 
+        # wa.me links carry a prefilled opener, and it differs by who is writing
+        # (a player with a booking problem vs an owner registering a pitch), so
+        # the text comes from the language's own dictionary.
+        $vars['waUrlGeneral'] = ''
+        $vars['waUrlOwner']   = ''
+        $vars['waDisplay']    = ''
+        $vars['mailUrl']      = ''
+        $vars['mailDisplay']  = $MailAddr
+        if ($WaDigits -ne '') {
+            $mg = $(if ($T.ContainsKey('waMsgGeneral')) { $T['waMsgGeneral'] } else { '' })
+            $mo = $(if ($T.ContainsKey('waMsgOwner'))   { $T['waMsgOwner'] }   else { '' })
+            $vars['waUrlGeneral'] = "https://wa.me/$WaDigits" + '?text=' + [uri]::EscapeDataString($mg)
+            $vars['waUrlOwner']   = "https://wa.me/$WaDigits" + '?text=' + [uri]::EscapeDataString($mo)
+            # Shown with a leading + so it reads as an international number.
+            $vars['waDisplay']    = '+' + $WaDigits
+        }
+        if ($MailAddr -ne '') { $vars['mailUrl'] = 'mailto:' + $MailAddr }
+
         $body = Read-Text $bodyFile
+        $body = $body.Replace('{{include:contact}}', $(if ($ContactLive) { '{{include:contact-live}}' } else { '{{include:contact-soon}}' }))
 
         # Partial includes run BEFORE expansion so the included markup's own
         # {{t.key}} placeholders are resolved in the same pass.

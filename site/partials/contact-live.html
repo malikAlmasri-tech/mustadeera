@@ -1,0 +1,19 @@
+<!-- حالة «القنوات منشورة». الروابط كلّها مبنيّة من site/contact.txt،
+     ورسالة الواتساب تُفتح مكتوبة مسبقًا بلغة الصفحة. -->
+<div class="ct-grid">
+  <article class="ct-card">
+    <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.5L3 21l2.1-5.6A8.4 8.4 0 1 1 21 11.5Z"/></svg></span>
+    <h2 class="h3-card">{{t.ctWhatsTitle}}</h2>
+    <p>{{t.ctWhatsDesc}}</p>
+    <p class="ct-val" dir="ltr">{{waDisplay}}</p>
+    <a class="btn btn-pri" href="{{waUrlGeneral}}" rel="noopener">{{t.ctWhatsCta}}</a>
+  </article>
+
+  <article class="ct-card">
+    <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+    <h2 class="h3-card">{{t.ctMailTitle}}</h2>
+    <p>{{t.ctMailDesc}}</p>
+    <p class="ct-val" dir="ltr">{{mailDisplay}}</p>
+    <a class="btn btn-sec" href="{{mailUrl}}">{{t.ctMailCta}}</a>
+  </article>
+</div>
