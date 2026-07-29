@@ -67,6 +67,26 @@ html.dark .neg{color:#FF8A90}
 .feed .e{color:var(--muted)}
 .feed .t{margin-inline-start:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
 
+/* رأس السجلّ + مؤشّر حالة البثّ. المؤشّر يقول الحقيقة دائمًا: أخضر فقط بعد
+   وصول حدث فعلي عبر المقبس، لا بمجرّد نجاح الاتصال (نجاح الاشتراك لا يعني
+   أن الأحداث تصل — راجع migration/08_realtime_audit.sql). */
+.sec-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.sec-head h2{margin-bottom:0}
+.rt{display:inline-flex;align-items:center;gap:7px;margin-inline-start:auto;
+  font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+.rt i{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.rt.live{color:var(--ok-ink,#0B7A43)}
+.rt.live i{background:currentColor;animation:rtPulse 2s ease-in-out infinite}
+.rt.wait i{background:var(--teal)}
+html.dark .rt.live{color:#5FD08A}
+html.dark .rt.wait i{background:var(--lime)}
+@keyframes rtPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.rt.live i{animation:none}}
+/* سطر وصل للتوّ — ومضة خفيفة تميّزه عمّا كان معروضًا */
+.feed li.fresh{animation:rtFresh 1.6s ease-out}
+@keyframes rtFresh{0%{background:var(--lime-soft);border-color:var(--line-2)}100%{}}
+@media (prefers-reduced-motion:reduce){.feed li.fresh{animation:none}}
+
 .usr-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
 .usr-row .ad-f{margin-bottom:0;flex:1;min-width:200px}
 .usr-card{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;
@@ -143,9 +163,15 @@ html.dark .badge.off{color:#FF8A90}
   </section>
 
   <section class="ad-sec">
-    <h2>سجلّ التدقيق — آخر 50 حدثًا</h2>
+    <div class="sec-head">
+      <h2>سجلّ التدقيق — آخر 50 حدثًا</h2>
+      <span class="rt" id="rt" role="status" aria-live="polite"><i aria-hidden="true"></i><span id="rtTxt">…</span></span>
+    </div>
     <ul class="feed" id="feed"></ul>
     <p class="note">يُكتب بـtrigger داخل القاعدة، فلا يستطيع أي عميل تجاوزه أو تزويره.</p>
+    <p class="note hide" id="rtHint">💡 الأحداث تصل بالتحديث الدوري لا بالبثّ الحيّ.
+      إن أردتها فورية شغّل <code>migration/08_realtime_audit.sql</code> مرّة واحدة — يُدرِج
+      <code>audit_log</code> في نشر Realtime. اللوحة تعمل في الحالتين.</p>
   </section>
 
   <p class="note">بناء 2026-07-29</p>
@@ -194,7 +220,8 @@ $('#loginForm').addEventListener('submit', function(e){
   api('/auth/v1/token?grant_type=password', { method:'POST', body:{ email: email, password: $('#pass').value } })
   .then(function(r){
     if (!r.ok || !r.data || !r.data.access_token) throw new Error('الرقم أو كلمة السرّ غير صحيحة');
-    S = { at: r.data.access_token, uid: r.data.user && r.data.user.id };
+    // rt = توكن التجديد: بدونه تموت اللوحة بصمت بعد ساعة (انتهاء صلاحية at)
+    S = { at: r.data.access_token, rt: r.data.refresh_token, uid: r.data.user && r.data.user.id };
     return api('/rest/v1/profiles?select=id,name,phone,role,active&id=eq.' + S.uid);
   })
   .then(function(r){
@@ -213,8 +240,15 @@ $('#loginForm').addEventListener('submit', function(e){
 });
 
 $('#out').addEventListener('click', function(){
+  rtStop();   // أغلق المقبس قبل إعادة التحميل — وإلّا بقي اتصال معلّق
   try { sessionStorage.removeItem('mustadaira:admin'); } catch(_){}
   location.reload();
+});
+// إغلاق التبويب/الانتقال: أنهِ المقبس بنظافة بدل تركه للمهلة.
+// وإن عادت الصفحة من كاش الرجوع (bfcache) فاستأنف — بلا هذا كانت تعود ميّتة.
+window.addEventListener('pagehide', rtStop);
+window.addEventListener('pageshow', function(e){
+  if (e.persisted && S && RT.dead){ RT.dead = false; RT.retry = 0; schedulePoll(); rtConnect(); scheduleRefresh(); }
 });
 
 /* ── اللوحة ── */
@@ -222,7 +256,10 @@ function start(){
   $('#login').classList.add('hide');
   $('#panel').classList.remove('hide');
   $('#who').textContent = (S.name || '') + ' · ' + (S.phone || '');
-  loadDaily(); loadPlaces(); loadFeed();
+  RT.dead = false;
+  loadDaily(); loadPlaces();
+  loadFeed().then(function(){ rtPaint(); schedulePoll(); rtConnect(); });
+  scheduleRefresh();
 }
 
 function loadDaily(){
@@ -274,20 +311,182 @@ function loadPlaces(){
   });
 }
 
-function loadFeed(){
-  api('/rest/v1/audit_log?select=at,actor_role,action,entity,entity_id&order=at.desc&limit=50').then(function(r){
-    var rows = r.data || [], ul = $('#feed');
-    if (!rows.length){ ul.innerHTML = '<li class="muted-row">لا أحداث بعد</li>'; return; }
-    var AC = { insert:'إضافة', update:'تعديل', delete:'حذف' };
-    var EN = { bookings:'حجز', reviews:'تقييم', fields:'ملعب', places:'مكان', profiles:'حساب' };
-    ul.innerHTML = rows.map(function(a){
-      var d = new Date(a.at);
-      return '<li><span class="a">' + (AC[a.action] || esc(a.action)) + '</span>' +
-             '<span class="e">' + (EN[a.entity] || esc(a.entity)) + '</span>' +
-             '<span class="e">' + esc(a.actor_role || '—') + '</span>' +
-             '<span class="t">' + d.toLocaleString('ar-JO') + '</span></li>';
-    }).join('');
+/* ── سجلّ التدقيق ──────────────────────────────────────────────────────────
+   مصدر واحد للحقيقة (`feedRows`) يغذّيه مصدران: البثّ الحيّ والتحديث الدوري.
+   وكلاهما يمرّ بـpushRows التي تُسقِط المكرّر بالمعرّف ⇒ يستحيل أن يظهر حدث
+   مرّتين لو وصل من الطريقين معًا. */
+var AC = { insert:'إضافة', update:'تعديل', delete:'حذف' };
+var EN = { bookings:'حجز', reviews:'تقييم', fields:'ملعب', places:'مكان', profiles:'حساب' };
+var feedRows = [], feedSeen = Object.create(null), FEED_MAX = 50;
+
+function feedLi(a){
+  var d = new Date(a.at);
+  return '<li' + (a.__fresh ? ' class="fresh"' : '') + '><span class="a">' + (AC[a.action] || esc(a.action)) + '</span>' +
+         '<span class="e">' + (EN[a.entity] || esc(a.entity)) + '</span>' +
+         '<span class="e">' + esc(a.actor_role || '—') + '</span>' +
+         '<span class="t">' + d.toLocaleString('ar-JO') + '</span></li>';
+}
+function renderFeed(){
+  var ul = $('#feed');
+  if (!feedRows.length){ ul.innerHTML = '<li class="muted-row">لا أحداث بعد</li>'; return; }
+  ul.innerHTML = feedRows.map(feedLi).join('');
+  feedRows.forEach(function(a){ delete a.__fresh; });   // الومضة مرّة واحدة
+}
+/* تُعيد عدد الصفوف الجديدة فعلًا — وهذا ما يكشف لاحقًا أن البثّ صامت */
+function pushRows(rows, fresh){
+  var added = 0;
+  rows.forEach(function(a){
+    if (a == null || a.id == null || feedSeen[a.id]) return;
+    feedSeen[a.id] = 1; if (fresh) a.__fresh = 1;
+    feedRows.push(a); added++;
   });
+  if (!added) return 0;
+  feedRows.sort(function(x, y){ return (+y.id) - (+x.id); });
+  if (feedRows.length > FEED_MAX) {
+    feedRows.slice(FEED_MAX).forEach(function(a){ delete feedSeen[a.id]; });
+    feedRows = feedRows.slice(0, FEED_MAX);
+  }
+  renderFeed();
+  return added;
+}
+function loadFeed(isPoll){
+  return api('/rest/v1/audit_log?select=id,at,actor_role,action,entity,entity_id&order=id.desc&limit=50')
+  .then(function(r){
+    if (!r.ok) return;
+    var added = pushRows(r.data || [], !!isPoll);
+    if (!feedRows.length) renderFeed();
+    // البثّ مفتوح ومع ذلك جاء الجديد من الاستطلاع ⇒ البثّ لا يوصل شيئًا.
+    // هذا هو الفحص الوحيد الصادق: نجاح الاشتراك لا يعني التوصيل.
+    if (isPoll && added > 0 && RT.open && RT.delivered === 0) RT.silent = true;
+    rtPaint();
+  });
+}
+
+/* ── البثّ الحيّ (Realtime) ────────────────────────────────────────────────
+   عميل Phoenix مكتوب باليد — المشروع فانيلا بلا مكتبات، وحمل supabase-js
+   كلّه (~40KB) من أجل مقبس واحد لا يستحقّ. البروتوكول مُتحقَّق منه ذهابًا
+   وإيابًا قبل كتابة هذا (انضمام · نبضة · رسالة ترتدّ).
+
+   ⚠️ القاعدة الحاكمة هنا: **نجاح الاشتراك لا يعني وصول الأحداث.** الخادم
+   يردّ «ok» حتى على جدول غير موجود (مقيس). لذلك لا تصير النقطة خضراء إلّا
+   بعد وصول حدث حقيقي، ويبقى الاستطلاع شبكةَ أمان تكشف صمت البثّ وتصلحه. */
+var RT = { ws:null, ref:0, hb:null, retry:0, open:false, delivered:0, silent:false, poll:null, dead:false };
+var TOPIC = 'realtime:audit';
+var WSURL = SB.replace(/^http/, 'ws') + '/realtime/v1/websocket?apikey=' + encodeURIComponent(KEY) + '&vsn=1.0.0';
+
+function rtSend(event, payload, topic){
+  if (!RT.ws || RT.ws.readyState !== 1) return;
+  RT.ws.send(JSON.stringify({ topic: topic || TOPIC, event: event, payload: payload || {}, ref: String(++RT.ref) }));
+}
+function rtPaint(){
+  var el = $('#rt'), tx = $('#rtTxt'), hint = $('#rtHint');
+  if (!el) return;
+  var live = RT.open && RT.delivered > 0 && !RT.silent;
+  var wait = RT.open && !RT.silent && !live;
+  el.className = 'rt' + (live ? ' live' : wait ? ' wait' : '');
+  tx.textContent = live ? 'حيّ' : wait ? 'متّصل — بانتظار أوّل حدث' : 'تحديث دوري';
+  hint.classList.toggle('hide', !RT.silent);
+}
+function rtConnect(){
+  if (RT.dead || !S) return;
+  try { RT.ws = new WebSocket(WSURL); } catch(e){ return rtRetry(); }
+
+  RT.ws.onopen = function(){
+    RT.ref = 0; RT.retry = 0;
+    rtSend('phx_join', {
+      config: { postgres_changes: [{ event:'INSERT', schema:'public', table:'audit_log' }] },
+      access_token: S.at
+    });
+    clearInterval(RT.hb);
+    RT.hb = setInterval(function(){ rtSend('heartbeat', {}, 'phoenix'); }, 25000);
+  };
+
+  RT.ws.onmessage = function(ev){
+    var m; try { m = JSON.parse(ev.data); } catch(e){ return; }
+
+    // ⚠️ phx_reply ليس دليل نجاح. الخادم يردّ عليه «ok» مع معرّف اشتراك حتى
+    // لجدول غير مُدرَج في النشر — بل حتى لجدول لا وجود له (مقيس 2026-07-29).
+    // الإشارة الصادقة هي رسالة `system` التي تليه، ولذلك لا نلمس الحالة هنا.
+    if (m.event === 'phx_reply') return;
+
+    if (m.event === 'system'){
+      var st = m.payload && m.payload.status;
+      if (st === 'ok'){ RT.open = true; RT.silent = false; rtPaint(); schedulePoll(); return; }
+      // «Unable to subscribe… check Realtime is enabled» = الجدول خارج نشر
+      // supabase_realtime ⇒ لن يصل حدث أبدًا. نعلنها فورًا بدل انتظار
+      // استطلاعين ليكتشفها، ونوجّه إلى الترحيل الذي يصلحها.
+      RT.open = false; RT.silent = true; rtPaint(); schedulePoll();
+      if (/token|jwt|expire/i.test(JSON.stringify(m.payload))) refreshToken();
+      return;
+    }
+    if (m.event === 'postgres_changes'){
+      var d = m.payload && m.payload.data, r = d && d.record;
+      if (!r) return;
+      // ننتقي الأعمدة المعروضة فقط. البثّ يرسل الصفّ كاملًا ومنه before/after
+      // وفيهما لقطة الصفّ المتغيّر (قد تحوي هاتفًا) — لا نخزّنها ولا نعرضها.
+      RT.delivered++; RT.silent = false;
+      pushRows([{ id:r.id, at:r.at, actor_role:r.actor_role, action:r.action,
+                  entity:r.entity, entity_id:r.entity_id }], true);
+      rtPaint(); schedulePoll();
+      return;
+    }
+  };
+
+  RT.ws.onerror = function(){ RT.open = false; rtPaint(); };
+  RT.ws.onclose  = function(){ RT.open = false; clearInterval(RT.hb); rtPaint(); rtRetry(); };
+}
+function rtRetry(){
+  if (RT.dead || !S) return;
+  // تراجع أُسّي بسقف 30ث — مقبس يعيد المحاولة كل ثانية يُغرق القاعدة ويستنزف البطارية.
+  var wait = Math.min(30000, 1000 * Math.pow(2, RT.retry++));
+  setTimeout(rtConnect, wait);
+}
+function rtStop(){
+  RT.dead = true; clearInterval(RT.hb); clearTimeout(RT.poll); clearTimeout(RT.refT);
+  try { RT.ws && RT.ws.close(); } catch(_){}
+}
+
+/* استطلاع: شبكة أمان لا مسار أساسي. سريع ما دام البثّ غير مُثبَت، ويتباعد
+   إلى دقيقة ونصف حين يثبت — فيبقى مصالحةً تكشف أي حدث فات المقبس. */
+function schedulePoll(){
+  clearTimeout(RT.poll);
+  if (RT.dead) return;
+  var live = RT.open && RT.delivered > 0 && !RT.silent;
+  RT.poll = setTimeout(function(){ loadFeed(true).then(schedulePoll, schedulePoll); }, live ? 90000 : 20000);
+}
+
+/* ── تجديد الجلسة ──────────────────────────────────────────────────────────
+   توكن Supabase ينتهي بعد ساعة، ولوحة حيّة يُفترض أن تبقى مفتوحة أطول من
+   ذلك. بلا تجديد كانت الصفحة تتحوّل بصمت إلى جداول فارغة بعد ساعة. */
+function jwtExp(t){
+  try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp * 1000; }
+  catch(e){ return 0; }
+}
+function scheduleRefresh(){
+  clearTimeout(RT.refT);
+  var exp = jwtExp(S && S.at);
+  if (!exp) return;
+  RT.refT = setTimeout(refreshToken, Math.max(10000, exp - Date.now() - 120000));
+}
+function refreshToken(){
+  if (!S || !S.rt) return sessionEnded();
+  return api('/auth/v1/token?grant_type=refresh_token', { method:'POST', body:{ refresh_token: S.rt } })
+  .then(function(r){
+    if (!r.ok || !r.data || !r.data.access_token) return sessionEnded();
+    S.at = r.data.access_token;
+    if (r.data.refresh_token) S.rt = r.data.refresh_token;
+    try { sessionStorage.setItem('mustadaira:admin', JSON.stringify(S)); } catch(_){}
+    rtSend('access_token', { access_token: S.at });   // المقبس يحمل توكنه الخاص
+    scheduleRefresh();
+  });
+}
+function sessionEnded(){
+  rtStop();
+  try { sessionStorage.removeItem('mustadaira:admin'); } catch(_){}
+  S = null;
+  $('#panel').classList.add('hide');
+  $('#login').classList.remove('hide');
+  var err = $('#loginErr'); err.textContent = 'انتهت الجلسة — ادخل من جديد'; err.classList.remove('hide');
 }
 
 /* ── إدارة المستخدمين ── */
@@ -326,10 +525,17 @@ $('#usrOut').addEventListener('click', function(e){
   });
 });
 
-/* استئناف جلسة قائمة في نفس التبويب */
+/* استئناف جلسة قائمة في نفس التبويب.
+   إن كان التوكن المحفوظ منتهيًا أو على وشك، جدّده **قبل** الرسم — وإلّا رسمت
+   اللوحة جداول فارغة (401 صامت) ثمّ صحّحت نفسها بعد ثوانٍ. */
 try {
   var saved = JSON.parse(sessionStorage.getItem('mustadaira:admin') || 'null');
-  if (saved && saved.at) { S = saved; start(); }
+  if (saved && saved.at) {
+    S = saved;
+    var exp = jwtExp(S.at);
+    if (exp && exp - Date.now() < 120000) { refreshToken().then(function(){ if (S) start(); }); }
+    else start();
+  }
 } catch(_){}
 })();
 </script>

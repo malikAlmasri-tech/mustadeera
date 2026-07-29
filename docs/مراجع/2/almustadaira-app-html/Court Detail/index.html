@@ -1,0 +1,1039 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Court Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a1018;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: #0F1923;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 2px #2a3a4a,
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 120px rgba(34, 197, 94, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+    }
+
+    .status-icons i {
+      font-size: 12px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 90px;
+    }
+
+    .scroll-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hero Image */
+    .hero-wrap {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hero-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-gradient-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, rgba(15, 25, 35, 0.75) 0%, transparent 100%);
+    }
+
+    .hero-gradient-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #0F1923 0%, rgba(15, 25, 35, 0.5) 60%, transparent 100%);
+    }
+
+    .hero-back-btn {
+      position: absolute;
+      top: 48px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(15, 25, 35, 0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .hero-back-btn:hover {
+      background: rgba(15, 25, 35, 0.85);
+      transform: scale(1.05);
+    }
+
+    .hero-back-btn:active {
+      transform: scale(0.93);
+    }
+
+    .hero-back-btn i {
+      font-size: 15px;
+      color: #ffffff;
+    }
+
+    .hero-heart-btn {
+      position: absolute;
+      top: 48px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(15, 25, 35, 0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .hero-heart-btn:hover {
+      background: rgba(15, 25, 35, 0.85);
+      transform: scale(1.05);
+    }
+
+    .hero-heart-btn:active {
+      transform: scale(0.93);
+    }
+
+    .hero-heart-btn i {
+      font-size: 15px;
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    .hero-heart-btn.liked i {
+      color: #EF4444;
+    }
+
+    .photo-count-badge {
+      position: absolute;
+      bottom: 16px;
+      right: 20px;
+      background: rgba(15, 25, 35, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 10;
+    }
+
+    .photo-count-badge i {
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    /* Court Info Section */
+    .court-info {
+      padding: 20px 24px 0;
+    }
+
+    .court-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .sport-tags-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .sport-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1.5px solid rgba(34, 197, 94, 0.25);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #22C55E;
+    }
+
+    /* Stats Pills Row */
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #1A2535;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 100px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .stat-pill:hover {
+      background: #213045;
+      transform: translateY(-1px);
+    }
+
+    .stat-pill i {
+      font-size: 13px;
+    }
+
+    .stat-pill .pill-icon-location {
+      color: #22C55E;
+    }
+
+    .stat-pill .pill-icon-star {
+      color: #F59E0B;
+    }
+
+    .stat-pill .pill-icon-price {
+      color: #22C55E;
+    }
+
+    .stat-pill .rating-sep {
+      color: #4A5C72;
+      margin: 0 2px;
+      font-weight: 400;
+    }
+
+    .stat-pill .review-count {
+      color: #64748B;
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    /* Divider */
+    .section-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 0 24px;
+    }
+
+    /* Section container */
+    .section {
+      padding: 20px 24px 4px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      margin-bottom: 14px;
+    }
+
+    /* Photo Thumbnails */
+    .photo-scroll-wrap {
+      padding: 0 0 4px;
+      margin-bottom: 4px;
+    }
+
+    .photo-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .photo-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .photo-thumb {
+      width: 86px;
+      height: 68px;
+      border-radius: 14px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .photo-thumb:hover {
+      border-color: #22C55E;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .photo-thumb.active {
+      border-color: #22C55E;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.35);
+    }
+
+    .photo-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Facilities */
+    .facilities-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .facility-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1A2535;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #C8D8EA;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .facility-chip:hover {
+      background: #213045;
+      border-color: rgba(34, 197, 94, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .facility-chip .fac-icon {
+      font-size: 16px;
+      width: 26px;
+      height: 26px;
+      background: rgba(34, 197, 94, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .facility-chip .fac-icon i {
+      font-size: 13px;
+      color: #22C55E;
+    }
+
+    /* About */
+    .about-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: #94A3B8;
+      line-height: 1.65;
+    }
+
+    /* Location */
+    .map-card {
+      background: #1A2535;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .map-card:hover {
+      border-color: rgba(34, 197, 94, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .map-preview {
+      width: 100%;
+      height: 130px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .map-pin-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -56%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .map-pin-dot {
+      width: 18px;
+      height: 18px;
+      background: #22C55E;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.7), 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .map-pin-tail {
+      width: 3px;
+      height: 10px;
+      background: #22C55E;
+      border-radius: 0 0 2px 2px;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    }
+
+    .map-address-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+
+    .map-address-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .map-address-icon {
+      width: 34px;
+      height: 34px;
+      background: rgba(34, 197, 94, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .map-address-icon i {
+      color: #22C55E;
+      font-size: 14px;
+    }
+
+    .map-address-text .addr-main {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .map-address-text .addr-sub {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .map-directions-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #22C55E;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .map-directions-btn:hover {
+      background: rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+    }
+
+    .map-directions-btn i {
+      font-size: 11px;
+    }
+
+    /* Reviews teaser */
+    .reviews-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .review-score-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .score-num {
+      font-size: 36px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .score-details {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .score-stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .score-stars i {
+      font-size: 13px;
+      color: #F59E0B;
+    }
+
+    .score-count {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .see-reviews-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: #22C55E;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .see-reviews-btn:hover {
+      color: #4ade80;
+    }
+
+    .review-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .review-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .review-bar-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      width: 14px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .review-bar-track {
+      flex: 1;
+      height: 5px;
+      background: #1A2535;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .review-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22C55E, #4ade80);
+      border-radius: 100px;
+    }
+
+    .review-bar-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A5C72;
+      width: 22px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Bottom CTA Bar */
+    .bottom-cta-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111d2a;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 14px 24px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+      z-index: 40;
+    }
+
+    .price-block {}
+
+    .price-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 2px;
+    }
+
+    .price-amount {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .price-amount span {
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748B;
+      letter-spacing: 0;
+    }
+
+    .book-now-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      border: none;
+      border-radius: 16px;
+      height: 52px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 18px rgba(34, 197, 94, 0.35);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .book-now-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.5);
+      background: linear-gradient(135deg, #2dd867, #22C55E);
+    }
+
+    .book-now-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    .book-now-btn i {
+      font-size: 16px;
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon">
+          <div class="battery-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Hero Image -->
+      <div class="hero-wrap">
+        <img src="floodlit_football_pitch_night_wide.jpg" alt="Wide-angle aerial view of a floodlit outdoor football pitch at night, vivid green synthetic turf glowing under bright stadium floodlights, white line markings, empty grandstand in the background, dramatic dark sky, professional sports venue" width="430" height="280">
+        <div class="hero-gradient-top"></div>
+        <div class="hero-gradient-bottom"></div>
+
+        <div class="hero-back-btn" id="backBtn">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+
+        <div class="hero-heart-btn" id="heartBtn">
+          <i class="far fa-heart"></i>
+        </div>
+
+        <div class="photo-count-badge">
+          <i class="fas fa-images"></i>
+          1 / 6
+        </div>
+      </div>
+
+      <!-- Court Info -->
+      <div class="court-info">
+        <div class="court-name">Al-Noor Sports Arena</div>
+
+        <div class="sport-tags-row">
+          <div class="sport-tag">⚽ Football</div>
+          <div class="sport-tag">🏓 Padel</div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-pill">
+            <i class="fas fa-location-dot pill-icon-location"></i>
+            Al Malaz, Riyadh · 1.2 km
+          </div>
+          <div class="stat-pill">
+            <i class="fas fa-star pill-icon-star"></i>
+            4.8
+            <span class="rating-sep">·</span>
+            <span class="review-count">124 reviews</span>
+          </div>
+          <div class="stat-pill">
+            <i class="fas fa-tag pill-icon-price"></i>
+            60 SAR/hr
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo Thumbnails -->
+      <div class="section-divider"></div>
+      <div class="section" style="padding-bottom: 0;">
+        <div class="section-title">Photos</div>
+      </div>
+      <div class="photo-scroll-wrap">
+        <div class="photo-scroll">
+          <div class="photo-thumb active">
+            <img src="court_photo_1_aerial_night.jpg" alt="Aerial view of Al-Noor football pitch under floodlights at night, green turf visible" width="86" height="68">
+          </div>
+          <div class="photo-thumb">
+            <img src="court_photo_2_goal_closeup.jpg" alt="Close-up of a football goal post on the Al-Noor pitch with the net and green turf, daylight" width="86" height="68">
+          </div>
+          <div class="photo-thumb">
+            <img src="court_photo_3_changing_rooms.jpg" alt="Clean and modern changing rooms interior at Al-Noor Sports Arena with lockers and benches" width="86" height="68">
+          </div>
+          <div class="photo-thumb">
+            <img src="court_photo_4_cafe_area.jpg" alt="Bright sports café seating area inside Al-Noor Sports Arena with tables, chairs, and menu board" width="86" height="68">
+          </div>
+          <div class="photo-thumb">
+            <img src="court_photo_5_padel_court.jpg" alt="Side view of an outdoor padel court enclosed in glass and metal, green padel turf, at Al-Noor Sports Arena" width="86" height="68">
+          </div>
+        </div>
+      </div>
+
+      <!-- Facilities -->
+      <div class="section-divider" style="margin-top: 16px;"></div>
+      <div class="section">
+        <div class="section-title">Facilities</div>
+        <div class="facilities-grid">
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-square-parking"></i></div>
+            Parking
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-door-open"></i></div>
+            Changing Rooms
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-lightbulb"></i></div>
+            Night Lighting
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-mug-hot"></i></div>
+            Café
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-kit-medical"></i></div>
+            First Aid
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-wifi"></i></div>
+            Free Wi-Fi
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="section-divider"></div>
+      <div class="section">
+        <div class="section-title">About</div>
+        <div class="about-text">
+          Al-Noor Sports Arena is a premium multi-sport venue in the heart of Al Malaz, offering floodlit football and padel courts with a professional finish. The facility is open 7 days a week and supports both casual sessions and competitive leagues, making it the top-rated court in Riyadh's central district.
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="section-divider"></div>
+      <div class="section">
+        <div class="reviews-row">
+          <div class="section-title" style="margin-bottom:0;">Reviews</div>
+          <div class="see-reviews-btn">See all 124</div>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center; margin-top: 14px;">
+          <div class="review-score-block">
+            <div class="score-num">4.8</div>
+            <div class="score-details">
+              <div class="score-stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-stroke"></i>
+              </div>
+              <div class="score-count">124 ratings</div>
+            </div>
+          </div>
+          <div class="review-bar-row" style="flex:1;">
+            <div class="review-bar-item">
+              <div class="review-bar-label">5</div>
+              <div class="review-bar-track"><div class="review-bar-fill" style="width: 78%;"></div></div>
+              <div class="review-bar-count">97</div>
+            </div>
+            <div class="review-bar-item">
+              <div class="review-bar-label">4</div>
+              <div class="review-bar-track"><div class="review-bar-fill" style="width: 14%;"></div></div>
+              <div class="review-bar-count">17</div>
+            </div>
+            <div class="review-bar-item">
+              <div class="review-bar-label">3</div>
+              <div class="review-bar-track"><div class="review-bar-fill" style="width: 5%;"></div></div>
+              <div class="review-bar-count">6</div>
+            </div>
+            <div class="review-bar-item">
+              <div class="review-bar-label">2</div>
+              <div class="review-bar-track"><div class="review-bar-fill" style="width: 2%;"></div></div>
+              <div class="review-bar-count">3</div>
+            </div>
+            <div class="review-bar-item">
+              <div class="review-bar-label">1</div>
+              <div class="review-bar-track"><div class="review-bar-fill" style="width: 1%;"></div></div>
+              <div class="review-bar-count">1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="section-divider"></div>
+      <div class="section" style="padding-bottom: 16px;">
+        <div class="section-title">Location</div>
+        <div class="map-card">
+          <div class="map-preview">
+            <img src="riyadh_al_malaz_district_map_aerial.jpg" alt="Aerial satellite map view of Al Malaz district in Riyadh, Saudi Arabia, showing urban city streets, buildings, and roads in a warm beige and tan color palette, top-down perspective" width="382" height="130">
+            <div class="map-pin-overlay">
+              <div class="map-pin-dot"></div>
+              <div class="map-pin-tail"></div>
+            </div>
+          </div>
+          <div class="map-address-bar">
+            <div class="map-address-left">
+              <div class="map-address-icon">
+                <i class="fas fa-location-dot"></i>
+              </div>
+              <div class="map-address-text">
+                <div class="addr-main">King Fahd Rd, Al Malaz</div>
+                <div class="addr-sub">Riyadh 12836, Saudi Arabia</div>
+              </div>
+            </div>
+            <div class="map-directions-btn">
+              <i class="fas fa-diamond-turn-right"></i>
+              Directions
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Fixed Bottom CTA Bar -->
+    <div class="bottom-cta-bar">
+      <div class="price-block">
+        <div class="price-label">Price</div>
+        <div class="price-amount">60 SAR <span>/ hour</span></div>
+      </div>
+      <button class="book-now-btn">
+        <i class="fas fa-calendar-check"></i>
+        Book Now
+      </button>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Heart toggle
+    const heartBtn = document.getElementById('heartBtn');
+    heartBtn.addEventListener('click', () => {
+      heartBtn.classList.toggle('liked');
+      const icon = heartBtn.querySelector('i');
+      if (heartBtn.classList.contains('liked')) {
+        icon.className = 'fas fa-heart';
+        icon.style.color = '#EF4444';
+        heartBtn.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+        heartBtn.style.background = 'rgba(239, 68, 68, 0.12)';
+      } else {
+        icon.className = 'far fa-heart';
+        icon.style.color = '#ffffff';
+        heartBtn.style.borderColor = 'rgba(255,255,255,0.12)';
+        heartBtn.style.background = 'rgba(15, 25, 35, 0.65)';
+      }
+    });
+
+    // Photo thumb selection + counter update
+    const thumbs = document.querySelectorAll('.photo-thumb');
+    const photoCountBadge = document.querySelector('.photo-count-badge');
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => {
+        thumbs.forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        photoCountBadge.innerHTML = `<i class="fas fa-images"></i> ${i + 1} / 6`;
+      });
+    });
+
+    // Back button
+    const backBtn = document.getElementById('backBtn');
+    backBtn.addEventListener('click', () => {
+      backBtn.style.transform = 'scale(0.88)';
+      setTimeout(() => { backBtn.style.transform = ''; }, 180);
+    });
+
+    // Directions btn
+    const dirBtn = document.querySelector('.map-directions-btn');
+    dirBtn.addEventListener('click', () => {
+      dirBtn.style.transform = 'scale(0.94)';
+      setTimeout(() => { dirBtn.style.transform = ''; }, 150);
+    });
+  </script>
+
+
+</body></html>

@@ -1,0 +1,1666 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Venue Owner Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050A0F;
+      --neon-green: #00FF87;
+      --neon-cyan: #0EA5E9;
+      --neon-magenta: #FF3CAC;
+      --neon-amber: #F59E0B;
+      --neon-red: #FF4560;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(0,255,135,0.15);
+      --dim-cyan: #4A90A4;
+      --text-primary: #FFFFFF;
+      --text-secondary: #94A3B8;
+      --surface: rgba(255,255,255,0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #01060A;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: var(--bg);
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(14,165,233,0.12),
+        0 40px 100px rgba(0,0,0,0.9),
+        0 0 60px rgba(14,165,233,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hex grid background */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(14,165,233,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,255,135,0.04) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,52 2,47 2,17' fill='none' stroke='rgba(14,165,233,0.04)' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: auto, auto, 60px 52px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .status-icons i { font-size: 12px; }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 100px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .scroll-content::-webkit-scrollbar { display: none; }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px 20px;
+    }
+
+    .top-bar-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .top-bar-title::before {
+      content: '▸ ';
+      color: var(--neon-cyan);
+      font-size: 10px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .neon-icon-btn {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      border: 1px solid rgba(14,165,233,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+
+    .neon-icon-btn:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(14,165,233,0.3);
+      background: rgba(14,165,233,0.08);
+      transform: translateY(-1px);
+    }
+
+    .neon-icon-btn:active { transform: scale(0.95); }
+
+    .neon-icon-btn i {
+      font-size: 16px;
+      color: var(--neon-cyan);
+    }
+
+    .notif-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: var(--neon-magenta);
+      border-radius: 50%;
+      border: 1.5px solid var(--bg);
+      box-shadow: 0 0 8px var(--neon-magenta);
+    }
+
+    .settings-btn {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .settings-btn i {
+      color: var(--text-secondary);
+    }
+
+    .settings-btn:hover {
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: none;
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* Owner Card */
+    .owner-card {
+      margin: 0 24px 22px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 18px 20px;
+      border: 1px solid rgba(14,165,233,0.18);
+      border-left: 3px solid var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow:
+        -4px 0 28px rgba(14,165,233,0.15),
+        0 8px 32px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .owner-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 60% 60% at 10% 50%, rgba(14,165,233,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .owner-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .owner-avatar-ring {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      padding: 2px;
+      box-shadow: 0 0 16px rgba(14,165,233,0.5), 0 0 0 0 rgba(14,165,233,0.3);
+      animation: avatarPulse 2.5s ease-in-out infinite;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    @keyframes avatarPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(14,165,233,0.4), 0 0 0 0 rgba(14,165,233,0.2); }
+      50% { box-shadow: 0 0 24px rgba(14,165,233,0.8), 0 0 0 6px rgba(14,165,233,0.08); }
+    }
+
+    .owner-avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .owner-info {}
+
+    .owner-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 3px;
+    }
+
+    .owner-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+      margin-bottom: 7px;
+      line-height: 1.1;
+    }
+
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(14,165,233,0.1);
+      border: 1px solid rgba(14,165,233,0.35);
+      border-radius: 100px;
+      padding: 4px 11px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 0 12px rgba(14,165,233,0.2);
+    }
+
+    .active-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-cyan);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .owner-date {
+      text-align: right;
+      position: relative;
+      z-index: 1;
+    }
+
+    .date-day {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .date-num {
+      font-size: 42px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -2px;
+      text-shadow: 0 0 20px rgba(14,165,233,0.3);
+    }
+
+    .date-month {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(14,165,233,0.5);
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 0 24px 24px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 14px 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .stat-card.green::before {
+      background: linear-gradient(90deg, var(--neon-green), rgba(0,255,135,0.3));
+      box-shadow: 0 0 14px rgba(0,255,135,0.6);
+    }
+
+    .stat-card.amber::before {
+      background: linear-gradient(90deg, var(--neon-amber), rgba(245,158,11,0.3));
+      box-shadow: 0 0 14px rgba(245,158,11,0.6);
+    }
+
+    .stat-card.cyan::before {
+      background: linear-gradient(90deg, var(--neon-cyan), rgba(14,165,233,0.3));
+      box-shadow: 0 0 14px rgba(14,165,233,0.6);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+    }
+
+    .stat-card.green:hover {
+      border-color: rgba(0,255,135,0.25);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,135,0.1);
+    }
+
+    .stat-card.amber:hover {
+      border-color: rgba(245,158,11,0.25);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.5), 0 0 20px rgba(245,158,11,0.1);
+    }
+
+    .stat-card.cyan:hover {
+      border-color: rgba(14,165,233,0.25);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.5), 0 0 20px rgba(14,165,233,0.1);
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .stat-icon.green {
+      background: rgba(0,255,135,0.1);
+      color: var(--neon-green);
+      box-shadow: 0 0 10px rgba(0,255,135,0.2);
+    }
+
+    .stat-icon.amber {
+      background: rgba(245,158,11,0.1);
+      color: var(--neon-amber);
+      box-shadow: 0 0 10px rgba(245,158,11,0.2);
+    }
+
+    .stat-icon.cyan {
+      background: rgba(14,165,233,0.1);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(14,165,233,0.2);
+    }
+
+    .stat-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .stat-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-value.green {
+      color: var(--neon-green);
+      text-shadow: 0 0 16px rgba(0,255,135,0.5);
+    }
+
+    .stat-value.amber {
+      color: var(--neon-amber);
+      text-shadow: 0 0 16px rgba(245,158,11,0.5);
+    }
+
+    .stat-value.cyan {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 16px rgba(14,165,233,0.5);
+    }
+
+    .stat-unit {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      margin-bottom: 3px;
+    }
+
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .stat-trend.up { color: var(--neon-green); }
+    .stat-trend.down { color: var(--neon-red); }
+    .stat-trend i { font-size: 9px; }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px 14px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+    }
+
+    .section-title::before {
+      content: '▸ ';
+      color: var(--neon-cyan);
+      font-size: 10px;
+    }
+
+    .see-all {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+    }
+
+    .see-all:hover {
+      color: #5dc8f8;
+      text-shadow: 0 0 12px rgba(14,165,233,0.6);
+    }
+
+    /* Timeline / Schedule */
+    .schedule-section {
+      padding: 0 24px 8px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .timeline-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 48px;
+      flex-shrink: 0;
+    }
+
+    .timeline-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      letter-spacing: 0.2px;
+      text-align: center;
+      line-height: 1.3;
+      padding-top: 14px;
+    }
+
+    .timeline-time .end-time {
+      color: rgba(74,144,164,0.5);
+      font-weight: 500;
+      font-size: 9px;
+    }
+
+    .timeline-line-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-dot.green {
+      background: var(--neon-green);
+      box-shadow: 0 0 10px rgba(0,255,135,0.8), 0 0 20px rgba(0,255,135,0.4);
+    }
+
+    .timeline-dot.amber {
+      background: var(--neon-amber);
+      box-shadow: 0 0 10px rgba(245,158,11,0.8), 0 0 20px rgba(245,158,11,0.4);
+    }
+
+    .timeline-dot.cyan {
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(14,165,233,0.8), 0 0 20px rgba(14,165,233,0.4);
+    }
+
+    .timeline-connector {
+      width: 1px;
+      flex: 1;
+      min-height: 16px;
+      background: linear-gradient(to bottom, rgba(14,165,233,0.2), rgba(14,165,233,0.04));
+    }
+
+    .timeline-card {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .timeline-card:hover {
+      transform: translateX(3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      border-color: rgba(14,165,233,0.2);
+    }
+
+    .timeline-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+
+    .sport-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+    }
+
+    .sport-emoji {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .payment-badge {
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .payment-badge.paid {
+      background: rgba(0,255,135,0.1);
+      border: 1px solid rgba(0,255,135,0.35);
+      color: var(--neon-green);
+      box-shadow: 0 0 10px rgba(0,255,135,0.15);
+      text-shadow: 0 0 8px rgba(0,255,135,0.5);
+    }
+
+    .payment-badge.pending {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.35);
+      color: var(--neon-amber);
+      box-shadow: 0 0 10px rgba(245,158,11,0.15);
+      text-shadow: 0 0 8px rgba(245,158,11,0.5);
+    }
+
+    .timeline-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-avatar-sm {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(14,165,233,0.2);
+    }
+
+    .player-avatar-sm img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .player-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .booking-amount {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--neon-green);
+      text-shadow: 0 0 10px rgba(0,255,135,0.4);
+    }
+
+    .court-label-tag {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      background: rgba(14,165,233,0.08);
+      border: 1px solid rgba(14,165,233,0.15);
+      border-radius: 6px;
+      padding: 2px 7px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Upcoming Section */
+    .upcoming-section {
+      padding: 0 24px 8px;
+    }
+
+    .upcoming-item {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .upcoming-item:hover {
+      transform: translateX(3px);
+      border-color: rgba(14,165,233,0.2);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    }
+
+    .upcoming-date-block {
+      width: 42px;
+      height: 48px;
+      background: rgba(14,165,233,0.08);
+      border: 1px solid rgba(14,165,233,0.15);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .upcoming-date-day {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .upcoming-date-num {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      line-height: 1.1;
+      text-shadow: 0 0 12px rgba(14,165,233,0.5);
+    }
+
+    .upcoming-info { flex: 1; }
+
+    .upcoming-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .upcoming-meta {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--dim-cyan);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .meta-dot {
+      width: 3px;
+      height: 3px;
+      background: rgba(74,144,164,0.4);
+      border-radius: 50%;
+    }
+
+    .upcoming-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+    }
+
+    /* Section divider */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(14,165,233,0.15), transparent);
+      margin: 4px 24px 22px;
+    }
+
+    /* Court Status Section */
+    .court-status-section {
+      padding: 0 24px 20px;
+    }
+
+    .court-status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .court-status-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border-radius: 18px;
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .court-status-card.occupied {
+      border: 1px solid rgba(255,69,96,0.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(255,69,96,0.08);
+    }
+
+    .court-status-card.available {
+      border: 1px solid rgba(0,255,135,0.25);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(0,255,135,0.08);
+    }
+
+    .court-status-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .court-status-card.occupied:hover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5), 0 0 30px rgba(255,69,96,0.15);
+    }
+
+    .court-status-card.available:hover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,135,0.15);
+    }
+
+    .court-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .court-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .court-type {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--dim-cyan);
+      margin-top: 1px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Toggle */
+    .status-toggle {
+      width: 40px;
+      height: 22px;
+      border-radius: 100px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .status-toggle.on {
+      background: linear-gradient(135deg, rgba(0,255,135,0.4), rgba(0,200,100,0.3));
+      border: 1px solid rgba(0,255,135,0.6);
+      box-shadow: 0 0 14px rgba(0,255,135,0.5), inset 0 0 8px rgba(0,255,135,0.1);
+    }
+
+    .status-toggle.off {
+      background: rgba(255,69,96,0.12);
+      border: 1px solid rgba(255,69,96,0.4);
+      box-shadow: 0 0 10px rgba(255,69,96,0.25);
+    }
+
+    .toggle-thumb {
+      width: 16px;
+      height: 16px;
+      background: #ffffff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .status-toggle.on .toggle-thumb {
+      left: 20px;
+      box-shadow: 0 0 8px rgba(0,255,135,0.6), 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .status-toggle.off .toggle-thumb {
+      left: 2px;
+      box-shadow: 0 0 8px rgba(255,69,96,0.4), 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .court-sport-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 9px;
+    }
+
+    .court-sport-icon { font-size: 14px; }
+
+    .court-sport-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+    }
+
+    .court-status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .court-status-label.available {
+      background: rgba(0,255,135,0.1);
+      border: 1px solid rgba(0,255,135,0.3);
+      color: var(--neon-green);
+      box-shadow: 0 0 12px rgba(0,255,135,0.15);
+      text-shadow: 0 0 8px rgba(0,255,135,0.4);
+    }
+
+    .court-status-label.occupied {
+      background: rgba(255,69,96,0.1);
+      border: 1px solid rgba(255,69,96,0.3);
+      color: var(--neon-red);
+      box-shadow: 0 0 12px rgba(255,69,96,0.15);
+      text-shadow: 0 0 8px rgba(255,69,96,0.4);
+    }
+
+    .court-status-label::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .court-status-label.available::before {
+      background: var(--neon-green);
+      box-shadow: 0 0 6px rgba(0,255,135,0.8);
+      animation: pulse-dot 2s infinite;
+    }
+
+    .court-status-label.occupied::before {
+      background: var(--neon-red);
+      box-shadow: 0 0 6px rgba(255,69,96,0.8);
+    }
+
+    .court-next-time {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(74,144,164,0.7);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    .court-next-time i {
+      font-size: 9px;
+      color: var(--dim-cyan);
+    }
+
+    .court-next-time strong {
+      color: var(--dim-cyan);
+    }
+
+    /* Floating Bottom Nav */
+    .bottom-nav-wrap {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      z-index: 100;
+    }
+
+    .bottom-nav {
+      background: rgba(5,10,20,0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(14,165,233,0.18);
+      border-radius: 30px;
+      padding: 10px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow:
+        0 8px 40px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.03),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      flex: 1;
+      padding: 4px 0;
+      transition: all 0.25s ease;
+      position: relative;
+      border-radius: 20px;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .nav-icon i {
+      font-size: 18px;
+      color: #3a4f64;
+      transition: all 0.25s ease;
+    }
+
+    .nav-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: #3a4f64;
+      letter-spacing: 0.5px;
+      transition: all 0.25s ease;
+    }
+
+    .nav-item.active .nav-icon {
+      background: rgba(14,165,233,0.12);
+    }
+
+    .nav-item.active .nav-icon i {
+      color: var(--neon-cyan);
+      filter: drop-shadow(0 0 6px rgba(14,165,233,0.7));
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px rgba(14,165,233,0.5);
+    }
+
+    .nav-item.active .nav-icon::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 2px;
+      background: var(--neon-cyan);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(14,165,233,0.8);
+    }
+
+    .nav-item:not(.active):hover .nav-icon i {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: -4px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--neon-magenta);
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--bg);
+      box-shadow: 0 0 8px var(--neon-magenta);
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-title">My Venues</div>
+        <div class="top-actions">
+          <div class="neon-icon-btn">
+            <i class="fas fa-bell"></i>
+            <div class="notif-dot"></div>
+          </div>
+          <div class="neon-icon-btn settings-btn">
+            <i class="fas fa-gear"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Card -->
+      <div class="owner-card">
+        <div class="owner-left">
+          <div class="owner-avatar-ring">
+            <img src="venue_owner_portrait.jpg" alt="Portrait of a confident Arab male venue owner in his 40s, business casual attire, smiling, against a dark background" width="52" height="52">
+          </div>
+          <div class="owner-info">
+            <div class="owner-label">Managing</div>
+            <div class="owner-name">Al-Noor Sports Arena</div>
+            <div class="active-badge">
+              <div class="active-dot"></div>
+              Active
+            </div>
+          </div>
+        </div>
+        <div class="owner-date">
+          <div class="date-day">Thursday</div>
+          <div class="date-num">17</div>
+          <div class="date-month">July 2025</div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-section">
+        <div class="stats-row">
+
+          <div class="stat-card green">
+            <div class="stat-icon green">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-label">Bookings</div>
+            <div class="stat-value-row">
+              <div class="stat-value green">8</div>
+            </div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +2 avg
+            </div>
+          </div>
+
+          <div class="stat-card amber">
+            <div class="stat-icon amber">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value-row">
+              <div class="stat-value amber">480</div>
+            </div>
+            <div style="font-size:9px;color:var(--dim-cyan);font-weight:700;letter-spacing:0.5px;margin-top:1px;">SAR</div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +12%
+            </div>
+          </div>
+
+          <div class="stat-card cyan">
+            <div class="stat-icon cyan">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="stat-label">Occupancy</div>
+            <div class="stat-value-row">
+              <div class="stat-value cyan">75</div>
+              <div class="stat-unit">%</div>
+            </div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +5%
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Today's Schedule -->
+      <div class="section-header">
+        <div class="section-title">Today's Schedule</div>
+        <a class="see-all">View all</a>
+      </div>
+
+      <div class="schedule-section">
+        <div class="timeline">
+
+          <!-- Booking 1 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                10:00<br>
+                <span class="end-time">11:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">⚽</span>
+                  Football
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="khalid_player_avatar.jpg" alt="Young Arab male athlete in sports gear, smiling headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Khalid Al-Qahtani</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Crt A</span>
+                  <span class="booking-amount">80 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 2 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                11:00<br>
+                <span class="end-time">12:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot amber"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🏀</span>
+                  Basketball
+                </div>
+                <div class="payment-badge pending">Pending</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="omar_player_avatar.jpg" alt="Arab male in basketball jersey, profile headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Omar Al-Sayed</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Crt B</span>
+                  <span class="booking-amount" style="color:var(--neon-amber);text-shadow:0 0 10px rgba(245,158,11,0.4);">60 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 3 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                12:00<br>
+                <span class="end-time">01:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">⚽</span>
+                  Football
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="faisal_player_avatar.jpg" alt="Saudi male sports player, casual headshot on dark background" width="26" height="26">
+                  </div>
+                  <span class="player-name">Faisal Al-Harbi</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Crt A</span>
+                  <span class="booking-amount">80 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 4 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                02:00<br>
+                <span class="end-time">03:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot amber"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🎾</span>
+                  Tennis
+                </div>
+                <div class="payment-badge pending">Pending</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="sara_player_avatar.jpg" alt="Young Arab female tennis player, casual headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Sara Al-Malik</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Crt B</span>
+                  <span class="booking-amount" style="color:var(--neon-amber);text-shadow:0 0 10px rgba(245,158,11,0.4);">70 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 5 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                06:00<br>
+                <span class="end-time">07:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot cyan"></div>
+              <div class="timeline-connector" style="min-height:0;"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🏓</span>
+                  Padel
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="ahmed_player_avatar.jpg" alt="Arab male padel player, sport headshot with green background" width="26" height="26">
+                  </div>
+                  <span class="player-name">Ahmed Al-Mutairi</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Crt A</span>
+                  <span class="booking-amount">90 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Upcoming -->
+      <div class="section-header">
+        <div class="section-title">Upcoming</div>
+        <a class="see-all">See all</a>
+      </div>
+
+      <div class="upcoming-section">
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-date-day">Fri</div>
+            <div class="upcoming-date-num">18</div>
+          </div>
+          <div class="upcoming-info">
+            <div class="upcoming-name">Mohammed Al-Rashid</div>
+            <div class="upcoming-meta">
+              <span>⚽ Football</span>
+              <div class="meta-dot"></div>
+              <span>10:00 – 11:00 AM</span>
+              <div class="meta-dot"></div>
+              <span>Court A</span>
+            </div>
+          </div>
+          <div class="upcoming-right">
+            <div class="payment-badge paid">Paid</div>
+            <span style="font-size:12px;font-weight:700;color:var(--neon-green);text-shadow:0 0 8px rgba(0,255,135,0.4);">80 SAR</span>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-date-day">Sat</div>
+            <div class="upcoming-date-num">19</div>
+          </div>
+          <div class="upcoming-info">
+            <div class="upcoming-name">Turki Al-Abdullah</div>
+            <div class="upcoming-meta">
+              <span>🏀 Basketball</span>
+              <div class="meta-dot"></div>
+              <span>02:00 – 03:00 PM</span>
+              <div class="meta-dot"></div>
+              <span>Court B</span>
+            </div>
+          </div>
+          <div class="upcoming-right">
+            <div class="payment-badge pending">Pending</div>
+            <span style="font-size:12px;font-weight:700;color:var(--neon-amber);text-shadow:0 0 8px rgba(245,158,11,0.4);">60 SAR</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Court Status -->
+      <div class="section-header">
+        <div class="section-title">Court Status</div>
+        <a class="see-all">Manage</a>
+      </div>
+
+      <div class="court-status-section">
+        <div class="court-status-grid">
+
+          <!-- Court A — Occupied -->
+          <div class="court-status-card occupied" id="courtA-card">
+            <div class="court-card-top">
+              <div>
+                <div class="court-name">Court A</div>
+                <div class="court-type">Full-size Pitch</div>
+              </div>
+              <div class="status-toggle off" id="toggleA" onclick="toggleCourt('A')">
+                <div class="toggle-thumb"></div>
+              </div>
+            </div>
+            <div class="court-sport-row">
+              <span class="court-sport-icon">⚽</span>
+              <span class="court-sport-label">Football</span>
+            </div>
+            <div class="court-status-label occupied" id="courtA-label">Occupied</div>
+            <div class="court-next-time">
+              <i class="fas fa-clock"></i>
+              Free at: <strong id="courtA-next">&nbsp;01:00 PM</strong>
+            </div>
+          </div>
+
+          <!-- Court B — Available -->
+          <div class="court-status-card available" id="courtB-card">
+            <div class="court-card-top">
+              <div>
+                <div class="court-name">Court B</div>
+                <div class="court-type">Indoor Arena</div>
+              </div>
+              <div class="status-toggle on" id="toggleB" onclick="toggleCourt('B')">
+                <div class="toggle-thumb"></div>
+              </div>
+            </div>
+            <div class="court-sport-row">
+              <span class="court-sport-icon">🏀</span>
+              <span class="court-sport-label">Multi-sport</span>
+            </div>
+            <div class="court-status-label available" id="courtB-label">Available</div>
+            <div class="court-next-time">
+              <i class="fas fa-clock"></i>
+              Booked: <strong id="courtB-next">&nbsp;11:00 AM</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Floating Bottom Nav -->
+    <div class="bottom-nav-wrap">
+      <div class="bottom-nav">
+        <div class="nav-item active" data-nav="">
+          <div class="nav-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <span class="nav-label">Dashboard</span>
+        </div>
+        <div class="nav-item" data-nav="">
+          <div class="nav-icon">
+            <i class="fas fa-calendar-days"></i>
+            <div class="nav-badge">3</div>
+          </div>
+          <span class="nav-label">Schedule</span>
+        </div>
+        <div class="nav-item" data-nav="">
+          <div class="nav-icon">
+            <i class="fas fa-door-open"></i>
+          </div>
+          <span class="nav-label">Courts</span>
+        </div>
+        <div class="nav-item" data-nav="">
+          <div class="nav-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <span class="nav-label">Analytics</span>
+        </div>
+        <div class="nav-item" data-nav="">
+          <div class="nav-icon">
+            <i class="fas fa-gear"></i>
+          </div>
+          <span class="nav-label">Settings</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Nav item toggle
+    const navItems = document.querySelectorAll('[data-nav]');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // Court toggle
+    function toggleCourt(court) {
+      const toggle = document.getElementById(`toggle${court}`);
+      const card = document.getElementById(`court${court}-card`);
+      const label = document.getElementById(`court${court}-label`);
+      const nextEl = document.getElementById(`court${court}-next`);
+      const isOn = toggle.classList.contains('on');
+
+      if (isOn) {
+        toggle.classList.remove('on');
+        toggle.classList.add('off');
+        card.classList.remove('available');
+        card.classList.add('occupied');
+        label.classList.remove('available');
+        label.classList.add('occupied');
+        label.textContent = 'Occupied';
+        nextEl.textContent = court === 'A' ? '\u00a001:00 PM' : '\u00a003:00 PM';
+      } else {
+        toggle.classList.remove('off');
+        toggle.classList.add('on');
+        card.classList.remove('occupied');
+        card.classList.add('available');
+        label.classList.remove('occupied');
+        label.classList.add('available');
+        label.textContent = 'Available';
+        nextEl.textContent = court === 'A' ? '\u00a010:00 AM' : '\u00a011:00 AM';
+      }
+    }
+
+    // Timeline card hover effects
+    document.querySelectorAll('.timeline-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = 'rgba(14,165,233,0.25)';
+        card.style.boxShadow = '0 8px 30px rgba(0,0,0,0.5), 0 0 16px rgba(14,165,233,0.1)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = 'rgba(255,255,255,0.06)';
+        card.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)';
+      });
+    });
+  </script>
+
+
+</body></html>

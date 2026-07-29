@@ -1,0 +1,1232 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Court Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050A0F;
+      --neon-green: #00FF87;
+      --neon-cyan: #0EA5E9;
+      --neon-magenta: #FF3CAC;
+      --neon-amber: #F59E0B;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(0,255,135,0.15);
+      --dim-cyan: #4A90A4;
+      --text-primary: #FFFFFF;
+      --text-secondary: #94A3B8;
+      --surface: rgba(255,255,255,0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #01060A;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: var(--bg);
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(0,255,135,0.12),
+        0 40px 100px rgba(0,0,0,0.9),
+        0 0 60px rgba(0,255,135,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hex grid background */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,255,135,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(14,165,233,0.03) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,52 2,47 2,17' fill='none' stroke='rgba(0,255,135,0.03)' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: auto, auto, 60px 52px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px 8px;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .status-icons i { font-size: 12px; }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 110px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .scroll-content::-webkit-scrollbar { display: none; }
+
+    /* ─── HERO ─── */
+    .hero-wrap {
+      position: relative;
+      height: 460px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hero-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Heavy neon green radial vignette */
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 80% at 50% 50%, transparent 25%, rgba(0,0,0,0.72) 100%),
+        linear-gradient(to top, var(--bg) 0%, rgba(5,10,15,0.85) 30%, rgba(5,10,15,0.3) 65%, transparent 100%),
+        linear-gradient(to bottom, rgba(5,10,15,0.7) 0%, transparent 25%);
+    }
+
+    /* Neon green edge glow */
+    .hero-neon-glow {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 100% 100% at 50% 100%, rgba(0,255,135,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 0% 100%, rgba(0,255,135,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(0,255,135,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Scan line accent */
+    .hero-scanline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--neon-green) 30%, var(--neon-green) 70%, transparent 100%);
+      box-shadow: 0 0 20px rgba(0,255,135,0.8), 0 0 40px rgba(0,255,135,0.4);
+      opacity: 0.7;
+    }
+
+    .hero-back-btn {
+      position: absolute;
+      top: 52px;
+      left: 20px;
+      width: 42px;
+      height: 42px;
+      background: rgba(5,10,15,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 14px;
+      border: 1px solid rgba(0,255,135,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 10;
+      box-shadow: 0 0 12px rgba(0,255,135,0.1);
+    }
+
+    .hero-back-btn:hover {
+      background: rgba(0,255,135,0.1);
+      border-color: rgba(0,255,135,0.5);
+      box-shadow: 0 0 20px rgba(0,255,135,0.25);
+    }
+
+    .hero-back-btn:active { transform: scale(0.9); }
+
+    .hero-back-btn i {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .hero-heart-btn {
+      position: absolute;
+      top: 52px;
+      right: 20px;
+      width: 42px;
+      height: 42px;
+      background: rgba(5,10,15,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 10;
+    }
+
+    .hero-heart-btn:hover {
+      background: rgba(255,60,172,0.1);
+      border-color: rgba(255,60,172,0.4);
+      box-shadow: 0 0 16px rgba(255,60,172,0.25);
+    }
+
+    .hero-heart-btn:active { transform: scale(0.9); }
+
+    .hero-heart-btn i {
+      font-size: 15px;
+      color: #fff;
+      transition: all 0.25s ease;
+    }
+
+    .hero-heart-btn.liked i {
+      color: var(--neon-magenta);
+      filter: drop-shadow(0 0 6px rgba(255,60,172,0.8));
+    }
+
+    .hero-heart-btn.liked {
+      border-color: rgba(255,60,172,0.4);
+      background: rgba(255,60,172,0.1);
+      box-shadow: 0 0 16px rgba(255,60,172,0.25);
+    }
+
+    .photo-count-badge {
+      position: absolute;
+      bottom: 18px;
+      right: 20px;
+      background: rgba(5,10,15,0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      border: 1px solid rgba(0,255,135,0.25);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(0,255,135,0.15);
+    }
+
+    .photo-count-badge i {
+      font-size: 10px;
+      color: var(--neon-green);
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.7));
+    }
+
+    /* ─── COURT INFO ─── */
+    .court-info {
+      padding: 22px 24px 0;
+    }
+
+    .court-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.8px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .sport-tags-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .sport-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,255,135,0.08);
+      border: 1px solid rgba(0,255,135,0.4);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 14px rgba(0,255,135,0.15), inset 0 0 10px rgba(0,255,135,0.04);
+      text-shadow: 0 0 8px rgba(0,255,135,0.5);
+      transition: all 0.2s ease;
+    }
+
+    .sport-tag:hover {
+      background: rgba(0,255,135,0.14);
+      box-shadow: 0 0 20px rgba(0,255,135,0.3);
+    }
+
+    .sport-tag.padel {
+      background: rgba(168,85,247,0.08);
+      border-color: rgba(168,85,247,0.4);
+      color: #A855F7;
+      box-shadow: 0 0 14px rgba(168,85,247,0.15);
+      text-shadow: 0 0 8px rgba(168,85,247,0.5);
+    }
+
+    .sport-tag.padel:hover {
+      background: rgba(168,85,247,0.14);
+      box-shadow: 0 0 20px rgba(168,85,247,0.3);
+    }
+
+    /* Stats Pills */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 100px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.2s ease;
+      cursor: default;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-pill:hover {
+      background: rgba(255,255,255,0.07);
+      transform: translateY(-1px);
+    }
+
+    .stat-pill i { font-size: 12px; }
+
+    .icon-location { color: var(--neon-cyan); filter: drop-shadow(0 0 4px rgba(14,165,233,0.6)); }
+    .icon-star { color: var(--neon-amber); filter: drop-shadow(0 0 4px rgba(245,158,11,0.6)); }
+    .icon-price { color: var(--neon-green); filter: drop-shadow(0 0 4px rgba(0,255,135,0.6)); }
+
+    .stat-pill .sep {
+      color: rgba(255,255,255,0.2);
+      font-weight: 400;
+      margin: 0 1px;
+    }
+
+    .stat-pill .muted {
+      color: var(--dim-cyan);
+      font-weight: 500;
+      font-size: 11px;
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      height: 1px;
+      margin: 20px 24px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,135,0.15), rgba(0,255,135,0.15), transparent);
+      position: relative;
+    }
+
+    .section-divider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: rgba(0,255,135,0.08);
+      filter: blur(2px);
+    }
+
+    /* ─── SECTION ─── */
+    .section {
+      padding: 0 24px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 14px;
+    }
+
+    .section-title::before {
+      content: '▸ ';
+      color: var(--neon-green);
+      font-size: 10px;
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.7));
+    }
+
+    /* ─── PHOTO STRIP ─── */
+    .photo-section-header {
+      padding: 0 24px;
+      margin-bottom: 14px;
+    }
+
+    .photo-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 4px 24px 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .photo-scroll::-webkit-scrollbar { display: none; }
+
+    .photo-thumb {
+      width: 88px;
+      height: 66px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .photo-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(5,10,15,0.3);
+      transition: all 0.25s ease;
+    }
+
+    .photo-thumb:hover {
+      border-color: rgba(0,255,135,0.5);
+      box-shadow: 0 0 16px rgba(0,255,135,0.25);
+      transform: translateY(-2px);
+    }
+
+    .photo-thumb:hover::after {
+      background: rgba(0,255,135,0.05);
+    }
+
+    .photo-thumb.active {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 16px rgba(0,255,135,0.4), 0 0 30px rgba(0,255,135,0.15);
+    }
+
+    .photo-thumb.active::after {
+      background: rgba(0,255,135,0.06);
+    }
+
+    .photo-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    /* ─── FACILITIES ─── */
+    .facilities-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .facility-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.25s ease;
+      cursor: default;
+      backdrop-filter: blur(8px);
+    }
+
+    .facility-chip:hover {
+      background: rgba(0,255,135,0.06);
+      border-color: rgba(0,255,135,0.25);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .fac-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(0,255,135,0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,255,135,0.15);
+    }
+
+    .fac-icon i {
+      font-size: 13px;
+      color: var(--neon-green);
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.6));
+    }
+
+    .fac-icon.cyan-icon {
+      background: rgba(14,165,233,0.08);
+      border-color: rgba(14,165,233,0.2);
+    }
+
+    .fac-icon.cyan-icon i {
+      color: var(--neon-cyan);
+      filter: drop-shadow(0 0 4px rgba(14,165,233,0.6));
+    }
+
+    .fac-icon.amber-icon {
+      background: rgba(245,158,11,0.08);
+      border-color: rgba(245,158,11,0.2);
+    }
+
+    .fac-icon.amber-icon i {
+      color: var(--neon-amber);
+      filter: drop-shadow(0 0 4px rgba(245,158,11,0.6));
+    }
+
+    .fac-icon.magenta-icon {
+      background: rgba(255,60,172,0.08);
+      border-color: rgba(255,60,172,0.2);
+    }
+
+    .fac-icon.magenta-icon i {
+      color: var(--neon-magenta);
+      filter: drop-shadow(0 0 4px rgba(255,60,172,0.6));
+    }
+
+    /* ─── ABOUT ─── */
+    .about-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--dim-cyan);
+      line-height: 1.7;
+    }
+
+    /* ─── REVIEWS ─── */
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .see-reviews-btn {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .see-reviews-btn:hover {
+      color: #4dffaa;
+      text-shadow: 0 0 12px rgba(0,255,135,0.6);
+    }
+
+    .reviews-body {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .score-num {
+      font-size: 44px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .score-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .score-stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .score-stars i {
+      font-size: 12px;
+      color: var(--neon-amber);
+      filter: drop-shadow(0 0 4px rgba(245,158,11,0.5));
+    }
+
+    .score-count {
+      font-size: 11px;
+      color: var(--dim-cyan);
+      font-weight: 500;
+    }
+
+    .review-bars {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      width: 10px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-green), #4dffaa);
+      border-radius: 100px;
+      box-shadow: 0 0 6px rgba(0,255,135,0.4);
+    }
+
+    .bar-count {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(74,144,164,0.6);
+      width: 20px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ─── LOCATION ─── */
+    .map-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,135,0.12);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .map-card:hover {
+      border-color: rgba(0,255,135,0.35);
+      box-shadow: 0 0 30px rgba(0,255,135,0.12), 0 8px 32px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    .map-preview {
+      width: 100%;
+      height: 130px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7) saturate(0.6);
+    }
+
+    .map-overlay-tint {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 50% 80% at 50% 50%, rgba(0,255,135,0.06) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(5,10,15,0.3) 0%, rgba(5,10,15,0.5) 100%);
+    }
+
+    .map-pin-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .map-pin-dot {
+      width: 16px;
+      height: 16px;
+      background: var(--neon-green);
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+      box-shadow: 0 0 16px rgba(0,255,135,0.9), 0 0 30px rgba(0,255,135,0.5);
+    }
+
+    .map-pin-tail {
+      width: 2.5px;
+      height: 10px;
+      background: var(--neon-green);
+      border-radius: 0 0 2px 2px;
+      box-shadow: 0 0 8px rgba(0,255,135,0.6);
+    }
+
+    .map-pin-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0,255,135,0.15);
+      animation: mapPulse 2s ease-out infinite;
+    }
+
+    @keyframes mapPulse {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+    }
+
+    .map-address-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(0,255,135,0.08);
+    }
+
+    .map-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .map-addr-icon {
+      width: 34px;
+      height: 34px;
+      background: rgba(0,255,135,0.08);
+      border: 1px solid rgba(0,255,135,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .map-addr-icon i {
+      color: var(--neon-green);
+      font-size: 14px;
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.6));
+    }
+
+    .addr-main {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .addr-sub {
+      font-size: 11px;
+      color: var(--dim-cyan);
+      font-weight: 500;
+    }
+
+    .directions-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,255,135,0.08);
+      border: 1px solid rgba(0,255,135,0.3);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(0,255,135,0.1);
+    }
+
+    .directions-btn:hover {
+      background: rgba(0,255,135,0.16);
+      border-color: var(--neon-green);
+      box-shadow: 0 0 20px rgba(0,255,135,0.3);
+    }
+
+    .directions-btn i { font-size: 10px; }
+
+    /* ─── BOTTOM CTA BAR ─── */
+    .bottom-cta-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5,10,15,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(0,255,135,0.15);
+      padding: 14px 24px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      z-index: 40;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.6), 0 -1px 0 rgba(0,255,135,0.06);
+    }
+
+    .price-block {}
+
+    .price-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 3px;
+    }
+
+    .price-amount {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      text-shadow: 0 0 16px rgba(0,255,135,0.5);
+    }
+
+    .price-amount .per {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dim-cyan);
+      letter-spacing: 0;
+    }
+
+    .book-now-btn {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(0,255,135,0.25), rgba(0,200,100,0.15));
+      border: 1px solid rgba(0,255,135,0.55);
+      border-radius: 16px;
+      height: 54px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      text-shadow: 0 0 10px rgba(0,255,135,0.6);
+      box-shadow:
+        0 0 24px rgba(0,255,135,0.25),
+        0 4px 20px rgba(0,255,135,0.15),
+        inset 0 1px 0 rgba(0,255,135,0.15),
+        inset 0 0 20px rgba(0,255,135,0.04);
+    }
+
+    .book-now-btn:hover {
+      background: linear-gradient(135deg, rgba(0,255,135,0.35), rgba(0,200,100,0.25));
+      border-color: var(--neon-green);
+      box-shadow:
+        0 0 40px rgba(0,255,135,0.45),
+        0 8px 30px rgba(0,255,135,0.25),
+        inset 0 1px 0 rgba(0,255,135,0.2);
+      transform: translateY(-2px);
+    }
+
+    .book-now-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 16px rgba(0,255,135,0.25);
+    }
+
+    .book-now-btn i {
+      font-size: 15px;
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.6));
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Hero Image -->
+      <div class="hero-wrap">
+        <img src="floodlit_football_pitch_night_wide.jpg" alt="Wide-angle aerial view of a floodlit outdoor football pitch at night, vivid green synthetic turf glowing under bright stadium floodlights, white line markings, empty grandstand in the background, dramatic dark sky, professional sports venue" width="430" height="460">
+        <div class="hero-vignette"></div>
+        <div class="hero-neon-glow"></div>
+        <div class="hero-scanline"></div>
+
+        <!-- Back Button -->
+        <div class="hero-back-btn" id="backBtn">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+
+        <!-- Heart Button -->
+        <div class="hero-heart-btn" id="heartBtn">
+          <i class="far fa-heart"></i>
+        </div>
+
+        <!-- Photo Counter -->
+        <div class="photo-count-badge" id="photoCountBadge">
+          <i class="fas fa-images"></i>
+          1 / 6
+        </div>
+      </div>
+
+      <!-- Court Info -->
+      <div class="court-info">
+        <div class="court-name">Al-Noor Sports Arena</div>
+
+        <div class="sport-tags-row">
+          <div class="sport-tag">⚽ Football</div>
+          <div class="sport-tag padel">🏓 Padel</div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-pill">
+            <i class="fas fa-location-dot icon-location"></i>
+            Al Malaz · 1.2 km
+          </div>
+          <div class="stat-pill">
+            <i class="fas fa-star icon-star"></i>
+            4.8
+            <span class="sep">·</span>
+            <span class="muted">124</span>
+          </div>
+          <div class="stat-pill">
+            <i class="fas fa-tag icon-price"></i>
+            60 SAR/hr
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Photos Section -->
+      <div class="photo-section-header">
+        <div class="section-title">Photos</div>
+      </div>
+      <div class="photo-scroll">
+        <div class="photo-thumb active" data-index="0">
+          <img src="court_photo_1_aerial_night.jpg" alt="Aerial view of Al-Noor football pitch under floodlights at night, green turf visible" width="88" height="66">
+        </div>
+        <div class="photo-thumb" data-index="1">
+          <img src="court_photo_2_goal_closeup.jpg" alt="Close-up of a football goal post on the Al-Noor pitch with the net and green turf, daylight" width="88" height="66">
+        </div>
+        <div class="photo-thumb" data-index="2">
+          <img src="court_photo_3_changing_rooms.jpg" alt="Clean and modern changing rooms interior at Al-Noor Sports Arena with lockers and benches" width="88" height="66">
+        </div>
+        <div class="photo-thumb" data-index="3">
+          <img src="court_photo_4_cafe_area.jpg" alt="Bright sports café seating area inside Al-Noor Sports Arena with tables, chairs, and menu board" width="88" height="66">
+        </div>
+        <div class="photo-thumb" data-index="4">
+          <img src="court_photo_5_padel_court.jpg" alt="Side view of an outdoor padel court enclosed in glass and metal, green padel turf, at Al-Noor Sports Arena" width="88" height="66">
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Facilities -->
+      <div class="section">
+        <div class="section-title">Facilities</div>
+        <div class="facilities-grid">
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-square-parking"></i></div>
+            Parking
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon cyan-icon"><i class="fas fa-door-open"></i></div>
+            Changing Rooms
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon amber-icon"><i class="fas fa-lightbulb"></i></div>
+            Night Lighting
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon magenta-icon"><i class="fas fa-mug-hot"></i></div>
+            Café
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon"><i class="fas fa-kit-medical"></i></div>
+            First Aid
+          </div>
+          <div class="facility-chip">
+            <div class="fac-icon cyan-icon"><i class="fas fa-wifi"></i></div>
+            Free Wi-Fi
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- About -->
+      <div class="section">
+        <div class="section-title">About</div>
+        <div class="about-text">
+          Al-Noor Sports Arena is a premium multi-sport venue in the heart of Al Malaz, offering floodlit football and padel courts with a professional finish. Open 7 days a week, supporting casual sessions and competitive leagues — the top-rated court in Riyadh's central district.
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Reviews -->
+      <div class="section">
+        <div class="reviews-header">
+          <div class="section-title" style="margin-bottom:0;">Reviews</div>
+          <div class="see-reviews-btn">See all 124</div>
+        </div>
+        <div class="reviews-body">
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <div class="score-num">4.8</div>
+            <div class="score-details">
+              <div class="score-stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-stroke"></i>
+              </div>
+              <div class="score-count">124 ratings</div>
+            </div>
+          </div>
+          <div class="review-bars">
+            <div class="bar-row">
+              <div class="bar-label">5</div>
+              <div class="bar-track"><div class="bar-fill" style="width:78%"></div></div>
+              <div class="bar-count">97</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">4</div>
+              <div class="bar-track"><div class="bar-fill" style="width:14%"></div></div>
+              <div class="bar-count">17</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">3</div>
+              <div class="bar-track"><div class="bar-fill" style="width:5%"></div></div>
+              <div class="bar-count">6</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">2</div>
+              <div class="bar-track"><div class="bar-fill" style="width:2%"></div></div>
+              <div class="bar-count">3</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">1</div>
+              <div class="bar-track"><div class="bar-fill" style="width:1%"></div></div>
+              <div class="bar-count">1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Location -->
+      <div class="section" style="padding-bottom:20px;">
+        <div class="section-title">Location</div>
+        <div class="map-card" id="mapCard">
+          <div class="map-preview">
+            <img src="riyadh_al_malaz_district_map_aerial.jpg" alt="Aerial satellite map view of Al Malaz district in Riyadh, Saudi Arabia, showing urban city streets, buildings, and roads in a warm beige and tan color palette, top-down perspective" width="382" height="130">
+            <div class="map-overlay-tint"></div>
+            <div class="map-pin-overlay">
+              <div class="map-pin-pulse"></div>
+              <div class="map-pin-dot"></div>
+              <div class="map-pin-tail"></div>
+            </div>
+          </div>
+          <div class="map-address-bar">
+            <div class="map-left">
+              <div class="map-addr-icon">
+                <i class="fas fa-location-dot"></i>
+              </div>
+              <div>
+                <div class="addr-main">King Fahd Rd, Al Malaz</div>
+                <div class="addr-sub">Riyadh 12836, Saudi Arabia</div>
+              </div>
+            </div>
+            <button class="directions-btn" id="dirBtn">
+              <i class="fas fa-diamond-turn-right"></i>
+              Directions
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Fixed Bottom CTA Bar -->
+    <div class="bottom-cta-bar">
+      <div class="price-block">
+        <div class="price-label">Price</div>
+        <div class="price-amount">60 SAR <span class="per">/ hr</span></div>
+      </div>
+      <button class="book-now-btn">
+        <i class="fas fa-calendar-check"></i>
+        Book Now
+      </button>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Heart toggle
+    const heartBtn = document.getElementById('heartBtn');
+    heartBtn.addEventListener('click', () => {
+      heartBtn.classList.toggle('liked');
+      const icon = heartBtn.querySelector('i');
+      if (heartBtn.classList.contains('liked')) {
+        icon.className = 'fas fa-heart';
+      } else {
+        icon.className = 'far fa-heart';
+      }
+    });
+
+    // Photo thumb selection
+    const thumbs = document.querySelectorAll('.photo-thumb');
+    const badge = document.getElementById('photoCountBadge');
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => {
+        thumbs.forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        badge.innerHTML = `<i class="fas fa-images"></i> ${i + 1} / 6`;
+      });
+    });
+
+    // Back button
+    const backBtn = document.getElementById('backBtn');
+    backBtn.addEventListener('click', () => {
+      backBtn.style.transform = 'scale(0.88)';
+      setTimeout(() => { backBtn.style.transform = ''; }, 180);
+    });
+
+    // Directions button
+    const dirBtn = document.getElementById('dirBtn');
+    dirBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dirBtn.style.transform = 'scale(0.92)';
+      setTimeout(() => { dirBtn.style.transform = ''; }, 150);
+    });
+  </script>
+
+
+</body></html>

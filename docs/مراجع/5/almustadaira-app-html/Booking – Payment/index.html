@@ -1,0 +1,1184 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Confirm &amp; Pay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050A0F;
+      --neon-green: #00FF87;
+      --neon-cyan: #0EA5E9;
+      --neon-magenta: #FF3CAC;
+      --neon-amber: #F59E0B;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(0,255,135,0.15);
+      --dim-cyan: #4A90A4;
+      --text-primary: #FFFFFF;
+      --text-secondary: #94A3B8;
+      --surface: rgba(255,255,255,0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #01060A;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: var(--bg);
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(0,255,135,0.12),
+        0 40px 100px rgba(0,0,0,0.9),
+        0 0 60px rgba(0,255,135,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hex grid background */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,255,135,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(14,165,233,0.04) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,52 2,47 2,17' fill='none' stroke='rgba(0,255,135,0.03)' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: auto, auto, 60px 52px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .status-icons i { font-size: 12px; }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 4px 24px 14px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(14,165,233,0.2);
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      background: rgba(14,165,233,0.08);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(14,165,233,0.25);
+    }
+
+    .back-btn:active { transform: scale(0.92); }
+
+    .back-btn i {
+      font-size: 15px;
+      color: var(--neon-cyan);
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(0,255,135,0.2);
+    }
+
+    .header-spacer {
+      width: 42px;
+      flex-shrink: 0;
+    }
+
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      padding: 0 32px 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .step-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .step.done .step-circle {
+      background: rgba(0,255,135,0.15);
+      border: 1.5px solid var(--neon-green);
+      color: var(--neon-green);
+      box-shadow: 0 0 14px rgba(0,255,135,0.4), 0 0 28px rgba(0,255,135,0.15);
+    }
+
+    .step.active .step-circle {
+      background: rgba(0,255,135,0.18);
+      border: 1.5px solid var(--neon-green);
+      color: var(--neon-green);
+      box-shadow: 0 0 20px rgba(0,255,135,0.6), 0 0 40px rgba(0,255,135,0.2);
+      animation: stepPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 16px rgba(0,255,135,0.5), 0 0 32px rgba(0,255,135,0.15); }
+      50% { box-shadow: 0 0 26px rgba(0,255,135,0.8), 0 0 50px rgba(0,255,135,0.25); }
+    }
+
+    .step.inactive .step-circle {
+      background: rgba(255,255,255,0.03);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      color: #3a4f64;
+    }
+
+    .step-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .step.done .step-label,
+    .step.active .step-label {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px rgba(0,255,135,0.4);
+    }
+
+    .step.inactive .step-label { color: #3a4f64; }
+
+    .step-connector {
+      flex: 1;
+      height: 1px;
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .step-connector.done {
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-green));
+      box-shadow: 0 0 6px rgba(0,255,135,0.5);
+    }
+
+    .step-connector.inactive {
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* Scan line accent on top */
+    .scan-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(0,255,135,0.3) 30%, rgba(0,255,135,0.6) 50%, rgba(0,255,135,0.3) 70%, transparent 100%);
+      margin: 0 24px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 10;
+      animation: scanAnim 4s ease-in-out infinite;
+    }
+
+    @keyframes scanAnim {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 8px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .scroll-content::-webkit-scrollbar { display: none; }
+
+    /* Section Label */
+    .section-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 0 24px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::before {
+      content: '▸';
+      color: var(--neon-green);
+      font-size: 9px;
+    }
+
+    /* Booking Summary Card */
+    .summary-card {
+      margin: 0 20px 20px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      border: 1px solid rgba(0,255,135,0.12);
+      border-left: 2px solid var(--neon-green);
+      overflow: hidden;
+      box-shadow:
+        -4px 0 20px rgba(0,255,135,0.12),
+        0 8px 32px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+    }
+
+    .summary-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 80% 60% at 0% 50%, rgba(0,255,135,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .summary-card-inner {
+      padding: 18px 18px 18px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .summary-venue-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .summary-venue-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+
+    .summary-venue-sub {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--dim-cyan);
+      font-weight: 500;
+    }
+
+    .summary-venue-sub i {
+      font-size: 10px;
+      color: var(--neon-cyan);
+    }
+
+    .sport-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,255,135,0.08);
+      border: 1px solid rgba(0,255,135,0.3);
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 12px rgba(0,255,135,0.15);
+      text-shadow: 0 0 8px rgba(0,255,135,0.4);
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,255,135,0.2), rgba(255,255,255,0.04) 60%, transparent);
+      margin-bottom: 14px;
+    }
+
+    .summary-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .summary-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px 12px;
+      transition: all 0.25s ease;
+    }
+
+    .summary-detail-item:hover {
+      background: rgba(0,255,135,0.04);
+      border-color: rgba(0,255,135,0.15);
+    }
+
+    .detail-icon-wrap {
+      width: 30px;
+      height: 30px;
+      background: rgba(0,255,135,0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,255,135,0.15);
+    }
+
+    .detail-icon-wrap i {
+      font-size: 12px;
+      color: var(--neon-green);
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.5));
+    }
+
+    .detail-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .detail-value {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* Payment Method Cards */
+    .payment-methods {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .payment-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .payment-card:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(0,255,135,0.2);
+    }
+
+    .payment-card.selected {
+      border-color: var(--neon-green);
+      background: rgba(0,255,135,0.06);
+      box-shadow:
+        0 0 0 1px rgba(0,255,135,0.2),
+        0 0 24px rgba(0,255,135,0.15),
+        inset 0 0 20px rgba(0,255,135,0.04);
+    }
+
+    .payment-card.selected::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+      box-shadow: 0 0 12px var(--neon-green);
+    }
+
+    .payment-icon-wrap {
+      width: 46px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+
+    .payment-info { flex: 1; }
+
+    .payment-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .payment-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--dim-cyan);
+    }
+
+    .radio-outer {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .payment-card.selected .radio-outer {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 10px rgba(0,255,135,0.4);
+    }
+
+    .radio-inner {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .payment-card.selected .radio-inner {
+      background: var(--neon-green);
+      box-shadow: 0 0 8px rgba(0,255,135,0.7);
+    }
+
+    /* Promo Code Section */
+    .promo-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+
+    .promo-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .promo-input-wrap {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left: 2px solid var(--neon-green);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      height: 50px;
+      transition: all 0.25s ease;
+      box-shadow: -2px 0 14px rgba(0,255,135,0.08);
+    }
+
+    .promo-input-wrap:focus-within {
+      border-color: rgba(0,255,135,0.4);
+      border-left: 2px solid var(--neon-green);
+      box-shadow: -4px 0 20px rgba(0,255,135,0.2), 0 0 0 1px rgba(0,255,135,0.1);
+    }
+
+    .promo-input-wrap i {
+      font-size: 13px;
+      color: var(--neon-green);
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.5));
+    }
+
+    .promo-input-wrap input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .promo-input-wrap input::placeholder {
+      color: rgba(74,144,164,0.5);
+      font-weight: 500;
+    }
+
+    .apply-btn {
+      background: rgba(0,255,135,0.12);
+      border: 1px solid rgba(0,255,135,0.4);
+      border-radius: 14px;
+      padding: 0 20px;
+      height: 50px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-shadow: 0 0 8px rgba(0,255,135,0.5);
+      box-shadow: 0 0 16px rgba(0,255,135,0.1);
+    }
+
+    .apply-btn:hover {
+      background: rgba(0,255,135,0.2);
+      border-color: var(--neon-green);
+      box-shadow: 0 0 24px rgba(0,255,135,0.3);
+      transform: translateY(-1px);
+    }
+
+    .apply-btn:active { transform: scale(0.96); }
+
+    .promo-success {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neon-green);
+      letter-spacing: 0.3px;
+      text-shadow: 0 0 8px rgba(0,255,135,0.4);
+    }
+
+    .promo-success.visible { display: flex; }
+    .promo-success i { font-size: 12px; }
+
+    /* Order Summary */
+    .order-summary {
+      margin: 0 20px 20px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .order-summary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,135,0.2), transparent);
+    }
+
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .order-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .order-amount {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .order-discount-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discount-badge {
+      background: rgba(0,255,135,0.1);
+      border: 1px solid rgba(0,255,135,0.25);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px rgba(0,255,135,0.4);
+    }
+
+    .order-amount.discount {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px rgba(0,255,135,0.4);
+    }
+
+    .order-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-green), rgba(0,255,135,0.4), transparent);
+      box-shadow: 0 0 8px rgba(0,255,135,0.4);
+      margin: 8px 0;
+    }
+
+    .order-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0 0;
+    }
+
+    .order-total-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .order-total-amount {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 20px rgba(0,255,135,0.6), 0 0 40px rgba(0,255,135,0.2);
+    }
+
+    .order-total-sar {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--neon-green);
+      margin-left: 3px;
+      opacity: 0.8;
+    }
+
+    /* Bottom area */
+    .bottom-area {
+      flex-shrink: 0;
+      background: linear-gradient(to top, rgba(5,10,15,1) 0%, rgba(5,10,15,0.95) 100%);
+      padding: 14px 20px 28px;
+      border-top: 1px solid rgba(0,255,135,0.08);
+      position: relative;
+      z-index: 10;
+    }
+
+    .bottom-area::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,135,0.3), transparent);
+    }
+
+    .pay-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(0,255,135,0.25), rgba(0,200,100,0.15));
+      border: 1px solid var(--neon-green);
+      border-radius: 18px;
+      height: 60px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(0,255,135,0.6);
+      box-shadow:
+        0 0 30px rgba(0,255,135,0.25),
+        0 0 60px rgba(0,255,135,0.08),
+        inset 0 0 20px rgba(0,255,135,0.05),
+        0 4px 20px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pay-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,135,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .pay-btn:hover::before {
+      left: 100%;
+    }
+
+    .pay-btn:hover {
+      background: linear-gradient(135deg, rgba(0,255,135,0.35), rgba(0,200,100,0.25));
+      box-shadow:
+        0 0 40px rgba(0,255,135,0.45),
+        0 0 80px rgba(0,255,135,0.15),
+        inset 0 0 30px rgba(0,255,135,0.08),
+        0 8px 28px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    .pay-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 20px rgba(0,255,135,0.3);
+    }
+
+    .pay-btn i { font-size: 15px; }
+
+    .secure-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+    }
+
+    .secure-label i {
+      font-size: 10px;
+      color: var(--neon-green);
+      filter: drop-shadow(0 0 4px rgba(0,255,135,0.5));
+    }
+
+    /* Apple Pay */
+    .apple-pay-text {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      font-family: -apple-system, sans-serif;
+    }
+
+    /* Card icons */
+    .card-icons {
+      display: flex;
+      gap: 2px;
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="back-btn" id="backBtn">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="header-title">Confirm &amp; Pay</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step done">
+        <div class="step-circle">
+          <i class="fas fa-check" style="font-size:12px;"></i>
+        </div>
+        <span class="step-label">Select</span>
+      </div>
+      <div class="step-connector done"></div>
+      <div class="step done">
+        <div class="step-circle">
+          <i class="fas fa-check" style="font-size:12px;"></i>
+        </div>
+        <span class="step-label">Details</span>
+      </div>
+      <div class="step-connector done"></div>
+      <div class="step active">
+        <div class="step-circle">3</div>
+        <span class="step-label">Payment</span>
+      </div>
+    </div>
+
+    <!-- Scan line accent -->
+    <div class="scan-line"></div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Booking Summary -->
+      <div class="section-label">Booking Summary</div>
+      <div class="summary-card">
+        <div class="summary-card-inner">
+          <div class="summary-venue-row">
+            <div>
+              <div class="summary-venue-name">Al-Rawdah Arena</div>
+              <div class="summary-venue-sub">
+                <i class="fas fa-location-dot"></i>
+                Al Rawdah, Riyadh
+              </div>
+            </div>
+            <div class="sport-pill">
+              <span>⚽</span>
+              Football
+            </div>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-details-grid">
+            <div class="summary-detail-item">
+              <div class="detail-icon-wrap">
+                <i class="fas fa-calendar-days"></i>
+              </div>
+              <div>
+                <div class="detail-label">Date</div>
+                <div class="detail-value">Fri, 24 Jan</div>
+              </div>
+            </div>
+            <div class="summary-detail-item">
+              <div class="detail-icon-wrap">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div>
+                <div class="detail-label">Time</div>
+                <div class="detail-value">08:00 PM</div>
+              </div>
+            </div>
+            <div class="summary-detail-item">
+              <div class="detail-icon-wrap">
+                <i class="fas fa-hourglass-half"></i>
+              </div>
+              <div>
+                <div class="detail-label">Duration</div>
+                <div class="detail-value">1 Hour</div>
+              </div>
+            </div>
+            <div class="summary-detail-item">
+              <div class="detail-icon-wrap">
+                <i class="fas fa-users"></i>
+              </div>
+              <div>
+                <div class="detail-label">Players</div>
+                <div class="detail-value">10 Players</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="section-label">Payment Method</div>
+
+      <div class="payment-methods">
+        <!-- Apple Pay -->
+        <div class="payment-card selected" data-method="applepay">
+          <div class="payment-icon-wrap" style="background: #000; border-radius: 10px;">
+            <span class="apple-pay-text"> Pay</span>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Apple Pay</div>
+            <div class="payment-sub">Touch ID or Face ID</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+
+        <!-- Credit / Debit Card -->
+        <div class="payment-card" data-method="card">
+          <div class="payment-icon-wrap" style="background: rgba(5,10,15,0.8);">
+            <div class="card-icons">
+              <i class="fab fa-cc-visa" style="color: #1A56DB; font-size: 20px;"></i>
+              <i class="fab fa-cc-mastercard" style="color: #EB001B; font-size: 20px;"></i>
+            </div>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Credit / Debit Card</div>
+            <div class="payment-sub">Visa, Mastercard, Amex</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+
+        <!-- Mada -->
+        <div class="payment-card" data-method="mada">
+          <div class="payment-icon-wrap" style="background: rgba(5,10,15,0.8);">
+            <svg width="38" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="38" height="20" rx="4" fill="rgba(0,255,135,0.05)"></rect>
+              <text x="4" y="14" font-family="Space Grotesk, sans-serif" font-size="11" font-weight="700" fill="#00FF87">mada</text>
+            </svg>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Mada</div>
+            <div class="payment-sub">Saudi debit network</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promo Code -->
+      <div class="section-label">Promo Code</div>
+
+      <div class="promo-section">
+        <div class="promo-input-row">
+          <div class="promo-input-wrap">
+            <i class="fas fa-tag"></i>
+            <input type="text" id="promoInput" placeholder="Enter promo code">
+          </div>
+          <button class="apply-btn" id="applyBtn">Apply</button>
+        </div>
+        <div class="promo-success" id="promoSuccess">
+          <i class="fas fa-circle-check"></i>
+          <span>Code <strong>SPORT20</strong> applied — 20% off!</span>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="section-label">Order Summary</div>
+
+      <div class="order-summary">
+        <div class="order-row">
+          <span class="order-label">Court Fee</span>
+          <span class="order-amount">SAR 60</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Service Fee</span>
+          <span class="order-amount">SAR 5</span>
+        </div>
+        <div class="order-row" id="discountRow" style="display: none;">
+          <span class="order-discount-label">
+            Discount
+            <span class="discount-badge">SPORT20</span>
+          </span>
+          <span class="order-amount discount" id="discountAmount">−SAR 13</span>
+        </div>
+        <div class="order-divider"></div>
+        <div class="order-total-row">
+          <span class="order-total-label">Total</span>
+          <span class="order-total-amount" id="totalAmount">65 <span class="order-total-sar">SAR</span></span>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Bottom Pay Button -->
+    <div class="bottom-area">
+      <button class="pay-btn" id="payBtn">
+        <i class="fas fa-lock"></i>
+        <span id="payBtnText">Pay 65 SAR</span>
+      </button>
+      <div class="secure-label">
+        <i class="fas fa-shield-halved"></i>
+        Secured by 256-bit SSL encryption
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Payment method selection
+    const paymentCards = document.querySelectorAll('.payment-card');
+    paymentCards.forEach(card => {
+      card.addEventListener('click', () => {
+        paymentCards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+      });
+    });
+
+    // Promo code apply
+    const applyBtn = document.getElementById('applyBtn');
+    const promoInput = document.getElementById('promoInput');
+    const promoSuccess = document.getElementById('promoSuccess');
+    const discountRow = document.getElementById('discountRow');
+    const totalAmount = document.getElementById('totalAmount');
+    const payBtnText = document.getElementById('payBtnText');
+
+    let promoApplied = false;
+
+    applyBtn.addEventListener('click', () => {
+      const code = promoInput.value.trim().toUpperCase();
+      if (code === 'SPORT20' && !promoApplied) {
+        promoApplied = true;
+        promoInput.value = 'SPORT20';
+        promoInput.disabled = true;
+        promoSuccess.classList.add('visible');
+        discountRow.style.display = 'flex';
+        totalAmount.innerHTML = '52 <span class="order-total-sar">SAR</span>';
+        payBtnText.textContent = 'Pay 52 SAR';
+        applyBtn.textContent = '✓ Applied';
+        applyBtn.style.background = 'rgba(0,255,135,0.08)';
+        applyBtn.style.color = 'var(--neon-green)';
+        applyBtn.style.borderColor = 'rgba(0,255,135,0.3)';
+        applyBtn.style.boxShadow = 'none';
+        applyBtn.disabled = true;
+      } else if (!promoApplied && code.length > 0) {
+        const wrap = promoInput.closest('.promo-input-wrap');
+        wrap.style.borderColor = '#FF3CAC';
+        wrap.style.boxShadow = '0 0 0 1px rgba(255,60,172,0.2), -3px 0 16px rgba(255,60,172,0.15)';
+        setTimeout(() => {
+          wrap.style.borderColor = '';
+          wrap.style.boxShadow = '';
+        }, 1500);
+      }
+    });
+
+    // Pay button
+    const payBtn = document.getElementById('payBtn');
+    payBtn.addEventListener('click', () => {
+      payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Processing...</span>';
+      payBtn.style.opacity = '0.75';
+      payBtn.disabled = true;
+      setTimeout(() => {
+        payBtn.innerHTML = '<i class="fas fa-circle-check"></i> <span>Payment Successful!</span>';
+        payBtn.style.opacity = '1';
+        payBtn.style.boxShadow = '0 0 40px rgba(0,255,135,0.5), 0 0 80px rgba(0,255,135,0.2)';
+      }, 2000);
+    });
+
+    // Back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+      const btn = document.getElementById('backBtn');
+      btn.style.transform = 'scale(0.9)';
+      setTimeout(() => { btn.style.transform = ''; }, 150);
+    });
+  </script>
+
+
+</body></html>

@@ -1,0 +1,1194 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Book a Court</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050A0F;
+      --neon-green: #00FF87;
+      --neon-cyan: #0EA5E9;
+      --neon-magenta: #FF3CAC;
+      --neon-amber: #F59E0B;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(0,255,135,0.15);
+      --dim-cyan: #4A90A4;
+      --text-primary: #FFFFFF;
+      --text-secondary: #94A3B8;
+      --surface: rgba(255,255,255,0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #01060A;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: var(--bg);
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(0,255,135,0.12),
+        0 40px 100px rgba(0,0,0,0.9),
+        0 0 60px rgba(0,255,135,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,255,135,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(14,165,233,0.04) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,52 2,47 2,17' fill='none' stroke='rgba(0,255,135,0.03)' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: auto, auto, 60px 52px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .status-icons i { font-size: 12px; }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 110px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .scroll-content::-webkit-scrollbar { display: none; }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 8px 24px 16px;
+      gap: 14px;
+      position: relative;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(14,165,233,0.2);
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      background: rgba(14,165,233,0.1);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(14,165,233,0.25);
+    }
+
+    .back-btn:active { transform: scale(0.93); }
+
+    .back-btn i {
+      font-size: 15px;
+      color: var(--neon-cyan);
+    }
+
+    .header-text { flex: 1; }
+
+    .header-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dim-cyan);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-subtitle i {
+      font-size: 10px;
+      color: var(--neon-cyan);
+    }
+
+    .share-btn {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .share-btn:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .share-btn i {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Progress Steps */
+    .progress-section {
+      padding: 0 24px 24px;
+      position: relative;
+    }
+
+    .progress-steps {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .step-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      z-index: 1;
+      position: relative;
+    }
+
+    .step.active .step-circle {
+      background: rgba(0,255,135,0.15);
+      color: var(--neon-green);
+      border: 1.5px solid rgba(0,255,135,0.7);
+      box-shadow: 0 0 20px rgba(0,255,135,0.5), 0 0 40px rgba(0,255,135,0.2), inset 0 0 10px rgba(0,255,135,0.08);
+    }
+
+    .step.inactive .step-circle {
+      background: rgba(255,255,255,0.03);
+      color: #3a4f64;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .step.done .step-circle {
+      background: rgba(0,255,135,0.1);
+      color: var(--neon-green);
+      border: 1px solid rgba(0,255,135,0.3);
+    }
+
+    .step-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .step.active .step-label {
+      color: var(--neon-green);
+      text-shadow: 0 0 10px rgba(0,255,135,0.4);
+    }
+
+    .step.inactive .step-label {
+      color: #3a4f64;
+    }
+
+    .step.done .step-label {
+      color: rgba(0,255,135,0.5);
+    }
+
+    .step-connector {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 16px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+
+    .step-line {
+      width: 100%;
+      height: 1.5px;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .step-line.neon {
+      background: linear-gradient(90deg, rgba(0,255,135,0.8), rgba(0,255,135,0.15));
+      box-shadow: 0 0 8px rgba(0,255,135,0.3);
+    }
+
+    .step-line.dim {
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* Section Title */
+    .section {
+      padding: 0 24px 22px;
+    }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dim-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title::before {
+      content: '▸';
+      color: var(--neon-green);
+      font-size: 10px;
+    }
+
+    /* Date Scroll */
+    .date-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin: 0 -24px;
+      padding: 4px 24px 8px;
+    }
+
+    .date-scroll::-webkit-scrollbar { display: none; }
+
+    .date-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 11px 13px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      flex-shrink: 0;
+      min-width: 54px;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .date-pill:hover:not(.active) {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(0,255,135,0.2);
+      transform: translateY(-1px);
+    }
+
+    .date-pill:active { transform: scale(0.95); }
+
+    .date-pill.active {
+      background: rgba(0,255,135,0.12);
+      border: 1.5px solid rgba(0,255,135,0.6);
+      box-shadow: 0 0 20px rgba(0,255,135,0.3), 0 4px 16px rgba(0,255,135,0.15), inset 0 0 12px rgba(0,255,135,0.06);
+    }
+
+    .date-day {
+      font-size: 10px;
+      font-weight: 600;
+      color: #3a4f64;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .date-pill.active .date-day {
+      color: rgba(0,255,135,0.7);
+    }
+
+    .date-num {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .date-pill.active .date-num {
+      color: var(--neon-green);
+      text-shadow: 0 0 12px rgba(0,255,135,0.6);
+    }
+
+    .date-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(0,255,135,0.4);
+      opacity: 0;
+    }
+
+    .date-pill.active .date-dot {
+      opacity: 1;
+      background: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green);
+    }
+
+    /* Duration Segmented */
+    .segmented {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+      gap: 3px;
+      backdrop-filter: blur(12px);
+    }
+
+    .seg-option {
+      flex: 1;
+      padding: 11px 6px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      color: #3a4f64;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      letter-spacing: 0.2px;
+    }
+
+    .seg-option:hover:not(.active) {
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .seg-option.active {
+      background: rgba(0,255,135,0.15);
+      color: var(--neon-green);
+      border: 1px solid rgba(0,255,135,0.45);
+      box-shadow: 0 0 16px rgba(0,255,135,0.25), inset 0 0 10px rgba(0,255,135,0.05);
+      text-shadow: 0 0 10px rgba(0,255,135,0.5);
+    }
+
+    .seg-option:active { transform: scale(0.97); }
+
+    .seg-label { font-size: 13px; font-weight: 700; }
+
+    .seg-price {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.65;
+    }
+
+    .seg-option.active .seg-price { opacity: 0.8; }
+
+    /* Slots Grid */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .slot-chip {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 10px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      gap: 2px;
+      backdrop-filter: blur(8px);
+    }
+
+    .slot-chip:hover:not(.unavailable):not(.active) {
+      background: rgba(0,255,135,0.06);
+      border-color: rgba(0,255,135,0.25);
+      transform: translateY(-1px);
+    }
+
+    .slot-chip:active:not(.unavailable) { transform: scale(0.95); }
+
+    .slot-chip.active {
+      background: rgba(0,255,135,0.14);
+      border: 1.5px solid rgba(0,255,135,0.7);
+      box-shadow: 0 0 18px rgba(0,255,135,0.35), 0 4px 14px rgba(0,255,135,0.2), inset 0 0 10px rgba(0,255,135,0.06);
+    }
+
+    .slot-chip.unavailable {
+      background: rgba(255,60,172,0.03);
+      border-color: rgba(255,60,172,0.08);
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .slot-time {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94A3B8;
+      letter-spacing: 0.1px;
+      line-height: 1;
+    }
+
+    .slot-chip.active .slot-time {
+      color: var(--neon-green);
+      text-shadow: 0 0 10px rgba(0,255,135,0.6);
+    }
+
+    .slot-chip.unavailable .slot-time {
+      color: #3a4f64;
+      text-decoration: line-through;
+    }
+
+    .slot-period {
+      font-size: 9px;
+      font-weight: 600;
+      color: #3a4f64;
+      letter-spacing: 0.3px;
+    }
+
+    .slot-chip.active .slot-period {
+      color: rgba(0,255,135,0.7);
+    }
+
+    /* Slot legend */
+    .slot-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #3a4f64;
+      letter-spacing: 0.3px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    .legend-dot.available {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .legend-dot.selected-dot {
+      background: var(--neon-green);
+      box-shadow: 0 0 6px var(--neon-green);
+    }
+
+    .legend-dot.unavailable-dot {
+      background: rgba(255,60,172,0.12);
+      border: 1px solid rgba(255,60,172,0.2);
+    }
+
+    /* Player Count Stepper */
+    .stepper-wrap {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+
+    .stepper-info { display: flex; flex-direction: column; gap: 3px; }
+
+    .stepper-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .stepper-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .stepper-value span {
+      font-size: 13px;
+      font-weight: 500;
+      color: #3a4f64;
+      margin-left: 3px;
+    }
+
+    .stepper-controls {
+      display: flex;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+      gap: 2px;
+    }
+
+    .stepper-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .stepper-btn.minus-btn {
+      border-color: rgba(255,60,172,0.25);
+      background: rgba(255,60,172,0.07);
+    }
+
+    .stepper-btn.minus-btn:hover {
+      background: rgba(255,60,172,0.15);
+      border-color: rgba(255,60,172,0.5);
+      box-shadow: 0 0 12px rgba(255,60,172,0.2);
+    }
+
+    .stepper-btn.plus-btn {
+      border-color: rgba(0,255,135,0.25);
+      background: rgba(0,255,135,0.07);
+    }
+
+    .stepper-btn.plus-btn:hover {
+      background: rgba(0,255,135,0.15);
+      border-color: rgba(0,255,135,0.5);
+      box-shadow: 0 0 12px rgba(0,255,135,0.2);
+    }
+
+    .stepper-btn:active { transform: scale(0.88); }
+
+    .stepper-btn.minus-btn i { font-size: 12px; color: var(--neon-magenta); }
+    .stepper-btn.plus-btn i { font-size: 12px; color: var(--neon-green); }
+
+    .stepper-count-display {
+      width: 40px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Venue Note */
+    .venue-note {
+      background: rgba(245,158,11,0.07);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 14px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+    }
+
+    .venue-note i {
+      color: var(--neon-amber);
+      font-size: 14px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .venue-note-text {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .venue-note-text strong {
+      color: var(--neon-amber);
+      font-weight: 700;
+    }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5,10,15,0.92);
+      border-top: 1px solid rgba(0,255,135,0.1);
+      padding: 12px 20px 28px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 -12px 40px rgba(0,0,0,0.6), 0 -1px 0 rgba(0,255,135,0.06);
+      z-index: 20;
+    }
+
+    .bottom-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .booking-summary {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 10px 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 3px;
+    }
+
+    .summary-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+
+    .summary-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #3a4f64;
+      flex-shrink: 0;
+    }
+
+    .summary-duration {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dim-cyan);
+    }
+
+    .summary-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .summary-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--neon-green);
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 12px rgba(0,255,135,0.5);
+    }
+
+    .summary-price-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #3a4f64;
+    }
+
+    .continue-btn {
+      background: rgba(0,255,135,0.15);
+      border: 1.5px solid rgba(0,255,135,0.5);
+      border-radius: 14px;
+      height: 58px;
+      width: 128px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px rgba(0,255,135,0.2), inset 0 0 16px rgba(0,255,135,0.05);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+      text-shadow: 0 0 10px rgba(0,255,135,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .continue-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,135,0.12), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .continue-btn:hover::before { left: 100%; }
+
+    .continue-btn:hover {
+      background: rgba(0,255,135,0.25);
+      border-color: var(--neon-green);
+      box-shadow: 0 0 30px rgba(0,255,135,0.4), 0 4px 20px rgba(0,255,135,0.2);
+      transform: translateY(-2px);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 15px rgba(0,255,135,0.25);
+    }
+
+    /* Scan line accent on active step */
+    .step.active .step-circle::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,255,135,0.25);
+      animation: stepPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes stepPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.15); opacity: 0; }
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Header -->
+      <div class="header">
+        <div class="back-btn" id="backBtn">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="header-text">
+          <div class="header-title">Book Court</div>
+          <div class="header-subtitle">
+            <i class="fas fa-location-dot"></i>
+            Al-Noor Sports Arena
+          </div>
+        </div>
+        <div class="share-btn">
+          <i class="fas fa-share-nodes"></i>
+        </div>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="progress-section">
+        <div class="progress-steps">
+
+          <div class="step active">
+            <div class="step-circle">1</div>
+            <div class="step-label">Date &amp;<br>Time</div>
+          </div>
+
+          <div class="step-connector">
+            <div class="step-line neon"></div>
+          </div>
+
+          <div class="step inactive">
+            <div class="step-circle">2</div>
+            <div class="step-label">Details</div>
+          </div>
+
+          <div class="step-connector">
+            <div class="step-line dim"></div>
+          </div>
+
+          <div class="step inactive">
+            <div class="step-circle">3</div>
+            <div class="step-label">Payment</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Select Date -->
+      <div class="section">
+        <div class="section-title">Select Date</div>
+        <div class="date-scroll" id="dateScroll">
+          <div class="date-pill">
+            <span class="date-day">MON</span>
+            <span class="date-num">12</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">TUE</span>
+            <span class="date-num">13</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">WED</span>
+            <span class="date-num">14</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill active">
+            <span class="date-day">THU</span>
+            <span class="date-num">15</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">FRI</span>
+            <span class="date-num">16</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">SAT</span>
+            <span class="date-num">17</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">SUN</span>
+            <span class="date-num">18</span>
+            <div class="date-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select Duration -->
+      <div class="section">
+        <div class="section-title">Duration</div>
+        <div class="segmented" id="durationSegment">
+          <div class="seg-option active" data-duration="1 hr" data-price="60">
+            <span class="seg-label">1 hr</span>
+            <span class="seg-price">60 SAR</span>
+          </div>
+          <div class="seg-option" data-duration="1.5 hr" data-price="90">
+            <span class="seg-label">1.5 hr</span>
+            <span class="seg-price">90 SAR</span>
+          </div>
+          <div class="seg-option" data-duration="2 hr" data-price="120">
+            <span class="seg-label">2 hr</span>
+            <span class="seg-price">120 SAR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Time Slots -->
+      <div class="section">
+        <div class="section-title">Time Slots</div>
+        <div class="slots-grid" id="slotsGrid">
+
+          <div class="slot-chip unavailable">
+            <span class="slot-time">8:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">9:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">10:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">11:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">12:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">1:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">2:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">3:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">4:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">5:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip active" id="selectedSlot">
+            <span class="slot-time">6:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">7:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+
+        </div>
+
+        <div class="slot-legend">
+          <div class="legend-item">
+            <div class="legend-dot available"></div>
+            Available
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot selected-dot"></div>
+            Selected
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot unavailable-dot"></div>
+            Booked
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Count -->
+      <div class="section">
+        <div class="section-title">Player Count</div>
+        <div class="stepper-wrap">
+          <div class="stepper-info">
+            <div class="stepper-label">Number of players</div>
+            <div class="stepper-value" id="playerLabel">5 <span>Players</span></div>
+          </div>
+          <div class="stepper-controls">
+            <div class="stepper-btn minus-btn" id="minusBtn">
+              <i class="fas fa-minus"></i>
+            </div>
+            <div class="stepper-count-display" id="playerCount">5</div>
+            <div class="stepper-btn plus-btn" id="plusBtn">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venue Note -->
+      <div class="section" style="padding-bottom: 16px;">
+        <div class="venue-note">
+          <i class="fas fa-circle-info"></i>
+          <div class="venue-note-text">
+            <strong>Max capacity: 10 players.</strong> Extra equipment (bibs, cones) can be requested on the next step. Cancellation is free up to 2 hours before kick-off.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Bottom Sticky Bar -->
+    <div class="bottom-bar">
+      <div class="bottom-bar-inner">
+        <div class="booking-summary">
+          <div class="summary-row">
+            <span class="summary-time" id="summaryTime">6:00 PM</span>
+            <div class="summary-sep"></div>
+            <span class="summary-duration" id="summaryDuration">1 hr</span>
+          </div>
+          <div class="summary-price-row">
+            <span class="summary-price" id="summaryPrice">60</span>
+            <span class="summary-price-label">SAR</span>
+          </div>
+        </div>
+        <button class="continue-btn" id="continueBtn">
+          Continue
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Date pill selection
+    const datePills = document.querySelectorAll('.date-pill');
+    datePills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        datePills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      });
+    });
+
+    // Duration segmented control
+    const segOptions = document.querySelectorAll('.seg-option');
+    segOptions.forEach(opt => {
+      opt.addEventListener('click', () => {
+        segOptions.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        document.getElementById('summaryDuration').textContent = opt.dataset.duration;
+        document.getElementById('summaryPrice').textContent = opt.dataset.price;
+      });
+    });
+
+    // Time slot selection
+    document.querySelectorAll('.slot-chip:not(.unavailable)').forEach(slot => {
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.slot-chip').forEach(s => s.classList.remove('active'));
+        slot.classList.add('active');
+        const time = slot.querySelector('.slot-time').textContent;
+        const period = slot.querySelector('.slot-period').textContent;
+        document.getElementById('summaryTime').textContent = `${time} ${period}`;
+      });
+    });
+
+    // Player count stepper
+    let players = 5;
+    const minusBtn = document.getElementById('minusBtn');
+    const plusBtn = document.getElementById('plusBtn');
+    const playerCountEl = document.getElementById('playerCount');
+    const playerLabelEl = document.getElementById('playerLabel');
+
+    function updatePlayers(val) {
+      players = Math.max(1, Math.min(10, val));
+      playerCountEl.textContent = players;
+      playerLabelEl.innerHTML = `${players} <span>${players === 1 ? 'Player' : 'Players'}</span>`;
+      minusBtn.style.opacity = players <= 1 ? '0.3' : '1';
+      minusBtn.style.cursor = players <= 1 ? 'not-allowed' : 'pointer';
+      plusBtn.style.opacity = players >= 10 ? '0.3' : '1';
+      plusBtn.style.cursor = players >= 10 ? 'not-allowed' : 'pointer';
+    }
+
+    minusBtn.addEventListener('click', () => updatePlayers(players - 1));
+    plusBtn.addEventListener('click', () => updatePlayers(players + 1));
+
+    // Continue button
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      const btn = document.getElementById('continueBtn');
+      btn.style.opacity = '0.7';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      setTimeout(() => {
+        btn.style.opacity = '1';
+        btn.innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+      }, 1200);
+    });
+
+    // Back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+      const btn = document.getElementById('backBtn');
+      btn.style.transform = 'scale(0.88)';
+      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
+    });
+
+    updatePlayers(5);
+  </script>
+
+
+</body></html>

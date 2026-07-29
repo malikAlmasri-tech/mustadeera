@@ -1,0 +1,1429 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Venue Owner Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a1018;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: #0F1923;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 2px #2a3a4a,
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 120px rgba(34, 197, 94, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+      flex-shrink: 0;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+    }
+
+    .status-icons i {
+      font-size: 12px;
+    }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 8px;
+    }
+
+    .scroll-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 24px 16px;
+    }
+
+    .top-bar-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      background: #1A2535;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: #213045;
+      transform: scale(1.05);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    .icon-btn i {
+      font-size: 16px;
+      color: #94A3B8;
+    }
+
+    .notif-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: #22C55E;
+      border-radius: 50%;
+      border: 2px solid #0F1923;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    }
+
+    /* Owner Greeting Card */
+    .owner-greeting {
+      margin: 0 24px 22px;
+      background: linear-gradient(135deg, #1A2535 0%, #162030 100%);
+      border-radius: 20px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .owner-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .owner-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 2px solid #22C55E;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+      flex-shrink: 0;
+    }
+
+    .owner-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .owner-info {}
+
+    .owner-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A5C72;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 3px;
+    }
+
+    .owner-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      margin-bottom: 5px;
+    }
+
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #22C55E;
+      letter-spacing: 0.3px;
+    }
+
+    .active-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #22C55E;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .owner-date {
+      text-align: right;
+    }
+
+    .date-day {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94A3B8;
+      margin-bottom: 2px;
+    }
+
+    .date-num {
+      font-size: 28px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .date-month {
+      font-size: 12px;
+      font-weight: 600;
+      color: #22C55E;
+      margin-top: 2px;
+    }
+
+    /* Stats Row */
+    .stats-section {
+      padding: 0 24px 24px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: #1A2535;
+      border-radius: 18px;
+      padding: 14px 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: 18px 18px 0 0;
+      opacity: 0.7;
+    }
+
+    .stat-card.green::before { background: linear-gradient(90deg, #22C55E, #4ade80); }
+    .stat-card.amber::before { background: linear-gradient(90deg, #F59E0B, #fbbf24); }
+    .stat-card.blue::before { background: linear-gradient(90deg, #3B82F6, #60a5fa); }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .stat-icon.green { background: rgba(34, 197, 94, 0.14); color: #22C55E; }
+    .stat-icon.amber { background: rgba(245, 158, 11, 0.14); color: #F59E0B; }
+    .stat-icon.blue { background: rgba(59, 130, 246, 0.14); color: #60a5fa; }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4A5C72;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .stat-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.8px;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748B;
+      margin-bottom: 2px;
+    }
+
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .stat-trend.up { color: #22C55E; }
+    .stat-trend.down { color: #EF4444; }
+    .stat-trend i { font-size: 9px; }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px 14px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .see-all {
+      font-size: 13px;
+      font-weight: 600;
+      color: #22C55E;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .see-all:hover {
+      color: #4ade80;
+    }
+
+    /* Timeline / Schedule */
+    .schedule-section {
+      padding: 0 24px 8px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .timeline-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 52px;
+      flex-shrink: 0;
+    }
+
+    .timeline-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: 0.2px;
+      text-align: center;
+      line-height: 1.2;
+      padding-top: 14px;
+    }
+
+    .timeline-time .end-time {
+      color: #4A5C72;
+      font-weight: 500;
+    }
+
+    .timeline-line-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-dot.green {
+      background: #22C55E;
+      box-shadow: 0 0 8px rgba(34,197,94,0.6);
+    }
+
+    .timeline-dot.amber {
+      background: #F59E0B;
+      box-shadow: 0 0 8px rgba(245,158,11,0.6);
+    }
+
+    .timeline-dot.blue {
+      background: #3B82F6;
+      box-shadow: 0 0 8px rgba(59,130,246,0.6);
+    }
+
+    .timeline-connector {
+      width: 2px;
+      flex: 1;
+      min-height: 16px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .timeline-card {
+      flex: 1;
+      background: #1A2535;
+      border-radius: 16px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .timeline-card:hover {
+      transform: translateX(2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .timeline-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .sport-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #94A3B8;
+    }
+
+    .sport-emoji {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .payment-badge {
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .payment-badge.paid {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #22C55E;
+    }
+
+    .payment-badge.pending {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #F59E0B;
+    }
+
+    .timeline-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-avatar-sm {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.1);
+    }
+
+    .player-avatar-sm img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .player-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .booking-amount {
+      font-size: 13px;
+      font-weight: 800;
+      color: #22C55E;
+    }
+
+    .court-label-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4A5C72;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+
+    /* Upcoming Section */
+    .upcoming-section {
+      padding: 0 24px 8px;
+    }
+
+    .upcoming-item {
+      background: #1A2535;
+      border-radius: 16px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .upcoming-item:hover {
+      transform: translateX(2px);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .upcoming-date-block {
+      width: 42px;
+      height: 48px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .upcoming-date-day {
+      font-size: 9px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .upcoming-date-num {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .upcoming-info {
+      flex: 1;
+    }
+
+    .upcoming-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 3px;
+    }
+
+    .upcoming-meta {
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-dot {
+      width: 3px;
+      height: 3px;
+      background: #4A5C72;
+      border-radius: 50%;
+    }
+
+    .upcoming-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    /* Court Status Section */
+    .court-status-section {
+      padding: 0 24px 20px;
+    }
+
+    .court-status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .court-status-card {
+      background: #1A2535;
+      border-radius: 18px;
+      padding: 16px 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    .court-status-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    }
+
+    .court-status-card.occupied {
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .court-status-card.available {
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    .court-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .court-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .court-type {
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748B;
+      margin-top: 1px;
+    }
+
+    /* Toggle */
+    .status-toggle {
+      width: 40px;
+      height: 22px;
+      border-radius: 100px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .status-toggle.on {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      box-shadow: 0 0 10px rgba(34,197,94,0.4);
+    }
+
+    .status-toggle.off {
+      background: rgba(239, 68, 68, 0.3);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .toggle-thumb {
+      width: 16px;
+      height: 16px;
+      background: #ffffff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .status-toggle.on .toggle-thumb { left: 21px; }
+    .status-toggle.off .toggle-thumb { left: 3px; }
+
+    .court-status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .court-status-label.available {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22C55E;
+    }
+
+    .court-status-label.occupied {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+    }
+
+    .court-status-label::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .court-status-label.available::before {
+      background: #22C55E;
+      box-shadow: 0 0 5px rgba(34,197,94,0.8);
+    }
+
+    .court-status-label.occupied::before {
+      background: #f87171;
+      box-shadow: 0 0 5px rgba(239,68,68,0.6);
+    }
+
+    .court-next-time {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4A5C72;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .court-next-time i {
+      font-size: 9px;
+    }
+
+    .court-next-time strong {
+      color: #94A3B8;
+    }
+
+    .court-sport-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .court-sport-icon {
+      font-size: 13px;
+    }
+
+    .court-sport-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      flex-shrink: 0;
+      background: #111d2a;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      flex: 1;
+      padding: 4px 0;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item:hover .nav-icon {
+      transform: translateY(-2px);
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-icon i {
+      font-size: 20px;
+      color: #4A5C72;
+      transition: all 0.2s ease;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4A5C72;
+      letter-spacing: 0.2px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-item.active .nav-icon {
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .nav-item.active .nav-icon i {
+      color: #22C55E;
+    }
+
+    .nav-item.active .nav-label {
+      color: #22C55E;
+    }
+
+    .nav-item.active .nav-icon::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background: #22C55E;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+
+    .section-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.04);
+      margin: 4px 24px 20px;
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon">
+          <div class="battery-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-title">My Venues</div>
+        <div class="top-bar-actions">
+          <div class="icon-btn">
+            <i class="fas fa-bell"></i>
+            <div class="notif-dot"></div>
+          </div>
+          <div class="icon-btn">
+            <i class="fas fa-gear"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Greeting -->
+      <div class="owner-greeting">
+        <div class="owner-left">
+          <div class="owner-avatar">
+            <img src="venue_owner_portrait.jpg" alt="Portrait of a confident Arab male venue owner in his 40s, business casual attire, smiling, against a dark background" width="48" height="48">
+          </div>
+          <div class="owner-info">
+            <div class="owner-label">Managing</div>
+            <div class="owner-name">Al-Noor Sports Arena</div>
+            <div class="active-badge">Active</div>
+          </div>
+        </div>
+        <div class="owner-date">
+          <div class="date-day">Thursday</div>
+          <div class="date-num">17</div>
+          <div class="date-month">July 2025</div>
+        </div>
+      </div>
+
+      <!-- Today's Stats -->
+      <div class="stats-section">
+        <div class="stats-row">
+
+          <div class="stat-card green">
+            <div class="stat-icon green">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-label">Today's Bookings</div>
+            <div class="stat-value-row">
+              <div class="stat-value">8</div>
+            </div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +2 vs. avg
+            </div>
+          </div>
+
+          <div class="stat-card amber">
+            <div class="stat-icon amber">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value-row">
+              <div class="stat-value">480</div>
+            </div>
+            <div class="stat-unit" style="font-size:11px; color:#64748B; margin-top:2px; font-weight:700;">SAR</div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +12%
+            </div>
+          </div>
+
+          <div class="stat-card blue">
+            <div class="stat-icon blue">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="stat-label">Occupancy</div>
+            <div class="stat-value-row">
+              <div class="stat-value">75</div>
+              <div class="stat-unit">%</div>
+            </div>
+            <div class="stat-trend up">
+              <i class="fas fa-arrow-trend-up"></i>
+              +5%
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Today's Schedule -->
+      <div class="section-header">
+        <div class="section-title">Today's Schedule</div>
+        <a class="see-all">View all</a>
+      </div>
+
+      <div class="schedule-section">
+        <div class="timeline">
+
+          <!-- Booking 1 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                10:00<br>
+                <span class="end-time">11:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">⚽</span>
+                  Football
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="khalid_player_avatar.jpg" alt="Young Arab male athlete in sports gear, smiling headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Khalid Al-Qahtani</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Court A</span>
+                  <span class="booking-amount">80 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 2 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                11:00<br>
+                <span class="end-time">12:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot amber"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🏀</span>
+                  Basketball
+                </div>
+                <div class="payment-badge pending">Pending</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="omar_player_avatar.jpg" alt="Arab male in basketball jersey, profile headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Omar Al-Sayed</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Court B</span>
+                  <span class="booking-amount">60 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 3 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                12:00<br>
+                <span class="end-time">01:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">⚽</span>
+                  Football
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="faisal_player_avatar.jpg" alt="Saudi male sports player, casual headshot on dark background" width="26" height="26">
+                  </div>
+                  <span class="player-name">Faisal Al-Harbi</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Court A</span>
+                  <span class="booking-amount">80 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 4 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                02:00<br>
+                <span class="end-time">03:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot amber"></div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🎾</span>
+                  Tennis
+                </div>
+                <div class="payment-badge pending">Pending</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="sara_player_avatar.jpg" alt="Young Arab female tennis player, casual headshot" width="26" height="26">
+                  </div>
+                  <span class="player-name">Sara Al-Malik</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Court B</span>
+                  <span class="booking-amount">70 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 5 -->
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">
+                06:00<br>
+                <span class="end-time">07:00</span>
+              </div>
+            </div>
+            <div class="timeline-line-wrap">
+              <div class="timeline-dot green"></div>
+              <div class="timeline-connector" style="min-height:0;"></div>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <div class="sport-tag">
+                  <span class="sport-emoji">🏓</span>
+                  Padel
+                </div>
+                <div class="payment-badge paid">Paid</div>
+              </div>
+              <div class="timeline-card-bottom">
+                <div class="player-row">
+                  <div class="player-avatar-sm">
+                    <img src="ahmed_player_avatar.jpg" alt="Arab male padel player, sport headshot with green background" width="26" height="26">
+                  </div>
+                  <span class="player-name">Ahmed Al-Mutairi</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="court-label-tag">Court A</span>
+                  <span class="booking-amount">90 SAR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Upcoming Section -->
+      <div class="section-header">
+        <div class="section-title">Upcoming</div>
+        <a class="see-all">See all</a>
+      </div>
+
+      <div class="upcoming-section">
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-date-day">Fri</div>
+            <div class="upcoming-date-num">18</div>
+          </div>
+          <div class="upcoming-info">
+            <div class="upcoming-name">Mohammed Al-Rashid</div>
+            <div class="upcoming-meta">
+              <span>⚽ Football</span>
+              <div class="meta-dot"></div>
+              <span>10:00 – 11:00 AM</span>
+              <div class="meta-dot"></div>
+              <span>Court A</span>
+            </div>
+          </div>
+          <div class="upcoming-right">
+            <div class="payment-badge paid">Paid</div>
+            <span style="font-size:12px;font-weight:800;color:#22C55E;">80 SAR</span>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-date-day">Sat</div>
+            <div class="upcoming-date-num">19</div>
+          </div>
+          <div class="upcoming-info">
+            <div class="upcoming-name">Turki Al-Abdullah</div>
+            <div class="upcoming-meta">
+              <span>🏀 Basketball</span>
+              <div class="meta-dot"></div>
+              <span>02:00 – 03:00 PM</span>
+              <div class="meta-dot"></div>
+              <span>Court B</span>
+            </div>
+          </div>
+          <div class="upcoming-right">
+            <div class="payment-badge pending">Pending</div>
+            <span style="font-size:12px;font-weight:800;color:#F59E0B;">60 SAR</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Court Status Section -->
+      <div class="section-header">
+        <div class="section-title">Court Status</div>
+        <a class="see-all">Manage</a>
+      </div>
+
+      <div class="court-status-section">
+        <div class="court-status-grid">
+
+          <!-- Court A -->
+          <div class="court-status-card occupied" id="courtA-card">
+            <div class="court-card-top">
+              <div>
+                <div class="court-name">Court A</div>
+                <div class="court-type">Full-size Pitch</div>
+              </div>
+              <div class="status-toggle off" id="toggleA" onclick="toggleCourt('A')">
+                <div class="toggle-thumb"></div>
+              </div>
+            </div>
+            <div class="court-sport-row">
+              <span class="court-sport-icon">⚽</span>
+              <span class="court-sport-label">Football</span>
+            </div>
+            <div class="court-status-label occupied" id="courtA-label">Occupied</div>
+            <div class="court-next-time">
+              <i class="fas fa-clock"></i>
+              Next free: <strong id="courtA-next">&nbsp;01:00 PM</strong>
+            </div>
+          </div>
+
+          <!-- Court B -->
+          <div class="court-status-card available" id="courtB-card">
+            <div class="court-card-top">
+              <div>
+                <div class="court-name">Court B</div>
+                <div class="court-type">Indoor Arena</div>
+              </div>
+              <div class="status-toggle on" id="toggleB" onclick="toggleCourt('B')">
+                <div class="toggle-thumb"></div>
+              </div>
+            </div>
+            <div class="court-sport-row">
+              <span class="court-sport-icon">🏀</span>
+              <span class="court-sport-label">Multi-sport</span>
+            </div>
+            <div class="court-status-label available" id="courtB-label">Available</div>
+            <div class="court-next-time">
+              <i class="fas fa-clock"></i>
+              Booked at: <strong id="courtB-next">&nbsp;11:00 AM</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="nav-item active" data-nav="">
+        <div class="nav-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" data-nav="">
+        <div class="nav-icon">
+          <i class="fas fa-calendar-days"></i>
+        </div>
+        <span class="nav-label">Schedule</span>
+      </div>
+      <div class="nav-item" data-nav="">
+        <div class="nav-icon">
+          <i class="fas fa-door-open"></i>
+        </div>
+        <span class="nav-label">Courts</span>
+      </div>
+      <div class="nav-item" data-nav="">
+        <div class="nav-icon">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <span class="nav-label">Analytics</span>
+      </div>
+      <div class="nav-item" data-nav="">
+        <div class="nav-icon">
+          <i class="fas fa-gear"></i>
+        </div>
+        <span class="nav-label">Settings</span>
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Nav item toggle
+    const navItems = document.querySelectorAll('[data-nav]');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // Court toggle
+    function toggleCourt(court) {
+      const toggle = document.getElementById(`toggle${court}`);
+      const card = document.getElementById(`court${court}-card`);
+      const label = document.getElementById(`court${court}-label`);
+      const nextEl = document.getElementById(`court${court}-next`);
+
+      const isOn = toggle.classList.contains('on');
+
+      if (isOn) {
+        toggle.classList.remove('on');
+        toggle.classList.add('off');
+        card.classList.remove('available');
+        card.classList.add('occupied');
+        label.classList.remove('available');
+        label.classList.add('occupied');
+        label.textContent = 'Occupied';
+        nextEl.textContent = court === 'A' ? ' 01:00 PM' : ' 03:00 PM';
+      } else {
+        toggle.classList.remove('off');
+        toggle.classList.add('on');
+        card.classList.remove('occupied');
+        card.classList.add('available');
+        label.classList.remove('occupied');
+        label.classList.add('available');
+        label.textContent = 'Available';
+        nextEl.textContent = court === 'A' ? ' 10:00 AM' : ' 11:00 AM';
+      }
+    }
+
+    // Timeline card hover effects
+    document.querySelectorAll('.timeline-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = 'rgba(255,255,255,0.14)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = 'rgba(255,255,255,0.06)';
+      });
+    });
+  </script>
+
+</body></html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Al-Mustadaira | Book Your Football Pitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-dark': '#0D1B12',
+                        'brand-green': '#1A5C38',
+                        'brand-light': '#EAECEB',
+                        'brand-accent': '#F5B800',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'ticker-slide': {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        'ping-ring': {
+                            '0%': { transform: 'scale(1)', opacity: '0.6' },
+                            '100%': { transform: 'scale(2.5)', opacity: '0' },
+                        }
+                    },
+                    animation: {
+                        ticker: 'ticker-slide 30s linear infinite',
+                        'ping-ring': 'ping-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0D1B12; color: #fff; overflow-x: hidden; }
+        h1, h2, h3, .font-heading { font-family: 'Poppins', sans-serif; }
+
+        /* Nav Link Hover Effect */
+        .nav-link { position: relative; padding-bottom: 4px; transition: color 0.3s ease; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #F5B800;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #F5B800; }
+
+        /* Hero Dot Grid */
+        .dot-grid {
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+        }
+
+        /* Timeline Connector */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar Hide */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between bg-brand-dark/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-2xl">
+            <a href="#" class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-brand-accent rounded-full"></span>
+                <span class="font-heading font-bold text-xl tracking-tight">Al-Mustadaira</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Browse Pitches</a>
+                <a href="#" class="nav-link">How It Works</a>
+                <a href="#" class="nav-link">For Owners</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 text-xs font-semibold uppercase tracking-wider hover:bg-white hover:text-brand-dark transition-all">
+                    <i class="fa-solid fa-plus"></i> List Your Pitch
+                </button>
+                <button class="bg-brand-accent text-brand-dark px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-white transition-all">
+                    Book Now
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative flex items-center pt-24 pb-12 overflow-hidden" style="min-height:760px;">
+        <div class="absolute inset-0 dot-grid pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(13,27,18,0)_0%,#0D1B12_100%)] pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+                    Book Your Perfect <br><span class="text-brand-accent">Pitch, Anytime.</span>
+                </h1>
+                <p class="text-lg text-gray-400 max-w-md leading-relaxed">
+                    Browse hundreds of football pitches across the city. Check availability, compare prices, and book in seconds.
+                </p>
+
+                <!-- Search Bar Module -->
+                <div class="bg-brand-dark/60 backdrop-blur-xl p-2 rounded-3xl border border-white/10 shadow-2xl flex flex-col md:flex-row gap-2">
+                    <div class="flex-1 px-6 py-4 bg-white/5 rounded-2xl flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors">
+                        <i class="fa-solid fa-location-dot text-brand-accent"></i>
+                        <div class="flex-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 tracking-widest">Location</label>
+                            <input type="text" placeholder="City or Area" class="bg-transparent border-none outline-none text-sm w-full">
+                        </div>
+                    </div>
+                    <div class="flex-1 px-6 py-4 bg-white/5 rounded-2xl flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors">
+                        <i class="fa-solid fa-futbol text-brand-accent"></i>
+                        <div class="flex-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 tracking-widest">Sport Type</label>
+                            <select class="bg-transparent border-none outline-none text-sm w-full appearance-none">
+                                <option>Football 5-a-side</option>
+                                <option>Football 7-a-side</option>
+                                <option>Football 11-a-side</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex-1 px-6 py-4 bg-white/5 rounded-2xl flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors">
+                        <i class="fa-regular fa-calendar text-brand-accent"></i>
+                        <div class="flex-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 tracking-widest">Date & Time</label>
+                            <input type="datetime-local" class="bg-transparent border-none outline-none text-sm w-full [color-scheme:dark]">
+                        </div>
+                    </div>
+                    <button class="bg-brand-accent text-brand-dark px-8 py-4 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-white transition-all">
+                        Search Pitches
+                    </button>
+                </div>
+
+                <!-- Live Activity Ticker -->
+                <div class="flex items-center gap-4 text-xs font-mono text-gray-500 uppercase tracking-widest overflow-hidden border-t border-white/10 pt-6">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span>Live Now:</span>
+                    </div>
+                    <div class="overflow-hidden whitespace-nowrap">
+                        <div class="animate-ticker inline-block">
+                            RIYADH • JEDDAH • DAMMAM • RIYADH • JEDDAH • DAMMAM •
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Visual -->
+            <div class="relative hidden lg:block">
+                <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-[4/5]">
+                    <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_12918e0317_7430014b418e7b86.png" alt="aerial top-down view of a lush green football pitch with white turf lines, dramatic evening lighting" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-80"></div>
+                </div>
+                <!-- Floating Status Badge -->
+                <div class="absolute -bottom-6 -left-6 bg-brand-dark/90 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-2xl z-20 max-w-xs">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="relative">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="absolute inset-0 bg-green-500 rounded-full animate-ping-ring"></div>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-green-400">Available Now</span>
+                    </div>
+                    <p class="text-sm text-gray-300">Over 200 pitches open for booking tonight across the city.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stat Band -->
+    <section class="py-20 border-b border-white/5 bg-brand-green">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div class="space-y-2">
+                <div class="text-6xl font-bold font-heading">500+</div>
+                <div class="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent">Pitches Listed</div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-6xl font-bold font-heading">12,000+</div>
+                <div class="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent">Bookings Made</div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-6xl font-bold font-heading">50+</div>
+                <div class="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent">Cities Covered</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works (Timeline Steps) -->
+    <section class="py-24 bg-brand-light text-brand-dark">
+        <div class="container mx-auto px-6">
+            <div class="mb-16">
+                <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">How it works</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4">Three simple steps to <span class="text-brand-green">kick off.</span></h2>
+            </div>
+
+            <div class="relative timeline-line ml-4 md:ml-0 max-w-4xl mx-auto space-y-12">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col md:flex-row gap-6 md:gap-12 group">
+                    <div class="md:w-24 flex md:flex-col items-center md:items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-brand-dark text-white flex items-center justify-center font-bold shrink-0 relative z-10">1</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-2">
+                            <h3 class="text-2xl font-bold">Search</h3>
+                            <span class="text-xs font-mono text-gray-500">00:00</span>
+                        </div>
+                        <p class="text-gray-600">Filter by location, size, and time slot. See real-time availability across every listed venue.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex flex-col md:flex-row gap-6 md:gap-12 group">
+                    <div class="md:w-24 flex md:flex-col items-center md:items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-brand-dark text-white flex items-center justify-center font-bold shrink-0 relative z-10">2</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-2">
+                            <h3 class="text-2xl font-bold">Choose</h3>
+                            <span class="text-xs font-mono text-gray-500">00:15</span>
+                        </div>
+                        <p class="text-gray-600">Pick your pitch, check availability & price. Compare facilities and read reviews from other players.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex flex-col md:flex-row gap-6 md:gap-12 group">
+                    <div class="md:w-24 flex md:flex-col items-center md:items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-brand-dark text-white flex items-center justify-center font-bold shrink-0 relative z-10">3</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-2">
+                            <h3 class="text-2xl font-bold">Book</h3>
+                            <span class="text-xs font-mono text-gray-500">00:30</span>
+                        </div>
+                        <p class="text-gray-600">Pay securely online and get instant confirmation. Show up and play — it's that easy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Status Indicator -->
+            <div class="mt-12 flex items-center gap-3 text-sm font-medium">
+                <div class="relative flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 bg-brand-accent rounded-full"></div>
+                    <div class="absolute inset-0 bg-brand-accent rounded-full animate-ping opacity-75"></div>
+                </div>
+                <span class="uppercase tracking-widest">Step 1 active</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Pitches (Card Grid) -->
+    <section class="py-24 bg-brand-light">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">Top picks</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-4 text-brand-dark">Featured Pitches</h2>
+                </div>
+                <a href="#" class="text-brand-dark font-semibold flex items-center gap-2 group">
+                    View all pitches
+                    <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/5] mb-6">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_8a08675b3c_78bf353cb798c13f.png" alt="modern indoor football arena with artificial turf, bright stadium lights, players warming up, energe" />
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-brand-dark text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">Popular</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                            <div class="flex items-center gap-1 text-yellow-400 text-xs font-bold mb-1">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <span class="text-white ml-1">(128)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-brand-dark">Green Arena – Riyadh</h3>
+                            <span class="text-brand-green font-bold">120 SAR <span class="text-xs text-gray-500 font-normal">/ hr</span></span>
+                        </div>
+                        <p class="text-sm text-gray-500 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> Olaya District, Riyadh</p>
+                        <div class="pt-4 flex gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-3 py-1.5 rounded-full text-gray-600">5v5</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-3 py-1.5 rounded-full text-gray-600">7v7</span>
+                        </div>
+                        <button class="mt-4 w-full py-3 rounded-full border-2 border-brand-dark text-brand-dark font-bold uppercase text-xs tracking-widest hover:bg-brand-dark hover:text-white transition-all">Book Now</button>
+                    </div>
+                </article>
+
+                <!-- Card 2 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/5] mb-6">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_a8de9eb864_e2150f74adef65d4.png" alt="outdoor floodlit football pitch at dusk with green grass and white markings, moody atmospheric sport" />
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-brand-accent text-brand-dark text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">Available Today</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-brand-dark">City Kick Stadium</h3>
+                            <span class="text-brand-green font-bold">90 SAR <span class="text-xs text-gray-500 font-normal">/ hr</span></span>
+                        </div>
+                        <p class="text-sm text-gray-500 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> Al Malqa, Riyadh</p>
+                        <div class="pt-4 flex gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-3 py-1.5 rounded-full text-gray-600">11v11</span>
+                        </div>
+                        <button class="mt-4 w-full py-3 rounded-full border-2 border-brand-dark text-brand-dark font-bold uppercase text-xs tracking-widest hover:bg-brand-dark hover:text-white transition-all">Book Now</button>
+                    </div>
+                </article>
+
+                <!-- Card 3 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/5] mb-6">
+                        <img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_18453a71ce_e1c23bab44570920.png" alt="premium indoor football facility with blue turf and glass walls, modern architecture, dynamic sport " />
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-brand-dark">Blue Turf Indoor</h3>
+                            <span class="text-brand-green font-bold">150 SAR <span class="text-xs text-gray-500 font-normal">/ hr</span></span>
+                        </div>
+                        <p class="text-sm text-gray-500 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> Tahlia Street, Jeddah</p>
+                        <div class="pt-4 flex gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-3 py-1.5 rounded-full text-gray-600">5v5</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-3 py-1.5 rounded-full text-gray-600">VIP</span>
+                        </div>
+                        <button class="mt-4 w-full py-3 rounded-full border-2 border-brand-dark text-brand-dark font-bold uppercase text-xs tracking-widest hover:bg-brand-dark hover:text-white transition-all">Book Now</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Pitch Owners (Dark Band) -->
+    <section class="py-24 bg-brand-green relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_ebee12d1d9_13902ea43ec29668.png" alt="abstract close-up texture of green football turf fibers, dark moody sport photography" />
+        </div>
+        <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="max-w-xl">
+                <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">For owners</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-6">Own a Pitch? Start Earning More.</h2>
+                <p class="text-gray-300 text-lg leading-relaxed">Join Al-Mustadaira and reach thousands of players looking to book. Manage your schedule, pricing, and bookings — all in one place.</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="px-10 py-4 rounded-full border-2 border-brand-accent text-brand-accent font-bold uppercase text-xs tracking-widest hover:bg-brand-accent hover:text-brand-dark transition-all">List Your Pitch</button>
+                <button class="px-10 py-4 rounded-full border-2 border-white text-white font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-brand-dark transition-all">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials (Horizontal Snap) -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="mb-12">
+                <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">Testimonials</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 text-brand-dark">Players love us</h2>
+            </div>
+
+            <div class="flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x">
+                <!-- Review 1 -->
+                <div class="min-w-[300px] md:min-w-[350px] snap-center bg-brand-light p-6 rounded-3xl space-y-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-lg">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_bc274f9849_90fdc675bf3bae51.png" alt="portrait of a young male football player smiling, natural light, candid photography" />
+                    </div>
+                    <div class="flex items-center gap-1 text-brand-accent text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">"Booking a pitch used to take forever. With Al-Mustadaira I find and reserve a spot in under a minute."</p>
+                    <div class="pt-2 border-t border-gray-200">
+                        <div class="font-bold text-brand-dark">Ahmed Al-Rashidi</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider">Riyadh</div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="min-w-[300px] md:min-w-[350px] snap-center bg-brand-light p-6 rounded-3xl space-y-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-lg">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_ddd098d2f2_7927785905a79fe9.png" alt="portrait of a young woman athlete smiling, sportswear, candid photography" />
+                    </div>
+                    <div class="flex items-center gap-1 text-brand-accent text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">"The quality of the pitches is amazing and the prices are fair. My weekly team uses it every Saturday."</p>
+                    <div class="pt-2 border-t border-gray-200">
+                        <div class="font-bold text-brand-dark">Sara Mohammed</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider">Jeddah</div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="min-w-[300px] md:min-w-[350px] snap-center bg-brand-light p-6 rounded-3xl space-y-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-lg">
+                        <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/gen_f3b6dbfebf_81cffd16ef720508.png" alt="portrait of a middle-aged man in sportswear smiling confidently, candid photography" />
+                    </div>
+                    <div class="flex items-center gap-1 text-brand-accent text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">"As a pitch owner, this platform doubled my bookings. The dashboard makes managing everything effortless."</p>
+                    <div class="pt-2 border-t border-gray-200">
+                        <div class="font-bold text-brand-dark">Khalid Faisal</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider">Pitch Owner</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark pt-24 pb-12 border-t border-white/10">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
+                <div class="lg:col-span-2 space-y-6">
+                    <a href="#" class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-brand-accent rounded-full"></span>
+                        <span class="font-heading font-bold text-2xl tracking-tight">Al-Mustadaira</span>
+                    </a>
+                    <p class="text-gray-500 max-w-sm">The easiest way to book a football pitch. Play anywhere, anytime.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="font-bold uppercase text-xs tracking-widest text-white">Company</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Press</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="font-bold uppercase text-xs tracking-widest text-white">Support</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-brand-accent transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="font-bold uppercase text-xs tracking-widest text-white">Newsletter</h4>
+                    <form class="relative">
+                        <input type="email" placeholder="Email address" class="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 text-sm outline-none focus:border-brand-accent transition-colors">
+                        <button class="absolute right-1 top-1 bottom-1 bg-brand-accent text-brand-dark px-4 rounded-full font-bold text-xs uppercase hover:bg-white transition-all">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10 gap-6">
+                <p class="text-xs text-gray-600">© 2025 Al-Mustadaira. All rights reserved.</p>
+                <div class="flex gap-6 text-gray-500">
+                    <a href="#" class="hover:text-brand-accent transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-brand-accent transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="hover:text-brand-accent transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

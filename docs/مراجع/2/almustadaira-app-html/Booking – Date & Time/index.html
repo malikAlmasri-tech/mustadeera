@@ -1,0 +1,1117 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Book a Court</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a1018;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: #0F1923;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 2px #2a3a4a,
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 120px rgba(34, 197, 94, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+      flex-shrink: 0;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+    }
+
+    .status-icons i {
+      font-size: 12px;
+    }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 96px;
+    }
+
+    .scroll-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 10px 24px 14px;
+      gap: 14px;
+      position: relative;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      background: #1A2535;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      background: #213045;
+      transform: scale(1.05);
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
+    .back-btn i {
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .header-text {
+      flex: 1;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94A3B8;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-subtitle i {
+      font-size: 11px;
+      color: #22C55E;
+    }
+
+    /* Progress Steps */
+    .progress-section {
+      padding: 4px 24px 24px;
+    }
+
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      position: relative;
+    }
+
+    .step-top {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      z-index: 1;
+      position: relative;
+    }
+
+    .step.active .step-circle {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.5), 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .step.inactive .step-circle {
+      background: #1A2535;
+      color: #4A5C72;
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+
+    .step.done .step-circle {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22C55E;
+      border: 1.5px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      margin: 0 4px;
+      border-radius: 2px;
+    }
+
+    .step-line.active {
+      background: linear-gradient(90deg, #22C55E, rgba(34, 197, 94, 0.3));
+    }
+
+    .step-line.inactive {
+      background: rgba(255,255,255,0.07);
+    }
+
+    .step-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .step.active .step-label {
+      color: #22C55E;
+    }
+
+    .step.inactive .step-label {
+      color: #4A5C72;
+    }
+
+    .step.done .step-label {
+      color: #22C55E;
+      opacity: 0.7;
+    }
+
+    .step-line-wrap {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 15px;
+    }
+
+    /* Section */
+    .section {
+      padding: 0 24px 24px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+    }
+
+    /* Date Picker */
+    .date-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+      margin: 0 -24px;
+      padding: 4px 24px 8px;
+    }
+
+    .date-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .date-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #1A2535;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+      flex-shrink: 0;
+      min-width: 56px;
+      transition: all 0.22s ease;
+    }
+
+    .date-pill:hover:not(.active) {
+      background: #1f2d40;
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-1px);
+    }
+
+    .date-pill:active {
+      transform: scale(0.96);
+    }
+
+    .date-pill.active {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      border-color: #22C55E;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.35), 0 4px 12px rgba(34, 197, 94, 0.2);
+    }
+
+    .date-day {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .date-pill.active .date-day {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .date-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .date-pill.active .date-num {
+      color: #ffffff;
+    }
+
+    .date-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.5);
+    }
+
+    .date-pill.active .date-dot {
+      background: rgba(255,255,255,0.6);
+    }
+
+    .date-pill:not(.active) .date-dot {
+      opacity: 0;
+    }
+
+    /* Duration Segmented Control */
+    .segmented {
+      display: flex;
+      background: #1A2535;
+      border-radius: 16px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,0.07);
+      gap: 4px;
+    }
+
+    .seg-option {
+      flex: 1;
+      padding: 11px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      color: #64748B;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .seg-option:hover:not(.active) {
+      color: #94A3B8;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .seg-option.active {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .seg-option:active {
+      transform: scale(0.97);
+    }
+
+    .seg-price {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.75;
+    }
+
+    .seg-option.active .seg-price {
+      opacity: 0.85;
+    }
+
+    /* Time Slots Grid */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .slot-chip {
+      background: #1A2535;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      gap: 2px;
+    }
+
+    .slot-chip:hover:not(.unavailable):not(.active) {
+      background: #1f2d40;
+      border-color: rgba(34, 197, 94, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .slot-chip:active:not(.unavailable) {
+      transform: scale(0.96);
+    }
+
+    .slot-chip.active {
+      background: rgba(34, 197, 94, 0.12);
+      border-color: #22C55E;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.25);
+    }
+
+    .slot-chip.unavailable {
+      background: rgba(26, 37, 53, 0.4);
+      border-color: rgba(255,255,255,0.04);
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .slot-time {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.1px;
+      line-height: 1;
+    }
+
+    .slot-chip.active .slot-time {
+      color: #22C55E;
+    }
+
+    .slot-chip.unavailable .slot-time {
+      color: #4A5C72;
+      text-decoration: line-through;
+    }
+
+    .slot-period {
+      font-size: 10px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .slot-chip.active .slot-period {
+      color: #4ade80;
+    }
+
+    .slot-chip.unavailable .slot-period {
+      color: #3a4a5a;
+    }
+
+    /* Slot legend */
+    .slot-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    .legend-dot.available {
+      background: #1A2535;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+
+    .legend-dot.selected-dot {
+      background: #22C55E;
+    }
+
+    .legend-dot.unavailable-dot {
+      background: rgba(26, 37, 53, 0.4);
+      border: 1.5px solid rgba(255,255,255,0.04);
+    }
+
+    /* Player Count Stepper */
+    .stepper-wrap {
+      background: #1A2535;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stepper-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stepper-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .stepper-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+
+    .stepper-value span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    .stepper-controls {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: #0F1923;
+      border-radius: 14px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .stepper-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+    }
+
+    .stepper-btn:hover {
+      background: #1A2535;
+    }
+
+    .stepper-btn:active {
+      transform: scale(0.9);
+    }
+
+    .stepper-btn i {
+      font-size: 14px;
+      color: #94A3B8;
+    }
+
+    .stepper-btn.minus-btn i {
+      color: #EF4444;
+    }
+
+    .stepper-btn.plus-btn i {
+      color: #22C55E;
+    }
+
+    .stepper-count-display {
+      width: 42px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* Venue Note */
+    .venue-note {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .venue-note i {
+      color: #F59E0B;
+      font-size: 14px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .venue-note-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #94A3B8;
+      line-height: 1.5;
+    }
+
+    .venue-note-text strong {
+      color: #F59E0B;
+    }
+
+    /* Bottom Sticky Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111d2a;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 14px 24px 28px;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .bottom-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .booking-summary {
+      flex: 1;
+      background: #1A2535;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 10px 14px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .summary-time {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .summary-sep {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #4A5C72;
+      flex-shrink: 0;
+    }
+
+    .summary-duration {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .summary-price-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .summary-price {
+      font-size: 18px;
+      font-weight: 900;
+      color: #22C55E;
+      letter-spacing: -0.3px;
+    }
+
+    .summary-price-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A5C72;
+    }
+
+    .continue-btn {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      border: none;
+      border-radius: 16px;
+      height: 58px;
+      width: 130px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.5);
+      background: linear-gradient(135deg, #2dd867, #22C55E);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon">
+          <div class="battery-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Header -->
+      <div class="header">
+        <div class="back-btn" id="backBtn">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="header-text">
+          <div class="header-title">Book a Court</div>
+          <div class="header-subtitle">
+            <i class="fas fa-location-dot"></i>
+            Al-Noor Sports Arena
+          </div>
+        </div>
+        <div style="width:42px;height:42px;background:#1A2535;border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.06);">
+          <i class="fas fa-share-nodes" style="font-size:15px;color:#64748B;"></i>
+        </div>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="progress-section">
+        <div class="progress-steps">
+
+          <!-- Step 1 -->
+          <div class="step active">
+            <div class="step-top">
+              <div class="step-circle">1</div>
+            </div>
+            <div class="step-label">Date &amp;<br>Time</div>
+          </div>
+
+          <!-- Line 1 -->
+          <div class="step-line-wrap">
+            <div class="step-line inactive" style="flex:1;margin-top:0;position:relative;top:-7px;"></div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step inactive">
+            <div class="step-top">
+              <div class="step-circle">2</div>
+            </div>
+            <div class="step-label">Details</div>
+          </div>
+
+          <!-- Line 2 -->
+          <div class="step-line-wrap">
+            <div class="step-line inactive" style="flex:1;margin-top:0;position:relative;top:-7px;"></div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step inactive">
+            <div class="step-top">
+              <div class="step-circle">3</div>
+            </div>
+            <div class="step-label">Payment</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Select Date -->
+      <div class="section">
+        <div class="section-title">Select Date</div>
+        <div class="date-scroll" id="dateScroll">
+          <div class="date-pill">
+            <span class="date-day">MON</span>
+            <span class="date-num">12</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">TUE</span>
+            <span class="date-num">13</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">WED</span>
+            <span class="date-num">14</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill active">
+            <span class="date-day">THU</span>
+            <span class="date-num">15</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">FRI</span>
+            <span class="date-num">16</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">SAT</span>
+            <span class="date-num">17</span>
+            <div class="date-dot"></div>
+          </div>
+          <div class="date-pill">
+            <span class="date-day">SUN</span>
+            <span class="date-num">18</span>
+            <div class="date-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select Duration -->
+      <div class="section">
+        <div class="section-title">Select Duration</div>
+        <div class="segmented" id="durationSegment">
+          <div class="seg-option active" data-duration="1hr" data-price="60">
+            1 hr
+            <span class="seg-price">60 SAR</span>
+          </div>
+          <div class="seg-option" data-duration="1.5hr" data-price="90">
+            1.5 hr
+            <span class="seg-price">90 SAR</span>
+          </div>
+          <div class="seg-option" data-duration="2hr" data-price="120">
+            2 hr
+            <span class="seg-price">120 SAR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Time Slots -->
+      <div class="section">
+        <div class="section-title">Available Time Slots</div>
+        <div class="slots-grid" id="slotsGrid">
+
+          <div class="slot-chip unavailable">
+            <span class="slot-time">8:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">9:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">10:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">11:00</span>
+            <span class="slot-period">AM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">12:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">1:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip unavailable">
+            <span class="slot-time">2:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">3:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">4:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">5:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip active" id="selectedSlot">
+            <span class="slot-time">6:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+          <div class="slot-chip">
+            <span class="slot-time">7:00</span>
+            <span class="slot-period">PM</span>
+          </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div class="slot-legend">
+          <div class="legend-item">
+            <div class="legend-dot available"></div>
+            Available
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot selected-dot"></div>
+            Selected
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot unavailable-dot"></div>
+            Booked
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Count -->
+      <div class="section">
+        <div class="section-title">Player Count</div>
+        <div class="stepper-wrap">
+          <div class="stepper-info">
+            <div class="stepper-label">Number of players</div>
+            <div class="stepper-value" id="playerLabel">5 <span>Players</span></div>
+          </div>
+          <div class="stepper-controls">
+            <div class="stepper-btn minus-btn" id="minusBtn">
+              <i class="fas fa-minus"></i>
+            </div>
+            <div class="stepper-count-display" id="playerCount">5</div>
+            <div class="stepper-btn plus-btn" id="plusBtn">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venue Note -->
+      <div class="section" style="padding-bottom: 16px;">
+        <div class="venue-note">
+          <i class="fas fa-circle-info"></i>
+          <div class="venue-note-text">
+            <strong>Max capacity: 10 players.</strong> Extra equipment (bibs, cones) can be requested on the next step. Cancellation is free up to 2 hours before kick-off.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Bottom Sticky Bar -->
+    <div class="bottom-bar">
+      <div class="bottom-bar-inner">
+        <div class="booking-summary">
+          <div class="summary-row">
+            <span class="summary-time" id="summaryTime">6:00 PM</span>
+            <div class="summary-sep"></div>
+            <span class="summary-duration" id="summaryDuration">1 hr</span>
+          </div>
+          <div class="summary-price-row">
+            <span class="summary-price" id="summaryPrice">60</span>
+            <span class="summary-price-label">SAR</span>
+          </div>
+        </div>
+        <button class="continue-btn" id="continueBtn">
+          Continue
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Date pill selection
+    const datePills = document.querySelectorAll('.date-pill');
+    datePills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        datePills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      });
+    });
+
+    // Duration segmented control
+    const segOptions = document.querySelectorAll('.seg-option');
+    let currentPrice = 60;
+    let currentDuration = '1 hr';
+
+    segOptions.forEach(opt => {
+      opt.addEventListener('click', () => {
+        segOptions.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        currentPrice = parseInt(opt.dataset.price);
+        currentDuration = opt.dataset.duration.replace('hr', ' hr').replace('.5 hr', '.5 hr');
+        document.getElementById('summaryDuration').textContent = opt.dataset.duration.replace('hr', ' hr');
+        document.getElementById('summaryPrice').textContent = currentPrice;
+      });
+    });
+
+    // Time slot selection
+    const slotChips = document.querySelectorAll('.slot-chip:not(.unavailable)');
+    slotChips.forEach(slot => {
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.slot-chip').forEach(s => s.classList.remove('active'));
+        slot.classList.add('active');
+        const time = slot.querySelector('.slot-time').textContent;
+        const period = slot.querySelector('.slot-period').textContent;
+        document.getElementById('summaryTime').textContent = `${time} ${period}`;
+      });
+    });
+
+    // Player count stepper
+    let players = 5;
+    const minusBtn = document.getElementById('minusBtn');
+    const plusBtn = document.getElementById('plusBtn');
+    const playerCountEl = document.getElementById('playerCount');
+    const playerLabelEl = document.getElementById('playerLabel');
+
+    function updatePlayers(val) {
+      players = Math.max(1, Math.min(10, val));
+      playerCountEl.textContent = players;
+      playerLabelEl.innerHTML = `${players} <span>${players === 1 ? 'Player' : 'Players'}</span>`;
+
+      minusBtn.style.opacity = players <= 1 ? '0.3' : '1';
+      minusBtn.style.cursor = players <= 1 ? 'not-allowed' : 'pointer';
+      plusBtn.style.opacity = players >= 10 ? '0.3' : '1';
+      plusBtn.style.cursor = players >= 10 ? 'not-allowed' : 'pointer';
+    }
+
+    minusBtn.addEventListener('click', () => updatePlayers(players - 1));
+    plusBtn.addEventListener('click', () => updatePlayers(players + 1));
+
+    // Continue button
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      const btn = document.getElementById('continueBtn');
+      btn.style.opacity = '0.8';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      setTimeout(() => {
+        btn.style.opacity = '1';
+        btn.innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+      }, 1200);
+    });
+
+    // Back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById('backBtn').style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        document.getElementById('backBtn').style.transform = 'scale(1)';
+      }, 200);
+    });
+
+    // Init player display
+    updatePlayers(5);
+  </script>
+
+</body></html>

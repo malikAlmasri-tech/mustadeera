@@ -1,0 +1,1037 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Mustadaira — Confirm &amp; Pay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a1018;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      background: #0F1923;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 2px #2a3a4a,
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 120px rgba(34, 197, 94, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 8px;
+      flex-shrink: 0;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffffff;
+    }
+
+    .status-icons i {
+      font-size: 12px;
+    }
+
+    .battery-icon {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid #fff;
+      border-radius: 2.5px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1.5px;
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 6px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 8px 24px 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      background: #1A2535;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      background: #213045;
+      transform: scale(1.05);
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
+    .back-btn i {
+      font-size: 15px;
+      color: #94A3B8;
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+
+    .header-spacer {
+      width: 42px;
+      flex-shrink: 0;
+    }
+
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      padding: 0 24px 20px;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      position: relative;
+    }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.done .step-circle {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+    }
+
+    .step.active .step-circle {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.5);
+    }
+
+    .step.inactive .step-circle {
+      background: #1A2535;
+      color: #4A5C72;
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+
+    .step-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .step.done .step-label,
+    .step.active .step-label {
+      color: #22C55E;
+    }
+
+    .step.inactive .step-label {
+      color: #4A5C72;
+    }
+
+    .step-connector {
+      flex: 1;
+      height: 2px;
+      margin-bottom: 22px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .step-connector.done {
+      background: linear-gradient(90deg, #22C55E, #22C55E);
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+    }
+
+    .step-connector.inactive {
+      background: #1A2535;
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 8px;
+    }
+
+    .scroll-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Section spacing */
+    .section-gap {
+      padding: 0 20px;
+      margin-bottom: 16px;
+    }
+
+    /* Booking Summary Card */
+    .summary-card {
+      background: #1A2535;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left: 3px solid #22C55E;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25), 0 0 0 0 rgba(34,197,94,0.1);
+      position: relative;
+    }
+
+    .summary-card-inner {
+      padding: 18px 18px 18px 20px;
+    }
+
+    .summary-venue-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .summary-venue-info {}
+
+    .summary-venue-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+      margin-bottom: 3px;
+    }
+
+    .summary-venue-sub {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+
+    .summary-venue-sub i {
+      font-size: 10px;
+      color: #64748B;
+    }
+
+    .sport-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 100px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #22C55E;
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin-bottom: 14px;
+    }
+
+    .summary-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .summary-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-icon-wrap {
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .detail-icon-wrap i {
+      font-size: 13px;
+      color: #22C55E;
+    }
+
+    .detail-text {}
+
+    .detail-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4A5C72;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .detail-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* Section Label */
+    .section-label {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      padding: 0 20px 12px;
+    }
+
+    /* Payment Method Cards */
+    .payment-methods {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .payment-card {
+      background: #1A2535;
+      border-radius: 16px;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .payment-card:hover {
+      background: #1f2d40;
+      border-color: rgba(34, 197, 94, 0.25);
+    }
+
+    .payment-card.selected {
+      border-color: #22C55E;
+      background: rgba(34, 197, 94, 0.06);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15), 0 4px 16px rgba(34, 197, 94, 0.1);
+    }
+
+    .payment-icon-wrap {
+      width: 44px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    .payment-info {
+      flex: 1;
+    }
+
+    .payment-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1px;
+    }
+
+    .payment-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .radio-outer {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .payment-card.selected .radio-outer {
+      border-color: #22C55E;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+    }
+
+    .radio-inner {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .payment-card.selected .radio-inner {
+      background: #22C55E;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    }
+
+    /* Promo Code Section */
+    .promo-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+
+    .promo-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .promo-input-wrap {
+      flex: 1;
+      background: #1A2535;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      height: 50px;
+      transition: all 0.25s ease;
+    }
+
+    .promo-input-wrap:focus-within {
+      border-color: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+
+    .promo-input-wrap i {
+      font-size: 14px;
+      color: #4A5C72;
+      flex-shrink: 0;
+    }
+
+    .promo-input-wrap input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .promo-input-wrap input::placeholder {
+      color: #4A5C72;
+      font-weight: 500;
+    }
+
+    .apply-btn {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      border: none;
+      border-radius: 14px;
+      padding: 0 20px;
+      height: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      white-space: nowrap;
+    }
+
+    .apply-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.45);
+    }
+
+    .apply-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Promo success state */
+    .promo-success {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #22C55E;
+    }
+
+    .promo-success.visible {
+      display: flex;
+    }
+
+    .promo-success i {
+      font-size: 12px;
+    }
+
+    /* Order Summary */
+    .order-summary {
+      margin: 0 20px 20px;
+      background: #1A2535;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+    }
+
+    .order-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94A3B8;
+    }
+
+    .order-amount {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .order-discount-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .discount-badge {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #22C55E;
+    }
+
+    .order-amount.discount {
+      color: #22C55E;
+    }
+
+    .order-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 8px 0;
+    }
+
+    .order-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0 0;
+    }
+
+    .order-total-label {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .order-total-amount {
+      font-size: 22px;
+      font-weight: 900;
+      color: #22C55E;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+    }
+
+    .order-total-sar {
+      font-size: 14px;
+      font-weight: 700;
+      color: #22C55E;
+      margin-left: 2px;
+    }
+
+    /* Bottom area */
+    .bottom-area {
+      flex-shrink: 0;
+      background: #0F1923;
+      padding: 12px 20px 24px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .pay-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      border: none;
+      border-radius: 18px;
+      height: 58px;
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.1);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .pay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(34, 197, 94, 0.5), 0 0 50px rgba(34, 197, 94, 0.15);
+      background: linear-gradient(135deg, #2dd867, #22C55E);
+    }
+
+    .pay-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    .pay-btn i {
+      font-size: 16px;
+    }
+
+    .secure-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A5C72;
+      letter-spacing: 0.3px;
+    }
+
+    .secure-label i {
+      font-size: 11px;
+      color: #22C55E;
+    }
+
+    /* Apple Pay logo styling */
+    .apple-pay-logo {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    /* Mada logo */
+    .mada-logo {
+      font-size: 11px;
+      font-weight: 900;
+      color: #6366F1;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Card icons */
+    .card-icons {
+      display: flex;
+      gap: 3px;
+    }
+
+    .card-icons i {
+      font-size: 18px;
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon">
+          <div class="battery-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="back-btn" id="backBtn">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="header-title">Confirm &amp; Pay</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step done">
+        <div class="step-circle">
+          <i class="fas fa-check" style="font-size:13px;"></i>
+        </div>
+        <span class="step-label">Select</span>
+      </div>
+      <div class="step-connector done"></div>
+      <div class="step done">
+        <div class="step-circle">
+          <i class="fas fa-check" style="font-size:13px;"></i>
+        </div>
+        <span class="step-label">Details</span>
+      </div>
+      <div class="step-connector done"></div>
+      <div class="step active">
+        <div class="step-circle">3</div>
+        <span class="step-label">Payment</span>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content">
+
+      <!-- Booking Summary -->
+      <div class="section-gap">
+        <div class="summary-card">
+          <div class="summary-card-inner">
+            <div class="summary-venue-row">
+              <div class="summary-venue-info">
+                <div class="summary-venue-name">Al-Rawdah Arena</div>
+                <div class="summary-venue-sub">
+                  <i class="fas fa-location-dot"></i>
+                  Al Rawdah, Riyadh
+                </div>
+              </div>
+              <div class="sport-pill">
+                <span>⚽</span>
+                Football
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-details-grid">
+              <div class="summary-detail-item">
+                <div class="detail-icon-wrap">
+                  <i class="fas fa-calendar-days"></i>
+                </div>
+                <div class="detail-text">
+                  <div class="detail-label">Date</div>
+                  <div class="detail-value">Fri, 24 Jan</div>
+                </div>
+              </div>
+              <div class="summary-detail-item">
+                <div class="detail-icon-wrap">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="detail-text">
+                  <div class="detail-label">Time</div>
+                  <div class="detail-value">08:00 PM</div>
+                </div>
+              </div>
+              <div class="summary-detail-item">
+                <div class="detail-icon-wrap">
+                  <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="detail-text">
+                  <div class="detail-label">Duration</div>
+                  <div class="detail-value">1 Hour</div>
+                </div>
+              </div>
+              <div class="summary-detail-item">
+                <div class="detail-icon-wrap">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="detail-text">
+                  <div class="detail-label">Players</div>
+                  <div class="detail-value">10 Players</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="section-label">Payment Method</div>
+
+      <div class="payment-methods">
+        <!-- Apple Pay -->
+        <div class="payment-card selected" data-method="applepay">
+          <div class="payment-icon-wrap" style="background: #000; border-radius: 10px;">
+            <span style="font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -0.5px; font-family: -apple-system, sans-serif;"> Pay</span>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Apple Pay</div>
+            <div class="payment-sub">Touch ID or Face ID</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+
+        <!-- Credit / Debit Card -->
+        <div class="payment-card" data-method="card">
+          <div class="payment-icon-wrap" style="background: #0F1923; gap: 2px;">
+            <div class="card-icons">
+              <i class="fab fa-cc-visa" style="color: #1A56DB; font-size: 20px;"></i>
+              <i class="fab fa-cc-mastercard" style="color: #EB001B; font-size: 20px;"></i>
+            </div>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Credit / Debit Card</div>
+            <div class="payment-sub">Visa, Mastercard, Amex</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+
+        <!-- Mada -->
+        <div class="payment-card" data-method="mada">
+          <div class="payment-icon-wrap" style="background: #0F1923;">
+            <svg width="38" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="38" height="20" rx="4" fill="#1A2535"></rect>
+              <text x="4" y="14" font-family="Inter, sans-serif" font-size="11" font-weight="900" fill="#22C55E">mada</text>
+            </svg>
+          </div>
+          <div class="payment-info">
+            <div class="payment-name">Mada</div>
+            <div class="payment-sub">Saudi debit network</div>
+          </div>
+          <div class="radio-outer">
+            <div class="radio-inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promo Code -->
+      <div class="section-label">Promo Code</div>
+
+      <div class="promo-section">
+        <div class="promo-input-row">
+          <div class="promo-input-wrap">
+            <i class="fas fa-tag"></i>
+            <input type="text" id="promoInput" placeholder="Enter code">
+          </div>
+          <button class="apply-btn" id="applyBtn">Apply</button>
+        </div>
+        <div class="promo-success" id="promoSuccess">
+          <i class="fas fa-circle-check"></i>
+          <span>Code <strong>SPORT20</strong> applied — 20% off!</span>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="section-label">Order Summary</div>
+
+      <div class="order-summary">
+        <div class="order-row">
+          <span class="order-label">Court Fee</span>
+          <span class="order-amount">SAR 60</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Service Fee</span>
+          <span class="order-amount">SAR 5</span>
+        </div>
+        <div class="order-row" id="discountRow" style="display: none;">
+          <span class="order-discount-label">
+            Discount
+            <span class="discount-badge">SPORT20</span>
+          </span>
+          <span class="order-amount discount" id="discountAmount">−SAR 13</span>
+        </div>
+        <div class="order-divider"></div>
+        <div class="order-total-row">
+          <span class="order-total-label">Total</span>
+          <span class="order-total-amount" id="totalAmount">65 <span class="order-total-sar">SAR</span></span>
+        </div>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Bottom Pay Button -->
+    <div class="bottom-area">
+      <button class="pay-btn" id="payBtn">
+        <i class="fas fa-lock"></i>
+        <span id="payBtnText">Pay 65 SAR</span>
+      </button>
+      <div class="secure-label">
+        <i class="fas fa-shield-halved"></i>
+        Secured by 256-bit SSL encryption
+      </div>
+    </div>
+
+  </div><!-- end phone-frame -->
+
+  <script>
+    // Payment method selection
+    const paymentCards = document.querySelectorAll('.payment-card');
+    paymentCards.forEach(card => {
+      card.addEventListener('click', () => {
+        paymentCards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+      });
+    });
+
+    // Promo code apply
+    const applyBtn = document.getElementById('applyBtn');
+    const promoInput = document.getElementById('promoInput');
+    const promoSuccess = document.getElementById('promoSuccess');
+    const discountRow = document.getElementById('discountRow');
+    const totalAmount = document.getElementById('totalAmount');
+    const payBtnText = document.getElementById('payBtnText');
+
+    let promoApplied = false;
+
+    applyBtn.addEventListener('click', () => {
+      const code = promoInput.value.trim().toUpperCase();
+      if (code === 'SPORT20' && !promoApplied) {
+        promoApplied = true;
+        promoInput.value = 'SPORT20';
+        promoInput.disabled = true;
+        promoSuccess.classList.add('visible');
+        discountRow.style.display = 'flex';
+        totalAmount.innerHTML = '52 <span class="order-total-sar">SAR</span>';
+        payBtnText.textContent = 'Pay 52 SAR';
+        applyBtn.textContent = '✓ Applied';
+        applyBtn.style.background = 'rgba(34, 197, 94, 0.15)';
+        applyBtn.style.color = '#22C55E';
+        applyBtn.style.boxShadow = 'none';
+        applyBtn.style.border = '1.5px solid rgba(34, 197, 94, 0.3)';
+        applyBtn.disabled = true;
+      } else if (!promoApplied && code.length > 0) {
+        promoInput.style.borderColor = '#EF4444';
+        promoInput.closest('.promo-input-wrap').style.borderColor = '#EF4444';
+        promoInput.closest('.promo-input-wrap').style.boxShadow = '0 0 0 3px rgba(239,68,68,0.1)';
+        setTimeout(() => {
+          promoInput.closest('.promo-input-wrap').style.borderColor = '';
+          promoInput.closest('.promo-input-wrap').style.boxShadow = '';
+        }, 1500);
+      }
+    });
+
+    // Pay button
+    const payBtn = document.getElementById('payBtn');
+    payBtn.addEventListener('click', () => {
+      payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      payBtn.style.opacity = '0.85';
+      payBtn.disabled = true;
+      setTimeout(() => {
+        payBtn.innerHTML = '<i class="fas fa-circle-check"></i> Payment Successful!';
+        payBtn.style.opacity = '1';
+        payBtn.style.background = 'linear-gradient(135deg, #16A34A, #15803D)';
+      }, 2000);
+    });
+
+    // Back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+      // Visual feedback
+      const btn = document.getElementById('backBtn');
+      btn.style.transform = 'scale(0.92)';
+      setTimeout(() => { btn.style.transform = ''; }, 150);
+    });
+  </script>
+
+</body></html>

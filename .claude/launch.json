@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "koora",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8000", "--directory", "app"],
+      "port": 8000
+    },
+    {
+      "name": "koora-app",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8012", "--directory", "app/native"],
+      "port": 8012
+    },
+    {
+      "name": "koora-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8020", "--directory", "public"],
+      "port": 8020
+    }
+  ]
+}

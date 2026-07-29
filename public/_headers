@@ -10,10 +10,12 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 # 'unsafe-inline' is required, not sloppiness: the site inlines its whole
-# stylesheet and one small theme script, and /app is a single-file SPA with
-# its JS inline. connect-src lists the two backends the SPA talks to -
-# Apps Script today, Supabase after stage (D) of PLAN-2-website.md.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://script.google.com https://script.googleusercontent.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'
+# stylesheet and one small theme script. connect-src lists what the pages
+# actually talk to: Supabase over https for REST, and over wss for the live
+# audit feed on /admin. A CSP source is scheme-exact - https://*.supabase.co
+# does NOT authorise a wss:// socket to the same host, so both are listed.
+# Apps Script stays until the AI panels move off it (P5).
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://script.google.com https://script.googleusercontent.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'
 
 # NOT immutable, and not a year: these filenames carry no content hash, so a
 # year-long immutable cache would pin a stale logo on returning visitors with
