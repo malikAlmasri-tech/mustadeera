@@ -14,14 +14,14 @@ migration/02_import.sql
 migration/03_owners.sql
 
 # ── مخرجات build.ps1 — مولّدة، لا تُحرَّر ولا تُرفع ──────────────────────────
-# استثناءان **متتبَّعان** لأن الاستضافة تنشر من المستودع مباشرةً بلا خطوة بناء:
-#   · جذر index.html  ⇐ ينشره Vercel (يبقى حتى إسقاط Vercel في المرحلة ز)
-#   · public/         ⇐ ينشره Cloudflare Pages (مخرَج site/build-site.ps1)
+# استثناء واحد **متتبَّع**: `public/` — لأن Vercel ينشر من المستودع مباشرةً
+# بلا خطوة بناء (`outputDirectory: "public"` في vercel.json).
 # ⚠️ حرّر `site/` لا `public/` — أي تعديل داخل public/ يضيع عند أوّل بناء.
-المستديرة محدث.txt
-www/
-app/_preview_*.html
-app/native/_preview_*.html
+#
+# و`app/www/` مخرَج بناء التطبيق (webDir لـCapacitor) — يُعاد توليده في كل بناء
+# ويُنسخ إلى android/ بـ`npx cap sync`، فلا معنى لرفعه.
+app/www/
+app/src/_preview_*.html
 
 # ── تبعيات ومخرجات بناء ─────────────────────────────────────────────────────
 node_modules/

@@ -1,7 +1,7 @@
 # مجلّد الترحيل — ما هو كل ملفّ، وأيّها يُشغَّل
 
 > الخطة الكاملة والمراحل في [`../PLAN-db-migration.md`](../PLAN-db-migration.md).
-> **المشروع الحيّ:** `https://nxqddfuwtrsabprxcfez.supabase.co` · المفتاح `anon` مضمَّن في `app/native/app.js` (عام بالتصميم — الأمان قائم على RLS لا على إخفائه).
+> **المشروع الحيّ:** `https://nxqddfuwtrsabprxcfez.supabase.co` · المفتاح `anon` مضمَّن في `app/src/app.js` (عام بالتصميم — الأمان قائم على RLS لا على إخفائه).
 
 ---
 

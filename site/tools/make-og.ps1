@@ -52,7 +52,7 @@ $glow.SurroundColors = @([System.Drawing.Color]::FromArgb(0, 140, 198, 62))
 $g.FillPath($glow, $path)
 
 # Logo lockup (the brand name is artwork inside it - no font dependency).
-$logoPath = Join-Path $Root 'app\logo-nav-dark.png'
+$logoPath = Join-Path $Site 'static\assets\logo-nav-dark.png'
 if (Test-Path $logoPath) {
     $logo = [System.Drawing.Image]::FromFile($logoPath)
     $lw = 560; $lh = [int]($logo.Height * $lw / $logo.Width)

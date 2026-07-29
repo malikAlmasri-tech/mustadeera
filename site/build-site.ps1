@@ -501,8 +501,11 @@ if (Test-Path $staticDir) {
 
 $assetsOut = Join-Path $Out 'assets'
 if (-not (Test-Path $assetsOut)) { New-Item -ItemType Directory -Path $assetsOut -Force | Out-Null }
+# The logos used to sit in app\ even though only the site consumes them, which
+# made them look like app assets. They moved to site\static\assets in the
+# 2026-07-29 reorganisation; og-default.png was already there.
 foreach ($f in @('logo-nav.png', 'logo-nav-dark.png', 'logo-mark.png', 'logo-mark-dark.png', 'logo-fav.png')) {
-    $src = Join-Path $Root "app\$f"
+    $src = Join-Path $SiteDir "static\assets\$f"
     if (Test-Path $src) { Copy-Item $src (Join-Path $assetsOut $f) -Force }
 }
 
