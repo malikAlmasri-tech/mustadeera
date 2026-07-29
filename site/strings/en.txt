@@ -35,6 +35,7 @@ heroSub = Browse pitches near you, see the hours that are actually free, and sen
 heroCtaPrimary = Download the app
 heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
+heroInstallGuide = Install guide and checksum
 
 # ---------- Proof strip (every line is verifiable) ----------
 trust1 = Booked hours never show up for you

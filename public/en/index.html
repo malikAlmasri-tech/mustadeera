@@ -38,7 +38,7 @@
      الرئيسة كانت 41KB لأن الورقة تتكرّر في ٢٨ صفحة، وقد تجاوزت ميزانيتها.
      الاسم يحمل بصمة المحتوى ⇒ يُخزَّن سنة كاملة ويتبدّل تلقائيًّا عند أي تعديل.
      الوسم حاجب للرسم ⇒ لا رسمة بلا أنماط، وهو ما كان التضمين يشتريه. -->
-<link rel="stylesheet" href="/build/site.814e28f8.css">
+<link rel="stylesheet" href="/build/site.597a6fed.css">
 
 <!-- السكربت الوحيد المضمَّن، ولا يمكن أن يفشل تحميله. مهمّتان:
      ① الثيم يُطبَّق قبل أوّل رسم كي لا يومض الأبيض على مستخدم الوضع الليلي.
@@ -144,6 +144,8 @@
       <p class="lead">Browse pitches near you, see the hours that are actually free, and send your booking request in under a minute.</p>
 
       <div class="hero-cta">
+        <!-- /en/download/ هو الـAPK نفسه متى وُجد إصدار منشور، و/download/ إن لم
+             يوجد. الاثنان يُشتقّان من site/release.txt وقت البناء. -->
         <a class="btn btn-pri btn-lg" href="/en/download/">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
           Download the app
@@ -164,9 +166,15 @@
            اللغة تلقائيًّا؛ الصورة الواحدة لا تفعل، وكانت الصفحة الإنجليزية
            تعرض واجهة عربية. en يحلّه بلا سطر في البناء. -->
       <span class="hero-shot">
-        <img src="/assets/app-mockup-en.png" alt="Choosing a day and a time in the Mustadeera app" class="hero-mockup"
-             width="400" height="525" fetchpriority="high" decoding="async">
-      </span>
+        <span class="hp-btn hp-v1" aria-hidden="true"></span>
+        <span class="hp-btn hp-v2" aria-hidden="true"></span>
+        <span class="hp-btn hp-pw" aria-hidden="true"></span>
+        <span class="hp-scr">
+          <img src="/assets/app-mockup-en.png" alt="Choosing a day and a time in the Mustadeera app" class="hero-mockup"
+               width="400" height="525" fetchpriority="high" decoding="async">
+          <span class="hp-island" aria-hidden="true"></span>
+          <span class="hp-home" aria-hidden="true"></span>
+        </span></span>
     </figure>
   </div>
 

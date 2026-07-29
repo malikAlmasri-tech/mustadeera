@@ -448,6 +448,29 @@ foreach ($lang in $Langs) {
         $vars['relSha']     = $(if ($Rel.ContainsKey('sha256'))  { $Rel['sha256'] }  else { '' })
         $vars['relUrl']     = $(if ($Rel.ContainsKey('url'))     { $Rel['url'] }     else { '' })
 
+        # ---- the "download the app" call to action ----
+        # It points straight at the APK once a release exists, and falls back to
+        # /download/ while none does - a button that downloads nothing is worse
+        # than a button that explains why. Both states come from release.txt, so
+        # neither is typed by hand.
+        #
+        # The `download` attribute is ignored cross-origin; GitHub Releases send
+        # Content-Disposition: attachment, which is what actually saves the file.
+        #
+        # Going straight to the APK skips the page carrying the SHA-256 and the
+        # sideload instructions, so ctaDlNote puts a link to them under the
+        # button - present only when the button itself bypasses that page.
+        if ($RelLive) {
+            $vars['ctaDl']     = $Rel['url']
+            $vars['ctaDlAttr'] = ' download rel="noopener"'
+            $vars['ctaDlNote'] = ' <a class="in-link" href="' + $lang.base + '/download/">' +
+                                 (Tx $T 'heroInstallGuide') + '</a>'
+        } else {
+            $vars['ctaDl']     = $lang.base + '/download/'
+            $vars['ctaDlAttr'] = ''
+            $vars['ctaDlNote'] = ''
+        }
+
         # wa.me links carry a prefilled opener, and it differs by who is writing
         # (a player with a booking problem vs an owner registering a pitch), so
         # the text comes from the language's own dictionary.
