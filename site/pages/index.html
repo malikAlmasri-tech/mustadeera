@@ -1,6 +1,13 @@
 <!-- ============ الهيرو — لوح داكن + المنتج بجانبه ============ -->
 <section class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
+  <!-- صورة ملعب ليلي فوق التدرّج مباشرةً (نفس z-index، وتليه في الوسم).
+       زخرفية بحتة ⇒ خلفية CSS لا <img>، فلا نصّ بديل يُقرأ ولا تدخل شجرة
+       إمكانية الوصول. التباين فوقها مفحوص حيًّا لا مقدَّر. -->
+  <div class="hero-photo" aria-hidden="true"></div>
+  <!-- هالة تتنفّس ببطء: قرص واحد ثابت الحجم يتمدّد بالتحجيم، فلا يُعاد
+       رسم تدرّج في كل إطار. تختفي كليًّا عند تفضيل تقليل الحركة. -->
+  <div class="hero-glow" aria-hidden="true"></div>
 
   <div class="wrap hero-grid">
     <div class="hero-copy">
@@ -22,7 +29,19 @@
       <!-- هيكل الهاتف مبنيّ بالـCSS ومحتواه DOM حقيقي: صفر صور، صفر انزياح تخطيط.
            لا يعرض اسم ملعب ولا سعرًا — لأن أيّ منهما سيكون رقمًا مصنوعًا. -->
       <div class="phone" role="img" aria-label="{{t.mockCaption}}">
+        <span class="ph-btn ph-v1" aria-hidden="true"></span>
+        <span class="ph-btn ph-v2" aria-hidden="true"></span>
+        <span class="ph-btn ph-pw" aria-hidden="true"></span>
         <div class="scr">
+          <div class="scr-top" aria-hidden="true">
+            <span class="scr-time">8:45</span>
+            <span class="scr-island"></span>
+            <span class="scr-sig">
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="7.5" width="2.6" height="3.5" rx=".7"/><rect x="4.1" y="5" width="2.6" height="6" rx=".7"/><rect x="8.2" y="2.5" width="2.6" height="8.5" rx=".7"/><rect x="12.3" y="0" width="2.6" height="11" rx=".7"/></svg>
+              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3.6a9 9 0 0 1 12 0"/><path d="M3.4 6.3a5.6 5.6 0 0 1 7.2 0"/><circle cx="7" cy="9.3" r="1" fill="currentColor" stroke="none"/></svg>
+              <svg width="20" height="11" viewBox="0 0 20 11" fill="none"><rect x=".6" y=".6" width="15.5" height="9.8" rx="2.6" stroke="currentColor" stroke-width="1.2" opacity=".5"/><rect x="2.2" y="2.2" width="11" height="6.6" rx="1.4" fill="currentColor"/><path d="M18 4v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".5"/></svg>
+            </span>
+          </div>
           <p class="scr-h">{{t.mockPickDay}}</p>
           <div class="chips">
             <span class="chip on">{{t.mockDay1}}</span>
@@ -40,6 +59,7 @@
             <span class="slot">{{t.mockSlot6}}</span>
           </div>
           <span class="scr-send">{{t.mockSend}}</span>
+          <span class="scr-home" aria-hidden="true"></span>
         </div>
       </div>
       <p class="mock-cap">{{t.mockCaption}}</p>
@@ -51,6 +71,15 @@
     <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust2}}</span></li>
     <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.trust3}}</span></li>
   </ul>
+</section>
+
+<!-- ============ الأرقام ============
+     مولَّدة كاملة من الصفوف التي قرأها البناء من القاعدة. لا رقم مكتوب
+     بيد هنا، ولو خلت القاعدة لَما بُني الشريط أصلًا (قاعدة الصدق م5). -->
+<section class="sec sec-tight">
+  <div class="wrap">
+    {{statsBand}}
+  </div>
 </section>
 
 <!-- ============ المميزات · Bento ============ -->
@@ -118,7 +147,7 @@
 
 <!-- ============ أصحاب الملاعب ============ -->
 <section class="sec">
-  <div class="wrap rv">
+  <div class="wrap owners-in rv">
     <div class="own-card">
       <span class="eyebrow">{{t.ownersEyebrow}}</span>
       <h2>{{t.ownersTitle}}</h2>
@@ -131,12 +160,62 @@
       <a class="btn btn-pri" href="{{base}}/owners/">{{t.ownersCta}}</a>
       <p class="own-note">{{t.ownersCtaNote}}</p>
     </div>
+
+    <!-- المقاسان مصرَّح بهما فلا تقفز الصفحة حين تصل الصورة، وsizes يخبر
+         المتصفّح بعرضها الحقيقي فيختار 720 على الجوّال لا 1100. -->
+    <figure class="own-photo">
+      <img src="/assets/photos/players-run-1100.jpg"
+           srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
+           sizes="(min-width: 900px) 46vw, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="{{t.photoPlayersAlt}}">
+    </figure>
+  </div>
+</section>
+
+<!-- ============ الأسئلة الشائعة ============
+     <details> حقيقي: يفتح ويُبحث فيه ويُطبع بلا سكربت. السكربت لا يزيد
+     على تأخير الإغلاق حتى تنتهي حركة الارتفاع. -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">{{t.faqEyebrow}}</span>
+      <h2 class="h2">{{t.faqTitle}}</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ1}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA1}}</p></div></div>
+      </details>
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ2}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA2}}</p></div></div>
+      </details>
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ3}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA3}}</p></div></div>
+      </details>
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ4}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA4}}</p></div></div>
+      </details>
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ5}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA5}}</p></div></div>
+      </details>
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ6}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA6}}</p></div></div>
+      </details>
+    </div>
   </div>
 </section>
 
 <!-- ============ نداء الختام — لوح داكن يغلق الصفحة كما فتحها الهيرو ============ -->
 <section class="sec final cta-band rv">
   <div class="cta-band-bg" aria-hidden="true"></div>
+  <div class="cta-photo" aria-hidden="true"></div>
   <div class="wrap">
     <h2>{{t.finalTitle}}</h2>
     <p class="lead">{{t.finalDesc}}</p>

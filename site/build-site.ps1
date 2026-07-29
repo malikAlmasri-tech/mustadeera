@@ -225,14 +225,44 @@ $TplHead   = Read-Text (Join-Path $SiteDir 'partials\head.html')
 $TplHeader = Read-Text (Join-Path $SiteDir 'partials\header.html')
 $TplFooter = Read-Text (Join-Path $SiteDir 'partials\footer.html')
 $Css       = Read-Text (Join-Path $SiteDir 'styles\site.css')
+$Js        = Read-Text (Join-Path $SiteDir 'scripts\site.js')
 
-# CSS is inlined in every page rather than linked. Reason: the whole
-# stylesheet is small enough that one round-trip beats cross-page caching,
-# and it removes any chance of an unstyled first paint. Revisit past ~20KB.
 $CssMin = $Css -replace '(?s)/\*.*?\*/', ''
 $CssMin = $CssMin -replace '(?m)^\s+', '' -replace '(?m)\s+$', ''
 $CssMin = ($CssMin -split "`r?`n" | Where-Object { $_ -ne '' }) -join ''
 $CssMin = $CssMin -replace ';\}', '}' -replace '\s*([{}:;,>])\s*', '$1'
+
+# ---- CSS and JS ship as external files named after their own content ----
+# They used to be inlined into every page. That bought one less round-trip
+# and no unstyled first paint, and it was the right call while the sheet was
+# small - the note here said "revisit past ~20KB". It passed: the stylesheet
+# repeated across 28 pages had pushed the home page to 41KB, over its budget.
+#
+# A <link> in <head> is render-blocking too, so the unstyled-paint argument
+# survives the move. What changes is that the bytes are fetched once for the
+# whole site instead of once per page.
+#
+# The filename carries a hash of the content, so the file can be cached for a
+# year and still be impossible to serve stale: change the source and the URL
+# changes with it. That is why these live under /build/ and not /assets/ -
+# the logos there keep their filenames and so must keep a shorter cache.
+# JS is NOT minified: a regex minifier cannot tell a comment from a "//"
+# inside a string, and gzip already collapses the difference to a rounding
+# error. Correctness over a few hundred bytes.
+function Get-Hash8([string]$s) {
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        $bytes = $sha.ComputeHash($Utf8NoBom.GetBytes($s))
+        (($bytes | ForEach-Object { $_.ToString('x2') }) -join '').Substring(0, 8)
+    } finally { $sha.Dispose() }
+}
+
+$CssName = 'site.' + (Get-Hash8 $CssMin) + '.css'
+$JsName  = 'site.' + (Get-Hash8 $Js)     + '.js'
+$CssHref = '/build/' + $CssName
+$JsHref  = '/build/' + $JsName
+Write-Text (Join-Path $Out ('build\' + $CssName)) $CssMin
+Write-Text (Join-Path $Out ('build\' + $JsName))  $Js
 
 $sitemap = New-Object System.Collections.ArrayList
 $written = 0
@@ -262,7 +292,15 @@ function Render-PlacesList($model, $T, [string]$base) {
     [void]$sb.Append('<div class="pl-grid">')
     foreach ($p in $model) {
         $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
-        [void]$sb.Append('<article class="pl-card"><a class="pl-link" href="' + $href + '">')
+        # data-area drives the filter chips; data-q is the haystack the search
+        # box matches against. Both are plain attributes so the filter needs no
+        # second copy of the data and the page still works with JS switched off.
+        # The axis is the REGION, not the city: measured on today's data, all
+        # six venues share one city and sit in six different regions, so city
+        # chips would have been a filter that filters nothing.
+        $q = ($p.name + ' ' + $p.city + ' ' + $p.region + ' ' + $p.type)
+        [void]$sb.Append('<article class="pl-card" data-area="' + (HtmlEnc $p.region) + '" data-q="' + (HtmlEnc $q) + '">')
+        [void]$sb.Append('<a class="pl-link" href="' + $href + '">')
         [void]$sb.Append('<h2 class="pl-name">' + (HtmlEnc $p.name) + '</h2></a>')
         [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
         [void]$sb.Append('<p class="pl-tags"><span class="pl-tag">' + (HtmlEnc $p.type) + '</span>')
@@ -275,10 +313,66 @@ function Render-PlacesList($model, $T, [string]$base) {
     $sb.ToString()
 }
 
+# Region chips for the directory filter. They come from the data, so a new
+# region in the database becomes a new chip at the next build with no edit here.
+# Rendered only when they would actually narrow anything: one region filters
+# nothing, and past a dozen the chip row is worse than the search box.
+function Render-Areas($model) {
+    @($model | ForEach-Object { $_.region } | Where-Object { $_ -ne '' } | Sort-Object -Unique)
+}
+
+function Render-PlaceChips($model, $T) {
+    $areas = Render-Areas $model
+    if ($areas.Count -lt 2 -or $areas.Count -gt 12) { return '' }
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<div class="pl-chips">')
+    foreach ($a in $areas) {
+        [void]$sb.Append('<button class="pl-chip" type="button" aria-pressed="false" data-area="' +
+                         (HtmlEnc $a) + '">' + (HtmlEnc $a) + '</button>')
+    }
+    [void]$sb.Append('</div>')
+    $sb.ToString()
+}
+
+# The numbers band on the home page. Every figure is counted from the rows the
+# build just read - none is typed by hand, and an empty database renders no
+# band at all rather than a row of zeros (honesty rule 5).
+#
+# The labels are definite plural nouns ("the venues", not "N venues") on
+# purpose. Arabic changes the counted noun with the number - 3-10 takes the
+# plural, 11+ the singular accusative - so a label that follows a live figure
+# would read as broken Arabic half the time. A standing noun under the number
+# is correct for every value, in both languages.
+function Render-Stats($model, $T) {
+    if ($model.Count -eq 0) { return '' }
+    $fields = ($model | ForEach-Object { $_.fields.Count } | Measure-Object -Sum).Sum
+    $areas  = (Render-Areas $model).Count
+    $rows = @(
+        @{ n = $model.Count; k = 'statPlaces' },
+        @{ n = $fields;      k = 'statFields' },
+        @{ n = $areas;       k = 'statAreas' }
+    )
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<div class="stats">')
+    $i = 0
+    foreach ($r in $rows) {
+        [void]$sb.Append('<div class="stat rv" style="--i:' + $i + '">')
+        # The final number is in the markup: it is what a reader sees with the
+        # counter script absent or motion switched off. The count-up is decoration.
+        [void]$sb.Append('<span class="stat-n" data-count="' + $r.n + '">' + $r.n + '</span>')
+        [void]$sb.Append('<span class="stat-k">' + (Tx $T $r.k) + '</span></div>')
+        $i++
+    }
+    [void]$sb.Append('</div>')
+    $sb.ToString()
+}
+
 function Render-PlaceBody($p, $T, [string]$base) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append('<section class="sec"><div class="wrap">')
-    [void]$sb.Append('<a class="pl-back" href="' + $base + '/places/">' + (Tx $T 'plBackToList') + '</a>')
+    [void]$sb.Append('<a class="pl-back" href="' + $base + '/places/">' +
+                     '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>' +
+                     (Tx $T 'plBackToList') + '</a>')
     [void]$sb.Append('<h1 class="h1-page">' + (HtmlEnc $p.name) + '</h1>')
     [void]$sb.Append('<p class="lead">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + ' &middot; ' + (HtmlEnc $p.type) + '</p>')
     if ($p.hasRating) { [void]$sb.Append('<p class="pl-rate-row">' + (Render-Stars $p $T) + '</p>') }
@@ -338,7 +432,8 @@ foreach ($lang in $Langs) {
             buildStamp = $BuildStamp
             year       = (Get-Date -Format 'yyyy')
             fontHref   = $lang.font
-            css        = $CssMin
+            cssHref    = $CssHref
+            jsHref     = $JsHref
             title      = $(if ($T.ContainsKey($page.title)) { $T[$page.title] } else { '' })
             desc       = $(if ($T.ContainsKey($page.desc))  { $T[$page.desc]  } else { '' })
         }
@@ -373,6 +468,11 @@ foreach ($lang in $Langs) {
 
         $vars['placesList']  = $(if ($PlaceModel.Count -gt 0) { Render-PlacesList $PlaceModel $T $lang.base } else { '' })
         $vars['placesCount'] = [string]$PlaceModel.Count
+        $vars['placesChips'] = $(if ($PlaceModel.Count -gt 0) { Render-PlaceChips $PlaceModel $T } else { '' })
+        $vars['statsBand']   = Render-Stats $PlaceModel $T
+        # The counter's starting text is rendered with the real total, so the
+        # line reads correctly before - and without - any script.
+        $vars['plCountInit'] = (Tx $T 'plCountTpl').Replace('{n}', [string]$PlaceModel.Count)
 
         $body = Read-Text $bodyFile
         $body = $body.Replace('{{include:contact}}', $(if ($ContactLive) { '{{include:contact-live}}' } else { '{{include:contact-soon}}' }))
@@ -463,8 +563,12 @@ Write-Text (Join-Path $Out 'sitemap.xml') $sb.ToString()
 # not security - the actual guard is row-level security in the database.
 $adminSrc = Join-Path $SiteDir 'admin.html'
 if (Test-Path $adminSrc) {
+    # The dashboard links the same hashed stylesheet and script as the site, so
+    # every change to the site's tokens, buttons, theme switch and motion
+    # reaches it automatically instead of drifting into a second design.
     $av = @{
-        css        = $CssMin
+        cssHref    = $CssHref
+        jsHref     = $JsHref
         sbBase     = $SbUrl -replace '/rest/v1$', ''
         sbKey      = $SbKey
         buildStamp = $BuildStamp
@@ -522,8 +626,12 @@ $totalBytes = (Get-ChildItem $Out -Recurse -File | Measure-Object Length -Sum).S
 $homeChars  = (Read-Text (Join-Path $Out 'index.html')).Length
 Write-Host ''
 Write-Host ("  [site]   {0} pages -> public\  ({1:N0} KB total)" -f $written, ($totalBytes / 1KB)) -ForegroundColor Cyan
-Write-Host ("  [css]    {0:N0} chars inlined per page" -f $CssMin.Length) -ForegroundColor DarkGray
-Write-Host ("  [home]   {0:N0} chars  (budget 40,000)" -f $homeChars) -ForegroundColor $(if ($homeChars -gt 40000) { 'Red' } else { 'Green' })
+Write-Host ("  [build]  {0} ({1:N1} KB) + {2} ({3:N1} KB) - cached once for the whole site" -f `
+            $CssName, ($CssMin.Length / 1KB), $JsName, ($Js.Length / 1KB)) -ForegroundColor DarkGray
+# The budget is per page and the stylesheet no longer counts against it, so
+# this now measures actual markup. Today's home page is ~21,700 chars; 28,000
+# leaves room for a section or two before the page needs a second look.
+Write-Host ("  [home]   {0:N0} chars of markup  (budget 28,000)" -f $homeChars) -ForegroundColor $(if ($homeChars -gt 28000) { 'Red' } else { 'Green' })
 Write-Host ("  [origin] {0}" -f $SiteOrigin) -ForegroundColor DarkGray
 if ($script:Missing.Count -gt 0) {
     $uniq = $script:Missing | Sort-Object -Unique

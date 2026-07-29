@@ -21,6 +21,10 @@ navDownload = Download
 navOwners = For pitch owners
 navAbout = About
 navContact = Contact
+ariaToTop = Back to top
+ariaMenuClose = Close menu
+ariaMenu = Open navigation menu
+navPlaces = Pitches
 navCta = Book now
 
 # ---------- Hero ----------
@@ -344,3 +348,38 @@ metaPrivacyTitle = Privacy policy - AL-Mustadira
 metaPrivacyDesc = What data we collect, why, how we store it, and how to request deletion of your account.
 metaTermsTitle = Terms of use - AL-Mustadira
 metaTermsDesc = Terms for using the AL-Mustadira platform, for players and for pitch owners.
+
+# ---------- Numbers band ----------
+# NOTE: the figures are not here - the build counts them from database rows.
+# These are only the labels that sit under them, and they are standing
+# nouns rather than counted ones so they read correctly at any value.
+statPlaces = Venues listed
+statFields = Bookable pitches
+statAreas = Areas covered
+
+# ---------- FAQ ----------
+faqEyebrow = Frequent questions
+faqTitle = What players ask before their first booking
+faqQ1 = Is the app free to use?
+faqA1 = Yes. Downloading and using the app are free, and we take no booking fee from you. You pay the hourly price to the pitch owner, at the pitch.
+faqQ2 = Is my booking confirmed instantly?
+faqA2 = No. You send a **booking request** and the pitch owner confirms it. You can follow the request's status in the app until it is settled - and a booked hour is never shown to you as available.
+faqQ3 = Do I need a bank card?
+faqA3 = No. There is no online payment anywhere in the platform and we never ask for card details. Payment happens between you and the pitch.
+faqQ4 = Does it work on iPhone?
+faqA4 = Not yet. The app is Android-only today, and booking happens there and nowhere else. The download page says so plainly rather than wasting your time.
+faqQ5 = Why does Android warn me during install?
+faqA5 = Because the app is downloaded here rather than from the Play Store, and Android shows that warning for every app installed from outside it. The download page walks through the steps, quotes the warning exactly as it appears on your device, and publishes the file's checksum so you can verify it yourself.
+faqQ6 = I own a pitch - how do I register it?
+faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free.
+
+# ---------- Directory filter ----------
+plSearchPh = Search by venue or area
+plCountTpl = Results: {n}
+plEmpty = No venue matches your search. Try a shorter name, or clear the city filter.
+
+# ---------- Photography ----------
+# NOTE: alt text describes what the photograph shows, not what we
+# wish it showed. These are stock match photographs, not pictures of
+# the venues listed here - we do not have those (honesty rule 5).
+photoPlayersAlt = Players competing for the ball during a football match

@@ -22,8 +22,12 @@ app/    ⇒ التطبيق فقط          site/   ⇒ الموقع فقط
 | **التطبيق** | `app/src/app.html` + `app.css` + `app.js` | `app/www/index.html` ⇒ الـAPK |
 | **طبقة الهاتف** (اهتزاز · زر الرجوع · شريط الحالة) | `app/src/native.css` + `native.js` | تُحقَن قبل `</body>` — خاملة في المتصفّح |
 | **الموقع** | `site/pages/` + `site/partials/` + `site/styles/` | `public/` ⇒ Vercel |
+| **حركة الموقع وسلوكه** | `site/scripts/site.js` | `public/build/site.<hash>.js` |
 | **نصوص الموقع** | `site/strings/ar.txt` + `en.txt` | — |
 | **لوحة الإدارة** | `site/admin.html` | `public/admin/` |
+
+> **اللوحة تربط ورقة أنماط الموقع وسكربته نفسيهما** (مبصومَين). أي تعديل في
+> توكنات الموقع أو أزراره أو تبديل ثيمه يصل إليها تلقائيًّا — لا تُنسَخ الأنماط.
 
 **بعد أي تعديل، أمر واحد يبني الاثنين:**
 
@@ -51,8 +55,14 @@ koora/
 ├── site/                  ← 🟠 الموقع — كل ما يخصّه
 │   ├── build-site.ps1     ← المولّد (يمسح public/ أوّلًا ثمّ يكتب)
 │   ├── pages/ · partials/ · styles/     ← المحتوى والقوالب والتنسيق
+│   ├── scripts/site.js    ← سلوك الموقع كلّه: كشف عند التمرير · درج الجوّال ·
+│   │                        تبديل الثيم · تصفية الدليل. المحتوى يعمل بدونه
 │   ├── strings/{ar,en}.txt              ← كل نصوص الموقع
 │   ├── static/            ← _headers · _redirects · assets/ (الشعارات + OG)
+│   │                        + assets/photos/ ← 🤖 مولَّدة من tools/make-photos.ps1
+│   ├── tools/             ← make-og.ps1 (صورة المشاركة) · make-photos.ps1
+│   │                        (يصغّر صور app/assets/onb وينسخها هنا — الموقع
+│   │                        يملك نسخته ولا يقرأ من مجلّد التطبيق)
 │   ├── data/places.json   ← كاش الأماكن: يمنع كسر البناء عند انقطاع الشبكة
 │   ├── admin.html         ← لوحة الإدارة (صفحة مستقلّة خارج قالب الموقع)
 │   ├── release.txt        ← ✍️ يملؤه المالك: إصدار الـAPK وبصمته ورابطه
@@ -90,6 +100,8 @@ koora/
 | المسار | المصدر |
 |---|---|
 | `public/**` | `site/` ⇐ `site/build-site.ps1` |
+| `public/build/site.<hash>.css` | `site/styles/site.css` — الاسم يحمل بصمة المحتوى |
+| `public/build/site.<hash>.js` | `site/scripts/site.js` — الاسم يحمل بصمة المحتوى |
 | `app/www/index.html` | `app/src/` ⇐ `build.ps1` |
 | `app/src/_preview_app.html` | نفسه + علم `body.native` للمعاينة |
 | `android/app/src/main/assets/public/` | `app/www/` ⇐ `npx cap sync` |

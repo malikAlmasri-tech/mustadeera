@@ -12,18 +12,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@700;800;900&display=swap">
-<script>(function(){try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<!-- نفس ورقة الأنماط ونفس السكربت اللذين يخدمان الموقع، مبصومَين بمحتواهما.
+     القصد صريح: كل تغيير في توكنات الموقع وأزراره وتبديل ثيمه وحركته يصل
+     إلى هذه اللوحة تلقائيًّا، فلا ينشأ نظاما تصميم يفترقان مع الوقت. -->
+<link rel="stylesheet" href="{{cssHref}}">
+<script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
+<script src="{{jsHref}}" defer></script>
 <style>
-{{css}}
-
-/* ===== لوحة الإدارة ===== */
+/* ===== ما يخصّ اللوحة وحدها ===== */
 .ad-wrap{max-width:1240px;margin-inline:auto;padding:clamp(16px,3vw,28px)}
-.ad-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:14px;
-  border-bottom:1px solid var(--line);margin-bottom:clamp(20px,3vw,28px)}
+/* الشريط العلوي لاصق: الهوية وزرّ الخروج وتبديل الثيم تبقى في المتناول
+   مهما طال الجدول تحتها. */
+.ad-bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding-block:14px;margin-bottom:clamp(20px,3vw,28px);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
 .ad-bar h1{font-size:20px;margin:0}
-.ad-who{margin-inline-start:auto;font-size:14px;color:var(--muted)}
-.ad-out{padding:8px 14px;font-size:14px;font-weight:700;border:1px solid var(--line);
-  background:var(--surface);border-radius:var(--r-sm);cursor:pointer;color:var(--ink)}
+.ad-who{margin-inline-start:auto;font-size:14px;color:var(--muted);
+  display:flex;align-items:center;gap:8px}
+.ad-out{padding:9px 15px;font-size:14px;font-weight:700;border:1px solid var(--line);
+  background:var(--surface);border-radius:var(--r-sm);cursor:pointer;color:var(--ink);
+  transition:border-color var(--t-fast),color var(--t-fast),transform var(--t) var(--spring)}
+@media (hover:hover){.ad-out:hover{border-color:var(--line-2);transform:translateY(-1px)}}
+.ad-out:active{transform:scale(.96)}
 
 .ad-login{max-width:400px;margin:clamp(40px,10vh,90px) auto;background:var(--surface);
   border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh)}
@@ -40,31 +51,78 @@ html.dark .ad-err{color:#FF8A90}
 .ad-ok{background:var(--lime-soft);border:1px solid var(--line-2);color:var(--ink-2);
   padding:11px 14px;border-radius:var(--r-sm);font-size:14.5px;font-weight:600;margin-bottom:14px}
 
-.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:26px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
-.kpi .k{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-.kpi .v{font-family:var(--f-head);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
-.kpi .s{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+/* ---- بطاقات المؤشّرات ----
+   الرقم أوّلًا ثمّ مسمّاه ثمّ سطر يشرحه. الثلاثة بأحجام متباعدة عمدًا:
+   العين تلتقط الرقم من مسافة، والمسمّى عند التوقّف، والشرح عند الحاجة. */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));margin-bottom:24px}
+.kpi{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 18px}
+.kpi .k{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:600}
+.kpi .v{display:block;font-family:var(--f-head);font-size:30px;font-weight:900;
+  font-variant-numeric:tabular-nums;line-height:1.05;letter-spacing:-.02em}
+.kpi .s{display:block;font-size:12.5px;color:var(--muted);margin-top:6px}
+/* البطاقة الوحيدة التي تطلب فعلًا: طلبات تنتظر ردًّا. تُلوَّن حين تكون >0 فقط،
+   كي لا يصير التمييز زينة دائمة يعتادها النظر ويتوقّف عن رؤيتها. */
+.kpi.hot{border-color:var(--line-2);background:var(--lime-soft)}
+.kpi.hot .v{color:var(--teal)}
+html.dark .kpi.hot .v{color:var(--lime)}
+.kpi.hot::after{content:'';position:absolute;inset-block:0;inset-inline-start:0;width:3px;
+  background:var(--lime)}
 
 .ad-sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:clamp(16px,2.4vw,24px);margin-bottom:20px}
-.ad-sec h2{font-size:17px;margin-bottom:14px}
-.ad-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
-th,td{text-align:start;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:12.5px;color:var(--muted);font-weight:700}
+.ad-sec h2{font-size:17px;margin-bottom:4px}
+/* سطر يقول ما الذي يعدّه هذا الجدول بالضبط — رقم بلا تعريف رقمٌ يُساء فهمه */
+.ad-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7}
+.ad-scroll{overflow-x:auto;overscroll-behavior-x:contain}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:620px}
+th,td{text-align:start;padding:11px 13px;white-space:nowrap}
+/* الرأس لاصق داخل الإطار القابل للتمرير: عمود الرقم يبقى معرَّفًا مهما نزلت */
+thead th{position:sticky;top:0;z-index:1;font-size:12.5px;color:var(--muted);font-weight:700;
+  background:var(--surface);border-bottom:1px solid var(--line-2)}
+tbody td{border-bottom:1px solid var(--line)}
+/* تظليل متناوب: العين تتبع الصفّ أفقيًّا بلا أن تنزلق إلى الذي تحته */
+tbody tr:nth-child(even) td{background:var(--surface-2)}
 td{font-variant-numeric:tabular-nums}
 tbody tr:last-child td{border-bottom:0}
+/* الأرقام والنسب إلى النهاية، والنصّ إلى البداية — عمود أرقام محاذٍ للنهاية
+   يُقارَن بالنظر وحده. */
+.n{text-align:end}
+th.n{text-align:end}
 .num{font-weight:700}
 .pos{color:var(--ok-ink,#0B7A43);font-weight:700}
 .neg{color:#B02718;font-weight:700}
+.wait{color:#8C5F16;font-weight:700}
 html.dark .neg{color:#FF8A90}
+html.dark .wait{color:#E8B84B}
+/* صفّ المجاميع — مثبَّت أسفل الجدول وبثقل يفصله عن الصفوف */
+tfoot td{background:var(--bg-2);font-weight:800;border-top:2px solid var(--line-2)}
+/* شريط حصّة المكان من الإيراد: نسبة تُقرأ بالنظر قبل أن تُقرأ بالرقم */
+.share{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.share-b{inline-size:56px;block-size:6px;border-radius:99px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden;flex:none}
+.share-f{display:block;block-size:100%;background:var(--lime);border-radius:99px}
+.share-t{font-size:13px;color:var(--muted);font-weight:700;min-inline-size:38px;text-align:end}
 
-.feed{list-style:none;display:grid;gap:8px;max-height:420px;overflow-y:auto}
-.feed li{display:flex;gap:10px;align-items:baseline;padding:9px 12px;background:var(--surface-2);
-  border:1px solid var(--line);border-radius:var(--r-sm);font-size:13.5px}
-.feed .a{font-weight:800}
-.feed .e{color:var(--muted)}
+.feed{list-style:none;display:grid;gap:8px;max-height:440px;overflow-y:auto;overscroll-behavior:contain}
+.feed li{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 13px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);font-size:14px}
+/* الفعل بلون يفرّقه فورًا: إضافة أخضر · تعديل كهرماني · حذف أحمر.
+   واللون ليس الدليل الوحيد — الكلمة مكتوبة إلى جانبه (لا يُعتمد على اللون وحده). */
+.feed .a{font-weight:800;padding:3px 10px;border-radius:var(--r-full);font-size:12.5px;
+  background:var(--surface);border:1px solid var(--line)}
+.feed .a[data-act="insert"]{color:var(--ok-ink,#0B7A43);border-color:rgba(11,122,67,.35)}
+.feed .a[data-act="update"]{color:#8C5F16;border-color:rgba(140,95,22,.35)}
+.feed .a[data-act="delete"]{color:#B02718;border-color:rgba(176,39,24,.35)}
+html.dark .feed .a[data-act="insert"]{color:#5FD08A}
+html.dark .feed .a[data-act="update"]{color:#E8B84B}
+html.dark .feed .a[data-act="delete"]{color:#FF8A90}
+.feed .e{font-weight:700}
+.feed .who{color:var(--muted);font-size:13px}
+/* معرّف الصفّ: كان يُجلَب ولا يُعرَض، وهو ما يربط سطر السجلّ بصفّ حقيقي */
+.feed .id{font-family:ui-monospace,'Cascadia Mono',Consolas,monospace;font-size:12px;
+  color:var(--muted);background:var(--surface);border:1px solid var(--line);
+  padding:2px 7px;border-radius:5px}
 .feed .t{margin-inline-start:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
 
 /* رأس السجلّ + مؤشّر حالة البثّ. المؤشّر يقول الحقيقة دائمًا: أخضر فقط بعد
@@ -125,6 +183,9 @@ html.dark .badge.off{color:#FF8A90}
   <div class="ad-bar">
     <h1>لوحة الإدارة</h1>
     <span class="ad-who" id="who"></span>
+    <button class="tool thm" type="button" data-theme-toggle aria-label="تبديل الوضع الليلي">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="thm-p" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
     <button class="ad-out" id="out">خروج</button>
   </div>
 
@@ -132,19 +193,32 @@ html.dark .badge.off{color:#FF8A90}
 
   <section class="ad-sec">
     <h2>آخر 14 يومًا</h2>
+    <p class="ad-sub">كل صفّ يوم واحد. <strong>المعلّقة</strong> = حجوزات لم تُؤكَّد ولم تُلغَ بعد،
+      وهي وحدها ما ينتظر ردًّا. <strong>الإيراد</strong> و<strong>العمولة</strong> من المؤكّد فقط —
+      الحجز المعلّق لا يُحتسب حتى يُؤكَّد.</p>
     <div class="ad-scroll">
       <table id="daily"><thead><tr>
-        <th>التاريخ</th><th>الحجوزات</th><th>مؤكّدة</th><th>ملغاة/مرفوضة</th><th>الإيراد</th><th>عمولتك 10%</th>
-      </tr></thead><tbody></tbody></table>
+        <th>التاريخ</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th><th class="n">معلّقة</th>
+        <th class="n">ملغاة/مرفوضة</th><th class="n">الإيراد</th><th class="n">عمولتك 10%</th>
+      </tr></thead><tbody></tbody><tfoot></tfoot></table>
     </div>
   </section>
 
   <section class="ad-sec">
     <h2>الأماكن — مرتّبة بالإيراد</h2>
+    <p class="ad-sub">الأرقام تراكمية منذ أوّل حجز، لا آخر 14 يومًا.
+      <strong>الحصّة</strong> نصيب المكان من إجمالي الإيراد المؤكّد.
+      التقييم <strong>—</strong> يعني لا تقييم بعد، لا صفرًا.
+      <!-- عمدًا «غير مؤكّدة» لا «معلّقة»: عرض admin_places لا يفصل الملغاة عن
+           المرفوضة عن المعلّقة، فكل ما يمكن اشتقاقه هنا هو «ليست مؤكّدة».
+           التفصيل الدقيق في جدول الأيام أعلاه، حيث العرض يوفّر lost. -->
+      و<strong>غير مؤكّدة</strong> تجمع المعلّق والملغى والمرفوض معًا.</p>
     <div class="ad-scroll">
       <table id="places"><thead><tr>
-        <th>المكان</th><th>المدينة</th><th>الحجوزات</th><th>مؤكّدة</th><th>الإيراد</th><th>التقييم</th><th>الحالة</th>
-      </tr></thead><tbody></tbody></table>
+        <th>المكان</th><th>المدينة</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th>
+        <th class="n">غير مؤكّدة</th><th class="n">الإيراد</th><th class="n">الحصّة</th>
+        <th class="n">التقييم</th><th>الحالة</th>
+      </tr></thead><tbody></tbody><tfoot></tfoot></table>
     </div>
   </section>
 
@@ -210,6 +284,34 @@ function api(path, opts){
 var esc = function(s){ var d = document.createElement('span'); d.textContent = s == null ? '' : s; return d.innerHTML; };
 var money = function(n){ return (Math.round((+n||0)*100)/100).toLocaleString('en') + ' د.أ'; };
 
+/* العربية تغيّر المعدود مع العدد: ١ و٢ لهما صيغتاهما · ٣-١٠ جمع ·
+   ١١+ مفرد منصوب. «مجموع 3 مكانًا» عربية مكسورة — نفس الفخّ الذي
+   أوقع مسمّيات الأرقام في الموقع، فلا يُترك رقم حيّ يسبق معدودًا ثابتًا. */
+function countNoun(n, one, two, few, many){
+  if (n === 1) return one;
+  if (n === 2) return two;
+  if (n >= 3 && n <= 10) return n + ' ' + few;
+  return n + ' ' + many;
+}
+
+/* وقت نسبي: «قبل ٥ دقائق» أنفع في سجلّ تدقيق من طابع زمني كامل.
+   Intl يتكفّل بجموع العربية، والطابع الكامل يبقى في title ولا يضيع.
+   الأرقام لاتينية (nu-latn) كي لا يختلط رقمان بنظامين في جدول واحد. */
+var RTF = null;
+try { RTF = new Intl.RelativeTimeFormat('ar', { numeric: 'auto' }); } catch(e){}
+var FULL_DT = null;
+try { FULL_DT = new Intl.DateTimeFormat('ar-JO-u-nu-latn', { dateStyle:'medium', timeStyle:'short' }); } catch(e){}
+
+function whenText(d){
+  var s = Math.round((Date.now() - d.getTime()) / 1000);
+  if (!RTF) return d.toLocaleString('ar-JO');
+  if (s < 60)    return RTF.format(-s, 'second');
+  if (s < 3600)  return RTF.format(-Math.round(s/60), 'minute');
+  if (s < 86400) return RTF.format(-Math.round(s/3600), 'hour');
+  return RTF.format(-Math.round(s/86400), 'day');
+}
+function whenFull(d){ return FULL_DT ? FULL_DT.format(d) : d.toLocaleString('ar-JO'); }
+
 /* ── الدخول ── */
 $('#loginForm').addEventListener('submit', function(e){
   e.preventDefault();
@@ -262,15 +364,35 @@ function start(){
   scheduleRefresh();
 }
 
+/* المعلّق يُشتقّ ولا يُقرأ: العرض يعطي bookings و confirmed و lost، ومجال
+   status في المخطّط أربع قيم لا خامسة لها ('pending','confirmed','cancelled',
+   'rejected') ⇒ bookings − confirmed − lost هو عدد 'pending' بالضبط.
+   لو أُضيفت حالة خامسة يومًا، هذا السطر أوّل ما يجب مراجعته. */
+function pendingOf(d){ return Math.max(0, (+d.bookings||0) - (+d.confirmed||0) - (+d.lost||0)); }
+
 function loadDaily(){
   api('/rest/v1/admin_daily?select=*&limit=14').then(function(r){
-    var rows = r.data || [], tb = $('#daily tbody');
-    if (!rows.length){ tb.innerHTML = '<tr><td colspan="6" class="muted-row">لا حجوزات بعد</td></tr>'; renderKpis([]); return; }
+    var rows = r.data || [], tb = $('#daily tbody'), tf = $('#daily tfoot');
+    if (!rows.length){
+      tb.innerHTML = '<tr><td colspan="7" class="muted-row">لا حجوزات بعد</td></tr>';
+      tf.innerHTML = ''; renderKpis([]); return;
+    }
     tb.innerHTML = rows.map(function(d){
-      return '<tr><td>' + esc(d.booking_date) + '</td><td class="num">' + d.bookings + '</td>' +
-             '<td class="pos">' + d.confirmed + '</td><td class="neg">' + d.lost + '</td>' +
-             '<td class="num">' + money(d.revenue) + '</td><td class="num">' + money(d.commission) + '</td></tr>';
+      var pd = pendingOf(d);
+      return '<tr><td>' + esc(d.booking_date) + '</td><td class="n num">' + d.bookings + '</td>' +
+             '<td class="n pos">' + d.confirmed + '</td>' +
+             '<td class="n ' + (pd ? 'wait' : '') + '">' + pd + '</td>' +
+             '<td class="n neg">' + d.lost + '</td>' +
+             '<td class="n num">' + money(d.revenue) + '</td><td class="n num">' + money(d.commission) + '</td></tr>';
     }).join('');
+    // صفّ المجاميع: بلا هذا كان على المالك أن يجمع أربعة عشر رقمًا بنفسه
+    var S = function(k){ return rows.reduce(function(a,d){ return a + (+d[k]||0); }, 0); };
+    var pdAll = rows.reduce(function(a,d){ return a + pendingOf(d); }, 0);
+    tf.innerHTML = '<tr><td>مجموع ' + countNoun(rows.length, 'يوم واحد', 'يومين', 'أيام', 'يومًا') + '</td>' +
+      '<td class="n">' + S('bookings') + '</td><td class="n pos">' + S('confirmed') + '</td>' +
+      '<td class="n ' + (pdAll ? 'wait' : '') + '">' + pdAll + '</td>' +
+      '<td class="n neg">' + S('lost') + '</td>' +
+      '<td class="n">' + money(S('revenue')) + '</td><td class="n">' + money(S('commission')) + '</td></tr>';
     renderKpis(rows);
   });
 }
@@ -280,34 +402,55 @@ function renderKpis(rows){
   var t = rows.filter(function(r){ return r.booking_date === today; })[0];
   var last7 = rows.slice(0,7);
   var sum = function(k){ return last7.reduce(function(a,r){ return a + (+r[k]||0); }, 0); };
-  var bk = sum('bookings'), cf = sum('confirmed');
+  var bk = sum('bookings'), cf = sum('confirmed'), ls = sum('lost');
+  var pd = last7.reduce(function(a,r){ return a + pendingOf(r); }, 0);
   var rate = bk ? Math.round(cf / bk * 100) : 0;
+  var avg  = cf ? sum('revenue') / cf : 0;
+  // hot: البطاقة الوحيدة التي تطلب فعلًا. تُلوَّن حين يكون فيها ما ينتظر فقط.
   var k = [
-    ['حجوزات اليوم', t ? t.bookings : 0, today],
-    ['حجوزات 7 أيام', bk, cf + ' مؤكّدة'],
-    ['إيراد 7 أيام', money(sum('revenue')), 'المؤكّد فقط'],
-    ['عمولتك 10%', money(sum('commission')), 'من المؤكّد'],
-    ['نسبة التأكيد', rate + '%', bk ? (bk - cf) + ' غير مؤكّد' : '—'],
-    ['ملغاة/مرفوضة', sum('lost'), 'آخر 7 أيام']
+    ['بانتظار التأكيد', pd, 'آخر 7 أيام — تحتاج ردًّا', pd > 0],
+    ['حجوزات اليوم', t ? t.bookings : 0, today, false],
+    ['حجوزات 7 أيام', bk, cf + ' مؤكّدة · ' + ls + ' ملغاة', false],
+    ['إيراد 7 أيام', money(sum('revenue')), 'من المؤكّد فقط', false],
+    ['عمولتك 10%', money(sum('commission')), 'من إيراد المؤكّد', false],
+    ['نسبة التأكيد', rate + '%', bk ? cf + ' من ' + bk : '—', false],
+    ['متوسّط قيمة الحجز', money(avg), cf ? 'على ' + cf + ' حجزًا مؤكّدًا' : 'لا حجز مؤكّد', false]
   ];
   $('#kpis').innerHTML = k.map(function(x){
-    return '<div class="kpi"><span class="k">' + x[0] + '</span><span class="v">' + esc(String(x[1])) +
-           '</span><span class="s">' + esc(String(x[2])) + '</span></div>';
+    return '<div class="kpi' + (x[3] ? ' hot' : '') + '"><span class="k">' + x[0] + '</span><span class="v">' +
+           esc(String(x[1])) + '</span><span class="s">' + esc(String(x[2])) + '</span></div>';
   }).join('');
 }
 
 function loadPlaces(){
   api('/rest/v1/admin_places?select=*').then(function(r){
-    var rows = r.data || [], tb = $('#places tbody');
-    if (!rows.length){ tb.innerHTML = '<tr><td colspan="7" class="muted-row">لا بيانات</td></tr>'; return; }
+    var rows = r.data || [], tb = $('#places tbody'), tf = $('#places tfoot');
+    if (!rows.length){
+      tb.innerHTML = '<tr><td colspan="9" class="muted-row">لا بيانات</td></tr>'; tf.innerHTML = ''; return;
+    }
+    var totalRev = rows.reduce(function(a,p){ return a + (+p.revenue||0); }, 0);
     tb.innerHTML = rows.map(function(p){
       // بلا تقييم حقيقي ⇒ شرطة، لا صفر. نفس قاعدة hasRating في التطبيق والموقع.
       var rate = (p.rating === null || p.rating === undefined) ? '—' : (Math.round(p.rating*10)/10);
+      // هنا «غير مؤكّدة» لا «معلّقة»: العرض لا يعطي lost لكل مكان، فلا سبيل
+      // إلى فصل المعلّق عن الملغى — والتسمية تقول ما يمكن إثباته فقط.
+      var open = Math.max(0, (+p.bookings||0) - (+p.confirmed||0));
+      var pct  = totalRev > 0 ? Math.round((+p.revenue||0) / totalRev * 100) : 0;
       return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.city) + '</td>' +
-             '<td class="num">' + p.bookings + '</td><td class="pos">' + p.confirmed + '</td>' +
-             '<td class="num">' + money(p.revenue) + '</td><td>' + rate + '</td>' +
+             '<td class="n num">' + p.bookings + '</td><td class="n pos">' + p.confirmed + '</td>' +
+             '<td class="n ' + (open ? 'wait' : '') + '">' + open + '</td>' +
+             '<td class="n num">' + money(p.revenue) + '</td>' +
+             '<td class="n"><span class="share"><span class="share-b">' +
+               '<span class="share-f" style="inline-size:' + pct + '%"></span></span>' +
+               '<span class="share-t">' + pct + '%</span></span></td>' +
+             '<td class="n">' + rate + '</td>' +
              '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
     }).join('');
+    var S = function(k){ return rows.reduce(function(a,p){ return a + (+p[k]||0); }, 0); };
+    tf.innerHTML = '<tr><td>مجموع ' + countNoun(rows.length, 'مكان واحد', 'مكانين', 'أماكن', 'مكانًا') + '</td><td></td>' +
+      '<td class="n">' + S('bookings') + '</td><td class="n pos">' + S('confirmed') + '</td>' +
+      '<td class="n">' + Math.max(0, S('bookings') - S('confirmed')) + '</td>' +
+      '<td class="n">' + money(totalRev) + '</td><td class="n">100%</td><td></td><td></td></tr>';
   });
 }
 
@@ -319,12 +462,20 @@ var AC = { insert:'إضافة', update:'تعديل', delete:'حذف' };
 var EN = { bookings:'حجز', reviews:'تقييم', fields:'ملعب', places:'مكان', profiles:'حساب' };
 var feedRows = [], feedSeen = Object.create(null), FEED_MAX = 50;
 
+var ROLE = { admin:'أدمن', owner:'صاحب ملعب', player:'لاعب' };
 function feedLi(a){
   var d = new Date(a.at);
-  return '<li' + (a.__fresh ? ' class="fresh"' : '') + '><span class="a">' + (AC[a.action] || esc(a.action)) + '</span>' +
+  // معرّف الصفّ كان يُجلَب ولا يُعرَض. ثمانية محارف تكفي للربط بصفّ بعينه
+  // في القاعدة، والكامل في title لمن يحتاج نسخه.
+  var id = a.entity_id ? String(a.entity_id) : '';
+  var idShort = id ? id.slice(0, 8) : '';
+  return '<li' + (a.__fresh ? ' class="fresh"' : '') + '>' +
+         '<span class="a" data-act="' + esc(a.action) + '">' + (AC[a.action] || esc(a.action)) + '</span>' +
          '<span class="e">' + (EN[a.entity] || esc(a.entity)) + '</span>' +
-         '<span class="e">' + esc(a.actor_role || '—') + '</span>' +
-         '<span class="t">' + d.toLocaleString('ar-JO') + '</span></li>';
+         (idShort ? '<span class="id" title="' + esc(id) + '" dir="ltr">' + esc(idShort) + '</span>' : '') +
+         '<span class="who">' + (ROLE[a.actor_role] || esc(a.actor_role || '—')) + '</span>' +
+         '<span class="t"><time datetime="' + esc(a.at) + '" title="' + esc(whenFull(d)) + '">' +
+           esc(whenText(d)) + '</time></span></li>';
 }
 function renderFeed(){
   var ul = $('#feed');
