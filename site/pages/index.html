@@ -8,6 +8,9 @@
   <!-- هالة تتنفّس ببطء: قرص واحد ثابت الحجم يتمدّد بالتحجيم، فلا يُعاد
        رسم تدرّج في كل إطار. تختفي كليًّا عند تفضيل تقليل الحركة. -->
   <div class="hero-glow" aria-hidden="true"></div>
+  <!-- كتلة ثانية في الركن المقابل بدورة أطول (19ث مقابل 13ث): الدورتان لا
+       تتزامنان أبدًا، فيتنفّس اللوح بلا نبض ميكانيكي يُلحَظ. -->
+  <div class="hero-blob" aria-hidden="true"></div>
 
   <div class="wrap hero-grid">
     <div class="hero-copy">
@@ -25,45 +28,21 @@
       <p class="hero-note">{{t.heroNote}}</p>
     </div>
 
-    <div class="hero-device">
-      <!-- هيكل الهاتف مبنيّ بالـCSS ومحتواه DOM حقيقي: صفر صور، صفر انزياح تخطيط.
-           لا يعرض اسم ملعب ولا سعرًا — لأن أيّ منهما سيكون رقمًا مصنوعًا. -->
-      <div class="phone" role="img" aria-label="{{t.mockCaption}}">
-        <span class="ph-btn ph-v1" aria-hidden="true"></span>
-        <span class="ph-btn ph-v2" aria-hidden="true"></span>
-        <span class="ph-btn ph-pw" aria-hidden="true"></span>
-        <div class="scr">
-          <div class="scr-top" aria-hidden="true">
-            <span class="scr-time">8:45</span>
-            <span class="scr-island"></span>
-            <span class="scr-sig">
-              <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="7.5" width="2.6" height="3.5" rx=".7"/><rect x="4.1" y="5" width="2.6" height="6" rx=".7"/><rect x="8.2" y="2.5" width="2.6" height="8.5" rx=".7"/><rect x="12.3" y="0" width="2.6" height="11" rx=".7"/></svg>
-              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3.6a9 9 0 0 1 12 0"/><path d="M3.4 6.3a5.6 5.6 0 0 1 7.2 0"/><circle cx="7" cy="9.3" r="1" fill="currentColor" stroke="none"/></svg>
-              <svg width="20" height="11" viewBox="0 0 20 11" fill="none"><rect x=".6" y=".6" width="15.5" height="9.8" rx="2.6" stroke="currentColor" stroke-width="1.2" opacity=".5"/><rect x="2.2" y="2.2" width="11" height="6.6" rx="1.4" fill="currentColor"/><path d="M18 4v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".5"/></svg>
-            </span>
-          </div>
-          <p class="scr-h">{{t.mockPickDay}}</p>
-          <div class="chips">
-            <span class="chip on">{{t.mockDay1}}</span>
-            <span class="chip">{{t.mockDay2}}</span>
-            <span class="chip">{{t.mockDay3}}</span>
-            <span class="chip">{{t.mockDay4}}</span>
-          </div>
-          <p class="scr-h">{{t.mockPickTime}}</p>
-          <div class="slots">
-            <span class="slot off" data-l="{{t.mockBooked}}">{{t.mockSlot1}}</span>
-            <span class="slot">{{t.mockSlot2}}</span>
-            <span class="slot on">{{t.mockSlot3}}</span>
-            <span class="slot">{{t.mockSlot4}}</span>
-            <span class="slot off" data-l="{{t.mockBooked}}">{{t.mockSlot5}}</span>
-            <span class="slot">{{t.mockSlot6}}</span>
-          </div>
-          <span class="scr-send">{{t.mockSend}}</span>
-          <span class="scr-home" aria-hidden="true"></span>
-        </div>
-      </div>
-      <p class="mock-cap">{{t.mockCaption}}</p>
-    </div>
+    <!-- لقطة حقيقية من شاشة الحجز في التطبيق (أنماط التطبيق نفسها، لا رسم يحاكيها).
+         لا تحمل اسم ملعب ولا سعرًا — كلاهما كان سيصير رقمًا مصنوعًا (م5).
+         المقاسان مصرَّح بهما فلا تقفز الصفحة عند وصولها، وfetchpriority=high
+         لأنها فوق الطيّة ويجب أن تصل مع الهيرو لا بعده. -->
+    <figure class="hero-device">
+      <!-- اللوح الحامل: اللقطة عارية كانت تذوب في الهيرو الداكن. .hero-shot
+           يعطيها حافّة وهالة وارتفاعًا — فصلٌ بالضوء لا بمحاكاة جهاز.
+           لقطة لكل لغة: الهيكل القديم كان يقرأ نصّه من ملفّ النصوص فيتبع
+           اللغة تلقائيًّا؛ الصورة الواحدة لا تفعل، وكانت الصفحة الإنجليزية
+           تعرض واجهة عربية. {{lang}} يحلّه بلا سطر في البناء. -->
+      <span class="hero-shot">
+        <img src="/assets/app-mockup-{{lang}}.png" alt="{{t.mockCaption}}" class="hero-mockup"
+             width="400" height="525" fetchpriority="high" decoding="async">
+      </span>
+    </figure>
   </div>
 
   <ul class="trust wrap">
@@ -92,37 +71,37 @@
 
     <div class="bento">
       <article class="bt bt-a hero-tile rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect pathLength="1" x="3" y="4" width="18" height="18" rx="2"/><path pathLength="1" d="M16 2v4M8 2v4M3 10h18"/><path pathLength="1" d="m9 16 2 2 4-4"/></svg></span>
         <h3>{{t.featBookTitle}}</h3>
         <p>{{t.featBookDesc}}</p>
       </article>
 
       <article class="bt bt-b rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></svg></span>
         <h3>{{t.featTimesTitle}}</h3>
         <p>{{t.featTimesDesc}}</p>
       </article>
 
       <article class="bt bt-c rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9Z"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="m12 3 2.7 5.5 6.3.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.4l6.3-.9Z"/></svg></span>
         <h3>{{t.featRatingsTitle}}</h3>
         <p>{{t.featRatingsDesc}}</p>
       </article>
 
       <article class="bt bt-d rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 12 22l-9-9V3h10Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20.6 13.4 12 22l-9-9V3h10Z"/><circle pathLength="1" cx="7.5" cy="7.5" r="1.5"/></svg></span>
         <h3>{{t.featPriceTitle}}</h3>
         <p>{{t.featPriceDesc}}</p>
       </article>
 
       <article class="bt bt-e rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M3.6 9h16.8M3.6 15h16.8"/><path pathLength="1" d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg></span>
         <h3>{{t.featLangTitle}}</h3>
         <p>{{t.featLangDesc}}</p>
       </article>
 
       <article class="bt bt-f rv">
-        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="m4 20 16-16"/></svg></span>
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect pathLength="1" x="2" y="5" width="20" height="14" rx="2"/><path pathLength="1" d="M2 10h20"/><path pathLength="1" d="m4 20 16-16"/></svg></span>
         <h3>{{t.featNoCardTitle}}</h3>
         <p>{{t.featNoCardDesc}}</p>
       </article>

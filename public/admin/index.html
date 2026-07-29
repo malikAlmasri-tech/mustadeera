@@ -15,9 +15,9 @@
 <!-- نفس ورقة الأنماط ونفس السكربت اللذين يخدمان الموقع، مبصومَين بمحتواهما.
      القصد صريح: كل تغيير في توكنات الموقع وأزراره وتبديل ثيمه وحركته يصل
      إلى هذه اللوحة تلقائيًّا، فلا ينشأ نظاما تصميم يفترقان مع الوقت. -->
-<link rel="stylesheet" href="/build/site.2193a596.css">
+<link rel="stylesheet" href="/build/site.814e28f8.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
-<script src="/build/site.61278ad5.js" defer></script>
+<script src="/build/site.0f915522.js" defer></script>
 <style>
 /* ===== ما يخصّ اللوحة وحدها ===== */
 .ad-wrap{max-width:1240px;margin-inline:auto;padding:clamp(16px,3vw,28px)}
@@ -26,7 +26,12 @@
 .ad-bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   padding-block:14px;margin-bottom:clamp(20px,3vw,28px);
   background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line)}
+  border-bottom:1px solid var(--line);
+  /* نفس حافّة الزجاج التي على .hd في الموقع — الشريطان سطح واحد بمهمّتين.
+     الظلال المصبوغة والدرجات الجديدة تصل إلى هنا من التوكنات وحدها،
+     فاللوحة تربط site.css نفسه. أمّا الصور والكتل العائمة فلا محلّ لها
+     في لوحة أرقام: زينةٌ تحت جدول تُبطئ قراءته لا أكثر. */
+  box-shadow:inset 0 1px 0 var(--glass-rim)}
 .ad-bar h1{font-size:20px;margin:0}
 .ad-who{margin-inline-start:auto;font-size:14px;color:var(--muted);
   display:flex;align-items:center;gap:8px}

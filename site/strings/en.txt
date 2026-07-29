@@ -60,7 +60,7 @@ mockSlot6 = 10:00 PM
 mockBooked = Booked
 mockSelected = Selected
 mockSend = Send booking request
-mockCaption = A sample of the app interface
+mockCaption = Choosing a day and a time in the Mustadeera app
 
 # ---------- Features (bento) ----------
 featuresEyebrow = Why AL-Mustadira

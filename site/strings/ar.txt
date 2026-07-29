@@ -62,7 +62,7 @@ mockSlot6 = 10:00 م
 mockBooked = محجوز
 mockSelected = مُختار
 mockSend = أرسل طلب الحجز
-mockCaption = نموذج من واجهة التطبيق
+mockCaption = شاشة اختيار اليوم والوقت في تطبيق المستديرة
 
 # ---------- المميزات (Bento) ----------
 featuresEyebrow = لماذا المستديرة

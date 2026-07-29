@@ -73,6 +73,22 @@
     } catch (e) { cssTimeline = false; }
     if (cssTimeline) root.classList.add('css-scroll-tl');
 
+    /* انزياح صورة الهيرو — احتياطي ما لا يدعم animation-timeline.
+       العنصر يُطلَب مرّة لا في كل إطار، ويبقى null حيث لا معنى له:
+       صفحة بلا هيرو · مخطّط تمرير مدعوم (وإلّا تحرّكت الصورة مرّتين،
+       مرّة بالـCSS ومرّة هنا) · تفضيل تقليل الحركة.
+       النسبة 0.06 لا 0.2: الإزاحة محدودة بفسحة التكبير في CSS (20px)،
+       و0.2 كانت تستهلكها في أوّل 100px من التمرير ⇒ قفزة لا انزياح. */
+    var heroPhoto = (cssTimeline || reduced()) ? null : $('.hero-photo');
+    var PAR_RATIO = 0.06, PAR_MAX = 20;
+
+    /* صور تنزاح بمرورها بالنافذة — احتياطي animation-timeline:view().
+       نفس البوّابتين، ومقصور على صورة واحدة في الصفحة فقياس موضعها كل
+       إطار لا يُذكر. الكتابة لا تُبطل التخطيط (transform ليس تخطيطيًّا)
+       فلا يتناوب قياسٌ وكتابةٌ يُربكان المتصفّح. */
+    var viewPar = (cssTimeline || reduced()) ? [] : $$('.own-photo img');
+    var VP_MAX = 16;
+
     var ticking = false;
     function read() {
       ticking = false;
@@ -82,6 +98,16 @@
       if (cssTimeline) return;
       var max = document.documentElement.scrollHeight - window.innerHeight;
       root.style.setProperty('--p', max > 0 ? String(Math.min(1, y / max)) : '0');
+      if (heroPhoto) {
+        heroPhoto.style.setProperty('--par', Math.min(PAR_MAX, y * PAR_RATIO).toFixed(1) + 'px');
+      }
+      for (var i = 0; i < viewPar.length; i++) {
+        var el = viewPar[i], r = el.getBoundingClientRect();
+        // تقدّم المرور: 0 حين يلامس العنصرُ أسفلَ النافذة · 1 حين يغادر أعلاها
+        var p = (window.innerHeight - r.top) / (window.innerHeight + r.height);
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        el.style.setProperty('--par', ((p * 2 - 1) * VP_MAX).toFixed(1) + 'px');
+      }
     }
     function tick() { if (!ticking) { ticking = true; requestAnimationFrame(read); } }
 
@@ -236,10 +262,13 @@
      6 · بقعة الضوء تحت المؤشّر
      مستمع واحد على المستند، لا واحد لكل بطاقة، ومقيّد بأجهزة
      المؤشّر الدقيق (نفس شرط الـCSS) كي لا يعمل شيء على اللمس.
+     الأزرار انضمّت هنا بديلًا عن الانجذاب المغناطيسي المحذوف: البقعة
+     لا تحرّك العنصر، فلا يتبدّل ما تحت المؤشّر ولا يتعلّق زرّان
+     متجاوران. ولا تكلفة إضافية — نفس المستمع ونفس الإطار.
      =========================================================== */
   (function spotlight() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    var SEL = '.bt,.note-card,.ct-card,.pl-card,.stat';
+    var SEL = '.bt,.note-card,.ct-card,.pl-card,.stat,.btn';
     var pending = null, raf = 0;
 
     on(document, 'pointermove', function (e) {
@@ -259,33 +288,11 @@
   })();
 
   /* ===========================================================
-     7 · ميلان جهاز الهيرو مع المؤشّر
-     أرقام صغيرة عمدًا (±6 درجات): الميلة توحي بالعمق، والمبالغة
-     فيها تجعل اللوح يبدو معطوبًا لا حيًّا.
+     7 · ما كان هنا: ميلان لقطة الهيرو مع المؤشّر — أُزيل
+     الميلة كانت تصحّ على هيكل الهاتف المبنيّ بالـCSS (له سُمك وحافّة
+     لامعة، فالدوران يُقرأ عمقًا). على لقطة مسطّحة تُقرأ اعوجاجًا.
+     البديل في CSS: هالة وحافّة وطفوٌ عمودي بطيء — بلا دوران وبلا JS.
      =========================================================== */
-  (function tilt() {
-    var hero = $('.hero');
-    var phone = $('.hero .phone');
-    if (!hero || !phone || reduced()) return;
-    if (!window.matchMedia('(min-width: 920px) and (pointer: fine)').matches) return;
-
-    var raf = 0, px = 0, py = 0;
-    on(hero, 'pointermove', function (e) {
-      var r = hero.getBoundingClientRect();
-      px = (e.clientX - r.left) / r.width - 0.5;
-      py = (e.clientY - r.top) / r.height - 0.5;
-      if (raf) return;
-      raf = requestAnimationFrame(function () {
-        raf = 0;
-        phone.style.setProperty('--ty', String(-9 + px * 12));
-        phone.style.setProperty('--tx', String(3 - py * 10));
-      });
-    }, { passive: true });
-    on(hero, 'pointerleave', function () {
-      phone.style.setProperty('--ty', '-9');
-      phone.style.setProperty('--tx', '3');
-    });
-  })();
 
   /* ===========================================================
      8 · عدّادات الأرقام
@@ -427,6 +434,14 @@
       window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' });
     });
   })();
+
+  /* ===========================================================
+     12 · ما كان هنا: أزرار مغناطيسية — أُزيلت
+     الزرّ كان يتحرّك نحو المؤشّر فيصير هو نفسه تحته ⇒ اختبار الإصابة
+     يتبدّل، فيتناوب pointerenter/pointerleave بين زرّين متجاورين
+     ويتعلّق أحدهما. أُصلحت البنية لا الأرقام: البديل في §6 لا يحرّك
+     الزرّ إطلاقًا، فالحالة التي تسمح بالعطل لم تعد قائمة.
+     =========================================================== */
 
   /* لا service worker — المشروع له وجهان فقط: هذا الموقع، والتطبيق.
      وإن كان مسجَّلًا من زيارة سابقة فلا بدّ من إلغائه، وإلّا بقي يخدم
