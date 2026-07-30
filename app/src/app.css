@@ -76,6 +76,9 @@
   --g-btn:#8CC63E;  /* زر primary — Lime مسطّح صلب (بلا تدرّجات) */
   --g-btn-solid:#8CC63E; --btn-ink:#0B2227;  /* حبر الزر — Teal شبه أسود للتباين على الـLime */
   --ring:rgba(15,75,83,.6);           /* حلقة تركيز Teal (نهاري) — .35 كانت تعطي 1.9:1 على الأبيض (دون حدّ 3:1)؛ .6 ⇒ ~3.3:1 */
+  /* هالة الحلقة — زينة بحتة تحت الحدّ الحقيقي، فشفافيتها منخفضة عمدًا:
+     الحدّ (‏--ring) هو ما يجب أن يمرّ 3:1، لا الهالة. */
+  --ring-glow:rgba(15,75,83,.18);
   /* حبر الحالات (نهاري) — داكن بما يكفي للتباين على الفاتح */
   --ok-ink:#0B7A43; --danger-ink:#B02718; --warning-ink:#7A5210; --info-ink:#1D4ED8;
   /* أيقونات الثيم (قمر/شمس) — CSS فقط فوق زرّ الإيموجي الحالي */
@@ -122,6 +125,7 @@ body.dark{
   --g-btn:#8CC63E;  /* زر primary ليلي — نفس الـLime المسطّح (اتساق الهوية) */
   --g-btn-solid:#8CC63E; --btn-ink:#0B2227;
   --ring:rgba(95,183,196,.6);   /* حلقة تركيز Teal فاتح (ليلي) — .42 ⇒ 2.35:1 على #081D22؛ .6 ⇒ ~3.5:1 */
+  --ring-glow:rgba(140,198,62,.22);   /* ليلًا Lime لا Teal: الهالة تُقرأ ضوءًا على داكن */
   --ok-ink:#4ADE80; --danger-ink:#FF8A90; --warning-ink:#F0C070; --info-ink:#9BC2FD;
 }
 
@@ -639,19 +643,39 @@ body.dark .fs-mint{opacity:.5}
 /* ---------- BOTTOM NAV ---------- */
 /* الارتفاع مصدره --bnav-h في :root (كي تقرأه .page أيضاً — الشقيق لا يرث متغيّرات الشقيق).
    min-height يثبّت القيمة على الواقع، والحشوة السفلية تنمو وحدها مع منطقة الأمان. */
-.bnav{min-height:var(--bnav-h);position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid var(--glass-brd);display:none;justify-content:space-around;padding:6px 12px max(8px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+/* ---------- شريط عائم بحبّة نشطة ----------
+   كان لوحًا ملتصقًا بحافّة الشاشة بحدّ علوي، والعنصر النشط يُعرَف بمؤشّر شعرة
+   فوقه وأيقونة ملوّنة. صار لوحًا **عائمًا** له نصف قطر كامل وظلّ يفصله عن
+   المحتوى، والنشط **حبّة ممتلئة** تحمل الأيقونة والنصّ جنبًا إلى جنب.
+   ⚠️ الطفو ليس زينة: العنصر النشط صار يُعرَف بشكله لا بلونه وحده، فمن لا
+   يميّز الألوان يقرأ الحالة من امتلاء الحبّة.
+   ⚠️ والحشوة السفلية تبقى مبنيّة على env(safe-area-inset-bottom): الشريط ابتعد
+   عن الحافّة لكنّ شريط الإيماءات في أندرويد ما زال تحته. */
+.bnav{min-height:var(--bnav-h);position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);
+  display:none;justify-content:center;align-items:center;gap:2px;
+  padding:8px 10px max(10px,env(safe-area-inset-bottom));z-index:100;
+  background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--glass-brd);box-shadow:0 -10px 30px rgba(0,0,0,.5)}
 .bnav.show{display:flex}
-.nitem{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--soft);min-width:64px;min-height:var(--tap);font-weight:800;border-radius:16px;padding:6px 14px;position:relative;transition:all var(--t-base) var(--ease-out)}
-.nitem.active{color:var(--emerald-2)}
-/* المؤشّر العلوي يتمدّد أفقيًا عند تفعيل التبويب */
-.nitem.active::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:999px;background:var(--primary);box-shadow:none;animation:navBar var(--t-base) var(--ease-spring)}
-/* الأيقونة النشطة تنبض نبضة لطيفة عند الانتقال بين التبويبات */
-.nitem.active .nicon{background:var(--primary-soft);border-radius:14px;box-shadow:none;animation:navPop var(--t-base) var(--ease-spring)}
-.nicon{width:42px;height:28px;display:grid;place-items:center;transition:transform var(--t-base) var(--ease-spring)}
+/* حبّة العنصر: صفّ أفقي لا عمود — النصّ يجاور الأيقونة في النشط ويختفي في
+   الخامل، فتتقلّص الحبّة إلى أيقونة وحدها بلا أن يقفز الصفّ.
+   ⚠️ العرض ينتقل بـmax-inline-size لا width:auto: الانتقال إلى `auto`
+   لا يُنعَّم إطلاقًا، فكانت الحبّة تظهر دفعةً واحدة. */
+.nitem{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;
+  font-size:11.5px;font-weight:800;color:var(--soft);
+  min-height:var(--tap);padding:8px 12px;border-radius:999px;position:relative;flex:0 1 auto;
+  transition:color var(--t-base) var(--ease-out),background-color var(--t-base) var(--ease-out)}
+.nitem span{max-inline-size:0;overflow:hidden;white-space:nowrap;opacity:0;
+  transition:max-inline-size var(--t-base) var(--ease-spring),opacity var(--t-fast) var(--ease-out)}
+.nitem.active{color:var(--emerald-2);background:var(--primary-soft);padding-inline:14px}
+.nitem.active span{max-inline-size:9ch;opacity:1}
+/* الأيقونة لم تعد تحمل خلفيتها الخاصّة — الحبّة صارت هي الخلفية */
+.nicon{width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;
+  transition:transform var(--t-base) var(--ease-spring)}
 .nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width var(--t-base)}
 .nitem:active .nicon{transform:scale(.84)}
-.nitem.active .nicon svg{stroke-width:2.2}
-@keyframes navBar{from{transform:translateX(-50%) scaleX(0);opacity:0}to{transform:translateX(-50%) scaleX(1);opacity:1}}
+.nitem.active .nicon{animation:navPop var(--t-base) var(--ease-spring)}
+.nitem.active .nicon svg{stroke-width:2.3}
 @keyframes navPop{0%{transform:scale(.82)}55%{transform:scale(1.12)}100%{transform:scale(1)}}
 
 /* ---------- DAY & TIME (tap ≥ 48px) ---------- */
@@ -662,6 +686,20 @@ body.dark .fs-mint{opacity:.5}
 .day-btn.active{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}
 .day-btn:hover:not(.active){border-color:rgba(15,75,83,.42);color:var(--emerald)}
 .day-btn.is-loading{opacity:.7;pointer-events:none}
+/* ---------- سطر حالة اليوم ----------
+   ⚠️ ارتفاعه محجوز دائمًا (min-height) ولو كان فارغًا: بدونه تختلف أطوال
+   الأزرار السبعة فيصير الشريط مسنّنًا، ويقفز كلّما تبدّلت حالة يوم بعد جلبة.
+   ⚠️ والفرق بين «ممتلئ» و«باقي n» محمول على **اللون والنصّ معًا** لا اللون
+   وحده — من لا يميّز الأحمر يقرأ الكلمة. */
+.d-state{min-height:12px;font-size:9.5px;font-weight:800;letter-spacing:.02em;line-height:1.25}
+.d-state.is-few{color:var(--warning-ink)}
+.d-state.is-full{color:var(--danger-ink)}
+/* اليوم الممتلئ يبقى قابلًا للنقر عمدًا: نقره يعرض البديل الذكي (§ alt-panel)،
+   فتعطيله كان سيخفي الجواب مع السؤال. الخفوت يقول «هنا لا شيء» بلا منعه. */
+.day-btn.day-full:not(.active){opacity:.72;border-style:dashed}
+/* على الزرّ النشط يُقلب اللونان: الخلفية صارت Lime، والأحمر/البرتقالي عليها
+   لا يُقرأ. القيمتان مكتوبتان على داكن الهوية نفسه المستعمل في .day-btn.active */
+.day-btn.active .d-state{color:rgba(11,34,39,.72)}
 .times-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .times-grid.cols-2{grid-template-columns:repeat(2,1fr)}
 /* عنوان فترة اليوم (صباحاً/ظهراً/مساءً) يمتد عبر الصف */
@@ -700,6 +738,10 @@ body.dark .fs-mint{opacity:.5}
    ما خلفها) كي يبقى النص مقروءاً فوق أي صورة، فاتحة كانت أم داكنة، وفي الثيمين معاً. */
 .avail-badge{border-radius:999px;padding:6px 13px;font-size:10px;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.22)}
 .avail-yes{background:#063A26;color:#8CF0BE}.avail-no{background:#3A0E0B;color:#FFB4AD}
+/* «باقي ٢» — يظهر حين يقلّ عدد أوقات اليوم عن الحدّ نفسه المستعمَل في شريط
+   الأيام، فيقرأ المستخدم الرقم ذاته في البطاقة وفي التفاصيل. برتقالي لا أحمر:
+   المكان متاح، وقلّة الأوقات تنبيه لا منع. */
+.avail-few{background:#3A2408;color:#FFD79A}
 /* السعر أهم رقم على البطاقة: خلفية معتمة داكنة + Lime أفتح (--copper-hover) ⇒ تباين ~11:1،
    و12px + tabular-nums كي لا تتراقص عروض الأرقام بين بطاقة وأخرى. */
 .price-badge{background:#0A1712;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--copper-hover);box-shadow:0 3px 12px rgba(0,0,0,.45);border:1px solid rgba(140,198,62,.5)}
@@ -722,9 +764,32 @@ body.dark .fs-mint{opacity:.5}
 .place-book-btn:active{transform:scale(.96)}
 
 /* ---------- DETAIL ---------- */
-.detail-hero{height:216px;display:grid;place-items:center;font-size:66px;position:relative;border-radius:0 0 var(--r-3xl) var(--r-3xl);overflow:hidden;background:#0E3D45}
-.detail-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.detail-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04) 0%,transparent 30%,rgba(0,0,0,.5) 100%)}
+/* ---------- صورة الملعب تذوب في المحتوى ----------
+   كانت لوحًا مقصوصًا بنصف قطر سفلي: حدٌّ حادّ يفصل الصورة عمّا تحتها، فتُقرأ
+   الصفحة قطعتين. الآن الصورة **تنتهي في لون الصفحة نفسه** فلا حدّ يُرى أصلًا.
+   ثلاثة أشياء مجتمعة تصنع الذوبان:
+   ① نصف القطر السفلي أُلغي (لا معنى لحافّة مستديرة لحافّة غير مرئية)؛
+   ② `--hero-fade` تدرّجٌ من شفّاف إلى لون الخلفية الحقيقي — لا إلى أسود:
+      التدرّج إلى الأسود يظهر شريطًا رماديًّا فوق خلفية فاتحة نهارًا؛
+   ③ الصورة تُقنَّع فتتلاشى بكسلاتها هي، فلا تبقى حافّة صورة تحت التدرّج.
+   ⚠️ mask على الصورة لا overflow:hidden على الأب: القصّ يقطع، والقناع يذيب. */
+.detail-hero{height:230px;display:grid;place-items:center;font-size:66px;position:relative;
+  /* ⚠️ --bg-primary لا --bg: التوكن الثاني غير موجود في هذا الملفّ إطلاقًا،
+     وvar() بلا احتياطي على اسم غير معرَّف تُسقط الخاصية كلّها صامتةً — فكان
+     التدرّج ينتهي إلى «لا شيء» بدل لون الصفحة. وهو يُعاد تعريفه في §2266
+     مع الثيم، فالذوبان يتبع الثيمين مجّانًا. */
+  border-radius:0;background:transparent;--hero-fade:var(--bg-primary);margin-bottom:-34px}
+.detail-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 52%,rgba(0,0,0,.55) 78%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0%,#000 52%,rgba(0,0,0,.55) 78%,transparent 100%)}
+/* التدرّج يعمل مع القناع لا بدلًا منه: القناع يُذهب الصورة، وهذا يملأ مكانها
+   بلون الصفحة تدريجيًّا فلا يظهر فراغ ولا حافّة. */
+.detail-hero::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 26%,
+             color-mix(in srgb, var(--hero-fade) 55%, transparent) 74%,
+             var(--hero-fade) 100%)}
+/* المحتوى يرتفع داخل ذيل التدرّج، فيبدأ اسم الملعب داخل الذوبان لا تحته */
+.detail-body{position:relative;z-index:2}
 .detail-back{position:absolute;top:14px;inset-inline-start:14px;z-index:5;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:18px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:grid;place-items:center;transition:transform var(--t-fast)}
 .detail-back:hover{opacity:.9}.detail-back:active{transform:scale(.94)}
 .detail-emoji{position:relative;z-index:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4))}
@@ -857,7 +922,20 @@ body.modal-open{overflow:hidden}
    (يحوّل الأزرار الحبّية 999px إلى شبه مربّعة)، و`inherit` كان سيسحب نصف قطر الأب لا العنصر.
    الـoutline في المتصفّحات الحديثة يتبع border-radius الخاص بالعنصر تلقائياً — وهو المطلوب. */
 :where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--ring);outline-offset:2px}
-.finput:focus-visible{outline:none}
+/* هالة خفيفة حول الحدّ — الحدّ وحده يقول «هنا التركيز»، والهالة تجعله يُرى
+   على خلفية مزدحمة (صورة ملعب مثلًا) بلا زيادة سُمكه.
+   ⚠️ **بلا :where() هنا عمدًا.** `:where()` نوعيّتها **صفر**، فالقاعدة كلّها
+   تساوي `:focus-visible` وحدها (0,1,0) — وأي صنف لاحق يحمل ظلًّا خاصًّا به
+   (‏`.sbtn` · `.cbtn` · `.card`) يغلبها ويمسح الهالة. مقيس: الحدّ كان يظهر
+   والهالة لا، لأن الحدّ لا ينازعه أحد والظلّ ينازعه كل زرّ في الورقة.
+   بالوسم الصريح تصير (0,1,1) فتعلو على الصنف المفرد.
+   ⚠️ وbox-shadow لا filter: الثانية تنشئ سياق تركيب يقصّ الأبناء الثابتين. */
+button:focus-visible,a:focus-visible,input:focus-visible,
+select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+  box-shadow:0 0 0 6px var(--ring-glow)}
+/* الحقول تُلغي الحدّ وتكتفي بالهالة: .finput لها حدّ خاصّ يتلوّن عند التركيز
+   أصلًا، فحدّ ثانٍ فوقه كان يعطي إطارين متراكبين. */
+.finput:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring-glow)}
 
 /* ---------- FILTER BAR + SHEET (المرحلة 2) ---------- */
 /* ===================== BROWSE STICKY — حاوية تصفّح لاصقة (نمط Airbnb) =====================
@@ -968,6 +1046,26 @@ body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:r
 .scarce-txt{min-width:0}
 @keyframes scarcePulse{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(2.6);opacity:0}}
 body.dark .scarce{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.3);border-inline-start-color:#f59e0b}
+
+/* ---------- البديل الذكي حين يمتلئ اليوم ----------
+   يلي .no-times مباشرةً: تلك تقول «لا شيء هنا»، وهذه تقول «بل هنا».
+   لونها لون النجاح لا التحذير — هي جواب لا مشكلة. */
+.alt-panel{grid-column:1/-1;margin-top:10px;padding:14px;border-radius:var(--r-md);
+  background:var(--primary-soft);border:1px solid var(--line-2);
+  border-inline-start:3px solid var(--primary);
+  display:flex;flex-direction:column;gap:9px}
+.alt-head{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--emerald)}
+.alt-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.alt-line{font-size:13.5px;font-weight:800;color:var(--ink);line-height:1.6}
+.alt-none{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.6;text-align:center}
+/* الزرّ محاذٍ لبداية السطر لا ممدّد: ليس الإجراء الرئيسي في الصفحة، وتمديده
+   كان سينافس «متابعة الحجز» اللاصق أسفل الشاشة. */
+.alt-go{align-self:flex-start;min-height:var(--tap);padding:0 18px;border-radius:var(--r-md);
+  background:var(--g-btn);color:#0B2227;font-size:13px;font-weight:800;
+  box-shadow:var(--shadow-green);transition:transform var(--t-fast) var(--ease-out)}
+.alt-go:active{transform:scale(.96)}
+body.dark .alt-panel{background:rgba(140,198,62,.10);border-color:rgba(140,198,62,.26)}
 body.dark .scarce-dot,body.dark .scarce-dot::after{background:#f59e0b}
 @media (prefers-reduced-motion:reduce){ .scarce-dot::after{animation:none;opacity:0} }
 .dsec-ic{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--emerald);background:var(--soft-green);border:1px solid rgba(15,75,83,.18)}
@@ -1217,6 +1315,17 @@ body.dark{--sk-grad:linear-gradient(90deg,rgba(255,255,255,.045) 0%,rgba(255,255
 .kpi-val{font-size:19px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
 .kpi-lbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:3px}
 .section-title{font-size:14.5px;font-weight:800;color:var(--ink);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+/* ⚠️ صنف منفصل لا تعديل على .section-title: الأصل يوزّع أبناءه على الطرفين
+   (‏space-between) وهو ما تحتاجه العناوين ذات الإجراء على اليمين. عنوانٌ بأيقونة
+   يحتاج العكس تمامًا — لو ورث space-between لطارت الأيقونة إلى طرف والنصّ إلى
+   الطرف الآخر. */
+.section-title.with-ic{justify-content:flex-start;gap:11px}
+.sec-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex-shrink:0;
+  color:var(--emerald);background:var(--primary-soft)}
+.sec-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* داخل بطاقة الجلسة تبقى منطقة الخطر مفصولة، لكن حدّها العلوي كان يلامس حافّة
+   البطاقة الآن — الهامش يعيد له مسافته. */
+.card .danger-zone{margin-top:20px}
 .mini-badge{background:var(--info-soft);color:var(--info-ink);border-radius:999px;padding:4px 11px;font-size:10px;font-weight:800}
 .mini-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--ink-2);margin-bottom:9px}
 .progress{height:9px;background:var(--surface-muted);border-radius:999px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}
@@ -2220,14 +2329,19 @@ body.dark{--act-bg:#8CC63E;--act-bg-hover:#A5DA5B;--act-ink:#0B2227}
 .place-book-btn::after{background:var(--act-ink)}
 .lp-owners-card .lp-btn-primary{background:#fff!important;color:var(--emerald)!important}
 
-/* ── 4) شريط التبويبات السفلي — أصيل: صلب نظيف، بلا مؤشّر علوي/فقاعة (كالمرجع) ── */
+/* ── 4) شريط التبويبات السفلي — صلب نظيف، والمؤشّر حبّةٌ لا فقاعة أيقونة ──
+   ⚠️ كانت هذه الفقرة تُطفئ حركة الأيقونة بـ`animation:none!important`، فأي
+   حركة تُكتب في §BOTTOM NAV أعلاه **لا تعمل** ولا تُنتِج خطأً — تُبتلَع صامتة.
+   الفقاعة القديمة (خلفية على .nicon) أُلغيت لأن الحبّة صارت هي الخلفية،
+   لا لأن الحركة غير مرغوبة: النبضة هي ما يجعل الانتقال بين التبويبات
+   يُقرأ حركةً لا قفزة. */
 .bnav{background:var(--surface)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
   border-top:1px solid var(--line)!important;
   box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -14px rgba(16,24,32,.12)!important}
 body.dark .bnav{box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -12px rgba(0,0,0,.55)!important}
 .nitem.active{color:var(--primary)}
 .nitem.active::before{display:none!important}
-.nitem.active .nicon{background:transparent!important;animation:none!important}
+.nitem.active .nicon{background:transparent!important}
 
 /* ── 5) تنظيف الأسطح الزجاجية على كروم المحتوى (شريط البحث/التصفّح) ── */
 .search-bar{background:var(--surface)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
@@ -2842,6 +2956,14 @@ html.vt-lang::view-transition-new(root){z-index:2;transform-origin:50% 50%;
    القديمة (الانتقال بدأ للتوّ) ⇒ الدائرة تكشف صورة شبه مطابقة، ثم تُكمل الصفحة
    كلّها تحوّلها اللوني 450ms **تحتها** = طبقتان متزامنتان تُقرآن كتلعثم.
    وهذا أيضًا يعني إعادة رسم كل عقدة في الشجرة 450ms على الخيط الرئيسي. */
+/* ⚠️ **قِيس ولم يُحسَم — لا تُوسَّع هذه القائمة ظنًّا.** تبديل الثيم يُسقط
+   ~10-12 إطارًا (ذروة 50ms) بينما تبديل اللغة يُسقط إطارًا واحدًا، وخطّ
+   الأساس الساكن صفر. والتجربة تقول إن الكلفة **من الانتقالات** لا الحركات:
+   `*{transition:none}` مضافةً **قبل** الضغطة تُنزلها إلى 2، و`*{animation:none}`
+   لا تغيّر شيئًا (14). لكنّ توسيع هذه القائمة إلى `*`، وإبقاء `.theme-swap`
+   مرفوعةً طوال الانتقال بدل reflow واحد — **جُرّبا معًا ولم يغيّرا الرقم**
+   (12 و9). ⇒ الفارق ليس في مدى القائمة ولا في عمرها، والسبب الحقيقي يحتاج
+   تنميطًا (profiler) لا تخمينًا. أُعيدت القائمة كما كانت عمدًا. */
 html.theme-swap :where(body,section,header,footer,nav,main,aside,div,p,span,a,li,ul,ol,h1,h2,h3,h4,
   figure,figcaption,blockquote,button,input,select,textarea,label,legend,fieldset,details,summary,
   strong,em,small,td,th){transition:none!important}

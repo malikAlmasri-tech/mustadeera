@@ -87,6 +87,18 @@ const I18N = {
     sportsHint:'المستديرة تحجز الملاعب الرياضية كلّها. المفتوح للحجز الآن كرة القدم — وباقي الرياضات تُفتح فور تسجيل ملاعبها.',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
     available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'اكتمل جدول هذا اليوم بالكامل — جرّب يوماً آخر قريباً منه.',
+    /* حالة اليوم على زرّه. ⚠️ «باقي {n}» لا «{n} أوقات»: العدد يأتي **بعد** الاسم
+       فلا يقع في مسألة المعدود العربي أصلًا (١ · ٢ · ٣-١٠ جمع · ١١+ مفرد منصوب)،
+       ويصحّ مع أي رقم. والنصّ قصير لأن الزرّ 74px لا أكثر. */
+    /* عنوان بطاقة الجلسة في «حسابي». ⚠️ لا بطاقة «دعم»: لا رقم دعم في التطبيق،
+       واختراع واحد ممنوع (م5) — البطاقات الأربع كلّها أقسام موجودة فعلًا. */
+    secSession:'الجلسة',
+    dayFull:'ممتلئ', dayLeft:'باقي {n}',
+    dayFullAria:'ممتلئ بالكامل', dayLeftAria:'باقي {n} من الأوقات',
+    /* البديل الذكي حين يمتلئ اليوم — كلّه مشتقّ من نفس البيانات المعروضة */
+    altTitle:'أقرب وقت متاح', altSameField:'في {field} يوم {day} الساعة {time}',
+    altOtherField:'في {field} اليوم نفسه الساعة {time}',
+    altGo:'انقلني إليه', altNone:'لا وقت متاح في هذا المكان خلال الأسبوع القادم.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
     reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'الموعد', stepConfirm:'التأكيد',
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
@@ -286,6 +298,12 @@ const I18N = {
     sportsHint:'AL-Mustadira books sports venues of every kind. Football is what is open for booking now — the other sports open as soon as their venues are registered.',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
     available:'Available', noServices:'No services information has been added yet.', noTimesDay:'This day is fully booked — try another one nearby.',
+    secSession:'Session',
+    dayFull:'Full', dayLeft:'{n} left',
+    dayFullAria:'fully booked', dayLeftAria:'{n} times left',
+    altTitle:'Nearest free time', altSameField:'On {field}, {day} at {time}',
+    altOtherField:'On {field}, same day at {time}',
+    altGo:'Take me there', altNone:'No time is free at this venue in the next week.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
     reviewTitle:'Review booking', stepField:'Field', stepDate:'Time', stepConfirm:'Confirm',
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status',
@@ -1556,7 +1574,9 @@ function placeAvailability(p){
     slots.forEach(s=>{ if(!bToday.includes(s.hour)) todayFree++; });
     for(let i=0;i<7;i++){ const d=dateAfter(i); const bk=(State.bookedSlots[f.field_id]?.[d])||[]; slots.forEach(s=>{ if(!bk.includes(s.hour)) weekFree++; }); }
   });
-  if(todayFree>0) return {state:'today', label:'متاح اليوم', cls:'avail-yes'};
+  // العدد يُعاد مع الحالة: كان يُحسَب ثمّ يُرمى، والبطاقة تعرض «متاح/غير متاح»
+  // ثنائيًّا بينما الفرق بين وقتين وتسعة أوقات هو ما يحسم القرار.
+  if(todayFree>0) return {state:'today', label:'متاح اليوم', cls:'avail-yes', free:todayFree};
   if(weekFree>0)  return {state:'later', label:'متاح لاحقاً', cls:'avail-soon'};
   if(todayTotal>0)return {state:'full',  label:'مكتمل اليوم', cls:'avail-no'};
   return {state:'none', label:'لا أوقات', cls:'avail-no'};
@@ -1717,10 +1737,18 @@ function placeCard(p, eager){
     if(State.favOnly) renderPlaces();
   });
   const unavailable = av.state==='full' || av.state==='none';
+  /* شارة العدد حين يقلّ: نفس حدّ شريط الأيام (‏DAY_LEFT_MAX) كي يقرأ المستخدم
+     الرقم نفسه في البطاقة وفي التفاصيل. والعدد قابل للعدّ بالعين داخل الملعب
+     ⇒ لا استعجال مخترَع (م5)، وهي القاعدة نفسها التي تحكم لافتة الندرة. */
+  const fewToday = av.state==='today' && av.free>0 && av.free<=DAY_LEFT_MAX ? av.free : 0;
   /* شارة التصنيف (م3، نمط المرجع): نوع أرضية الملعب أعلى الصورة — نُقلت من سطر النص السفلي فلا تكرار */
   cover.append(h('div',{class:'place-top-badges'},
     p.type && h('span',{class:'place-cat-badge'}, p.type),
     unavailable && h('span',{class:'avail-badge avail-no'}, t('unavailableBadge')),
+    /* ⚠️ ثلاثيّة لا `&&`: الصفر قيمة **زائفة تُرسَم**. `cond && h(...)` تصلح مع
+       `false` و`''` لأنهما لا يظهران، أمّا `0` فيمرّ إلى الأبناء ويُطبَع رقمًا
+       عاريًا فوق الصورة. ظهر في اللقطة قبل أن يظهر في أي فحص منطقي. */
+    (fewToday ? h('span',{class:'avail-badge avail-few'}, t('dayLeft',{n:fewToday})) : ''),
     favB));
 
   /* جسم البطاقة تحت الصورة: الاسم والتقييم ثم الموقع ثم أهم مرفقين ثم النوع وعدد الملاعب */
@@ -2059,10 +2087,35 @@ function renderSubFields(){
     el.append(card);
   });
 }
-function dayButton(date, i, active, onClick){
+/* عدد الأوقات الشاغرة في ملعب فرعي بيوم بعينه.
+   ⚠️ لا طلب شبكة هنا: `buildBookedSlots` تبني الأيام كلّها من جلبة واحدة
+   (‏`State.bookedSlots[fid][date]`)، فالسبعة أيام حاضرة بعد `ensurePublicBookings`
+   الوحيدة التي يناديها التفاعل أصلًا. */
+function freeCountFor(field, date){
+  if(!field) return null;
+  const slots = fieldSlots(field);
+  if(!slots.length) return null;
+  const taken = (State.bookedSlots[field.field_id]?.[date]) || [];
+  return slots.filter(s => !taken.includes(s.hour)).length;
+}
+/* حدّ إظهار العدد: فوقه لا معنى للرقم — «باقي ٩» لا يغيّر قرارًا، و«باقي ٢» يغيّره.
+   والسطر يبقى محجوز الارتفاع في الحالتين فلا يقفز الزرّ حين تتبدّل الحالة. */
+const DAY_LEFT_MAX = 3;
+/* `field` اختياري: مُرِّر فيُرسَم سطر الحالة، أُغفِل فيبقى الزرّ كما كان.
+   نافذة المالك (الحجز الخارجي) لا تمرّره — سياق ملعبها يُختار من قائمة منفصلة. */
+function dayButton(date, i, active, onClick, field){
   const label = dayLabel(date);
-  const b=h('button',{class:'day-btn'+(active?' active':''), type:'button', 'aria-pressed':active?'true':'false', 'aria-label':label+' '+shortDate(date)},
+  const free = field ? freeCountFor(field, date) : null;
+  const show = free!==null && (free===0 || free<=DAY_LEFT_MAX);
+  const stateTxt = free===0 ? t('dayFull') : (show ? t('dayLeft',{n:free}) : '');
+  const stateAria = free===0 ? t('dayFullAria') : (show ? t('dayLeftAria',{n:free}) : '');
+  const b=h('button',{class:'day-btn'+(active?' active':'')+(free===0?' day-full':''), type:'button',
+    'aria-pressed':active?'true':'false',
+    'aria-label':label+' '+shortDate(date)+(stateAria?' — '+stateAria:'')},
     h('div',{}, label), h('div',{class:'d-date'}, shortDate(date)));
+  /* السطر يُضاف دائمًا حين نعرف الحالة — فارغًا أو مملوءًا — كي يتساوى ارتفاع
+     الأزرار السبعة، وإلّا صار الشريط مسنّنًا وقفز عند كل تبديل يوم. */
+  if(free!==null) b.append(h('div',{class:'d-state'+(free===0?' is-full':' is-few'), 'aria-hidden':'true'}, stateTxt));
   b.addEventListener('click', onClick); b.dataset.date=date;
   return b;
 }
@@ -2073,7 +2126,7 @@ function renderDetailDays(){
       State.detail.date=d; State.detail.hour=null; renderDetailDays(); renderDetailSticky(); timeSkeleton($('#detailTimes'),6);
       try{ await ensurePublicBookings(); }catch(_){}
       renderDetailDays(); renderDetailTimes();
-    }));
+    }, State.detail.field));
   }
 }
 /* opts (اختياري): { cls, tag } — لوسم خانة بحالة خاصّة (مثل «الحالي» في تعديل الموعد)
@@ -2116,8 +2169,89 @@ function renderDetailTimes(){
     el.append(h('div',{class:'time-period'}, t(p.key)));
     group.forEach((s,i)=>{ const btn=timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour, ()=>{ State.detail.hour=s.hour; renderDetailTimes(); }); btn.style.animationDelay=`${i*0.04}s`; el.append(btn); });
   });
-  if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, t('noTimesDay')));
+  if(slots.length && free===0){
+    el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, t('noTimesDay')));
+    const alt=alternativePanel(); if(alt) el.append(alt);
+  }
   renderDetailSticky();
+}
+
+/* ===================== البديل الذكي حين يمتلئ اليوم =====================
+   «اكتمل جدول هذا اليوم — جرّب يوماً آخر» تطلب من المستخدم أن يفتّش بنفسه عمّا
+   نعرفه نحن أصلًا: كل أوقات المكان كلّها في `State.bookedSlots` منذ أول جلبة.
+   هذه الدالّة تجيب بدلًا من أن تسأل.
+
+   ⚠️ بلا باكند وبلا migration: لا قائمة انتظار ولا إشعار — كلاهما يحتاج جدولًا
+   جديدًا ودالّة جديدة، وأيّ دالّة جديدة تعني هجرة معلَّقة على المالك. هذا يقرأ
+   ما هو معروض على الشاشة فعلًا لا أكثر.
+   ⚠️ وبلا وعد: يُعرَض الوقت الحقيقي الأوّل الذي يجده الفحص، وإن لم يجد شيئًا
+   قال ذلك صراحةً (م5) بدل أن يصمت أو يقترح ما لا يملك.
+
+   الترتيب: **نفس اليوم أوّلًا** على ملعب فرعي آخر (أقرب بديل نفسيًّا — الموعد
+   محفوظ)، ثمّ الأيام التالية بالترتيب على أي ملعب. */
+function findAlternative(){
+  const place = State.detail.place; const cur = State.detail.field;
+  if(!place || !cur) return null;
+  const fields = (place.fields||[]).filter(f=>f.active!==false);
+  const firstFreeOn = (field, date) => {
+    const taken=(State.bookedSlots[field.field_id]?.[date])||[];
+    return fieldSlots(field).find(s=>!taken.includes(s.hour)) || null;
+  };
+  // ① اليوم نفسه، ملعب فرعي آخر
+  for(const f of fields){
+    if(String(f.field_id)===String(cur.field_id)) continue;
+    const s=firstFreeOn(f, State.detail.date);
+    if(s) return { field:f, date:State.detail.date, slot:s, sameDay:true };
+  }
+  // ② الأيام التالية — الملعب الحالي أوّلًا في كل يوم، فهو ما اختاره المستخدم.
+  // الفهرس يُشتقّ بالمطابقة على dateAfter نفسها التي بنت الشريط: لا حساب فرق
+  // تواريخ بيد، فلا مجال لخطأ توقيت أو منطقة زمنية.
+  let start = 0;
+  for(let i=0;i<7;i++){ if(dateAfter(i)===State.detail.date){ start=i; break; } }
+  for(let i=start+1;i<7;i++){
+    const d=dateAfter(i);
+    for(const f of [cur, ...fields.filter(f=>String(f.field_id)!==String(cur.field_id))]){
+      const s=firstFreeOn(f, d);
+      if(s) return { field:f, date:d, slot:s, sameDay:false };
+    }
+  }
+  return null;
+}
+function alternativePanel(){
+  const alt = findAlternative();
+  const box = h('div',{class:'alt-panel', style:{gridColumn:'1/-1'}});
+  if(!alt){
+    box.append(h('div',{class:'alt-none'}, t('altNone')));
+    return box;
+  }
+  const time = slotDisplay(alt.slot);
+  /* ⚠️ اسم الملعب والوقت يُعزلان بـ<bdi>، ولا يُلصقان في النصّ لصقًا.
+     اسم الملعب من القاعدة وهو عربي دائمًا («ملعب 2»)، والجملة قد تكون
+     إنجليزية ⇒ خوارزمية bidi تقلبه إلى «2 ملعب». والوقت مدى برقمين تفصلهما
+     شرطة محايدة («10:00 - 12:00») ⇒ ينقلب في الجملة العربية فيصير الانتهاء
+     قبل الابتداء. نفس العطل الذي قُلب مدى السعر في الموقع، ومقيس هناك.
+     العزل بعلامة نائبة ثمّ تقسيم: النصّ يبقى في ملفّ اللغة كجملة واحدة. */
+  const SEP='\u0001';   // sentinel: not present in any UI string, safe to split on
+  const raw = alt.sameDay
+    ? t('altOtherField',{ field:SEP, time:SEP })
+    : t('altSameField',{ field:SEP, day:dayLabel(alt.date), time:SEP });
+  const chunks = raw.split(SEP);
+  const line = h('span',{},
+    chunks[0]||'', h('bdi',{}, alt.field.field_name),
+    chunks[1]||'', h('bdi',{dir:'ltr'}, time),
+    chunks[2]||'');
+  const go = h('button',{class:'alt-go', type:'button'}, t('altGo'));
+  go.addEventListener('click', async()=>{
+    State.detail.field = alt.field; State.detail.date = alt.date; State.detail.hour = alt.slot.hour;
+    renderSubFields(); renderDetailHero(); setText('dPrice', formatCurrency(alt.field.price));
+    renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
+    scrollToDetailSection('time','#detailTimes .tbtn.sel');
+  });
+  box.append(
+    h('div',{class:'alt-head'}, h('span',{class:'alt-dot','aria-hidden':'true'}), h('span',{}, t('altTitle'))),
+    h('div',{class:'alt-line'}, line),
+    go);
+  return box;
 }
 
 /* ===================== RENDER: ECONOMIC (place / player) ===================== */
@@ -2411,7 +2545,7 @@ function renderRescheduleDays(){
       renderRescheduleDays(); timeSkeleton($('#rsTimes'),6);
       try{ await ensurePublicBookings(); }catch(_){}
       renderRescheduleDays(); renderRescheduleTimes();
-    }));
+    }, State.reschedule.field));
   }
 }
 function renderRescheduleTimes(){
@@ -3680,14 +3814,20 @@ function toggleTheme(btn, e){
       vt = document.startViewTransition(()=>{
         // تُلتقط لقطة «بعد» هنا: نوقف انتقالات اللون لحظتَها كي تُلتقط بألوانها
         // النهائية لا في منتصف تحوّل (الإيقاف محصور بقائمة الوسوم).
+        // ⚠️ جُرّب إبقاء الحارس مرفوعًا طوال الانتقال بدل reflow واحد — بلا أي
+        //    فرق في الإطارات الساقطة (12 و9 قبل وبعد). انظر تعليق `.theme-swap`
+        //    في app.css: السبب ما زال غير محسوم ويحتاج تنميطًا.
         root.classList.add('theme-swap');
         commit();
         void document.body.offsetWidth;
         root.classList.remove('theme-swap');
       });
-    }catch(_){ root.classList.remove('vt-theme'); vtBusy = false; vt = null; }
+    }catch(_){ root.classList.remove('vt-theme','theme-swap'); vtBusy = false; vt = null; }
     if(vt){
-      const done = ()=>{ root.classList.remove('vt-theme'); vtBusy = false; };
+      /* `theme-swap` تُرفع في المسار العادي داخل الاستدعاء أعلاه؛ ورفعها هنا
+         أيضًا شبكة أمان: لو أخفق الاستدعاء بعد إضافتها لبقيت الواجهة بلا
+         انتقالات للأبد. */
+      const done = ()=>{ root.classList.remove('vt-theme','theme-swap'); vtBusy = false; };
       vt.ready.then(()=>{
         // تفتّح ناعم: اللقطة الجديدة تظهر وهي تستقرّ من تكبير طفيف عند الإصبع.
         // `opacity`+`transform` فقط ⇒ الحركة كلّها على الـGPU، صفر رسم في كل فريم.

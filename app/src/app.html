@@ -347,8 +347,14 @@
           <div class="profile-phone" id="accPhoneDisplay">—</div>
         </div>
       </div>
+      <!-- ============ حسابي: أربع بطاقات معنونة ============
+           كانت الصفحة قائمة حقول متّصلة يفصلها بياضٌ فقط، فيقرؤها المستخدم
+           كتلةً واحدة. الآن كلّ قسم بطاقةٌ بأيقونة وعنوان، والعين تجد ما تريد
+           بالأيقونة قبل أن تقرأ.
+           ⚠️ الأقسام الأربعة كلّها موجودة فعلًا — لا بطاقة «دعم» ولا «إشعارات»
+           كما في المرجع: لا رقم دعم في التطبيق ولا إشعارات تُضبَط (م5). -->
       <div class="card mb-card">
-        <div class="section-title" data-i18n="editProfile">تعديل البيانات</div>
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><span data-i18n="editProfile">تعديل البيانات</span></div>
         <label class="form-label" for="accName" data-i18n="name">الاسم</label>
         <input class="finput" id="accName" type="text" placeholder="اسم اللاعب" data-i18n-ph="phAccName" style="margin-bottom:13px">
         <label class="form-label" for="accPhone" data-i18n="phone">رقم الهاتف</label>
@@ -356,7 +362,7 @@
         <button class="sbtn" data-action="saveAccount" data-i18n="saveEdit">حفظ التعديل</button>
       </div>
       <div class="card mb-card">
-        <div class="section-title" data-i18n="pwTitle">تغيير كلمة السر</div>
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg></span><span data-i18n="pwTitle">تغيير كلمة السر</span></div>
         <p class="t-sub" style="line-height:1.75;margin-bottom:14px" data-i18n="pwSub">لازم تكتب كلمة السر الحالية — هيك ما حدا يقدر يغيّرها لو وصل لهاتفك.</p>
         <label class="form-label" for="pwCur" data-i18n="pwCur">كلمة السر الحالية</label>
         <div class="input-wrap" style="margin-bottom:13px">
@@ -385,7 +391,7 @@
         <button class="sbtn" data-action="changePassword" data-i18n="pwSave">تغيير كلمة السر</button>
       </div>
       <div class="card settings-card mb-card">
-        <div class="section-title" data-i18n="prefsTitle">التفضيلات</div>
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span data-i18n="prefsTitle">التفضيلات</span></div>
         <div class="settings-row">
           <div class="settings-info">
             <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
@@ -401,11 +407,17 @@
           <button class="settings-toggle" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
         </div>
       </div>
-      <button class="cbtn danger-outline-btn" data-action="logout" data-i18n="logout">تسجيل خروج</button>
-      <!-- منطقة الخطر: إجراء لا رجعة فيه ⇒ مفصول بصريًّا عن بقية الإعدادات وآخر ما في الصفحة -->
-      <div class="danger-zone">
-        <div class="danger-zone-title" data-i18n="dangerZone">منطقة الخطر</div>
-        <button class="cbtn danger-solid-btn" data-action="deleteAccount" data-i18n="delAccount">حذف الحساب</button>
+      <!-- الجلسة: الخروج والحذف معًا في بطاقة واحدة — كلاهما «إنهاء»، وكانا
+           يطفوان خارج أي بطاقة فيبدوان زرّين تائهين أسفل الصفحة.
+           ومنطقة الخطر تبقى مفصولة **داخلها**: إجراء لا رجعة فيه، وآخر ما في
+           الصفحة كما كان. -->
+      <div class="card mb-card">
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4"/><path d="M6 12h9"/></svg></span><span data-i18n="secSession">الجلسة</span></div>
+        <button class="cbtn danger-outline-btn" data-action="logout" data-i18n="logout">تسجيل خروج</button>
+        <div class="danger-zone">
+          <div class="danger-zone-title" data-i18n="dangerZone">منطقة الخطر</div>
+          <button class="cbtn danger-solid-btn" data-action="deleteAccount" data-i18n="delAccount">حذف الحساب</button>
+        </div>
       </div>
     </div>
   </section>
