@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@700;800;900&display=swap">
 
-<link rel="stylesheet" href="/build/site.fe48dfce.css">
+<link rel="stylesheet" href="/build/site.0197fa4d.css">
 
 <script>(function(){var r=document.documentElement;try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){r.classList.add('dark');}}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 
@@ -120,7 +120,8 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">منصّة حجز الملاعب الرياضية</span>
-      <h1>ملعبك جاهز. <span class="hi">بلا مكالمة واحدة.</span></h1>
+      
+      <h1><span class="hl-a">ملعبك جاهز.</span> <span class="hi">بلا مكالمة واحدة.</span> <span class="hl-out">والمتاح أمامك.</span></h1>
       <p class="lead">تصفّح الملاعب القريبة منك، شاهد الأوقات المتاحة فعلًا، وأرسل طلب حجزك في أقلّ من دقيقة. ملاعب كرة القدم مفتوحة للحجز الآن، وبقيّة الرياضات في الطريق.</p>
 
       <div class="hero-cta">
@@ -143,9 +144,18 @@
         <span class="hp-scr">
           <img src="/assets/app-mockup-ar.png" alt="شاشة اختيار اليوم والوقت في تطبيق المستديرة" class="hero-mockup"
                width="400" height="525" fetchpriority="high" decoding="async">
+          <span class="hp-sheen" aria-hidden="true"></span>
           <span class="hp-island" aria-hidden="true"></span>
           <span class="hp-home" aria-hidden="true"></span>
         </span></span>
+
+      <span class="hflag hflag-a" aria-hidden="true">
+        <span class="hflag-dot"></span>
+        <span class="hflag-tx"><b>مجّاني</b>للاعبين</span>
+      </span>
+      <span class="hflag hflag-b" aria-hidden="true">
+        <b>بلا بطاقة</b><span>تدفع في الملعب</span>
+      </span>
     </figure>
   </div>
 
@@ -234,10 +244,27 @@
         <p>تختار اليوم والوقت، والملعب يؤكّد. وتعرف حالة طلبك في كل خطوة: بانتظار التأكيد، مؤكّد، أو مرفوض مع السبب.</p>
       </article>
 
+      <article class="bt bt-zero rv">
+        <span class="bz-n" aria-hidden="true">0</span>
+        <h3><span class="sr">0 </span>مكالمة لتحجز</h3>
+        <p>تفتح التطبيق في أي ساعة وترسل طلبك. لا أحد مضطرّ أن يردّ عليك.</p>
+      </article>
+
       <article class="bt bt-b rv">
         <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></svg></span>
         <h3>أوقات حقيقية</h3>
         <p>الساعات المحجوزة تختفي من الشبكة. لن تكتشف أن الملعب مشغول بعد أن تصل إليه.</p>
+      </article>
+
+      <article class="bt bt-price rv">
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M3 7h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path pathLength="1" d="M3 7l3-3h12l3 3"/><path pathLength="1" d="M9 12h6"/></svg></span>
+        <h3>السعر الذي تراه هو ما تدفعه</h3>
+        <dl class="bp-rows">
+          
+          <div class="bp-row"><dt>سعر الساعة في الدليل</dt><dd><bdi dir="ltr">40–60</bdi> د.أ</dd></div>
+          <div class="bp-row bp-zero"><dt>رسوم إضافية عليك</dt><dd>0.00</dd></div>
+        </dl>
+        <p class="bp-note">تدفع للملعب مباشرةً — نقدًا أو كما يقبل.</p>
       </article>
 
       <article class="bt bt-c rv">
@@ -278,26 +305,50 @@
       <div class="step rv"><h3>اختر الوقت</h3><p>اليوم المناسب ثمّ الساعة المتاحة. المحجوز لا يظهر أصلًا.</p></div>
       <div class="step rv"><h3>أرسل الطلب</h3><p>يصل الملعب فورًا، ويصلك قراره. تتابع الحالة من «حجوزاتي» في أي وقت.</p></div>
     </div>
+
+    <figure class="photo-band duo rv">
+      <img class="duo-c" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="لاعب يسدّد الكرة على ملعب مضاء ليلًا">
+    </figure>
   </div>
 </section>
 
-<section class="sec">
+<section class="sec own-band">
+  
+  <span class="own-flag">نقلب الجهة — لأصحاب الملاعب</span>
   <div class="wrap owners-in rv">
-    <div class="own-card">
-      <span class="eyebrow">لأصحاب الملاعب</span>
+    <div class="own-copy">
       <h2>ملعبك يمتلئ، ودفترك يرتّب نفسه.</h2>
-      <p>لوحة تحكّم تجمع طلبات الحجز في مكان واحد، تؤكّد أو ترفض بضغطة، وتحسب إيرادك وإشغالك بلا ورقة ولا قلم — لملاعب كرة القدم اليوم، ولبقيّة الرياضات فور تسجيل ملاعبها.</p>
-      <ul class="own-list">
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>كل الطلبات في شاشة واحدة — بلا مكالمات متقطّعة</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>تقارير إيراد وإشغال وأكثر الساعات طلبًا</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>تتحكّم بأوقاتك وأسعارك ومرافقك بنفسك</span></li>
-      </ul>
-      <a class="btn btn-pri" href="/owners/">سجّل ملعبك</a>
-      <p class="own-note">التسجيل مجّاني، ونتواصل معك لتفعيل لوحتك.</p>
+      <p class="own-lead">لوحة تحكّم تجمع طلبات الحجز في مكان واحد، تؤكّد أو ترفض بضغطة، وتحسب إيرادك وإشغالك بلا ورقة ولا قلم — لملاعب كرة القدم اليوم، ولبقيّة الرياضات فور تسجيل ملاعبها.</p>
+
+      <ol class="own-steps">
+        <li><b>طلبات في شاشة واحدة</b><span>تؤكّد أو ترفض بضغطة، والسبب يصل اللاعب معها.</span></li>
+        <li><b>أوقاتك وأسعارك بيدك</b><span>تفتح ساعة أو تغلقها، وتضبط سعر كل ملعب فرعي بنفسك.</span></li>
+        <li><b>إيرادك وإشغالك محسوبان</b><span>تقارير يومية وأكثر الساعات طلبًا، بلا ورقة ولا قلم.</span></li>
+        <li><b>المال يبقى بينك وبين اللاعب</b><span>لا دفع إلكتروني نمرّره ولا حصّة نقتطعها من سعرك.</span></li>
+      </ol>
+
+      <div class="own-cta">
+        <a class="btn btn-lg own-btn" href="/owners/">سجّل ملعبك</a>
+        <span class="own-note">التسجيل مجّاني، ونتواصل معك لتفعيل لوحتك.</span>
+      </div>
     </div>
 
-    <figure class="own-photo">
-      <img src="/assets/photos/players-run-1100.jpg"
+    <figure class="own-photo duo">
+      <img class="duo-c" src="/assets/photos/players-run-1100.jpg"
+           srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
+           sizes="(min-width: 900px) 46vw, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-run-1100.jpg"
            srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
            sizes="(min-width: 900px) 46vw, 92vw"
            width="1100" height="733" loading="lazy" decoding="async"
@@ -351,7 +402,9 @@
   <div class="cta-band-bg" aria-hidden="true"></div>
   <div class="cta-photo" aria-hidden="true"></div>
   <div class="wrap">
-    <h2>جاهز تحجز؟</h2>
+    
+    <span class="eyebrow">الحجز يجري في التطبيق</span>
+    <h2 class="final-big">مباراة الليلة <span class="hi">على بُعد نقرة</span></h2>
     <p class="lead">نزّل التطبيق على أندرويد، أو تصفّح الملاعب المتاحة أوّلًا.</p>
     <div class="hero-cta">
       <a class="btn btn-pri btn-lg" href="/download/">نزّل التطبيق</a>

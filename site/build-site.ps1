@@ -405,8 +405,16 @@ function Render-PlaceBody($p, $T, [string]$base) {
 
     [void]$sb.Append('<div class="pl-facts">')
     [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPitches') + '</span><span class="v">' + $p.fields.Count + '</span></div>')
-    $priceTxt = $(if ($p.priceMin -eq $p.priceMax) { (Fmt-Price $p.priceMin) } else { (Fmt-Price $p.priceMin) + ' - ' + (Fmt-Price $p.priceMax) })
-    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPriceHour') + '</span><span class="v">' + $priceTxt + ' ' + (Tx $T 'plCurrency') + '</span></div>')
+    # The range is wrapped in <bdi dir="ltr"> and the currency is left outside it.
+    # Without that, an Arabic page renders "40 - 60" as "60 - 40": the dash is a
+    # bidi-neutral character between two European numbers, so the surrounding RTL
+    # direction wins and the two numbers swap - the page shows the highest price
+    # first and the lowest second. Measured on rendered pixels, not assumed; the
+    # DOM string is correct either way, which is exactly why this survived.
+    # An en dash (U+2013), matching the home page's pricing tile: the same two
+    # numbers are printed in both places and had drifted to two separators.
+    $priceTxt = $(if ($p.priceMin -eq $p.priceMax) { (Fmt-Price $p.priceMin) } else { (Fmt-Price $p.priceMin) + [char]0x2013 + (Fmt-Price $p.priceMax) })
+    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPriceHour') + '</span><span class="v"><bdi dir="ltr">' + $priceTxt + '</bdi> ' + (Tx $T 'plCurrency') + '</span></div>')
     [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plSurface') + '</span><span class="v">' + (HtmlEnc $p.type) + '</span></div>')
     [void]$sb.Append('</div>')
 
@@ -522,6 +530,21 @@ foreach ($lang in $Langs) {
         # The counter's starting text is rendered with the real total, so the
         # line reads correctly before - and without - any script.
         $vars['plCountInit'] = (Tx $T 'plCountTpl').Replace('{n}', [string]$PlaceModel.Count)
+
+        # ---- the pricing tile's figures ----
+        # The real span of every listed pitch price, read from the same rows the
+        # venue pages print. Nothing here is typed by hand: with no rows the
+        # tile is not built at all (honesty rule m5), which is why priceSpan is
+        # empty rather than "0" when the model is empty.
+        $vars['priceSpan'] = ''
+        if ($PlaceModel.Count -gt 0) {
+            $allPrices = @($PlaceModel | ForEach-Object { $_.fields } | ForEach-Object { [double]$_.price })
+            $pLo = ($allPrices | Measure-Object -Minimum).Minimum
+            $pHi = ($allPrices | Measure-Object -Maximum).Maximum
+            # An en dash, not a hyphen: this is a numeric range, and the dash has
+            # to read the same in an RTL line as in an LTR one.
+            $vars['priceSpan'] = $(if ($pLo -eq $pHi) { (Fmt-Price $pLo) } else { (Fmt-Price $pLo) + [char]0x2013 + (Fmt-Price $pHi) })
+        }
 
         $body = Read-Text $bodyFile
         $body = $body.Replace('{{include:contact}}', $(if ($ContactLive) { '{{include:contact-live}}' } else { '{{include:contact-soon}}' }))

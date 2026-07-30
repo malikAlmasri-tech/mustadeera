@@ -15,7 +15,11 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">{{t.heroBadge}}</span>
-      <h1>{{t.heroTitleA}} <span class="hi">{{t.heroTitleHi}}</span></h1>
+      <!-- ثلاثة أسطر بثلاث درجات صوت: أبيض ممتلئ ⇒ Lime ⇒ محيطي.
+           ⚠️ السطر المحيطي داخل @supports في الورقة: `color:transparent`
+           بلا `-webkit-text-stroke` = **نصّ غير مرئي**، لا نصّ باهت. فمن
+           لا يدعم الخاصية يراه أبيض عاديًّا لا يراه معدومًا. -->
+      <h1><span class="hl-a">{{t.heroTitleA}}</span> <span class="hi">{{t.heroTitleHi}}</span> <span class="hl-out">{{t.heroTitleOut}}</span></h1>
       <p class="lead">{{t.heroSub}}</p>
 
       <div class="hero-cta">
@@ -47,9 +51,24 @@
         <span class="hp-scr">
           <img src="/assets/app-mockup-{{lang}}.png" alt="{{t.mockCaption}}" class="hero-mockup"
                width="400" height="525" fetchpriority="high" decoding="async">
+          <span class="hp-sheen" aria-hidden="true"></span>
           <span class="hp-island" aria-hidden="true"></span>
           <span class="hp-home" aria-hidden="true"></span>
         </span></span>
+
+      <!-- لوحتان طائرتان حول الجهاز.
+           ⚠️ محتواهما **حقيقة بنيوية** لا حدث حيّ: المرجع كان يقول
+           «9:00 م — فضي الآن»، وهذا خبرٌ لا يملكه موقع ثابت مبنيّ مسبقًا (م5).
+           ⚠️ aria-hidden عمدًا: نصّهما تكرارٌ حرفي لما تقوله .hero-note فوقهما
+           («مجّاني · أندرويد · بلا بطاقة ولا دفع إلكتروني») ⇒ قارئ الشاشة
+           يسمعه مرّة واحدة، والعين تراه مرّتين لأن العين تقرأ اللوح لا السطر. -->
+      <span class="hflag hflag-a" aria-hidden="true">
+        <span class="hflag-dot"></span>
+        <span class="hflag-tx"><b>{{t.heroFlagFreeK}}</b>{{t.heroFlagFreeV}}</span>
+      </span>
+      <span class="hflag hflag-b" aria-hidden="true">
+        <b>{{t.heroFlagCardK}}</b><span>{{t.heroFlagCardV}}</span>
+      </span>
     </figure>
   </div>
 
@@ -156,10 +175,39 @@
         <p>{{t.featBookDesc}}</p>
       </article>
 
+      <!-- بلاطة الرقم العملاق: الرقم **هو** البلاطة، لا أيقونة فوقه ولا فقرة
+           تشرحه قبل أن يُقرأ. صفرٌ بنيوي — لا مكالمة في المسار أصلًا — لا
+           «متوسّط مكالمات موفّرة» يُدّعى (م5). -->
+      <article class="bt bt-zero rv">
+        <span class="bz-n" aria-hidden="true">{{t.featZeroNum}}</span>
+        <h3><span class="sr">{{t.featZeroNum}} </span>{{t.featZeroTitle}}</h3>
+        <p>{{t.featZeroDesc}}</p>
+      </article>
+
       <article class="bt bt-b rv">
         <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></svg></span>
         <h3>{{t.featTimesTitle}}</h3>
         <p>{{t.featTimesDesc}}</p>
+      </article>
+
+      <!-- بلاطة التسعير: صفّان لا جدول مخترَع.
+           ⚠️ {{priceSpan}} مقروء وقت البناء من أسعار الملاعب المسجَّلة نفسها
+           التي تطبعها صفحات `/places/*` — لا رقم مكتوب بيد. ولو خلت القاعدة
+           لخرج فارغًا، وصفّه لا يُبنى. وصفّ «الرسوم» صفرٌ حقيقي: ما نقتطعه
+           من اللاعب = لا شيء، وهو نفس ما يقوله trust2 منذ البداية. -->
+      <article class="bt bt-price rv">
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M3 7h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path pathLength="1" d="M3 7l3-3h12l3 3"/><path pathLength="1" d="M9 12h6"/></svg></span>
+        <h3>{{t.featPriceTableTitle}}</h3>
+        <dl class="bp-rows">
+          <!-- ⚠️ <bdi dir="ltr"> ليس زينة: «40–60» رقمان أوروبيّان تفصلهما
+               شرطة محايدة. داخل فقرة RTL تحسم خوارزمية bidi الشرطة لصالح
+               الاتجاه المحيط فينقلب الترتيب المرئي إلى «60–40» — أي أعلى
+               سعر ثمّ أدناه. مقيس بالبكسل على اللقطة لا مفترضًا. العزل
+               بـltr يثبّت المدى، والعملة تبقى خارجه فتأخذ مكانها العربي. -->
+          <div class="bp-row"><dt>{{t.featPriceRowSpan}}</dt><dd><bdi dir="ltr">{{priceSpan}}</bdi> {{t.plCurrency}}</dd></div>
+          <div class="bp-row bp-zero"><dt>{{t.featPriceRowExtra}}</dt><dd>{{t.featPriceRowExtraVal}}</dd></div>
+        </dl>
+        <p class="bp-note">{{t.featPriceTableNote}}</p>
       </article>
 
       <article class="bt bt-c rv">
@@ -201,29 +249,68 @@
       <div class="step rv"><h3>{{t.howStep2Title}}</h3><p>{{t.howStep2Desc}}</p></div>
       <div class="step rv"><h3>{{t.howStep3Title}}</h3><p>{{t.howStep3Desc}}</p></div>
     </div>
+
+    <!-- شريط صورة عريض يغلق القسم. الملفّ نفسه المستعمَل خلف لوح الختام
+         (‏.cta-photo) ⇒ طلب شبكة واحد يخدم الاثنين، لا بايت إضافي.
+         رمادية ساكنةً وتتلوّن عند التحويم — §11ب. -->
+    <figure class="photo-band duo rv">
+      <img class="duo-c" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="{{t.photoKickAlt}}">
+    </figure>
   </div>
 </section>
 
-<!-- ============ أصحاب الملاعب ============ -->
-<section class="sec">
+<!-- ============ أصحاب الملاعب — لوح فاتح بعرض الشاشة ============
+     الصفحة كلّها فاتحة نهارًا وداكنة ليلًا، فقسمٌ يقلب لونه إلى العاج **في
+     الثيمين معًا** يقول للقارئ إن الكلام قلب جهته: ما قبله موجَّه للاعب وما
+     فيه موجَّه للمالك. وهو أيضًا اللوح الفاتح الوحيد على صفحة داكنة ليلًا،
+     فلا ينافسه شيء على الانتباه.
+     ⚠️ ألوان هذا القسم مكتوبة صراحةً لا من التوكنات: التوكنات تنقلب مع الثيم
+     وهذا اللوح لا ينقلب — كما لا ينقلب الهيرو الداكن (§6). -->
+<section class="sec own-band">
+  <!-- الشارة العائمة على الحدّ العلوي: نصفها فوق اللوح ونصفها خارجه.
+       inset-inline-start فتنعكس مع الاتجاه بلا حساب. -->
+  <span class="own-flag">{{t.ownersFlag}}</span>
   <div class="wrap owners-in rv">
-    <div class="own-card">
-      <span class="eyebrow">{{t.ownersEyebrow}}</span>
+    <div class="own-copy">
       <h2>{{t.ownersTitle}}</h2>
-      <p>{{t.ownersDesc}}</p>
-      <ul class="own-list">
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.ownersB1}}</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.ownersB2}}</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{t.ownersB3}}</span></li>
-      </ul>
-      <a class="btn btn-pri" href="{{base}}/owners/">{{t.ownersCta}}</a>
-      <p class="own-note">{{t.ownersCtaNote}}</p>
+      <p class="own-lead">{{t.ownersDesc}}</p>
+
+      <!-- قائمة مرقّمة لا قائمة علامات صحّ: الرقم يقود العين سطرًا سطرًا،
+           وخطّ فاصل فوق كلّ صفّ يعطي القسم انضباط جدول لا كومة نقاط.
+           الأرقام في CSS (counter) لا في الوسم — فلا رقم يُقرأ مرّتين. -->
+      <ol class="own-steps">
+        <li><b>{{t.ownersS1K}}</b><span>{{t.ownersS1V}}</span></li>
+        <li><b>{{t.ownersS2K}}</b><span>{{t.ownersS2V}}</span></li>
+        <li><b>{{t.ownersS3K}}</b><span>{{t.ownersS3V}}</span></li>
+        <li><b>{{t.ownersS4K}}</b><span>{{t.ownersS4V}}</span></li>
+      </ol>
+
+      <div class="own-cta">
+        <a class="btn btn-lg own-btn" href="{{base}}/owners/">{{t.ownersCta}}</a>
+        <span class="own-note">{{t.ownersCtaNote}}</span>
+      </div>
     </div>
 
     <!-- المقاسان مصرَّح بهما فلا تقفز الصفحة حين تصل الصورة، وsizes يخبر
-         المتصفّح بعرضها الحقيقي فيختار 720 على الجوّال لا 1100. -->
-    <figure class="own-photo">
-      <img src="/assets/photos/players-run-1100.jpg"
+         المتصفّح بعرضها الحقيقي فيختار 720 على الجوّال لا 1100.
+         طبقتان بنفس الـsrc: الرمادية فوق الملوّنة وتذوب بالـopacity عند
+         التحويم — انظر §11ب في الورقة لسبب ألّا يكون الانتقال على filter. -->
+    <figure class="own-photo duo">
+      <img class="duo-c" src="/assets/photos/players-run-1100.jpg"
+           srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
+           sizes="(min-width: 900px) 46vw, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-run-1100.jpg"
            srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
            sizes="(min-width: 900px) 46vw, 92vw"
            width="1100" height="733" loading="lazy" decoding="async"
@@ -282,7 +369,10 @@
   <div class="cta-band-bg" aria-hidden="true"></div>
   <div class="cta-photo" aria-hidden="true"></div>
   <div class="wrap">
-    <h2>{{t.finalTitle}}</h2>
+    <!-- ⚠️ الحاشية تقول أين يجري الحجز، لا كم يستغرق. المرجع كان يكتب
+         «انطلاق خلال ٢٨ ثانية» — رقمٌ لم يُقَس ولا يُقاس (م5). -->
+    <span class="eyebrow">{{t.finalEyebrow}}</span>
+    <h2 class="final-big">{{t.finalTitleA}} <span class="hi">{{t.finalTitleHi}}</span></h2>
     <p class="lead">{{t.finalDesc}}</p>
     <div class="hero-cta">
       <a class="btn btn-pri btn-lg" href="{{ctaDl}}"{{ctaDlAttr}}>{{t.finalPrimary}}</a>

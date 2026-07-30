@@ -472,11 +472,46 @@ html.mnav-open .mnav-cta{opacity:1;transform:none;transition-delay:360ms}
 }
 
 .hero-grid{display:grid;gap:clamp(30px,5vw,56px);align-items:center;grid-template-columns:1fr}
-@media (min-width:920px){.hero-grid{grid-template-columns:1.08fr .92fr}}
+/* عمود النصّ أوسع ممّا كان (1.08) لأن العنوان صار ثلاثة أسطر لا سطرين:
+   كل سطر يجب أن يبقى سطرًا واحدًا، وإلّا صارت الثلاثة ستّة وانهار التدرّج.
+   عمود الجهاز يحتمل الضيق — عرضه محدود بـmin(316px,80vw) أصلًا. */
+@media (min-width:920px){.hero-grid{grid-template-columns:1.18fr .82fr}}
 .hero-copy{text-align:center}
 @media (min-width:920px){.hero-copy{text-align:start}}
-.hero h1{font-size:clamp(33px,6.6vw,64px);margin-bottom:18px;color:#fff}
-.hero h1 .hi{color:var(--lime);display:block}
+/* ---- العنوان: ثلاثة أسطر بثلاث درجات صوت ----
+   أبيض ممتلئ ⇒ Lime ⇒ محيطي. الترتيب مقصود: الصوت ينخفض سطرًا بعد سطر،
+   فالسطر المحيطي هو الأخفت وهو أيضًا الأقلّ أهمّية في الجملة.
+   ارتفاع السطر أضيق من الافتراضي (1.22) لأن ثلاثة أسطر بارتفاع عادي تدفع
+   الجهاز خارج الطيّة؛ والعربية تبقى أوسع من اللاتيني لأن نزلاتها أطول. */
+.hero h1{font-size:clamp(31px,6.1vw,58px);margin-bottom:18px;color:#fff;line-height:1.04}
+html[lang="ar"] .hero h1{line-height:1.24}
+/* ⚠️ اللاتيني أصغر من العربي هنا لا لذوق: «Without a single call.» ٢٢ محرفًا
+   بـMontserrat 800 تتجاوز عمود النصّ عند 58px فتنكسر سطرين — والعربية
+   «بلا مكالمة واحدة.» ١٧ محرفًا وحروفها أضيق فتسع. الورقة تفرّق بين اللغتين
+   في --fs-body منذ البداية، وهذا امتداد للقاعدة نفسها. */
+html[lang="en"] .hero h1{font-size:clamp(30px,5.2vw,46px)}
+.hero h1 .hl-a,.hero h1 .hi,.hero h1 .hl-out{display:block}
+.hero h1 .hi{color:var(--lime)}
+
+/* السطر المحيطي.
+   ⚠️ داخل @supports وحده: القاعدة تُلوّن النصّ بشفافية شبه كاملة وتعتمد على
+   الحدّ ليُقرأ. متصفّح لا يعرف -webkit-text-stroke كان سيطبّق اللون وحده
+   ⇒ **سطر معدوم** لا سطر باهت. وبدونها يبقى أبيض عاديًّا — وهذا أسوأ ما
+   يمكن أن يحدث.
+   الحدّ .84 لا .55 كما في المرجع. مقيس بالبكسل لا مقدَّر: تُرسَم الصفحة
+   والسطر مخفيّ (visibility:hidden)، ثمّ يؤخَذ **أسطع ٢٪** من بكسلات
+   الخلفية داخل صندوقه — لا المتوسّط، فالتباين ينكسر عند ألمع بقعة.
+   ⚠️ والقياس **بالسطر ظاهرًا كذب**: بكسلات تنعيم حواف الحدّ نفسها تُعدّ
+   خلفيةً ساطعة، فأعطت 2.18:1 وهْمًا. بالسطر مخفيًّا: أسطع ٢٪ لمعانها
+   0.0666، والحدّ مركَّبًا فوقها = **6.2:1** (والمتوسّط 9.9:1).
+   والتعبئة .12 ليست زينة: الحرف المفرَّغ تمامًا يفقد ثقله البصري عند
+   أحجام الجوّال، وهذه التعبئة الخفيفة تعيده بلا أن تُلغي طابع الحدّ. */
+@supports (-webkit-text-stroke:1px #000){
+  .hero h1 .hl-out{color:rgba(255,255,255,.12);-webkit-text-stroke:2px rgba(234,243,241,.84)}
+  /* العربية متّصلة وعيونها ضيّقة: حدّ 2px يسدّ عين «ع» و«ه» عند 31px.
+     1.3px يحفظ الشكل ويبقي التباين نفسه (الحدّ لون واحد لا سُمك واحد). */
+  html[lang="ar"] .hero h1 .hl-out{-webkit-text-stroke-width:1.5px}
+}
 .hero .lead{color:rgba(234,243,241,.78);font-size:clamp(16.5px,2vw,20px);margin-inline:auto}
 @media (min-width:920px){.hero .lead{margin-inline:0}}
 .hero .eyebrow{background:rgba(140,198,62,.14);color:var(--lime)}
@@ -591,7 +626,12 @@ html.dark .stat-n{color:var(--lime)}
    ② حافّة رفيعة حول الزجاج تعطي حدًّا نظيفًا بلا محاكاة جهاز.
    ③ اللقطة أكبر (340px بدل 300) فتُقرأ الواجهة داخلها.
    الثلاثة ساكنة تمامًا عدا طفوٍ بطيء بـtransform وحده. */
-.hero-device{position:relative;isolation:isolate}
+/* المنظور يعيش على الحاوية لا على الجهاز: لو وُضع على .hero-shot نفسه لكان
+   كل عنصر من عناصره الثلاثية يُسقَط بمنظوره الخاصّ ⇒ لا يجتمعون في مجسّم
+   واحد. المنظور هنا يجعل الجهاز كتلةً واحدة تُرى من نقطة واحدة.
+   1500px منظور بعيد عمدًا: القريب (600px) يعطي تشوّه عدسة عريضة يُقرأ
+   اعوجاجًا على سطح مستطيل — وهو بالضبط العطل الذي كلّف الدفعة الثالثة. */
+.hero-device{position:relative;isolation:isolate;perspective:1500px;perspective-origin:50% 42%}
 
 /* ---- هيكل الجهاز ----
    اللوح المجرّد كان يُقرأ مربّعًا أسود: بلا سُمك ولا حافّة ولا شيء يقول
@@ -604,7 +644,25 @@ html.dark .stat-n{color:var(--lime)}
   padding:10px;border-radius:clamp(38px,4.4vw,48px);
   background:linear-gradient(146deg,#5A686F 0%,#1B2429 16%,#0C1114 47%,#141C21 73%,#4E5B62 100%);
   box-shadow:0 44px 84px -30px rgba(0,0,0,.66),0 14px 34px -16px rgba(0,0,0,.55),
-             0 0 0 1px rgba(255,255,255,.09)}
+             0 0 0 1px rgba(255,255,255,.09);
+
+  /* ---- الميلة ----
+     ⚠️ الدفعة الثالثة حذفت الدوران وكتبت أن «rotateY على لقطة مسطّحة
+     يُقرأ اعوجاجًا». ذلك كان صحيحًا لأن الدوران كان على **اللقطة عارية**:
+     صورة مسطّحة تُشوَّه بلا شيء يشرح التشويه. ما تغيّر ثلاثة أشياء تجعل
+     الميلة تُقرأ عمقًا لا خطأً:
+       ① الجهاز صار كتلة (إطار معدني + زجاج + أزرار) تدور **كلّها معًا**؛
+       ② preserve-3d مع رفع الشاشة 3px يعطي فرق عمق حقيقيًّا بين الحافّة
+          والزجاج، فالعين ترى سُمكًا لا التواءً في صورة؛
+       ③ المنظور بعيد (1500px) والزوايا معتدلة (13° · 4° · 2°).
+     كلّ زاوية أفقية مضروبة في --dirx: transform فيزيائي، والجهاز يجب أن
+     يميل نحو النصّ في الاتجاهين. بإشارة واحدة ثابتة كان يميل بعيدًا عن
+     النصّ في العربية — والخلل لا يظهر إلّا في اتجاه واحد.
+     الميلة في متغيّر لأن keyframes الطفو تحتاجها حرفيًّا: transform واحد
+     لا يتراكب، فلو كتبت الحركة translate وحده لألغت الدوران كلّه. */
+  --tilt:rotateX(4deg) rotateY(calc(var(--dirx) * 13deg)) rotateZ(calc(var(--dirx) * -2deg));
+  transform-style:preserve-3d;
+  transform:var(--tilt)}
 /* ① الهالة خلف الجهاز — الفصل عن اللوح الداكن ضوء لا خطّ */
 .hero-shot::before{content:'';position:absolute;z-index:-1;inset:-20% -26%;
   border-radius:50%;pointer-events:none;
@@ -622,9 +680,20 @@ html.dark .stat-n{color:var(--lime)}
 .hp-v1{inset-inline-start:-3px;inset-block-start:23%;block-size:34px}
 .hp-v2{inset-inline-start:-3px;inset-block-start:32%;block-size:34px}
 
-.hp-scr{position:relative;display:block;overflow:hidden;
+/* الزجاج مرفوع 3px عن مستوى الإطار. هذا هو ما يحوّل الميلة من «صورة
+   ملتوية» إلى «جهاز»: عند الدوران تنكشف حافّة الإطار من جهة وتختفي من
+   الأخرى — فرق منظور حقيقي لا يمكن رسمه بتدرّج. */
+.hp-scr{position:relative;display:block;overflow:hidden;transform:translateZ(3px);
   border-radius:clamp(30px,3.6vw,40px);background:#0B0F12}
 .hero-mockup{display:block;width:100%;height:auto}
+
+/* شعاع ضوء يعبر الزجاج. ساكن تمامًا (لا يومض ولا يمرّ): اللمعات الثلاث
+   أُزيلت بطلب المالك في الدفعة الثانية، وهذه ليست عودةً إليها — هي انعكاس
+   ثابت يقول «هذا سطح زجاجي»، لا حركة تلفت النظر.
+   مقصوص بـoverflow:hidden على .hp-scr، فلا يتجاوز حدود الشاشة. */
+.hp-sheen{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(107deg,transparent 26%,rgba(255,255,255,.13) 40%,
+             rgba(255,255,255,.05) 48%,transparent 58%)}
 
 /* ④ الجزيرة والمؤشّر — يُرسمان فوق الصورة لأن اللقطة نفسها بلا شريط حالة.
    موضعهما بالنسبة المئوية لا بالبكسل كي يصحّا مع تغيّر عرض الجهاز. */
@@ -643,9 +712,56 @@ html.dark .stat-n{color:var(--lime)}
    على الـGPU. دورته 7.5ث ولا تتزامن مع الكتلتين (13ث · 19ث). */
 @media (prefers-reduced-motion:no-preference){
   .hero-shot{animation:shot-float 7.5s ease-in-out infinite}
+  /* ⚠️ var(--tilt) مكرّرة في الإطارين لا مضافة إليهما: transform خاصّية
+     واحدة لا تتراكم، فإطارٌ يكتب translate وحده **يمسح** الدوران ⇒ الجهاز
+     ينتصب ويميل سبع مرّات في الدقيقة. */
   @keyframes shot-float{
-    0%,100%{transform:translate3d(0,0,0)}
-    50%{transform:translate3d(0,-10px,0)}
+    0%,100%{transform:translate3d(0,0,0) var(--tilt)}
+    50%{transform:translate3d(0,-10px,0) var(--tilt)}
+  }
+}
+
+/* ---- اللوحتان الطائرتان ----
+   ⚠️ محتواهما حقيقة بنيوية لا حدث حيّ (م5) — انظر تعليق الوسم.
+   موضعهما بالخصائص المنطقية فينعكسان مع الاتجاه؛ أمّا الميلة فـtransform
+   فيزيائي ⇒ مضروبة في --dirx كي تميل اللوحة نحو الجهاز في الاتجاهين.
+   ولا تحملان أي انجذاب للمؤشّر: كل عنصر يلاحق المؤشّر يضع نفسه تحته. */
+.hflag{position:absolute;z-index:4;display:flex;align-items:center;gap:9px;
+  padding:10px 14px;border-radius:15px;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.55);
+  font-size:12.5px;line-height:1.35;white-space:nowrap}
+.hflag b{display:block;font-family:var(--f-head);font-weight:800;font-size:15px;letter-spacing:-.01em}
+html[lang="ar"] .hflag b{font-family:var(--f-body);letter-spacing:0}
+
+/* الأولى: زجاج داكن بنقطة Lime — نفس لغة شرائح .trust في الهيرو */
+.hflag-a{inset-block-start:6%;inset-inline-start:clamp(-30px,-9%,-8px);
+  background:rgba(8,38,44,.90);border:1px solid rgba(140,198,62,.36);color:#EAF3F1;
+  backdrop-filter:blur(7px);transform:rotate(calc(var(--dirx) * -2.5deg))}
+.hflag-a .hflag-tx{color:rgba(234,243,241,.62)}
+.hflag-a b{color:var(--lime)}
+.hflag-dot{inline-size:8px;block-size:8px;border-radius:50%;background:var(--lime);flex:none}
+
+/* الثانية: بطاقة عاجية مصمتة — النقيض اللوني للأولى فلا تُقرآن توأمًا */
+.hflag-b{inset-block-end:14%;inset-inline-end:clamp(-26px,-8%,-6px);
+  flex-direction:column;align-items:flex-start;gap:2px;
+  background:#F2F1EC;color:#08262C;transform:rotate(calc(var(--dirx) * 3deg))}
+.hflag-b span{font-size:11.5px;color:rgba(8,38,44,.62)}
+
+/* تحت 560px الجهاز يضيق حتى تلتصق اللوحتان بحوافّه فتُقصّان بـ
+   .hero{overflow:hidden}. الإخفاء أصدق من عرضٍ مبتور — ونصّهما موجود
+   كاملًا في .hero-note فوقهما، فلا معلومة تضيع. */
+@media (max-width:559px){.hflag{display:none}}
+
+@media (prefers-reduced-motion:no-preference){
+  .hflag-a{animation:flag-bob 6s ease-in-out infinite}
+  .hflag-b{animation:flag-bob2 7.4s ease-in-out infinite}
+  @keyframes flag-bob{
+    0%,100%{transform:translate3d(0,0,0) rotate(calc(var(--dirx) * -2.5deg))}
+    50%{transform:translate3d(0,-9px,0) rotate(calc(var(--dirx) * -2.5deg))}
+  }
+  @keyframes flag-bob2{
+    0%,100%{transform:translate3d(0,0,0) rotate(calc(var(--dirx) * 3deg))}
+    50%{transform:translate3d(0,-11px,0) rotate(calc(var(--dirx) * 3deg))}
   }
 }
 
@@ -677,13 +793,50 @@ html.dark .bt-ic{color:var(--lime)}
 .bt.hero-tile p{color:rgba(255,255,255,.82)}
 .bt.hero-tile .bt-ic{background:rgba(255,255,255,.14);color:var(--lime)}
 .bt.hero-tile{--spot:rgba(140,198,62,.16)}
+/* ---- بلاطة الرقم العملاق ----
+   الرقم **هو** البلاطة: بلا أيقونة تسبقه وبلا عنوان يشرحه قبل أن يُقرأ.
+   ⚠️ الرقم aria-hidden والعنوان يحمله في .sr، فقارئ الشاشة يسمع «0 مكالمة
+   لتحجز» جملةً واحدة بدل رقمٍ يتيم ثمّ عنوانٍ مبتور.
+   ⚠️ --spot أبيض لا Teal: بقعة الضوء الافتراضية (Teal بشفافية) كانت تُقرأ
+   بقعة **قاتمة** فوق Lime — أي عكس ما تعنيه. */
+.bt-zero{background:var(--lime);border-color:transparent;color:var(--on-lime);
+  --spot:rgba(255,255,255,.3);
+  display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:236px}
+.bz-n{font-family:var(--f-head);font-weight:900;line-height:.74;
+  font-size:clamp(84px,11.5vw,142px);letter-spacing:-.06em;
+  font-variant-numeric:tabular-nums}
+.bt-zero h3{margin-bottom:6px}
+.bt-zero p{color:rgba(11,34,39,.74)}
+
+/* ---- بلاطة التسعير ----
+   صفّان لا جدول: الأوّل مدى حقيقي مقروء من القاعدة، والثاني صفرٌ حقيقي.
+   ⚠️ لون القيمة يتبع قاعدة .stat-n نفسها: Teal نهارًا و Lime ليلًا.
+   Lime على سطح أبيض يعطي 2.0:1 — يفشل AA لنصٍّ بهذا الحجم، ولو «بدا»
+   أجمل. اللون هنا مقيس لا مذوّق. */
+.bp-rows{margin:16px 0 0}
+.bp-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:11px 0;border-top:1px solid var(--line)}
+.bp-row:last-child{border-bottom:1px solid var(--line)}
+.bp-row dt{color:var(--muted);font-size:14.5px;font-weight:600}
+.bp-row dd{margin:0;font-family:var(--f-head);font-weight:800;font-size:16px;
+  color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.bp-zero dd{color:var(--teal)}
+html.dark .bp-zero dd{color:var(--lime)}
+.bp-note{margin-top:13px;font-size:14px}
+
 @media (min-width:620px){
   .bento{grid-template-columns:repeat(6,1fr)}
   .bt{grid-column:span 3}
 }
+/* ثمانِ بلاطات على ستّة أعمدة:
+     صفّ١  a(3) | zero(3)
+     صفّ٢  a    | b(3)
+     صفّ٣  price(3) | c(3)
+     صفّ٤  d(2) e(2) f(2)
+   البلاطة الكبيرة وحدها تمتدّ صفّين، فيبقى للشبكة إيقاع لا رتابة. */
 @media (min-width:980px){
   .bt-a{grid-column:span 3;grid-row:span 2;display:flex;flex-direction:column;justify-content:center}
-  .bt-b,.bt-c{grid-column:span 3}
+  .bt-zero,.bt-b,.bt-price,.bt-c{grid-column:span 3}
   .bt-d,.bt-e,.bt-f{grid-column:span 2}
 }
 
@@ -844,11 +997,61 @@ html.dark .sport-live .sport-court>svg{opacity:.62}
 .own-card .eyebrow{background:rgba(255,255,255,.13);color:var(--lime)}
 .own-card h2{font-size:clamp(25px,3.4vw,36px);margin-bottom:14px}
 .own-card p{color:rgba(255,255,255,.84)}
-.own-list{list-style:none;margin:22px 0 26px;display:grid;gap:13px}
-.own-list li{display:flex;gap:11px;align-items:flex-start;font-size:15.5px;font-weight:600}
-.own-list svg{flex-shrink:0;margin-top:5px;color:var(--lime)}
 .own-card .btn-pri{background:var(--lime);color:var(--on-lime)}
-.own-note{margin-top:13px;font-size:14px;color:rgba(255,255,255,.66)}
+.own-card .own-note{margin-top:13px;color:rgba(255,255,255,.66)}
+.own-note{font-size:14px}
+
+/* ---- اللوح الفاتح في الرئيسة ----
+   قسمٌ واحد على الصفحة يقلب لونه إلى العاج، فيقول للقارئ إن الكلام قلب
+   جهته: ما قبله موجَّه للاعب وما فيه موجَّه للمالك.
+   ⚠️ ألوانه مكتوبة صراحةً لا مأخوذة من التوكنات — تمامًا كالهيرو الداكن
+   (§6). التوكنات تنقلب مع الثيم، وهذا اللوح لا ينقلب: لو تبع الثيم لصار
+   ليلًا داكنًا كجيرانه ⇒ يختفي «قلب الجهة» وهو كلّ معناه. وليلًا هو اللوح
+   الفاتح الوحيد على صفحة داكنة، فلا ينافسه شيء على الانتباه.
+   ⚠️ ولذلك أيضًا لا يستعمل .btn-pri: --btn-bg تصير Lime ليلًا، وLime على
+   عاج = 1.8:1. الزرّ هنا داكن مصمت في الثيمين. */
+.own-band{position:relative;isolation:isolate;
+  background:#F2F1EC;color:#08262C;
+  border-block-start:5px solid var(--lime);
+  margin-block:clamp(34px,6vw,72px);
+  padding-block:clamp(52px,8vw,104px)}
+
+/* الشارة تجلس على الحدّ نفسه: نصفها فوق اللوح ونصفها خارجه.
+   ⚠️ لا inset-inline-start:50% + translateX(-50%): transform غير مدرك
+   للاتجاه فلا يتمركز في RTL. وهي هنا ليست في الوسط أصلًا — بداية السطر،
+   ومحاذاة .wrap نفسها فتقع فوق أوّل حرف من العنوان تمامًا. */
+.own-flag{position:absolute;z-index:2;inset-block-start:0;
+  inset-inline-start:clamp(18px,5vw,32px);translate:0 -50%;
+  background:var(--lime);color:var(--on-lime);
+  padding:9px 18px;border-radius:var(--r-full);
+  font-size:13px;font-weight:800;letter-spacing:.02em;
+  box-shadow:0 10px 26px -10px rgba(8,38,44,.42)}
+@media (min-width:1224px){.own-flag{inset-inline-start:calc((100vw - var(--wrap)) / 2 + 32px)}}
+
+.own-band .owners-in{align-items:center}
+.own-copy h2{font-size:clamp(26px,3.8vw,44px);margin-bottom:14px}
+.own-lead{color:rgba(8,38,44,.7);font-size:clamp(15.5px,1.8vw,18px);max-width:46ch}
+
+/* ---- القائمة المرقّمة ٠١..٠٤ ----
+   الرقم من counter لا من الوسم: لو كُتب في الوسم لقرأه قارئ الشاشة مرّة
+   ثمّ قرأ ترقيم <ol> مرّة أخرى. و::before محتوى مولَّد ⇒ خارج شجرة النصّ.
+   decimal-leading-zero يعطي «01» لا «1» — وهو ما يصنع طابع الجدول. */
+.own-steps{list-style:none;counter-reset:os;margin:26px 0 0;padding:0}
+.own-steps li{counter-increment:os;
+  display:grid;grid-template-columns:auto 1fr;gap:3px clamp(12px,2vw,18px);
+  padding-block:15px;border-block-start:1px solid rgba(8,38,44,.15)}
+.own-steps li:last-child{border-block-end:1px solid rgba(8,38,44,.15)}
+.own-steps li::before{content:counter(os,decimal-leading-zero);grid-row:1 / 3;
+  align-self:start;padding-block-start:4px;
+  font-family:var(--f-head);font-weight:700;font-size:13px;letter-spacing:.06em;
+  color:rgba(8,38,44,.4);font-variant-numeric:tabular-nums}
+.own-steps b{font-weight:800;font-size:16.5px;line-height:1.5}
+.own-steps span{color:rgba(8,38,44,.66);font-size:15px;line-height:1.7}
+
+.own-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:28px}
+.own-btn{background:#08262C;color:#F2F1EC;border-color:transparent}
+@media (hover:hover){.own-btn:hover{background:#0F4B53;color:#fff}}
+.own-band .own-note{color:rgba(8,38,44,.56);margin:0}
 
 /* صورة إلى جانب لوح المُلّاك. صورة محتوى حقيقية (<img> بنصّ بديل ومقاسات
    مصرَّح بها فلا تقفز الصفحة عند وصولها) وليست خلفية زخرفية.
@@ -882,10 +1085,45 @@ html.dark .sport-live .sport-court>svg{opacity:.62}
     }
   }
 }
-.own-photo::after{content:'';position:absolute;inset:0;pointer-events:none;
+.own-photo::after{content:'';position:absolute;z-index:2;inset:0;pointer-events:none;
   background:linear-gradient(205deg,rgba(15,75,83,.34) 0%,transparent 52%),
              linear-gradient(0deg,rgba(8,38,44,.42) 0%,transparent 40%)}
 @media (max-width:899px){.own-photo{aspect-ratio:16/9}}
+
+/* =============================================================
+   11ب · صورة رمادية تتلوّن عند التحويم
+   ---------------------------------------------------------------
+   ⚠️ **طبقتان تتقاطعان بالـopacity، لا انتقال على filter.**
+   الحلّ البديهي `img{filter:grayscale(1);transition:filter}` صحيح شكلًا
+   وخاطئ أداءً: filter ليست خاصّية مركَّبة على الـGPU، فتنعيمها يعني إعادة
+   رسم الصورة كاملةً في كل إطار من نصف الثانية. هنا الترشيح **ساكن** على
+   الطبقة العليا ولا يُنعَّم أبدًا، والمتحرّك opacity وحدها.
+   الثمن: فكّ ترميز البتماب مرّتين. والطلب الشبكي واحد — نفس src وsrcset
+   وsizes حرفيًّا، فالثانية تأتي من كاش الذاكرة.
+   ⚠️ الطبقة العليا (الرمادية) هي التي تحمل النصّ البديل، والسفلى
+   alt="" و aria-hidden ⇒ الصورة تُعلَن مرّة واحدة لا مرّتين.
+   ⚠️ وعلى جهاز بلا تحويم تُخفى الرمادية أصلًا: لمس الشاشة لا يكشف اللون،
+   فترك الصورة رمادية على الجوّال يعني أن نصف الزوّار لا يرون الصورة
+   الحقيقية أبدًا. الجوّال يرى اللون، والتحويم ترفٌ لمن يملك مؤشّرًا. */
+.duo{position:relative;overflow:hidden}
+.duo img{display:block;width:100%;height:100%;object-fit:cover}
+.duo .duo-g{position:absolute;inset:0;
+  filter:grayscale(1) contrast(1.05);
+  transition:opacity var(--t-slower) var(--ease)}
+@media (hover:hover) and (pointer:fine){
+  .duo:hover .duo-g,.duo:focus-within .duo-g{opacity:0}
+}
+@media (hover:none),(pointer:coarse){
+  .duo .duo-g{opacity:0}
+}
+
+/* شريط الصورة العريض الذي يغلق «كيف يعمل» */
+.photo-band{position:relative;margin:clamp(30px,5vw,50px) 0 0;
+  border-radius:var(--r-xl);box-shadow:var(--sh-lg);aspect-ratio:21/9}
+@media (max-width:719px){.photo-band{aspect-ratio:16/10}}
+/* تدرّج خفيف يثبّت الصورة في القسم بدل أن تطفو مستطيلًا معلّقًا */
+.photo-band::after{content:'';position:absolute;z-index:2;inset:0;pointer-events:none;
+  background:linear-gradient(0deg,rgba(8,38,44,.30) 0%,transparent 46%)}
 
 /* الصورة الثانية تحت لوح الختام — زخرفية، فخلفية CSS بلا نصّ بديل */
 .cta-photo{position:absolute;inset:0;z-index:-1;pointer-events:none;
@@ -938,6 +1176,18 @@ html.dark .faq-ic{color:var(--lime)}
 .final h2{font-size:clamp(26px,4vw,40px);margin-bottom:12px}
 .final .lead{margin-inline:auto}
 .final .hero-cta{margin-top:26px}
+/* الشارة على لوح داكن: نفس معالجة .hero .eyebrow — التوكن يعطي Teal على
+   Teal هنا (اللوح داكن في الثيمين) فيختفي النصّ. */
+.final .eyebrow{background:rgba(140,198,62,.14);color:var(--lime)}
+/* جملة الختام: أكبر عنوان على الصفحة بعد الهيرو، سطران بلونين.
+   الشطر الثاني block لا inline كي ينكسر السطر حيث نريد لا حيث يتّسع. */
+/* ⚠️ `h2.final-big` لا `.final-big` وحدها: قاعدة `.final h2` أعلاها
+   نوعيّةً (صنف + وسم)، فالحجم الكبير كان يُكتَب ولا يُطبَّق — والعنوان
+   يخرج 40px بدل 78px. مقيس على اللقطة لا مفترضًا. */
+.final h2.final-big{font-size:clamp(32px,6.8vw,78px);line-height:1.04;letter-spacing:-.04em;
+  margin-bottom:16px}
+html[lang="ar"] .final h2.final-big{line-height:1.26;letter-spacing:0}
+.final-big .hi{display:block;color:var(--lime)}
 
 /* =============================================================
    14 · التذييل
@@ -1190,6 +1440,9 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
      من بدّله بعدها كان سيبقى بقيم مكتوبة سطريًّا لا تُمسح. هذه القاعدة
      تُلغيها فورًا لأنّ !important يعلو على السطري. */
   .hero-photo,.own-photo img{--par:0px!important}
-  /* الطفو زينة بحتة: يُطفأ مع كل حركة أخرى */
-  .hero-shot{animation:none!important;transform:none!important}
+  /* الطفو زينة بحتة: يُطفأ مع كل حركة أخرى.
+     ⚠️ لكنّ الميلة **ليست حركة** — هي وضعية ساكنة. transform:none كان
+     سيبسط الجهاز ويُلغي التصميم على من طلب تقليل الحركة وحده، وهو لم
+     يطلب تصميمًا آخر. الميلة تبقى، والطفو وحده يذهب. */
+  .hero-shot{animation:none!important;transform:var(--tilt)!important}
 }

@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap">
 
-<link rel="stylesheet" href="/build/site.fe48dfce.css">
+<link rel="stylesheet" href="/build/site.0197fa4d.css">
 
 <script>(function(){var r=document.documentElement;try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){r.classList.add('dark');}}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 
@@ -120,7 +120,8 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">Sports venue booking</span>
-      <h1>Your court is ready. <span class="hi">Without a single call.</span></h1>
+      
+      <h1><span class="hl-a">Your court is ready.</span> <span class="hi">Without a single call.</span> <span class="hl-out">Nothing left to ask.</span></h1>
       <p class="lead">Browse venues near you, see the hours that are actually free, and send your booking request in under a minute. Football pitches are open for booking now, and the other sports are on the way.</p>
 
       <div class="hero-cta">
@@ -143,9 +144,18 @@
         <span class="hp-scr">
           <img src="/assets/app-mockup-en.png" alt="Choosing a day and a time in the Mustadeera app" class="hero-mockup"
                width="400" height="525" fetchpriority="high" decoding="async">
+          <span class="hp-sheen" aria-hidden="true"></span>
           <span class="hp-island" aria-hidden="true"></span>
           <span class="hp-home" aria-hidden="true"></span>
         </span></span>
+
+      <span class="hflag hflag-a" aria-hidden="true">
+        <span class="hflag-dot"></span>
+        <span class="hflag-tx"><b>Free</b>for players</span>
+      </span>
+      <span class="hflag hflag-b" aria-hidden="true">
+        <b>No card</b><span>pay at the venue</span>
+      </span>
     </figure>
   </div>
 
@@ -234,10 +244,27 @@
         <p>You pick the day and hour, the pitch confirms. You see where your request stands at every step: awaiting confirmation, confirmed, or declined with a reason.</p>
       </article>
 
+      <article class="bt bt-zero rv">
+        <span class="bz-n" aria-hidden="true">0</span>
+        <h3><span class="sr">0 </span>calls to book</h3>
+        <p>Open the app at any hour and send your request. Nobody has to pick up.</p>
+      </article>
+
       <article class="bt bt-b rv">
         <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="1" cx="12" cy="12" r="9"/><path pathLength="1" d="M12 7v5l3.5 2"/></svg></span>
         <h3>Real availability</h3>
         <p>Booked hours disappear from the grid. You won't find out the pitch is taken after you get there.</p>
+      </article>
+
+      <article class="bt bt-price rv">
+        <span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M3 7h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path pathLength="1" d="M3 7l3-3h12l3 3"/><path pathLength="1" d="M9 12h6"/></svg></span>
+        <h3>The price you see is the price you pay</h3>
+        <dl class="bp-rows">
+          
+          <div class="bp-row"><dt>Hourly price in the directory</dt><dd><bdi dir="ltr">40–60</bdi> JOD</dd></div>
+          <div class="bp-row bp-zero"><dt>Extra fees on you</dt><dd>0.00</dd></div>
+        </dl>
+        <p class="bp-note">You pay the venue directly - cash, or however it accepts.</p>
       </article>
 
       <article class="bt bt-c rv">
@@ -278,26 +305,50 @@
       <div class="step rv"><h3>Pick a time</h3><p>The right day, then a free hour. Booked slots aren't shown at all.</p></div>
       <div class="step rv"><h3>Send the request</h3><p>It reaches the pitch straight away and their decision comes back to you. Track it any time from My Bookings.</p></div>
     </div>
+
+    <figure class="photo-band duo rv">
+      <img class="duo-c" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-kick-1100.jpg"
+           srcset="/assets/photos/players-kick-720.jpg 720w, /assets/photos/players-kick-1100.jpg 1100w"
+           sizes="(min-width: 1160px) 1096px, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="A player striking the ball on a floodlit pitch at night">
+    </figure>
   </div>
 </section>
 
-<section class="sec">
+<section class="sec own-band">
+  
+  <span class="own-flag">Switching sides - for pitch owners</span>
   <div class="wrap owners-in rv">
-    <div class="own-card">
-      <span class="eyebrow">For pitch owners</span>
+    <div class="own-copy">
       <h2>A fuller pitch, and a ledger that keeps itself.</h2>
-      <p>A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper - for football pitches today, and for the other sports the moment their venues are registered.</p>
-      <ul class="own-list">
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Every request on one screen - no more scattered calls</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Revenue, occupancy and busiest-hours reports</span></li>
-        <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>You control your hours, prices and amenities yourself</span></li>
-      </ul>
-      <a class="btn btn-pri" href="/en/owners/">Register your pitch</a>
-      <p class="own-note">Registration is free, and we'll be in touch to activate your dashboard.</p>
+      <p class="own-lead">A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper - for football pitches today, and for the other sports the moment their venues are registered.</p>
+
+      <ol class="own-steps">
+        <li><b>Every request on one screen</b><span>Confirm or decline with one tap, and the reason reaches the player with it.</span></li>
+        <li><b>Your hours and prices, your call</b><span>Open or close an hour, and set the price of each pitch yourself.</span></li>
+        <li><b>Revenue and occupancy, worked out</b><span>Daily reports and your busiest hours, with no pen and paper.</span></li>
+        <li><b>The money stays between you and the player</b><span>No online payment passing through us, and no cut taken out of your price.</span></li>
+      </ol>
+
+      <div class="own-cta">
+        <a class="btn btn-lg own-btn" href="/en/owners/">Register your pitch</a>
+        <span class="own-note">Registration is free, and we'll be in touch to activate your dashboard.</span>
+      </div>
     </div>
 
-    <figure class="own-photo">
-      <img src="/assets/photos/players-run-1100.jpg"
+    <figure class="own-photo duo">
+      <img class="duo-c" src="/assets/photos/players-run-1100.jpg"
+           srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
+           sizes="(min-width: 900px) 46vw, 92vw"
+           width="1100" height="733" loading="lazy" decoding="async"
+           alt="" aria-hidden="true">
+      <img class="duo-g" src="/assets/photos/players-run-1100.jpg"
            srcset="/assets/photos/players-run-720.jpg 720w, /assets/photos/players-run-1100.jpg 1100w"
            sizes="(min-width: 900px) 46vw, 92vw"
            width="1100" height="733" loading="lazy" decoding="async"
@@ -351,7 +402,9 @@
   <div class="cta-band-bg" aria-hidden="true"></div>
   <div class="cta-photo" aria-hidden="true"></div>
   <div class="wrap">
-    <h2>Ready to book?</h2>
+    
+    <span class="eyebrow">Booking happens in the app</span>
+    <h2 class="final-big">Tonight's match <span class="hi">is one tap away</span></h2>
     <p class="lead">Download the Android app, or browse the available pitches first.</p>
     <div class="hero-cta">
       <a class="btn btn-pri btn-lg" href="/en/download/">Download the app</a>

@@ -40,6 +40,17 @@ heroCtaPrimary = Download the app
 heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
 heroInstallGuide = Install guide and checksum
+# The headline's third line - drawn as an outline (sheet section 6b).
+# It promises no instant confirmation: the venue confirms the request (m5,
+# faqA2). What it does promise is that free times are already on screen.
+heroTitleOut = Nothing left to ask.
+# Two cards floating around the device. Both are STRUCTURAL facts, not live
+# events: the reference design said "9:00 PM - just opened up", which is news
+# a static site does not have (m5).
+heroFlagFreeK = Free
+heroFlagFreeV = for players
+heroFlagCardK = No card
+heroFlagCardV = pay at the venue
 
 # ---------- Proof strip (every line is verifiable) ----------
 trust1 = Booked hours never show up for you
@@ -98,6 +109,20 @@ featLangTitle = Arabic and English
 featLangDesc = The full interface in both directions, with a dark mode that's easy on the eyes.
 featNoCardTitle = No cards
 featNoCardDesc = No online payment, no card number. The app books you the time; the rest is between you and the pitch.
+# The giant-numeral tile: the number IS the tile. A structural zero, not a
+# measured one - there is no call in the path at all, and no "average calls"
+# figure is being claimed (m5).
+featZeroNum = 0
+featZeroTitle = calls to book
+featZeroDesc = Open the app at any hour and send your request. Nobody has to pick up.
+# The pricing tile: {{priceSpan}} is read from the registered pitch prices at
+# build time. The "extra fees" row is a real zero: no cut is taken from the
+# player, the same thing trust2 already says.
+featPriceTableTitle = The price you see is the price you pay
+featPriceRowSpan = Hourly price in the directory
+featPriceRowExtra = Extra fees on you
+featPriceRowExtraVal = 0.00
+featPriceTableNote = You pay the venue directly - cash, or however it accepts.
 
 # ---------- How it works ----------
 howEyebrow = How it works
@@ -118,9 +143,26 @@ ownersB2 = Revenue, occupancy and busiest-hours reports
 ownersB3 = You control your hours, prices and amenities yourself
 ownersCta = Register your pitch
 ownersCtaNote = Registration is free, and we'll be in touch to activate your dashboard.
+# The badge floating on the light panel's top edge - it tells the reader the
+# copy has switched sides.
+ownersFlag = Switching sides - for pitch owners
+# The numbered 01..04 list. A short title then its explanation, so the number
+# leads the eye instead of a tick mark.
+ownersS1K = Every request on one screen
+ownersS1V = Confirm or decline with one tap, and the reason reaches the player with it.
+ownersS2K = Your hours and prices, your call
+ownersS2V = Open or close an hour, and set the price of each pitch yourself.
+ownersS3K = Revenue and occupancy, worked out
+ownersS3V = Daily reports and your busiest hours, with no pen and paper.
+ownersS4K = The money stays between you and the player
+ownersS4V = No online payment passing through us, and no cut taken out of your price.
 
 # ---------- Closing call ----------
-finalTitle = Ready to book?
+# An honest kicker: the reference design read "kickoff in 28 seconds", a
+# figure nobody measured (m5). What we can say is where booking happens.
+finalEyebrow = Booking happens in the app
+finalTitleA = Tonight's match
+finalTitleHi = is one tap away
 finalDesc = Download the Android app, or browse the available pitches first.
 finalPrimary = Download the app
 finalSecondary = Browse the pitches
@@ -419,3 +461,4 @@ plEmpty = No venue matches your search. Try a shorter name, or clear the city fi
 # wish it showed. These are stock match photographs, not pictures of
 # the venues listed here - we do not have those (honesty rule 5).
 photoPlayersAlt = Players competing for the ball during a football match
+photoKickAlt = A player striking the ball on a floodlit pitch at night
