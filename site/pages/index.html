@@ -69,6 +69,56 @@
   </div>
 </section>
 
+<!-- ============ الرياضات ============
+     أوّل ما يسأله الزائر: «شو هو هذا التطبيق؟». الجواب هنا بلوحة واحدة:
+     خمس رياضات، وحالة كل واحدة مكتوبة على حبّتها لا في حاشية.
+     ⚠️ الحالات هنا مرآة لـSPORTS في app/src/app.js — لا تُفتَح رياضة هنا قبل
+     أن تُفتَح هناك، وإلّا وعد الموقعُ بما لا يعطيه التطبيق (م5).
+     الأيقونات هي أيقونات التطبيق نفسها حرفيًّا: الزائر الذي يراها هنا يجدها
+     كما هي في مبدّل الرياضة داخل التطبيق. -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">{{t.sportsEyebrow}}</span>
+      <h2 class="h2">{{t.sportsTitle}}</h2>
+      <p class="lead">{{t.sportsLead}}</p>
+    </div>
+
+    <ul class="sports">
+      <li class="sport sport-live rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m12 7.6 3.7 2.7-1.4 4.4H9.7L8.3 10.3 12 7.6Z" fill="currentColor" stroke="none"/><path d="M12 3v4.6M8.3 10.3 4 8.9M15.7 10.3 20 8.9M9.7 14.7 7.2 18.6M14.3 14.7l2.5 3.9"/></svg></span>
+        <span class="sport-nm">{{t.sportFootball}}</span>
+        <span class="sport-st">{{t.sportLive}}</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6c4.1 0 6.9 3 6.9 7s-2.8 7-6.9 7-6.9-3-6.9-7 2.8-7 6.9-7Z"/><circle cx="9.6" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".9" fill="currentColor" stroke="none"/><path d="M12 16.6V21"/><path d="M10.4 21h3.2"/></svg></span>
+        <span class="sport-nm">{{t.sportPadel}}</span>
+        <span class="sport-st">{{t.sportSoon}}</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="M5.6 5.6c3.6 3.6 3.6 9.2 0 12.8M18.4 5.6c-3.6 3.6-3.6 9.2 0 12.8"/></svg></span>
+        <span class="sport-nm">{{t.sportBasket}}</span>
+        <span class="sport-st">{{t.sportSoon}}</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="10.2" cy="8.4" rx="5.6" ry="6.6" transform="rotate(38 10.2 8.4)"/><path d="M6.6 4.6 13 12M13.6 4.9 7.3 11.7"/><path d="m13.6 13.3 2.2 2.6a2 2 0 0 1-.2 2.7l-.6.6a2 2 0 0 1-2.8-.1l-2.2-2.6"/></svg></span>
+        <span class="sport-nm">{{t.sportTennis}}</span>
+        <span class="sport-st">{{t.sportSoon}}</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 0-4.6 17.2"/><path d="M20.6 9.3A15 15 0 0 0 3.5 14"/><path d="M15.4 20.6A15 15 0 0 0 9.9 3.3"/></svg></span>
+        <span class="sport-nm">{{t.sportVolley}}</span>
+        <span class="sport-st">{{t.sportSoon}}</span>
+      </li>
+    </ul>
+
+    <p class="sports-note rv">
+      <span>{{t.sportsOwnerNote}}</span>
+      <a class="btn btn-sec" href="{{base}}/owners/">{{t.sportsOwnerCta}}</a>
+    </p>
+  </div>
+</section>
+
 <!-- ============ المميزات · Bento ============ -->
 <section class="sec">
   <div class="wrap">
@@ -171,6 +221,12 @@
     </div>
 
     <div class="faq-list">
+      <!-- «هل هو لكرة القدم فقط؟» أوّلًا رغم أن مفتاحه الأخير: هو السؤال الذي
+           يحدّد ما هو المنتج، وما بعده تفاصيل استعمال. الترتيب هنا لا في الملفّ. -->
+      <details class="faq rv">
+        <summary class="faq-q">{{t.faqQ7}}<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>{{t.faqA7}}</p></div></div>
+      </details>
       <details class="faq rv">
         <summary class="faq-q">{{t.faqQ1}}<span class="faq-ic" aria-hidden="true"></span></summary>
         <div class="faq-a"><div><p>{{t.faqA1}}</p></div></div>

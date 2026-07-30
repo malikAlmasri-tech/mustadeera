@@ -739,6 +739,46 @@ html.dark .bt-ic{color:var(--lime)}
 }
 
 /* =============================================================
+   9ب · الرياضات — خمس حبّات، حالة كل واحدة عليها
+   الفرق بين «متاح» و«قريبًا» محمول على ثلاثة إشارات لا لون واحد: الحدّ،
+   والامتلاء، ونصّ الشارة. فمن لا يميّز الألوان يقرأ الحالة كما يقرأها غيره.
+   ============================================================= */
+.sports{list-style:none;display:grid;gap:12px;margin-top:clamp(26px,4vw,40px);
+  grid-template-columns:repeat(2,1fr)}
+@media (min-width:640px){.sports{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:940px){.sports{grid-template-columns:repeat(5,1fr)}}
+.sport{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;
+  padding:clamp(18px,2.4vw,24px) 12px;border-radius:var(--r-lg);
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.sport-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:var(--r-full);
+  background:var(--teal-soft);color:var(--teal)}
+/* سمات الرسم مرّة واحدة هنا لا خمس مرّات في الوسم: خمس أيقونات × ~100 محرف
+   من `fill/stroke/stroke-width/linecap/linejoin` كانت تدفع الرئيسة فوق ميزانيتها.
+   والمسارات الممتلئة داخلها تبقى بسماتها — السمة المكتوبة على العنصر نفسه
+   تسبق القيمة الموروثة من أبيه، فلا تُطمَس نجمة الكرة ولا نقاط مضرب البادل. */
+.sport-ic svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+/* ⚠️ `:not(.sport-live)` ليس زينة. بدونه كانت `html.dark .sport-ic` بوزنها
+   (0,2,1) تغلب `.sport-live .sport-ic` بوزنها (0,2,0)، فتصبغ الأيقونة بالـLime
+   فوق خلفية Lime ⇒ **قرص أخضر مصمت بلا أيقونة** في الوضع الليلي وحده.
+   والاستثناء يمنع التعارض بنيويًّا لا بترتيب سطور يسهل نقضه. */
+html.dark .sport:not(.sport-live) .sport-ic{color:var(--lime)}
+.sport-nm{font-weight:700;font-size:16px}
+.sport-st{font-size:12.5px;font-weight:700;letter-spacing:.02em;
+  padding:4px 11px;border-radius:var(--r-full);
+  background:var(--teal-soft);color:var(--muted)}
+/* المتاحة: ممتلئة بالهوية وبحدّ ملوّن — لا اعتماد على اللون وحده، فالشارة
+   تقول «متاح للحجز» نصًّا، والباقية تقول «قريبًا». */
+.sport-live{border-color:var(--lime);background:linear-gradient(160deg,var(--lime-soft),transparent 70%)}
+.sport-live .sport-ic{background:var(--lime);color:var(--on-lime)}
+.sport-live .sport-st{background:var(--lime);color:var(--on-lime)}
+/* الرياضة التي لم تُفتح بعد: باهتة قليلًا — تُقرأ «موجودة ومنتظَرة» لا «معطّلة» */
+.sport:not(.sport-live) .sport-ic{opacity:.62}
+.sports-note{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:14px;text-align:center;margin-top:clamp(20px,3vw,30px);
+  color:var(--muted);font-size:15.5px}
+
+/* =============================================================
    10 · كيف يعمل
    ============================================================= */
 .steps{display:grid;gap:clamp(20px,3vw,28px);grid-template-columns:1fr;margin-top:clamp(28px,4vw,44px);counter-reset:s}
@@ -1067,6 +1107,11 @@ html.dark .pl-rate{color:#F0C070}
 .pl-am li{font-size:14px;font-weight:600;padding:8px 14px;border-radius:var(--r-full);
   background:var(--lime-soft);border:1px solid var(--line);color:var(--ink-2)}
 .pl-updated{margin-top:clamp(24px,3vw,32px);font-size:13.5px;color:var(--muted)}
+/* ملاحظة «ما هي الرياضة المتاحة» أعلى الدليل: شريط جانبي لا لوح — تُقرأ
+   حاشيةً تشرح القائمة لا إعلانًا يزاحمها. */
+.pl-note{margin-top:16px;max-width:72ch;padding:13px 16px;border-radius:var(--r-sm);
+  border-inline-start:3px solid var(--lime);background:var(--lime-soft);
+  color:var(--ink-2);font-size:15px;line-height:1.75}
 
 /* =============================================================
    19 · انتقالات العرض — الثيم واللغة والتنقّل

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0A0F0B">
-<meta name="description" content="المستديرة — منصّة حجز ملاعب كرة القدم. تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ.">
+<meta name="description" content="المستديرة — منصّة حجز الملاعب الرياضية: كرة القدم والبادل وكرة السلة والتنس والكرة الطائرة. تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ.">
 <title data-i18n="docTitle">المستديرة - احجز ملعبك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,14 +48,18 @@
           </div>
         </div>
         <div class="onb-hero-body">
-          <span class="onb-eyebrow" data-i18n="onbEyebrow">حجز ملاعب كرة القدم</span>
+          <span class="onb-eyebrow" data-i18n="onbEyebrow">حجز الملاعب الرياضية</span>
           <h1 class="onb-title" data-i18n="onbTitle">احجز ملعبك بلا مكالمات</h1>
-          <p class="onb-sub" data-i18n="onbSub">تصفّح الملاعب، قارن الأسعار والأوقات، واحجز في ثوانٍ.</p>
+          <p class="onb-sub" data-i18n="onbSub">خمس رياضات في تطبيق واحد: تصفّح الملاعب، قارن الأسعار والأوقات، واحجز في ثوانٍ. ملاعب كرة القدم مفتوحة الآن، وبقيّة الرياضات قريباً.</p>
+          <!-- الأيقونات الخمس = الرياضات الخمس في SPORTS بالضبط. كانت أربعًا
+               (بلا الطائرة) فكان الشريط يعِد بأقلّ ممّا في التطبيق. زخرفية
+               (aria-hidden) — النصّ المجاور هو ما يقول الرسالة لقارئ الشاشة. -->
           <div class="onb-sports" aria-hidden="true">
             <span class="onb-sport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7.6 3.7 2.7-1.4 4.4H9.7L8.3 10.3 12 7.6Z" fill="currentColor" stroke="none"/><path d="M12 3v4.6M8.3 10.3 4 8.9M15.7 10.3 20 8.9M9.7 14.7 7.2 18.6M14.3 14.7l2.5 3.9"/></svg></span>
             <span class="onb-sport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6c4.1 0 6.9 3 6.9 7s-2.8 7-6.9 7-6.9-3-6.9-7 2.8-7 6.9-7Z"/><circle cx="9.6" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".9" fill="currentColor" stroke="none"/><path d="M12 16.6V21"/><path d="M10.4 21h3.2"/></svg></span>
             <span class="onb-sport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="M5.6 5.6c3.6 3.6 3.6 9.2 0 12.8M18.4 5.6c-3.6 3.6-3.6 9.2 0 12.8"/></svg></span>
             <span class="onb-sport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10.2" cy="8.4" rx="5.6" ry="6.6" transform="rotate(38 10.2 8.4)"/><path d="M6.6 4.6 13 12M13.6 4.9 7.3 11.7"/><path d="m13.6 13.3 2.2 2.6a2 2 0 0 1-.2 2.7l-.6.6a2 2 0 0 1-2.8-.1l-2.2-2.6"/></svg></span>
+            <span class="onb-sport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 0-4.6 17.2"/><path d="M20.6 9.3A15 15 0 0 0 3.5 14"/><path d="M15.4 20.6A15 15 0 0 0 9.9 3.3"/></svg></span>
           </div>
         </div>
       </div>
@@ -216,7 +220,8 @@
       <div class="sport-dd" id="sportDD">
         <button class="sport-dd-btn" id="sportDDBtn" type="button" data-action="toggleSportDD" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="sportsAria" aria-label="اختر الرياضة">
           <span class="sport-dd-ic" id="sportDDIc" aria-hidden="true"></span>
-          <span class="sport-dd-name" id="sportDDName">كرة القدم</span>
+          <!-- نصّ مؤقّت حتى يكتبه renderSportDropdown من الرياضة المختارة -->
+          <span class="sport-dd-name" id="sportDDName">الرياضة</span>
           <svg class="sport-dd-chev" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="sport-dd-menu" id="sportDDMenu" role="listbox" hidden></div>
@@ -615,6 +620,10 @@
       <div class="modal-sub" data-i18n="filtersSub">فلترة حسب البيانات المتاحة للملاعب.</div>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sportLbl">الرياضة</legend>
         <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
+        <!-- هنا وحده يرى المستخدمُ الرياضاتِ الخمس مجتمعة، فهنا تُقال القاعدة:
+             المنصّة لكل الملاعب الرياضية، والمفتوح اليوم كرة القدم. بدون هذا
+             السطر تُقرأ شارات «قريباً» عطلًا في التطبيق لا خطّة معلنة. -->
+        <p class="fx-hint" data-i18n="sportsHint">المستديرة تحجز الملاعب الرياضية كلّها. المفتوح للحجز الآن كرة القدم — وباقي الرياضات تُفتح فور تسجيل ملاعبها.</p>
       </fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sortLabel">الترتيب</legend><div class="fx-chips" id="fxSort"></div></fieldset>
       <div class="fx-group"><label class="fx-label" for="fxRegion" data-i18n="regionLbl">المنطقة</label><select class="finput" id="fxRegion"></select></div>

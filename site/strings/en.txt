@@ -28,10 +28,14 @@ navPlaces = Pitches
 navCta = Book now
 
 # ---------- Hero ----------
-heroBadge = Football pitch booking
-heroTitleA = Your pitch is ready.
+# The platform is for sports venues in general, not football alone. But the
+# honesty rule (M5) forbids implying any other sport is bookable today: every
+# venue in the database is a football pitch. So the promise is broad and what
+# is actually open is stated plainly in the "Sports" section.
+heroBadge = Sports venue booking
+heroTitleA = Your court is ready.
 heroTitleHi = Without a single call.
-heroSub = Browse pitches near you, see the hours that are actually free, and send your booking request in under a minute.
+heroSub = Browse venues near you, see the hours that are actually free, and send your booking request in under a minute. Football pitches are open for booking now, and the other sports are on the way.
 heroCtaPrimary = Download the app
 heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
@@ -41,6 +45,22 @@ heroInstallGuide = Install guide and checksum
 trust1 = Booked hours never show up for you
 trust2 = You pay the pitch price - no extra fee on you
 trust3 = Ratings come from players who actually booked
+
+# ---------- Sports ----------
+# Each sport's status here mirrors SPORTS in app/src/app.js (ready:true/false).
+# When a sport opens in the app, change its badge here - never before.
+sportsEyebrow = The sports
+sportsTitle = A platform for every sports venue - it started with football.
+sportsLead = AL-Mustadira is not a football app. It was built to book sports venues generally, and all five sports have been in the app since day one. What is open for booking right now is football pitches, because those are the venues actually registered with us; everything else carries an explicit "Soon" badge - we never list a venue you cannot book.
+sportFootball = Football
+sportPadel = Padel
+sportBasket = Basketball
+sportTennis = Tennis
+sportVolley = Volleyball
+sportLive = Open for booking
+sportSoon = Soon
+sportsOwnerNote = Own a padel, basketball, tennis or volleyball court? Register it now - your sport opens for booking once its venues are in.
+sportsOwnerCta = Register your venue
 
 # ---------- Product showcase ----------
 showcaseEyebrow = Inside the app
@@ -82,8 +102,8 @@ featNoCardDesc = No online payment, no card number. The app books you the time; 
 # ---------- How it works ----------
 howEyebrow = How it works
 howTitle = Three steps, one minute.
-howStep1Title = Pick a pitch
-howStep1Desc = Browse by area and sport. Photos, amenities, price and surface type are all there.
+howStep1Title = Pick a sport and a venue
+howStep1Desc = Switch sport at the top of the screen, then browse by area. Photos, amenities, price and surface type are all there.
 howStep2Title = Pick a time
 howStep2Desc = The right day, then a free hour. Booked slots aren't shown at all.
 howStep3Title = Send the request
@@ -92,7 +112,7 @@ howStep3Desc = It reaches the pitch straight away and their decision comes back 
 # ---------- Pitch owners ----------
 ownersEyebrow = For pitch owners
 ownersTitle = A fuller pitch, and a ledger that keeps itself.
-ownersDesc = A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper.
+ownersDesc = A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper - for football pitches today, and for the other sports the moment their venues are registered.
 ownersB1 = Every request on one screen - no more scattered calls
 ownersB2 = Revenue, occupancy and busiest-hours reports
 ownersB3 = You control your hours, prices and amenities yourself
@@ -106,7 +126,7 @@ finalPrimary = Download the app
 finalSecondary = Browse the pitches
 
 # ---------- Footer ----------
-footerTagline = Football pitch booking - without the phone calls.
+footerTagline = Sports venue booking - without the phone calls.
 footerColProduct = Product
 footerColCompany = Platform
 footerColLegal = Legal
@@ -187,6 +207,9 @@ aboutP2 = AL-Mustadira moves that notebook somewhere everyone can see at the sam
 aboutWhatTitle = What the platform actually does
 aboutWhat1 = **For players:** browse pitches and their free hours, send a booking request, and follow it through to confirmation.
 aboutWhat2 = **For owners:** a dashboard that collects requests and confirms or declines them with one tap, plus revenue and occupancy reports.
+aboutSportsTitle = One sport today, built for five
+aboutSportsBody = The problem we solve is not specific to football: a padel court and a basketball court get booked through the same unanswered phone call. So the app is built around five sports - football, padel, basketball, tennis and volleyball - and the sport switcher has been in it since day one.
+aboutSportsBody2 = What is open for booking right now is football alone, because those are the venues actually registered with us. The other four carry a "Soon" badge instead of invented listings, and we open them one at a time as their venues come in.
 aboutNotTitle = And what it doesn't do
 aboutNot1 = It takes no online payment and stores no cards - there is no payment in the platform at all.
 aboutNot2 = It does not guarantee a booking on the pitch's behalf: confirmation is always the owner's decision, and what you send is a **request**, not a confirmed booking.
@@ -198,7 +221,9 @@ aboutHonestBody = We show no invented numbers. No ratings written by us, no "tho
 # =========================================================
 ownPageEyebrow = For pitch owners
 ownPageTitle = Your pitch where people look, and your ledger on one screen.
-ownPageLead = Registering is free. You control your hours and prices, and you confirm or decline every request yourself.
+ownPageLead = Registering is free, and open to football, padel, basketball, tennis and volleyball venues. You control your hours and prices, and you confirm or decline every request yourself.
+ownSportsTitle = My venue isn't for football - do you take it?
+ownSportsBody = Yes. AL-Mustadira is built around five sports, and the app's sport switcher shows all of them. Football is what's open for booking today because those are the venues registered with us; the rest carry a "Soon" badge. We open your sport for booking once its venues are in - and registering today is what brings that closer.
 ownProblemTitle = What changes for you
 ownP1Title = The calls stop
 ownP1Desc = Instead of ten scattered calls while you're working, requests arrive in writing in one place, with the time, the pitch and who asked.
@@ -209,7 +234,7 @@ ownP3Desc = Today's and this week's revenue, occupancy rate, busiest hours and y
 ownP4Title = The decision stays yours
 ownP4Desc = Nothing books itself. Every request waits for your confirmation, and you can decline with a reason.
 ownHowTitle = How to register
-ownHow1 = Get in touch with your pitch details: name, area, number of pitches, hours and prices.
+ownHow1 = Get in touch with your venue details: name, sport, area, number of pitches, hours and prices.
 ownHow2 = We create your account and add your pitch with its photos and amenities.
 ownHow3 = You sign in to your dashboard and start receiving requests - and change your hours and prices whenever you like.
 ownCostTitle = What does it cost?
@@ -292,7 +317,7 @@ ctSoonTitle = Contact channels go live shortly
 ctSoonBody = We haven't published a number or an address yet, and we won't put up one that doesn't actually reach us. In the meantime, booking and its requests work as usual inside the platform.
 ctTopicsTitle = What we can help with
 ctTopic1 = **A booking problem:** a request that never arrived, a late confirmation, or a cancellation you didn't understand.
-ctTopic2 = **Registering a pitch:** send the name, area, number of pitches, hours and prices, and we'll take it from there.
+ctTopic2 = **Registering a venue:** send the name, sport, area, number of pitches, hours and prices, and we'll take it from there.
 ctTopic3 = **Your account:** changing your number, recovering access, or deleting your account and data.
 ctTopic4 = **Reporting content:** an abusive review, or incorrect pitch details.
 # Prefilled WhatsApp opener (URL-encoded automatically by the build)
@@ -305,8 +330,12 @@ waMsgOwner = Hello, I'd like to register my pitch on AL-Mustadira. Pitch name:
 #  venue name or a price in here.
 # =========================================================
 plEyebrow = Venue directory
-plTitle = Football pitches available to book
+plTitle = Venues available to book
 plLead = Every venue with its area, surface, number of pitches and hourly price. Open any venue for the detail, and book from the app.
+# This line describes the database, not the ambition: the directory is built
+# from registered rows, and today every one of them is football. If a venue for
+# another sport is registered it will appear here and this line needs updating.
+plSportsNote = The directory currently lists football pitches - the one sport open for booking right now. Padel, basketball, tennis and volleyball appear in the app with a "Soon" badge until their venues are registered.
 plPitchOne = 1 pitch
 plPitchTwo = 2 pitches
 plPitchesFew = pitches
@@ -333,14 +362,16 @@ amBathrooms = Toilets
 amParking = Parking
 
 # ---------- Page titles & descriptions (search + sharing) ----------
-metaPlacesTitle = Football pitch directory - AL-Mustadira
-metaPlacesDesc = Football pitches available to book: area, surface type, number of pitches and the hourly price for each venue.
-metaHomeTitle = AL-Mustadira - book a football pitch without the calls
-metaHomeDesc = Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.
+metaPlacesTitle = Sports venue directory - AL-Mustadira
+metaPlacesDesc = Venues available to book: area, surface type, number of pitches and the hourly price for each. Football pitches are open now; padel, basketball, tennis and volleyball are coming.
+metaHomeTitle = AL-Mustadira - book a sports venue without the calls
+# Never bring back "plus a browser version": the SPA was pulled and booking
+# happens in the app alone (settled decision 1).
+metaHomeDesc = Sports venue booking in Jordan: football is open for booking now, with padel, basketball, tennis and volleyball coming. See the hours that are actually free and send your request in under a minute, from a free Android app.
 metaDownloadTitle = Download the AL-Mustadira app for Android
 metaDownloadDesc = Download and install AL-Mustadira on Android in three steps, with a plain explanation of the outside-the-store install warning.
-metaOwnersTitle = Register your pitch on AL-Mustadira - for owners
-metaOwnersDesc = A dashboard that gathers booking requests and confirms them with one tap, plus revenue and occupancy reports. Free to register.
+metaOwnersTitle = Register your venue on AL-Mustadira - for owners
+metaOwnersDesc = A dashboard that gathers booking requests and confirms them with one tap, plus revenue and occupancy reports. Free to register, and open to football, padel, basketball, tennis and volleyball venues.
 metaAboutTitle = About us - AL-Mustadira
 metaAboutDesc = Why we built AL-Mustadira, and exactly what the platform does for players and for pitch owners.
 metaContactTitle = Contact us - AL-Mustadira
@@ -372,7 +403,11 @@ faqA4 = Not yet. The app is Android-only today, and booking happens there and no
 faqQ5 = Why does Android warn me during install?
 faqA5 = Because the app is downloaded here rather than from the Play Store, and Android shows that warning for every app installed from outside it. The download page walks through the steps, quotes the warning exactly as it appears on your device, and publishes the file's checksum so you can verify it yourself.
 faqQ6 = I own a pitch - how do I register it?
-faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free.
+faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free, and open to any of the five sports - not football alone.
+# Rendered FIRST in the FAQ list on purpose: it is the question that defines
+# what the product even is.
+faqQ7 = Is the app only for football?
+faqA7 = No. AL-Mustadira is a platform for booking sports venues, and it carries five sports: football, padel, basketball, tennis and volleyball. What is open for booking today is football, because those are the venues registered with us so far; the rest appear in the app with a "Soon" badge. We open them one at a time as their venues are registered, and we never list a venue you cannot book.
 
 # ---------- Directory filter ----------
 plSearchPh = Search by venue or area

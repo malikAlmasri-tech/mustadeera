@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AL-Mustadira - book a football pitch without the calls</title>
-<meta name="description" content="Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.">
+<title>AL-Mustadira - book a sports venue without the calls</title>
+<meta name="description" content="Sports venue booking in Jordan: football is open for booking now, with padel, basketball, tennis and volleyball coming. See the hours that are actually free and send your request in under a minute, from a free Android app.">
 <link rel="canonical" href="https://mustadeera.vercel.app/en/">
 
 <!-- كل صفحة تشير إلى شقيقتها في اللغة الأخرى، و x-default إلى العربية (لغة الجمهور الأساسي) -->
@@ -19,8 +19,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AL-Mustadira">
 <meta property="og:locale" content="en">
-<meta property="og:title" content="AL-Mustadira - book a football pitch without the calls">
-<meta property="og:description" content="Browse football pitches near you, see the hours that are actually free, and send your booking request in under a minute. Free Android app plus a browser version.">
+<meta property="og:title" content="AL-Mustadira - book a sports venue without the calls">
+<meta property="og:description" content="Sports venue booking in Jordan: football is open for booking now, with padel, basketball, tennis and volleyball coming. See the hours that are actually free and send your request in under a minute, from a free Android app.">
 <meta property="og:url" content="https://mustadeera.vercel.app/en/">
 <meta property="og:image" content="https://mustadeera.vercel.app/assets/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -38,7 +38,7 @@
      الرئيسة كانت 41KB لأن الورقة تتكرّر في ٢٨ صفحة، وقد تجاوزت ميزانيتها.
      الاسم يحمل بصمة المحتوى ⇒ يُخزَّن سنة كاملة ويتبدّل تلقائيًّا عند أي تعديل.
      الوسم حاجب للرسم ⇒ لا رسمة بلا أنماط، وهو ما كان التضمين يشتريه. -->
-<link rel="stylesheet" href="/build/site.597a6fed.css">
+<link rel="stylesheet" href="/build/site.cfedd1fd.css">
 
 <!-- السكربت الوحيد المضمَّن، ولا يمكن أن يفشل تحميله. مهمّتان:
      ① الثيم يُطبَّق قبل أوّل رسم كي لا يومض الأبيض على مستخدم الوضع الليلي.
@@ -139,9 +139,9 @@
 
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="eyebrow">Football pitch booking</span>
-      <h1>Your pitch is ready. <span class="hi">Without a single call.</span></h1>
-      <p class="lead">Browse pitches near you, see the hours that are actually free, and send your booking request in under a minute.</p>
+      <span class="eyebrow">Sports venue booking</span>
+      <h1>Your court is ready. <span class="hi">Without a single call.</span></h1>
+      <p class="lead">Browse venues near you, see the hours that are actually free, and send your booking request in under a minute. Football pitches are open for booking now, and the other sports are on the way.</p>
 
       <div class="hero-cta">
         <!-- /en/download/ هو الـAPK نفسه متى وُجد إصدار منشور، و/download/ إن لم
@@ -191,6 +191,56 @@
 <section class="sec sec-tight">
   <div class="wrap">
     <div class="stats"><div class="stat rv" style="--i:0"><span class="stat-n" data-count="6">6</span><span class="stat-k">Venues listed</span></div><div class="stat rv" style="--i:1"><span class="stat-n" data-count="12">12</span><span class="stat-k">Bookable pitches</span></div><div class="stat rv" style="--i:2"><span class="stat-n" data-count="6">6</span><span class="stat-k">Areas covered</span></div></div>
+  </div>
+</section>
+
+<!-- ============ الرياضات ============
+     أوّل ما يسأله الزائر: «شو هو هذا التطبيق؟». الجواب هنا بلوحة واحدة:
+     خمس رياضات، وحالة كل واحدة مكتوبة على حبّتها لا في حاشية.
+     ⚠️ الحالات هنا مرآة لـSPORTS في app/src/app.js — لا تُفتَح رياضة هنا قبل
+     أن تُفتَح هناك، وإلّا وعد الموقعُ بما لا يعطيه التطبيق (م5).
+     الأيقونات هي أيقونات التطبيق نفسها حرفيًّا: الزائر الذي يراها هنا يجدها
+     كما هي في مبدّل الرياضة داخل التطبيق. -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">The sports</span>
+      <h2 class="h2">A platform for every sports venue - it started with football.</h2>
+      <p class="lead">AL-Mustadira is not a football app. It was built to book sports venues generally, and all five sports have been in the app since day one. What is open for booking right now is football pitches, because those are the venues actually registered with us; everything else carries an explicit "Soon" badge - we never list a venue you cannot book.</p>
+    </div>
+
+    <ul class="sports">
+      <li class="sport sport-live rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m12 7.6 3.7 2.7-1.4 4.4H9.7L8.3 10.3 12 7.6Z" fill="currentColor" stroke="none"/><path d="M12 3v4.6M8.3 10.3 4 8.9M15.7 10.3 20 8.9M9.7 14.7 7.2 18.6M14.3 14.7l2.5 3.9"/></svg></span>
+        <span class="sport-nm">Football</span>
+        <span class="sport-st">Open for booking</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6c4.1 0 6.9 3 6.9 7s-2.8 7-6.9 7-6.9-3-6.9-7 2.8-7 6.9-7Z"/><circle cx="9.6" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".9" fill="currentColor" stroke="none"/><path d="M12 16.6V21"/><path d="M10.4 21h3.2"/></svg></span>
+        <span class="sport-nm">Padel</span>
+        <span class="sport-st">Soon</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="M5.6 5.6c3.6 3.6 3.6 9.2 0 12.8M18.4 5.6c-3.6 3.6-3.6 9.2 0 12.8"/></svg></span>
+        <span class="sport-nm">Basketball</span>
+        <span class="sport-st">Soon</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="10.2" cy="8.4" rx="5.6" ry="6.6" transform="rotate(38 10.2 8.4)"/><path d="M6.6 4.6 13 12M13.6 4.9 7.3 11.7"/><path d="m13.6 13.3 2.2 2.6a2 2 0 0 1-.2 2.7l-.6.6a2 2 0 0 1-2.8-.1l-2.2-2.6"/></svg></span>
+        <span class="sport-nm">Tennis</span>
+        <span class="sport-st">Soon</span>
+      </li>
+      <li class="sport rv">
+        <span class="sport-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 0-4.6 17.2"/><path d="M20.6 9.3A15 15 0 0 0 3.5 14"/><path d="M15.4 20.6A15 15 0 0 0 9.9 3.3"/></svg></span>
+        <span class="sport-nm">Volleyball</span>
+        <span class="sport-st">Soon</span>
+      </li>
+    </ul>
+
+    <p class="sports-note rv">
+      <span>Own a padel, basketball, tennis or volleyball court? Register it now - your sport opens for booking once its venues are in.</span>
+      <a class="btn btn-sec" href="/en/owners/">Register your venue</a>
+    </p>
   </div>
 </section>
 
@@ -250,7 +300,7 @@
       <h2 class="h2">Three steps, one minute.</h2>
     </div>
     <div class="steps">
-      <div class="step rv"><h3>Pick a pitch</h3><p>Browse by area and sport. Photos, amenities, price and surface type are all there.</p></div>
+      <div class="step rv"><h3>Pick a sport and a venue</h3><p>Switch sport at the top of the screen, then browse by area. Photos, amenities, price and surface type are all there.</p></div>
       <div class="step rv"><h3>Pick a time</h3><p>The right day, then a free hour. Booked slots aren't shown at all.</p></div>
       <div class="step rv"><h3>Send the request</h3><p>It reaches the pitch straight away and their decision comes back to you. Track it any time from My Bookings.</p></div>
     </div>
@@ -263,7 +313,7 @@
     <div class="own-card">
       <span class="eyebrow">For pitch owners</span>
       <h2>A fuller pitch, and a ledger that keeps itself.</h2>
-      <p>A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper.</p>
+      <p>A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper - for football pitches today, and for the other sports the moment their venues are registered.</p>
       <ul class="own-list">
         <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Every request on one screen - no more scattered calls</span></li>
         <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Revenue, occupancy and busiest-hours reports</span></li>
@@ -296,6 +346,12 @@
     </div>
 
     <div class="faq-list">
+      <!-- «هل هو لكرة القدم فقط؟» أوّلًا رغم أن مفتاحه الأخير: هو السؤال الذي
+           يحدّد ما هو المنتج، وما بعده تفاصيل استعمال. الترتيب هنا لا في الملفّ. -->
+      <details class="faq rv">
+        <summary class="faq-q">Is the app only for football?<span class="faq-ic" aria-hidden="true"></span></summary>
+        <div class="faq-a"><div><p>No. AL-Mustadira is a platform for booking sports venues, and it carries five sports: football, padel, basketball, tennis and volleyball. What is open for booking today is football, because those are the venues registered with us so far; the rest appear in the app with a "Soon" badge. We open them one at a time as their venues are registered, and we never list a venue you cannot book.</p></div></div>
+      </details>
       <details class="faq rv">
         <summary class="faq-q">Is the app free to use?<span class="faq-ic" aria-hidden="true"></span></summary>
         <div class="faq-a"><div><p>Yes. Downloading and using the app are free, and we take no booking fee from you. You pay the hourly price to the pitch owner, at the pitch.</p></div></div>
@@ -318,7 +374,7 @@
       </details>
       <details class="faq rv">
         <summary class="faq-q">I own a pitch - how do I register it?<span class="faq-ic" aria-hidden="true"></span></summary>
-        <div class="faq-a"><div><p>Through the <strong>For pitch owners</strong> page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free.</p></div></div>
+        <div class="faq-a"><div><p>Through the <strong>For pitch owners</strong> page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free, and open to any of the five sports - not football alone.</p></div></div>
       </details>
     </div>
   </div>
@@ -345,7 +401,7 @@
     <div class="ft-brand">
       <img class="ft-logo lt" src="/assets/logo-nav.png" alt="AL-Mustadira" width="110" height="40" loading="lazy">
       <img class="ft-logo dk" src="/assets/logo-nav-dark.png" alt="" aria-hidden="true" width="110" height="40" loading="lazy">
-      <p class="ft-tag">Football pitch booking - without the phone calls.</p>
+      <p class="ft-tag">Sports venue booking - without the phone calls.</p>
     </div>
 
     <nav class="ft-col" aria-labelledby="ft-c1">
