@@ -214,6 +214,32 @@ const I18N = {
     chooseDayTimeHint:'اختر اليوم والوقت', actConfirmWa:'أكّد + واتساب',
     ageNow:'وصل الآن', ageMin:'منذ {n} د', ageHr:'منذ {n} س', ageDay:'منذ {n} يوم',
     newPendingToast:'🔔 وصل {n} طلب حجز جديد',
+    // ---- (١) تعديل موعد الحجز — للحجوزات التي ما زالت بانتظار التأكيد ----
+    rsBtn:'تعديل', rsTitle:'تعديل موعد الحجز',
+    rsSub:'اختر يوماً ووقتاً جديدين. يبقى الحجز بانتظار تأكيد إدارة الملعب كما هو.',
+    rsCurrentLbl:'موعدك الحالي', rsCurrentTag:'الحالي',
+    rsSave:'حفظ الموعد الجديد', rsPickTime:'اختر وقتاً جديداً أولاً',
+    rsOk:'تم تعديل موعد حجزك', rsFail:'تعذّر تعديل الموعد', rsErr:'حدث خطأ أثناء تعديل الموعد',
+    rsNoField:'تعذّر جلب أوقات هذا الملعب — لا يمكن تعديل الموعد الآن.',
+    rsNotReady:'تعديل الموعد غير مُفعّل على الخادم بعد — تواصل مع إدارة الملعب لتغيير موعدك.',
+    // ---- (٢) ندرة الأوقات — تظهر فقط حين يبقى وقت أو وقتان فعلاً ----
+    scarce1:'ما بقي إلا وقت واحد في هذا اليوم!', scarce2:'ما بقي إلا وقتان في هذا اليوم!',
+    // ---- (٣) حذف الحساب ----
+    dangerZone:'منطقة الخطر', delAccount:'حذف الحساب', delAccTitle:'حذف حسابك نهائياً؟',
+    delAccMsg:'سيُغلق حسابك ولن تستطيع الدخول به مرة أخرى بهذا الرقم. حجوزاتك القائمة تبقى عند إدارة الملعب كسجل لديها — ألغِ ما لا تريده قبل المتابعة. لا يمكن التراجع عن هذه الخطوة من التطبيق.',
+    delAccConfirm:'نعم، احذف حسابي', delAccOk:'تم حذف حسابك. نأسف لذهابك!',
+    delAccFail:'تعذّر حذف الحساب', delAccErr:'حدث خطأ أثناء حذف الحساب',
+    // ---- (٤) انقطاع الاتصال ----
+    offTitle:'توقّفت الصافرة مؤقتاً', offSub:'يرجى التحقق من اتصالك بالإنترنت — نكمل المباراة فور عودته.',
+    offDismiss:'تصفّح ما هو محمّل', onlineBack:'عاد الاتصال — أكمل اللعب!',
+    // ---- (٥) تعديلات لم تُحفظ ----
+    unsavedTitle:'تعديلات لم تُحفظ', unsavedMsg:'أدخلت بيانات لم تُحفظ بعد. تغلق النافذة وتتجاهلها؟',
+    unsavedDiscard:'تجاهل وأغلق', unsavedKeep:'أكمل التعديل',
+    // ---- (٦) السحب للتحديث ----
+    ptrPull:'اسحب للتحديث', ptrRelease:'أفلت للتحديث', ptrLoading:'يجري التحديث…', ptrDone:'تم التحديث',
+    // ---- (٧) شرائح التصفية اللاصقة ----
+    fchipsAria:'الفلاتر المفعّلة', fchipRegion:'المنطقة: {v}', fchipPriceMin:'من {v}', fchipPriceMax:'إلى {v}',
+    fchipSize:'الحجم: {v}', fchipType:'النوع: {v}', fchipRating:'{v}★ فأعلى', fchipRemove:'أزل {v}',
   },
   en: {
     brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -386,6 +412,32 @@ const I18N = {
     chooseDayTimeHint:'Pick a day & time', actConfirmWa:'Confirm + WhatsApp',
     ageNow:'just now', ageMin:'{n}m ago', ageHr:'{n}h ago', ageDay:'{n}d ago',
     newPendingToast:'🔔 {n} new booking request(s)',
+    // ---- (1) Rescheduling — pending bookings only ----
+    rsBtn:'Modify', rsTitle:'Change booking time',
+    rsSub:'Pick a new day and time. The booking stays pending the venue’s confirmation.',
+    rsCurrentLbl:'Your current time', rsCurrentTag:'current',
+    rsSave:'Save new time', rsPickTime:'Pick a new time first',
+    rsOk:'Your booking time was changed', rsFail:'Couldn’t change the time', rsErr:'An error occurred while changing the time',
+    rsNoField:'Couldn’t load this field’s schedule — rescheduling isn’t possible right now.',
+    rsNotReady:'Rescheduling isn’t enabled on the server yet — contact the venue to move your booking.',
+    // ---- (2) Slot scarcity — shown only when 1 or 2 slots are genuinely free ----
+    scarce1:'Only one slot left on this day!', scarce2:'Only two slots left on this day!',
+    // ---- (3) Delete account ----
+    dangerZone:'Danger zone', delAccount:'Delete account', delAccTitle:'Delete your account?',
+    delAccMsg:'Your account will be closed and you won’t be able to log in again with this number. Existing bookings stay on record with the venue — cancel any you don’t want before continuing. This can’t be undone from the app.',
+    delAccConfirm:'Yes, delete my account', delAccOk:'Your account was deleted. Sorry to see you go!',
+    delAccFail:'Couldn’t delete the account', delAccErr:'An error occurred while deleting the account',
+    // ---- (4) Offline ----
+    offTitle:'The whistle paused', offSub:'Check your internet connection — we’ll resume the match as soon as it’s back.',
+    offDismiss:'Browse what’s loaded', onlineBack:'You’re back online — play on!',
+    // ---- (5) Unsaved changes ----
+    unsavedTitle:'Unsaved changes', unsavedMsg:'You have input that hasn’t been saved. Close and discard it?',
+    unsavedDiscard:'Discard & close', unsavedKeep:'Keep editing',
+    // ---- (6) Pull to refresh ----
+    ptrPull:'Pull to refresh', ptrRelease:'Release to refresh', ptrLoading:'Refreshing…', ptrDone:'Updated',
+    // ---- (7) Sticky filter chips ----
+    fchipsAria:'Active filters', fchipRegion:'Region: {v}', fchipPriceMin:'From {v}', fchipPriceMax:'Up to {v}',
+    fchipSize:'Size: {v}', fchipType:'Type: {v}', fchipRating:'{v}★ & up', fchipRemove:'Remove {v}',
   }
 };
 function t(key, params){
@@ -433,6 +485,15 @@ const API_MESSAGE_MAP = {
   'ما لقينا المكان':'Place not found.',
   'هذا الوقت راح، اختار وقت ثاني':'This time is gone, choose another one.',
   'صار خطأ بالخادم، حاول مرة ثانية':'A server error occurred, please try again.',
+  /* رسائل دالّة تعديل الموعد (player_reschedule_booking) — تُكتب بالعربية في القاعدة وتُترجم هنا */
+  'ما لقينا الحجز':'Booking not found.',
+  'هذا الحجز مش تبعك':'This booking isn’t yours.',
+  'ما بتقدر تعدّل إلا الحجز اللي لسا بانتظار التأكيد':'Only a booking still awaiting confirmation can be changed.',
+  'هذا نفس موعد حجزك':'That’s the same time as your booking.',
+  'ما بنفع تنقل الحجز لوقت راح':'You can’t move a booking to a time that has already passed.',
+  'تم تعديل موعد حجزك':'Your booking time was changed.',
+  'ما بتقدر تحذف هذا الحساب':'You can’t delete this account.',
+  'تم حذف حسابك':'Your account was deleted.',
 };
 const apiMsg = (msg) => (State.lang==='en' && msg && API_MESSAGE_MAP[msg]) ? API_MESSAGE_MAP[msg] : msg;
 
@@ -460,7 +521,8 @@ const ICON = {
   dot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
   edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
-  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>'
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
 };
 
 /* ===================== DOM UTILS ===================== */
@@ -845,6 +907,25 @@ async function sbUpdateBookingStatus(d, session){
   return { success:true, message:'تم التحديث' };
 }
 
+/* تعديل موعد حجز معلّق — عبر **دالّة في القاعدة** لا PATCH مباشر.
+   سياسة `bookings_update` تسمح للاعب بالتحديث إلى `cancelled` وحدها
+   (`with check … status = 'cancelled'`). توسيعها لتمرير `pending` كان سيفتح
+   **كل** الأعمدة أمامه — السعر والملعب واسم صاحب الحجز. الدالّة أضيق:
+   تعدّل `booking_date` و`hour` وحدهما بعد التحقّق من الملكية والحالة والتوفّر،
+   والقيد الفريد في القاعدة يحسم التزامن كما في الإنشاء.
+   ⚠️ تحتاج تشغيل `migration/09_player_reschedule.sql` مرّة واحدة. قبله يردّ
+   PostgREST 404/PGRST202 ⇒ نقولها للمستخدم صراحةً بدل «حدث خطأ» مبهم. */
+async function sbRescheduleBooking(d, session){
+  if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
+  const r = await sbFetch('/rest/v1/rpc/player_reschedule_booking', { method:'POST', token: session.at, body:{
+    p_booking: String(d.row_number), p_date: String(d.date), p_hour: Number(d.hour), p_time_label: d.time || ''
+  }});
+  if (r.status === 404 || (r.raw||'').includes('PGRST202')) return { success:false, message: t('rsNotReady') };
+  if (!r.ok) return { success:false, message: (r.raw||'').includes('23505') ? 'هذا الوقت راح، اختار وقت ثاني' : 'صار خطأ، حاول كمان مرة' };
+  const out = r.data || {};
+  return { success: !!out.success, message: out.message || '' };
+}
+
 /* ═══ الموزّع: نفس واجهة API القديمة (get/post) فوق Supabase ═══ */
 const API = {
   async get(action, extra={}, key) {
@@ -931,6 +1012,23 @@ const API = {
         return { success:true, message:'تم حفظ التعديلات', player:{ player_id:s.uid, name, phone:s.phone } };
       }
 
+      /* «حذف الحساب» = **إغلاقه** (`profiles.active = false`).
+         حذف مستخدم من `auth.users` يحتاج `service_role`، ووضع ذلك المفتاح في
+         المتصفّح = تسليم القاعدة كاملةً — نفس سبب رفض «إعادة تعيين كلمة السرّ»
+         في `/admin` (قرار ٥). والإغلاق يمنع الدخول فعليًّا لا شكليًّا:
+         `sbLogin` يرفض أي حساب `active=false` قبل أن يُصدر جلسة.
+         ⚠️ ولذلك نصّ التأكيد يقول ما يحدث بالضبط ولا يَعِد بمحو البيانات. */
+      case 'deleteAccount': {
+        const s = await sbSession(data.player_token, false);
+        if (!s) return { success:false, message:'سجّل دخولك أول' };
+        const r = await sbRest(`/profiles?id=eq.${s.uid}`, { method:'PATCH', token:s.at,
+          prefer:'return=representation', body:{ active:false } });
+        if (!r.ok) return { success:false, message:'صار خطأ، حاول كمان مرة' };
+        // صفّ فارغ مع 200 = منعته RLS. قبول العملية ≠ نجاحها.
+        if (!(r.data||[]).length) return { success:false, message:'ما بتقدر تحذف هذا الحساب' };
+        return { success:true, message:'تم حذف حسابك' };
+      }
+
       // يخدم اللاعب والمالك معًا — الفرق فقط أيّ توكن أُرسل
       case 'changePassword': {
         const isOwner = !!data.owner_token;
@@ -959,6 +1057,9 @@ const API = {
         const s = await sbSession(data.owner_token || data.player_token, !!data.owner_token);
         return sbUpdateBookingStatus(data, s);
       }
+
+      case 'playerRescheduleBooking':
+        return sbRescheduleBooking(data, await sbSession(data.player_token, false));
 
       case 'ownerUpdateField': {
         const s = await sbSession(data.owner_token, true);
@@ -1031,6 +1132,7 @@ const State = {
   detail: { place:null, field:null, date: today(), hour:null },
   booking:{ place:null, field:null, date:null, hour:null, editing:true },   // null date ⇒ إفشاء تدريجي
   manual: { fieldId:null, date: today(), hour:null },
+  reschedule: { booking:null, field:null, date:null, hour:null },   // تعديل موعد حجز معلّق
   review: { rating:0, placeId:null },
   pendingBooking: null,   // حجز الضيف المحفوظ ريثما يسجّل دخوله ثم يُستأنف
   pageScroll: {},         // موضع التمرير لكل صفحة (الرئيسية تستعيده دائمًا، والرجوع يستعيد صفحته)
@@ -1220,12 +1322,49 @@ async function resumePendingBooking(){
 /* ===================== AUTH CHOICE (للضيف عند التأكيد) ===================== */
 function openAuthChoice(){ Modal.open('modal-authchoice'); }
 
+/* ===================== (٥) تعديلات لم تُحفظ =====================
+   النوافذ ذات الإدخال تُغلق بأربعة مسارات (زرّ · Escape · نقر خارجها · سحب لأسفل)،
+   وكلّها كانت تبتلع ما كتبه المستخدم بصمت. العلَم يُرفع بأي **إدخال أو اختيار** —
+   والاختيار هنا ليس حقلًا (أزرار الأيام والأوقات والنجوم) فلا يكفي حدث `input`.
+   يُنزَّل عند فتح النافذة (المحتوى يُعاد بناؤه) وعند الحفظ الناجح. */
+const DIRTY_MODALS = ['modal-field','modal-review','modal-manual','modal-reschedule'];
+const Dirty = {
+  _set: new Set(),
+  mark(id){ if(DIRTY_MODALS.includes(id)) this._set.add(id); },
+  clear(id){ id ? this._set.delete(id) : this._set.clear(); },
+  has(id){ return this._set.has(id); },
+  init(){
+    DIRTY_MODALS.forEach(id=>{
+      const o=$('#'+id); if(!o) return;
+      const on=()=>Dirty.mark(id);
+      o.addEventListener('input', on);
+      o.addEventListener('change', on);
+      o.addEventListener('click', (e)=>{ if(e.target.closest('.day-btn,.tbtn,.star')) on(); });
+    });
+  }
+};
+/* يُستدعى من كل مسارات الإغلاق. ⚠️ فتح نافذة التأكيد يُخفي النافذة القذرة
+   (‏`Modal.open` ينادي `closeAll`)، فإن اختار «أكمل التعديل» نعيد إظهارها —
+   ومحتواها باقٍ في DOM كما تركه، ولذلك نُبقي العلَم مرفوعًا (keepDirty). */
+async function confirmDiscard(id){
+  const ok = await askConfirm(t('unsavedTitle'), t('unsavedMsg'), t('unsavedDiscard'), t('unsavedKeep'), true);
+  const o=$('#'+id); if(!o) return;
+  if(ok){ Dirty.clear(id); o.classList.remove('show'); Modal._afterClose(); }
+  else Modal.open(id, true);
+}
+
 /* ===================== MODAL (+ swipe to close) ===================== */
 const Modal = {
   _last:null,
-  open(id){ const o=$('#'+id); if(!o) return; this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open');
+  open(id, keepDirty){ const o=$('#'+id); if(!o) return; if(!keepDirty) Dirty.clear(id); this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open');
     const panel=o.querySelector('.modal,.scard'); if(panel){ panel.setAttribute('tabindex','-1'); requestAnimationFrame(()=>{ try{ panel.focus({preventScroll:true}); }catch(_){} }); } },
-  close(id){ const o = id ? $('#'+id) : $('.modal-overlay.show'); if(o) o.classList.remove('show'); this._afterClose(); },
+  /* force=true يتخطّى سؤال «تعديلات لم تُحفظ» — يستعمله مسار الحفظ الناجح وحده */
+  close(id, force){
+    const o = id ? $('#'+id) : $('.modal-overlay.show');
+    if(!o){ this._afterClose(); return; }
+    if(!force && Dirty.has(o.id)){ confirmDiscard(o.id); return; }
+    Dirty.clear(o.id); o.classList.remove('show'); this._afterClose();
+  },
   closeAll(except){ $$('.modal-overlay.show, .success-overlay.show').forEach(o=>{ if(o!==except) o.classList.remove('show'); }); },
   _afterClose(){
     if($$('.modal-overlay.show, .success-overlay.show').length) return;   // ما زالت نافذة مفتوحة
@@ -1241,7 +1380,8 @@ function enableSwipe(overlay){
   grip.addEventListener('touchstart', e => { startY = e.touches[0].clientY; active = true; dy = 0; modal.classList.add('dragging'); }, { passive:true });
   // النوافذ الحرجة (data-safe-close كنافذة مراجعة الحجز): مقاومة بصرية + مسافة إغلاق أكبر بكثير
   grip.addEventListener('touchmove', e => { if(!active) return; dy = Math.max(0, e.touches[0].clientY - startY); const damp = modal.dataset.safeClose ? 0.45 : 1; modal.style.transform = `translate3d(0,${dy*damp}px,0)`; }, { passive:true });
-  const end = () => { if(!active) return; active = false; modal.classList.remove('dragging'); modal.style.transform = ''; const limit = modal.dataset.safeClose ? 250 : 110; if (dy > limit){ overlay.classList.remove('show'); Modal._afterClose(); } dy = 0; };
+  // الإغلاق بالسحب يمرّ بـModal.close كي يسأل عن التعديلات غير المحفوظة كبقية المسارات
+  const end = () => { if(!active) return; active = false; modal.classList.remove('dragging'); modal.style.transform = ''; const limit = modal.dataset.safeClose ? 250 : 110; if (dy > limit){ Modal.close(overlay.id); } dy = 0; };
   grip.addEventListener('touchend', end); grip.addEventListener('touchcancel', end);
 }
 
@@ -1487,6 +1627,46 @@ function updateFilterBar(){
   if(c){ c.textContent=n; c.hidden=n===0; }
   const sc=$('#sortCurrent'); if(sc) sc.textContent=t('sortLabel')+': '+t(SORT_LABEL[State.sort]||'sortDefault');
   const fb=$('#filterBtn'); if(fb) fb.classList.toggle('has-filters', n>0);
+  renderFilterChips();
+}
+
+/* ===================== (٧) شرائح التصفية اللاصقة =====================
+   ما هو مفعَّل فعلًا في `State.fx` و`State.filter` — شريحة لكلٍّ، وإزالتها بضغطة.
+   قبلها كان عدّاد رقمي على زرّ الفلاتر يقول «٣» بلا أن يقول **أيّ ثلاثة**، فيضطرّ
+   المستخدم لفتح الورقة ليعرف لماذا اختفت النتائج.
+   ملاحظة: الترتيب ليس فلترًا (لا يُخفي نتيجة) فلا شريحة له، وإن كان يدخل العدّاد. */
+function filterChipList(){
+  const fx=State.fx, out=[];
+  const add=(label, remove)=> out.push({label, remove});
+  if(State.favOnly)        add(t('favTab'),                                ()=>{ State.favOnly=false; });
+  if(State.filter!=='all') add(t('fchipRegion',{v:State.filter}),          ()=>{ State.filter='all'; });
+  if(fx.minPrice!=null)    add(t('fchipPriceMin',{v:formatCurrency(fx.minPrice)}), ()=>{ fx.minPrice=null; });
+  if(fx.maxPrice!=null)    add(t('fchipPriceMax',{v:formatCurrency(fx.maxPrice)}), ()=>{ fx.maxPrice=null; });
+  fx.sizes.slice().forEach(v => add(t('fchipSize',{v}),  ()=>toggleArr(fx.sizes, v)));
+  fx.types.slice().forEach(v => add(t('fchipType',{v}),  ()=>toggleArr(fx.types, v)));
+  if(fx.minRating>0)       add(t('fchipRating',{v:fx.minRating}),          ()=>{ fx.minRating=0; });
+  if(fx.availableToday)    add(t('availableToday'),                        ()=>{ fx.availableToday=false; });
+  fx.amenities.slice().forEach(k => add(amenityLabel(AMENITY[k]) || k, ()=>toggleArr(fx.amenities, k)));
+  return out;
+}
+function renderFilterChips(){
+  const bar=$('#fchipsBar'); if(!bar) return;
+  const list=filterChipList();
+  clear(bar);
+  if(!list.length){ bar.hidden=true; return; }   // hidden لا شفافية: صفّ فارغ لاصق كان يأكل ارتفاعًا
+  bar.hidden=false;
+  const after=()=>{ renderRegionTabs(); renderPlaces(); };   // renderPlaces ينادي updateFilterBar ⇒ الشرائح تُعاد بناؤها
+  list.forEach(c=>{
+    const b=h('button',{class:'fchip', type:'button', 'aria-label':t('fchipRemove',{v:c.label})},
+      h('span',{class:'fchip-lbl'}, c.label), ico('x','fchip-x'));
+    b.addEventListener('click', ()=>{ c.remove(); buzz(6); after(); });
+    bar.append(b);
+  });
+  if(list.length>1){
+    const clr=h('button',{class:'fchip fchip-clear', type:'button'}, t('clearAll'));
+    clr.addEventListener('click', ()=>{ resetAllFilters(); State.favOnly=false; buzz(8); updateSearchClear(); after(); });
+    bar.append(clr);
+  }
 }
 function placeCard(p, eager){
   const av = placeAvailability(p);
@@ -1599,6 +1779,26 @@ function openFilters(){
   renderFiltersSheet();
   Modal.open('modal-filters');
 }
+/* عدّاد زرّ «تطبيق» — يُقرأ من المسودّة، فيجب أن تكون المسودّة محدَّثة أولاً */
+function updateFxApplyCount(){
+  const fx=State.fxDraft; if(!fx) return;
+  let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++;
+  n+=fx.sizes.length+fx.types.length+fx.amenities.length;
+  if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
+  setText('fxApplyCount', n? `${t('apply')} (${n})` : t('apply'));
+}
+/* ⚠️ الحقول الثابتة (السعر · «متاح اليوم») تعيش في HTML ولا يُعاد إنشاؤها، بينما
+   كل نقرة على شريحة تُعيد بناء الورقة و**تُعيد كتابة قيمها من المسودّة**. وما دامت
+   المسودّة لا تُكتب إلا في applyFilters، كان كل ما كُتب ولم يُطبَّق بعد يُمحى صامتًا.
+   الحلّ: يكتب المستخدمُ المسودّةَ فور إدخاله، فتبقى إعادة البناء أمينة.
+   (مزامنة DOM⇒مسودّة قبل الرسم كانت ستُحيي نصّ الجلسة السابقة عند أوّل فتح.) */
+function syncDraftInputs(){
+  const fx=State.fxDraft; if(!fx) return;
+  fx.minPrice=numOrNull($('#fxMin').value);
+  fx.maxPrice=numOrNull($('#fxMax').value);
+  fx.availableToday=$('#fxToday').checked;
+  updateFxApplyCount();
+}
 function renderFiltersSheet(){
   const fx=State.fxDraft;
   // الترتيب
@@ -1609,8 +1809,10 @@ function renderFiltersSheet(){
   reg.append(h('option',{value:'all'},t('allRegions')));
   getRegions().forEach(r=> reg.append(h('option',{value:r}, r)));
   reg.value = (State.filter!=='all' && getRegions().some(r=>r===State.filter)) ? State.filter : 'all';
-  // السعر
+  // السعر — إسناد الخاصّية (لا addEventListener) لأنه **متكافئ**: الحقول ثابتة في HTML
+  // وإعادة البناء تمرّ هنا عشرات المرّات، فالإضافة كانت ستكدّس مستمعًا في كل مرّة.
   $('#fxMin').value = fx.minPrice ?? ''; $('#fxMax').value = fx.maxPrice ?? '';
+  $('#fxMin').oninput = $('#fxMax').oninput = syncDraftInputs;
   // الحجم
   const sz=$('#fxSizes'); clear(sz); const sizes=distinctSizes();
   sizes.length ? sizes.forEach(szv=>{ const c=fxChip(szv, fx.sizes.includes(szv)); c.addEventListener('click',()=>{ toggleArr(fx.sizes,szv); renderFiltersSheet(); }); sz.append(c); })
@@ -1621,15 +1823,15 @@ function renderFiltersSheet(){
                : tp.append(h('span',{class:'fx-empty'},t('noData')));
   // التقييم
   const rt=$('#fxRating'); clear(rt); [4,3,2].forEach(r=>{ const c=fxChip('★ '+r+'+', fx.minRating===r); c.addEventListener('click',()=>{ fx.minRating = fx.minRating===r?0:r; renderFiltersSheet(); }); rt.append(c); });
-  // متاح اليوم
+  // متاح اليوم — نفس العطل تمامًا: كان يُعاد ضبطه من المسودّة عند كل إعادة بناء
   $('#fxToday').checked = !!fx.availableToday;
+  $('#fxToday').onchange = syncDraftInputs;
   // المرافق
   const am=$('#fxAmenities'); clear(am); const ams=distinctAmenities();
   ams.length ? ams.forEach(k=>{ const m=AMENITY[k]; const c=fxChip(m&&m.labelKey?t(m.labelKey):k, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
               : am.append(h('span',{class:'fx-empty'},t('noData')));
   // عدّاد المسودّة
-  let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++; n+=fx.sizes.length+fx.types.length+fx.amenities.length; if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
-  setText('fxApplyCount', n? `${t('apply')} (${n})` : t('apply'));
+  updateFxApplyCount();
 }
 function applyFilters(){
   const fx=State.fxDraft; if(!fx) return;
@@ -1836,12 +2038,15 @@ function renderDetailDays(){
     }));
   }
 }
-function timeButton(slot, taken, selected, onClick){
-  const stateLbl = taken ? t('stTaken') : (selected ? t('stSelected') : t('stAvailable'));
+/* opts (اختياري): { cls, tag } — لوسم خانة بحالة خاصّة (مثل «الحالي» في تعديل الموعد)
+   بدل «محجوز» المضلّل. الاستدعاءات الثلاثة القديمة تمرّ بلا تغيير. */
+function timeButton(slot, taken, selected, onClick, opts){
+  const o = opts || {};
+  const stateLbl = taken ? (o.tag || t('stTaken')) : (selected ? t('stSelected') : t('stAvailable'));
   const disp = slotDisplay(slot);
-  const b=h('button',{class:'tbtn'+(taken?' taken':'')+(selected&&!taken?' sel':''), type:'button',
+  const b=h('button',{class:'tbtn'+(taken?' taken':'')+(selected&&!taken?' sel':'')+(o.cls?' '+o.cls:''), type:'button',
     'aria-pressed': (selected&&!taken)?'true':'false', 'aria-label': disp+' — '+stateLbl}, disp);
-  if (taken){ b.setAttribute('disabled',''); b.append(h('span',{class:'t-tag'}, t('bookedTag'))); }
+  if (taken){ b.setAttribute('disabled',''); b.append(h('span',{class:'t-tag'}, o.tag || t('bookedTag'))); }
   else b.addEventListener('click', onClick);
   return b;
 }
@@ -1851,11 +2056,22 @@ const TIME_PERIODS=[
   {key:'tmNoon',    test:hr=>hr>=12&&hr<17},
   {key:'tmEvening', test:hr=>hr>=17},
 ];
+/* ندرة الأوقات — لافتة تُعرض **فقط** حين يبقى وقت أو وقتان.
+   العدد المعروض = عدد الأزرار القابلة للنقر بالضبط (نفس `free` أدناه)، فالمستخدم
+   يستطيع عدّها بعينه ⇒ لا استعجال مخترَع (قاعدة الصدق م5). ولا نصّ عامّ لـ«n»
+   لأن المعدود العربي يتغيّر مع العدد: نصّان جاهزان للمفرد والمثنّى. */
+function scarcityBanner(free){
+  if(free!==1 && free!==2) return null;
+  return h('div',{class:'scarce', 'data-n':String(free)},
+    h('span',{class:'scarce-dot','aria-hidden':'true'}),
+    h('span',{class:'scarce-txt'}, t(free===1?'scarce1':'scarce2')));
+}
 function renderDetailTimes(){
   const el=$('#detailTimes'); clear(el);
   const slots=fieldSlots(State.detail.field);
   const taken=(State.bookedSlots[State.detail.field.field_id]?.[State.detail.date])||[];
   const free=slots.filter(s=>!taken.includes(s.hour)).length;
+  const scarce=scarcityBanner(free); if(scarce) el.append(scarce);
   TIME_PERIODS.forEach(p=>{
     const group=slots.filter(s=>p.test(Number(s.hour)));
     if(!group.length) return;
@@ -2046,9 +2262,19 @@ function playerBookingCard(b){
   );
   if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, t('reasonPrefix')+b.cancel_reason));
   if (canCancel){
-    const btn=h('button',{class:'cbtn', style:{marginTop:'12px',color:'#dc2626',borderColor:'rgba(220,38,38,.25)'}}, t('cancelBookingBtn'));
-    btn.addEventListener('click', ()=>playerCancelBooking(btn, b.row_number, b.place_name+' - '+b.field_name));
-    card.append(btn);
+    const label = b.place_name+' - '+b.field_name;
+    const row = h('div',{class:'bk-actions'});
+    // «تعديل» للمعلّق وحده: المؤكّد اتّفق عليه الطرفان ⇒ تغييره من طرف واحد يكسر الاتفاق،
+    // وسياسة القاعدة نفسها لا تسمح به (الدالّة ترفض أي حالة غير pending).
+    if (status==='pending'){
+      const ed=h('button',{class:'cbtn bk-act'}, ico('edit','svg-sm'), ' '+t('rsBtn'));
+      ed.addEventListener('click', ()=>openReschedule(b));
+      row.append(ed);
+    }
+    const btn=h('button',{class:'cbtn bk-act danger-outline-btn'}, t('cancelBookingBtn'));
+    btn.addEventListener('click', ()=>playerCancelBooking(btn, b.row_number, label));
+    row.append(btn);
+    card.append(row);
   }
   return card;
 }
@@ -2108,6 +2334,85 @@ async function playerCancelBooking(btn, rowNumber, label){
       await loadPlayerBookings(); await loadData();
       if ($('#page-home').classList.contains('active')) renderPlaces();
     }catch(_){ toast(t('cancelErr'),'error'); }
+  });
+}
+
+/* ===================== تعديل موعد الحجز (اللاعب) =====================
+   يعيد استعمال منطق الوقت نفسه الذي تستعمله صفحة التفاصيل والحجز الخارجي:
+   fieldSlots للأوقات · State.bookedSlots للمحجوز · dayButton/timeButton للعرض.
+   ⚠️ الحفظ يمرّ بدالّة في القاعدة لا بـPATCH مباشر: سياسة RLS تسمح للاعب أن
+   يُلغي حجزه فقط (`with check … status = 'cancelled'`)، ولو وُسِّعت لتمرير
+   pending لصار بوسعه تعديل **أي** عمود — السعر والملعب واسم صاحب الحجز.
+   الدالّة تعدّل التاريخ والساعة وحدهما وتتحقّق من الملكية والحالة والتوفّر. */
+function reschedFieldOf(b){
+  const place=(State.places||[]).find(p=>String(p.place_id)===String(b.place_id));
+  return place ? (place.fields||[]).find(f=>String(f.field_id)===String(b.field_id)) : null;
+}
+async function openReschedule(b){
+  if(!Session.player()){ showPage('playerLogin'); return; }
+  if(!State.places.length){ try{ await loadData(); }catch(_){} }
+  // بلا كائن الملعب لا نعرف جدول أوقاته ⇒ نقولها صراحةً بدل عرض أوقات مخترَعة
+  const field=reschedFieldOf(b);
+  if(!field){ toast(t('rsNoField'),'warn'); return; }
+  // اليوم المفتوح = يوم الحجز إن كان ضمن الأيام السبعة المعروضة، وإلّا اليوم.
+  // (حجز معلّق بتاريخ أبعد من أسبوع أو تاريخ ماضٍ ⇒ لا يطابق أي زرّ يوم فيبقى بلا نشِط)
+  const cur=String(b.date).split('T')[0];
+  const inWindow=Array.from({length:7},(_,i)=>dateAfter(i)).includes(cur);
+  State.reschedule={ booking:b, field, date: inWindow ? cur : today(), hour:null };
+  setText('rsCurrent', `${b.place_name} - ${b.field_name} · ${dayLabel(b.date)} ${shortDate(String(b.date).split('T')[0])} · ${b.time}`);
+  renderRescheduleDays(); renderRescheduleTimes();
+  Modal.open('modal-reschedule');
+  try{ await ensurePublicBookings(); }catch(_){}
+  renderRescheduleTimes();
+}
+function renderRescheduleDays(){
+  const el=$('#rsDays'); if(!el) return; clear(el);
+  for(let i=0;i<7;i++){ const d=dateAfter(i);
+    el.append(dayButton(d, i, d===State.reschedule.date, async()=>{
+      State.reschedule.date=d; State.reschedule.hour=null;
+      renderRescheduleDays(); timeSkeleton($('#rsTimes'),6);
+      try{ await ensurePublicBookings(); }catch(_){}
+      renderRescheduleDays(); renderRescheduleTimes();
+    }));
+  }
+}
+function renderRescheduleTimes(){
+  const el=$('#rsTimes'); const { booking:b, field, date }=State.reschedule; if(!el||!field) return; clear(el);
+  const taken=(State.bookedSlots[field.field_id]?.[date])||[];
+  const curDate=String(b.date).split('T')[0], curHour=Number(b.hour);
+  const slots=fieldSlots(field);
+  const free=slots.filter(s=>!taken.includes(s.hour)).length;
+  const scarce=scarcityBanner(free); if(scarce) el.append(scarce);
+  slots.forEach(s=>{
+    // خانة الحجز نفسه تظهر «محجوزة» لأنها فعلاً في booked_slots — تسميتها «الحالي»
+    // تقول الحقيقة: هي محجوزة لك أنت، والانتقال إليها بلا معنى (والقاعدة ترفضه).
+    const isCur = (date===curDate && Number(s.hour)===curHour);
+    el.append(timeButton(s, taken.includes(s.hour), State.reschedule.hour===s.hour,
+      ()=>{ State.reschedule.hour=s.hour; renderRescheduleTimes(); },
+      isCur ? { cls:'current', tag:t('rsCurrentTag') } : null));
+  });
+  if(slots.length && free===0) el.append(h('div',{class:'no-times', style:{gridColumn:'1/-1'}}, t('noTimesDay')));
+}
+async function saveReschedule(btn){
+  const { booking:b, field, date, hour }=State.reschedule;
+  if(!b||!field){ Modal.close('modal-reschedule'); return; }
+  if(hour==null){ toast(t('rsPickTime'),'warn'); return; }
+  const slot=fieldSlots(field).find(s=>Number(s.hour)===Number(hour));
+  await withLoading(btn, async()=>{
+    try{
+      const res=await API.post({ action:'playerRescheduleBooking', player_token:Session.player(),
+        row_number:b.row_number, date, hour, time: slot ? slot.label : '' });
+      if(!res.success){ toast(apiMsg(res.message)||t('rsFail'),'error');
+        try{ await loadPublicBookings(); }catch(_){}
+        renderRescheduleTimes();                       // الوقت راح لغيرك ⇒ أظهره محجوزاً فوراً
+        return; }
+      Modal.close('modal-reschedule', true);
+      buzz(14); toast(t('rsOk'),'success');
+      State.reschedule={ booking:null, field:null, date:null, hour:null };
+      await loadPlayerBookings();
+      try{ await loadPublicBookings(); }catch(_){}
+      if ($('#page-home').classList.contains('active')) renderPlaces();
+    }catch(_){ toast(t('rsErr'),'error'); }
   });
 }
 
@@ -2669,13 +2974,19 @@ function askReason(title, hint, confirmLabel, required=false){
     no.onclick=()=>done(null);
   });
 }
-/* تأكيد إجراء (Promise<boolean>) — يُستخدم قبل تأكيد الحجز */
-function askConfirm(title, message, confirmLabel){
+/* تأكيد إجراء (Promise<boolean>).
+   `cancelLabel` أُضيف لأن زرّ الرجوع كان نصًّا عربيًّا ثابتًا في HTML بلا `data-i18n`
+   ⇒ يبقى «رجوع» في الواجهة الإنجليزية. و`danger` يصبغ زرّ التأكيد أحمر للإجراءات
+   التي لا رجعة فيها (حذف الحساب · تجاهل التعديلات). */
+function askConfirm(title, message, confirmLabel, cancelLabel, danger){
   return new Promise(resolve=>{
     setText('confirmTitle',title); setText('confirmMessage',message);
-    const ok=$('#confirmOk'), no=$('#confirmCancel'); ok.textContent=confirmLabel||t('confirmWord');
+    const ok=$('#confirmOk'), no=$('#confirmCancel');
+    ok.textContent=confirmLabel||t('confirmWord');
+    no.textContent=cancelLabel||t('backWord');
+    ok.classList.toggle('danger-solid-btn', !!danger);
     Modal.open('modal-confirm');
-    const done=(v)=>{ Modal.close('modal-confirm'); ok.onclick=null; no.onclick=null; resolve(v); };
+    const done=(v)=>{ Modal.close('modal-confirm', true); ok.onclick=null; no.onclick=null; resolve(v); };
     ok.onclick=()=>done(true); no.onclick=()=>done(false);
   });
 }
@@ -2908,6 +3219,100 @@ function buzz(ms){
   document.addEventListener('touchcancel', ()=>{ if(page) reset(); else detach(); }, {passive:true});
 })();
 
+/* ══════════════════════════════════════════════════════════════════════
+   (٤) انقطاع الاتصال — طبقة تحجب التفاعل وتقول ما حدث
+   • `navigator.onLine === false` دليل قاطع على الانقطاع؛ و`true` **ليس** دليلًا
+     على وجود إنترنت (شبكة بلا بوّابة تُعطيه). لذلك نُظهر الطبقة على `offline`
+     وحدها، ولا ندّعي شيئًا عند `online` سوى أن الجهاز عاد متّصلًا.
+   • زرّ خروج إجباري: لو أخطأ المتصفّح في التقدير لا يعلق المستخدم أمام حائط.
+     والإخفاء يدويًّا لا يمنع ظهورها في الانقطاع التالي.
+   ══════════════════════════════════════════════════════════════════════ */
+const Offline = {
+  el(){ return $('#offlineOverlay'); },
+  show(){ const o=this.el(); if(!o||!o.hidden) return; o.hidden=false; requestAnimationFrame(()=>o.classList.add('show')); buzz(18); },
+  hide(){ const o=this.el(); if(!o||o.hidden) return; o.classList.remove('show');
+    const done=()=>{ if(!o.classList.contains('show')) o.hidden=true; };
+    o.addEventListener('transitionend', done, {once:true}); setTimeout(done, 400); },   // شبكة أمان لو لم يصل transitionend
+  init(){
+    window.addEventListener('offline', ()=>this.show());
+    window.addEventListener('online',  ()=>{ this.hide(); toast(t('onlineBack'),'success'); loadData().catch(()=>{}); });
+    if(navigator.onLine === false) this.show();          // قد يقلع التطبيق وهو مقطوع أصلًا
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   (٦) السحب للتحديث — على الصفحات الثلاث القابلة للتحديث
+   • المتمرِّر هو **المستند** لا `#app` (لا `overflow-y` عليه) ⇒ الشرط `scrollY<=0`.
+   • المستمع غير السلبي يُركَّب عند لمسة مؤهّلة ويُفكّ فور انتهائها — نفس نمط
+     إيماءة الرجوع، فلا يُقطَّع التمرير العادي على الأجهزة المتوسطة.
+   • التخميد 0.5 يجعل السحب يُقاوم كالتطبيقات الأصلية، والمؤشّر ثابت خارج
+     تدفّق الصفحة فلا يزحزح المحتوى، وحركته transform/opacity وحدهما.
+   ══════════════════════════════════════════════════════════════════════ */
+const PullRefresh = (()=>{
+  const TRIG=72, MAX=110, DAMP=0.5;
+  const JOBS = {
+    home:     async()=>{ try{ localStorage.removeItem(CONFIG.CACHE_KEY); }catch(_){} await loadData({force:true}); renderPlaces(); },
+    bookings: async()=>{ await loadPlayerBookings(); },
+    owner:    async()=>{ await loadOwnerDashboard(); },
+  };
+  let sy=0, pull=0, tracking=false, locked=false, busy=false;
+
+  const box=()=>$('#ptr');
+  function paint(state){
+    const el=box(); if(!el) return;
+    el.style.transform = `translate3d(-50%,${pull}px,0)`;
+    el.style.opacity = String(Math.min(1, pull/44));
+    el.classList.toggle('ready', pull>=TRIG && state!=='loading');
+    el.classList.toggle('loading', state==='loading');
+    const ring=$('#ptrRing'); if(ring && state!=='loading') ring.style.transform=`rotate(${pull*3}deg)`;
+    setText('ptrTxt', state==='loading' ? t('ptrLoading') : (pull>=TRIG ? t('ptrRelease') : t('ptrPull')));
+  }
+  function reset(){
+    pull=0; tracking=false; locked=false;
+    const el=box(); if(el){ el.classList.add('snap'); el.classList.remove('ready','loading'); el.style.transform='translate3d(-50%,0,0)'; el.style.opacity='0';
+      setTimeout(()=>el.classList.remove('snap'), 260); }
+    detach();
+  }
+  const eligible=()=>{
+    if(busy || document.body.classList.contains('modal-open')) return false;
+    if(!$('#offlineOverlay')?.hidden) return false;
+    const p=activePageName();
+    return !!(p && JOBS[p]) && (window.scrollY||document.documentElement.scrollTop||0) <= 0;
+  };
+  function detach(){ document.removeEventListener('touchmove', onMove, {passive:false}); }
+  function onMove(e){
+    if(!tracking){ detach(); return; }
+    const dy = e.touches[0].clientY - sy;
+    if(!locked){
+      if(dy < 8) { if(dy < -8){ tracking=false; detach(); } return; }   // تمرير لأعلى ⇒ اتركه
+      if((window.scrollY||0) > 0){ tracking=false; detach(); return; }
+      locked=true; const el=box(); if(el) el.classList.remove('snap');
+    }
+    pull = Math.min(MAX, dy*DAMP);
+    e.preventDefault();                       // بعد الحسم فقط — يمنع أيضًا تحديث المتصفّح المدمج
+    paint();
+  }
+  async function run(){
+    const p=activePageName(); const job=JOBS[p]; if(!job){ reset(); return; }
+    busy=true; pull=TRIG; paint('loading'); buzz(10);
+    try{ await job(); }catch(_){ /* الوظائف تعالج أخطاءها وتُظهر رسالتها */ }
+    finally{ busy=false; setText('ptrTxt', t('ptrDone')); setTimeout(reset, 320); }
+  }
+  const end=()=>{
+    if(!tracking || !locked){ if(tracking) reset(); return; }
+    if(pull >= TRIG) run(); else reset();
+  };
+  return { init(){
+    document.addEventListener('touchstart', (e)=>{
+      if(e.touches.length!==1 || !eligible()) return;
+      sy=e.touches[0].clientY; pull=0; tracking=true; locked=false;
+      document.addEventListener('touchmove', onMove, {passive:false});
+    }, {passive:true});
+    document.addEventListener('touchend', end, {passive:true});
+    document.addEventListener('touchcancel', ()=>{ if(tracking) reset(); else detach(); }, {passive:true});
+  }};
+})();
+
 /* ارتفاع كيبورد الهاتف: نرفع التوست فوقه ونُنزل الشريط السفلي تحته (بدل أن يطفو بمنتصف الشاشة) */
 if(window.visualViewport){
   const vv=window.visualViewport;
@@ -3024,6 +3429,20 @@ async function ownerLogin(btn){
     }catch(_){ toast(t('connLag'),'error'); }
   });
 }
+/* ---- (٣) حذف الحساب ---- */
+async function deleteAccount(btn){
+  if(!Session.player()){ showPage('playerLogin'); return; }
+  const ok = await askConfirm(t('delAccTitle'), t('delAccMsg'), t('delAccConfirm'), t('backWord'), true);
+  if(!ok) return;
+  await withLoading(btn, async()=>{
+    try{
+      const res = await API.post({ action:'deleteAccount', player_token:Session.player() });
+      if(!res.success){ toast(apiMsg(res.message)||t('delAccFail'),'error'); return; }
+      doLogout();                                   // يمسح الجلسة ويعود لشاشة الترحيب
+      toast(t('delAccOk'),'success', 5200);
+    }catch(_){ toast(t('delAccErr'),'error'); }
+  });
+}
 function doLogout(){
   Session.clear(); State.player=null; State.owner=null; State.ownerData=null; State.guest=false;
   $('#nav-player').classList.remove('show'); $('#nav-owner').classList.remove('show');
@@ -3102,7 +3521,7 @@ async function submitReview(btn){
     try{
       const res=await API.post({ action:'createReview', place_id:id, field_id:State.detail.field?.field_id||'', user_name:$('#rvName').value.trim(), phone:$('#rvPhone').value.trim(), rating:State.review.rating, comment:$('#rvComment').value.trim() });
       if(!res.success){ toast(apiMsg(res.message)||t('reviewFail'),'error'); return; }
-      Modal.close('modal-review'); showSimpleSuccess(t('reviewOk'));
+      Modal.close('modal-review', true); showSimpleSuccess(t('reviewOk'));
       await loadData({force:true});
       const updated=State.places.find(p=>String(p.place_id)===id); if(updated&&State.detail.place){ State.detail.place=updated; if($('#dBadges')&&$('#page-detail').classList.contains('active')){ renderDetailBadges(updated); renderPlaceStats(); } }
     }catch(_){ toast(t('reviewErr'),'error'); }
@@ -3120,7 +3539,7 @@ async function saveManual(btn){
       if(weeks===1){
         const res=await API.post({ action:'ownerCreateManualBooking', owner_token:Session.owner(), field_id:f.field_id, date:State.manual.date, hour:State.manual.hour, time:slot?slot.label:'', name, phone, players:f.size, price });
         if(!res.success){ toast(apiMsg(res.message)||t('manualFail'),'error'); await loadPublicBookings().catch(()=>{}); renderManualTimes(); return; }
-        Modal.close('modal-manual'); toast(t('manualOk'),'success');
+        Modal.close('modal-manual', true); toast(t('manualOk'),'success');
         await loadOwnerDashboard(); await loadData({force:true});
         return;
       }
@@ -3137,7 +3556,7 @@ async function saveManual(btn){
           else skipped++;
         }catch(_){ skipped++; }
       }
-      Modal.close('modal-manual');
+      Modal.close('modal-manual', true);
       toast(t('repeatSummary',{added, skipped}), added>0?'success':'error', 5200);
       await loadOwnerDashboard(); await loadData({force:true});
     }catch(_){ toast(t('manualErr'),'error'); }
@@ -3154,7 +3573,7 @@ async function saveField(btn){
         : { action:'ownerUpdateField', owner_token:Session.owner(), field_id, price, slots, active };
       const res=await API.post(payload);
       if(!res.success){ toast(apiMsg(res.message)||t('fieldFail'),'error'); return; }
-      Modal.close('modal-field'); try{ localStorage.removeItem(CONFIG.CACHE_KEY); }catch(_){}
+      Modal.close('modal-field', true); try{ localStorage.removeItem(CONFIG.CACHE_KEY); }catch(_){}
       await loadOwnerDashboard(); await loadData({force:true}); toast(t('fieldOk'),'success');
     }catch(_){ toast(t('fieldErr'),'error'); }
   });
@@ -3324,6 +3743,7 @@ function toggleLang(){ setLanguage(State.lang==='ar'?'en':'ar'); }
 /* ===================== EVENT DELEGATION ===================== */
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, changePassword, toggleTheme, toggleLang,
+  deleteAccount, dismissOffline:()=>Offline.hide(),
   search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
   openFilters, applyFilters, clearFiltersSheet,
   openBooking: openBookingReview,
@@ -3331,7 +3751,7 @@ const Actions = {
   openReview, confirmBooking, submitReview,
   authLogin:()=>{ Modal.close('modal-authchoice'); showPage('playerLogin'); },
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
-  openManual, saveManual, addField:openAddField, saveField,
+  openManual, saveManual, addField:openAddField, saveField, saveReschedule,
   clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
   refreshAiInsights:()=>loadAiInsights(true), refreshAiReviews:()=>loadAiReviews(true), refreshAiWeather:()=>loadAiWeather(true),
@@ -3452,9 +3872,11 @@ document.addEventListener('visibilitychange', ()=>HeroPh.sync());   // لا يح
 // تفعيل عناصر التنقّل غير-الأزرار (مثل الشعار) بلوحة المفاتيح (Enter/Space)
 document.addEventListener('keydown', (e)=>{ if(e.key!=='Enter' && e.key!==' ') return; const el=e.target.closest('[data-go],[data-nav]'); if(el && el.getAttribute('role')==='button'){ e.preventDefault(); el.click(); } });
 // إغلاق النافذة عند الضغط على الخلفية
-document.addEventListener('click', (e)=>{ const o=e.target.closest('.modal-overlay,.success-overlay'); if(o&&e.target===o){ o.classList.remove('show'); Modal._afterClose(); } });
+/* النقر خارج النافذة و Escape — كلاهما يمرّ بـModal.close كي يسأل عن التعديلات
+   غير المحفوظة. (كانا يزيلان `.show` مباشرةً فيتخطّيان أي حارس.) */
+document.addEventListener('click', (e)=>{ const o=e.target.closest('.modal-overlay,.success-overlay'); if(o&&e.target===o) Modal.close(o.id); });
 // إغلاق بزر Escape (وصولية)
-document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const o=$('.modal-overlay.show, .success-overlay.show'); if(o){ o.classList.remove('show'); Modal._afterClose(); } } });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const o=$('.modal-overlay.show, .success-overlay.show'); if(o) Modal.close(o.id); } });
 // تنقّل المعرض المكبّر بأسهم الكيبورد (يحترم اتجاه الصفحة)
 document.addEventListener('keydown', (e)=>{
   if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
@@ -3576,6 +3998,9 @@ async function init(){
   applyTheme(Session.theme());
   setLanguage(State.lang);   // يضبط lang/dir + يطبّق الترجمة على الواجهة الثابتة
   validateI18nParity();      // تحقّق تكافؤ مفاتيح ar/en (تحذير كونسول فقط)
+  Dirty.init();              // مراقبة الإدخال في نوافذ النماذج (تحذير التعديلات غير المحفوظة)
+  Offline.init();            // طبقة انقطاع الاتصال + استئناف عند العودة
+  PullRefresh.init();        // السحب للتحديث على الرئيسية/الحجوزات/لوحة المالك
   initLandingReveal();       // تجهيز كشف أقسام الهبوط (الـDOM الثابت متاح الآن)
   initStickyDedup();         // منع تكرار زرّ متابعة الحجز (اللاصق × الداخلي)
   loadData().then(updateTrust);

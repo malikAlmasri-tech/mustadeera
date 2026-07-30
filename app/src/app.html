@@ -197,6 +197,10 @@
     </header>
     <!-- شريط تصفّح لاصق موحّد (نمط Airbnb/Careem): زرّ الفلاتر مثبّت + الرياضات + فاصل + المناطق
          في مسار انزلاق أفقي واحد — بدل صفّين منفصلين يستهلكان مساحة رأسية على الهاتف. -->
+    <!-- غلاف لاصق واحد يضمّ شريط التصفّح + شرائح الفلاتر المفعّلة.
+         سبب الغلاف: عنصران كلاهما `top:0` كانا سيتراكبان؛ وبالغلاف يلتصق الاثنان معًا
+         بترتيبهما الطبيعي بلا قياس ارتفاع في JS. -->
+    <div class="home-sticky" id="homeSticky">
     <div class="browse-sticky" id="browseSticky">
       <!-- زرّ الفلاتر **خارج** مسار الانزلاق: حين كان داخله (لاصقًا) كانت المناطق
            تنزلق تحته وتختفي «الكل» خلفه حتى في وضع السكون. الآن الصفّ محصور
@@ -217,6 +221,9 @@
         </button>
         <div class="sport-dd-menu" id="sportDDMenu" role="listbox" hidden></div>
       </div>
+    </div>
+    <!-- شرائح الفلاتر المفعّلة — تُبنى من State.fx/State.filter، ومخفيّة تمامًا حين لا فلتر -->
+    <div class="fchips-bar" id="fchipsBar" data-i18n-aria="fchipsAria" aria-label="الفلاتر المفعّلة" hidden></div>
     </div>
     <div class="sec-title"><span class="sec-title-main"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="sec-title-end"><span class="sort-current" id="sortCurrent">الترتيب: الافتراضي</span><span class="view-toggle" role="group" data-i18n-aria="viewModeAria" aria-label="طريقة العرض"><button type="button" class="vt-btn active" data-action="setView" data-view="grid" data-i18n-aria="viewGrid" aria-label="عرض شبكي" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></button><button type="button" class="vt-btn" data-action="setView" data-view="list" data-i18n-aria="viewList" aria-label="عرض قائمة" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="4.5" rx="1"/><path d="M11.5 6.2H21"/><rect x="3.5" y="13.5" width="4.5" height="4.5" rx="1"/><path d="M11.5 15.7H21"/></svg></button></span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></span></div>
     <div class="places-list" id="placesList"></div>
@@ -390,6 +397,11 @@
         </div>
       </div>
       <button class="cbtn danger-outline-btn" data-action="logout" data-i18n="logout">تسجيل خروج</button>
+      <!-- منطقة الخطر: إجراء لا رجعة فيه ⇒ مفصول بصريًّا عن بقية الإعدادات وآخر ما في الصفحة -->
+      <div class="danger-zone">
+        <div class="danger-zone-title" data-i18n="dangerZone">منطقة الخطر</div>
+        <button class="cbtn danger-solid-btn" data-action="deleteAccount" data-i18n="delAccount">حذف الحساب</button>
+      </div>
     </div>
   </section>
 
@@ -677,6 +689,25 @@
     </div>
   </div>
 
+  <!-- ============ RESCHEDULE MODAL (تعديل موعد حجز معلّق) ============ -->
+  <div class="modal-overlay" id="modal-reschedule" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
+    <div class="modal" data-modal="reschedule">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="rsTitle" data-i18n="rsTitle">تعديل موعد الحجز</div>
+      <div class="modal-sub" data-i18n="rsSub">اختر يوماً ووقتاً جديدين. يبقى الحجز بانتظار تأكيد إدارة الملعب كما هو.</div>
+      <div class="rs-current">
+        <span class="rs-current-lbl" data-i18n="rsCurrentLbl">موعدك الحالي</span>
+        <span class="rs-current-val" id="rsCurrent"></span>
+      </div>
+      <label class="form-label" data-i18n="dayLbl">اليوم</label>
+      <div class="days-row" id="rsDays" style="margin-bottom:14px"></div>
+      <label class="form-label" data-i18n="timeLbl">الوقت</label>
+      <div class="times-grid cols-2" id="rsTimes" style="margin-bottom:18px"></div>
+      <button class="sbtn" data-action="saveReschedule" data-i18n="rsSave">حفظ الموعد الجديد</button>
+      <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
+    </div>
+  </div>
+
   <!-- ============ FIELD MODAL ============ -->
   <div class="modal-overlay" id="modal-field" role="dialog" aria-modal="true" aria-labelledby="fieldTitle">
     <div class="modal" data-modal="field">
@@ -752,6 +783,35 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============ مؤشّر السحب للتحديث ============
+       ثابت خارج تدفّق الصفحة ⇒ لا يزحزح المحتوى. الحركة على transform/opacity وحدهما. -->
+  <div class="ptr" id="ptr" aria-hidden="true">
+    <div class="ptr-ring" id="ptrRing">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9"/></svg>
+    </div>
+    <div class="ptr-txt" id="ptrTxt"></div>
+  </div>
+
+  <!-- ============ انقطاع الاتصال ============
+       role=alertdialog لأنها تحجب التفاعل؛ ولها زرّ خروج كي لا يعلق المستخدم
+       لو أخطأ المتصفّح في تقدير الحالة (navigator.onLine ليس دليل إنترنت). -->
+  <div class="offline-overlay" id="offlineOverlay" role="alertdialog" aria-modal="true" aria-labelledby="offTitle" aria-describedby="offSub" hidden>
+    <div class="off-card">
+      <div class="off-art" aria-hidden="true">
+        <span class="off-ball"></span>
+        <svg class="off-whistle" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 24h20a12 12 0 1 1 0 24H26a12 12 0 0 1-12-12v-4"/>
+          <path d="M20 24 8 18v12l12-6Z"/>
+          <circle cx="40" cy="36" r="5"/>
+        </svg>
+        <span class="off-wave off-wave-1"></span><span class="off-wave off-wave-2"></span>
+      </div>
+      <div class="off-title" id="offTitle" data-i18n="offTitle">توقّفت الصافرة مؤقتاً</div>
+      <div class="off-sub" id="offSub" data-i18n="offSub">يرجى التحقق من اتصالك بالإنترنت — نكمل المباراة فور عودته.</div>
+      <button class="cbtn off-dismiss" data-action="dismissOffline" data-i18n="offDismiss">تصفّح ما هو محمّل</button>
+    </div>
+  </div>
 
   <!-- ============ DETAIL STICKY SUMMARY (يظهر بعد اختيار ملعب+يوم+وقت) ============ -->
   <div class="detail-sticky" id="detailSticky" hidden>

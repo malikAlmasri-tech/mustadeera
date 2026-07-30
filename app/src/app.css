@@ -863,7 +863,29 @@ body.modal-open{overflow:hidden}
 /* ===================== BROWSE STICKY — حاوية تصفّح لاصقة (نمط Airbnb) =====================
    تضمّ الرياضات + الفلاتر + المناطق وتبقى ملتصقة أعلى الشاشة أثناء تمرير البطاقات.
    زجاجية (blur) لتفرِس ما خلفها + حدّ سفلي خفيف يفصلها عن القائمة. */
+/* غلاف لاصق واحد: عنصران بـtop:0 كانا سيتراكبان. الغلاف يلصقهما معًا بترتيبهما
+   الطبيعي بلا قياس ارتفاع في JS، فيبقى الحلّ صحيحًا مهما تغيّر ارتفاع الشريط. */
+.home-sticky{position:sticky;top:0;z-index:40}
+.home-sticky .browse-sticky{position:static;z-index:auto}
 .browse-sticky{position:sticky;top:0;z-index:40;display:flex;align-items:center;background:var(--glass);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line)}
+
+/* ---------- (٧) شرائح الفلاتر المفعّلة ---------- */
+.fchips-bar{display:flex;gap:7px;align-items:center;overflow-x:auto;scrollbar-width:none;
+  padding:8px var(--s-4);background:var(--glass);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%)}
+.fchips-bar::-webkit-scrollbar{display:none}
+.fchip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;max-width:62vw;
+  padding:6px 11px;border-radius:var(--radius-full);border:1.5px solid var(--line-2);
+  background:var(--primary-soft);color:var(--emerald);font-size:11.5px;font-weight:800;
+  min-height:32px;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast),border-color var(--t-fast)}
+.fchip:active{transform:scale(.94)}
+.fchip:hover{border-color:var(--emerald-2)}
+.fchip-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fchip-x{display:inline-flex;flex-shrink:0;width:13px;height:13px;opacity:.75}
+.fchip-x svg{width:13px;height:13px}
+.fchip-clear{background:transparent;color:var(--muted);border-style:dashed}
+.fchip-clear:hover{color:var(--danger-ink);border-color:rgba(220,38,38,.4)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .fchips-bar{background:var(--surface)} }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .browse-sticky{background:var(--surface)} }
 
 /* ===================== BROWSE RAIL — مسار تصفّح موحّد =====================
@@ -927,6 +949,24 @@ body.dark .avail-soon{background:rgba(245,158,11,.22);color:#fcd34d;border-color
 .dsec-title{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.015em}
 .no-times{padding:16px;border-radius:var(--r-md);background:var(--soft-yellow);border:1px dashed rgba(224,163,60,.4);color:var(--warning-ink);font-size:12.5px;font-weight:700;text-align:center}
 body.dark .no-times{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+
+/* ---------- لافتة الندرة (وقت أو وقتان فقط) ----------
+   تعيش داخل .times-grid ⇒ تمتدّ على الشبكة كلها. الحدّ الجانبي منطقي
+   (border-inline-start) فينقلب مع الاتجاه. النبض على transform/opacity فقط
+   (مركَّبان على الـGPU)، ومصدر الحركة الوحيد animation ⇒ إيقافه يوقفها فعلاً. */
+.scarce{grid-column:1/-1;display:flex;align-items:center;gap:10px;
+  padding:11px 13px;margin-bottom:2px;border-radius:var(--r-md);
+  background:var(--soft-yellow);border:1px solid rgba(224,163,60,.45);
+  border-inline-start:3px solid var(--warning);
+  color:var(--warning-ink);font-size:12.5px;font-weight:800;line-height:1.5}
+.scarce-dot{flex-shrink:0;position:relative;width:9px;height:9px;border-radius:50%;background:var(--warning)}
+.scarce-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--warning);
+  animation:scarcePulse 1.9s var(--ease-out) infinite}
+.scarce-txt{min-width:0}
+@keyframes scarcePulse{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(2.6);opacity:0}}
+body.dark .scarce{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.3);border-inline-start-color:#f59e0b}
+body.dark .scarce-dot,body.dark .scarce-dot::after{background:#f59e0b}
+@media (prefers-reduced-motion:reduce){ .scarce-dot::after{animation:none;opacity:0} }
 .dsec-ic{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--emerald);background:var(--soft-green);border:1px solid rgba(15,75,83,.18)}
 .dsec-ic svg{width:15px;height:15px}
 .amen-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -1028,6 +1068,13 @@ html[lang="ar"] :is(.sbtn,.btn,.search-btn,.lp-cta-sm,.lp-btn-primary,.place-boo
 .grid-col-full{grid-column:1/-1}
 .card-spaced{margin-bottom:var(--s-4)}
 .danger-outline-btn{color:#dc2626;border-color:rgba(220,38,38,.25)}
+/* زرّ خطر معبّأ — للإجراء الذي لا رجعة فيه (حذف الحساب · تجاهل التعديلات) */
+.danger-solid-btn{background:var(--danger-btn)!important;color:#fff!important;border-color:transparent!important}
+.danger-solid-btn:hover{background:#b8232e!important;color:#fff!important}
+/* منطقة الخطر: مفصولة بخطّ وبمسافة كي لا تُلمس بالخطأ بعد «تسجيل الخروج» */
+.danger-zone{margin-top:34px;padding-top:18px;border-top:1px dashed rgba(220,38,38,.28)}
+.danger-zone-title{font-size:11px;font-weight:800;color:var(--danger-ink);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+body.dark .danger-zone-title{color:#fca5a5}
 .readonly-field{background:var(--surface-muted);color:var(--muted)}
 
 /* ---------- SUCCESS + TOAST ---------- */
@@ -1191,6 +1238,20 @@ body.dark .econ-decision{color:var(--ok-ink);background:var(--primary-soft)}
 .info-line{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-2)}
 .info-line svg,.svg-sm{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:middle}
 .reason-box{font-size:12px;color:var(--danger-ink);background:var(--danger-soft);border-radius:10px;padding:10px 12px;margin-top:10px;font-weight:600}
+
+/* أزرار بطاقة الحجز (تعديل · إلغاء) — صفّ واحد متساوي القسمة.
+   الزرّان .cbtn وله margin-top مدمج ⇒ نصفّره داخل الصفّ كي لا يتراكم. */
+.bk-actions{display:flex;gap:9px;margin-top:12px}
+.bk-actions .bk-act{margin-top:0;flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+/* موعد الحجز الحالي داخل نافذة تعديل الموعد */
+.rs-current{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;margin:0 0 16px;padding:11px 13px;
+  border-radius:var(--r-md);background:var(--primary-soft);border:1px solid var(--line);
+  border-inline-start:3px solid var(--emerald)}
+.rs-current-lbl{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.03em;text-transform:uppercase}
+.rs-current-val{font-size:12.5px;font-weight:800;color:var(--ink);min-width:0}
+/* الخانة الحالية للحجز: محجوزة فعلاً (لك أنت) ⇒ تبقى معطّلة، لكن بلون الهوية لا بلون «راح» */
+.tbtn.taken.current{background:var(--primary-soft);color:var(--emerald);border-color:var(--line-2);opacity:.85;text-decoration:none}
+.tbtn.taken.current .t-tag{color:var(--emerald)}
 .star{font-size:32px;color:#d6dcd4;cursor:pointer;padding:0 4px;min-width:44px;display:inline-block;transition:transform var(--t-base) var(--ease-spring),color var(--t-base)}
 .star.active{color:#f59e0b}
 .star:hover{color:#fbbf24}
@@ -2244,7 +2305,8 @@ body.dark .bnav{box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -12px rgba(0,0,0,.
 .app-header.home .icon-btn,.app-header.compact .ghost-btn{
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 /* أسطح كانت تعتمد على الضبابية ⇒ تصبح صلبة صريحة */
-.browse-sticky,.owner-tabs{background:var(--surface)!important;border-bottom:1px solid var(--line)!important}
+.browse-sticky,.owner-tabs,.fchips-bar{background:var(--surface)!important;border-bottom:1px solid var(--line)!important}
+.fchips-bar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .detail-sticky{background:var(--surface)!important;border-top:1px solid var(--line)!important;
   box-shadow:0 -0.5px 0 var(--line),0 -8px 24px -16px rgba(16,24,32,.14)!important}
 body.dark .detail-sticky{box-shadow:0 -0.5px 0 var(--line),0 -8px 24px -14px rgba(0,0,0,.55)!important}
@@ -2788,3 +2850,56 @@ html.theme-swap .thm-ic{animation:none!important}
 @keyframes timesSync{from{background-position:-45% 0}to{background-position:145% 0}}
 #detailTimes.times-syncing .tbtn{opacity:.72;transition:opacity .2s var(--ease-out)}
 @media (prefers-reduced-motion: reduce){ #detailTimes.times-syncing::before{animation:none;background-size:100% 100%;opacity:.5} }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ── 25) السحب للتحديث (٦) + انقطاع الاتصال (٤) ──
+   كلاهما ثابت خارج تدفّق الصفحة ⇒ لا يزحزح المحتوى ولا يعيد التخطيط.
+   كل حركة على transform/opacity (مركَّبان على الـGPU) — لا clip-path ولا filter
+   في المسار المتحرّك. وقواعد الإيقاف تُوقف `animation` **و**`transition` معًا،
+   لأن `animation:none` وحدها لا تمسّ الانتقالات.
+   ══════════════════════════════════════════════════════════════════════ */
+.ptr{position:fixed;top:calc(env(safe-area-inset-top) + 6px);inset-inline-start:50%;z-index:150;
+  display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;
+  transform:translate3d(-50%,0,0);opacity:0;will-change:transform,opacity}
+.ptr.snap{transition:transform var(--t-slow) var(--ease-out),opacity var(--t-base)}
+.ptr-ring{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface-solid);border:1.5px solid var(--line-2);box-shadow:var(--shadow-sm);color:var(--emerald)}
+.ptr-ring svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.ptr-ring>svg>circle{opacity:.22}
+.ptr.ready .ptr-ring{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}
+.ptr.loading .ptr-ring{background:var(--g-btn);border-color:transparent;color:#0B2227;animation:ptrSpin .8s linear infinite}
+.ptr-txt{font-size:10.5px;font-weight:800;color:var(--muted);background:var(--surface-solid);
+  border:1px solid var(--line);border-radius:var(--radius-full);padding:3px 10px;white-space:nowrap;box-shadow:var(--shadow-xs)}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){ .ptr.loading .ptr-ring{animation:none} .ptr.snap{transition:none} }
+
+/* ---------- (٤) طبقة انقطاع الاتصال ---------- */
+.offline-overlay{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px;
+  background:rgba(4,14,17,.72);backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);
+  opacity:0;transition:opacity var(--t-slow) var(--ease-out)}
+.offline-overlay.show{opacity:1}
+.offline-overlay[hidden]{display:none}
+.off-card{width:100%;max-width:340px;text-align:center;background:var(--surface-solid);border:1px solid var(--line);
+  border-radius:var(--r-3xl);padding:30px 24px 24px;box-shadow:var(--shadow-lg);
+  transform:translate3d(0,14px,0) scale(.97);transition:transform var(--t-slower) var(--ease-spring)}
+.offline-overlay.show .off-card{transform:translate3d(0,0,0) scale(1)}
+/* الرسم: صافرة ساكنة + كرة تهبط وترتدّ + موجتا صوت تتلاشيان — إشارة «توقّف اللعب» */
+.off-art{position:relative;width:104px;height:104px;margin:0 auto 18px;display:grid;place-items:center;color:var(--emerald)}
+.off-whistle{width:64px;height:64px;position:relative;z-index:2}
+.off-ball{position:absolute;top:4px;inset-inline-start:calc(50% + 22px);width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,#fff 0 38%,var(--copper-primary) 39% 100%);
+  box-shadow:0 2px 6px rgba(0,0,0,.25);animation:offBall 2.4s var(--ease-out) infinite;z-index:3}
+.off-wave{position:absolute;inset:0;margin:auto;width:70px;height:70px;border-radius:50%;
+  border:2px solid var(--copper-primary);opacity:0;animation:offWave 2.6s var(--ease-out) infinite}
+.off-wave-2{animation-delay:.9s}
+@keyframes offBall{0%,100%{transform:translate3d(0,0,0)}45%{transform:translate3d(0,54px,0)}62%{transform:translate3d(0,34px,0)}}
+@keyframes offWave{0%{transform:scale(.7);opacity:.55}70%,100%{transform:scale(1.75);opacity:0}}
+.off-title{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.02em;margin-bottom:9px}
+.off-sub{font-size:13px;font-weight:600;color:var(--muted);line-height:1.75;margin-bottom:20px}
+.off-dismiss{margin-top:0}
+@media (prefers-reduced-motion:reduce){
+  .off-ball,.off-wave{animation:none}
+  .off-wave{opacity:.28;transform:scale(1.1)}
+  .off-card{transition:none;transform:none}
+  .offline-overlay{transition:none}
+}
