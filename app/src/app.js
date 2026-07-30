@@ -1752,7 +1752,11 @@ function placeCard(p, eager){
   return card;
 }
 function setPlacesCount(n){ const el=$('#placesCount'); if(!el) return; if(n>0){ el.textContent=String(n); el.hidden=false; } else { el.hidden=true; } }
-function renderPlaces(){
+/* `quiet` ⇒ بلا حركة دخول. تُمرَّر من الكتابة في البحث وحدها: `renderPlaces`
+   تُستدعى بعد كل ضغطة زرّ (مؤجَّلة)، فسُلَّم الظهور كان يُعاد توزيعه من الصفر
+   مع كل حرف — القائمة تُوزَّع كورق اللعب مرارًا بينما المستخدم يكتب. */
+function renderPlaces(opts){
+  const quiet = !!(opts && opts.quiet);
   const el = $('#placesList'); if(!el) return;
   el.dataset.view = State.view; updateViewToggle();
   // رياضة غير متوفرة بعد ⇒ حالة «قريباً» بدل القائمة
@@ -1790,7 +1794,15 @@ function renderPlaces(){
   }
   list.forEach((p,i) => {
     const card = placeCard(p, i===0);   // أول بطاقة eager (LCP)
-    card.style.animationDelay = `${i * 0.05}s`;
+    if(quiet){
+      // ⚠️ `.place-card` تبدأ `opacity:0` وتعتمد على `fadeUp ... forwards` لتظهر.
+      // إلغاء الحركة وحده يترك البطاقة **غير مرئية** ⇒ لا بدّ من ردّ الشفافية معها.
+      card.style.animation = 'none'; card.style.opacity = '1';
+    }else{
+      // سُلَّم بسقف: بلا `Math.min` تنتظر البطاقةُ العشرون ثانيةً كاملة قبل ظهورها،
+      // والدليل ينمو من القاعدة فالسقف ليس ترفًا. ثمانِ درجات = 0.35s كحدّ أقصى.
+      card.style.animationDelay = `${Math.min(i, 7) * 0.05}s`;
+    }
     el.append(card);
   });
 }
@@ -3642,14 +3654,17 @@ function applyTheme(theme){
    الحاملة لانتقال الثيم، ولحظةَ التقاط اللقطة الجديدة فقط.
    ══════════════════════════════════════════════════════════════════════ */
 const THEME_BG = { light:'#F4F5F6', dark:'#0A0E11' };   // = --bg-primary في كل ثيم (الجزء 1 من app.css)
-let themeBusy = false;
+/* قفل **مشترك** بين تبديل الثيم وتبديل اللغة: المتصفّح لا يشغّل انتقالَي جذر معًا —
+   بدء الثاني **يُلغي** الأوّل فورًا (`vt.skipTransition` ضمنيًّا) فيُقرأ الإلغاء وميضًا.
+   قفل واحد لكليهما ⇒ الضغطة الثانية أثناء انتقال جارٍ تُبدَّل فورًا بلا حركة، لا تُبتلع. */
+let vtBusy = false;
 function toggleTheme(btn, e){
   const next = document.body.classList.contains('dark') ? 'light' : 'dark';
   const commit = ()=>{ Session.setTheme(next); applyTheme(next); };
   let reduce=false; try{ reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
   const r = (btn && btn.getBoundingClientRect) ? btn.getBoundingClientRect() : null;
   // حارس: تقليل حركة · بلا زرّ صالح · بلا WAAPI · نقرة أثناء كشف جارٍ ⇒ تبديل فوري
-  if(reduce || themeBusy || !r || !r.width || typeof Element.prototype.animate !== 'function'){ commit(); return; }
+  if(reduce || vtBusy || !r || !r.width || typeof Element.prototype.animate !== 'function'){ commit(); return; }
   const cx = r.left + r.width/2, cy = r.top + r.height/2;
 
   // ① الكشف الحقيقي للمحتوى
@@ -3657,7 +3672,7 @@ function toggleTheme(btn, e){
     const root = document.documentElement;
     let vt = null;
     try{
-      themeBusy = true;
+      vtBusy = true;
       // مركز التفتّح = موضع الزرّ (نسبةً لا بكسلًا كي يصمد مع أي مقاس شاشة)
       root.style.setProperty('--vt-ox', (cx/innerWidth*100).toFixed(2)+'%');
       root.style.setProperty('--vt-oy', (cy/innerHeight*100).toFixed(2)+'%');
@@ -3670,9 +3685,9 @@ function toggleTheme(btn, e){
         void document.body.offsetWidth;
         root.classList.remove('theme-swap');
       });
-    }catch(_){ root.classList.remove('vt-theme'); themeBusy = false; vt = null; }
+    }catch(_){ root.classList.remove('vt-theme'); vtBusy = false; vt = null; }
     if(vt){
-      const done = ()=>{ root.classList.remove('vt-theme'); themeBusy = false; };
+      const done = ()=>{ root.classList.remove('vt-theme'); vtBusy = false; };
       vt.ready.then(()=>{
         // تفتّح ناعم: اللقطة الجديدة تظهر وهي تستقرّ من تكبير طفيف عند الإصبع.
         // `opacity`+`transform` فقط ⇒ الحركة كلّها على الـGPU، صفر رسم في كل فريم.
@@ -3690,7 +3705,7 @@ function toggleTheme(btn, e){
     }
   }
   // ② الاحتياطي: قرص مصمت
-  themeBusy = true;
+  vtBusy = true;
   const x = r.left + r.width/2, y = r.top + r.height/2;
   const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   const wrap = document.createElement('div'); wrap.className = 'theme-reveal';
@@ -3713,7 +3728,7 @@ function toggleTheme(btn, e){
     // المحتوى فوق خلفية مطابقة — لا شاشة فارغة. 130ms تكفي لتُقرأ كظهور لا كوميض.
     const out = disc.animate([{opacity:1},{opacity:0}],
       {duration:200, easing:'cubic-bezier(.22,.61,.36,1)', fill:'forwards'});
-    const drop = ()=>{ wrap.remove(); themeBusy = false; };
+    const drop = ()=>{ wrap.remove(); vtBusy = false; };
     out.onfinish = drop; setTimeout(drop, 380);            // شبكة أمان لو لم يُطلق الحدث
   };
   // منحنى ينهي التغطية بسرعة في آخره ⇒ زمن «الشاشة مغطّاة بالكامل» أقصر ما يمكن.
@@ -3764,7 +3779,73 @@ function setLanguage(lang){
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
   }catch(_){}
 }
-function toggleLang(){ setLanguage(State.lang==='ar'?'en':'ar'); }
+/* ══════════════════════════════════════════════════════════════════════
+   تبديل اللغة — تلاشٍ متقاطع فوق قلب الاتجاه.
+
+   ما الذي يُعالَج فعلًا: `setLanguage` تقلب `dir` على `<html>` ثم تُعيد ترجمة
+   المستند كلّه وترسم محتوى الصفحة النشطة من جديد. الشغل نفسه **متزامن**، فلا
+   يراه المستخدم تدرّجًا — يراه **قطعًا حادًّا** بين تخطيطين متعاكسين في فريم
+   واحد. ⚠️ فالانتقال هنا لا يجعل التبديل أسرع (لا شيء يجعله أسرع، المهمّة
+   متزامنة بطبعها)، بل يستبدل بالقطعة الحادّة ذوبانًا يُقرأ كتحوّل مقصود.
+
+   ① **View Transitions** (الأساسي): لقطة «قبل» تبقى ساكنة تحت، ولقطة «بعد»
+      بتخطيطها المعكوس تتلاشى فوقها. `opacity`+`transform` وحدهما ⇒ صفر رسم
+      في كل فريم بعد التقاط اللقطتين.
+   ② **حجاب احتياطي** لأي WebView قبل Chrome 111.
+
+   ⚠️ لماذا **لا** `opacity` على `#app` كاحتياطي: أي عنصر بـ`opacity<1` يصير
+   **الكتلة الحاوية** لأبنائه `position:fixed`. و`.bnav` و`.detail-sticky`
+   و`.ptr` أبناء مباشرون لـ`#app`، و`#app` طوله طول المستند كلّه ⇒ `bottom:0`
+   يقفز من أسفل **الشاشة** إلى أسفل **الصفحة**: شريط التنقّل يطير خارج الرؤية
+   طوال التلاشي. والعطل يظهر على الأجهزة القديمة وحدها (مسار الاحتياطي) فينجو
+   من الفحص. الحجاب عنصر مستقلّ على `body` ⇒ لا يمسّ الكتلة الحاوية لأحد.
+   ══════════════════════════════════════════════════════════════════════ */
+function toggleLang(){ switchLanguage(State.lang==='ar'?'en':'ar'); }
+function switchLanguage(lang){
+  if(lang===State.lang) return;
+  let reduce=false; try{ reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
+  // حارس: تقليل حركة · انتقال جذر جارٍ · بلا WAAPI ⇒ تبديل فوري (لا ابتلاع للضغطة)
+  if(reduce || vtBusy || typeof Element.prototype.animate !== 'function'){ setLanguage(lang); return; }
+
+  if(typeof document.startViewTransition === 'function'){
+    const root = document.documentElement;
+    let vt = null;
+    try{
+      vtBusy = true;
+      root.classList.add('vt-lang');
+      // الاستثناء يُبتلع داخل الردّ: لو رمى `setLanguage` لسبب ما، وجب أن يُكمل
+      // الانتقالُ دورتَه ويُرفع القفل — وإلّا بقيت الشاشة على اللقطة القديمة.
+      vt = document.startViewTransition(()=>{ try{ setLanguage(lang); }catch(_){} });
+    }catch(_){ root.classList.remove('vt-lang'); vtBusy = false; vt = null; }
+    if(vt){
+      const done = ()=>{ root.classList.remove('vt-lang'); vtBusy = false; };
+      vt.finished.then(done, done);
+      if(vt.updateCallbackDone) vt.updateCallbackDone.catch(()=>{});
+      setTimeout(done, 900);   // شبكة أمان: بيئة تجمّد الأنيميشن لا تحسم الوعود
+      buzz(6);
+      return;
+    }
+  }
+  // ② الحجاب الاحتياطي
+  vtBusy = true;
+  const veil = document.createElement('div');
+  veil.className = 'lang-veil';
+  veil.style.background = document.body.classList.contains('dark') ? THEME_BG.dark : THEME_BG.light;
+  document.body.appendChild(veil);
+  buzz(6);
+  let swapped = false;
+  const swap = ()=>{
+    if(swapped) return; swapped = true;
+    try{ setLanguage(lang); }catch(_){}
+    const out = veil.animate([{opacity:1},{opacity:0}],
+      {duration:190, easing:'cubic-bezier(.22,.61,.36,1)', fill:'forwards'});
+    const drop = ()=>{ veil.remove(); vtBusy = false; };
+    out.onfinish = drop; setTimeout(drop, 330);
+  };
+  const cover = veil.animate([{opacity:0},{opacity:1}],
+    {duration:110, easing:'cubic-bezier(.4,0,1,1)', fill:'forwards'});
+  cover.onfinish = swap; setTimeout(swap, 240);   // شبكة أمان: المعاينة تجمّد WAAPI فلا يُطلق onfinish
+}
 
 /* ===================== EVENT DELEGATION ===================== */
 const Actions = {
@@ -3950,7 +4031,7 @@ $('#ownerTabs')?.addEventListener('keydown', (e)=>{
 });
 // بحث مع تأخير (Debounce 300ms) + إظهار زر المسح فورياً
 $('#searchInput')?.addEventListener('input', updateSearchClear);
-$('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces(), CONFIG.SEARCH_DEBOUNCE));
+$('#searchInput')?.addEventListener('input', debounce(()=>renderPlaces({quiet:true}), CONFIG.SEARCH_DEBOUNCE));
 /* قناع رقم الهاتف الأردني (079 123 4567) — لكل type="tel" عبر التفويض.
    تنسيق بصري فقط: normalizePhone/validPhone يتجاهلان الفراغات فلا يتأثر التحقق ولا المُرسَل للخادم.
    يقنّع أرقام 07 المحلية فقط؛ الصيغ الدولية (962…) تبقى أرقاماً متصلة بلا قناع. */

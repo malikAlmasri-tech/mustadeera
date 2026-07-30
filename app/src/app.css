@@ -2808,6 +2808,27 @@ html.vt-theme::view-transition-new(root){z-index:2;
   transform-origin:var(--vt-ox,50%) var(--vt-oy,50%);
   will-change:opacity,transform;backface-visibility:hidden}
 
+/* ── تبديل اللغة: اللقطة المعكوسة تذوب فوق القديمة ──
+   نفس معمار الثيم: القديمة **معتمة وساكنة** تحت، الجديدة تتلاشى فوقها.
+   ⚠️ لا يُترك التلاشي الافتراضي للمتصفّح (الاثنتان تتلاشيان معًا): في منتصفه
+   تكون كلتاهما نصف شفّافة فوق فراغ، فيُرى **الشبح المزدوج** — سطر عربي وسطر
+   إنجليزي متراكبان بميلين متعاكسين. إبقاء القديمة معتمة يلغي الشبح تمامًا.
+   والتكبير الطفيف من المركز (لا من الإصبع كالثيم: لا زرّ واحد للّغة في كل
+   الصفحات) يعطي عمقًا يجعل الذوبان يُقرأ حركةً لا وميضًا. */
+html.vt-lang::view-transition-old(root),
+html.vt-lang::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.vt-lang::view-transition-old(root){z-index:1;opacity:1}
+html.vt-lang::view-transition-new(root){z-index:2;transform-origin:50% 50%;
+  will-change:opacity,transform;backface-visibility:hidden;
+  animation:vtLangIn 320ms cubic-bezier(.22,.61,.36,1) both}
+@keyframes vtLangIn{from{opacity:0;transform:scale(1.018)}to{opacity:1;transform:scale(1)}}
+
+/* الحجاب الاحتياطي (WebView قبل Chrome 111) — على `body` لا على `#app`:
+   `opacity<1` على `#app` يجعله الكتلة الحاوية لأبنائه الثابتين فيطير شريط
+   التنقّل إلى أسفل المستند. z-index تحت قرص الثيم وفوق كل شيء آخر. */
+.lang-veil{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:0;
+  will-change:opacity;backface-visibility:hidden}
+
 .theme-reveal{position:fixed;inset:0;z-index:9998;pointer-events:none;overflow:hidden;contain:paint}
 .theme-reveal-disc{position:absolute;border-radius:50%;transform:scale(0);
   will-change:transform,opacity;backface-visibility:hidden}
