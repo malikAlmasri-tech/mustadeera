@@ -3,19 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- صفحة إدارة: لا تُفهرَس ولا تُتبَع، ومستثناة في robots.txt أيضًا.
-     ⚠️ الإخفاء ليس أمانًا — الأمان في القاعدة: كل جدول محكوم بـRLS و is_admin()،
-     ومن يفتح هذه الصفحة بلا الدور لا يحصل على صفّ واحد مهما فعل بأدوات المطوّر. -->
+
 <meta name="robots" content="noindex, nofollow">
 <title>لوحة الإدارة — المستديرة</title>
 <link rel="icon" href="/assets/logo-fav.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Montserrat:wght@700;800;900&display=swap">
-<!-- نفس ورقة الأنماط ونفس السكربت اللذين يخدمان الموقع، مبصومَين بمحتواهما.
-     القصد صريح: كل تغيير في توكنات الموقع وأزراره وتبديل ثيمه وحركته يصل
-     إلى هذه اللوحة تلقائيًّا، فلا ينشأ نظاما تصميم يفترقان مع الوقت. -->
-<link rel="stylesheet" href="/build/site.cfedd1fd.css">
+
+<link rel="stylesheet" href="/build/site.fe48dfce.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 <script src="/build/site.0f915522.js" defer></script>
 <style>
@@ -247,7 +243,6 @@ html.dark .trend.down{color:#FF8A90}
 </head>
 <body>
 
-<!-- ── الدخول ── -->
 <section id="login" class="ad-login">
   <h1>لوحة الإدارة</h1>
   <p>ادخل برقم حساب الأدمن. الحسابات الأخرى لن ترى شيئًا حتى لو دخلت.</p>
@@ -261,7 +256,6 @@ html.dark .trend.down{color:#FF8A90}
   </form>
 </section>
 
-<!-- ── اللوحة ── -->
 <main id="panel" class="ad-wrap hide">
   <div class="ad-bar">
     <h1>لوحة الإدارة</h1>
@@ -280,7 +274,6 @@ html.dark .trend.down{color:#FF8A90}
     <button class="tab" role="tab" id="tab-log"   aria-controls="p-log"   aria-selected="false">السجلّ</button>
   </div>
 
-  <!-- ══ نظرة عامّة ══ -->
   <div class="panel" id="p-over" role="tabpanel" aria-labelledby="tab-over" tabindex="0">
     <div class="kpis" id="kpis"></div>
 
@@ -322,7 +315,6 @@ html.dark .trend.down{color:#FF8A90}
     </div>
   </div>
 
-  <!-- ══ الأيام ══ -->
   <div class="panel" id="p-days" role="tabpanel" aria-labelledby="tab-days" tabindex="0" hidden>
   <section class="ad-sec">
     <h2>آخر 14 يومًا</h2>
@@ -338,7 +330,6 @@ html.dark .trend.down{color:#FF8A90}
   </section>
   </div>
 
-  <!-- ══ الأماكن ══ -->
   <div class="panel" id="p-place" role="tabpanel" aria-labelledby="tab-place" tabindex="0" hidden>
   <div class="card" style="margin-bottom:20px">
     <h3>حصّة كل مكان من الإيراد المؤكّد</h3>
@@ -352,9 +343,7 @@ html.dark .trend.down{color:#FF8A90}
     <p class="ad-sub">الأرقام تراكمية منذ أوّل حجز، لا آخر 14 يومًا.
       <strong>الحصّة</strong> نصيب المكان من إجمالي الإيراد المؤكّد.
       التقييم <strong>—</strong> يعني لا تقييم بعد، لا صفرًا.
-      <!-- عمدًا «غير مؤكّدة» لا «معلّقة»: عرض admin_places لا يفصل الملغاة عن
-           المرفوضة عن المعلّقة، فكل ما يمكن اشتقاقه هنا هو «ليست مؤكّدة».
-           التفصيل الدقيق في جدول الأيام أعلاه، حيث العرض يوفّر lost. -->
+      
       و<strong>غير مؤكّدة</strong> تجمع المعلّق والملغى والمرفوض معًا.</p>
     <div class="ad-scroll">
       <table id="places"><thead><tr>
@@ -366,7 +355,6 @@ html.dark .trend.down{color:#FF8A90}
   </section>
   </div>
 
-  <!-- ══ المستخدمون ══ -->
   <div class="panel" id="p-users" role="tabpanel" aria-labelledby="tab-users" tabindex="0" hidden>
   <section class="ad-sec">
     <h2>إدارة المستخدمين</h2>
@@ -383,7 +371,6 @@ html.dark .trend.down{color:#FF8A90}
   </section>
   </div>
 
-  <!-- ══ السجلّ ══ -->
   <div class="panel" id="p-log" role="tabpanel" aria-labelledby="tab-log" tabindex="0" hidden>
   <section class="ad-sec">
     <div class="sec-head">

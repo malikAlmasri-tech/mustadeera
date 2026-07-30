@@ -1193,6 +1193,12 @@ body.dark{--sk-grad:linear-gradient(90deg,rgba(255,255,255,.045) 0%,rgba(255,255
 /* ---------- EMPTY STATE (حالات الفراغ) ---------- */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:56px 28px;gap:14px;animation:fadeUp var(--t-slow) var(--ease-out) both}
 .empty-icon{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:var(--primary-soft);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+/* حالة «قريباً»: مخطّط الملعب مكان الرمز التعبيري. يصير اللوح مستطيلًا
+   بنسبة المخطّط نفسها — الملعب لا يُقصّ داخل قرص. يأتي بعد `.empty-icon`
+   عمدًا: وزنه مساوٍ (0,1,0) فالترتيب وحده هو ما يُسقط `border-radius:50%`. */
+.empty-court{width:176px;height:110px;border-radius:18px;overflow:hidden}
+.empty-court .court-svg{display:block;width:100%;height:100%;color:var(--primary);opacity:.5;
+  fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .empty-title{font-size:16.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .empty-sub{font-size:13px;color:var(--muted);max-width:300px;line-height:1.75;font-weight:500}
 .empty .sbtn,.empty .cbtn{max-width:260px}

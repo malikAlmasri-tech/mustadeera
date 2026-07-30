@@ -43,6 +43,32 @@ function Write-Text([string]$p, [string]$s) {
     [IO.File]::WriteAllText($p, $s, $Utf8NoBom)
 }
 
+# ---- HTML comments are for whoever edits site\pages, not for the visitor ----
+# They were 7.5 KB on the home page alone - a quarter of its markup budget -
+# and rode along on every one of the 28 pages. Source keeps every word; the
+# output does not carry any of it. Same reasoning that moved the stylesheet
+# and the script out to /build/: pay once, or better, do not pay at all.
+#
+# Script and style bodies are lifted out before the comment regex runs and put
+# back after. Without that, a naive "<!--.*?-->" sweep runs over JavaScript,
+# where both "<!--" and "-->" are ordinary characters inside a string literal
+# and deleting the span between them would silently corrupt the script. The
+# MatchEvaluator form is deliberate too: it treats its return value literally,
+# so a "$1" inside the restored JS is never read as a capture reference.
+function Remove-HtmlComments([string]$h) {
+    $sep  = [char]1                       # cannot occur in HTML source
+    $keep = New-Object System.Collections.ArrayList
+    $h = [regex]::Replace($h, '(?is)<(script|style)\b[^>]*>.*?</\1\s*>', {
+        $i = $keep.Add($args[0].Value)
+        "$sep$i$sep"
+    })
+    $h = [regex]::Replace($h, '(?s)<!--.*?-->', '')
+    $h = [regex]::Replace($h, "$sep(\d+)$sep", { $keep[[int]$args[0].Groups[1].Value] })
+    # a removed block leaves its blank line behind; collapse runs back to one
+    $h = [regex]::Replace($h, '(\r?\n)[ \t]*(\r?\n)([ \t]*\r?\n)+', '$1$2')
+    return $h
+}
+
 # ---- strings: "key = value" per line; '#' comments; blanks ignored ----
 function Read-Strings([string]$p) {
     $h = @{}
@@ -512,7 +538,7 @@ foreach ($lang in $Langs) {
                 $TplHeader + "`r`n<main id=`"main`">`r`n" + $body + "`r`n</main>`r`n" +
                 $TplFooter + "`r`n</body>`r`n</html>`r`n"
 
-        $html = Expand-Tpl $html $vars $T
+        $html = Remove-HtmlComments (Expand-Tpl $html $vars $T)
 
         # NOTE: not $rel - PowerShell variable names are case-insensitive, so
         # $rel and the release hashtable $Rel are the same variable.
@@ -551,7 +577,7 @@ foreach ($lang in $Langs) {
                  $TplHead + "`r`n</head>`r`n<body class=`"p-place`">`r`n" +
                  $TplHeader + "`r`n<main id=`"main`">`r`n" + $pBody + "`r`n</main>`r`n" +
                  $TplFooter + "`r`n</body>`r`n</html>`r`n"
-        $pHtml = Expand-Tpl $pHtml $pv $T
+        $pHtml = Remove-HtmlComments (Expand-Tpl $pHtml $pv $T)
 
         # On disk the folder carries the RAW slug, never the percent-encoded one:
         # a server decodes the request path before it looks for the file, so an
@@ -597,7 +623,7 @@ if (Test-Path $adminSrc) {
         buildStamp = $BuildStamp
         year       = (Get-Date -Format 'yyyy')
     }
-    Write-Text (Join-Path $Out 'admin\index.html') (Expand-Tpl (Read-Text $adminSrc) $av $Strings['ar'])
+    Write-Text (Join-Path $Out 'admin\index.html') (Remove-HtmlComments (Expand-Tpl (Read-Text $adminSrc) $av $Strings['ar']))
 }
 
 # ---- no service worker, no web-app manifest ----

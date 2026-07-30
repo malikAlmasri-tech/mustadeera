@@ -748,10 +748,30 @@ html.dark .bt-ic{color:var(--lime)}
 @media (min-width:640px){.sports{grid-template-columns:repeat(3,1fr)}}
 @media (min-width:940px){.sports{grid-template-columns:repeat(5,1fr)}}
 .sport{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;
-  padding:clamp(18px,2.4vw,24px) 12px;border-radius:var(--r-lg);
+  padding:10px 10px clamp(14px,2vw,18px);border-radius:var(--r-lg);
   background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+/* لوح المخطّط — الجزء الذي يجعل «خمس رياضات» تُرى لا تُقرأ فقط.
+   ⚠️ ليست صورة: لا نملك صور بادل/سلة/تنس واختراعها ممنوع (م5). ومخطّط
+   الملعب رسمٌ هندسي لواقعة منشورة (الأبعاد والخطوط)، لا ادّعاء ملكية ملعب.
+   اللوح نسبته ثابتة 16/10 في كل الحبّات فتبقى الشبكة منتظمة، أمّا الملعب
+   **داخله فبنسبته الحقيقية**: بادل 20×10 و قدم 105×68 و تنس 23.8×11 ⇒
+   الأشكال تخرج مختلفة فعلًا، والاختلاف نفسه هو الرسالة. */
+.sport-court{position:relative;align-self:stretch;aspect-ratio:16/10;overflow:hidden;
+  border-radius:var(--r-md);background:var(--teal-soft)}
+/* سمات الرسم على اللوح لا على كل مخطّط: خمسة مخطّطات × ~90 محرف سمات
+   كانت ستعيد الرئيسة إلى ما فوق ميزانيتها. `>` عمدًا — الأيقونة تحته
+   وسماتها الخاصّة (مقاسها ومسارات ممتلئة) يجب ألّا تُطمَس بهذه. */
+.sport-court>svg{display:block;width:100%;height:100%;color:var(--teal);opacity:.45;
+  fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+/* الأيقونة صارت شارة فوق زاوية اللوح: تبقى الصلة بالتطبيق (الأيقونة نفسها
+   حرفيًّا) بلا أن تنافس المخطّط على الانتباه. منطقية الحافّة لأن الزاوية
+   تنقلب مع اتّجاه اللغة. */
 .sport-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:var(--r-full);
   background:var(--teal-soft);color:var(--teal)}
+.sport-court .sport-ic{position:absolute;inset-block-end:7px;inset-inline-end:7px;
+  width:32px;height:32px;background:var(--surface);border:1px solid var(--line);
+  box-shadow:var(--sh-sm)}
+.sport-court .sport-ic svg{width:17px;height:17px}
 /* سمات الرسم مرّة واحدة هنا لا خمس مرّات في الوسم: خمس أيقونات × ~100 محرف
    من `fill/stroke/stroke-width/linecap/linejoin` كانت تدفع الرئيسة فوق ميزانيتها.
    والمسارات الممتلئة داخلها تبقى بسماتها — السمة المكتوبة على العنصر نفسه
@@ -772,8 +792,14 @@ html.dark .sport:not(.sport-live) .sport-ic{color:var(--lime)}
 .sport-live{border-color:var(--lime);background:linear-gradient(160deg,var(--lime-soft),transparent 70%)}
 .sport-live .sport-ic{background:var(--lime);color:var(--on-lime)}
 .sport-live .sport-st{background:var(--lime);color:var(--on-lime)}
-/* الرياضة التي لم تُفتح بعد: باهتة قليلًا — تُقرأ «موجودة ومنتظَرة» لا «معطّلة» */
-.sport:not(.sport-live) .sport-ic{opacity:.62}
+/* المفتوحة: ملعبها مرسوم بخطوط أوضح على أرضية بالهوية — تُقرأ «جاهزة». */
+.sport-live .sport-court{background:var(--lime-soft)}
+.sport-live .sport-court>svg{opacity:.7}
+/* الرياضة التي لم تُفتح بعد: خطوط ملعبها أخفت — تُقرأ «موجودة ومنتظَرة» لا
+   «معطّلة». والخفوت على المخطّط وحده: الشارة والأيقونة تبقيان صريحتين،
+   فحالتها تُقرأ نصًّا لا بالتخمين من درجة اللون. */
+html.dark .sport-court>svg{color:var(--lime);opacity:.4}
+html.dark .sport-live .sport-court>svg{opacity:.62}
 .sports-note{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
   gap:14px;text-align:center;margin-top:clamp(20px,3vw,30px);
   color:var(--muted);font-size:15.5px}

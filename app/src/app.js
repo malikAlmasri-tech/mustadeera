@@ -527,6 +527,26 @@ const ICON = {
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
 };
 
+/* مخطّطات الملاعب — تُعرَض في حالة «قريباً» بدل الرمز التعبيري ⏳.
+   السبب: الساعة الرملية تقول «انتظر» ولا تقول **ماذا** تنتظر؛ ومخطّط الملعب
+   يُري المستخدم الرياضةَ نفسها فيفهم أن التطبيق ليس تطبيق كرة قدم.
+   ⚠️ مخطّط لا صورة: لا نملك صور بادل/سلة/تنس واختراعها ممنوع (م5). وهذا
+   رسم هندسي لأبعاد منشورة، لا ادّعاء بأن عندنا ملعبًا كهذا — والشارة
+   النصّية «قريباً» فوقه تبقى هي التي تقول الحالة.
+   كل ملعب بنسبته الحقيقية داخل لوح 160×100 واحد، فالأشكال تخرج مختلفة
+   فعلًا. نسخة طبق الأصل ممّا في قسم «الرياضات» بالموقع — الوجهان يقولان
+   الشيء نفسه بالرسم نفسه. */
+const COURT = {
+  football:'<rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><circle cx="80" cy="50" r="1.6" fill="currentColor" stroke="none"/><path d="M15 25h20v50H15M15 38.5h7v23h-7M145 25h-20v50h20M145 38.5h-7v23h7"/>',
+  padel:'<rect x="10" y="15" width="140" height="70" rx="1"/><path d="M80 15v70M31.4 15v70M128.6 15v70M31.4 50h97.2"/>',
+  basket:'<rect x="10" y="12.5" width="140" height="75" rx="1"/><path d="M80 12.5v75"/><circle cx="80" cy="50" r="9"/><path d="M10 37.75h29v24.5H10M150 37.75h-29v24.5h29"/><circle cx="39" cy="50" r="9"/><circle cx="121" cy="50" r="9"/><path d="M10 17h12a33.75 33.75 0 0 1 0 66H10M150 17h-12a33.75 33.75 0 0 0 0 66h12"/>',
+  tennis:'<rect x="10" y="17.5" width="140" height="65" rx="1"/><path d="M80 17.5v65M10 25.6h140M10 74.4h140M42.3 25.6v48.8M117.7 25.6v48.8M42.3 50h75.4"/>',
+  volley:'<rect x="10" y="15" width="140" height="70" rx="1"/><path d="M80 15v70M56.7 15v70M103.3 15v70"/>',
+};
+const courtSvg = (key) => COURT[key]
+  ? '<svg class="court-svg" viewBox="0 0 160 100" aria-hidden="true">'+COURT[key]+'</svg>'
+  : '';
+
 /* ===================== DOM UTILS ===================== */
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
@@ -1256,9 +1276,12 @@ function timeSkeleton(el, count=6){ if(!el) return; clear(el);
 }
 
 /* حالة فراغ جذّابة (Empty State) بدل النص العادي */
-function emptyState({icon='🗂️', title, sub, actionLabel, action, secondaryLabel, secondaryAction}){
+/* iconHtml: بديل اختياري للرمز التعبيري بـSVG ثابت (مخطّط ملعب). يُمرَّر عبر
+   props.html وهو محجوز للسلاسل الثابتة في هذا الملفّ ⇒ لا مدخل مستخدم فيه. */
+function emptyState({icon='🗂️', iconHtml=null, title, sub, actionLabel, action, secondaryLabel, secondaryAction}){
   const box = h('div',{class:'empty'},
-    h('div',{class:'empty-icon'}, icon),
+    iconHtml ? h('div',{class:'empty-icon empty-court', html:iconHtml})
+             : h('div',{class:'empty-icon'}, icon),
     h('div',{class:'empty-title'}, title),
     sub && h('div',{class:'empty-sub'}, sub)
   );
@@ -1736,7 +1759,8 @@ function renderPlaces(){
   if(State.sport && State.sport!=='football'){
     clear(el); setPlacesCount(0);
     const s=SPORTS.find(x=>x.key===State.sport);
-    el.append(emptyState({ icon:'⏳', title:t('comingSoonTitle'), sub:t('comingSoonSub',{sport:t(s?s.label:'sportFootball')}),
+    el.append(emptyState({ iconHtml:courtSvg(State.sport), icon:'⏳',
+      title:t('comingSoonTitle'), sub:t('comingSoonSub',{sport:t(s?s.label:'sportFootball')}),
       actionLabel:t('backToFootball'), action:()=>setSport('football') }));
     return;
   }
