@@ -200,7 +200,7 @@ const I18N = {
     ariaChooseDate:'اختيار الموعد', ariaOwnerTabs:'أقسام لوحة المالك', ariaSearchBookings:'بحث في الحجوزات', ariaFilterDate:'فلترة بالتاريخ', ariaFilterField:'فلترة بالملعب', ariaFilterStatus:'فلترة بالحالة',
     calPrevAria:'الشهر السابق', calNextAria:'الشهر التالي', ariaBookingSteps:'خطوات الحجز', ariaRateLegend:'قيّم المكان من 1 إلى 5 نجوم',
     star1:'نجمة واحدة', star2:'نجمتان', star3:'3 نجوم', star4:'4 نجوم', star5:'5 نجوم',
-    phRegName:'محمد أحمد', phRegPass:'4 خانات على الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
+    phRegName:'محمد أحمد', phRegPass:'6 خانات على الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
     placeStatsTitle:'إحصائيات الملعب',
     skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
@@ -253,6 +253,41 @@ const I18N = {
     // ---- (٧) شرائح التصفية اللاصقة ----
     fchipsAria:'الفلاتر المفعّلة', fchipRegion:'المنطقة: {v}', fchipPriceMin:'من {v}', fchipPriceMax:'إلى {v}',
     fchipSize:'الحجم: {v}', fchipType:'النوع: {v}', fchipRating:'{v}★ فأعلى', fchipRemove:'أزل {v}',
+    // ---- (٨) شاشتا الدخول والتسجيل: شروط كلمة السرّ مكتوبة قبل أن تُخالَف ----
+    loginEyebrow:'حسابك في المستديرة', regEyebrow:'حساب جديد',
+    loginWelcome:'أهلاً بعودتك', regWelcome:'صار لك مكان بيننا',
+    pwRulesTitle:'كلمة السر لازم تكون:',
+    pwRuleLen:'6 خانات على الأقل', pwRuleLetter:'فيها حرف', pwRuleDigit:'فيها رقم',
+    pwStrength:'قوّتها', pwLvl1:'ضعيفة', pwLvl2:'مقبولة', pwLvl3:'جيّدة', pwLvl4:'قويّة',
+    pwShort6:'كلمة السر لازم 6 خانات على الأقل', pwNeedMix:'كلمة السر لازم يكون فيها حرف ورقم',
+    phoneHint:'رقم أردني يبدأ بـ 07', capsOn:'مفتاح الحروف الكبيرة مفعّل',
+    // ---- (٩) تأكيد رقم الهاتف ----
+    vfTitle:'أكّد رقمك', vfEyebrow:'خطوة أخيرة',
+    vfSub:'كتبنا كوداً من ست خانات وأرسلناه إلى {phone}. اكتبه هنا.',
+    vfCodeAria:'كود التحقق — ست خانات', vfDigitAria:'الخانة {n}',
+    vfVerify:'أكّد الرقم', vfResend:'أرسل الكود مرّة ثانية',
+    // {rel} يأتي من Intl.RelativeTimeFormat ⇒ «بعد ثانيتين» و«بعد ٣ ثوانٍ» تصحّان معًا
+    vfResendIn:'إعادة الإرسال {rel}', vfSending:'نرسل الكود…',
+    vfSkip:'أكمل، وأكّد لاحقاً', vfNeedAll:'اكتب الخانات الستّ كلّها',
+    vfOk:'تم تأكيد رقمك ✅', vfFail:'تعذّر التأكيد، جرّب كمان مرة',
+    vfWhyTitle:'ليش نأكّد الرقم؟',
+    vfWhy:'إدارة الملعب تتصل بك على هذا الرقم لتأكيد حجزك. رقمٌ بخانة غلط = حجز ما حدا يقدر يأكّده.',
+    // الحالة الصادقة: لا مزوّد رسائل بعد ⇒ لا كود يصل، ولا نتظاهر بإرساله
+    vfNoProviderTitle:'إرسال الأكواد غير مُفعّل بعد',
+    vfNoProvider:'ما فينا نرسل لك كود الآن — خدمة الرسائل لسا ما اتوصّلت. حسابك شغّال وتقدر تحجز عادي، وبنأكّد رقمك أول ما تصير الخدمة جاهزة.',
+    vfNotReady:'تأكيد الرقم غير مُفعّل على الخادم بعد. حسابك شغّال وتقدر تحجز عادي.',
+    vfAlready:'رقمك مؤكَّد من قبل',
+    vfContinue:'أكمل', vfTooSoon:'استنّى شوي قبل ما تطلب كود جديد',
+    // شارة الحالة في «حسابي»
+    accPhoneVerified:'رقم مؤكَّد', accPhoneUnverified:'رقم غير مؤكَّد', accVerifyNow:'أكّده الآن',
+    // ---- (١٠) وسيلة الدفع ----
+    payTitle:'وسيلة الدفع', payMethodLbl:'الدفع',
+    payCash:'نقداً في الملعب', payCashSub:'تدفع لإدارة الملعب لمّا توصل.',
+    payCard:'بطاقة فيزا أو ماستركارد', payCardSoon:'قريباً',
+    payCardSub:'الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.',
+    payCardWhy:'ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا: التطبيق ما بيشوف الرقم ولا بيخزّنه.',
+    paySoonToast:'الدفع بالبطاقة لسا ما اشتغل — الدفع نقداً في الملعب.',
+    payCardsTitle:'بطاقاتي', payNoCards:'ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.',
   },
   en: {
     brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -405,7 +440,7 @@ const I18N = {
     ariaChooseDate:'Choose the time', ariaOwnerTabs:'Owner dashboard sections', ariaSearchBookings:'Search bookings', ariaFilterDate:'Filter by date', ariaFilterField:'Filter by field', ariaFilterStatus:'Filter by status',
     calPrevAria:'Previous month', calNextAria:'Next month', ariaBookingSteps:'Booking steps', ariaRateLegend:'Rate this place from 1 to 5 stars',
     star1:'One star', star2:'Two stars', star3:'3 stars', star4:'4 stars', star5:'5 stars',
-    phRegName:'John Smith', phRegPass:'At least 4 characters', phAccName:'Player name', phManualName:'Booker name', phFieldName:'Field 1',
+    phRegName:'John Smith', phRegPass:'At least 6 characters', phAccName:'Player name', phManualName:'Booker name', phFieldName:'Field 1',
     placeStatsTitle:'Field stats',
     skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
@@ -458,6 +493,38 @@ const I18N = {
     // ---- (7) Sticky filter chips ----
     fchipsAria:'Active filters', fchipRegion:'Region: {v}', fchipPriceMin:'From {v}', fchipPriceMax:'Up to {v}',
     fchipSize:'Size: {v}', fchipType:'Type: {v}', fchipRating:'{v}★ & up', fchipRemove:'Remove {v}',
+    // ---- (8) Login & register: password rules stated before they can be broken ----
+    loginEyebrow:'Your AL-Mustadira account', regEyebrow:'New account',
+    loginWelcome:'Welcome back', regWelcome:'Let’s get you on the pitch',
+    pwRulesTitle:'Your password needs:',
+    pwRuleLen:'At least 6 characters', pwRuleLetter:'A letter', pwRuleDigit:'A number',
+    pwStrength:'Strength', pwLvl1:'Weak', pwLvl2:'Fair', pwLvl3:'Good', pwLvl4:'Strong',
+    pwShort6:'Password must be at least 6 characters', pwNeedMix:'Password needs at least one letter and one number',
+    phoneHint:'A Jordanian number starting with 07', capsOn:'Caps Lock is on',
+    // ---- (9) Phone verification ----
+    vfTitle:'Confirm your number', vfEyebrow:'One last step',
+    vfSub:'We sent a six-digit code to {phone}. Type it below.',
+    vfCodeAria:'Verification code — six digits', vfDigitAria:'Digit {n}',
+    vfVerify:'Confirm number', vfResend:'Send the code again',
+    vfResendIn:'Resend {rel}', vfSending:'Sending the code…',
+    vfSkip:'Continue, confirm later', vfNeedAll:'Enter all six digits',
+    vfOk:'Your number is confirmed ✅', vfFail:'Couldn’t confirm — please try again',
+    vfWhyTitle:'Why confirm?',
+    vfWhy:'The venue calls this number to confirm your booking. One wrong digit means a booking nobody can confirm.',
+    vfNoProviderTitle:'Code sending isn’t switched on yet',
+    vfNoProvider:'We can’t text you a code right now — the messaging service isn’t connected yet. Your account works and you can book as normal; we’ll confirm your number once the service is ready.',
+    vfNotReady:'Number confirmation isn’t enabled on the server yet. Your account works and you can book as normal.',
+    vfAlready:'Your number is already confirmed',
+    vfContinue:'Continue', vfTooSoon:'Please wait a moment before asking for a new code',
+    accPhoneVerified:'Number confirmed', accPhoneUnverified:'Number not confirmed', accVerifyNow:'Confirm now',
+    // ---- (10) Payment method ----
+    payTitle:'Payment method', payMethodLbl:'Payment',
+    payCash:'Cash at the venue', payCashSub:'You pay the venue when you arrive.',
+    payCard:'Visa or Mastercard', payCardSoon:'Soon',
+    payCardSub:'Card payment isn’t live yet — it opens as soon as the payment gateway is ready.',
+    payCardWhy:'And when it does, your card number is typed at the payment gateway, not here: the app never sees it and never stores it.',
+    paySoonToast:'Card payment isn’t live yet — payment is cash at the venue.',
+    payCardsTitle:'My cards', payNoCards:'No saved card — every booking is paid in cash at the venue today.',
   }
 };
 function t(key, params){
@@ -882,7 +949,10 @@ async function sbLogin(phone, password, wantRole){
     placeId = ((po.data||[])[0]||{}).place_id || '';
   }
   return { success:true, session:{ at, rt:r.data.refresh_token, exp: Date.now() + (r.data.expires_in||3600)*1000,
-           uid:String(uid), role:prof.role, name:prof.name||'', phone:prof.phone||'', place_id:String(placeId||'') } };
+           uid:String(uid), role:prof.role, name:prof.name||'', phone:prof.phone||'', place_id:String(placeId||''),
+           // `select=*` يجلبه تلقائيًّا بعد ترحيل 11، وقبله `undefined` ⇒ false.
+           // القيمة تُقرأ عند كل دخول فلا تتقادم في الجلسة المخزَّنة.
+           verified: !!prof.phone_verified } };
 }
 
 /* ── تغيير كلمة السرّ ──
@@ -966,6 +1036,35 @@ async function sbRescheduleBooking(d, session){
   return { success: !!out.success, message: out.message || '' };
 }
 
+/* ── تأكيد رقم الهاتف — دالّتان في القاعدة، ولا شيء منهما في المتصفّح ──
+   الكود يُولَّد ويُجزَّأ ويُقارَن داخل Postgres (‏`migration/11_phone_verification.sql`).
+   ولا يعرف التطبيق الكودَ ولا الحدودَ الزمنية: يطلب، ويقرأ ما تردّه الدالّة.
+
+   ثلاثة ردود مختلفة تمامًا يجب ألّا تُخلَط:
+     • 404/PGRST202 ⇒ **الترحيل لم يُشغَّل** — عطل خادم، لا عطل مستخدم.
+     • sent:false + no_provider ⇒ الترحيل شغّال لكن لا مزوّد رسائل بعد.
+     • success:false + too_soon/rate_limited ⇒ حدٌّ حقيقي، ومعه ثوانيه.
+   وكلّها تُقال كما هي. «حدث خطأ» على أيٍّ منها تجعل المستخدم يعيد المحاولة
+   إلى الأبد على شيء لن ينجح. */
+async function sbRequestPhoneCode(session){
+  if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
+  const r = await sbFetch('/rest/v1/rpc/request_phone_code', { method:'POST', token: session.at, body:{} });
+  if (r.status === 404 || (r.raw||'').includes('PGRST202')) return { success:true, sent:false, reason:'not_ready' };
+  if (!r.ok) return { success:false, message:'صار خطأ، حاول كمان مرة' };
+  const out = r.data || {};
+  return { success: out.success !== false, sent: !!out.sent, reason: out.reason || '',
+           retry_after: Number(out.retry_after||0), message: out.message || '' };
+}
+async function sbVerifyPhoneCode(session, code){
+  if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
+  const r = await sbFetch('/rest/v1/rpc/verify_phone_code', { method:'POST', token: session.at, body:{ p_code: String(code||'') } });
+  if (r.status === 404 || (r.raw||'').includes('PGRST202')) return { success:false, reason:'not_ready', message: t('vfNotReady') };
+  if (!r.ok) return { success:false, message:'صار خطأ، حاول كمان مرة' };
+  const out = r.data || {};
+  return { success: !!out.success, reason: out.reason || '', left: out.left,
+           message: out.message || '' };
+}
+
 /* ═══ الموزّع: نفس واجهة API القديمة (get/post) فوق Supabase ═══ */
 const API = {
   async get(action, extra={}, key) {
@@ -977,7 +1076,7 @@ const API = {
         const r = await sbLogin(extra.phone, extra.password, 'player');
         if (!r.success) return r;
         return { success:true, message:'أهلاً، تفضل', player_token: JSON.stringify(r.session),
-                 player:{ player_id:r.session.uid, name:r.session.name, phone:r.session.phone } };
+                 player:{ player_id:r.session.uid, name:r.session.name, phone:r.session.phone, verified:!!r.session.verified } };
       }
       case 'ownerLogin': {
         const r = await sbLogin(extra.phone, extra.password, 'owner');
@@ -991,12 +1090,18 @@ const API = {
         if (!s) return { success:false, message:'سجّل دخولك أول' };
         const r = await sbRest(`/bookings_full?select=${SB_BK_COLS}&player_id=eq.${s.uid}&order=booking_date.desc,hour.desc`, { token:s.at, key });
         if (!r.ok) return { success:false, message:'تعذّر جلب البيانات' };
-        return { success:true, bookings:(r.data||[]).map(sbBooking) };
+        /* `player` يُعاد معها لأن `init()` يستدعي هذه العملية وحدها عند فتح
+           التطبيق بجلسة محفوظة، ثمّ يُسند `State.player = res.player` — وكانت
+           تردّ بلا `player` ⇒ `undefined`: الاسم يختفي من سطر الترحيب بعد كل
+           إعادة فتح، وشارةُ حالة الرقم لا تعرف ما تعرض. (‏`sbCreateBooking`
+           كان يتراجع إلى `session.name` فلم يظهر الأثر في الحجز نفسه.) */
+        return { success:true, bookings:(r.data||[]).map(sbBooking),
+                 player:{ player_id:s.uid, name:s.name, phone:s.phone, verified: !!s.verified } };
       }
       case 'getPlayerProfile': {
         const s = await sbSession(extra.player_token, false);
         if (!s) return { success:false, message:'سجّل دخولك أول' };
-        return { success:true, player:{ player_id:s.uid, name:s.name, phone:s.phone } };
+        return { success:true, player:{ player_id:s.uid, name:s.name, phone:s.phone, verified: !!s.verified } };
       }
 
       case 'getOwnerData': {
@@ -1037,9 +1142,9 @@ const API = {
         const uid = r.data.user && r.data.user.id, at = r.data.access_token;
         await sbRest('/profiles', { method:'POST', token: at, body:{ id: uid, role:'player', name, phone, active:true } });
         const session = { at, rt:r.data.refresh_token, exp: Date.now() + (r.data.expires_in||3600)*1000,
-                          uid:String(uid), role:'player', name, phone, place_id:'' };
+                          uid:String(uid), role:'player', name, phone, place_id:'', verified:false };
         return { success:true, message:'تمام، حسابك جاهز', player_token: JSON.stringify(session),
-                 player:{ player_id:String(uid), name, phone } };
+                 player:{ player_id:String(uid), name, phone, verified:false } };
       }
 
       case 'updatePlayerProfile': {
@@ -1067,6 +1172,15 @@ const API = {
         // صفّ فارغ مع 200 = منعته RLS. قبول العملية ≠ نجاحها.
         if (!(r.data||[]).length) return { success:false, message:'ما بتقدر تحذف هذا الحساب' };
         return { success:true, message:'تم حذف حسابك' };
+      }
+
+      case 'requestPhoneCode': {
+        const s = await sbSession(data.player_token, false);
+        return sbRequestPhoneCode(s);
+      }
+      case 'verifyPhoneCode': {
+        const s = await sbSession(data.player_token, false);
+        return sbVerifyPhoneCode(s, data.code);
       }
 
       // يخدم اللاعب والمالك معًا — الفرق فقط أيّ توكن أُرسل
@@ -3223,6 +3337,77 @@ function setRating(r){
   radios.forEach(i=>{ i.checked = (Number(i.value)===r); });
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   الحبّة المنزلقة في الشريط السفلي
+
+   ما تفعله: تقيس زرّ التبويب النشط، وتنقل عنصرًا واحدًا (`.nav-pill`) إليه
+   بـ`transform` و`width`. الأزرار نفسها لا تتحرّك ولا تتغيّر خلفياتها، فكل
+   الحركة في طبقة واحدة مركَّبة.
+
+   ⚠️ لماذا القياس في JS لا في CSS: عرض كل زرّ يتبع نصّه (‏«الرئيسية» أضيق من
+   «حجوزاتي»)، والصفّ موسَّط ⇒ لا صيغة CSS ثابتة تعطي موضع الزرّ الثالث.
+
+   ⚠️ والإحداثيان **فارقان** بين مستطيل الزرّ ومستطيل الشريط، لا `left` مطلقة:
+   الشريط نفسه مزاح بـ`translate3d(-50%,…)` ويُزاح ثانيةً عند فتح الكيبورد،
+   والفارق ثابت في الحالتين. وهو أيضًا ما يجعل المنطق **واحدًا في RTL وLTR**:
+   `getBoundingClientRect` فيزيائي أصلًا فلا إشارة تُعكَس ولا ضرب في --dirx.
+
+   ⚠️ ولا يُقاس شريط مخفيّ: `display:none` يعطي أصفارًا، فتذهب الحبّة إلى
+   الزاوية. الشريط المخفيّ يفقد `pill-on` ⇒ ظهوره التالي **قفزة لا انزلاق**
+   (الانزلاق من موضع بائد يُقرأ خللًا).
+   ══════════════════════════════════════════════════════════════════════ */
+const NavPill = {
+  raf: 0,
+  sync(jump){
+    $$('.bnav').forEach(nav=>{
+      const pill=nav.querySelector('.nav-pill'); if(!pill) return;
+      if(!nav.classList.contains('show')){ nav.classList.remove('pill-on'); return; }
+      const act=nav.querySelector('.nitem.active');
+      if(!act){ nav.classList.remove('pill-on'); return; }
+      const nr=nav.getBoundingClientRect(), ar=act.getBoundingClientRect();
+      if(!ar.width || !ar.height){ nav.classList.remove('pill-on'); return; }
+      /* ⚠️ حدّ الشريط يُطرح: العنصر المطلق يُوضَع من **صندوق الحشوة** لا صندوق
+         الحدّ، و`.bnav` لها `border-top:1px` ⇒ فارقُ المستطيلين يزيد بكسلًا
+         واحدًا فتجلس الحبّة أخفض من الزرّ. (مقيسة: y=11.5 والحبّة عند 12.5.) */
+      const cs=getComputedStyle(nav);
+      // فيزيائي لا منطقي: `ar.left-nr.left` فيزيائي، فالحدّ المطروح منه مثله
+      const bl=parseFloat(cs.borderLeftWidth)||0;
+      const bt=parseFloat(cs.borderTopWidth)||0;
+      // شريط لم يُقَس بعد ⇒ لا مكان سابق يُنزلَق منه
+      const hard = jump || !nav.classList.contains('pill-on');
+      if(hard) nav.classList.add('pill-jump');
+      pill.style.setProperty('--pill-x', (ar.left-nr.left-bl)+'px');
+      pill.style.setProperty('--pill-y', (ar.top -nr.top -bt)+'px');
+      pill.style.setProperty('--pill-w', ar.width +'px');
+      pill.style.setProperty('--pill-h', ar.height+'px');
+      nav.classList.add('pill-on');
+      // القراءة تُجبر تثبيت القيم الجديدة قبل إعادة الانتقالات
+      if(hard){ void pill.offsetWidth; nav.classList.remove('pill-jump'); }
+    });
+  },
+  /* قياسان: واحد **فورًا** وآخر بعد فريم.
+     ⚠️ الفوري ليس تفاؤلًا — قراءة `getBoundingClientRect` تُجبر المتصفّح على
+     إعادة التخطيط قبل أن تردّ، فالمقاس صحيح ولو تغيّر `display` قبل سطر واحد.
+     وبدونه تتعلّق الحبّة بـ`requestAnimationFrame` وهو **يُخنَق في التبويب
+     المخفيّ ولا يُطلَق أصلًا**: قيس ذلك في متصفّح بلا واجهة فظهرت الحبّة
+     متأخّرة خطوةً كاملة عن التبويب النشط في كل لقطة.
+     والثاني يلتقط ما يستقرّ بعد فريم (وصول خطّ عربي يغيّر عرض الكلمات). */
+  schedule(jump){
+    this.sync(jump);
+    cancelAnimationFrame(this.raf);
+    this.raf=requestAnimationFrame(()=>this.sync(jump));
+  }
+};
+window.addEventListener('resize', ()=>NavPill.schedule(true));
+/* ⚠️ `fonts.ready` مرّة واحدة لا تكفي: خطّ الإنجليزية لا يُحمَّل إلّا حين
+   تُستعمل الإنجليزية أوّل مرّة، فقياسُ الحبّة عند قلب اللغة يقع على مقاييس
+   الخطّ الاحتياطي. (مقيس: الحبّة تستقرّ على 85.93px والزرّ 85.40px وتبقى
+   الفارقة أبدًا.) و`loadingdone` يُطلَق مع كل دفعة خطوط تصل. */
+try{
+  document.fonts?.ready?.then(()=>NavPill.schedule(true));
+  document.fonts?.addEventListener?.('loadingdone', ()=>NavPill.schedule(true));
+}catch(_){}
+
 /* ===================== ROUTER ===================== */
 const NAV_OF = { home:'player', bookings:'player', account:'player', owner:'owner' };
 /* مكدّس تنقّل داخلي: «رجوع» حقيقي داخل التطبيق دون مغادرة الموقع وبلا window.history */
@@ -3263,6 +3448,7 @@ function showPage(name, opts){
   $('#nav-player').classList.toggle('show', nav==='player');
   $('#nav-owner').classList.toggle('show', nav==='owner');
   $$('#nav-player .nitem').forEach(n=>{ const on=n.dataset.nav===name; n.classList.toggle('active', on); n.setAttribute('aria-current', on?'page':'false'); });
+  NavPill.schedule();
   // خطافات الصفحات — التحويلات الداخلية {redirect:true} كي لا تدخل المكدّس فتصنع حلقة
   if (name==='home') renderPlaces();
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast(t('loginToSeeBookings'),'warn'); return showPage('playerLogin',{redirect:true}); } loadPlayerBookings(); }
@@ -3271,7 +3457,12 @@ function showPage(name, opts){
     $('#accName').value=nm; $('#accPhone').value=ph;
     setText('accNameDisplay', nm||t('welcomeYou')); setText('accPhoneDisplay', ph||'—');
     const av=$('#accAvatar'); if(av) av.textContent=(nm.trim().charAt(0))||t('avatarFallback');
+    renderVerifyBadge();
   }
+  // العدّاد يُوقَف عند مغادرة شاشة التأكيد لا عند الدخول إليها: `cur` هو ما غادرناه
+  if (cur==='verifyPhone' && name!=='verifyPhone') Verify.stopTimer();
+  if (name==='verifyPhone'){ if(!Session.player()){ return showPage('playerLogin',{redirect:true}); } Verify.enter(); }
+  if (name==='playerRegister') renderPwFeedback();
   if (name==='owner'){ if(!Session.owner()){ return showPage('ownerLogin',{redirect:true}); } if(State.ownerData) renderOwnerDashboard(); }
   manageAutoRefresh();
   HeroPh.sync();   // يوقف دوران النائب خارج صفحة الهبوط ويستأنفه عند العودة إليها
@@ -3575,7 +3766,9 @@ async function playerRegister(btn){
   let bad=false;
   if(!name){ setFieldError('regName',t('vName')); bad=true; }
   if(!validPhone(phone)){ setFieldError('regPhone',t('vPhone')); bad=true; }
+  // نفس شرط الخادم بالضبط، معروضًا قبل الإرسال لا بعد الرفض
   if(!password){ setFieldError('regPass',t('vPass')); bad=true; }
+  else if(!pwValid(password)){ setFieldError('regPass', pwChecks(password).len ? t('pwNeedMix') : t('pwShort6')); bad=true; }
   if(bad){ focusFirstError($('#page-playerRegister')); return; }
   await withLoading(btn, async()=>{
     try{
@@ -3584,11 +3777,216 @@ async function playerRegister(btn){
       Session.setPlayer(res.player_token, !!$('#regRemember')?.checked); State.player=res.player; State.guest=false;
       updatePlayerGreeting();
       if(!State.places.length){ placesSkeleton(); await loadData(); }
-      if(await resumePendingBooking()) return;          // استئناف حجز الضيف إن وُجد
-      showPage('home');
+      /* ⚠️ الحجز أوّلًا، والتأكيد بعده.
+         الضيف الذي جاء من نافذة «خطوة أخيرة ويكتمل حجزك» في منتصف حجز، ووضع
+         شاشةً بينه وبين الحجز يخسر الحجز نفسه — وهو ما جاء لأجله. شارةُ
+         «رقم غير مؤكَّد» في «حسابي» تدعوه إلى التأكيد متى شاء. */
+      if(await resumePendingBooking()) return;
+      showPage('verifyPhone');
     }catch(_){ toast(t('connLag'),'error'); }
   });
 }
+
+/* ═══════════════ تأكيد رقم الهاتف ═══════════════
+   ست خانات منفصلة تتصرّف كحقل واحد: الكتابة تتقدّم، والمسح يتراجع، واللصق
+   يوزّع، والاكتمال يُرسِل بلا زرّ. والأرقام تُطبَّع إلى اللاتينية لأن لوحة
+   المفاتيح العربية تكتب ٠-٩ بينما الكود المخزَّن لاتيني. */
+const toAscii = (s) => String(s||'')
+  .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 0x0660))
+  .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 0x06F0));
+/* تعديل حقل واحد في الجلسة المخزَّنة مع **الحفاظ على مكان تخزينها**:
+   `Session.setPlayer(str,true)` ينقل جلسةً مؤقّتة إلى localStorage ⇒ «تذكّرني»
+   يُفعَّل خلسةً على جهاز لم يطلبه صاحبه. */
+function sessionPatch(patch){
+  try{
+    const raw = Session.player(); if(!raw) return;
+    const s = JSON.parse(raw); if(!s) return;
+    Object.assign(s, patch);
+    Session.setPlayer(JSON.stringify(s), !!localStorage.getItem('player_token'));
+  }catch(_){}
+}
+const relSeconds = (n) => {
+  const v = Math.max(1, Math.round(n));
+  // Intl يتكفّل بالمعدود العربي (ثانية · ثانيتان · ثوانٍ) — لا نكتبه بأيدينا
+  try{ return new Intl.RelativeTimeFormat(State.lang==='en'?'en':'ar', {numeric:'always'}).format(v, 'second'); }
+  catch(_){ return State.lang==='en' ? `in ${v}s` : `بعد ${v} ث`; }
+};
+
+const Verify = {
+  timer:0, left:0, busy:false, blocked:'', sent:false,
+  cells(){ return $$('#vfCells .vf-cell'); },
+  code(){ return this.cells().map(c => toAscii(c.value).replace(/\D/g,'')).join(''); },
+  err(msg){
+    const e=$('#vfErr'); if(!e) return;
+    e.textContent = msg||''; e.hidden = !msg;
+    const box=$('#vfCells'); if(!box) return;
+    box.classList.remove('shake'); if(msg){ void box.offsetWidth; box.classList.add('shake'); }
+  },
+  clear(){ this.cells().forEach(c=>{ c.value=''; c.classList.remove('filled'); }); this.err(''); },
+  focusFirstEmpty(){ const c=this.cells().find(x=>!x.value) || this.cells()[5]; if(c){ try{ c.focus(); }catch(_){} } },
+
+  /* نصّان لا يمرّان على data-i18n لأن فيهما قيمة مُدخَلة (الرقم) أو حالة (سبب
+     التعطيل)؛ applyTranslations كانت ستكتب فوقهما القالبَ الخام عند تبديل اللغة. */
+  phone(){
+    if(State.player && State.player.phone) return State.player.phone;
+    // احتياط: الجلسة المخزَّنة تحمل الرقم أيضًا. بدونه تخرج الجملة بفجوة
+    // («وأرسلناه إلى . اكتبه هنا») — وهو أسوأ من عدم ذكر الرقم أصلًا.
+    try{ return (JSON.parse(Session.player()||'null')||{}).phone || ''; }catch(_){ return ''; }
+  },
+  syncText(){
+    const sub=$('#vfSub');
+    if(sub){
+      /* ⚠️ م5: «أرسلنا كوداً إلى رقمك» تُكتب **بعد** أن يؤكّد الخادم الإرسال
+         لا قبله. قبل ذلك (وطوال حالة «لا مزوّد») السطرُ يقول لماذا نؤكّد
+         الرقم — لا يدّعي إرسالًا لم يقع. */
+      if(!this.sent){ sub.textContent = t('vfWhy'); }
+      else {
+        const phone = this.phone();
+        const parts = String(t('vfSub')).split('{phone}');
+        sub.textContent = '';
+        sub.append(parts[0]||'');
+        // الرقم لاتيني داخل جملة عربية ⇒ يُعزَل، وإلّا زحفت النقطة بعده إلى صدره
+        if(phone){ const b=document.createElement('bdi'); b.dir='ltr'; b.textContent=phone; sub.append(b); }
+        sub.append(parts[1]||'');
+      }
+    }
+    const txt=$('#vfBlockedText');
+    if(txt && this.blocked) txt.textContent = t(this.blocked==='not_ready' ? 'vfNotReady' : 'vfNoProvider');
+    this.paintResend();
+  },
+  paintResend(){
+    const b=$('#vfResendBtn'); if(!b) return;
+    if(this.left > 0){ b.disabled=true; b.textContent = t('vfResendIn', {rel: relSeconds(this.left)}); }
+    else { b.disabled=false; b.textContent = t('vfResend'); }
+  },
+  stopTimer(){ if(this.timer){ clearInterval(this.timer); this.timer=0; } this.left=0; },
+  startTimer(sec){
+    this.stopTimer(); this.left = Math.max(0, Math.round(sec||0)); this.paintResend();
+    if(!this.left) return;
+    this.timer = setInterval(()=>{
+      this.left--; this.paintResend();
+      if(this.left <= 0) this.stopTimer();
+    }, 1000);
+  },
+  showForm(){ this.blocked=''; $('#vfBlocked').hidden=true; $('#vfForm').hidden=false; },
+  showBlocked(reason){
+    this.blocked = reason || 'no_provider';
+    this.stopTimer();
+    $('#vfForm').hidden = true;
+    const b=$('#vfBlocked'); if(b) b.hidden = false;
+    this.syncText();
+  },
+  markVerified(){
+    if(State.player) State.player.verified = true;
+    sessionPatch({ verified:true });
+    renderVerifyBadge();
+  },
+  /* ردٌّ واحد بأربعة معانٍ مختلفة — ولكلٍّ منها ما يليق به */
+  applyRequest(res, silent){
+    if(!res || res.success === false){
+      if(res && (res.reason==='too_soon' || res.reason==='rate_limited')){
+        this.showForm(); this.startTimer(res.retry_after||60);
+        if(!silent) toast(apiMsg(res.message)||t('vfTooSoon'),'warn');
+        return;
+      }
+      toast(apiMsg(res&&res.message)||t('vfFail'),'error'); return;
+    }
+    if(res.sent){ this.sent = true; this.showForm(); this.syncText(); this.startTimer(res.retry_after||60); if(!silent) toast(t('vfSending'),'success'); return; }
+    if(res.reason==='already_verified'){ this.markVerified(); this.leave(); toast(t('vfAlready'),'success'); return; }
+    this.showBlocked(res.reason);            // no_provider | not_ready
+  },
+  async enter(){
+    this.sent = false;
+    this.clear(); this.stopTimer(); this.showForm(); this.syncText();
+    if(!Session.player()){ showPage('playerLogin',{redirect:true}); return; }
+    try{ this.applyRequest(await API.post({action:'requestPhoneCode', player_token:Session.player()}), true); }
+    catch(_){ toast(t('connLag'),'error'); }
+  },
+  async resend(btn){
+    if(this.left > 0) return;
+    await withLoading(btn, async()=>{
+      try{ this.clear(); this.applyRequest(await API.post({action:'requestPhoneCode', player_token:Session.player()})); }
+      catch(_){ toast(t('connLag'),'error'); }
+    });
+  },
+  async submit(btn){
+    const code = this.code();
+    if(code.length < 6){ this.err(t('vfNeedAll')); this.focusFirstEmpty(); buzz(14); return; }
+    if(this.busy) return; this.busy = true;
+    try{
+      await withLoading(btn, async()=>{
+        try{
+          const res = await API.post({action:'verifyPhoneCode', player_token:Session.player(), code});
+          if(!res.success){
+            // كودٌ محروق أو منتهٍ ⇒ الخانات تُفرَّغ، فلا يعيد إرسال ما لن ينجح
+            if(res.reason==='expired' || res.reason==='too_many' || res.reason==='no_code') this.clear();
+            this.err(apiMsg(res.message)||t('vfFail')); buzz(18);
+            this.focusFirstEmpty(); return;
+          }
+          this.markVerified(); this.leave();
+          showSimpleSuccess(t('vfOk'));
+        }catch(_){ toast(t('connLag'),'error'); }
+      });
+    } finally { this.busy = false; }
+  },
+  /* الخروج من الشاشة: يوقف العدّاد دائمًا (مؤقّتٌ يعدّ في صفحة مخفيّة = تسريب).
+     ⚠️ والوجهة ليست «رجوعًا» دائمًا: القادم من التسجيل يجد في المكدّس
+     `playerRegister` — أي نموذجَ إنشاء حساب وقد صار له حساب. الرجوع يصحّ
+     من «حسابي» وحدها؛ وما عداها فالرئيسة. */
+  leave(){
+    this.stopTimer();
+    if(NavStack[NavStack.length-1] === 'account'){ navigateBack('home'); return; }
+    showPage('home', {redirect:true});
+  },
+};
+/* شارة حالة الرقم في «حسابي» — تُخفى تمامًا حين تكون الحالة مجهولة (جلسة
+   قديمة قبل ترحيل 11 لا تحمل العلَم) بدل أن تُعرَض «غير مؤكَّد» بلا دليل (م5). */
+function renderVerifyBadge(){
+  const b = $('#accVerifyBadge'); if(!b) return;
+  const p = State.player;
+  if(!p || p.verified === undefined){ b.hidden = true; return; }
+  const ok = !!p.verified;
+  b.hidden = false;
+  b.classList.toggle('is-ok', ok);
+  b.disabled = ok;
+  b.textContent = ok ? t('accPhoneVerified') : `${t('accPhoneUnverified')} — ${t('accVerifyNow')}`;
+}
+
+/* ═══════════════ كلمة السرّ: الشرط مكتوب، والقوّة وصف ═══════════════
+   ⚠️ الحدّ **ستّ** خانات لأن الخادم يرفض ما دونها (`playerRegister` في API.post).
+   كانت النائبة تقول أربعًا، فيكتب المستخدم خمسًا ويُرَدّ بلا سبب ظاهر —
+   رقمٌ واحد مختلف في مكانين كلّفه محاولةً ضائعة. المصدر هنا واحد: `PW_MIN`. */
+const PW_MIN = 6;
+// الأرقام الهندية (٠-٩ · ۰-۹) تُعدّ أرقامًا كما تُعدّ اللاتينية: لوحة المفاتيح
+// العربية تكتبها، والخادم يعدّ المحارف لا أشكالها.
+const RE_DIGIT  = /[0-9٠-٩۰-۹]/;
+const RE_LETTER = /[A-Za-zء-يٱ-ۓ]/;
+const pwChecks = (v) => { const s=String(v||''); return {
+  len: s.length >= PW_MIN, letter: RE_LETTER.test(s), digit: RE_DIGIT.test(s) }; };
+const pwValid  = (v) => { const c=pwChecks(v); return c.len && c.letter && c.digit; };
+/* القوّة **لا تمنع** الإنشاء — الشروط الثلاثة وحدها تمنع. هذا مقياس يشجّع لا حارس
+   يعاقب: كلمة من ثماني خانات وحرف ورقم مقبولة تمامًا وإن قال المقياس «مقبولة». */
+function pwScore(v){
+  const s = String(v||''); if(!s) return 0;
+  let n = 0;
+  if(s.length >= PW_MIN) n++;
+  if(s.length >= 10) n++;
+  if(RE_DIGIT.test(s) && RE_LETTER.test(s)) n++;
+  if(/[^A-Za-z0-9؀-ۿ]/.test(s) || (/[a-z]/.test(s) && /[A-Z]/.test(s))) n++;
+  return Math.min(4, n);
+}
+function renderPwFeedback(){
+  const inp = $('#regPass'); if(!inp) return;
+  const v = inp.value, c = pwChecks(v), score = pwScore(v);
+  $$('#pwRules .pw-rule').forEach(li => li.classList.toggle('ok', !!c[li.dataset.rule]));
+  const meter = $('#pwMeter');
+  if(meter){
+    meter.hidden = !v;
+    meter.dataset.lvl = String(score);   // الشرائح تُملأ بمحدّدات nth-child على هذه القيمة
+    setText('pwLvlText', v ? `${t('pwStrength')}: ${t('pwLvl'+Math.max(1,score))}` : '');
+  }
+}
+
 async function ownerLogin(btn){
   const phone=$('#ownerPhone').value.trim(), password=$('#ownerPass').value.trim();
   if(!phone||!password){ toast(t('loginNeed'),'warn'); return; }
@@ -3916,7 +4314,13 @@ function setLanguage(lang){
     if($('#page-home')?.classList.contains('active')) renderPlaces();
     if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderDetailBadges(State.detail.place); renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
+    // نصوص تحمل قيمة أو حالة ⇒ خارج data-i18n، فتُعاد بناءً هنا (انظر Verify.syncText)
+    renderPwFeedback(); renderVerifyBadge();
+    if($('#page-verifyPhone')?.classList.contains('active')) Verify.syncText();
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
+    // نصوص التبويبات تغيّرت ⇒ عروض الأزرار تغيّرت. قفزة لا انزلاق: الحبّة
+    // تتبع كلمةً صار مكانها في الطرف المقابل، فالانزلاق عبر الشريط بلا معنى.
+    NavPill.schedule(true);
   }catch(_){}
 }
 /* ══════════════════════════════════════════════════════════════════════
@@ -3998,6 +4402,14 @@ const Actions = {
   openReview, confirmBooking, submitReview,
   authLogin:()=>{ Modal.close('modal-authchoice'); showPage('playerLogin'); },
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
+  verifyPhone:(btn)=>Verify.submit(btn), resendCode:(btn)=>Verify.resend(btn),
+  vfContinue:()=>Verify.leave(), goVerify:()=>showPage('verifyPhone'),
+  /* «فيزا» معطَّلة: النقرة تُجيب بدل أن تُبتلع بصمت — الزرّ الذي لا يفعل شيئًا
+     ولا يقول شيئًا يُقرأ عطلًا في التطبيق لا قرارًا في المنتج. */
+  payPick:(btn)=>{
+    if(btn.dataset.pay !== 'cash'){ toast(t('paySoonToast'),'warn'); buzz(14); return; }
+    $$('.pay-opt').forEach(o=>{ const on = o===btn; o.classList.toggle('is-on', on); o.setAttribute('aria-checked', on?'true':'false'); });
+  },
   openManual, saveManual, addField:openAddField, saveField, saveReschedule,
   clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
@@ -4241,6 +4653,49 @@ function initStickyDedup(){
   io.observe(inline);
 }
 
+/* ربط حقول المصادقة مرّة واحدة.
+   ⚠️ **إسناد خاصّية** (`el.oninput=`) لا `addEventListener`: هذه عناصر ثابتة في
+   الـHTML، والإضافة تكدّس مستمعًا جديدًا لو نُودي المهيّئ مرّتين. */
+function initAuthForms(){
+  const pass = $('#regPass');
+  if(pass) pass.oninput = renderPwFeedback;
+
+  const cells = $$('#vfCells .vf-cell');
+  const submitBtn = () => $('#vfForm [data-action="verifyPhone"]');
+  const paint = (c) => c.classList.toggle('filled', !!c.value);
+  const maybeSubmit = () => { if(Verify.code().length === 6) Verify.submit(submitBtn()); };
+
+  cells.forEach((c, i) => {
+    c.oninput = () => {
+      // آخر محرف لا أوّله: من يكتب فوق خانة ممتلئة يقصد استبدالها
+      c.value = toAscii(c.value).replace(/\D/g,'').slice(-1);
+      paint(c); Verify.err('');
+      if(c.value && i < cells.length-1) cells[i+1].focus();
+      maybeSubmit();
+    };
+    c.onkeydown = (e) => {
+      if(e.key === 'Backspace' && !c.value && i > 0){
+        e.preventDefault(); cells[i-1].value=''; paint(cells[i-1]); cells[i-1].focus(); return;
+      }
+      // الصفّ `dir="ltr"` دائمًا (الكود عدد لا نصّ) ⇒ اليسار هو السابق في اللغتين
+      if(e.key === 'ArrowLeft'  && i > 0){ e.preventDefault(); cells[i-1].focus(); }
+      if(e.key === 'ArrowRight' && i < cells.length-1){ e.preventDefault(); cells[i+1].focus(); }
+    };
+    // لصق الكود كاملًا على أي خانة يملأ الصفّ من أوّله — لا من الخانة الملصوق فيها
+    c.onpaste = (e) => {
+      const cb = e.clipboardData || window.clipboardData;
+      const txt = toAscii(cb ? cb.getData('text') : '').replace(/\D/g,'').slice(0,6);
+      if(!txt) return;
+      e.preventDefault();
+      cells.forEach((x,k)=>{ x.value = txt[k]||''; paint(x); });
+      Verify.err('');
+      cells[Math.min(txt.length, cells.length-1)].focus();
+      maybeSubmit();
+    };
+    c.onfocus = () => { try{ c.select(); }catch(_){} };
+  });
+}
+
 async function init(){
   applyTheme(Session.theme());
   setLanguage(State.lang);   // يضبط lang/dir + يطبّق الترجمة على الواجهة الثابتة
@@ -4250,6 +4705,7 @@ async function init(){
   PullRefresh.init();        // السحب للتحديث على الرئيسية/الحجوزات/لوحة المالك
   initLandingReveal();       // تجهيز كشف أقسام الهبوط (الـDOM الثابت متاح الآن)
   initStickyDedup();         // منع تكرار زرّ متابعة الحجز (اللاصق × الداخلي)
+  initAuthForms();           // شروط كلمة السرّ الحيّة + خانات كود التحقّق
   loadData().then(updateTrust);
   if (Session.owner()){
     $('#nav-owner').classList.add('show'); showPage('owner'); loadOwnerDashboard(); return;

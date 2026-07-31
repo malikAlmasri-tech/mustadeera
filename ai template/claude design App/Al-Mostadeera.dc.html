@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+*::-webkit-scrollbar{display:none}
+:root{--bg:#0A0B0A;--surface:#141614;--surface2:#1C1F1C;--border:rgba(255,255,255,0.09);--text:#F6F7F5;--muted:rgba(246,247,245,0.52);--stage:#0E100E;--bezel:#1A1C1A;--volt:#8CC63E;--onVolt:#0A0B0A}
+body{margin:0;background:#0E100E;font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--volt);text-decoration:none}
+a:hover{color:var(--text)}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="min-height:100vh;background:var(--stage);color:var(--text);font-family:Manrope,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:34px 24px 56px;gap:26px">
+
+  <div style="width:100%;max-width:940px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:0.28em;color:var(--volt);text-transform:uppercase">Al-Mostadeera · v2 concept</div>
+      <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;line-height:1.02;letter-spacing:-0.035em;color:var(--text)">Premium Athletic Minimalism</div>
+      <div style="font-size:13px;font-weight:500;color:var(--muted);max-width:420px;text-wrap:pretty">Interactive prototype — explore pitches, pick a date, feel the scarcity, join a waitlist, book.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="display:flex;padding:4px;gap:4px;border-radius:999px;background:var(--surface);border:1px solid var(--border)">
+        <div onClick="{{ setDark }}" style="padding:9px 18px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s ease,color .2s ease;background:{{ darkBtnBg }};color:{{ darkBtnFg }}">Dark</div>
+        <div onClick="{{ setLight }}" style="padding:9px 18px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s ease,color .2s ease;background:{{ lightBtnBg }};color:{{ lightBtnFg }}">Light</div>
+      </div>
+      <div onClick="{{ reset }}" style="padding:10px 18px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);border:1px solid var(--border);background:transparent;transition:color .2s ease" style-hover="color:var(--text)">Reset flow</div>
+    </div>
+  </div>
+
+  <div style="padding:9px;border-radius:54px;background:var(--bezel);box-shadow:0 40px 90px -30px rgba(0,0,0,0.65),0 0 0 1px var(--border)">
+  <div style="width:390px;height:844px;border-radius:46px;overflow:hidden;position:relative;background:var(--bg);display:flex;flex-direction:column">
+
+    <div style="height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px">
+      <div style="font-family:Archivo,sans-serif;font-weight:700;font-size:14px;letter-spacing:-0.01em;color:var(--text)">9:41</div>
+      <div style="display:flex;align-items:center;gap:5px">
+        <div style="width:16px;height:9px;border-radius:2px;background:var(--text);opacity:0.9"></div>
+        <div style="width:9px;height:9px;border-radius:50%;background:var(--text);opacity:0.9"></div>
+        <div style="width:22px;height:10px;border-radius:3px;border:1.5px solid var(--text);opacity:0.9"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none">
+      <div style="padding:6px 20px 0;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:29px;line-height:1;letter-spacing:-0.04em;color:var(--text)">Hi, Moath</div>
+          <div style="font-size:12.5px;font-weight:500;color:var(--muted)">Amman · 7 pitches free tonight</div>
+        </div>
+        <div style="position:relative">
+          <div style="width:46px;height:46px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Archivo,sans-serif;font-weight:800;font-size:17px;color:var(--text)">M</div>
+          <div style="position:absolute;top:-1px;right:-1px;width:12px;height:12px;border-radius:50%;background:var(--volt);border:2.5px solid var(--bg)"></div>
+        </div>
+      </div>
+
+      <div style="position:sticky;top:0;z-index:5;background:var(--bg);padding:18px 20px 12px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:12px;height:58px;padding:0 8px 0 18px;border-radius:18px;background:var(--surface);border:1px solid var(--border)">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex:none;opacity:0.55"><circle cx="7.6" cy="7.6" r="5.6" stroke="currentColor" stroke-width="1.8"/><line x1="11.8" y1="11.8" x2="16" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search pitches, areas…" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:Archivo,sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-0.015em;color:var(--text)">
+          <div onClick="{{ noop }}" style="width:42px;height:42px;flex:none;border-radius:14px;background:var(--volt);display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <div style="width:15px;height:15px;border:2px solid var(--onVolt);border-radius:3px;opacity:0.95"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:12px;padding-bottom:2px">
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+            <div style="flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px 8px 14px;border-radius:999px;background:color-mix(in oklab, var(--volt) 13%, transparent);border:1px solid color-mix(in oklab, var(--volt) 42%, transparent);font-size:12.5px;font-weight:700;color:var(--text)">
+              <span>{{ c.label }}</span>
+              <span onClick="{{ c.remove }}" style="cursor:pointer;font-size:14px;line-height:1;color:var(--muted);transition:color .15s ease" style-hover="color:var(--text)">×</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ chipsEmpty }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ restoreChips }}" style="flex:none;padding:8px 14px;border-radius:999px;border:1px dashed var(--border);font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer">+ Add filters</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 20px 0">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <div onClick="{{ t.select }}" style="flex:none;padding:10px 17px;border-radius:999px;border-width:1px;border-style:solid;font-family:Archivo,sans-serif;font-weight:700;font-size:13.5px;letter-spacing:-0.01em;cursor:pointer;transition:all .2s ease;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.border }}">{{ t.label }}</div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;align-items:baseline;justify-content:space-between;padding:22px 20px 12px">
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.03em;color:var(--text)">Near you</div>
+        <div style="font-size:11.5px;font-weight:600;color:var(--muted)">{{ resultCount }}</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;padding:0 20px 120px">
+        <sc-for list="{{ venues }}" as="v" hint-placeholder-count="3">
+          <div onClick="{{ v.open }}" style="border-radius:16px;overflow:hidden;background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.25,1)" style-hover="transform:translateY(-3px)">
+            <div style="position:relative;height:200px;background:#121614">
+              <div style="position:absolute;inset:0;background:{{ v.tint }}"></div>
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 10px)"></div>
+              <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(4,6,5,0.62), rgba(4,6,5,0) 58%)"></div>
+              <div style="position:absolute;left:14px;top:14px;font:500 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:0.14em;color:rgba(255,255,255,0.55);text-transform:uppercase">{{ v.imgLabel }}</div>
+              <div style="position:absolute;right:14px;top:14px;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:rgba(8,10,9,0.55);border:1px solid rgba(255,255,255,0.16)">
+                <div style="width:5px;height:5px;border-radius:50%;background:var(--volt)"></div>
+                <span style="font-family:Archivo,sans-serif;font-weight:700;font-size:11.5px;color:#fff">{{ v.rating }}</span>
+                <span style="font-size:10.5px;font-weight:500;color:rgba(255,255,255,0.6)">{{ v.reviews }}</span>
+              </div>
+              <div style="position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:7px">
+                <div style="padding:7px 12px;border-radius:999px;background:#fff;font-family:Archivo,sans-serif;font-weight:800;font-size:13px;letter-spacing:-0.02em;color:#0A0B0A">{{ v.priceTag }}</div>
+                <div style="padding:7px 11px;border-radius:999px;background:rgba(8,10,9,0.5);border:1px solid rgba(255,255,255,0.16);font-size:11px;font-weight:600;color:rgba(255,255,255,0.86)">{{ v.format }}</div>
+              </div>
+            </div>
+            <div style="padding:15px 16px 16px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:19.5px;line-height:1.12;letter-spacing:-0.035em;color:var(--text)">{{ v.name }}</div>
+                <div style="font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap;padding-top:3px">{{ v.dist }}</div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ v.tags }}" as="tag" hint-placeholder-count="3">
+                  <div style="padding:5px 10px;border-radius:999px;background:var(--surface2);font-size:10.5px;font-weight:600;letter-spacing:0.01em;color:var(--muted)">{{ tag }}</div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ v.scarcity }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:7px;margin-top:2px">
+                  <div style="width:6px;height:6px;border-radius:50%;background:{{ v.scarcityColor }}"></div>
+                  <div style="font-size:11.5px;font-weight:700;color:{{ v.scarcityColor }}">{{ v.scarcity }}</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="position:absolute;left:0;right:0;bottom:0;height:88px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:flex-start;padding:14px 12px 0;z-index:8">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="width:22px;height:3px;border-radius:999px;background:var(--volt)"></div>
+        <div style="font-family:Archivo,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:0.01em;color:var(--text)">Explore</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="width:22px;height:3px;border-radius:999px;background:transparent"></div>
+        <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:11.5px;color:var(--muted)">Matches</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="width:22px;height:3px;border-radius:999px;background:transparent"></div>
+        <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:11.5px;color:var(--muted)">Bookings</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="width:22px;height:3px;border-radius:999px;background:transparent"></div>
+        <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:11.5px;color:var(--muted)">Profile</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ detailMounted }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;transition:transform .46s cubic-bezier(.22,.9,.24,1);transform:{{ detailTransform }}">
+        <div style="flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none">
+          <div style="position:relative;height:326px;background:#121614">
+            <div style="position:absolute;inset:0;background:{{ venue.tint }}"></div>
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 10px)"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(to top, var(--bg) 1%, rgba(4,6,5,0.35) 45%, rgba(4,6,5,0.15))"></div>
+            <div style="position:absolute;left:14px;top:64px;font:500 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:0.14em;color:rgba(255,255,255,0.5);text-transform:uppercase">{{ venue.imgLabel }}</div>
+            <div style="position:absolute;top:58px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between">
+              <div onClick="{{ closeDetail }}" style="width:42px;height:42px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:Archivo,sans-serif;font-weight:700;font-size:17px;color:var(--text)">‹</div>
+              <div onClick="{{ toggleFav }}" style="width:42px;height:42px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;line-height:1;color:{{ favColor }}">♥</div>
+            </div>
+          </div>
+
+          <div style="padding:2px 20px 0;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="padding:6px 11px;border-radius:999px;background:color-mix(in oklab, var(--volt) 15%, transparent);font-family:Archivo,sans-serif;font-weight:700;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--volt)">{{ venue.format }}</div>
+                <div style="font-size:11.5px;font-weight:600;color:var(--muted)">{{ venue.area }} · {{ venue.dist }}</div>
+              </div>
+              <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:32px;line-height:1.03;letter-spacing:-0.045em;color:var(--text)">{{ venue.name }}</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:5px;height:5px;border-radius:50%;background:var(--volt)"></div>
+                <div style="font-family:Archivo,sans-serif;font-weight:700;font-size:13px;color:var(--text)">{{ venue.rating }}</div>
+                <div style="font-size:12px;font-weight:500;color:var(--muted)">{{ venue.reviews }} reviews · Superhost pitch</div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ venue.amenities }}" as="a" hint-placeholder-count="4">
+                <div style="padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:11.5px;font-weight:600;color:var(--muted)">{{ a }}</div>
+              </sc-for>
+            </div>
+
+            <div style="height:1px;background:var(--border);margin:4px 0 2px"></div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.03em;color:var(--text)">Choose a date</div>
+              <div style="font-size:11px;font-weight:600;color:var(--muted)">July — August</div>
+            </div>
+
+            <div style="display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px">
+              <sc-for list="{{ dates }}" as="d" hint-placeholder-count="7">
+                <div onClick="{{ d.select }}" style="flex:none;width:60px;padding:11px 0 10px;border-radius:16px;border-width:1.5px;border-style:solid;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .2s ease;background:{{ d.bg }};border-color:{{ d.border }}">
+                  <div style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;color:{{ d.dowColor }}">{{ d.dow }}</div>
+                  <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.03em;color:{{ d.dayColor }}">{{ d.day }}</div>
+                  <div style="font-size:9px;font-weight:700;letter-spacing:0.02em;color:{{ d.subColor }};height:11px">{{ d.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:12px;padding-top:6px">
+                <div style="height:1px;background:var(--border)"></div>
+                <div style="display:flex;align-items:baseline;justify-content:space-between">
+                  <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.03em;color:var(--text)">{{ slotsHeading }}</div>
+                  <div style="font-size:11px;font-weight:600;color:var(--muted)">60 min sessions</div>
+                </div>
+
+                <sc-if value="{{ hasSlots }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <sc-for list="{{ slots }}" as="s" hint-placeholder-count="6">
+                      <div onClick="{{ s.select }}" style="padding:13px 14px 12px;border-radius:16px;border-width:1.5px;border-style:solid;transition:all .2s ease;background:{{ s.bg }};border-color:{{ s.border }};opacity:{{ s.opacity }};cursor:{{ s.cursor }}">
+                        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.03em;color:{{ s.timeColor }};text-decoration:{{ s.deco }}">{{ s.time }}</div>
+                        <div style="margin-top:3px;font-size:11.5px;font-weight:600;color:var(--muted)">{{ s.price }}</div>
+                        <sc-if value="{{ s.badge }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:9px;display:inline-block;padding:4px 9px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:0.02em;background:{{ s.badgeBg }};color:{{ s.badgeFg }}">{{ s.badge }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ dateFull }}" hint-placeholder-val="{{ false }}">
+                  <div style="border-radius:16px;background:var(--surface);border:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div style="width:7px;height:7px;border-radius:50%;background:{{ hotColor }}"></div>
+                      <div style="font-size:10.5px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:{{ hotColor }}">Fully booked</div>
+                    </div>
+                    <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:21px;line-height:1.15;letter-spacing:-0.035em;color:var(--text);text-wrap:pretty">{{ fullTitle }}</div>
+                    <div style="font-size:12.5px;font-weight:500;line-height:1.5;color:var(--muted);text-wrap:pretty">14 players are watching this pitch. Cancellations here free up within hours — we'll ping you first.</div>
+                    <div onClick="{{ joinWaitlist }}" style="margin-top:2px;padding:15px;border-radius:999px;border-width:1.5px;border-style:solid;text-align:center;font-family:Archivo,sans-serif;font-weight:700;font-size:14px;letter-spacing:-0.01em;cursor:pointer;transition:all .2s ease;background:{{ waitBg }};border-color:{{ waitBorder }};color:{{ waitFg }}">{{ waitLabel }}</div>
+                  </div>
+                </sc-if>
+
+                <div style="font-size:11px;font-weight:500;color:var(--muted);padding:2px 2px 0">Free cancellation up to 6 hours before kick-off.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ noDate }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:26px 18px;border-radius:16px;border:1px dashed var(--border);text-align:center;font-size:12.5px;font-weight:600;color:var(--muted)">Pick a date to see live availability</div>
+            </sc-if>
+
+            <div style="height:130px"></div>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:16px 20px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:23px;letter-spacing:-0.04em;color:var(--text)">{{ totalPrice }}</div>
+            <div style="font-size:11px;font-weight:600;color:var(--muted)">{{ totalNote }}</div>
+          </div>
+          <div onClick="{{ book }}" style="padding:16px 30px;border-radius:999px;font-family:Archivo,sans-serif;font-weight:800;font-size:15px;letter-spacing:-0.015em;transition:all .2s ease;background:{{ ctaBg }};color:{{ ctaFg }};cursor:{{ ctaCursor }}">{{ ctaLabel }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ booked }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:36px">
+        <div style="width:88px;height:88px;border-radius:50%;background:var(--volt);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;color:var(--onVolt)">✓</div>
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;letter-spacing:-0.045em;color:var(--text);text-align:center">Pitch secured</div>
+        <div style="font-size:13.5px;font-weight:500;line-height:1.55;color:var(--muted);text-align:center;text-wrap:pretty">{{ bookedSummary }}</div>
+        <div style="padding:12px 16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font:600 11px/1 ui-monospace,Menlo,monospace;letter-spacing:0.1em;color:var(--muted)">REF · MST-4471</div>
+        <div onClick="{{ closeSuccess }}" style="margin-top:10px;padding:16px 40px;border-radius:999px;background:var(--volt);color:var(--onVolt);font-family:Archivo,sans-serif;font-weight:800;font-size:15px;cursor:pointer">Done</div>
+      </div>
+    </sc-if>
+
+  </div>
+  </div>
+
+  <div style="font-size:12px;font-weight:500;color:var(--muted);text-align:center;max-width:520px;text-wrap:pretty">{{ hint }}</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#8CC63E&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#8CC63E&quot;,&quot;#C6F135&quot;,&quot;#3DDC91&quot;,&quot;#FF6B3D&quot;],&quot;section&quot;:&quot;Brand&quot;},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;dark&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;tsType&quot;:&quot;'dark' | 'light'&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;scarcityBadges&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;JOD&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  state = {
+    theme: null, query: '', sport: 'football',
+    chips: ['5x5', '< 20 JOD', 'Tonight'],
+    venueId: null, detailMounted: false, detailOpen: false,
+    dateId: null, slotId: null, waitlisted: false, booked: false, fav: false
+  };
+
+  themes = {
+    dark: { bg:'#0A0B0A', surface:'#141614', surface2:'#1C1F1C', border:'rgba(255,255,255,0.09)', text:'#F6F7F5', muted:'rgba(246,247,245,0.52)', stage:'#0E100E', bezel:'#1A1C1A' },
+    light: { bg:'#F3F3EF', surface:'#FFFFFF', surface2:'#EAEAE4', border:'rgba(16,18,16,0.10)', text:'#101210', muted:'rgba(16,18,16,0.55)', stage:'#DDDDD7', bezel:'#C7C7BF' }
+  };
+
+  venues = [
+    { id:'waha', sport:'football', name:'Al-Waha Arena', format:'5x5 turf', area:'Abdoun', dist:'2.4 km', price:18, rating:'4.92', reviews:'128',
+      tint:'linear-gradient(150deg,#1E4230 0%,#0C1512 100%)', imgLabel:'pitch photo · floodlit 5x5',
+      tags:['Turf 2023','Floodlights','Free parking'], amenities:['Floodlights','Changing rooms','Free parking','Ball included','Water station'], scarce:'2 slots left tonight' },
+    { id:'city', sport:'football', name:'Sports City Pitch 3', format:'7x7 grass', area:'Shmeisani', dist:'4.1 km', price:24, rating:'4.78', reviews:'86',
+      tint:'linear-gradient(150deg,#25382A 0%,#0E1411 100%)', imgLabel:'pitch photo · 7x7 hybrid grass',
+      tags:['Hybrid grass','Showers','Café'], amenities:['Showers','Café','Seating for 40','Referee on request'], scarce:'' },
+    { id:'jazeera', sport:'football', name:'Nadi Al-Jazeera', format:'11x11', area:'Marj Al-Hamam', dist:'8.6 km', price:40, rating:'4.66', reviews:'54',
+      tint:'linear-gradient(150deg,#1A3340 0%,#0B1216 100%)', imgLabel:'pitch photo · full-size 11v11',
+      tags:['Full size','Stands','Locker rooms'], amenities:['Stands','Locker rooms','Physio room','Team parking'], scarce:'' },
+    { id:'yard', sport:'padel', name:'The Yard Padel Club', format:'Padel · indoor', area:'Dabouq', dist:'6.8 km', price:15, rating:'4.85', reviews:'212',
+      tint:'linear-gradient(150deg,#2C3A1E 0%,#111510 100%)', imgLabel:'court photo · indoor padel',
+      tags:['Indoor','Air conditioned','Racket rental'], amenities:['Air conditioned','Racket rental','Coaching','Pro shop'], scarce:'Prime hours 90% booked' },
+    { id:'court7', sport:'basketball', name:'Court Seven', format:'Half court', area:'Jabal Amman', dist:'3.2 km', price:12, rating:'4.71', reviews:'64',
+      tint:'linear-gradient(150deg,#3A2A1E 0%,#151110 100%)', imgLabel:'court photo · outdoor hoops',
+      tags:['Outdoor','Night lights','Rooftop'], amenities:['Night lights','Rooftop view','Water station'], scarce:'' },
+    { id:'baccalaureate', sport:'tennis', name:'Rawabi Tennis Deck', format:'Clay court', area:'Khalda', dist:'5.0 km', price:20, rating:'4.89', reviews:'41',
+      tint:'linear-gradient(150deg,#3B2B2B 0%,#141010 100%)', imgLabel:'court photo · clay singles',
+      tags:['Clay','Coach available','Shade'], amenities:['Coach available','Shaded seating','Ball machine'], scarce:'' }
+  ];
+
+  sports = [['football','Football'],['padel','Padel'],['basketball','Basketball'],['tennis','Tennis'],['volleyball','Volleyball']];
+
+  dateDefs = [
+    { id:'d0', dow:'WED', day:'30', status:'few' },
+    { id:'d1', dow:'THU', day:'31', status:'open' },
+    { id:'d2', dow:'FRI', day:'01', status:'hot' },
+    { id:'d3', dow:'SAT', day:'02', status:'full' },
+    { id:'d4', dow:'SUN', day:'03', status:'open' },
+    { id:'d5', dow:'MON', day:'04', status:'open' },
+    { id:'d6', dow:'TUE', day:'05', status:'open' }
+  ];
+
+  slotPlans = {
+    d0: [['18:00','open'],['19:00','last'],['20:00','hot'],['21:00','open'],['22:00','gone'],['23:00','open']],
+    d1: [['17:00','open'],['18:00','open'],['19:00','hot'],['20:00','open'],['21:00','last'],['22:00','open']],
+    d2: [['16:00','gone'],['17:00','hot'],['18:00','last'],['19:00','gone'],['20:00','hot'],['21:00','open']],
+    d4: [['15:00','open'],['16:00','open'],['17:00','open'],['18:00','hot'],['19:00','open'],['20:00','last']],
+    d5: [['17:00','open'],['18:00','open'],['19:00','open'],['20:00','open'],['21:00','open'],['22:00','open']],
+    d6: [['17:00','open'],['18:00','last'],['19:00','open'],['20:00','hot'],['21:00','open'],['22:00','open']]
+  };
+
+  theme() { return this.state.theme || this.props.defaultTheme || 'dark'; }
+  cur() { return this.props.currency || 'JOD'; }
+  scarcityOn() { return this.props.scarcityBadges !== false; }
+
+  componentDidMount() { this.apply(); }
+  componentDidUpdate() { this.apply(); }
+  apply() {
+    const el = this.rootRef.current; if (!el) return;
+    const t = this.themes[this.theme()];
+    Object.keys(t).forEach(k => el.style.setProperty('--' + k, t[k]));
+    el.style.setProperty('--volt', this.props.accent || '#8CC63E');
+    el.style.setProperty('--onVolt', '#0A0B0A');
+    document.body.style.background = t.stage;
+  }
+
+  openVenue = (v) => {
+    this.setState({ venueId: v.id, detailMounted: true, detailOpen: false, dateId: null, slotId: null, waitlisted: false, fav: false });
+    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ detailOpen: true })));
+  };
+  closeDetail = () => {
+    this.setState({ detailOpen: false });
+    setTimeout(() => this.setState({ detailMounted: false }), 460);
+  };
+
+  slotsFor(dateId) {
+    const v = this.venues.find(x => x.id === this.state.venueId);
+    const plan = this.slotPlans[dateId] || [];
+    const dark = this.theme() === 'dark';
+    const hot = dark ? '#FF8A3D' : '#D65F13';
+    const last = dark ? '#FF5C5C' : '#D93B3B';
+    return plan.map(([time, st]) => {
+      const bump = st === 'hot' || st === 'last' ? 4 : 0;
+      const gone = st === 'gone';
+      const sel = this.state.slotId === time;
+      const badgeOn = this.scarcityOn() && (st === 'hot' || st === 'last');
+      return {
+        id: time, time,
+        price: gone ? 'Taken' : ((v ? v.price : 18) + bump) + ' ' + this.cur(),
+        bg: sel ? 'color-mix(in oklab, var(--volt) 15%, transparent)' : 'var(--surface)',
+        border: sel ? 'var(--volt)' : 'var(--border)',
+        opacity: gone ? '0.42' : '1',
+        cursor: gone ? 'not-allowed' : 'pointer',
+        deco: gone ? 'line-through' : 'none',
+        timeColor: 'var(--text)',
+        badge: !badgeOn ? '' : (st === 'last' ? 'Only 1 slot left!' : 'Hot · 6 booked today'),
+        badgeBg: st === 'last' ? 'color-mix(in oklab, ' + last + ' 15%, transparent)' : 'color-mix(in oklab, ' + hot + ' 15%, transparent)',
+        badgeFg: st === 'last' ? last : hot,
+        select: gone ? (() => {}) : (() => this.setState({ slotId: time }))
+      };
+    });
+  }
+
+  renderVals() {
+    const s = this.state, dark = this.theme() === 'dark', cur = this.cur();
+    const q = s.query.trim().toLowerCase();
+    const volt = this.props.accent || '#8CC63E';
+    const hotColor = dark ? '#FF8A3D' : '#D65F13';
+
+    const venues = this.venues
+      .filter(v => v.sport === s.sport)
+      .filter(v => !q || (v.name + ' ' + v.area + ' ' + v.format).toLowerCase().includes(q))
+      .map(v => ({
+        ...v,
+        priceTag: v.price + ' ' + cur + '/hr',
+        scarcity: this.scarcityOn() ? v.scarce : '',
+        scarcityColor: hotColor,
+        open: () => this.openVenue(v)
+      }));
+
+    const venue = this.venues.find(x => x.id === s.venueId) || this.venues[0];
+
+    const dates = this.dateDefs.map(d => {
+      const sel = s.dateId === d.id, full = d.status === 'full';
+      return {
+        ...d,
+        bg: sel ? 'color-mix(in oklab, var(--volt) 15%, transparent)' : 'var(--surface)',
+        border: sel ? 'var(--volt)' : 'var(--border)',
+        dowColor: 'var(--muted)',
+        dayColor: 'var(--text)',
+        sub: !this.scarcityOn() ? '' : (full ? 'FULL' : d.status === 'few' ? '3 LEFT' : d.status === 'hot' ? 'HOT' : ''),
+        subColor: full ? (dark ? '#FF5C5C' : '#D93B3B') : d.status === 'hot' ? hotColor : volt,
+        select: () => this.setState({ dateId: d.id, slotId: null })
+      };
+    });
+
+    const cd = this.dateDefs.find(d => d.id === s.dateId);
+    const dateFull = !!cd && cd.status === 'full';
+    const slots = cd && !dateFull ? this.slotsFor(cd.id) : [];
+    const dayName = cd ? ({ WED:'Wednesday', THU:'Thursday', FRI:'Friday', SAT:'Saturday', SUN:'Sunday', MON:'Monday', TUE:'Tuesday' })[cd.dow] : '';
+    const slot = slots.find(x => x.id === s.slotId);
+
+    return {
+      rootRef: this.rootRef,
+      hint: s.detailMounted
+        ? 'Tap a date — availability reveals below. Saturday is fully booked: try the waitlist.'
+        : 'Tap any pitch card to open the booking flow. Remove a filter chip, switch sports, or flip the theme.',
+      darkBtnBg: dark ? 'var(--volt)' : 'transparent',
+      darkBtnFg: dark ? 'var(--onVolt)' : 'var(--muted)',
+      lightBtnBg: dark ? 'transparent' : 'var(--volt)',
+      lightBtnFg: dark ? 'var(--muted)' : 'var(--onVolt)',
+      setDark: () => this.setState({ theme: 'dark' }),
+      setLight: () => this.setState({ theme: 'light' }),
+      reset: () => this.setState({ query:'', sport:'football', chips:['5x5','< 20 JOD','Tonight'], venueId:null, detailMounted:false, detailOpen:false, dateId:null, slotId:null, waitlisted:false, booked:false, fav:false }),
+      noop: () => {},
+
+      query: s.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      chips: s.chips.map(c => ({ label: c, remove: () => this.setState({ chips: s.chips.filter(x => x !== c) }) })),
+      chipsEmpty: s.chips.length === 0,
+      restoreChips: () => this.setState({ chips: ['5x5', '< 20 JOD', 'Tonight'] }),
+
+      tabs: this.sports.map(([id, label]) => ({
+        id, label,
+        bg: s.sport === id ? 'var(--volt)' : 'var(--surface)',
+        fg: s.sport === id ? 'var(--onVolt)' : 'var(--muted)',
+        border: s.sport === id ? 'var(--volt)' : 'var(--border)',
+        select: () => this.setState({ sport: id })
+      })),
+      venues,
+      resultCount: venues.length + (venues.length === 1 ? ' pitch' : ' pitches'),
+
+      detailMounted: s.detailMounted,
+      detailTransform: s.detailOpen ? 'translateY(0)' : 'translateY(100%)',
+      closeDetail: this.closeDetail,
+      venue,
+      favColor: s.fav ? 'var(--volt)' : 'var(--muted)',
+      toggleFav: () => this.setState({ fav: !s.fav }),
+
+      dates,
+      hasDate: !!cd,
+      noDate: !cd,
+      hasSlots: slots.length > 0,
+      dateFull,
+      slots,
+      slotsHeading: dateFull ? 'No times left' : 'Available times',
+      fullTitle: dayName + ' ' + (cd ? cd.day : '') + ' is fully booked',
+      hotColor,
+      joinWaitlist: () => this.setState({ waitlisted: true }),
+      waitLabel: s.waitlisted ? "You're on the waitlist ✓" : 'Notify me if a slot opens',
+      waitBg: s.waitlisted ? 'color-mix(in oklab, var(--volt) 14%, transparent)' : 'transparent',
+      waitBorder: s.waitlisted ? 'var(--volt)' : 'var(--border)',
+      waitFg: s.waitlisted ? 'var(--volt)' : 'var(--text)',
+
+      totalPrice: slot ? slot.price : (venue.price + ' ' + cur),
+      totalNote: slot ? (dayName + ' ' + cd.day + ' · ' + slot.time + ' – ' + (parseInt(slot.time, 10) + 1) + ':00') : 'per hour · taxes included',
+      ctaLabel: dateFull ? 'Join waitlist' : slot ? 'Book now' : 'Select a time',
+      ctaBg: (slot || dateFull) ? 'var(--volt)' : 'var(--surface2)',
+      ctaFg: (slot || dateFull) ? 'var(--onVolt)' : 'var(--muted)',
+      ctaCursor: (slot || dateFull) ? 'pointer' : 'not-allowed',
+      book: () => { if (dateFull) this.setState({ waitlisted: true }); else if (slot) this.setState({ booked: true }); },
+
+      booked: s.booked,
+      bookedSummary: venue.name + ' · ' + (slot ? dayName + ' ' + cd.day + ', ' + slot.time : '') + '. Your team captain link is ready to share.',
+      closeSuccess: () => { this.setState({ booked: false }); this.closeDetail(); }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

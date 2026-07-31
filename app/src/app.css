@@ -643,40 +643,69 @@ body.dark .fs-mint{opacity:.5}
 /* ---------- BOTTOM NAV ---------- */
 /* الارتفاع مصدره --bnav-h في :root (كي تقرأه .page أيضاً — الشقيق لا يرث متغيّرات الشقيق).
    min-height يثبّت القيمة على الواقع، والحشوة السفلية تنمو وحدها مع منطقة الأمان. */
-/* ---------- شريط عائم بحبّة نشطة ----------
-   كان لوحًا ملتصقًا بحافّة الشاشة بحدّ علوي، والعنصر النشط يُعرَف بمؤشّر شعرة
-   فوقه وأيقونة ملوّنة. صار لوحًا **عائمًا** له نصف قطر كامل وظلّ يفصله عن
-   المحتوى، والنشط **حبّة ممتلئة** تحمل الأيقونة والنصّ جنبًا إلى جنب.
-   ⚠️ الطفو ليس زينة: العنصر النشط صار يُعرَف بشكله لا بلونه وحده، فمن لا
-   يميّز الألوان يقرأ الحالة من امتلاء الحبّة.
-   ⚠️ والحشوة السفلية تبقى مبنيّة على env(safe-area-inset-bottom): الشريط ابتعد
-   عن الحافّة لكنّ شريط الإيماءات في أندرويد ما زال تحته. */
+/* ---------- شريط بحبّة **منزلقة** ----------
+   ⚠️ لماذا أُعيد بناؤه: النسخة السابقة كانت تُنعِّم ما لا يُنعَّم. الحبّة كانت
+   خلفيةَ العنصر نفسه، والنصّ يتمدّد بـ`max-inline-size` **وهو عنصر داخل
+   التدفّق** ⇒ كل فريم من الـ170ms يُعيد **تخطيط الصفّ كلّه** (ثلاثة أزرار
+   تُعاد قياسًا وتوسيطًا)، ومعه `background-color` تُطفَأ في زرّ وتُشعَل في
+   آخر — رسمٌ لا تركيب. لا منحنى ولا مدّة تُصلح ذلك: الخاصّية نفسها هي العطل.
+   البديل: **حبّة واحدة** خارج التدفّق تنزلق بين الأزرار بـ`transform`+`width`
+   (‏`transform` مركَّب على الـGPU، و`width` على عنصر خارج التدفّق تخطيطُه
+   محبوس في نفسه فلا يمسّ الصفّ)، والأزرار نفسها لا تتحرّك إطلاقًا.
+   ⚠️ وتبعًا لذلك **النصّ ظاهر دائمًا** لا في النشط وحده: بلا تمدّد لا حاجة
+   إلى إخفائه، والصفّ ثابت العرض فيصير قياس الحبّة صحيحًا في أي لحظة.
+   ولذلك أيضًا لونه صار `--muted` (‏6.2:1) لا `--soft` (‏2.87:1): نصٌّ دائم
+   يحمل معلومة لا زخرفة.
+   ⚠️ العنصر النشط ما زال يُعرَف **بشكله** (حبّة ممتلئة تحته) لا بلونه وحده،
+   فمن لا يميّز الألوان يقرأ الحالة كما كان.
+   ⚠️ والحشوة السفلية تبقى مبنيّة على env(safe-area-inset-bottom): شريط
+   الإيماءات في أندرويد تحته. */
 .bnav{min-height:var(--bnav-h);position:fixed;bottom:0;left:50%;transform:translate3d(-50%,0,0);width:100%;max-width:var(--max);
   display:none;justify-content:center;align-items:center;gap:2px;
   padding:8px 10px max(10px,env(safe-area-inset-bottom));z-index:100;
   background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid var(--glass-brd);box-shadow:0 -10px 30px rgba(0,0,0,.5)}
 .bnav.show{display:flex}
-/* حبّة العنصر: صفّ أفقي لا عمود — النصّ يجاور الأيقونة في النشط ويختفي في
-   الخامل، فتتقلّص الحبّة إلى أيقونة وحدها بلا أن يقفز الصفّ.
-   ⚠️ العرض ينتقل بـmax-inline-size لا width:auto: الانتقال إلى `auto`
-   لا يُنعَّم إطلاقًا، فكانت الحبّة تظهر دفعةً واحدة. */
+/* ── الحبّة المنزلقة ──
+   ⚠️ `left/top:0` **فيزيائيان عمدًا** ولا يُضربان في --dirx: الإحداثيان
+   يُقاسان في JS من `getBoundingClientRect` وهي فيزيائية أصلًا، فالمنطق واحد
+   في الاتجاهين بلا إشارة تُعكَس (وهي أكثر ما يُنسى في RTL).
+   ⚠️ وتبقى `opacity:0` حتى أوّل قياس: قبله عرضها صفر وموضعها الزاوية، فلو
+   ظهرت لرُئيت نقطةً تقفز من الحافّة. */
+.nav-pill{position:absolute;left:0;top:0;z-index:0;pointer-events:none;opacity:0;
+  width:var(--pill-w,0px);height:var(--pill-h,0px);border-radius:999px;
+  background:var(--primary-soft);
+  /* حلقة شعرة داخلية بدل حافّة بيضاء: الحافّة البيضاء تختفي تمامًا على الثيم
+     النهاري (‏--primary-soft هناك 10% Teal على أبيض) فتبدو الحبّة بلا حدّ. */
+  box-shadow:inset 0 0 0 1px var(--glass-brd),0 6px 16px -12px rgba(0,0,0,.5);
+  transform:translate3d(var(--pill-x,0px),var(--pill-y,0px),0);
+  will-change:transform,width;
+  transition:transform 420ms var(--sp-pill),width 420ms var(--sp-pill),opacity 200ms var(--ease-out)}
+.bnav.pill-on .nav-pill{opacity:1}
+/* أوّل وضع (وبعد قلب اللغة/تغيّر المقاس): تُنقل بلا انتقال — الانزلاق من
+   موضع قديم لم يعد له معنى يُقرأ خللًا لا حركة. */
+.bnav.pill-jump .nav-pill{transition:opacity 200ms var(--ease-out)}
 .nitem{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;
-  font-size:11.5px;font-weight:800;color:var(--soft);
-  min-height:var(--tap);padding:8px 12px;border-radius:999px;position:relative;flex:0 1 auto;
-  transition:color var(--t-base) var(--ease-out),background-color var(--t-base) var(--ease-out)}
-.nitem span{max-inline-size:0;overflow:hidden;white-space:nowrap;opacity:0;
-  transition:max-inline-size var(--t-base) var(--ease-spring),opacity var(--t-fast) var(--ease-out)}
-.nitem.active{color:var(--emerald-2);background:var(--primary-soft);padding-inline:14px}
-.nitem.active span{max-inline-size:9ch;opacity:1}
-/* الأيقونة لم تعد تحمل خلفيتها الخاصّة — الحبّة صارت هي الخلفية */
+  font-size:11.5px;font-weight:800;color:var(--muted);
+  /* الحشوة تتبع عرض الشاشة: النصّ صار ظاهرًا دائمًا في الأزرار الثلاثة،
+     فحشوة ثابتة 14px تُخرج الصفّ عن 320px. والحبّة تُقاس لا تُحسَب ⇒ تتبعها. */
+  min-height:var(--tap);padding:8px clamp(9px,3.2vw,14px);border-radius:999px;position:relative;z-index:1;flex:0 1 auto;
+  background:transparent;
+  transition:color 260ms var(--ease-out)}
+.nitem span{white-space:nowrap}
+.nitem.active{color:var(--emerald-2)}
+/* الأيقونة لا تحمل خلفيتها الخاصّة — الحبّة هي الخلفية */
 .nicon{width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;
   transition:transform var(--t-base) var(--ease-spring)}
-.nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width var(--t-base)}
-.nitem:active .nicon{transform:scale(.84)}
-.nitem.active .nicon{animation:navPop var(--t-base) var(--ease-spring)}
+.nicon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width 260ms var(--ease-out)}
+.nitem:active .nicon{transform:scale(.86)}
+/* ⚠️ بلا `both`: التعبئة الأمامية تُثبّت `transform` من الأنيميشن، والأنيميشن
+   يغلب الانتقال ⇒ الزرّ النشط يفقد ردّ فعل الضغط إلى الأبد. */
+.nitem.active .nicon{animation:navPop 420ms var(--sp-pop)}
 .nitem.active .nicon svg{stroke-width:2.3}
-@keyframes navPop{0%{transform:scale(.82)}55%{transform:scale(1.12)}100%{transform:scale(1)}}
+/* التجاوز يأتي من المنحنى نفسه (ذروته 1.16) لا من إطار وسيط مكتوب بيد:
+   .86 + .14×1.16 ≈ 1.022 ⇒ نبضة تُحسّ ولا تُرى قفزة. */
+@keyframes navPop{from{transform:scale(.86)}to{transform:scale(1)}}
 
 /* ---------- DAY & TIME (tap ≥ 48px) ---------- */
 .days-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -2548,6 +2577,15 @@ body.native .page.active{animation:pageInApp .2s var(--ease-out) both}
   /* رجوع الإيماءة إلى مكانها — ζ=0.76 · 260ms · تجاوز 2.5% (إحساس مطاطي خفيف) */
   --sp-snap:cubic-bezier(.34,1.3,.5,1);
   --sp-snap:linear(0 0%, .0476 5.6%, .1597 11.1%, .3006 16.7%, .4464 22.2%, .5825 27.8%, .7007 33.3%, .7979 38.9%, .8739 44.4%, .9305 50%, .9706 55.6%, .9972 61.1%, 1.0134 66.7%, 1.022 72.2%, 1.0252 77.8%, 1.0249 83.3%, 1.0225 88.9%, 1.0191 94.4%, 1 100%);
+  /* انزلاق حبّة التبويبات — ζ=0.72 · ω=8.2 · 420ms · تجاوز 3.8%.
+     ⚠️ عيّنة 95.8% تساوي 1.0003 ⇒ الفارق عن النهاية 0.0003: النابض **مستقرّ
+     فعلًا** قبل انتهاء المدّة، فلا قفزة في آخر فريم. (المنحنى الأوّل الذي
+     ولّدته كان يصل 1.0174 عند 95% ⇒ ارتدادة مرئية في الفريم الأخير.) */
+  --sp-pill:cubic-bezier(.32,1.28,.42,1);
+  --sp-pill:linear(0 0%, .0494 4.2%, .1664 8.3%, .3141 12.5%, .467 16.7%, .6091 20.8%, .7317 25%, .8312 29.2%, .9074 33.3%, .9625 37.5%, .9996 41.7%, 1.0223 45.8%, 1.0341 50%, 1.0383 54.2%, 1.0373 58.3%, 1.0333 62.5%, 1.0278 66.7%, 1.0219 70.8%, 1.0163 75%, 1.0114 79.2%, 1.0074 83.3%, 1.0042 87.5%, 1.0019 91.7%, 1.0003 95.8%, 1 100%);
+  /* نبضة أيقونة التبويب النشط — ζ=0.50 · ω=9.4 · 420ms · تجاوز 16% */
+  --sp-pop:cubic-bezier(.34,1.56,.64,1);
+  --sp-pop:linear(0 0%, .0933 5%, .3085 10%, .5627 15%, .7972 20%, .9789 25%, 1.0961 30%, 1.1527 35%, 1.1617 40%, 1.1393 45%, 1.1012 50%, 1.0599 55%, 1.0237 60%, .997 65%, .9808 70%, .974 75%, .9743 80%, .9789 85%, .9854 90%, .992 95%, 1 100%);
 }
 /* إشارة الاتجاه تتبع اتجاه الكتابة: «للأمام» تدخل الصفحة من الحافة النهائية
    (يسار في العربي · يمين في الإنجليزي)، و«رجوع» من الحافة الابتدائية. */
@@ -3054,4 +3092,151 @@ html.theme-swap .thm-ic{animation:none!important}
   .off-wave{opacity:.28;transform:scale(1.1)}
   .off-card{transition:none;transform:none}
   .offline-overlay{transition:none}
+}
+
+/* =============================================================
+   AUTH · شاشتا الدخول والتسجيل + تأكيد الرقم + وسيلة الدفع
+   قاعدتان تحكمان كل حركة هنا:
+   ① `transform`/`opacity` وحدهما (مركَّبتان على الـGPU) — لا width ولا filter.
+   ② كل إزاحة أفقية **متناظرة** (الاهتزاز يذهب ويعود بالقدر نفسه) فلا تحتاج
+      ضربًا في اتجاه، ولا ينكسر شيء في RTL.
+   ============================================================= */
+
+/* ---------- ألوان نصّية آمنة على الثيمين ----------
+   ⚠️ ألوان الهوية **لا تصلح نصًّا على أبيض**: مقيسة على `#FFF` بحاسبة WCAG
+   ‏— Lime ‎#8CC63E ⇒ 2.05:1 و Mint ‎#12B76A ⇒ 2.62:1، وكلاهما راسب لنصّ 11px
+   (المطلوب 4.5:1). فتُستعمل درجتان أغمق في النهاري (5.1:1 و5.4:1)، وتعود
+   ألوان الهوية نفسها في الليلي حيث تقيس 8.48:1 و6.62:1 على سطح البطاقة. */
+:root{ --auth-lime-ink:#4E7A16; --auth-mint-ink:#0A7A46; --auth-amber-ink:#8C5F16 }
+body.dark{ --auth-lime-ink:var(--copper-primary); --auth-mint-ink:var(--mint-electric); --auth-amber-ink:#E0B25E }
+
+/* ---------- ترويسة المصادقة: هالة تنبض وأيقونة تطفو ---------- */
+.auth-head{position:relative;overflow:hidden}
+.auth-head > *{position:relative;z-index:1}
+/* الهالة تتمركز بـinset-inline + margin-inline لا بـtranslateX(-50%):
+   `transform` غير مدرك للاتجاه فيقفز المركز في RTL. */
+.auth-orb{position:absolute;inset-inline:0;margin-inline:auto;top:-104px;width:290px;height:290px;border-radius:50%;
+  background:radial-gradient(circle,rgba(140,198,62,.32) 0%,rgba(140,198,62,0) 68%);
+  pointer-events:none;z-index:0;animation:authOrb 7.5s var(--ease-out) infinite}
+@keyframes authOrb{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.16);opacity:1}}
+.auth-emoji{animation:authFloat 5.6s var(--ease-out) infinite}
+@keyframes authFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-5px,0)}}
+.auth-eyebrow{font-size:11px;font-weight:900;letter-spacing:.16em;color:var(--auth-lime-ink);margin-bottom:7px}
+html[lang="ar"] .auth-eyebrow{letter-spacing:normal;font-size:11.5px}
+
+/* ---------- مجموعات الحقول: ظهور متدرّج ---------- */
+.auth-card .fgroup{animation:authRise .46s var(--ease-out) both;animation-delay:calc(var(--i,1) * 68ms)}
+@keyframes authRise{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+.fgroup + .fgroup{margin-top:15px}
+/* ‏`--muted` لا `--soft`: التلميح يحمل معلومة («يبدأ بـ 07») لا زخرفة،
+   و‎--soft يقيس 2.87:1 على أبيض ⇒ راسب لنصّ 11.5px. ‏--muted يقيس 6.3:1. */
+.fhint{font-size:11.5px;font-weight:600;color:var(--muted);margin-top:6px;line-height:1.6}
+/* البدائل خلف فاصل: الزرّ الأساسي لا ينافسه زرّان بنفس الوزن */
+.auth-alt{margin-top:20px;padding-top:17px;border-top:1px solid var(--line)}
+.auth-alt .cbtn:first-of-type{margin-top:0}
+
+/* ---------- مقياس قوّة كلمة السرّ ----------
+   الشرائح تُملأ بـscaleX (لا width) والقيمة تُختار بـnth-child حسب data-lvl —
+   لأن CSS لا يقارن عددًا بعدد، فالمقارنة تُترجَم إلى محدّدات جاهزة. */
+.pw-meter{display:flex;align-items:center;gap:10px;margin-top:12px}
+.pw-bars{display:flex;gap:5px;flex:1;min-width:0}
+.pw-bars i{flex:1;height:5px;border-radius:999px;background:var(--surface-muted);position:relative;overflow:hidden}
+.pw-bars i::after{content:'';position:absolute;inset:0;border-radius:999px;background:var(--pw-c,var(--copper-primary));
+  transform:scaleX(0);transform-origin:center;transition:transform .3s var(--ease-out),background var(--t-base)}
+.pw-meter[data-lvl="1"]{--pw-c:#D2333E}
+.pw-meter[data-lvl="2"]{--pw-c:var(--auth-amber-ink)}
+.pw-meter[data-lvl="3"]{--pw-c:var(--auth-lime-ink)}
+.pw-meter[data-lvl="4"]{--pw-c:var(--auth-mint-ink)}
+.pw-meter[data-lvl="1"] .pw-bars i:nth-child(-n+1)::after,
+.pw-meter[data-lvl="2"] .pw-bars i:nth-child(-n+2)::after,
+.pw-meter[data-lvl="3"] .pw-bars i:nth-child(-n+3)::after,
+.pw-meter[data-lvl="4"] .pw-bars i:nth-child(-n+4)::after{transform:scaleX(1)}
+.pw-lvl{font-size:11.5px;font-weight:800;color:var(--pw-c,var(--muted));flex:none;min-width:86px;text-align:end}
+
+/* ---------- الشروط الثلاثة: تُشطب وهو يكتب ---------- */
+.pw-rules{list-style:none;margin-top:12px;display:flex;flex-wrap:wrap;gap:7px 15px;align-items:center}
+.pw-rule-head{flex:1 0 100%;font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.pw-rule{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--soft);transition:color var(--t-base)}
+.pw-rule.ok{color:var(--auth-mint-ink)}
+.pw-tick{width:15px;height:15px;flex:none;border-radius:50%;border:1.5px solid var(--line-2);position:relative;
+  transition:background var(--t-base),border-color var(--t-base)}
+.pw-rule.ok .pw-tick{background:var(--auth-mint-ink);border-color:var(--auth-mint-ink)}
+/* علامة الصحّ بحدود **فيزيائية** عمدًا: المنطقية تنعكس في RTL فيخرج الشكل مقلوبًا */
+.pw-tick::after{content:'';position:absolute;inset:0;margin:auto;width:4px;height:7.5px;
+  border:2px solid #fff;border-top:0;border-left:0;
+  transform:rotate(45deg) scale(0);transform-origin:center;transition:transform .24s var(--ease-spring)}
+.pw-rule.ok .pw-tick::after{transform:translate3d(0,-1px,0) rotate(45deg) scale(1)}
+
+/* ---------- خانات كود التحقّق ---------- */
+.vf-cells{display:flex;gap:9px;justify-content:center;margin-top:2px}
+.vf-cell{flex:1 1 0;min-width:0;max-width:54px;aspect-ratio:3 / 3.7;text-align:center;
+  font-size:22px;font-weight:900;color:var(--ink);letter-spacing:normal;
+  border:1.5px solid var(--line-2);border-radius:var(--r-md);background:var(--input-bg);outline:none;
+  transition:border-color var(--t-base),box-shadow var(--t-base),transform var(--t-base),background var(--t-fast)}
+.vf-cell:focus{border-color:var(--emerald-2);box-shadow:0 0 0 4px var(--ring);background:var(--surface);transform:translate3d(0,-2px,0)}
+.vf-cell.filled{border-color:var(--copper-primary);background:var(--surface)}
+/* اهتزاز متناظر ⇒ لا حاجة إلى اتجاه */
+.vf-cells.shake{animation:vfShake .4s var(--ease-out)}
+@keyframes vfShake{0%,100%{transform:translate3d(0,0,0)}
+  20%{transform:translate3d(-6px,0,0)}40%{transform:translate3d(6px,0,0)}
+  60%{transform:translate3d(-4px,0,0)}80%{transform:translate3d(4px,0,0)}}
+.vf-err{color:#dc2626;font-size:12px;font-weight:800;text-align:center;margin-top:11px}
+body.dark .vf-err{color:#fca5a5}
+
+/* ---------- اللوح الصادق: لا مزوّد رسائل / ترحيل غير مُشغَّل ---------- */
+.vf-blocked{text-align:center}
+.vf-blocked-ic{width:58px;height:58px;margin:2px auto 15px;display:grid;place-items:center;border-radius:50%;
+  background:var(--warning-soft);color:var(--auth-amber-ink)}
+.vf-blocked-ic svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.vf-blocked-title{font-size:16px;font-weight:900;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.vf-blocked-text{font-size:13px;font-weight:600;color:var(--muted);line-height:1.9;margin-bottom:19px}
+.vf-why{background:var(--surface-muted);border-radius:var(--r-md);padding:13px 14px}
+.vf-why-title{font-size:12.5px;font-weight:900;color:var(--ink-2);margin-bottom:5px}
+.vf-why-text{font-size:12px;font-weight:600;color:var(--muted);line-height:1.8}
+
+/* ---------- شارة حالة الرقم في «حسابي» ---------- */
+.vf-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 11px;border-radius:999px;
+  font-size:11px;font-weight:800;color:var(--auth-amber-ink);background:var(--warning-soft);
+  border:1px solid rgba(154,106,30,.3);transition:transform var(--t-fast),background var(--t-fast)}
+.vf-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.vf-badge:active{transform:scale(.96)}
+.vf-badge.is-ok{color:var(--auth-mint-ink);background:var(--mint-soft);border-color:rgba(18,183,106,.3)}
+.vf-badge:disabled{opacity:1}
+
+/* ---------- وسيلة الدفع ---------- */
+.pay-pick{margin:17px 0 3px}
+.pay-pick-title{font-size:12px;font-weight:800;color:var(--ink-2);margin-bottom:9px}
+.pay-opt{width:100%;display:flex;align-items:center;gap:11px;text-align:start;padding:12px 13px;margin-bottom:9px;
+  min-height:var(--tap);border:1.5px solid var(--line-2);border-radius:var(--r-md);background:var(--surface);
+  transition:border-color var(--t-base),background var(--t-fast),transform var(--t-fast)}
+.pay-opt:active{transform:scale(.985)}
+.pay-opt.is-on{border-color:var(--emerald-2);background:var(--primary-soft)}
+.pay-opt.is-soon{opacity:.62}
+.pay-ic{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--surface-muted);color:var(--emerald)}
+.pay-ic svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pay-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pay-txt b{font-size:13px;font-weight:800;color:var(--ink)}
+.pay-txt small{font-size:11px;font-weight:600;color:var(--muted);line-height:1.6}
+.pay-dot{width:19px;height:19px;flex:none;position:relative;border-radius:50%;border:2px solid var(--line-2);transition:border-color var(--t-base)}
+.pay-opt.is-on .pay-dot{border-color:var(--emerald-2)}
+.pay-dot::after{content:'';position:absolute;inset:0;margin:auto;width:9px;height:9px;border-radius:50%;
+  background:var(--emerald-2);transform:scale(0);transition:transform .2s var(--ease-spring)}
+.pay-opt.is-on .pay-dot::after{transform:scale(1)}
+.pay-soon{flex:none;font-size:10px;font-weight:900;padding:4px 9px;border-radius:999px;color:var(--auth-amber-ink);background:var(--warning-soft)}
+.pay-empty{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r-md);background:var(--surface-muted);margin-bottom:12px}
+.pay-empty-ic{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--surface);color:var(--soft)}
+.pay-empty-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pay-empty p{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.7}
+.pay-why{font-size:11.5px;line-height:1.85}
+
+/* ---------- كتم الحركة ----------
+   ⚠️ الظهور المتدرّج يعتمد على `both` ⇒ إلغاء الأنيميشن وحده يترك الحقول
+      **غير مرئية**. لذلك تُعاد opacity/transform صراحةً هنا. */
+@media (prefers-reduced-motion:reduce){
+  .auth-orb,.auth-emoji{animation:none}
+  .auth-card .fgroup{animation:none;opacity:1;transform:none}
+  .vf-cells.shake{animation:none}
+  .vf-cell,.pay-opt,.vf-badge{transition:none}
+  .vf-cell:focus{transform:none}
+  .pw-bars i::after,.pw-tick::after,.pay-dot::after{transition:none}
 }

@@ -88,79 +88,178 @@
     </div>
   </section>
 
-  <!-- ============ PLAYER LOGIN ============ -->
+  <!-- ============ PLAYER LOGIN ============
+       الترتيب مقصود: الحقلان أوّلًا ثمّ الزرّ الأساسي، والبدائل (حساب جديد ·
+       تصفّح بلا حساب) خلف فاصل — كي لا يقرأ العائدُ ثلاثةَ أزرار متساوية الوزن
+       ويحتار أيّها زرُّ الدخول. `--i` على كل مجموعة = ترتيب ظهورها المتدرّج. -->
   <section class="page" id="page-playerLogin">
-    <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div>
-      <div class="header-title" data-i18n="loginTitle">دخول اللاعب</div>
+    <header class="app-header auth auth-head"><div class="header-grid"></div>
+      <span class="auth-orb" aria-hidden="true"></span>
+      <div class="header-emoji auth-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="auth-eyebrow" data-i18n="loginEyebrow">حسابك في المستديرة</div>
+      <div class="header-title" data-i18n="loginWelcome">أهلاً بعودتك</div>
       <div class="header-subtitle" data-i18n="loginSubtitle">ادخل عشان تشوف وتتابع حجوزاتك</div>
     </header>
     <div class="pad">
-      <div class="card">
-        <label class="form-label" for="playerPhone" data-i18n="phone">رقم الهاتف</label>
-        <input class="finput" id="playerPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
-        <label class="form-label" for="playerPassword" data-i18n="password">كلمة السر</label>
-        <div class="input-wrap" style="margin-bottom:18px">
-          <input class="finput has-affix" id="playerPassword" type="password" placeholder="••••••" autocomplete="current-password">
-          <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
-            <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
-          </button>
+      <div class="card auth-card">
+        <div class="fgroup" style="--i:1">
+          <label class="form-label" for="playerPhone" data-i18n="phone">رقم الهاتف</label>
+          <input class="finput" id="playerPhone" type="tel" inputmode="tel" dir="ltr" placeholder="079xxxxxxx" autocomplete="tel">
+          <p class="fhint" data-i18n="phoneHint">رقم أردني يبدأ بـ 07</p>
         </div>
-        <label class="remember-row" for="playerRemember">
-          <input type="checkbox" id="playerRemember" class="remember-box">
-          <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
-        </label>
-        <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول</button>
-        <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
-        <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
+        <div class="fgroup" style="--i:2">
+          <label class="form-label" for="playerPassword" data-i18n="password">كلمة السر</label>
+          <div class="input-wrap">
+            <input class="finput has-affix" id="playerPassword" type="password" placeholder="••••••" autocomplete="current-password">
+            <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
+              <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="fgroup" style="--i:3">
+          <label class="remember-row" for="playerRemember">
+            <input type="checkbox" id="playerRemember" class="remember-box">
+            <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
+          </label>
+          <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول</button>
+        </div>
+        <div class="fgroup auth-alt" style="--i:4">
+          <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
+          <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ PLAYER REGISTER ============ -->
+  <!-- ============ PLAYER REGISTER ============
+       الشروط الثلاثة **مكتوبة قبل أن تُخالَف** لا بعدها: كانت النائبة تقول
+       «4 خانات على الأقل» بينما الخادم يرفض ما دون الستّ (‏`playerRegister`
+       في app.js) ⇒ المستخدم يكتب خمسًا فيُرَدّ بلا سبب ظاهر. الآن الشروط معروضة
+       وتُشطب وهو يكتب، ويُفحَص الثلاثة قبل أي طلب شبكة. -->
   <section class="page" id="page-playerRegister">
-    <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
-      <div class="header-title" data-i18n="regTitle">إنشاء حساب</div>
+    <header class="app-header auth auth-head"><div class="header-grid"></div>
+      <span class="auth-orb" aria-hidden="true"></span>
+      <div class="header-emoji auth-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+      <div class="auth-eyebrow" data-i18n="regEyebrow">حساب جديد</div>
+      <div class="header-title" data-i18n="regWelcome">صار لك مكان بيننا</div>
       <div class="header-subtitle" data-i18n="regSubtitle">احفظ حجوزاتك وتابعها بأي وقت</div>
     </header>
     <div class="pad">
-      <div class="card">
-        <label class="form-label" for="regName" data-i18n="name">الاسم</label>
-        <input class="finput" id="regName" type="text" placeholder="محمد أحمد" data-i18n-ph="phRegName" autocomplete="name" style="margin-bottom:13px">
-        <label class="form-label" for="regPhone" data-i18n="phone">رقم الهاتف</label>
-        <input class="finput" id="regPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
-        <label class="form-label" for="regPass" data-i18n="password">كلمة السر</label>
-        <div class="input-wrap" style="margin-bottom:18px">
-          <input class="finput has-affix" id="regPass" type="password" placeholder="4 خانات على الأقل" data-i18n-ph="phRegPass" autocomplete="new-password">
-          <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
-            <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
-          </button>
+      <div class="card auth-card">
+        <div class="fgroup" style="--i:1">
+          <label class="form-label" for="regName" data-i18n="name">الاسم</label>
+          <input class="finput" id="regName" type="text" placeholder="محمد أحمد" data-i18n-ph="phRegName" autocomplete="name">
         </div>
-        <label class="remember-row" for="regRemember">
-          <input type="checkbox" id="regRemember" class="remember-box">
-          <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
-        </label>
-        <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
-        <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
-        <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
+        <div class="fgroup" style="--i:2">
+          <label class="form-label" for="regPhone" data-i18n="phone">رقم الهاتف</label>
+          <input class="finput" id="regPhone" type="tel" inputmode="tel" dir="ltr" placeholder="079xxxxxxx" autocomplete="tel">
+          <p class="fhint" data-i18n="phoneHint">رقم أردني يبدأ بـ 07</p>
+        </div>
+        <div class="fgroup" style="--i:3">
+          <label class="form-label" for="regPass" data-i18n="password">كلمة السر</label>
+          <div class="input-wrap">
+            <input class="finput has-affix" id="regPass" type="password" placeholder="6 خانات على الأقل" data-i18n-ph="phRegPass" autocomplete="new-password"
+                   aria-describedby="pwRules">
+            <button type="button" class="input-affix" data-action="togglePass" data-i18n-aria="showPass" aria-label="إظهار كلمة السر">
+              <svg class="eye-on" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.3 3.9"/><path d="M6.1 6.1A16 16 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 3.1-.5"/></svg>
+            </button>
+          </div>
+          <!-- مقياس القوّة: أربع شرائح تُملأ بـscaleX (خاصّية مركَّبة على الـGPU)
+               لا بـwidth. والقوّة **وصفٌ لا شرط** — الشرط هو القائمة تحتها. -->
+          <div class="pw-meter" id="pwMeter" hidden>
+            <div class="pw-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <span class="pw-lvl" id="pwLvlText"></span>
+          </div>
+          <ul class="pw-rules" id="pwRules" aria-live="polite">
+            <li class="pw-rule-head" data-i18n="pwRulesTitle">كلمة السر لازم تكون:</li>
+            <li class="pw-rule" data-rule="len"><span class="pw-tick" aria-hidden="true"></span><span data-i18n="pwRuleLen">6 خانات على الأقل</span></li>
+            <li class="pw-rule" data-rule="letter"><span class="pw-tick" aria-hidden="true"></span><span data-i18n="pwRuleLetter">فيها حرف</span></li>
+            <li class="pw-rule" data-rule="digit"><span class="pw-tick" aria-hidden="true"></span><span data-i18n="pwRuleDigit">فيها رقم</span></li>
+          </ul>
+        </div>
+        <div class="fgroup" style="--i:4">
+          <label class="remember-row" for="regRemember">
+            <input type="checkbox" id="regRemember" class="remember-box">
+            <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
+          </label>
+          <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
+        </div>
+        <div class="fgroup auth-alt" style="--i:5">
+          <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
+          <button class="cbtn" data-action="browse" data-i18n="browseNoAccount">تصفح بدون حساب</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHONE VERIFICATION ============
+       ست خانات منفصلة لا حقل واحد: الخانة المنفصلة تُظهر التقدّم، وتجعل
+       المسح والتصحيح أسهل على الإبهام. اللصق على أي خانة يوزّع الرقم كلّه،
+       والصفّ `dir="ltr"` دائمًا لأن الكود عددٌ لا نصّ عربي.
+       ⚠️ الشاشة **لا تحجز أحدًا**: زرّ «أكمل، وأكّد لاحقاً» ظاهر دائمًا،
+          لأن إرسال الأكواد قد لا يكون مفعّلًا أصلًا (ترحيل 11 §6). -->
+  <section class="page" id="page-verifyPhone">
+    <header class="app-header auth auth-head"><div class="header-grid"></div>
+      <span class="auth-orb" aria-hidden="true"></span>
+      <div class="header-emoji auth-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M11 18.6h2"/></svg></div>
+      <div class="auth-eyebrow" data-i18n="vfEyebrow">خطوة أخيرة</div>
+      <div class="header-title" data-i18n="vfTitle">أكّد رقمك</div>
+      <!-- بلا data-i18n: النصّ يحمل رقم الهاتف معزولًا بـ<bdi>، فتكتب عليه
+           applyTranslations القالبَ الخام «{phone}». يبنيه Verify.syncText(). -->
+      <div class="header-subtitle" id="vfSub">كتبنا كوداً من ست خانات وأرسلناه إلى رقمك. اكتبه هنا.</div>
+    </header>
+    <div class="pad">
+      <!-- اللوح الصادق: يظهر حين لا مزوّد رسائل أو حين الترحيل غير مُشغَّل -->
+      <div class="card auth-card vf-blocked" id="vfBlocked" hidden>
+        <div class="vf-blocked-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg></div>
+        <div class="vf-blocked-title" id="vfBlockedTitle" data-i18n="vfNoProviderTitle">إرسال الأكواد غير مُفعّل بعد</div>
+        <!-- بلا data-i18n: النصّ يتبع سبب التعطيل (لا مزوّد / ترحيل غير مُشغَّل) -->
+        <p class="vf-blocked-text" id="vfBlockedText">ما فينا نرسل لك كود الآن.</p>
+        <button class="sbtn" data-action="vfContinue" data-i18n="vfContinue">أكمل</button>
+      </div>
+
+      <div class="card auth-card" id="vfForm">
+        <div class="fgroup" style="--i:1">
+          <label class="form-label" for="vfD1" data-i18n="vfCodeAria">كود التحقق — ست خانات</label>
+          <div class="vf-cells" id="vfCells" dir="ltr" role="group" data-i18n-aria="vfCodeAria" aria-label="كود التحقق — ست خانات">
+            <input class="vf-cell" id="vfD1" type="tel" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="1">
+            <input class="vf-cell" id="vfD2" type="tel" inputmode="numeric" maxlength="1" aria-label="2">
+            <input class="vf-cell" id="vfD3" type="tel" inputmode="numeric" maxlength="1" aria-label="3">
+            <input class="vf-cell" id="vfD4" type="tel" inputmode="numeric" maxlength="1" aria-label="4">
+            <input class="vf-cell" id="vfD5" type="tel" inputmode="numeric" maxlength="1" aria-label="5">
+            <input class="vf-cell" id="vfD6" type="tel" inputmode="numeric" maxlength="1" aria-label="6">
+          </div>
+          <p class="fhint vf-err" id="vfErr" role="alert" hidden></p>
+        </div>
+        <div class="fgroup" style="--i:2">
+          <button class="sbtn" data-action="verifyPhone" data-i18n="vfVerify">أكّد الرقم</button>
+          <button class="cbtn" id="vfResendBtn" data-action="resendCode" data-i18n="vfResend">أرسل الكود مرّة ثانية</button>
+        </div>
+        <div class="fgroup auth-alt" style="--i:3">
+          <div class="vf-why">
+            <div class="vf-why-title" data-i18n="vfWhyTitle">ليش نأكّد الرقم؟</div>
+            <p class="vf-why-text" data-i18n="vfWhy">إدارة الملعب تتصل بك على هذا الرقم لتأكيد حجزك.</p>
+          </div>
+          <button class="cbtn" data-action="vfContinue" data-i18n="vfSkip">أكمل، وأكّد لاحقاً</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ============ OWNER LOGIN ============ -->
   <section class="page" id="page-ownerLogin">
-    <header class="app-header auth"><div class="header-grid"></div>
-      <div class="header-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+    <header class="app-header auth auth-head"><div class="header-grid"></div>
+      <span class="auth-orb" aria-hidden="true"></span>
+      <div class="header-emoji auth-emoji" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
       <div class="header-title" data-i18n="ownerLoginTitle">دخول المالك</div>
       <div class="header-subtitle" data-i18n="ownerLoginSubtitle">لوحة تحكم الملاعب والحجوزات</div>
     </header>
     <div class="pad">
-      <div class="card">
+      <div class="card auth-card">
         <label class="form-label" for="ownerPhone" data-i18n="phone">رقم الهاتف</label>
-        <input class="finput" id="ownerPhone" type="tel" inputmode="tel" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
+        <input class="finput" id="ownerPhone" type="tel" inputmode="tel" dir="ltr" placeholder="079xxxxxxx" autocomplete="tel" style="margin-bottom:13px">
         <label class="form-label" for="ownerPass" data-i18n="password">كلمة السر</label>
         <div class="input-wrap" style="margin-bottom:18px">
           <input class="finput has-affix" id="ownerPass" type="password" placeholder="••••••" autocomplete="current-password">
@@ -345,6 +444,8 @@
         <div class="profile-meta">
           <div class="profile-name" id="accNameDisplay">—</div>
           <div class="profile-phone" id="accPhoneDisplay">—</div>
+          <!-- شارة حالة الرقم — تُملأ من JS، ومخفيّة حتى تُعرَف الحالة فعلًا -->
+          <button type="button" class="vf-badge" id="accVerifyBadge" data-action="goVerify" hidden></button>
         </div>
       </div>
       <!-- ============ حسابي: أربع بطاقات معنونة ============
@@ -389,6 +490,18 @@
           </button>
         </div>
         <button class="sbtn" data-action="changePassword" data-i18n="pwSave">تغيير كلمة السر</button>
+      </div>
+      <!-- ============ بطاقاتي ============
+           بطاقةٌ تقول الحقيقة بدل أن تكون قائمةً فارغة تُوهم بأن الحفظ ممكن:
+           لا بطاقة محفوظة لأن الدفع كلّه نقدي اليوم. وحين تُوصَل بوّابة الدفع
+           تصير هذه البطاقةُ مكانَ البطاقات المحفوظة (آخر أربعة أرقام لا أكثر). -->
+      <div class="card mb-card">
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M6 14.5h3.5"/></svg></span><span data-i18n="payCardsTitle">بطاقاتي</span></div>
+        <div class="pay-empty">
+          <span class="pay-empty-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M4 3.5 20.5 20"/></svg></span>
+          <p data-i18n="payNoCards">ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.</p>
+        </div>
+        <p class="t-sub pay-why" data-i18n="payCardWhy">ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا.</p>
       </div>
       <div class="card settings-card mb-card">
         <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span data-i18n="prefsTitle">التفضيلات</span></div>
@@ -602,6 +715,24 @@
         <li class="bk-step active" data-step="3" aria-current="step"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepConfirm">التأكيد</span></li>
       </ol>
       <div id="bkReview" class="bk-review"></div>
+      <!-- ============ وسيلة الدفع ============
+           خياران لا واحد، والثاني **معطَّل بشارة صريحة** لا مخفيّ: إخفاؤه يترك
+           اللاعب يسأل «طيب كيف بدفع؟»، وإظهاره مفتوحًا يَعِد بما لا نعطيه (م5).
+           ⚠️ لا حقل بطاقة هنا ولا في أي مكان من التطبيق — رقم البطاقة يُكتب عند
+              بوّابة الدفع وحدها، فلا يمرّ علينا ولا يُخزَّن (ترحيل 12). -->
+      <div class="pay-pick" role="radiogroup" data-i18n-aria="payTitle" aria-label="وسيلة الدفع">
+        <div class="pay-pick-title" data-i18n="payTitle">وسيلة الدفع</div>
+        <button type="button" class="pay-opt is-on" role="radio" aria-checked="true" data-pay="cash" data-action="payPick">
+          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+          <span class="pay-txt"><b data-i18n="payCash">نقداً في الملعب</b><small data-i18n="payCashSub">تدفع لإدارة الملعب لمّا توصل.</small></span>
+          <span class="pay-dot" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="pay-opt is-soon" role="radio" aria-checked="false" aria-disabled="true" data-pay="card" data-action="payPick">
+          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M6 14.5h3.5"/></svg></span>
+          <span class="pay-txt"><b data-i18n="payCard">بطاقة فيزا أو ماستركارد</b><small data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل.</small></span>
+          <span class="pay-soon" data-i18n="payCardSoon">قريباً</span>
+        </button>
+      </div>
       <div class="bk-note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <span data-i18n="bkNote">بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
@@ -845,6 +976,9 @@
 
   <!-- ============ BOTTOM NAV ============ -->
   <nav class="bnav" id="nav-player">
+    <!-- الحبّة تحت الأزرار لا داخلها: عنصر واحد ينزلق بينها بدل خلفية تُشعَل
+         وتُطفَأ في اثنين. مخفيّ عن قارئ الشاشة — الحالة يحملها aria-current. -->
+    <span class="nav-pill" aria-hidden="true"></span>
     <button type="button" class="nitem active" data-nav="home">
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div><span data-i18n="navHome">الرئيسية</span>
     </button>
@@ -856,6 +990,7 @@
     </button>
   </nav>
   <nav class="bnav" id="nav-owner">
+    <span class="nav-pill" aria-hidden="true"></span>
     <button type="button" class="nitem active" data-nav="owner">
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg></div><span data-i18n="navOwner">لوحتي</span>
     </button>

@@ -625,19 +625,35 @@ html.dark .res .no{color:#FF8A90}
     <p class="ad-sub">يُكتب المكان في القاعدة مباشرةً، ويظهر في <strong>التطبيق فور حفظه</strong>
       (التطبيق يقرأ من القاعدة حيًّا). أمّا <strong>صفحات الموقع</strong> فتُولَّد وقت البناء ⇒
       لن تظهر فيه حتى إعادة البناء والنشر. وكل ما تفعله هنا يُكتب في سجلّ التدقيق تلقائيًّا.</p>
+    <p class="ad-sub">📋 <strong>الحقول التي يصفّي بها التطبيق قوائمُ مغلقة لا كتابة حرّة</strong>
+      (المدينة · المنطقة · نوع الأرضية · الحجم · المرافق). السبب مقيس لا احتياطي:
+      التطبيق يبني شرائح التصفية من <strong>القيم المميّزة كما هي في القاعدة</strong>،
+      فحرفٌ واحد مختلف يصنع شريحتين. في القاعدة الآن <code>8x8</code> بـ«إكس» لاتينية
+      بينما البقيّة <code>×</code> — شريحتان لحجم واحد. ولكل قائمة خيار
+      <strong>«أخرى…»</strong> يفتح حقلًا حرًّا حين تحتاج قيمة جديدة فعلًا،
+      فيصير إدخالها <em>قرارًا</em> لا زلّة لوحة مفاتيح.</p>
     <div id="addRes"></div>
     <form id="addForm" novalidate>
       <div class="frm">
         <label class="ad-f"><span>اسم المكان *</span>
           <input id="f_name" required autocomplete="off" placeholder="ملاعب ..."></label>
         <label class="ad-f"><span>المدينة *</span>
-          <input id="f_city" list="dlCity" value="عمان" autocomplete="off"></label>
+          <select id="f_city" class="oth-sel"></select>
+          <input class="oth" hidden autocomplete="off" placeholder="اكتب اسم المدينة الجديدة"></label>
         <label class="ad-f"><span>المنطقة *</span>
-          <input id="f_region" list="dlRegion" autocomplete="off" placeholder="طبربور، الجبيهة، ..."></label>
+          <select id="f_region" class="oth-sel"></select>
+          <input class="oth" hidden autocomplete="off" placeholder="اكتب اسم المنطقة الجديدة"></label>
         <label class="ad-f"><span>هاتف المكان</span>
           <input id="f_phone" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
         <label class="ad-f"><span>نوع الأرضية</span>
-          <input id="f_type" list="dlType" value="عشب صناعي" autocomplete="off"></label>
+          <select id="f_type" class="oth-sel">
+            <option value="عشب صناعي">عشب صناعي</option>
+            <option value="عشب طبيعي">عشب طبيعي</option>
+            <option value="صالة مغلقة">صالة مغلقة</option>
+            <option value="أرضية مطّاطية">أرضية مطّاطية</option>
+            <option value="__other">أخرى…</option>
+          </select>
+          <input class="oth" hidden autocomplete="off" placeholder="اكتب نوع الأرضية"></label>
         <label class="ad-f"><span>رابط الخريطة</span>
           <input id="f_map" type="url" dir="ltr" placeholder="https://maps.app.goo.gl/..."></label>
         <label class="ad-f"><span>لون البطاقة في التطبيق</span>
@@ -645,27 +661,25 @@ html.dark .res .no{color:#FF8A90}
         <label class="ad-f chk"><input id="f_active" type="checkbox" checked>
           <span>نشط — يظهر للاعبين فورًا</span></label>
       </div>
-      <datalist id="dlCity"></datalist>
-      <datalist id="dlRegion"></datalist>
-      <datalist id="dlType">
-        <option value="عشب صناعي"></option><option value="عشب طبيعي"></option>
-        <option value="صالة مغلقة"></option><option value="أرضية مطّاطية"></option>
-      </datalist>
-      <datalist id="dlSize">
-        <option value="5×5"></option><option value="6×6"></option><option value="7×7"></option>
-        <option value="9×9"></option><option value="11×11"></option>
-      </datalist>
 
       <h3 class="frm-h">المرافق</h3>
-      <p class="frm-n">الحقل الفارغ يعني <strong>غير متوفّر</strong> فلا تُعرض له أيقونة أصلًا.
-        وما تكتبه يظهر كما كتبته في صفحة المكان — «مجانًا» أو «بأجرة» أو «حتى 20 سيارة».
-        اكتب <code>نعم</code> إن كان متوفّرًا بلا تفصيل.</p>
+      <p class="frm-n">القيم الأربع هي <strong>كل ما يعرف التطبيق ترجمته</strong>:
+        <code>Free</code> ⇒ «مجاناً» · <code>Paid</code> ⇒ «برسوم» · <code>Available</code> ⇒ «متوفرة» ·
+        والفارغ لا تُعرض له أيقونة أصلًا. لذلك صارت قائمةً لا حقلًا حرًّا:
+        نصٌّ خارج هذه الأربع (‏«بأجرة» · «حتى 20 سيارة») <strong>يُعرَض كما كُتب حرفيًّا</strong>
+        وبالعربية وحدها — فيقرؤه مستخدم الإنجليزية عربيًّا، ويختلف مكانان عن بعضهما
+        في وصف الخدمة نفسها.</p>
       <div class="frm">
-        <label class="ad-f"><span>مياه</span><input id="a_water" autocomplete="off"></label>
-        <label class="ad-f"><span>فيزتات</span><input id="a_vests" autocomplete="off"></label>
-        <label class="ad-f"><span>كرة</span><input id="a_ball" autocomplete="off"></label>
-        <label class="ad-f"><span>حمّامات</span><input id="a_bathrooms" autocomplete="off"></label>
-        <label class="ad-f"><span>مواقف</span><input id="a_parking" autocomplete="off"></label>
+        <label class="ad-f"><span>مياه</span>
+          <select id="a_water" class="amen-sel"></select></label>
+        <label class="ad-f"><span>فيزتات</span>
+          <select id="a_vests" class="amen-sel"></select></label>
+        <label class="ad-f"><span>كرة</span>
+          <select id="a_ball" class="amen-sel"></select></label>
+        <label class="ad-f"><span>حمّامات</span>
+          <select id="a_bathrooms" class="amen-sel"></select></label>
+        <label class="ad-f"><span>مواقف</span>
+          <select id="a_parking" class="amen-sel"></select></label>
       </div>
 
       <h3 class="frm-h">الملاعب داخل المكان *</h3>
@@ -1682,6 +1696,49 @@ var SLOT_ALL = [
 var QUICK = { full:[8,10,12,14,16,18,20,22], morning:[8,10,12], evening:[16,18,20,22] };
 var rowSeq = 0;
 
+/* ── قوائم مغلقة + «أخرى…» ───────────────────────────────────────────────
+   لماذا لا datalist: الـdatalist **يقترح ولا يمنع** — الكتابة الحرّة تمرّ كما
+   هي. والتطبيق يبني شرائح التصفية من القيم المميّزة في القاعدة نفسها
+   (‏`distinctSizes`/`distinctTypes` في app.js) ⇒ «عمّان» و«عمان» منطقتان،
+   و`8x8` و`8×8` حجمان. القائمة تمنع الزلّة، و«أخرى…» تُبقي القيمة الجديدة
+   ممكنة لكن **بقرار**: خيارٌ يُختار ثمّ حقلٌ يُملأ.
+   ⚠️ حقل «أخرى» شقيقٌ للقائمة داخل نفس `label.ad-f` — بلا معرّف: صفوف
+   الملاعب تتكرّر، وأي معرّف فيها يتكرّر معها. */
+var OTHER = '__other';
+var OPT_OTHER = '<option value="' + OTHER + '">أخرى…</option>';
+var SIZE_OPTS = ['5×5','6×6','7×7','8×8','9×9','11×11'].map(function(s){
+  return '<option value="' + s + '">' + s + '</option>'; }).join('') + OPT_OTHER;
+
+/* المرافق: القيم الأربع التي يعرف `amenityValueText` في التطبيق ترجمتها،
+   وما عداها يُعرَض حرفيًّا بلا ترجمة. الفارغ = لا أيقونة أصلًا. */
+var AMEN_OPTS = [
+  ['',          'غير متوفّر — لا تظهر أيقونته'],
+  ['Free',      'متوفّر مجانًا — يُعرَض «مجاناً» / «Free»'],
+  ['Paid',      'متوفّر برسوم — يُعرَض «برسوم» / «Paid»'],
+  ['Available', 'متوفّر — يُعرَض «متوفرة» / «Available»']
+].map(function(o){ return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('');
+
+function othOf(sel){ var l = sel.closest('.ad-f'); return l ? l.querySelector('.oth') : null; }
+function syncOth(sel){
+  var x = othOf(sel); if (!x) return;
+  var on = (sel.value === OTHER);
+  x.hidden = !on; if (!on) x.value = '';
+}
+/* القيمة المقروءة واحدة في الحالتين — من يقرأها لا يعرف أيّهما جاءت منه */
+function pick(sel){
+  if (!sel) return '';
+  if (sel.value !== OTHER) return String(sel.value || '').trim();
+  var x = othOf(sel); return x ? String(x.value || '').trim() : '';
+}
+document.addEventListener('change', function(e){
+  var s = e.target && e.target.closest ? e.target.closest('select.oth-sel') : null;
+  if (!s) return;
+  syncOth(s);
+  var x = othOf(s); if (x && !x.hidden) x.focus();
+});
+/* بعد أي reset تعود القوائم إلى خيارها الأوّل — والحقول المكشوفة لا تُخفى وحدها */
+function syncAllOth(){ document.querySelectorAll('select.oth-sel').forEach(syncOth); }
+
 function fieldRowHtml(i, price){
   var chips = SLOT_ALL.map(function(s){
     return '<label class="slot-chip"><input type="checkbox" class="fr-slot" value="' + s.h +
@@ -1694,7 +1751,8 @@ function fieldRowHtml(i, price){
       '<label class="ad-f"><span>اسم الملعب</span>' +
         '<input class="fr-name" value="ملعب ' + i + '" autocomplete="off"></label>' +
       '<label class="ad-f"><span>الحجم</span>' +
-        '<input class="fr-size" list="dlSize" value="5×5" autocomplete="off"></label>' +
+        '<select class="fr-size oth-sel">' + SIZE_OPTS + '</select>' +
+        '<input class="oth" hidden autocomplete="off" placeholder="مثال: 8×8 — بعلامة × لا حرف x"></label>' +
       '<label class="ad-f"><span>سعر الساعة (د.أ)</span>' +
         '<input class="fr-price" type="number" min="0" step="1" inputmode="numeric" dir="ltr" value="' +
         esc(String(price || '')) + '"></label>' +
@@ -1730,21 +1788,34 @@ $('#fieldRows').addEventListener('click', function(e){
   });
 });
 
-/* المدن والمناطق والأنواع من القاعدة نفسها: الكتابة الحرّة تصنع «عمّان»
-   و«عمان» مدينتين، والتصفية في الموقع بالمنطقة ⇒ منطقة مكتوبة بحرف زائد
-   تختفي من الفلتر. */
+/* المدن والمناطق **من القاعدة نفسها**: القائمة لا تخترع قيمة ولا تحذف واحدة —
+   ما فيها هو ما في `places` حرفيًّا، فاختيارُه يطابق ما تصفّي به الواجهة.
+   ⚠️ والقيمة المختارة تُحفَظ قبل إعادة البناء وتُعاد بعده: `loadAll()` يُنادى
+   بعد كل عملية، ولو أُعيد ملء القائمة بلا حفظ لضاع اختيار المالك وهو يكتب. */
 function renderAddLists(){
-  function fill(id, vals){
-    $(id).innerHTML = vals.filter(Boolean).sort().map(function(v){
-      return '<option value="' + esc(v) + '"></option>'; }).join('');
+  function fill(id, vals, ph){
+    var el = $(id); if (!el) return;
+    var keep = el.value;
+    var list = vals.filter(Boolean).sort(function(a,b){ return String(a).localeCompare(String(b),'ar'); });
+    el.innerHTML = '<option value="">— اختر ' + ph + ' —</option>' +
+      list.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join('') +
+      OPT_OTHER;
+    if (keep){ el.value = keep; if (el.value !== keep) el.value = ''; }
+    // قيمة واحدة في القاعدة كلّها ⇒ اختيارها افتراضًا لا يخفي بديلًا (لا بديل)
+    else if (list.length === 1) el.value = list[0];
+    syncOth(el);
   }
   var cities = {}, regions = {};
   D.places.forEach(function(p){
     if (p.city) cities[p.city] = 1;
     if (p.region && p.region !== 'all') regions[p.region] = 1;
   });
-  fill('#dlCity', Object.keys(cities));
-  fill('#dlRegion', Object.keys(regions));
+  fill('#f_city', Object.keys(cities), 'المدينة');
+  fill('#f_region', Object.keys(regions), 'المنطقة');
+  document.querySelectorAll('select.amen-sel').forEach(function(s){
+    if (s.options.length) return;                 // لا تُبطل اختيارًا قائمًا
+    s.innerHTML = AMEN_OPTS;
+  });
   if (!document.querySelector('#fieldRows .fld-row')) addFieldRow();
 }
 
@@ -1857,6 +1928,7 @@ var LI_NO = '<li><span class="no">✘</span><span>';
 $('#addReset').addEventListener('click', function(){
   $('#addForm').reset();
   $('#fieldRows').innerHTML = ''; rowSeq = 0; addFieldRow();
+  renderAddLists(); syncAllOth();   // reset يعيد القوائم لخيارها الأوّل ولا يخفي حقول «أخرى»
   $('#addRes').innerHTML = '';
 });
 
@@ -1864,7 +1936,7 @@ $('#addForm').addEventListener('submit', function(e){
   e.preventDefault();
   var btn = $('#addGo');
 
-  var name = val('#f_name'), city = val('#f_city'), region = val('#f_region');
+  var name = val('#f_name'), city = pick($('#f_city')), region = pick($('#f_region'));
   var errs = [];
   if (!name)   errs.push('اسم المكان مطلوب.');
   if (!city)   errs.push('المدينة مطلوبة — بلا مدينة لا يظهر المكان في تصفية الموقع.');
@@ -1882,8 +1954,9 @@ $('#addForm').addEventListener('submit', function(e){
     var price = Number(r.querySelector('.fr-price').value);
     if (!slots.length) errs.push('الملعب «' + esc(fname) + '» بلا وقت واحد متاح — لن يستطيع أحد حجزه.');
     if (!(price >= 0) || isNaN(price)) errs.push('سعر الملعب «' + esc(fname) + '» غير صالح.');
-    rows.push({ name:fname, size:String(r.querySelector('.fr-size').value||'').trim() || '5×5',
-                price:price, slots:slots });
+    var size = pick(r.querySelector('.fr-size'));
+    if (!size) errs.push('حجم الملعب «' + esc(fname) + '» فارغ — اخترتَ «أخرى…» ولم تكتب شيئًا.');
+    rows.push({ name:fname, size:size, price:price, slots:slots });
   });
   if (!rows.length) errs.push('لا بدّ من ملعب واحد على الأقلّ.');
 
@@ -1897,10 +1970,10 @@ $('#addForm').addEventListener('submit', function(e){
     return;
   }
 
-  var amen = function(sel){ var v = val(sel); return v || null; };
+  var amen = function(sel){ return val(sel) || null; };   // الفارغ ⇒ NULL لا '' — العمود nullable والتطبيق يقرأ الفراغ «غير متوفّر»
   var body = {
     name: name, city: city, region: region,
-    type: val('#f_type') || 'عشب صناعي',
+    type: pick($('#f_type')) || 'عشب صناعي',
     color: val('#f_color') || '#15803d',
     phone: normPhone(val('#f_phone')),
     map_link: val('#f_map'),
@@ -1989,9 +2062,9 @@ $('#addForm').addEventListener('submit', function(e){
     li.push(LI_NO + 'غير ظاهر على <b>الموقع</b> بعد: صفحات <code>/places</code> تُولَّد وقت البناء ' +
       '⇒ يحتاج <code>build.ps1</code> ثمّ نشرًا.</span></li>');
     addResult('ok', '<h3>تمّ إنشاء «' + esc(name) + '»</h3><ul>' + li.join('') + '</ul>');
-    $('#addForm').reset();
+    $('#addForm').reset(); syncAllOth();
     $('#fieldRows').innerHTML = ''; rowSeq = 0;
-    loadAll();     // الجداول تعرف بالمكان الجديد فورًا
+    loadAll();     // الجداول تعرف بالمكان الجديد فورًا — و`renderAddLists` تلتقط المدينة/المنطقة الجديدتين
   })
   .catch(function(ex){
     var li = done.map(function(x){ return LI_OK + x + '</span></li>'; });

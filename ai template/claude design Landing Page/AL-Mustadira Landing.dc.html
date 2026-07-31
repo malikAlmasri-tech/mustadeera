@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #08262C; }
+  * { box-sizing: border-box; }
+  a { color: #8CC63E; text-decoration: none; }
+  a:hover { color: #A6E052; }
+  @keyframes mst-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes mst-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.82); } }
+  @keyframes mst-bob { 0%,100% { transform: translateY(0) rotate(-2.5deg); } 50% { transform: translateY(-10px) rotate(-2.5deg); } }
+  @keyframes mst-bob2 { 0%,100% { transform: translateY(0) rotate(3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
+</style>
+</helmet>
+<div style="background:#08262C;color:#EAF3EC;font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5;text-wrap:pretty;overflow-x:hidden">
+
+  <nav style="position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(16px,4vw,56px);background:rgba(8,38,44,.78);backdrop-filter:blur(14px);border-bottom:1px solid rgba(140,198,62,.16)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:26px;height:26px;border-radius:50%;background:#8CC63E;box-shadow:0 0 0 4px rgba(140,198,62,.16)"></div>
+      <div style="display:flex;flex-direction:column;line-height:1">
+        <span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:15px;letter-spacing:.02em">AL-MUSTADIRA</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:rgba(234,243,236,.45);margin-top:3px">المستديرة</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <a href="#owners" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(234,243,236,.72);padding:10px 14px;border:1px solid rgba(234,243,236,.18);border-radius:999px" style-hover="border-color:rgba(140,198,62,.6);color:#8CC63E">I own a pitch</a>
+      <a href="#download" style="background:#8CC63E;color:#08262C;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;letter-spacing:.01em" style-hover="background:#A6E052">Download the app</a>
+    </div>
+  </nav>
+
+  <section style="position:relative;padding:clamp(36px,6vw,76px) clamp(16px,4vw,56px) 0;text-align:center;overflow:hidden">
+    <div style="position:absolute;top:clamp(40px,10vw,120px);left:50%;transform:translateX(-50%);width:min(1100px,150vw);aspect-ratio:1;border:1px solid rgba(140,198,62,.13);border-radius:50%;pointer-events:none"></div>
+    <div style="position:absolute;top:clamp(140px,26vw,320px);left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(140,198,62,.22),transparent);pointer-events:none"></div>
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(760px,110vw);height:min(520px,70vw);background:radial-gradient(ellipse at 50% 0%,rgba(140,198,62,.16),transparent 70%);pointer-events:none"></div>
+
+    <div style="position:relative;display:inline-flex;align-items:center;gap:9px;padding:8px 16px;border:1px solid rgba(140,198,62,.35);border-radius:999px;background:rgba(140,198,62,.07)">
+      <span style="width:7px;height:7px;border-radius:50%;background:#8CC63E;animation:mst-pulse 1.6s ease-in-out infinite"></span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#B7E37A">Live availability · 40+ pitches</span>
+    </div>
+
+    <h1 style="position:relative;margin:clamp(18px,3vw,30px) 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(42px,10.6vw,130px);line-height:.86;letter-spacing:-.035em;text-transform:uppercase">
+      <span style="display:block">Book the</span>
+      <span style="display:block;color:#8CC63E">pitch.</span>
+      <span style="display:block;color:transparent;-webkit-text-stroke:1.5px rgba(234,243,236,.55)">Not the phone.</span>
+    </h1>
+
+    <p style="position:relative;max-width:min(560px,92vw);margin:clamp(18px,3vw,26px) auto 0;font-size:clamp(15px,1.6vw,19px);color:rgba(234,243,236,.7)">See every free slot in your city in real time, lock it in three taps, and pay at the gate. No calls. No deposits. No “let me check and call you back”.</p>
+
+    <div style="position:relative;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:clamp(22px,3vw,32px)">
+      <a href="#download" style="display:inline-flex;align-items:center;gap:10px;background:#8CC63E;color:#08262C;font-weight:700;font-size:clamp(15px,1.5vw,17px);padding:16px 26px;border-radius:999px;box-shadow:0 14px 40px rgba(140,198,62,.22)" style-hover="background:#A6E052;box-shadow:0 18px 50px rgba(140,198,62,.34)">Download for Android<span style="font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.65">FREE</span></a>
+      <a href="#owners" style="display:inline-flex;align-items:center;gap:8px;color:#EAF3EC;font-weight:600;font-size:clamp(15px,1.5vw,17px);padding:16px 24px;border:1px solid rgba(234,243,236,.22);border-radius:999px" style-hover="border-color:#8CC63E;color:#8CC63E">List your pitch →</a>
+    </div>
+    <p style="position:relative;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.42);margin:16px 0 0">No card needed · Pay at the venue · Android 8+</p>
+
+    <div style="position:relative;margin-top:clamp(28px,4vw,52px);padding-bottom:clamp(0px,2vw,20px)">
+      <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(1240px,100vw);height:clamp(200px,30vw,360px);background:repeating-linear-gradient(135deg,#0F3A42 0 10px,#0B2F36 10px 20px);opacity:.55;mask-image:linear-gradient(to top,#000 30%,transparent);-webkit-mask-image:linear-gradient(to top,#000 30%,transparent);border-radius:20px 20px 0 0"></div>
+      <span style="position:absolute;left:clamp(8px,3vw,28px);bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(234,243,236,.4)">[ photo: floodlit night match, wide ]</span>
+
+      <div style="position:relative;width:min(320px,62vw);margin:0 auto">
+        <div style="position:absolute;top:8%;left:clamp(-104px,-32%,-14px);z-index:3;animation:mst-bob 6s ease-in-out infinite;display:flex;align-items:center;gap:8px;padding:10px 13px;border-radius:14px;background:rgba(8,38,44,.9);border:1px solid rgba(140,198,62,.35);backdrop-filter:blur(6px);box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:left">
+          <span style="width:8px;height:8px;border-radius:50%;background:#8CC63E;animation:mst-pulse 1.6s ease-in-out infinite"></span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1.4;letter-spacing:.06em;color:#B7E37A">9:00 PM<br /><span style="color:rgba(234,243,236,.55)">JUST OPENED UP</span></span>
+        </div>
+        <div style="position:absolute;bottom:22%;right:clamp(-96px,-30%,-12px);z-index:3;animation:mst-bob2 7s ease-in-out infinite;padding:10px 13px;border-radius:14px;background:rgba(242,241,236,.95);color:#08262C;box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:left">
+          <span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:20px;line-height:1">0</span>
+          <span style="display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;margin-top:2px">CALLS MADE</span>
+        </div>
+
+        <div style="position:relative;z-index:2;border-radius:38px;padding:9px;background:linear-gradient(160deg,#123A42,#061C21);box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(234,243,236,.08)">
+          <div style="border-radius:30px;overflow:hidden;background:#08262C;text-align:left">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 6px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:rgba(234,243,236,.5)">
+              <span>21:04</span>
+              <span style="width:44px;height:5px;border-radius:99px;background:rgba(234,243,236,.18)"></span>
+              <span>84%</span>
+            </div>
+            <div style="padding:10px 16px 6px">
+              <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(140,198,62,.85)">Tonight · 2.4 km away</p>
+              <p style="margin:5px 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:17px;letter-spacing:-.01em">Al-Rawdah Arena</p>
+              <p style="margin:3px 0 0;font-size:11px;color:rgba(234,243,236,.55)">5-a-side · Artificial turf · Lights</p>
+            </div>
+            <div style="margin:10px 16px 0;height:88px;border-radius:14px;background:repeating-linear-gradient(135deg,#10424B 0 8px,#0C3239 8px 16px);display:flex;align-items:flex-end;padding:8px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,243,236,.45)">[ pitch photo ]</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.45)">Pick a slot</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8CC63E">SAR 180 / hr</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 16px 0">
+              <sc-for list="{{ slots }}" as="slot" hint-placeholder-count="4">
+                <button type="button" onClick="{{ slot.onClick }}" style="{{ slot.style }}">
+                  <span style="font-weight:700;font-size:12px">{{ slot.label }}</span>
+                  <span style="display:block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.06em;margin-top:2px;opacity:.7">{{ slot.meta }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="margin:14px 12px 12px;padding:11px 14px;border-radius:16px;background:#8CC63E;color:#08262C;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span style="font-weight:700;font-size:13px">{{ confirmLabel }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em">PAY AT VENUE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showTicker }}" hint-placeholder-val="{{ true }}">
+    <div style="border-top:1px solid rgba(140,198,62,.18);border-bottom:1px solid rgba(140,198,62,.18);background:rgba(140,198,62,.05);overflow:hidden;padding:13px 0">
+      <div style="display:flex;width:max-content;animation:mst-ticker 42s linear infinite;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,243,236,.6)">
+        <div style="display:flex;gap:28px;padding-right:28px">
+          <span>Al-Rawdah Arena — 9:00 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Green Field Complex — 10:30 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Nakheel Sports Hub — 7:00 PM 2 slots</span><span style="color:#8CC63E">●</span>
+          <span>City Turf 7-a-side — 8:00 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Corniche Pitch — 11:00 PM free</span><span style="color:#8CC63E">●</span>
+        </div>
+        <div style="display:flex;gap:28px;padding-right:28px">
+          <span>Al-Rawdah Arena — 9:00 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Green Field Complex — 10:30 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Nakheel Sports Hub — 7:00 PM 2 slots</span><span style="color:#8CC63E">●</span>
+          <span>City Turf 7-a-side — 8:00 PM free</span><span style="color:#8CC63E">●</span>
+          <span>Corniche Pitch — 11:00 PM free</span><span style="color:#8CC63E">●</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <section style="padding:clamp(56px,8vw,120px) clamp(16px,4vw,56px);display:grid;gap:clamp(28px,5vw,64px);grid-template-columns:repeat(auto-fit,minmax(300px,1fr));max-width:1240px;margin:0 auto;align-items:start">
+    <div>
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8CC63E">The scoreboard</p>
+      <p style="margin:14px 0 0;font-size:clamp(22px,2.6vw,34px);line-height:1.25;font-weight:600;letter-spacing:-.01em;color:rgba(234,243,236,.9)">Every week, thousands of minutes that used to be lost on unanswered calls turn into <span style="color:#8CC63E">actual football</span>.</p>
+      <p style="margin:16px 0 0;font-size:15px;color:rgba(234,243,236,.55);max-width:44ch">Organisers stop chasing owners. Owners stop losing empty slots. The pitch stays busy, the group chat stays calm.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,32px)">
+      <div style="flex:1 1 140px;border-top:1px solid rgba(140,198,62,.4);padding-top:16px">
+        <p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(38px,5.4vw,66px);line-height:.9;letter-spacing:-.04em">42<span style="color:#8CC63E">+</span></p>
+        <p style="margin:8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,243,236,.5)">Pitches listed</p>
+      </div>
+      <div style="flex:1 1 140px;border-top:1px solid rgba(140,198,62,.4);padding-top:16px;margin-top:clamp(0px,4vw,44px)">
+        <p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(38px,5.4vw,66px);line-height:.9;letter-spacing:-.04em">18k</p>
+        <p style="margin:8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,243,236,.5)">Bookings confirmed</p>
+      </div>
+      <div style="flex:1 1 140px;border-top:1px solid rgba(140,198,62,.4);padding-top:16px;margin-top:clamp(0px,2vw,18px)">
+        <p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(38px,5.4vw,66px);line-height:.9;letter-spacing:-.04em">28<span style="font-size:.42em;letter-spacing:0"> sec</span></p>
+        <p style="margin:8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,243,236,.5)">Average time to book</p>
+      </div>
+      <div style="flex:1 1 140px;border-top:1px solid rgba(140,198,62,.4);padding-top:16px;margin-top:clamp(0px,5vw,58px)">
+        <p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(38px,5.4vw,66px);line-height:.9;letter-spacing:-.04em">4.8<span style="color:#8CC63E">★</span></p>
+        <p style="margin:8px 0 0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,243,236,.5)">Play Store rating</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:0 clamp(16px,4vw,56px) clamp(56px,8vw,110px);max-width:1240px;margin:0 auto">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:clamp(22px,3vw,36px)">
+      <h2 style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(30px,5vw,62px);line-height:.94;letter-spacing:-.035em;text-transform:uppercase;max-width:18ch">Three problems,<br />one screen</h2>
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(234,243,236,.45)">01 — 06 / how it works</p>
+    </div>
+
+    <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">
+      <div style="grid-column:span 2;border-radius:22px;padding:clamp(22px,3vw,34px);background:linear-gradient(155deg,#0D343C,#092A31);border:1px solid rgba(234,243,236,.07)">
+        <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8CC63E">01 / real-time availability</p>
+        <h3 style="margin:12px 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(22px,2.6vw,32px);line-height:1.05;letter-spacing:-.02em">The grid updates the second someone books</h3>
+        <p style="margin:10px 0 0;font-size:15px;color:rgba(234,243,236,.6);max-width:46ch">Not a phone number. Not a “call for availability” page. A live board of tonight, tomorrow and the weekend.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(46px,1fr));gap:6px;margin-top:20px">
+          <div style="height:44px;border-radius:9px;background:rgba(234,243,236,.07);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(234,243,236,.35)">6PM</div>
+          <div style="height:44px;border-radius:9px;background:rgba(234,243,236,.07);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(234,243,236,.35)">7PM</div>
+          <div style="height:44px;border-radius:9px;background:#8CC63E;color:#08262C;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500">8PM</div>
+          <div style="height:44px;border-radius:9px;background:#8CC63E;color:#08262C;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500">9PM</div>
+          <div style="height:44px;border-radius:9px;background:rgba(234,243,236,.07);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(234,243,236,.35)">10PM</div>
+          <div style="height:44px;border-radius:9px;background:#8CC63E;color:#08262C;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500">11PM</div>
+        </div>
+      </div>
+
+      <div style="border-radius:22px;padding:clamp(22px,3vw,34px);background:#8CC63E;color:#08262C;display:flex;flex-direction:column;justify-content:space-between;min-height:230px">
+        <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.7">02 / zero phone calls</p>
+        <p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(72px,9vw,116px);line-height:.8;letter-spacing:-.06em">0</p>
+        <div>
+          <h3 style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:20px;letter-spacing:-.02em">Calls to make</h3>
+          <p style="margin:6px 0 0;font-size:14px;line-height:1.4;opacity:.75">Book at 1 AM if you want. Nobody has to pick up.</p>
+        </div>
+      </div>
+
+      <div style="border-radius:22px;padding:clamp(22px,3vw,34px);background:#0B2F36;border:1px solid rgba(234,243,236,.07)">
+        <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8CC63E">03 / clear upfront pricing</p>
+        <h3 style="margin:12px 0 16px;font-family:'Archivo Black',system-ui,sans-serif;font-size:20px;letter-spacing:-.02em">The price you see is the price you pay</h3>
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 0;border-top:1px solid rgba(234,243,236,.1);color:rgba(234,243,236,.7)"><span>60 min</span><span>SAR 180</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 0;border-top:1px solid rgba(234,243,236,.1);color:rgba(234,243,236,.7)"><span>90 min</span><span>SAR 240</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 0;border-top:1px solid rgba(234,243,236,.1);color:#8CC63E"><span>Hidden fees</span><span>0.00</span></div>
+      </div>
+
+      <div style="grid-column:span 2;border-radius:22px;overflow:hidden;border:1px solid rgba(234,243,236,.07);background:#0B2F36;display:flex;flex-wrap:wrap">
+        <div style="flex:1 1 240px;padding:clamp(22px,3vw,34px)">
+          <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8CC63E">04 / see it before you go</p>
+          <h3 style="margin:12px 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(20px,2.2vw,28px);line-height:1.1;letter-spacing:-.02em">Real photos, surface, lights, parking</h3>
+          <p style="margin:10px 0 0;font-size:15px;color:rgba(234,243,236,.6)">Every listing is checked before it goes live, so the pitch you booked is the pitch you show up to.</p>
+        </div>
+        <div style="flex:1 1 200px;min-height:180px;background:repeating-linear-gradient(135deg,#10424B 0 10px,#0C3239 10px 20px);display:flex;align-items:flex-end;padding:14px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,243,236,.45)">[ app screen: pitch detail ]</span>
+        </div>
+      </div>
+
+      <div style="border-radius:22px;padding:clamp(22px,3vw,34px);background:#0B2F36;border:1px solid rgba(234,243,236,.07)">
+        <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8CC63E">05 / three taps</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+          <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:22px;color:rgba(140,198,62,.55)">1</span><span style="font-weight:600">Pick your area &amp; time</span></div>
+          <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:22px;color:rgba(140,198,62,.55)">2</span><span style="font-weight:600">Choose a free slot</span></div>
+          <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:22px;color:rgba(140,198,62,.55)">3</span><span style="font-weight:600">Confirm — done</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:22px;padding:clamp(22px,3vw,34px);background:linear-gradient(155deg,#0D343C,#092A31);border:1px solid rgba(140,198,62,.22);display:flex;flex-direction:column;justify-content:space-between;min-height:230px">
+        <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8CC63E">06 / pay at the venue</p>
+        <h3 style="margin:14px 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(20px,2.2vw,26px);line-height:1.1;letter-spacing:-.02em">No card. No online deposit. No risk.</h3>
+        <p style="margin:12px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.5)">Cash · Card · At the gate</p>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showQuotes }}" hint-placeholder-val="{{ true }}">
+    <section style="padding:0 clamp(16px,4vw,56px) clamp(56px,8vw,110px);max-width:1240px;margin:0 auto;display:grid;gap:clamp(20px,3vw,40px);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+      <div style="border-left:2px solid #8CC63E;padding-left:clamp(16px,2vw,24px)">
+        <p style="margin:0;font-size:clamp(18px,2.1vw,26px);line-height:1.35;font-weight:600;letter-spacing:-.01em">“We used to spend the whole afternoon calling five pitches. Now one of us books it on the bus home.”</p>
+        <p style="margin:14px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.45)">Faisal — Thursday night organiser</p>
+      </div>
+      <div style="border-left:2px solid rgba(234,243,236,.2);padding-left:clamp(16px,2vw,24px)">
+        <p style="margin:0;font-size:clamp(18px,2.1vw,26px);line-height:1.35;font-weight:600;letter-spacing:-.01em">“My empty 10 PM slots are the ones filling up now. I stopped answering the phone during matches.”</p>
+        <p style="margin:14px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.45)">Owner — 3 pitches on AL-Mustadira</p>
+      </div>
+    </section>
+  </sc-if>
+
+  <div id="owners" style="position:relative;height:1px;background:rgba(140,198,62,.2)"></div>
+  <section style="position:relative;background:#F2F1EC;color:#08262C;padding:clamp(58px,9vw,130px) clamp(16px,4vw,56px);border-top:6px solid #8CC63E">
+    <div style="position:absolute;top:0;left:clamp(16px,4vw,56px);transform:translateY(-50%);background:#8CC63E;color:#08262C;padding:9px 18px;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25)">Switching sides — for pitch owners</div>
+
+    <div style="max-width:1240px;margin:0 auto;display:grid;gap:clamp(28px,4vw,64px);grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:center">
+      <div>
+        <h2 style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(30px,4.8vw,60px);line-height:.95;letter-spacing:-.035em;text-transform:uppercase">Manage your whole ledger on one screen</h2>
+        <p style="margin:16px 0 0;font-size:clamp(15px,1.6vw,18px);color:rgba(8,38,44,.7);max-width:46ch">Your bookings, your prices, your blocked hours — all in one dashboard. You keep the cash at the gate; we just keep the calendar honest.</p>
+        <div style="display:flex;flex-direction:column;gap:0;margin:26px 0 0">
+          <div style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(8,38,44,.14)"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(8,38,44,.4);padding-top:3px">01</span><span><b style="font-weight:700">Live calendar.</b> <span style="color:rgba(8,38,44,.65)">Block or open any hour in one tap.</span></span></div>
+          <div style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(8,38,44,.14)"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(8,38,44,.4);padding-top:3px">02</span><span><b style="font-weight:700">Daily revenue view.</b> <span style="color:rgba(8,38,44,.65)">Know what tonight is worth before it starts.</span></span></div>
+          <div style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(8,38,44,.14)"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(8,38,44,.4);padding-top:3px">03</span><span><b style="font-weight:700">Fill the dead hours.</b> <span style="color:rgba(8,38,44,.65)">Late slots surface to nearby players automatically.</span></span></div>
+          <div style="display:flex;gap:14px;padding:14px 0;border-top:1px solid rgba(8,38,44,.14);border-bottom:1px solid rgba(8,38,44,.14)"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(8,38,44,.4);padding-top:3px">04</span><span><b style="font-weight:700">No online payments to handle.</b> <span style="color:rgba(8,38,44,.65)">Players still pay you directly.</span></span></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:26px">
+          <a href="#owners" style="background:#08262C;color:#F2F1EC;font-weight:700;font-size:clamp(15px,1.5vw,17px);padding:16px 26px;border-radius:999px" style-hover="background:#0D3A43">Register your pitch — free</a>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(8,38,44,.5)">Live in 24 hours · No setup fee</span>
+        </div>
+      </div>
+
+      <div style="border-radius:22px;background:#FFFFFF;box-shadow:0 30px 70px rgba(8,38,44,.14);padding:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 6px 14px">
+          <span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:13px;letter-spacing:.02em">TONIGHT · 12 SLOTS</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#5C8A2F">SAR 1,860 BOOKED</span>
+        </div>
+        <div style="height:clamp(150px,20vw,220px);border-radius:14px;background:repeating-linear-gradient(135deg,#E6E4DA 0 10px,#EFEDE5 10px 20px);display:flex;align-items:flex-end;padding:12px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(8,38,44,.45)">[ owner dashboard: bookings ledger ]</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:12px">
+          <div style="border-radius:12px;background:#F2F1EC;padding:12px"><p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:20px">86%</p><p style="margin:4px 0 0;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(8,38,44,.5)">Occupancy</p></div>
+          <div style="border-radius:12px;background:#F2F1EC;padding:12px"><p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:20px">3</p><p style="margin:4px 0 0;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(8,38,44,.5)">Open hours</p></div>
+          <div style="border-radius:12px;background:#8CC63E;padding:12px"><p style="margin:0;font-family:'Archivo Black',system-ui,sans-serif;font-size:20px">+21%</p><p style="margin:4px 0 0;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(8,38,44,.6)">vs last month</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showFaq }}" hint-placeholder-val="{{ true }}">
+    <section style="padding:clamp(56px,8vw,110px) clamp(16px,4vw,56px);max-width:900px;margin:0 auto">
+      <h2 style="margin:0 0 clamp(20px,3vw,34px);font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(26px,3.6vw,44px);letter-spacing:-.03em;text-transform:uppercase">Before you ask</h2>
+      <div style="border-top:1px solid rgba(234,243,236,.14)">
+        <button type="button" onClick="{{ toggle0 }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;background:none;border:0;color:#EAF3EC;font-family:'Archivo',sans-serif;font-size:clamp(16px,1.8vw,20px);font-weight:600;text-align:left;cursor:pointer">Do I have to pay online?<span style="color:#8CC63E;font-size:22px;line-height:1">{{ sign0 }}</span></button>
+        <sc-if value="{{ open0 }}" hint-placeholder-val="{{ true }}"><p style="margin:0;padding:0 0 22px;font-size:15px;color:rgba(234,243,236,.62);max-width:60ch">Never. AL-Mustadira reserves the slot and you settle with the pitch owner at the venue — cash or card, exactly as you do today.</p></sc-if>
+      </div>
+      <div style="border-top:1px solid rgba(234,243,236,.14)">
+        <button type="button" onClick="{{ toggle1 }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;background:none;border:0;color:#EAF3EC;font-family:'Archivo',sans-serif;font-size:clamp(16px,1.8vw,20px);font-weight:600;text-align:left;cursor:pointer">Is the app free for players?<span style="color:#8CC63E;font-size:22px;line-height:1">{{ sign1 }}</span></button>
+        <sc-if value="{{ open1 }}" hint-placeholder-val="{{ true }}"><p style="margin:0;padding:0 0 22px;font-size:15px;color:rgba(234,243,236,.62);max-width:60ch">Yes. Download, browse, book. You only pay the pitch its normal rate.</p></sc-if>
+      </div>
+      <div style="border-top:1px solid rgba(234,243,236,.14);border-bottom:1px solid rgba(234,243,236,.14)">
+        <button type="button" onClick="{{ toggle2 }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;background:none;border:0;color:#EAF3EC;font-family:'Archivo',sans-serif;font-size:clamp(16px,1.8vw,20px);font-weight:600;text-align:left;cursor:pointer">What if the owner cancels on me?<span style="color:#8CC63E;font-size:22px;line-height:1">{{ sign2 }}</span></button>
+        <sc-if value="{{ open2 }}" hint-placeholder-val="{{ true }}"><p style="margin:0;padding:0 0 22px;font-size:15px;color:rgba(234,243,236,.62);max-width:60ch">You get an instant notification with the nearest alternative slots at similar pitches, and repeat cancellations cost owners their listing.</p></sc-if>
+      </div>
+    </section>
+  </sc-if>
+
+  <section id="download" style="position:relative;overflow:hidden;background:linear-gradient(180deg,#08262C,#04161A);padding:clamp(60px,10vw,150px) clamp(16px,4vw,56px);text-align:center">
+    <div style="position:absolute;bottom:-40%;left:50%;transform:translateX(-50%);width:min(900px,140vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(140,198,62,.18),transparent 62%);pointer-events:none"></div>
+    <p style="position:relative;margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8CC63E">Kickoff in 28 seconds</p>
+    <h2 style="position:relative;margin:clamp(14px,2vw,22px) 0 0;font-family:'Archivo Black',system-ui,sans-serif;font-size:clamp(40px,10vw,140px);line-height:.84;letter-spacing:-.045em;text-transform:uppercase">Tonight's match<br /><span style="color:#8CC63E">is one tap away</span></h2>
+    <div style="position:relative;display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;margin-top:clamp(26px,4vw,44px)">
+      <a href="#download" style="background:#8CC63E;color:#08262C;font-weight:700;font-size:clamp(16px,1.8vw,19px);padding:18px 34px;border-radius:999px;box-shadow:0 18px 50px rgba(140,198,62,.28)" style-hover="background:#A6E052">Download for Android</a>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:64px;height:64px;border-radius:12px;background:repeating-linear-gradient(45deg,#0F3A42 0 4px,#0B2F36 4px 8px);border:1px solid rgba(234,243,236,.14)"></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(234,243,236,.45);text-align:left">[ qr code ]<br />Scan to install</span>
+      </div>
+    </div>
+    <p style="position:relative;margin:20px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,243,236,.42)">Free · 12 MB · Android 8+ · iOS coming</p>
+  </section>
+
+  <footer style="border-top:1px solid rgba(234,243,236,.1);padding:28px clamp(16px,4vw,56px);display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:18px;height:18px;border-radius:50%;background:#8CC63E"></div>
+      <span style="font-family:'Archivo Black',system-ui,sans-serif;font-size:12px;letter-spacing:.04em">AL-MUSTADIRA</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(234,243,236,.35);letter-spacing:.12em">المستديرة</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase">
+      <a href="#owners" style="color:rgba(234,243,236,.55)" style-hover="color:#8CC63E">For owners</a>
+      <a href="#download" style="color:rgba(234,243,236,.55)" style-hover="color:#8CC63E">Download</a>
+      <a href="#download" style="color:rgba(234,243,236,.55)" style-hover="color:#8CC63E">Support</a>
+      <span style="color:rgba(234,243,236,.3)">© 2026</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showTicker&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;showQuotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;showFaq&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { selected: '9:00', open: [true, false, false] };
+
+  slotData = [
+    { t: '7:00', free: false },
+    { t: '8:00', free: true },
+    { t: '9:00', free: true },
+    { t: '10:00', free: true }
+  ];
+
+  slotStyle(s) {
+    const base = 'padding:9px 4px;border-radius:12px;text-align:center;font-family:Archivo,sans-serif;border:1px solid transparent;cursor:pointer;transition:background .15s,color .15s;';
+    if (!s.free) return base + 'background:rgba(234,243,236,.05);color:rgba(234,243,236,.3);text-decoration:line-through;cursor:not-allowed;';
+    if (this.state.selected === s.t) return base + 'background:#8CC63E;color:#08262C;';
+    return base + 'background:rgba(140,198,62,.1);border-color:rgba(140,198,62,.35);color:#B7E37A;';
+  }
+
+  toggle(i) {
+    this.setState(st => {
+      const open = st.open.slice();
+      open[i] = !open[i];
+      return { open };
+    });
+  }
+
+  renderVals() {
+    const sel = this.state.selected;
+    return {
+      showTicker: this.props.showTicker ?? true,
+      showQuotes: this.props.showQuotes ?? true,
+      showFaq: this.props.showFaq ?? true,
+      confirmLabel: sel ? 'Confirm ' + sel + ' PM' : 'Pick a time',
+      slots: this.slotData.map(s => ({
+        label: s.t,
+        meta: s.free ? (sel === s.t ? 'Picked' : 'Free') : 'Taken',
+        style: this.slotStyle(s),
+        onClick: s.free ? () => this.setState({ selected: s.t }) : undefined
+      })),
+      open0: this.state.open[0], open1: this.state.open[1], open2: this.state.open[2],
+      sign0: this.state.open[0] ? '–' : '+',
+      sign1: this.state.open[1] ? '–' : '+',
+      sign2: this.state.open[2] ? '–' : '+',
+      toggle0: () => this.toggle(0),
+      toggle1: () => this.toggle(1),
+      toggle2: () => this.toggle(2)
+    };
+  }
+}
+</script>
+</body>
+</html>
