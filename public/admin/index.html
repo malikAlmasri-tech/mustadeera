@@ -43,9 +43,12 @@
 .ad-login p{color:var(--muted);font-size:14.5px;margin-bottom:20px}
 .ad-f{display:block;margin-bottom:14px}
 .ad-f span{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px}
-.ad-f input{width:100%;min-height:48px;padding:0 14px;border:1px solid var(--line);
-  border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink);font-size:16px}
-.ad-f input:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.ad-f input,.ad-f select,.ad-f textarea{width:100%;min-height:48px;padding:0 14px;
+  border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface-2);
+  color:var(--ink);font-size:16px;font-family:inherit}
+.ad-f textarea{padding:12px 14px;min-height:80px;line-height:1.7;resize:vertical}
+.ad-f input:focus-visible,.ad-f select:focus-visible,.ad-f textarea:focus-visible{
+  outline:3px solid var(--ring);outline-offset:2px}
 .ad-err{background:rgba(214,48,58,.1);border:1px solid rgba(214,48,58,.35);color:#B02718;
   padding:11px 14px;border-radius:var(--r-sm);font-size:14.5px;font-weight:600;margin-bottom:14px}
 html.dark .ad-err{color:#FF8A90}
@@ -69,6 +72,14 @@ html.dark .ad-err{color:#FF8A90}
 html.dark .kpi.hot .v{color:var(--lime)}
 .kpi.hot::after{content:'';position:absolute;inset-block:0;inset-inline-start:0;width:3px;
   background:var(--lime)}
+/* بطاقة الصدارة: دخل المالك نفسه. أكبر حجمًا وتحتلّ عمودين، لأن كل ما
+   عداها في هذه الشاشة وسيلةٌ إلى هذا الرقم. */
+.kpi.lead{grid-column:span 2;background:linear-gradient(140deg,var(--teal) 0%,#0A3B42 100%);
+  border-color:transparent;color:#fff}
+.kpi.lead .k,.kpi.lead .s{color:rgba(255,255,255,.72)}
+.kpi.lead .v{font-size:clamp(32px,5vw,44px);color:#fff}
+.kpi.lead .trend{color:#CDE9A8}
+@media (max-width:520px){.kpi.lead{grid-column:span 1}}
 
 .ad-sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:clamp(16px,2.4vw,24px);margin-bottom:20px}
@@ -157,14 +168,15 @@ html.dark .rt.wait i{background:var(--lime)}
 html.dark .badge{color:var(--lime)}
 .badge.off{background:rgba(214,48,58,.12);color:#B02718}
 html.dark .badge.off{color:#FF8A90}
-.usr-card .btn{margin-inline-start:auto;min-height:40px;padding:0 16px;font-size:14px}
+.usr-card .acts{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
+.usr-card .btn{min-height:40px;padding:0 16px;font-size:14px}
 .note{font-size:13.5px;color:var(--muted);line-height:1.75;margin-top:12px}
 .hide{display:none!important}
 .muted-row{text-align:center;color:var(--muted);padding:18px;font-size:14.5px}
 
 /* ===== التبويبات =====
-   خمسة أقسام كانت تنزل واحدًا تحت الآخر في صفحة واحدة طويلة. التبويب
-   يجعل كل سؤال في مكانه: «كيف الأسبوع؟» غير «من المستخدم الفلاني؟».
+   كانت الأقسام تنزل واحدًا تحت الآخر في صفحة واحدة طويلة. التبويب
+   يجعل كل سؤال في مكانه: «كم ربحت؟» غير «من لم يردّ عليه أحد؟».
    أزرار حقيقية بـrole=tab وaria-selected، والتنقّل بالأسهم — لا div
    يتظاهر بأنه تبويب. */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
@@ -227,6 +239,7 @@ html.dark .chart .dot{stroke:var(--lime)}
 /* بطاقة التوقّع — إطار متقطّع يقول «مشتقّ لا مقيس» قبل أن يُقرأ النصّ */
 .fc{background:var(--surface-2);border:1px dashed var(--line-2);border-radius:var(--r);
   padding:15px 17px}
+.fc + .fc{margin-top:12px}
 .fc .fc-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .fc .fc-k{font-size:13px;color:var(--muted);font-weight:600}
 .fc .fc-v{font-family:var(--f-head);font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}
@@ -239,6 +252,104 @@ html.dark .chart .dot{stroke:var(--lime)}
 .trend.flat{color:var(--muted)}
 html.dark .trend.up{color:#5FD08A}
 html.dark .trend.down{color:#FF8A90}
+
+/* ===== «ماذا تقول الأرقام؟» =====
+   كل سطر جملة واحدة مبنيّة على رقم مقيس، ومعها ما يترتّب عليه. القصد أن
+   يُقرأ القسم في نصف دقيقة ويُغلق: من يفتح لوحة كل صباح لا يقرأ جداول. */
+.brief{list-style:none;display:grid;gap:10px}
+.brief li{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);
+  font-size:14.5px;line-height:1.75}
+.brief li::before{content:'●';font-size:11px;line-height:2;color:var(--muted);flex:none}
+.brief li.good{border-color:rgba(11,122,67,.3);background:var(--lime-soft)}
+.brief li.good::before{content:'▲';color:var(--ok-ink,#0B7A43)}
+.brief li.bad{border-color:rgba(176,39,24,.32);background:rgba(214,48,58,.07)}
+.brief li.bad::before{content:'▼';color:#B02718}
+.brief li.warn{border-color:rgba(140,95,22,.32);background:rgba(217,162,39,.09)}
+.brief li.warn::before{content:'!';font-weight:900;color:#8C5F16}
+html.dark .brief li.bad::before{color:#FF8A90}
+html.dark .brief li.warn::before{color:#E8B84B}
+.brief b{font-weight:800}
+.brief .act{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+
+/* صفوف رقم/مسمّى مضغوطة — للحقائق التي لا تستحقّ بطاقة كاملة */
+.mini{display:grid;gap:0;margin-top:4px}
+.mini div{display:flex;gap:12px;align-items:baseline;justify-content:space-between;
+  padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.mini div:last-child{border-bottom:0}
+.mini .mk{color:var(--muted)}
+.mini .mv{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ===== قائمة الأماكن الموجودة: إخفاء/إظهار وحذف =====
+   ⚠️ الصنف مسبوق بـ`ad-` عمدًا. اللوحة تربط `site.css` نفسه (وهذا مقصود:
+   التوكنات تصلها بلا نظامَي تصميم)، لكنّ **فضاء الأسماء مشترك معه**: كان
+   الاسم `pl-card` فاصطدم بـ`.pl-card` في شبكة `/places` وورث منها
+   `flex-direction:column` — فصارت البطاقة عمودًا وأنا لم أكتب ذلك في سطر
+   واحد. أي صنف جديد هنا يبدأ بـ`ad-` أو يُفحَص أنه غير موجود هناك. */
+.ad-pl{display:flex;flex-direction:row;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px}
+/* المخفيّ يبقى مقروءًا وواضحَ الاختلاف: الحدّ المتقطّع يقول «موجود ولا يُعرَض»
+   قبل أن تُقرأ الشارة، والخفوت وحده يُقرأ عطلًا في التحميل. */
+.ad-pl.off{border-style:dashed;opacity:.82}
+.ad-pl .nm{font-weight:800}
+.ad-pl .meta{color:var(--muted);font-size:13.5px}
+.ad-pl .acts{display:flex;gap:8px;margin-inline-start:auto;flex-wrap:wrap}
+.ad-pl .btn{min-height:40px;padding:0 15px;font-size:14px}
+.pl-del{background:none;border:1px solid rgba(176,39,24,.4);color:#B02718;font-family:inherit;
+  font-size:14px;font-weight:700;padding:0 15px;min-height:40px;border-radius:var(--r-sm);cursor:pointer}
+html.dark .pl-del{color:#FF8A90}
+.pl-del[disabled]{opacity:.45;cursor:not-allowed}
+/* تأكيد الحذف داخل البطاقة لا في نافذة المتصفّح: النافذة نصٌّ عارٍ لا يتّسع
+   لتعداد ما سيُمحى، والحذف هنا يمحو ملاعب وتقييمات لا صفًّا واحدًا. */
+.pl-confirm{flex-basis:100%;background:rgba(214,48,58,.08);border:1px solid rgba(176,39,24,.34);
+  border-radius:var(--r-sm);padding:13px 15px;font-size:14px;line-height:1.8}
+.pl-confirm b{font-weight:800}
+.pl-confirm .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+
+/* ===== نموذج إضافة مكان ===== */
+.frm{display:grid;gap:0 14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.frm-h{font-size:15px;margin:22px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+.frm-n{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px}
+.ad-f.chk{display:flex;align-items:center;gap:10px;min-height:48px}
+.ad-f.chk input{width:20px;min-height:20px;height:20px;flex:none;accent-color:var(--teal)}
+.ad-f.chk span{margin-bottom:0;font-weight:600}
+.ad-f input[type="color"]{padding:4px;height:48px;cursor:pointer}
+/* صفّ ملعب: بطاقة قائمة بذاتها — الملاعب متعدّدة والحدود تمنع اختلاطها */
+.fld-row{position:relative;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r);padding:15px 16px;margin-bottom:12px}
+.fld-row .fr-t{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.fld-row .fr-t b{font-size:14px}
+.fr-del{margin-inline-start:auto;background:none;border:1px solid var(--line);color:#B02718;
+  font-family:inherit;font-size:13px;font-weight:700;padding:6px 12px;
+  border-radius:var(--r-sm);cursor:pointer}
+html.dark .fr-del{color:#FF8A90}
+.fr-del[disabled]{opacity:.4;cursor:not-allowed}
+.fr-lbl{display:block;font-size:13.5px;font-weight:700;margin-bottom:8px}
+.slotset{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.slot-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;font-size:13.5px;
+  font-weight:600;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-full);cursor:pointer;user-select:none;
+  transition:border-color var(--t-fast),background-color var(--t-fast)}
+.slot-chip input{width:16px;height:16px;min-height:16px;accent-color:var(--teal);cursor:pointer}
+.slot-chip:has(input:checked){background:var(--lime-soft);border-color:var(--line-2)}
+.slot-quick{display:flex;flex-wrap:wrap;gap:8px}
+.qk{background:none;border:1px dashed var(--line-2);color:var(--ink-2);font-family:inherit;
+  font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:var(--r-full);cursor:pointer}
+@media (hover:hover){.qk:hover{background:var(--surface)}}
+.frm-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.frm-actions .btn{min-height:50px}
+/* رسالة النتيجة: ما حدث بالضبط، بندًا بندًا — «تمّ» وحدها لا تقول أي خطوة نجحت */
+.res{border-radius:var(--r);padding:16px 18px;margin-bottom:18px;font-size:14.5px;line-height:1.8}
+.res.ok{background:var(--lime-soft);border:1px solid var(--line-2)}
+.res.err{background:rgba(214,48,58,.09);border:1px solid rgba(214,48,58,.34)}
+.res h3{font-size:16px;margin-bottom:8px}
+.res ul{list-style:none;display:grid;gap:6px;margin:8px 0 0}
+.res li{display:flex;gap:9px;align-items:flex-start}
+.res .yes{color:var(--ok-ink,#0B7A43);font-weight:900;flex:none}
+.res .no{color:#B02718;font-weight:900;flex:none}
+html.dark .res .yes{color:#5FD08A}
+html.dark .res .no{color:#FF8A90}
 </style>
 </head>
 <body>
@@ -267,21 +378,30 @@ html.dark .trend.down{color:#FF8A90}
   </div>
 
   <div class="tabs" role="tablist" aria-label="أقسام اللوحة">
-    <button class="tab" role="tab" id="tab-over"  aria-controls="p-over"  aria-selected="true">نظرة عامّة</button>
-    <button class="tab" role="tab" id="tab-days"  aria-controls="p-days"  aria-selected="false">الأيام</button>
-    <button class="tab" role="tab" id="tab-place" aria-controls="p-place" aria-selected="false">الأماكن</button>
-    <button class="tab" role="tab" id="tab-users" aria-controls="p-users" aria-selected="false">المستخدمون</button>
+    <button class="tab" role="tab" id="tab-over"  aria-controls="p-over"  aria-selected="true">الملخّص</button>
+    <button class="tab" role="tab" id="tab-money" aria-controls="p-money" aria-selected="false">المال</button>
+    <button class="tab" role="tab" id="tab-place" aria-controls="p-place" aria-selected="false">الملاعب</button>
+    <button class="tab" role="tab" id="tab-cust"  aria-controls="p-cust"  aria-selected="false">العملاء</button>
+    <button class="tab" role="tab" id="tab-ops"   aria-controls="p-ops"   aria-selected="false">التشغيل</button>
+    <button class="tab" role="tab" id="tab-add"   aria-controls="p-add"   aria-selected="false">➕ إدارة الأماكن</button>
     <button class="tab" role="tab" id="tab-log"   aria-controls="p-log"   aria-selected="false">السجلّ</button>
   </div>
 
   <div class="panel" id="p-over" role="tabpanel" aria-labelledby="tab-over" tabindex="0">
     <div class="kpis" id="kpis"></div>
 
+    <div class="card" style="margin-bottom:20px">
+      <h3>ماذا تقول الأرقام؟</h3>
+      <p class="cap">كل سطر هنا جملةٌ مبنيّة على رقم في هذه الصفحة — لا رأي ولا تقدير.
+        ما لا تكفيه البيانات لا يُكتب، ويُقال سبب غيابه.</p>
+      <ul class="brief" id="brief"></ul>
+    </div>
+
     <div class="chart-grid two">
       <div class="card">
         <h3>الإيراد والحجوزات — 14 يومًا</h3>
         <p class="cap">الأعمدة إيراد المؤكّد بالدينار، والخطّ عدد الحجوزات. الخطّ المتقطّع
-          <strong>توقّع</strong> لا قياس — طريقته مشروحة في بطاقة التوقّع أدناه.</p>
+          <strong>توقّع</strong> لا قياس — طريقته مشروحة في تبويب «المال».</p>
         <div id="chRev"></div>
         <div class="legend">
           <span><i style="background:var(--teal)" class="lg-bar"></i>إيراد مؤكّد</span>
@@ -292,18 +412,27 @@ html.dark .trend.down{color:#FF8A90}
 
       <div class="card">
         <h3>أين تذهب الحجوزات؟</h3>
-        <p class="cap">آخر 14 يومًا. <strong>المعلّقة</strong> وحدها ما ينتظر ردًّا منك —
-          والملغاة/المرفوضة انتهت.</p>
+        <p class="cap">آخر 30 يومًا. <strong>المعلّقة</strong> وحدها ما ينتظر ردًّا —
+          والملغاة/المرفوضة انتهت، ومعها ذهب إيرادها.</p>
         <div class="funnel" id="funnel"></div>
       </div>
     </div>
+  </div>
 
+  <div class="panel" id="p-money" role="tabpanel" aria-labelledby="tab-money" tabindex="0" hidden>
     <div class="chart-grid two">
       <div class="card">
-        <h3>أيّ أيام الأسبوع أكثر ازدحامًا؟</h3>
-        <p class="cap">مجموع حجوزات كل يوم من أيام الأسبوع خلال آخر 14 يومًا.
-          يفيد في التسعير وفي ترتيب توفّر الملاعب.</p>
-        <div id="chDow"></div>
+        <h3>الشهور — دخلك مقابل حجم المبيعات</h3>
+        <p class="cap"><strong>حجم المبيعات</strong> ما يدفعه اللاعبون لأصحاب الملاعب،
+          و<strong>دخلك</strong> عمولتك منه (10%). الصفوف بتاريخ <strong>اللعب</strong>،
+          فالشهر <strong>الجارٍ</strong> ناقص لأنه لم ينتهِ، والشهر <strong>القادم</strong>
+          ليس فيه إلّا ما حُجز مقدَّمًا — ولا نموّ يُحسَب لأيٍّ منهما.</p>
+        <div class="ad-scroll">
+          <table id="months"><thead><tr>
+            <th>الشهر</th><th class="n">حجوزات</th><th class="n">مؤكّدة</th>
+            <th class="n">حجم المبيعات</th><th class="n">دخلك 10%</th><th class="n">النموّ</th>
+          </tr></thead><tbody></tbody><tfoot></tfoot></table>
+        </div>
       </div>
 
       <div class="card">
@@ -313,61 +442,261 @@ html.dark .trend.down{color:#FF8A90}
         <div id="fcast"></div>
       </div>
     </div>
-  </div>
 
-  <div class="panel" id="p-days" role="tabpanel" aria-labelledby="tab-days" tabindex="0" hidden>
-  <section class="ad-sec">
-    <h2>آخر 14 يومًا</h2>
-    <p class="ad-sub">كل صفّ يوم واحد. <strong>المعلّقة</strong> = حجوزات لم تُؤكَّد ولم تُلغَ بعد،
-      وهي وحدها ما ينتظر ردًّا. <strong>الإيراد</strong> و<strong>العمولة</strong> من المؤكّد فقط —
-      الحجز المعلّق لا يُحتسب حتى يُؤكَّد.</p>
-    <div class="ad-scroll">
-      <table id="daily"><thead><tr>
-        <th>التاريخ</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th><th class="n">معلّقة</th>
-        <th class="n">ملغاة/مرفوضة</th><th class="n">الإيراد</th><th class="n">عمولتك 10%</th>
-      </tr></thead><tbody></tbody><tfoot></tfoot></table>
+    <div class="chart-grid two">
+      <div class="card">
+        <h3>أين يتسرّب المال؟</h3>
+        <p class="cap">ثلاثة أرقام مختلفة تمامًا، ويُخلط بينها كثيرًا:
+          ما <strong>ضاع فعلًا</strong> · ما <strong>ما زال معلّقًا</strong> ·
+          و<strong>الطاقة الفارغة</strong> وهي سقفٌ نظري لا هدف.</p>
+        <div class="mini" id="leak"></div>
+      </div>
+
+      <div class="card">
+        <h3>حساسيّة الإشغال</h3>
+        <p class="cap">أنفع سؤال في هذا العمل: ماذا يساوي أن يرتفع الإشغال نقطة
+          مئوية واحدة؟ الجواب هنا محسوب من طاقتك الفعلية ومتوسّط سعرك.</p>
+        <div class="mini" id="sens"></div>
+      </div>
     </div>
-  </section>
+
+    <section class="ad-sec">
+      <h2>آخر 14 يومًا — يومًا بيوم</h2>
+      <p class="ad-sub">كل صفّ يوم واحد بتاريخ <strong>اللعب</strong> لا تاريخ الطلب.
+        <strong>المعلّقة</strong> = حجوزات لم تُؤكَّد ولم تُلغَ بعد، وهي وحدها ما ينتظر ردًّا.
+        <strong>حجم المبيعات</strong> و<strong>دخلك</strong> من المؤكّد فقط —
+        الحجز المعلّق لا يُحتسب حتى يُؤكَّد.</p>
+      <div class="ad-scroll">
+        <table id="daily"><thead><tr>
+          <th>التاريخ</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th><th class="n">معلّقة</th>
+          <th class="n">ملغاة/مرفوضة</th><th class="n">حجم المبيعات</th><th class="n">دخلك 10%</th>
+        </tr></thead><tbody></tbody><tfoot></tfoot></table>
+      </div>
+    </section>
   </div>
 
   <div class="panel" id="p-place" role="tabpanel" aria-labelledby="tab-place" tabindex="0" hidden>
-  <div class="card" style="margin-bottom:20px">
-    <h3>حصّة كل مكان من الإيراد المؤكّد</h3>
-    <p class="cap">تراكمي منذ أوّل حجز. المكان الذي يحمل حصّة كبيرة ونسبة تأكيد
-      منخفضة هو أوّل ما يستحقّ مكالمة.</p>
-    <div id="chShare"></div>
+  <div class="chart-grid two">
+    <div class="card">
+      <h3>حصّة كل مكان من المبيعات المؤكّدة</h3>
+      <p class="cap">تراكمي منذ أوّل حجز. المكان الذي يحمل حصّة كبيرة ونسبة تأكيد
+        منخفضة هو أوّل ما يستحقّ مكالمة.</p>
+      <div id="chShare"></div>
+    </div>
+    <div class="card">
+      <h3>تركيز الاعتماد</h3>
+      <p class="cap">كم من دخلك معلّق على مكان واحد؟ سوقٌ يعتمد على مورّد واحد
+        سوقٌ هشّ — لا لأن المورّد سيّئ، بل لأن رحيله يأخذ الدخل معه.</p>
+      <div class="mini" id="conc"></div>
+    </div>
   </div>
 
   <section class="ad-sec">
-    <h2>الأماكن — مرتّبة بالإيراد</h2>
+    <h2>الأماكن — مرتّبة بالمبيعات</h2>
     <p class="ad-sub">الأرقام تراكمية منذ أوّل حجز، لا آخر 14 يومًا.
-      <strong>الحصّة</strong> نصيب المكان من إجمالي الإيراد المؤكّد.
+      <strong>الحصّة</strong> نصيب المكان من إجمالي المبيعات المؤكّدة.
       التقييم <strong>—</strong> يعني لا تقييم بعد، لا صفرًا.
       
-      و<strong>غير مؤكّدة</strong> تجمع المعلّق والملغى والمرفوض معًا.</p>
+      و<strong>غير مؤكّدة</strong> تجمع المعلّق والملغى والمرفوض معًا.
+      <strong>الملاعب</strong> عدد الملاعب النشِطة داخل المكان، و<strong>الخانات/يوم</strong> طاقته اليومية.</p>
     <div class="ad-scroll">
       <table id="places"><thead><tr>
-        <th>المكان</th><th>المدينة</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th>
-        <th class="n">غير مؤكّدة</th><th class="n">الإيراد</th><th class="n">الحصّة</th>
+        <th>المكان</th><th>المدينة</th><th class="n">ملاعب</th><th class="n">خانات/يوم</th>
+        <th class="n">الحجوزات</th><th class="n">مؤكّدة</th>
+        <th class="n">غير مؤكّدة</th><th class="n">المبيعات</th><th class="n">دخلك</th><th class="n">الحصّة</th>
         <th class="n">التقييم</th><th>الحالة</th>
       </tr></thead><tbody></tbody><tfoot></tfoot></table>
     </div>
   </section>
   </div>
 
-  <div class="panel" id="p-users" role="tabpanel" aria-labelledby="tab-users" tabindex="0" hidden>
-  <section class="ad-sec">
-    <h2>إدارة المستخدمين</h2>
-    <div class="usr-row">
-      <label class="ad-f"><span>ابحث برقم الهاتف</span>
-        <input id="usrQ" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
-      <button class="btn btn-pri" id="usrGo">بحث</button>
+  <div class="panel" id="p-cust" role="tabpanel" aria-labelledby="tab-cust" tabindex="0" hidden>
+    <div class="chart-grid two">
+      <div class="card">
+        <h3>العائدون مقابل الجدد</h3>
+        <p class="cap">العميل هنا = <strong>رقم هاتف</strong> واحد في الحجوزات المحمَّلة.
+          العائد من حجز أكثر من مرّة. اكتساب عميل يكلّف، وإبقاؤه لا يكلّف —
+          فهذه النسبة أثمن من عدد الحجوزات نفسه.</p>
+        <div class="mini" id="custMini"></div>
+      </div>
+      <div class="card">
+        <h3>توزّع العملاء بعدد حجوزاتهم</h3>
+        <p class="cap">كم عميلًا حجز مرّة واحدة فقط، وكم منهم صار معتادًا.
+          الذيل الطويل على اليمين هو ما يبني عملًا مستقرًّا.</p>
+        <div id="chLoyal"></div>
+      </div>
     </div>
-    <div id="usrOut"></div>
-    <p class="note">⛔ <strong>عرض كلمة السرّ مستحيل</strong> — المخزَّن بصمة bcrypt أحادية الاتجاه.
-      وإعادة التعيين لا تجري من هذه الصفحة عمدًا: تحتاج مفتاح <code>service_role</code>،
-      ووضعه في صفحة يفتحها المتصفّح يعني تسليم القاعدة كاملةً لأي شخص يقرأ المصدر.
-      نفّذها من محرّر SQL في Supabase — الوصفة في <code>migration/RECIPES.sql</code> §8.</p>
+
+    <section class="ad-sec">
+      <h2>أفضل العملاء</h2>
+      <p class="ad-sub">مرتَّبون بما دفعوه فعلًا (المؤكّد وحده). العمود الأخير آخر مرّة حجزوا فيها —
+        عميلٌ كبير اختفى منذ شهر خبرٌ يستحقّ اتصالًا.</p>
+      <div class="ad-scroll">
+        <table id="topCust"><thead><tr>
+          <th>العميل</th><th>الهاتف</th><th class="n">حجوزات</th><th class="n">مؤكّدة</th>
+          <th class="n">أنفق</th><th class="n">دخلك منه</th><th>آخر حجز</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section class="ad-sec">
+      <h2>إدارة الحسابات</h2>
+      <p class="ad-sub">هذا بحثٌ في <strong>حسابات التطبيق</strong> (profiles)، وهو غير جدول
+        العملاء أعلاه: هناك من يحجز برقمه بلا حساب مسجَّل.
+        <strong>الحساب واحد لا حسابان</strong> — و<code>role</code> هو ما يفرّق اللاعب عن
+        صاحب الملعب. من سجّل في التطبيق يُنشَأ <code>player</code>، ورفعُه إلى
+        <code>owner</code> هو ما يفتح له «دخول المالك». وحسابات <code>admin</code> لا
+        يُغيَّر دورها من هنا.</p>
+      <div class="usr-row">
+        <label class="ad-f"><span>ابحث برقم الهاتف</span>
+          <input id="usrQ" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
+        <button class="btn btn-pri" id="usrGo">بحث</button>
+      </div>
+      <div id="usrOut"></div>
+      <p class="note">⛔ <strong>عرض كلمة السرّ مستحيل</strong> — المخزَّن بصمة bcrypt أحادية الاتجاه.
+        وإعادة التعيين لا تجري من هذه الصفحة عمدًا: تحتاج مفتاح <code>service_role</code>،
+        ووضعه في صفحة يفتحها المتصفّح يعني تسليم القاعدة كاملةً لأي شخص يقرأ المصدر.
+        نفّذها من محرّر SQL في Supabase — الوصفة في <code>migration/RECIPES.sql</code> §8.</p>
+    </section>
+  </div>
+
+  <div class="panel" id="p-ops" role="tabpanel" aria-labelledby="tab-ops" tabindex="0" hidden>
+    <div id="opsAlerts"></div>
+
+    <section class="ad-sec">
+      <h2>قائمة العمل — حجوزات معلّقة</h2>
+      <p class="ad-sub">الأقدم أوّلًا، لأن الأقدم هو الأقرب إلى الضياع.
+        <strong>⚠️ الحجز المعلّق يحجز خانته</strong> — قيد القاعدة يمنع حجزًا آخر على
+        نفس الملعب والتاريخ والساعة ما دام معلّقًا، فالمعلّق الذي لا يُردّ عليه
+        لا يضيع وحده بل يمنع غيره.</p>
+      <div class="ad-scroll">
+        <table id="pend"><thead><tr>
+          <th>عمر الطلب</th><th>موعد اللعب</th><th>المكان</th><th>العميل</th>
+          <th>الهاتف</th><th class="n">القيمة</th><th>المصدر</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <div class="chart-grid two">
+      <div class="card">
+        <h3>ساعات الذروة</h3>
+        <p class="cap">مجموع الحجوزات على كل خانة وقت. الخانة المزدحمة تحتمل سعرًا أعلى،
+          والفارغة تحتمل عرضًا — وكلاهما قرارك أنت.</p>
+        <div id="chHour"></div>
+      </div>
+      <div class="card">
+        <h3>أيّ أيام الأسبوع أكثر ازدحامًا؟</h3>
+        <p class="cap">مجموع الحجوزات على كل يوم من أيام الأسبوع.
+          يفيد في التسعير وفي ترتيب توفّر الملاعب.</p>
+        <div id="chDow"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid two">
+      <div class="card">
+        <h3>مهلة الحجز المسبق</h3>
+        <p class="cap">كم يومًا بين لحظة إرسال الطلب وموعد اللعب. مهلة قصيرة تعني
+          طلبًا لحظيًّا: سرعة ردّك عليه هي المنتَج نفسه.</p>
+        <div class="mini" id="lead"></div>
+      </div>
+      <div class="card">
+        <h3>لماذا تُلغى الحجوزات؟</h3>
+        <p class="cap">أسباب الإلغاء كما كُتبت فعلًا في الحجز. الفارغ منها لم يُذكر له سبب —
+          ولا يُخمَّن له واحد.</p>
+        <div id="chReason"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-add" role="tabpanel" aria-labelledby="tab-add" tabindex="0" hidden>
+  <section class="ad-sec">
+    <h2>الأماكن الموجودة</h2>
+    <p class="ad-sub"><strong>الإخفاء</strong> (‏<code>active=false</code>) يرفع المكان من التطبيق
+      ويُبقي كل شيء كما هو — قابل للرجوع في أي لحظة، وهو ما تريده في ٩٩٪ من الحالات
+      (ملعب أغلق موسمًا · خلاف مع صاحبه · بيانات ناقصة).
+      <strong>الحذف</strong> يمحو المكان <strong>ومعه ملاعبه وتقييماته</strong> ولا رجعة فيه،
+      ولا يُقبَل أصلًا على مكان عليه حجوزات — القاعدة ترفضه كي لا يتمزّق تاريخك المالي.</p>
+    <div id="plMsg"></div>
+    <div id="plList"></div>
+  </section>
+
+  <section class="ad-sec">
+    <h2>إضافة مكان جديد</h2>
+    <p class="ad-sub">يُكتب المكان في القاعدة مباشرةً، ويظهر في <strong>التطبيق فور حفظه</strong>
+      (التطبيق يقرأ من القاعدة حيًّا). أمّا <strong>صفحات الموقع</strong> فتُولَّد وقت البناء ⇒
+      لن تظهر فيه حتى إعادة البناء والنشر. وكل ما تفعله هنا يُكتب في سجلّ التدقيق تلقائيًّا.</p>
+    <div id="addRes"></div>
+    <form id="addForm" novalidate>
+      <div class="frm">
+        <label class="ad-f"><span>اسم المكان *</span>
+          <input id="f_name" required autocomplete="off" placeholder="ملاعب ..."></label>
+        <label class="ad-f"><span>المدينة *</span>
+          <input id="f_city" list="dlCity" value="عمان" autocomplete="off"></label>
+        <label class="ad-f"><span>المنطقة *</span>
+          <input id="f_region" list="dlRegion" autocomplete="off" placeholder="طبربور، الجبيهة، ..."></label>
+        <label class="ad-f"><span>هاتف المكان</span>
+          <input id="f_phone" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
+        <label class="ad-f"><span>نوع الأرضية</span>
+          <input id="f_type" list="dlType" value="عشب صناعي" autocomplete="off"></label>
+        <label class="ad-f"><span>رابط الخريطة</span>
+          <input id="f_map" type="url" dir="ltr" placeholder="https://maps.app.goo.gl/..."></label>
+        <label class="ad-f"><span>لون البطاقة في التطبيق</span>
+          <input id="f_color" type="color" value="#15803d"></label>
+        <label class="ad-f chk"><input id="f_active" type="checkbox" checked>
+          <span>نشط — يظهر للاعبين فورًا</span></label>
+      </div>
+      <datalist id="dlCity"></datalist>
+      <datalist id="dlRegion"></datalist>
+      <datalist id="dlType">
+        <option value="عشب صناعي"></option><option value="عشب طبيعي"></option>
+        <option value="صالة مغلقة"></option><option value="أرضية مطّاطية"></option>
+      </datalist>
+      <datalist id="dlSize">
+        <option value="5×5"></option><option value="6×6"></option><option value="7×7"></option>
+        <option value="9×9"></option><option value="11×11"></option>
+      </datalist>
+
+      <h3 class="frm-h">المرافق</h3>
+      <p class="frm-n">الحقل الفارغ يعني <strong>غير متوفّر</strong> فلا تُعرض له أيقونة أصلًا.
+        وما تكتبه يظهر كما كتبته في صفحة المكان — «مجانًا» أو «بأجرة» أو «حتى 20 سيارة».
+        اكتب <code>نعم</code> إن كان متوفّرًا بلا تفصيل.</p>
+      <div class="frm">
+        <label class="ad-f"><span>مياه</span><input id="a_water" autocomplete="off"></label>
+        <label class="ad-f"><span>فيزتات</span><input id="a_vests" autocomplete="off"></label>
+        <label class="ad-f"><span>كرة</span><input id="a_ball" autocomplete="off"></label>
+        <label class="ad-f"><span>حمّامات</span><input id="a_bathrooms" autocomplete="off"></label>
+        <label class="ad-f"><span>مواقف</span><input id="a_parking" autocomplete="off"></label>
+      </div>
+
+      <h3 class="frm-h">الملاعب داخل المكان *</h3>
+      <p class="frm-n">⚠️ <strong>مكان بلا ملعب واحد لا يظهر في التطبيق إطلاقًا</strong> —
+        التطبيق يُسقط الأماكن الفارغة عمدًا، فلا يرى اللاعب مكانًا لا يستطيع حجز شيء فيه.
+        ولذلك الملعب الأوّل إلزامي هنا. السعر بالساعة، والأوقات هي الخانات التي
+        سيراها اللاعب قابلة للحجز.</p>
+      <div id="fieldRows"></div>
+      <button type="button" class="btn btn-sec" id="addRow">+ أضف ملعبًا آخر</button>
+
+      <h3 class="frm-h">ربط مالك (اختياري)</h3>
+      <p class="frm-n">لا يوجد «حساب لاعب» و«حساب مالك» منفصلان — <strong>الحساب واحد</strong>،
+        و<code>role</code> هو ما يفرّق. فليسجّل صاحب الملعب في التطبيق تسجيلًا عاديًّا
+        (يُنشَأ <code>player</code>)، ثمّ اكتب رقمه هنا. إنشاء الحساب لا يجري من هذه الصفحة
+        (يحتاج <code>service_role</code> — نفس سبب امتناع إعادة تعيين كلمة السرّ).</p>
+      <div class="frm">
+        <label class="ad-f"><span>رقم هاتف المالك</span>
+          <input id="f_owner" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
+        <label class="ad-f chk"><input id="f_promote" type="checkbox" checked>
+          <span>ارفع دوره إلى <code>owner</code></span></label>
+      </div>
+      <p class="frm-n">⚠️ <strong>الربط وحده لا يكفي لدخول لوحة المالك.</strong> «دخول المالك»
+        في التطبيق يرفض كل حساب دوره <code>player</code> مهما كان مربوطًا بمكان، فيقرأ
+        صاحبه رسالة «الرقم أو كلمة السر غلط» ولا يفهم السبب. لذلك يُرفع الدور مع الربط —
+        وهو تغيير صلاحية، فأزل العلامة إن لم ترده.</p>
+
+      <div class="frm-actions">
+        <button class="btn btn-pri" type="submit" id="addGo">أنشئ المكان</button>
+        <button class="btn btn-sec" type="button" id="addReset">تفريغ النموذج</button>
+      </div>
+    </form>
   </section>
   </div>
 
@@ -385,6 +714,7 @@ html.dark .trend.down{color:#FF8A90}
   </section>
   </div>
 
+  <p class="note" id="dataNote"></p>
   <p class="note">بناء 2026-07-31</p>
 </main>
 
@@ -394,6 +724,9 @@ html.dark .trend.down{color:#FF8A90}
 var SB = 'https://nxqddfuwtrsabprxcfez.supabase.co', KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWRkZnV3dHJzYWJwcnhjZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNDkwNDcsImV4cCI6MjEwMDYyNTA0N30.SOL5yoyeDZpJOEneH9rgqGc5P6HswMw5fR9d76Uh0wA', MAIL = '@mustadeera.app';
 var $ = function(s){ return document.querySelector(s); };
 var S = null;   // الجلسة
+
+var RATE = 0.10;            // العمولة — نفس النسبة المكتوبة في admin_daily.commission
+var BK_LIMIT = 5000;        // سقف الحجوزات المحمَّلة؛ يُعلَن عند بلوغه
 
 /* توحيد الرقم — نفس منطق التطبيق حرفيًّا كي يطابق البريد المشتقّ المخزَّن */
 function normPhone(p){
@@ -420,6 +753,15 @@ function api(path, opts){
 }
 var esc = function(s){ var d = document.createElement('span'); d.textContent = s == null ? '' : s; return d.innerHTML; };
 var money = function(n){ return (Math.round((+n||0)*100)/100).toLocaleString('en') + ' د.أ'; };
+/* داخل جملة عربية يعزل bdi القيمةَ عن اتجاه ما حولها. بلا هذا ينقلب ترتيب
+   ما يخالف اتجاه السطر — الأرقام والمدَيات والأسماء اللاتينية معًا. */
+var bdi = function(html){ return '<bdi>' + html + '</bdi>'; };
+/* الرقم المُشار بعلامة يحتاج dir صريحًا لا العزل وحده: «+» في أوّل المقطع
+   محرفٌ محايد ولا رقمَ أوروبيًّا قبله، فيُحسَم باتّجاه السطر (RTL) ويقفز إلى
+   الطرف الآخر ⇒ «+15%» تُعرَض «15%+». مقيس في بطاقة الاتّجاه. */
+var numL = function(html){ return '<bdi dir="ltr">' + html + '</bdi>'; };
+var moneyB = function(n){ return bdi(money(n)); };
+var pct = function(n){ return Math.round(+n||0) + '%'; };
 
 /* العربية تغيّر المعدود مع العدد: ١ و٢ لهما صيغتاهما · ٣-١٠ جمع ·
    ١١+ مفرد منصوب. «مجموع 3 مكانًا» عربية مكسورة — نفس الفخّ الذي
@@ -430,6 +772,19 @@ function countNoun(n, one, two, few, many){
   if (n >= 3 && n <= 10) return n + ' ' + few;
   return n + ' ' + many;
 }
+var nBooking = function(n){ return countNoun(n, 'حجز واحد', 'حجزان', 'حجوزات', 'حجزًا'); };
+var nDay     = function(n){ return countNoun(n, 'يوم واحد', 'يومان', 'أيام', 'يومًا'); };
+var nPlace   = function(n){ return countNoun(n, 'مكان واحد', 'مكانان', 'أماكن', 'مكانًا'); };
+var nCust    = function(n){ return countNoun(n, 'عميل واحد', 'عميلان', 'عملاء', 'عميلًا'); };
+
+/* التاريخ المحلّي لا UTC. `toISOString().slice(0,10)` يعطي يوم الأمس في
+   الأردن بين منتصف الليل والثالثة فجرًا (‏UTC+3) — نفس الفخّ الذي أصابته
+   `current_date` في القاعدة. */
+function ymd(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' +
+         String(d.getDate()).padStart(2,'0');
+}
+function dshift(n){ var d = new Date(); d.setDate(d.getDate() + n); return ymd(d); }
 
 /* وقت نسبي: «قبل ٥ دقائق» أنفع في سجلّ تدقيق من طابع زمني كامل.
    Intl يتكفّل بجموع العربية، والطابع الكامل يبقى في title ولا يضيع.
@@ -453,7 +808,7 @@ function whenFull(d){ return FULL_DT ? FULL_DT.format(d) : d.toLocaleString('ar-
    أزرار حقيقية بأدوار ARIA، والتنقّل بالأسهم كما يتوقّع قارئ الشاشة.
    لا شيء يُحمَّل عند التبديل: كل البيانات محمَّلة أصلًا، والتبويب يُظهر
    ويُخفي فقط ⇒ التبديل فوري بلا طلب شبكة. */
-var TABS = ['over','days','place','users','log'];
+var TABS = ['over','money','place','cust','ops','add','log'];
 function showTab(name){
   TABS.forEach(function(n){
     var t = $('#tab-' + n), p = $('#p-' + n);
@@ -477,6 +832,10 @@ TABS.forEach(function(n, i){
     showTab(next); $('#tab-' + next).focus();
   });
 });
+function tabBadge(id, label, count, warn){
+  var t = $('#tab-' + id); if (!t) return;
+  t.innerHTML = label + (count ? ' <span class="cnt' + (warn ? ' warn' : '') + '">' + count + '</span>' : '');
+}
 
 /* ── أدوات الرسم ────────────────────────────────────────────────────────────
    SVG مبنيّ بالنصّ، بلا مكتبة. المحور الأفقي فيزيائي (SVG لا يعرف الاتجاه)،
@@ -548,17 +907,23 @@ function drawRevenue(rows, forecast){
 }
 
 /* أعمدة أفقية بسيطة: الاسم · الشريط · القيمة. تُستعمَل لأيام الأسبوع
-   وللحصص، فالشكل واحد والمعنى يتغيّر بالتسمية وحدها. */
+   وللحصص ولساعات الذروة، فالشكل واحد والمعنى يتغيّر بالتسمية وحدها. */
 function drawBars(items, fmt){
   if (!items.length) return emptyChart('لا بيانات بعد');
   var max = Math.max.apply(null, items.map(function(x){ return x.v; }).concat([1]));
   return '<div class="funnel">' + items.map(function(x){
-    var pct = max > 0 ? (x.v / max * 100) : 0;
+    var p = max > 0 ? (x.v / max * 100) : 0;
     return '<div class="fn-row"><span>' + esc(x.k) + '</span>' +
-      '<span class="fn-bar"><span class="fn-fill" style="inline-size:' + pct.toFixed(1) +
+      '<span class="fn-bar"><span class="fn-fill" style="inline-size:' + p.toFixed(1) +
         '%;background:' + (x.c || 'var(--lime)') + '"></span></span>' +
       '<span class="fn-v">' + esc(fmt ? fmt(x) : String(x.v)) + '</span></div>';
   }).join('') + '</div>';
+}
+/* صفوف «مسمّى ⟵ قيمة» — الحقائق التي لا تحتاج شريطًا ولا محورًا */
+function miniRows(items){
+  return items.map(function(x){
+    return '<div><span class="mk">' + x[0] + '</span><span class="mv">' + x[1] + '</span></div>';
+  }).join('');
 }
 
 /* ── الدخول ── */
@@ -611,9 +976,47 @@ function start(){
   // التبويب المفتوح يُستعاد من العنوان: تحديث الصفحة لا يعيدك إلى البداية
   var h = (location.hash || '').replace('#','');
   showTab(TABS.indexOf(h) !== -1 ? h : 'over');
-  loadDaily(); loadPlaces();
+  loadAll();
   loadFeed().then(function(){ rtPaint(); schedulePoll(); rtConnect(); });
   scheduleRefresh();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   البيانات
+
+   العروض المجمَّعة (admin_daily / admin_places) تكفي جدولين ولا تكفي سؤالًا
+   واحدًا من أسئلة صاحب العمل: من يعود؟ أي ساعة تُباع؟ كم خانة فارغة؟ ما الذي
+   ضاع؟ كلّها تحتاج **الصفوف نفسها**. وRLS يسمح للأدمن بقراءة bookings و
+   fields كاملةً أصلًا (bookings_read · fields_read) ⇒ لا ترحيل ولا عرض جديد،
+   الجلبة الواحدة تفتح كل ما تحت.
+   ⚠️ الحجوزات تحمل أرقام العملاء. تبقى في الذاكرة ولا تُخزَّن ولا تُرسَل.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], truncated:false };
+
+function loadAll(){
+  return Promise.all([
+    api('/rest/v1/admin_daily?select=*&limit=120'),
+    api('/rest/v1/admin_places?select=*'),
+    api('/rest/v1/bookings?select=id,created_at,booking_date,hour,time_label,place_id,field_id,' +
+        'customer_name,customer_phone,player_id,price,status,source,cancel_reason' +
+        '&order=booking_date.desc&limit=' + BK_LIMIT),
+    api('/rest/v1/fields?select=id,place_id,name,size,price,slots,active'),
+    // بلا `active` في المرشِّح عمدًا: الأدمن يرى المخفيّ كي يستطيع إظهاره.
+    // (‏places_read يسمح بذلك: `active or is_admin() or owns_place`.)
+    api('/rest/v1/places?select=id,name,city,region,type,phone,active&order=name'),
+    // عمودٌ واحد يكفي للعدّ. يُجلَب كي يقول تأكيدُ الحذف **كم تقييمًا** سيُمحى
+    // معه بالضبط — «وتقييماته» بلا عدد تأكيدٌ لا يعرف صاحبه ما يوقّع عليه.
+    api('/rest/v1/reviews?select=place_id')
+  ]).then(function(r){
+    D.daily        = r[0].data || [];
+    D.adminPlaces  = r[1].data || [];
+    D.bookings     = r[2].data || [];
+    D.fields       = r[3].data || [];
+    D.places       = r[4].data || [];
+    D.reviews      = r[5].data || [];
+    D.truncated    = D.bookings.length >= BK_LIMIT;
+    renderAll();
+  });
 }
 
 /* المعلّق يُشتقّ ولا يُقرأ: العرض يعطي bookings و confirmed و lost، ومجال
@@ -622,36 +1025,283 @@ function start(){
    لو أُضيفت حالة خامسة يومًا، هذا السطر أوّل ما يجب مراجعته. */
 function pendingOf(d){ return Math.max(0, (+d.bookings||0) - (+d.confirmed||0) - (+d.lost||0)); }
 
-function loadDaily(){
-  api('/rest/v1/admin_daily?select=*&limit=14').then(function(r){
-    var rows = r.data || [], tb = $('#daily tbody'), tf = $('#daily tfoot');
-    if (!rows.length){
-      tb.innerHTML = '<tr><td colspan="7" class="muted-row">لا حجوزات بعد</td></tr>';
-      tf.innerHTML = ''; renderKpis([]); renderOverview([]); return;
-    }
-    tb.innerHTML = rows.map(function(d){
-      var pd = pendingOf(d);
-      return '<tr><td>' + esc(d.booking_date) + '</td><td class="n num">' + d.bookings + '</td>' +
-             '<td class="n pos">' + d.confirmed + '</td>' +
-             '<td class="n ' + (pd ? 'wait' : '') + '">' + pd + '</td>' +
-             '<td class="n neg">' + d.lost + '</td>' +
-             '<td class="n num">' + money(d.revenue) + '</td><td class="n num">' + money(d.commission) + '</td></tr>';
-    }).join('');
-    // صفّ المجاميع: بلا هذا كان على المالك أن يجمع أربعة عشر رقمًا بنفسه
-    var S = function(k){ return rows.reduce(function(a,d){ return a + (+d[k]||0); }, 0); };
-    var pdAll = rows.reduce(function(a,d){ return a + pendingOf(d); }, 0);
-    tf.innerHTML = '<tr><td>مجموع ' + countNoun(rows.length, 'يوم واحد', 'يومين', 'أيام', 'يومًا') + '</td>' +
-      '<td class="n">' + S('bookings') + '</td><td class="n pos">' + S('confirmed') + '</td>' +
-      '<td class="n ' + (pdAll ? 'wait' : '') + '">' + pdAll + '</td>' +
-      '<td class="n neg">' + S('lost') + '</td>' +
-      '<td class="n">' + money(S('revenue')) + '</td><td class="n">' + money(S('commission')) + '</td></tr>';
-    renderKpis(rows);
-    renderOverview(rows);
-    // شارة التبويب: المعلّق وحده يستحقّ رقمًا فوق العنوان — وهو ما يطلب فعلًا
-    var pdAll2 = rows.reduce(function(a,d){ return a + pendingOf(d); }, 0);
-    var tt = $('#tab-days');
-    if (tt) tt.innerHTML = 'الأيام' + (pdAll2 ? ' <span class="cnt warn">' + pdAll2 + '</span>' : '');
+/* تجميعة واحدة تُستعمَل في كل نافذة زمنية: العدّ والمال معًا، فلا يُعاد
+   حساب نفس الشيء بصيغتين تختلفان بصمت. */
+function agg(rows){
+  var o = { n:0, cf:0, pd:0, ls:0, gmv:0, pending:0, lost:0 };
+  rows.forEach(function(b){
+    var p = +b.price || 0, st = String(b.status||'pending');
+    o.n++;
+    if (st === 'confirmed'){ o.cf++; o.gmv += p; }
+    else if (st === 'pending'){ o.pd++; o.pending += p; }
+    else { o.ls++; o.lost += p; }
   });
+  o.com  = o.gmv * RATE;
+  o.avg  = o.cf ? o.gmv / o.cf : 0;
+  o.rate = o.n ? o.cf / o.n * 100 : 0;
+  return o;
+}
+function between(rows, from, to){
+  return rows.filter(function(b){ var d = String(b.booking_date||''); return d >= from && d <= to; });
+}
+/* عدد خانات الملعب: PostgREST يعيد jsonb مفكوكًا، ونتسامح مع النصّ احتياطًا */
+function slotList(f){
+  var a = f && f.slots;
+  if (typeof a === 'string'){ try { a = JSON.parse(a); } catch(e){ a = null; } }
+  return Array.isArray(a) ? a : [];
+}
+var placeName = {};
+
+function renderAll(){
+  placeName = {};
+  D.places.forEach(function(p){ placeName[String(p.id)] = p.name; });
+  D.adminPlaces.forEach(function(p){ if (!placeName[String(p.id)]) placeName[String(p.id)] = p.name; });
+
+  var today = ymd(new Date());
+  var W = {
+    today: today,
+    cur:  between(D.bookings, dshift(-29), today),
+    prev: between(D.bookings, dshift(-59), dshift(-30)),
+    cap:  capacity()
+  };
+  renderKpis(W);
+  renderBrief(W);
+  renderDaily();
+  renderMonths();
+  renderMoney(W);
+  renderPlacesTab();
+  renderCustomers();
+  renderOps(W);
+  renderAddLists();
+  renderPlaceAdmin();
+
+  $('#dataNote').innerHTML = 'التحليل مبنيّ على ' + nBooking(D.bookings.length) + ' محمَّل و' +
+    bdi(String(D.fields.filter(function(f){ return f.active; }).length)) + ' من الملاعب النشِطة.' +
+    (D.truncated ? ' ⚠️ بلغ الحدّ الأقصى (' + BK_LIMIT + ') ⇒ الأقدم من ذلك غير محسوب في أقسام العملاء والذروة.' : '');
+}
+
+/* الطاقة اليومية: مجموع خانات كل ملعب نشِط. هي المقام في كل نسبة إشغال،
+   ولذلك تُحسب مرّة وتُمرَّر — لا تُعاد في كل قسم بصيغة قد تختلف. */
+function capacity(){
+  var perDay = 0, prices = [], nf = 0;
+  D.fields.forEach(function(f){
+    if (!f.active) return;
+    nf++; perDay += slotList(f).length;
+    var pr = +f.price || 0; if (pr > 0) prices.push(pr);
+  });
+  prices.sort(function(a,b){ return a-b; });
+  var med = prices.length ? prices[Math.floor(prices.length/2)] : 0;
+  return { perDay: perDay, fields: nf, medPrice: med };
+}
+
+/* ── ① الملخّص التنفيذي ──────────────────────────────────────────────────── */
+function renderKpis(W){
+  var c = agg(W.cur), p = agg(W.prev);
+  var held = W.cur.filter(function(b){ var s=b.status; return s==='confirmed'||s==='pending'; }).length;
+  var occ = W.cap.perDay ? held / (W.cap.perDay * 30) * 100 : null;
+  var run = c.com / 30 * 30.44;   // معدّل شهري من متوسّط يومي — الشهر 30.44 يومًا وسطيًّا
+
+  var k = [];
+  k.push('<div class="kpi lead"><span class="k">دخلك — آخر 30 يومًا (عمولة 10%)</span>' +
+    '<span class="v">' + esc(money(c.com)) + '</span>' +
+    '<span class="s">' + trendEl(c.com, p.com, 'عن الثلاثين السابقة') + '</span></div>');
+
+  function card(label, value, sub, hot){
+    k.push('<div class="kpi' + (hot ? ' hot' : '') + '"><span class="k">' + label + '</span>' +
+      '<span class="v">' + esc(String(value)) + '</span><span class="s">' + sub + '</span></div>');
+  }
+  card('حجم المبيعات — 30 يومًا', money(c.gmv), 'ما دفعه اللاعبون لأصحاب الملاعب');
+  card('معدّل شهري لدخلك', money(run), 'لو استمرّ المعدّل اليومي الحالي');
+  card('بانتظار التأكيد', c.pd, c.pd ? 'قيمتها ' + moneyB(c.pending) + ' — تحتاج ردًّا' : 'لا شيء ينتظر', c.pd > 0);
+  card('نسبة التأكيد', pct(c.rate), c.n ? c.cf + ' من ' + c.n : 'لا حجوزات');
+  card('الإشغال', occ === null ? '—' : pct(occ),
+       occ === null ? 'لا ملاعب بخانات معرَّفة'
+                    : held + ' من ' + countNoun(W.cap.perDay*30,'خانة واحدة','خانتين','خانات','خانة'));
+  // «5 حجوزات مؤكّدًا» عربية مكسورة: الصفة بعد معدود متغيّر لا تصحّ مع كل
+  // الأعداد. العدد + جمعٌ معرَّف بأل يصحّ مع أيّها كان.
+  card('متوسّط قيمة الحجز', money(c.avg), c.cf ? 'على ' + c.cf + ' من الحجوزات المؤكّدة' : 'لا حجز مؤكّد');
+  card('ضاع فعلًا — 30 يومًا', money(c.lost), c.ls ? c.ls + ' من الحجوزات الملغاة أو المرفوضة' : 'لا إلغاءات');
+  $('#kpis').innerHTML = k.join('');
+}
+
+/* «ماذا تقول الأرقام؟» — كل بند: ملاحظة مقيسة + ما يترتّب عليها.
+   ⚠️ م5: لا بند بلا رقم يسنده، ولا بند حين تعجز البيانات — يُقال العجز نفسه. */
+function renderBrief(W){
+  var c = agg(W.cur), p = agg(W.prev), out = [];
+  function say(cls, html, act){
+    out.push('<li class="' + cls + '"><span>' + html +
+      (act ? '<span class="act">' + act + '</span>' : '') + '</span></li>');
+  }
+  if (!D.bookings.length){
+    say('', 'لا حجز واحد في القاعدة بعد، فلا شيء يُحلَّل.',
+        'أوّل رقم ذي معنى يظهر هنا بعد أوّل حجز حقيقي.');
+    $('#brief').innerHTML = out.join('');
+    return;
+  }
+
+  // ① الدخل واتّجاهه
+  if (p.com > 0){
+    var g = Math.round((c.com - p.com) / p.com * 100);
+    say(g > 4 ? 'good' : g < -4 ? 'bad' : '',
+      'دخلك آخر 30 يومًا <b>' + moneyB(c.com) + '</b>، ' +
+      (g > 4 ? 'أعلى بـ' : g < -4 ? 'أقلّ بـ' : 'مستقرّ عند ') +
+      (Math.abs(g) > 4 ? bdi(Math.abs(g) + '%') + ' ' : '') + 'مقارنةً بالثلاثين التي قبلها (' + moneyB(p.com) + ').');
+  } else {
+    say('', 'دخلك آخر 30 يومًا <b>' + moneyB(c.com) + '</b>. لا ثلاثين سابقة فيها حجز ⇒ لا مقارنة بعد.');
+  }
+
+  // ② نسبة التأكيد — وما يقابلها بالدينار
+  if (c.n >= 5){
+    var miss = c.n - c.cf;
+    say(c.rate >= 75 ? 'good' : c.rate >= 55 ? 'warn' : 'bad',
+      'من كل ' + bdi('100') + ' طلب يصل، يُؤكَّد <b>' + bdi(pct(c.rate)) + '</b> فقط. ' +
+      'الباقي ' + bdi(String(miss)) + ' من الطلبات، قيمتها ' + moneyB(c.pending + c.lost) + '.',
+      c.rate < 75 ? 'كل نقطة مئوية في هذه النسبة ≈ ' + moneyB(c.n * 0.01 * c.avg * RATE) + ' من دخلك شهريًّا.' : '');
+  }
+
+  // ③ المعلّق الذي فات موعده — يحجز خانة ولا يتحوّل إلى شيء
+  var stale = D.bookings.filter(function(b){
+    return b.status === 'pending' && String(b.booking_date) < W.today; });
+  if (stale.length){
+    say('bad', 'عندك <b>' + countNoun(stale.length,'حجز واحد','حجزان','حجوزات','حجزًا') +
+      '</b> معلّقة فات موعدها ولم يُردّ عليها — قيمتها ' + moneyB(agg(stale).pending) + '.',
+      'المعلّق يحجز خانته في القاعدة، فهذه الطلبات منعت غيرها من الحجز ثمّ ضاعت هي أيضًا.');
+  }
+
+  // ④ تركيز الاعتماد على مكان واحد
+  var tot = D.adminPlaces.reduce(function(a,x){ return a + (+x.revenue||0); }, 0);
+  var top = D.adminPlaces.slice().sort(function(a,b){ return (+b.revenue||0)-(+a.revenue||0); })[0];
+  if (top && tot > 0){
+    var sh = (+top.revenue||0) / tot * 100;
+    say(sh >= 50 ? 'warn' : '',
+      '<b>' + esc(top.name) + '</b> وحده يصنع ' + bdi(pct(sh)) + ' من مبيعاتك التراكمية.',
+      sh >= 50 ? 'اعتمادٌ على مورّد واحد: خروجه من المنصّة يأخذ نصف الدخل معه.' : '');
+  }
+
+  // ⑤ الإشغال وحساسيّته
+  if (W.cap.perDay > 0){
+    var held = W.cur.filter(function(b){ var s=b.status; return s==='confirmed'||s==='pending'; }).length;
+    var occ = held / (W.cap.perDay * 30) * 100;
+    var perPoint = W.cap.perDay * 30 * 0.01 * (c.avg || W.cap.medPrice) * RATE;
+    say(occ >= 40 ? 'good' : 'warn',
+      'الإشغال <b>' + bdi(pct(occ)) + '</b> من طاقة ' +
+      countNoun(W.cap.perDay,'خانة واحدة','خانتين','خانات','خانة') + ' يوميًّا عبر ' +
+      // صفةٌ بعد معدود متغيّر تنكسر مع العدد («5 ملاعب نشِطًا»). الاسم
+      // المعرَّف بأل يصحّ مع أي عدد — نفس علاج مسمّيات الأرقام في الموقع.
+      bdi(String(W.cap.fields)) + ' من الملاعب النشِطة.',
+      'كل نقطة إشغال إضافية ≈ ' + moneyB(perPoint) + ' في دخلك شهريًّا.');
+  } else {
+    say('warn', 'لا يمكن حساب الإشغال: لا ملعب نشِط له خانات أوقات معرَّفة.',
+      'الإشغال = المحجوز ÷ الطاقة، وبلا خانات لا مقام للكسر.');
+  }
+
+  // ⑥ العملاء العائدون
+  var cst = customerRoll();
+  if (cst.total >= 5){
+    say(cst.repeatPct >= 30 ? 'good' : 'warn',
+      '<b>' + bdi(pct(cst.repeatPct)) + '</b> من عملائك حجزوا أكثر من مرّة (' +
+      bdi(String(cst.repeat)) + ' من ' + bdi(String(cst.total)) + ').',
+      cst.repeatPct < 30 ? 'أرخص دينار في هذا العمل هو دينار العميل الذي عاد وحده.' : '');
+  }
+  $('#brief').innerHTML = out.join('');
+}
+
+/* ── ② المال ─────────────────────────────────────────────────────────────── */
+function renderDaily(){
+  var rows = D.daily.slice(0, 14), tb = $('#daily tbody'), tf = $('#daily tfoot');
+  if (!rows.length){
+    tb.innerHTML = '<tr><td colspan="7" class="muted-row">لا حجوزات بعد</td></tr>';
+    tf.innerHTML = ''; $('#chRev').innerHTML = emptyChart('لا حجوزات بعد — لا شيء يُرسَم');
+    // القمع يعيش داخل renderRevChart، فالخروج المبكر هنا كان يترك اللوح فارغًا
+    // بلا سطر يقول لماذا — والفراغ الصامت يُقرأ عطلًا.
+    $('#funnel').innerHTML = emptyChart('لا حجوزات بعد');
+    $('#fcast').innerHTML = ''; return;
+  }
+  tb.innerHTML = rows.map(function(d){
+    var pd = pendingOf(d);
+    return '<tr><td>' + esc(d.booking_date) + '</td><td class="n num">' + d.bookings + '</td>' +
+           '<td class="n pos">' + d.confirmed + '</td>' +
+           '<td class="n ' + (pd ? 'wait' : '') + '">' + pd + '</td>' +
+           '<td class="n neg">' + d.lost + '</td>' +
+           '<td class="n num">' + money(d.revenue) + '</td><td class="n num">' + money(d.commission) + '</td></tr>';
+  }).join('');
+  // صفّ المجاميع: بلا هذا كان على المالك أن يجمع أربعة عشر رقمًا بنفسه
+  var sumOf = function(k){ return rows.reduce(function(a,d){ return a + (+d[k]||0); }, 0); };
+  var pdAll = rows.reduce(function(a,d){ return a + pendingOf(d); }, 0);
+  tf.innerHTML = '<tr><td>مجموع ' + nDay(rows.length) + '</td>' +
+    '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
+    '<td class="n ' + (pdAll ? 'wait' : '') + '">' + pdAll + '</td>' +
+    '<td class="n neg">' + sumOf('lost') + '</td>' +
+    '<td class="n">' + money(sumOf('revenue')) + '</td><td class="n">' + money(sumOf('commission')) + '</td></tr>';
+  renderRevChart(rows);
+}
+
+/* الشهور — المستوى الذي يُقاس به عملٌ فعليًّا. اليومي يقول ماذا حدث أمس،
+   والشهري يقول إلى أين يمشي هذا كلّه. */
+function renderMonths(){
+  var by = {};
+  D.daily.forEach(function(d){
+    var m = String(d.booking_date).slice(0,7); if (m.length !== 7) return;
+    var o = by[m] || (by[m] = { m:m, bookings:0, confirmed:0, revenue:0 });
+    o.bookings += +d.bookings||0; o.confirmed += +d.confirmed||0; o.revenue += +d.revenue||0;
+  });
+  var rows = Object.keys(by).sort().reverse().map(function(k){ return by[k]; });
+  var tb = $('#months tbody'), tf = $('#months tfoot');
+  if (!rows.length){ tb.innerHTML = '<tr><td colspan="6" class="muted-row">لا بيانات بعد</td></tr>'; tf.innerHTML=''; return; }
+  var curM = ymd(new Date()).slice(0,7);
+  tb.innerHTML = rows.map(function(r, i){
+    // الأقدم أسفل، فالسابق زمنيًّا هو التالي في المصفوفة
+    var prev = rows[i+1];
+    // ⚠️ الصفوف بتاريخ **اللعب**، والحجوزات المستقبلية تصنع شهورًا لم تبدأ.
+    // شهرٌ فيه حجزان مقدَّمان ليس «هبوطًا 63%» عن شهر كامل — والنسبة بينهما
+    // بلا معنى، فلا تُحسَب. والشهر الجاري ناقص كذلك، لكنّه على الأقلّ يقيس
+    // ما مضى منه فيُعرَض مع شارته.
+    var future = r.m > curM;
+    var partial = future || r.m === curM;
+    var g = (!partial && prev && prev.revenue > 0)
+      ? Math.round((r.revenue - prev.revenue)/prev.revenue*100) : null;
+    var gTxt = g === null ? '—' : numL((g > 0 ? '+' : '') + g + '%');
+    var gCls = g === null ? '' : g > 4 ? 'pos' : g < -4 ? 'neg' : '';
+    var tag = future ? ' <span class="badge">قادم</span>'
+            : r.m === curM ? ' <span class="badge">جارٍ</span>' : '';
+    return '<tr><td>' + esc(r.m) + tag + '</td>' +
+      '<td class="n num">' + r.bookings + '</td><td class="n pos">' + r.confirmed + '</td>' +
+      '<td class="n num">' + money(r.revenue) + '</td>' +
+      '<td class="n num">' + money(r.revenue * RATE) + '</td>' +
+      '<td class="n ' + gCls + '">' + gTxt + '</td></tr>';
+  }).join('');
+  var tR = rows.reduce(function(a,r){ return a + r.revenue; }, 0);
+  tf.innerHTML = '<tr><td>الإجمالي</td>' +
+    '<td class="n">' + rows.reduce(function(a,r){ return a+r.bookings; },0) + '</td>' +
+    '<td class="n pos">' + rows.reduce(function(a,r){ return a+r.confirmed; },0) + '</td>' +
+    '<td class="n">' + money(tR) + '</td><td class="n">' + money(tR * RATE) + '</td><td class="n">—</td></tr>';
+}
+
+function renderMoney(W){
+  var c = agg(W.cur);
+  // التسريب: ثلاثة أرقام لا يجوز جمعها معًا — واحد ضاع، وواحد ما زال قابلًا
+  // للإنقاذ، والثالث سقفٌ نظري لا يبلغه أحد.
+  var emptySlots = Math.max(0, W.cap.perDay * 30 -
+    W.cur.filter(function(b){ var s=b.status; return s==='confirmed'||s==='pending'; }).length);
+  var basePrice = c.avg || W.cap.medPrice;
+  $('#leak').innerHTML = miniRows([
+    ['ضاع فعلًا (ملغى/مرفوض) — 30 يومًا', moneyB(c.lost) + ' <span class="mk">· ' + c.ls + ' حجزًا</span>'],
+    ['ما زال معلّقًا — قابل للإنقاذ', moneyB(c.pending) + ' <span class="mk">· ' + c.pd + ' حجزًا</span>'],
+    ['دخلك الضائع من الملغى (10%)', moneyB(c.lost * RATE)],
+    ['خانات فارغة — 30 يومًا', bdi(String(emptySlots)) + ' <span class="mk">من ' + (W.cap.perDay*30) + '</span>'],
+    ['قيمتها النظرية بسعرك الوسطي', moneyB(emptySlots * basePrice) + ' <span class="mk">سقف لا هدف</span>']
+  ]) + '<p class="note">⚠️ السطر الأخير <strong>ليس إيرادًا ضائعًا</strong>. لا ملعب في العالم يمتلئ ' +
+    '١٠٠٪ في كل خانة من كل يوم؛ الرقم مذكور ليُقاس عليه التحسّن لا ليُطارَد.</p>';
+
+  var perPoint = W.cap.perDay * 30 * 0.01 * basePrice;
+  $('#sens').innerHTML = W.cap.perDay ? miniRows([
+    ['طاقتك اليومية', countNoun(W.cap.perDay,'خانة واحدة','خانتين','خانات','خانة') +
+      ' <span class="mk">عبر ' + W.cap.fields + ' من الملاعب النشِطة</span>'],
+    ['سعر الساعة الوسطي المستعمَل', moneyB(basePrice)],
+    ['+1 نقطة إشغال = مبيعات', moneyB(perPoint) + ' <span class="mk">شهريًّا</span>'],
+    ['+1 نقطة إشغال = دخلك', moneyB(perPoint * RATE) + ' <span class="mk">شهريًّا</span>'],
+    ['+5 نقاط إشغال = دخلك', moneyB(perPoint * 5 * RATE) + ' <span class="mk">شهريًّا</span>']
+  ]) : '<p class="chart-empty">لا ملعب نشِط له خانات ⇒ لا طاقة تُقاس عليها.</p>';
 }
 
 /* ── التوقّع ────────────────────────────────────────────────────────────────
@@ -680,17 +1330,17 @@ function project(ys, ahead){
 }
 function trendEl(now, prev, unit){
   if (prev <= 0) return '<span class="trend flat">— لا أساس للمقارنة</span>';
-  var pc = Math.round((now - prev) / prev * 100);
-  var cls = pc > 4 ? 'up' : pc < -4 ? 'down' : 'flat';
+  var p = Math.round((now - prev) / prev * 100);
+  var cls = p > 4 ? 'up' : p < -4 ? 'down' : 'flat';
   var arrow = cls === 'up' ? '▲' : cls === 'down' ? '▼' : '▬';
   var word = cls === 'up' ? 'صاعد' : cls === 'down' ? 'هابط' : 'مستقرّ';
   return '<span class="trend ' + cls + '">' + arrow + ' ' + word + ' ' +
-         (pc>0?'+':'') + pc + '%' + (unit ? ' ' + esc(unit) : '') + '</span>';
+         numL((p>0?'+':'') + p + '%') + (unit ? ' ' + esc(unit) : '') + '</span>';
 }
 
-/* ── نظرة عامّة: الرسوم والقمع والتوقّعات ── */
 var DOW = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-function renderOverview(rows){
+
+function renderRevChart(rows){
   // rows تصل من الأحدث إلى الأقدم؛ الرسم زمنيّ فيحتاج العكس
   var chron = rows.slice().reverse();
   var revs  = chron.map(function(r){ return +r.revenue||0; });
@@ -701,158 +1351,667 @@ function renderOverview(rows){
   var fc = active >= ENOUGH ? project(books, 7) : null;
   $('#chRev').innerHTML = drawRevenue(chron, fc ? fc.vals : []);
 
-  // القمع
-  var S = function(k){ return rows.reduce(function(a,r){ return a + (+r[k]||0); }, 0); };
-  var bk = S('bookings'), cf = S('confirmed'), ls = S('lost');
-  var pd = rows.reduce(function(a,r){ return a + pendingOf(r); }, 0);
-  $('#funnel').innerHTML = bk ? drawBars([
-    { k:'وصلت',   v:bk, c:'var(--teal)' },
-    { k:'مؤكّدة',  v:cf, c:'#3E9E62' },
-    { k:'معلّقة',  v:pd, c:'#D9A227' },
-    { k:'ملغاة',  v:ls, c:'#C4534A' }
-  ], function(x){ return x.v + (bk ? ' · ' + Math.round(x.v/bk*100) + '%' : ''); })
-    : emptyChart('لا حجوزات في آخر 14 يومًا');
-
-  // نمط أيام الأسبوع
-  var dow = [0,0,0,0,0,0,0];
-  chron.forEach(function(r){
-    var d = new Date(r.booking_date + 'T00:00:00');
-    if (!isNaN(d)) dow[d.getDay()] += (+r.bookings||0);
-  });
-  $('#chDow').innerHTML = bk ? drawBars(DOW.map(function(nm,i){
-    return { k:nm, v:dow[i] };
-  }), function(x){ return String(x.v); }) : emptyChart('لا حجوزات بعد');
-
-  // ── بطاقات التوقّع ──
   var out = [];
   if (!fc){
     out.push('<div class="fc"><div class="fc-h"><span class="fc-k">لا توقّع بعد</span></div>' +
       '<p class="fc-m">التوقّع يحتاج <strong>' + ENOUGH + ' أيام</strong> فيها حجز فعلي على الأقلّ، ' +
-      'والمتوفّر الآن ' + countNoun(active, 'يوم واحد', 'يومان', 'أيام', 'يومًا') + '. ' +
+      'والمتوفّر الآن ' + nDay(active) + '. ' +
       'رقمٌ من أقلّ من ذلك يكون تخمينًا لا توقّعًا، فلا يُعرَض.</p></div>');
   } else {
-    // إيراد الأسبوع القادم — من انحدار الإيراد لا الحجوزات
     var fr = project(revs, 7);
     var sum = fr.vals.reduce(function(a,b){ return a+b; }, 0);
     var band = fr.sd * Math.sqrt(7);
     var last7 = revs.slice(-7).reduce(function(a,b){ return a+b; }, 0);
     out.push('<div class="fc"><div class="fc-h">' +
-      '<span class="fc-k">إيراد الأسبوع القادم (متوقَّع)</span>' +
+      '<span class="fc-k">دخلك الأسبوع القادم (متوقَّع)</span>' +
+      '<span class="fc-v">' + money(Math.round(sum * RATE)) + '</span>' +
+      '<span class="fc-r">± ' + money(Math.round(band * RATE)) + '</span></div>' +
+      trendEl(sum, last7, 'عن الأسبوع الماضي') +
+      '<p class="fc-m">خطّ مستقيم بالمربّعات الصغرى على مبيعات ' + nDay(chron.length) +
+      ' ممدودًا سبعة أيام، ثمّ ضُرب في نسبة عمولتك. ' +
+      'الـ± تشتّتُ الأيام حول ذلك الخطّ — لا هامش أمان مضاف.</p></div>');
+    out.push('<div class="fc"><div class="fc-h">' +
+      '<span class="fc-k">حجم المبيعات الأسبوع القادم</span>' +
       '<span class="fc-v">' + money(Math.round(sum)) + '</span>' +
       '<span class="fc-r">± ' + money(Math.round(band)) + '</span></div>' +
-      trendEl(sum, last7, 'عن الأسبوع الماضي') +
-      '<p class="fc-m">خطّ مستقيم بالمربّعات الصغرى على إيراد ' +
-      countNoun(chron.length,'يوم واحد','يومين','أيام','يومًا') + ' ممدودًا سبعة أيام. ' +
-      'الـ± تشتّتُ الأيام حول ذلك الخطّ — لا هامش أمان مضاف.</p></div>');
+      '<p class="fc-m">هذا ما سيدفعه اللاعبون لأصحاب الملاعب — لا ما تقبضه أنت.</p></div>');
 
-    // نسبة التأكيد: أسبوع مقابل أسبوع
     var w = function(arr){ return arr.reduce(function(a,r){ return a+(+r||0); },0); };
     var cf1 = w(chron.slice(-7).map(function(r){return r.confirmed;})),
         bk1 = w(chron.slice(-7).map(function(r){return r.bookings;})),
         cf0 = w(chron.slice(-14,-7).map(function(r){return r.confirmed;})),
         bk0 = w(chron.slice(-14,-7).map(function(r){return r.bookings;}));
     var r1 = bk1 ? cf1/bk1*100 : 0, r0 = bk0 ? cf0/bk0*100 : 0;
-    out.push('<div class="fc" style="margin-top:12px"><div class="fc-h">' +
+    out.push('<div class="fc"><div class="fc-h">' +
       '<span class="fc-k">نسبة التأكيد — 7 أيام</span>' +
       '<span class="fc-v">' + Math.round(r1) + '%</span></div>' +
       (bk0 ? trendEl(r1, r0, 'عن الأسبوع السابق') : '<span class="trend flat">— لا أسبوع سابق للمقارنة</span>') +
-      '<p class="fc-m">' + cf1 + ' مؤكّدة من ' + bk1 + '. ' +
-      (pd ? 'وعندك <strong>' + pd + '</strong> معلّقة تنتظر ردًّا — كل واحدة منها تحرّك هذه النسبة.'
-          : 'ولا حجز معلّق ينتظر ردًّا.') + '</p></div>');
-
-    // اليوم الأثقل — قرار تسعير لا مجرّد ملاحظة
-    var best = 0; for (var i=1;i<7;i++) if (dow[i] > dow[best]) best = i;
-    if (dow[best] > 0){
-      var share = bk ? Math.round(dow[best]/bk*100) : 0;
-      out.push('<div class="fc" style="margin-top:12px"><div class="fc-h">' +
-        '<span class="fc-k">أثقل أيام الأسبوع</span>' +
-        '<span class="fc-v">' + esc(DOW[best]) + '</span>' +
-        '<span class="fc-r">' + share + '% من الحجوزات</span></div>' +
-        '<p class="fc-m">مجموع ' + dow[best] + ' حجزًا في هذا اليوم خلال ' +
-        countNoun(chron.length,'يوم واحد','يومين','أيام','يومًا') + '. ' +
-        'ملاحظة مقيسة لا توصية: القرار في السعر أو في التوفّر يبقى لك.</p></div>');
-    }
+      '<p class="fc-m">' + cf1 + ' مؤكّدة من ' + bk1 + '. كل حجز معلّق يُردّ عليه يحرّك هذه النسبة.</p></div>');
   }
   $('#fcast').innerHTML = out.join('');
+
+  // قمع 30 يومًا — من الصفوف لا من العرض، كي يوافق باقي التبويب
+  var today = ymd(new Date());
+  var c = agg(between(D.bookings, dshift(-29), today));
+  $('#funnel').innerHTML = c.n ? drawBars([
+    { k:'وصلت',   v:c.n,  c:'var(--teal)' },
+    { k:'مؤكّدة',  v:c.cf, c:'#3E9E62' },
+    { k:'معلّقة',  v:c.pd, c:'#D9A227' },
+    { k:'ملغاة',  v:c.ls, c:'#C4534A' }
+  ], function(x){ return x.v + ' · ' + Math.round(x.v/c.n*100) + '%'; })
+    : emptyChart('لا حجوزات في آخر 30 يومًا');
 }
 
-function renderKpis(rows){
-  var today = new Date().toISOString().slice(0,10);
-  var t = rows.filter(function(r){ return r.booking_date === today; })[0];
-  var last7 = rows.slice(0,7);
-  var sum = function(k){ return last7.reduce(function(a,r){ return a + (+r[k]||0); }, 0); };
-  var bk = sum('bookings'), cf = sum('confirmed'), ls = sum('lost');
-  var pd = last7.reduce(function(a,r){ return a + pendingOf(r); }, 0);
-  var rate = bk ? Math.round(cf / bk * 100) : 0;
-  var avg  = cf ? sum('revenue') / cf : 0;
-  // hot: البطاقة الوحيدة التي تطلب فعلًا. تُلوَّن حين يكون فيها ما ينتظر فقط.
-  var k = [
-    ['بانتظار التأكيد', pd, 'آخر 7 أيام — تحتاج ردًّا', pd > 0],
-    ['حجوزات اليوم', t ? t.bookings : 0, today, false],
-    ['حجوزات 7 أيام', bk, cf + ' مؤكّدة · ' + ls + ' ملغاة', false],
-    ['إيراد 7 أيام', money(sum('revenue')), 'من المؤكّد فقط', false],
-    ['عمولتك 10%', money(sum('commission')), 'من إيراد المؤكّد', false],
-    ['نسبة التأكيد', rate + '%', bk ? cf + ' من ' + bk : '—', false],
-    ['متوسّط قيمة الحجز', money(avg), cf ? 'على ' + cf + ' حجزًا مؤكّدًا' : 'لا حجز مؤكّد', false]
-  ];
-  $('#kpis').innerHTML = k.map(function(x){
-    return '<div class="kpi' + (x[3] ? ' hot' : '') + '"><span class="k">' + x[0] + '</span><span class="v">' +
-           esc(String(x[1])) + '</span><span class="s">' + esc(String(x[2])) + '</span></div>';
+/* ── ③ الملاعب ───────────────────────────────────────────────────────────── */
+function renderPlacesTab(){
+  var rows = D.adminPlaces, tb = $('#places tbody'), tf = $('#places tfoot');
+  if (!rows.length){
+    tb.innerHTML = '<tr><td colspan="12" class="muted-row">لا بيانات</td></tr>'; tf.innerHTML = '';
+    $('#chShare').innerHTML = emptyChart('لا أماكن بعد');
+    $('#conc').innerHTML = '<p class="chart-empty">لا أماكن بعد</p>'; return;
+  }
+  var totalRev = rows.reduce(function(a,p){ return a + (+p.revenue||0); }, 0);
+
+  // طاقة كل مكان من ملاعبه النشِطة — نفس المصدر الذي يبني الإشغال العام
+  var cap = {}, cnt = {};
+  D.fields.forEach(function(f){
+    if (!f.active) return;
+    var k = String(f.place_id);
+    cap[k] = (cap[k]||0) + slotList(f).length;
+    cnt[k] = (cnt[k]||0) + 1;
+  });
+
+  /* رسم الحصص: نفس أرقام العمود «الحصّة» في الجدول تحته، بشكل يُقارَن
+     بالنظر. ومعه نسبة التأكيد لكل مكان — الحصّة وحدها لا تقول من يحتاج
+     مكالمة؛ حصّةٌ كبيرة مع تأكيد منخفض هي التي تقول. */
+  var sorted = rows.slice().sort(function(a,b){ return (+b.revenue||0)-(+a.revenue||0); });
+  $('#chShare').innerHTML = drawBars(
+    sorted.map(function(p){
+      var bkp = +p.bookings||0, cfp = +p.confirmed||0;
+      var ok = bkp ? Math.round(cfp/bkp*100) : null;
+      return { k: p.name, v: +p.revenue||0, ok: ok,
+               c: (ok !== null && ok < 60) ? '#C4534A' : 'var(--lime)' };
+    }),
+    function(x){
+      var p = totalRev > 0 ? Math.round(x.v/totalRev*100) : 0;
+      return p + '% · ' + (x.ok === null ? 'لا حجز' : 'تأكيد ' + x.ok + '%');
+    });
+
+  // تركيز الاعتماد: أعلى مكان، وأعلى اثنين، وعدد الأماكن التي لم تبِع شيئًا
+  var top1 = sorted[0], top2sum = (+((sorted[0]||{}).revenue)||0) + (+((sorted[1]||{}).revenue)||0);
+  var dead = rows.filter(function(p){ return (+p.revenue||0) === 0; }).length;
+  $('#conc').innerHTML = totalRev > 0 ? miniRows([
+    ['أعلى مكان', esc(top1.name) + ' <span class="mk">' + bdi(pct((+top1.revenue||0)/totalRev*100)) + '</span>'],
+    ['أعلى مكانين معًا', bdi(pct(top2sum/totalRev*100))],
+    ['عدد الأماكن', bdi(String(rows.length)) + ' <span class="mk">منها ' + rows.filter(function(p){return p.active;}).length + ' نشِط</span>'],
+    ['أماكن بلا مبيعة واحدة', bdi(String(dead))]
+  ]) + (dead ? '<p class="note">مكانٌ مسجَّل بلا حجز واحد إمّا غير معروف للاعبين، وإمّا ' +
+    'أسعاره أو أوقاته لا تصلح. الجواب مكالمة واحدة لا تقرير.</p>' : '')
+    : '<p class="chart-empty">لا مبيعات بعد ⇒ لا تركيز يُقاس</p>';
+
+  var weak = rows.filter(function(p){
+    var bkp=+p.bookings||0; return bkp >= 5 && (+p.confirmed||0)/bkp < 0.6; }).length;
+  tabBadge('place', 'الملاعب', weak, true);
+
+  tb.innerHTML = sorted.map(function(p){
+    // بلا تقييم حقيقي ⇒ شرطة، لا صفر. نفس قاعدة hasRating في التطبيق والموقع.
+    var rate = (p.rating === null || p.rating === undefined) ? '—' : (Math.round(p.rating*10)/10);
+    // هنا «غير مؤكّدة» لا «معلّقة»: العرض لا يعطي lost لكل مكان، فلا سبيل
+    // إلى فصل المعلّق عن الملغى — والتسمية تقول ما يمكن إثباته فقط.
+    var open = Math.max(0, (+p.bookings||0) - (+p.confirmed||0));
+    var sh   = totalRev > 0 ? Math.round((+p.revenue||0) / totalRev * 100) : 0;
+    var k = String(p.id);
+    return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.city) + '</td>' +
+           '<td class="n">' + (cnt[k] || 0) + '</td><td class="n">' + (cap[k] || 0) + '</td>' +
+           '<td class="n num">' + p.bookings + '</td><td class="n pos">' + p.confirmed + '</td>' +
+           '<td class="n ' + (open ? 'wait' : '') + '">' + open + '</td>' +
+           '<td class="n num">' + money(p.revenue) + '</td>' +
+           '<td class="n num">' + money((+p.revenue||0) * RATE) + '</td>' +
+           '<td class="n"><span class="share"><span class="share-b">' +
+             '<span class="share-f" style="inline-size:' + sh + '%"></span></span>' +
+             '<span class="share-t">' + sh + '%</span></span></td>' +
+           '<td class="n">' + rate + '</td>' +
+           '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
+  }).join('');
+  var sumOf = function(k){ return rows.reduce(function(a,p){ return a + (+p[k]||0); }, 0); };
+  var capAll = Object.keys(cap).reduce(function(a,k){ return a + cap[k]; }, 0);
+  var cntAll = Object.keys(cnt).reduce(function(a,k){ return a + cnt[k]; }, 0);
+  tf.innerHTML = '<tr><td>مجموع ' + nPlace(rows.length) + '</td><td></td>' +
+    '<td class="n">' + cntAll + '</td><td class="n">' + capAll + '</td>' +
+    '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
+    '<td class="n">' + Math.max(0, sumOf('bookings') - sumOf('confirmed')) + '</td>' +
+    '<td class="n">' + money(totalRev) + '</td><td class="n">' + money(totalRev * RATE) + '</td>' +
+    '<td class="n">100%</td><td></td><td></td></tr>';
+}
+
+/* ── ④ العملاء ───────────────────────────────────────────────────────────── */
+/* العميل = رقم هاتف. الحساب المسجَّل شيء آخر: كثيرون يحجزون برقمهم بلا حساب،
+   ومن يقيس العملاء بجدول profiles يعدّ نصفهم. */
+function customerRoll(){
+  var by = {};
+  D.bookings.forEach(function(b){
+    var k = String(b.customer_phone || '').trim();
+    if (!k) k = b.player_id ? 'u:' + b.player_id : '';
+    if (!k) return;
+    var o = by[k] || (by[k] = { key:k, name:b.customer_name||'', n:0, cf:0, gmv:0, last:'', ordered:'' });
+    o.n++;
+    if (b.status === 'confirmed'){ o.cf++; o.gmv += +b.price||0; }
+    if (!o.name && b.customer_name) o.name = b.customer_name;
+    var d = String(b.booking_date||''); if (d > o.last) o.last = d;
+    // ⚠️ «نشِط» تُقاس بتاريخ **الطلب** لا بتاريخ اللعب. من حجز أمس لمباراة
+    // الشهر القادم أنشط الناس، وتاريخ لعبه في المستقبل ⇒ أي نافذة تنتهي
+    // عند اليوم تُسقطه. (كان الشرط `last <= today` فخرج «٠ نشِطين» وفي
+    // القاعدة مئات الحجوزات — مقيس.)
+    var c = String(b.created_at||'').slice(0,10); if (c > o.ordered) o.ordered = c;
+  });
+  var list = Object.keys(by).map(function(k){ return by[k]; });
+  var repeat = list.filter(function(c){ return c.n >= 2; }).length;
+  return {
+    list: list, total: list.length, repeat: repeat,
+    repeatPct: list.length ? repeat / list.length * 100 : 0,
+    perCust: list.length ? D.bookings.length / list.length : 0
+  };
+}
+function renderCustomers(){
+  var c = customerRoll();
+  if (!c.total){
+    $('#custMini').innerHTML = '<p class="chart-empty">لا عملاء بعد</p>';
+    $('#chLoyal').innerHTML = emptyChart('لا عملاء بعد');
+    $('#topCust tbody').innerHTML = '<tr><td colspan="7" class="muted-row">لا بيانات</td></tr>';
+    return;
+  }
+  var gmvAll = c.list.reduce(function(a,x){ return a + x.gmv; }, 0);
+  var repGmv = c.list.filter(function(x){ return x.n >= 2; }).reduce(function(a,x){ return a + x.gmv; }, 0);
+  var recent = c.list.filter(function(x){ return x.ordered >= dshift(-29); }).length;
+  var dormant = c.list.filter(function(x){ return x.n >= 2 && x.ordered < dshift(-59); }).length;
+  $('#custMini').innerHTML = miniRows([
+    ['عدد العملاء (أرقام مختلفة)', bdi(String(c.total))],
+    ['عادوا أكثر من مرّة', bdi(c.repeat + ' · ' + pct(c.repeatPct))],
+    ['حصّة العائدين من المبيعات', bdi(pct(gmvAll ? repGmv/gmvAll*100 : 0))],
+    ['متوسّط الحجوزات للعميل', bdi(String(Math.round(c.perCust*10)/10))],
+    ['متوسّط ما ينفقه العميل', moneyB(c.total ? gmvAll/c.total : 0)],
+    ['طلبوا خلال آخر 30 يومًا', bdi(String(recent)) + ' <span class="mk">من ' + c.total + '</span>'],
+    ['عملاء معتادون انقطعوا', bdi(String(dormant)) + ' <span class="mk">حجزوا مرّتين فأكثر ولا طلب منذ 60 يومًا</span>']
+  ]) + (dormant ? '<p class="note">العميل المعتاد الذي انقطع أرخص من يُستعاد: هو يعرف ' +
+    'الخدمة أصلًا، ومكالمة واحدة تكفي لتعرف السبب.</p>' : '');
+
+  // توزّع الولاء: 1 · 2 · 3-5 · 6+
+  var b1=0,b2=0,b35=0,b6=0;
+  c.list.forEach(function(x){
+    if (x.n === 1) b1++; else if (x.n === 2) b2++; else if (x.n <= 5) b35++; else b6++;
+  });
+  $('#chLoyal').innerHTML = drawBars([
+    { k:'حجز واحد',  v:b1,  c:'#C4534A' },
+    { k:'حجزان',     v:b2,  c:'#D9A227' },
+    { k:'3 إلى 5',   v:b35, c:'var(--lime)' },
+    { k:'6 فأكثر',   v:b6,  c:'var(--teal)' }
+  ], function(x){ return x.v + ' · ' + Math.round(x.v/c.total*100) + '%'; });
+
+  var top = c.list.slice().sort(function(a,b){ return b.gmv - a.gmv || b.n - a.n; }).slice(0, 10);
+  $('#topCust tbody').innerHTML = top.map(function(x){
+    var ph = x.key.indexOf('u:') === 0 ? '—' : x.key;
+    var lastD = x.last ? new Date(x.last + 'T00:00:00') : null;
+    return '<tr><td>' + esc(x.name || '(بلا اسم)') + '</td>' +
+      '<td dir="ltr">' + esc(ph) + '</td>' +
+      '<td class="n num">' + x.n + '</td><td class="n pos">' + x.cf + '</td>' +
+      '<td class="n num">' + money(x.gmv) + '</td>' +
+      '<td class="n num">' + money(x.gmv * RATE) + '</td>' +
+      '<td>' + esc(x.last) + (lastD && !isNaN(lastD) ? ' <span class="mk" style="color:var(--muted)">· ' +
+        esc(whenText(lastD)) + '</span>' : '') + '</td></tr>';
   }).join('');
 }
 
-function loadPlaces(){
-  api('/rest/v1/admin_places?select=*').then(function(r){
-    var rows = r.data || [], tb = $('#places tbody'), tf = $('#places tfoot');
-    if (!rows.length){
-      tb.innerHTML = '<tr><td colspan="9" class="muted-row">لا بيانات</td></tr>'; tf.innerHTML = '';
-      $('#chShare').innerHTML = emptyChart('لا أماكن بعد'); return;
-    }
-    var totalRev = rows.reduce(function(a,p){ return a + (+p.revenue||0); }, 0);
+/* ── ⑤ التشغيل ───────────────────────────────────────────────────────────── */
+function renderOps(W){
+  var today = W.today;
+  var pending = D.bookings.filter(function(b){ return b.status === 'pending'; });
+  var future  = pending.filter(function(b){ return String(b.booking_date) >= today; });
+  var past    = pending.filter(function(b){ return String(b.booking_date) <  today; });
+  var stale   = future.filter(function(b){ return Date.now() - new Date(b.created_at).getTime() > 864e5; });
 
-    /* رسم الحصص: نفس أرقام العمود «الحصّة» في الجدول تحته، بشكل يُقارَن
-       بالنظر. ومعه نسبة التأكيد لكل مكان — الحصّة وحدها لا تقول من يحتاج
-       مكالمة؛ حصّةٌ كبيرة مع تأكيد منخفض هي التي تقول. */
-    $('#chShare').innerHTML = drawBars(
-      rows.slice().sort(function(a,b){ return (+b.revenue||0)-(+a.revenue||0); })
-        .map(function(p){
-          var bkp = +p.bookings||0, cfp = +p.confirmed||0;
-          var ok = bkp ? Math.round(cfp/bkp*100) : null;
-          return { k: p.name, v: +p.revenue||0, ok: ok,
-                   c: (ok !== null && ok < 60) ? '#C4534A' : 'var(--lime)' };
-        }),
-      function(x){
-        var pct = totalRev > 0 ? Math.round(x.v/totalRev*100) : 0;
-        return pct + '% · ' + (x.ok === null ? 'لا حجز' : 'تأكيد ' + x.ok + '%');
-      });
-    var weak = rows.filter(function(p){
-      var bkp=+p.bookings||0; return bkp >= 5 && (+p.confirmed||0)/bkp < 0.6; }).length;
-    var tp = $('#tab-place');
-    if (tp) tp.innerHTML = 'الأماكن' + (weak ? ' <span class="cnt warn">' + weak + '</span>' : '');
-    tb.innerHTML = rows.map(function(p){
-      // بلا تقييم حقيقي ⇒ شرطة، لا صفر. نفس قاعدة hasRating في التطبيق والموقع.
-      var rate = (p.rating === null || p.rating === undefined) ? '—' : (Math.round(p.rating*10)/10);
-      // هنا «غير مؤكّدة» لا «معلّقة»: العرض لا يعطي lost لكل مكان، فلا سبيل
-      // إلى فصل المعلّق عن الملغى — والتسمية تقول ما يمكن إثباته فقط.
-      var open = Math.max(0, (+p.bookings||0) - (+p.confirmed||0));
-      var pct  = totalRev > 0 ? Math.round((+p.revenue||0) / totalRev * 100) : 0;
-      return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.city) + '</td>' +
-             '<td class="n num">' + p.bookings + '</td><td class="n pos">' + p.confirmed + '</td>' +
-             '<td class="n ' + (open ? 'wait' : '') + '">' + open + '</td>' +
-             '<td class="n num">' + money(p.revenue) + '</td>' +
-             '<td class="n"><span class="share"><span class="share-b">' +
-               '<span class="share-f" style="inline-size:' + pct + '%"></span></span>' +
-               '<span class="share-t">' + pct + '%</span></span></td>' +
-             '<td class="n">' + rate + '</td>' +
-             '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
-    }).join('');
-    var S = function(k){ return rows.reduce(function(a,p){ return a + (+p[k]||0); }, 0); };
-    tf.innerHTML = '<tr><td>مجموع ' + countNoun(rows.length, 'مكان واحد', 'مكانين', 'أماكن', 'مكانًا') + '</td><td></td>' +
-      '<td class="n">' + S('bookings') + '</td><td class="n pos">' + S('confirmed') + '</td>' +
-      '<td class="n">' + Math.max(0, S('bookings') - S('confirmed')) + '</td>' +
-      '<td class="n">' + money(totalRev) + '</td><td class="n">100%</td><td></td><td></td></tr>';
+  // العنوان لا يحمل العدد: صفةٌ بعد معدود متغيّر لا تصحّ مع كل الأعداد
+  // («طلب واحد قادمة» · «5 طلبًا»). العدد ينزل إلى الجملة معرَّفًا بـcountNoun.
+  var nReq = function(n){ return countNoun(n,'طلب واحد','طلبان','طلبات','طلبًا'); };
+  var al = [];
+  if (stale.length) al.push('<div class="res err"><h3>⏳ طلبات قادمة بلا ردّ منذ أكثر من ' +
+    bdi('24') + ' ساعة</h3>' +
+    'عددها ' + nReq(stale.length) + '، وقيمتها ' + moneyB(agg(stale).pending) + '. ' +
+    'وكلٌّ منها يحجز خانته فيمنع حجزًا آخر عليها.</div>');
+  if (past.length) al.push('<div class="res err"><h3>🗑️ طلبات معلّقة فات موعدها</h3>' +
+    'عددها ' + nReq(past.length) + '. لن تتحوّل إلى شيء، وهي تخفض نسبة التأكيد في كل الجداول. ' +
+    'إغلاقها (تأكيدًا أو رفضًا) يصحّح الأرقام ويحرّر الخانات الماضية من الحساب.</div>');
+  if (!al.length) al.push('<div class="res ok"><h3>✅ لا شيء عالق</h3>' +
+    'لا طلب قادم بلا ردّ منذ أكثر من ' + bdi('24') + ' ساعة، ولا معلّق فات موعده.</div>');
+  $('#opsAlerts').innerHTML = al.join('');
+  tabBadge('ops', 'التشغيل', future.length, stale.length > 0);
+
+  // قائمة العمل — الأقدم طلبًا أوّلًا
+  var tb = $('#pend tbody');
+  var work = future.slice().sort(function(a,b){ return new Date(a.created_at) - new Date(b.created_at); });
+  tb.innerHTML = work.length ? work.map(function(b){
+    var cr = new Date(b.created_at);
+    var old = Date.now() - cr.getTime() > 864e5;
+    // مدى الوقت («10:00 - 12:00») داخل سطر عربي ينقلب فيسبق الانتهاءُ الابتداء
+    var when = esc(b.booking_date) + (b.time_label ? ' · <bdi dir="ltr">' + esc(b.time_label) + '</bdi>' : '');
+    return '<tr><td class="' + (old ? 'neg' : '') + '"><time datetime="' + esc(b.created_at) +
+        '" title="' + esc(whenFull(cr)) + '">' + esc(whenText(cr)) + '</time></td>' +
+      '<td>' + when + '</td>' +
+      '<td>' + esc(placeName[String(b.place_id)] || '—') + '</td>' +
+      '<td>' + esc(b.customer_name || '—') + '</td>' +
+      '<td dir="ltr">' + esc(b.customer_phone || '—') + '</td>' +
+      '<td class="n num">' + money(b.price) + '</td>' +
+      '<td>' + (String(b.source||'') === 'owner_manual' ? 'يدوي من المالك' : 'التطبيق') + '</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="muted-row">لا حجز معلّق قادم — كل شيء مردود عليه</td></tr>';
+
+  // ساعات الذروة: التسمية من خانات الملاعب نفسها لا من تنسيق مخترَع
+  var lbl = {};
+  D.fields.forEach(function(f){ slotList(f).forEach(function(s){ if (s && s.label != null) lbl[s.h] = s.label; }); });
+  var byH = {};
+  D.bookings.forEach(function(b){ var h = Number(b.hour); if (!isNaN(h)) byH[h] = (byH[h]||0) + 1; });
+  var hrs = Object.keys(byH).map(Number).sort(function(a,b){ return a-b; });
+  $('#chHour').innerHTML = hrs.length ? drawBars(hrs.map(function(h){
+    return { k: lbl[h] || (h + ':00'), v: byH[h] };
+  }), function(x){ return String(x.v); }) : emptyChart('لا حجوزات بعد');
+
+  // أيام الأسبوع
+  var dow = [0,0,0,0,0,0,0];
+  D.bookings.forEach(function(b){
+    var d = new Date(String(b.booking_date) + 'T00:00:00');
+    if (!isNaN(d)) dow[d.getDay()]++;
   });
+  var dowTot = dow.reduce(function(a,x){ return a+x; }, 0);
+  $('#chDow').innerHTML = dowTot ? drawBars(DOW.map(function(nm,i){
+    return { k:nm, v:dow[i] };
+  }), function(x){ return x.v + ' · ' + Math.round(x.v/dowTot*100) + '%'; }) : emptyChart('لا حجوزات بعد');
+
+  // مهلة الحجز المسبق — من إرسال الطلب إلى موعد اللعب
+  var leads = [];
+  D.bookings.forEach(function(b){
+    var cr = new Date(b.created_at), pl = new Date(String(b.booking_date) + 'T00:00:00');
+    if (isNaN(cr) || isNaN(pl)) return;
+    var d = Math.round((pl - new Date(ymd(cr) + 'T00:00:00')) / 864e5);
+    if (d >= 0 && d < 365) leads.push(d);
+  });
+  if (leads.length){
+    leads.sort(function(a,b){ return a-b; });
+    var same = leads.filter(function(d){ return d === 0; }).length;
+    var wk   = leads.filter(function(d){ return d >= 7; }).length;
+    $('#lead').innerHTML = miniRows([
+      ['متوسّط المهلة', bdi(String(Math.round(leads.reduce(function(a,b){return a+b;},0)/leads.length*10)/10)) + ' <span class="mk">يوم</span>'],
+      ['الوسيط', bdi(String(leads[Math.floor(leads.length/2)])) + ' <span class="mk">يوم</span>'],
+      ['حُجز لنفس اليوم', bdi(same + ' · ' + pct(same/leads.length*100))],
+      ['حُجز قبل أسبوع فأكثر', bdi(wk + ' · ' + pct(wk/leads.length*100))]
+    ]) + '<p class="note">' + (same/leads.length > 0.5
+      ? 'أكثر من نصف الطلبات لنفس اليوم ⇒ <strong>سرعة الردّ هي المنتَج</strong>: الطلب الذي لا يُردّ عليه خلال ساعات يفقد موعده.'
+      : 'المهلة تسمح بردّ غير فوري، لكنّ الطلب المعلّق يظلّ يحجز خانته.') + '</p>';
+  } else {
+    $('#lead').innerHTML = '<p class="chart-empty">لا بيانات كافية</p>';
+  }
+
+  // أسباب الإلغاء — كما كُتبت، بلا تخمين للفارغ
+  var lost = D.bookings.filter(function(b){ var s=b.status; return s==='cancelled'||s==='rejected'; });
+  var byR = {}, noR = 0;
+  lost.forEach(function(b){
+    var r = String(b.cancel_reason||'').trim();
+    if (!r) { noR++; return; }
+    byR[r] = (byR[r]||0) + 1;
+  });
+  var rs = Object.keys(byR).map(function(k){ return { k:k, v:byR[k] }; })
+            .sort(function(a,b){ return b.v-a.v; }).slice(0, 6);
+  if (noR) rs.push({ k:'بلا سبب مكتوب', v:noR, c:'var(--muted)' });
+  $('#chReason').innerHTML = lost.length ? drawBars(rs, function(x){
+    return x.v + ' · ' + Math.round(x.v/lost.length*100) + '%';
+  }) : emptyChart('لا إلغاءات — لا شيء يُشرَح');
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ⑥ إضافة مكان
+
+   السياسات القائمة تسمح بهذا اليوم بلا ترحيل: places_write_admin تعطي
+   الأدمن الكتابة على `places`، وfields_owner_write على `fields`. الاستثناء
+   الوحيد `place_owners` — لا سياسة كتابة له أصلًا ⇒ ربط المالك يفشل حتى
+   يُشغَّل migration/10. ولذلك هو **خطوة أخيرة اختيارية**: فشلها لا يُسقط
+   المكان، ويُقال سببها صراحةً بدل «حدث خطأ».
+   ═══════════════════════════════════════════════════════════════════════════ */
+var SLOT_ALL = [
+  { h:8,  label:'8:00 - 10:00 ص' },  { h:10, label:'10:00 - 12:00 م' },
+  { h:12, label:'12:00 - 2:00 م' },  { h:14, label:'2:00 - 4:00 م' },
+  { h:16, label:'4:00 - 6:00 م' },   { h:18, label:'6:00 - 8:00 م' },
+  { h:20, label:'8:00 - 10:00 م' },  { h:22, label:'10:00 - 12:00 م' }
+];
+var QUICK = { full:[8,10,12,14,16,18,20,22], morning:[8,10,12], evening:[16,18,20,22] };
+var rowSeq = 0;
+
+function fieldRowHtml(i, price){
+  var chips = SLOT_ALL.map(function(s){
+    return '<label class="slot-chip"><input type="checkbox" class="fr-slot" value="' + s.h +
+      '" checked><span>' + esc(s.label) + '</span></label>';
+  }).join('');
+  return '<div class="fld-row" data-row="' + i + '">' +
+    '<div class="fr-t"><b>ملعب داخل هذا المكان</b>' +
+      '<button type="button" class="fr-del">حذف</button></div>' +
+    '<div class="frm">' +
+      '<label class="ad-f"><span>اسم الملعب</span>' +
+        '<input class="fr-name" value="ملعب ' + i + '" autocomplete="off"></label>' +
+      '<label class="ad-f"><span>الحجم</span>' +
+        '<input class="fr-size" list="dlSize" value="5×5" autocomplete="off"></label>' +
+      '<label class="ad-f"><span>سعر الساعة (د.أ)</span>' +
+        '<input class="fr-price" type="number" min="0" step="1" inputmode="numeric" dir="ltr" value="' +
+        esc(String(price || '')) + '"></label>' +
+    '</div>' +
+    '<span class="fr-lbl">الأوقات المتاحة للحجز</span>' +
+    '<div class="slotset">' + chips + '</div>' +
+    '<div class="slot-quick">' +
+      '<button type="button" class="qk" data-qk="full">كل اليوم</button>' +
+      '<button type="button" class="qk" data-qk="morning">صباحي فقط</button>' +
+      '<button type="button" class="qk" data-qk="evening">مسائي فقط</button>' +
+      '<button type="button" class="qk" data-qk="none">تفريغ</button>' +
+    '</div></div>';
+}
+function addFieldRow(){
+  var price = D.fields.length ? capacity().medPrice : '';
+  $('#fieldRows').insertAdjacentHTML('beforeend', fieldRowHtml(++rowSeq, price));
+  syncDelButtons();
+}
+function syncDelButtons(){
+  var rows = document.querySelectorAll('#fieldRows .fld-row');
+  // الملعب الأخير لا يُحذف: مكان بلا ملعب لا يظهر في التطبيق أصلًا
+  rows.forEach(function(r){ r.querySelector('.fr-del').disabled = (rows.length === 1); });
+}
+$('#addRow').addEventListener('click', addFieldRow);
+$('#fieldRows').addEventListener('click', function(e){
+  var del = e.target.closest('.fr-del');
+  if (del && !del.disabled){ del.closest('.fld-row').remove(); syncDelButtons(); return; }
+  var qk = e.target.closest('.qk');
+  if (!qk) return;
+  var want = QUICK[qk.getAttribute('data-qk')] || [];
+  qk.closest('.fld-row').querySelectorAll('.fr-slot').forEach(function(cb){
+    cb.checked = want.indexOf(Number(cb.value)) !== -1;
+  });
+});
+
+/* المدن والمناطق والأنواع من القاعدة نفسها: الكتابة الحرّة تصنع «عمّان»
+   و«عمان» مدينتين، والتصفية في الموقع بالمنطقة ⇒ منطقة مكتوبة بحرف زائد
+   تختفي من الفلتر. */
+function renderAddLists(){
+  function fill(id, vals){
+    $(id).innerHTML = vals.filter(Boolean).sort().map(function(v){
+      return '<option value="' + esc(v) + '"></option>'; }).join('');
+  }
+  var cities = {}, regions = {};
+  D.places.forEach(function(p){
+    if (p.city) cities[p.city] = 1;
+    if (p.region && p.region !== 'all') regions[p.region] = 1;
+  });
+  fill('#dlCity', Object.keys(cities));
+  fill('#dlRegion', Object.keys(regions));
+  if (!document.querySelector('#fieldRows .fld-row')) addFieldRow();
+}
+
+/* ── الأماكن الموجودة: إخفاء/إظهار وحذف ──────────────────────────────────────
+   الإخفاء هو الفعل الافتراضي وهو قابل للرجوع؛ والحذف استثناء لا رجعة فيه.
+   ⚠️ `bookings.place_id` مرجعٌ بـ**on delete restrict** ⇒ القاعدة نفسها ترفض
+   حذف مكان عليه حجز واحد. نُعطّل الزرّ مسبقًا **ونمسك الخطأ أيضًا**: العدّ
+   المعروض قد يكون أقدم من الواقع بثوانٍ، والقاعدة هي الحكم لا الشاشة.
+   وما يُحذف فعلًا أكثر من صفّ: `fields` و`reviews` و`place_owners` كلّها
+   **on delete cascade** ⇒ تذهب معه صامتةً. لذلك يُعدّ ما سيذهب قبل السؤال. */
+function renderPlaceAdmin(){
+  var out = $('#plList'); if (!out) return;
+  if (!D.places.length){ out.innerHTML = '<p class="muted-row">لا أماكن في القاعدة</p>'; return; }
+  var bk = {}, fl = {}, rv = {};
+  D.adminPlaces.forEach(function(p){ bk[String(p.id)] = +p.bookings || 0; });
+  D.fields.forEach(function(f){ fl[String(f.place_id)] = (fl[String(f.place_id)]||0) + 1; });
+  D.reviews.forEach(function(r){ rv[String(r.place_id)] = (rv[String(r.place_id)]||0) + 1; });
+
+  // المخفيّ أوّلًا: هو ما جئت إلى هذه القائمة من أجله غالبًا
+  var rows = D.places.slice().sort(function(a,b){
+    return (a.active === b.active) ? String(a.name).localeCompare(String(b.name), 'ar') : (a.active ? 1 : -1);
+  });
+  out.innerHTML = rows.map(function(p){
+    var id = String(p.id), nb = bk[id]||0, nf = fl[id]||0, nr = rv[id]||0;
+    var meta = [esc(p.city||'—'), esc(p.region||'—'),
+                countNoun(nf,'ملعب واحد','ملعبان','ملاعب','ملعبًا'),
+                countNoun(nb,'حجز واحد','حجزان','حجوزات','حجزًا')].join(' · ');
+    return '<div class="ad-pl' + (p.active ? '' : ' off') + '" data-id="' + esc(id) +
+             '" data-name="' + esc(p.name) + '" data-bk="' + nb + '" data-fl="' + nf + '" data-rv="' + nr + '">' +
+      '<span class="nm">' + esc(p.name) + '</span>' +
+      '<span class="meta">' + meta + '</span>' +
+      (p.active ? '<span class="badge">ظاهر</span>' : '<span class="badge off">مخفيّ</span>') +
+      '<span class="acts">' +
+        '<button class="btn ' + (p.active ? 'btn-sec' : 'btn-pri') + '" data-pl="tog">' +
+          (p.active ? 'إخفاء من التطبيق' : 'إظهار في التطبيق') + '</button>' +
+        '<button class="pl-del" data-pl="del"' + (nb ? ' disabled title="عليه حجوزات — القاعدة ترفض حذفه"' : '') +
+          '>حذف نهائي</button>' +
+      '</span></div>';
+  }).join('');
+}
+function plMsg(cls, html){ $('#plMsg').innerHTML = '<div class="res ' + cls + '">' + html + '</div>'; }
+
+$('#plList').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-pl]'); if (!btn || btn.disabled) return;
+  var card = btn.closest('.ad-pl'), id = card.getAttribute('data-id');
+  var name = card.getAttribute('data-name');
+  var act = btn.getAttribute('data-pl');
+
+  if (act === 'tog'){
+    var on = card.classList.contains('off');    // مخفيّ الآن ⇒ الفعل إظهار
+    btn.disabled = true;
+    api('/rest/v1/places?id=eq.' + encodeURIComponent(id), {
+      method:'PATCH', body:{ active: on }, prefer:'return=representation'
+    }).then(function(r){
+      btn.disabled = false;
+      if (!r.ok){ plMsg('err', 'تعذّر التعديل (' + r.status + ') — تأكّد أن حسابك أدمن.'); return; }
+      plMsg('ok', (on ? 'ظهر «' : 'أُخفي «') + esc(name) + '» ' +
+        (on ? 'في التطبيق فورًا.' : 'من التطبيق فورًا — وبياناته كلّها باقية، والإظهار يعيده كما كان.') +
+        ' <strong>الموقع</strong> لا يتبع إلّا بعد إعادة البناء والنشر.');
+      loadAll();
+    });
+    return;
+  }
+
+  if (act === 'del'){
+    if (card.querySelector('.pl-confirm')) return;         // سؤالٌ مطروح أصلًا
+    var nf = +card.getAttribute('data-fl')||0, nr = +card.getAttribute('data-rv')||0;
+    var gone = [countNoun(nf,'ملعبًا واحدًا','ملعبين','ملاعب','ملعبًا')];
+    if (nr) gone.push(countNoun(nr,'تقييمًا واحدًا','تقييمين','تقييمات','تقييمًا'));
+    card.insertAdjacentHTML('beforeend',
+      '<div class="pl-confirm">تُحذف <b>«' + esc(name) + '»</b> نهائيًّا، ويُحذف معها ' +
+      '<b>' + gone.join(' و') + '</b>. لا تراجع، ولا نسخة تُستعاد منها.<br>' +
+      'إن كان القصد رفعه من التطبيق مؤقّتًا فـ<b>الإخفاء</b> يفعل ذلك ويُبقي كل شيء.' +
+      '<span class="row"><button class="pl-del" data-pl="delyes">نعم، احذفه نهائيًّا</button>' +
+      '<button class="btn btn-sec" data-pl="cancel">تراجع</button></span></div>');
+    return;
+  }
+
+  if (act === 'cancel'){ var c = card.querySelector('.pl-confirm'); if (c) c.remove(); return; }
+
+  if (act === 'delyes'){
+    btn.disabled = true; btn.textContent = 'جارٍ الحذف…';
+    api('/rest/v1/places?id=eq.' + encodeURIComponent(id), { method:'DELETE' }).then(function(r){
+      if (r.ok){
+        plMsg('ok', 'حُذف «' + esc(name) + '» ومعه ملاعبه وتقييماته. ' +
+          '<strong>الموقع</strong> ما زال يعرضه حتى إعادة البناء والنشر.');
+        loadAll(); return;
+      }
+      btn.disabled = false; btn.textContent = 'نعم، احذفه نهائيًّا';
+      var code = r.data && r.data.code;
+      // 23503 = انتهاك مفتاح أجنبي: عليه حجوزات، والمرجع on delete restrict
+      plMsg('err', code === '23503'
+        ? 'لم يُحذف «' + esc(name) + '»: عليه حجوزات، والقاعدة تمنع حذف مكانٍ ' +
+          'تشير إليه حجوزات كي لا تصير في جداولك حجوزاتٌ بلا مكان. ' +
+          '<strong>استعمل الإخفاء</strong> — أثره في التطبيق هو الأثر نفسه.'
+        : 'تعذّر الحذف (' + r.status + ')' +
+          (r.data && r.data.message ? ' — ' + esc(r.data.message) : '') + '.');
+    });
+  }
+});
+
+function val(sel){ var e = $(sel); return e ? String(e.value||'').trim() : ''; }
+function addResult(cls, html){
+  $('#addRes').innerHTML = '<div class="res ' + cls + '">' + html + '</div>';
+  $('#addRes').scrollIntoView({ block:'nearest' });
+}
+var LI_OK = '<li><span class="yes">✔</span><span>';
+var LI_NO = '<li><span class="no">✘</span><span>';
+
+$('#addReset').addEventListener('click', function(){
+  $('#addForm').reset();
+  $('#fieldRows').innerHTML = ''; rowSeq = 0; addFieldRow();
+  $('#addRes').innerHTML = '';
+});
+
+$('#addForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var btn = $('#addGo');
+
+  var name = val('#f_name'), city = val('#f_city'), region = val('#f_region');
+  var errs = [];
+  if (!name)   errs.push('اسم المكان مطلوب.');
+  if (!city)   errs.push('المدينة مطلوبة — بلا مدينة لا يظهر المكان في تصفية الموقع.');
+  if (!region) errs.push('المنطقة مطلوبة — <strong>تصفية الموقع بالمنطقة لا بالمدينة</strong>، ومكانٌ بلا منطقة لا يقع في أي فلتر.');
+
+  var rows = [];
+  document.querySelectorAll('#fieldRows .fld-row').forEach(function(r, i){
+    var slots = [];
+    r.querySelectorAll('.fr-slot').forEach(function(cb){
+      if (!cb.checked) return;
+      var s = SLOT_ALL.filter(function(x){ return x.h === Number(cb.value); })[0];
+      if (s) slots.push({ h:s.h, label:s.label });
+    });
+    var fname = String(r.querySelector('.fr-name').value||'').trim() || ('ملعب ' + (i+1));
+    var price = Number(r.querySelector('.fr-price').value);
+    if (!slots.length) errs.push('الملعب «' + esc(fname) + '» بلا وقت واحد متاح — لن يستطيع أحد حجزه.');
+    if (!(price >= 0) || isNaN(price)) errs.push('سعر الملعب «' + esc(fname) + '» غير صالح.');
+    rows.push({ name:fname, size:String(r.querySelector('.fr-size').value||'').trim() || '5×5',
+                price:price, slots:slots });
+  });
+  if (!rows.length) errs.push('لا بدّ من ملعب واحد على الأقلّ.');
+
+  var dup = D.places.filter(function(p){ return String(p.name).trim() === name; })[0];
+  if (dup) errs.push('يوجد مكان بهذا الاسم بالفعل (' + esc(dup.city) + ') — غيّر الاسم أو ميّزه، ' +
+                     'وإلّا التبس على اللاعبين وعلى جداول هذه اللوحة.');
+
+  if (errs.length){
+    addResult('err', '<h3>لم يُنشَأ شيء</h3><ul>' +
+      errs.map(function(x){ return LI_NO + x + '</span></li>'; }).join('') + '</ul>');
+    return;
+  }
+
+  var amen = function(sel){ var v = val(sel); return v || null; };
+  var body = {
+    name: name, city: city, region: region,
+    type: val('#f_type') || 'عشب صناعي',
+    color: val('#f_color') || '#15803d',
+    phone: normPhone(val('#f_phone')),
+    map_link: val('#f_map'),
+    amenity_water: amen('#a_water'), amenity_vests: amen('#a_vests'),
+    amenity_ball: amen('#a_ball'), amenity_bathrooms: amen('#a_bathrooms'),
+    amenity_parking: amen('#a_parking'),
+    active: $('#f_active').checked
+  };
+  var ownerPhone = val('#f_owner');
+  var promote = $('#f_promote').checked;
+
+  btn.disabled = true; btn.textContent = 'جارٍ الإنشاء…';
+  addResult('ok', '<h3>جارٍ الإنشاء…</h3>');
+  var placeId = null, done = [];
+
+  api('/rest/v1/places', { method:'POST', body:body, prefer:'return=representation' })
+  .then(function(r){
+    if (!r.ok || !r.data || !r.data[0]) {
+      throw { step:'place', r:r };
+    }
+    placeId = r.data[0].id;
+    done.push('أُنشئ المكان <b>' + esc(name) + '</b> في ' + esc(city) + ' — ' + esc(region) + '.');
+    return api('/rest/v1/fields', {
+      method:'POST', prefer:'return=representation',
+      body: rows.map(function(f){
+        return { place_id:placeId, name:f.name, size:f.size, price:f.price, slots:f.slots, active:true };
+      })
+    });
+  })
+  .then(function(r){
+    if (!r.ok){
+      // مكان بلا ملاعب لا يظهر في التطبيق ولا يفيد أحدًا — نتراجع بدل تركه.
+      return api('/rest/v1/places?id=eq.' + encodeURIComponent(placeId), { method:'DELETE' })
+        .then(function(){ throw { step:'fields', r:r, rolledBack:true }; });
+    }
+    var caps = rows.reduce(function(a,f){ return a + f.slots.length; }, 0);
+    done.push('أُضيف ' + countNoun(rows.length,'ملعب واحد','ملعبان','ملاعب','ملعبًا') +
+      ' بطاقة ' + countNoun(caps,'خانة واحدة','خانتين','خانات','خانة') + ' يوميًّا.');
+    if (!ownerPhone) return null;
+    return api('/rest/v1/profiles?select=id,name,role&phone=eq.' + encodeURIComponent(normPhone(ownerPhone)));
+  })
+  .then(function(r){
+    if (r === null) return null;
+    var prof = (r.data || [])[0];
+    if (!prof) return [{ warn: 'لا حساب بالرقم ' + bdi(esc(ownerPhone)) +
+      ' — لم يُربَط مالك. المكان منشأ وملاعبه جاهزة؛ اربطه لاحقًا بعد أن يسجّل صاحبه في التطبيق.' }];
+    var res = [];
+    return api('/rest/v1/place_owners', { method:'POST', body:{ place_id:placeId, profile_id:prof.id } })
+      .then(function(pr){
+        if (pr.ok){ res.push({ ok:'رُبط المكان بحساب <b>' + esc(prof.name || ownerPhone) + '</b>.' }); }
+        // 42501 = انتهاك سياسة RLS. السبب معروف مسبقًا فيُقال باسمه.
+        else res.push({ warn: 'تعذّر ربط المالك (' + pr.status + '). ' +
+          '<code>place_owners</code> ليس له سياسة كتابة في القاعدة بعد ⇒ حتى الأدمن ممنوع. ' +
+          'شغّل <code>migration/10_admin_place_owners.sql</code> مرّة واحدة ثمّ أعد الربط. ' +
+          '<strong>المكان وملاعبه أُنشئا بنجاح</strong> ولا حاجة إلى إعادتهما.' });
+
+        /* رفع الدور — منفصلٌ عن الربط عمدًا: الربط يقول «هذا المكان له»،
+           والدور يقول «يُسمح له بدخول لوحة المالك». `sbLogin` في التطبيق
+           يرفض كل دور غير owner/admin عند «دخول المالك»، فالربط وحده يترك
+           صاحبه أمام «الرقم أو كلمة السر غلط» بلا سبب مفهوم.
+           ولا يُمَسّ دور `admin`: رفعُه إلى owner **تنزيلٌ** لا ترقية. */
+        if (prof.role === 'owner') { res.push({ ok:'دوره <code>owner</code> أصلًا — لا تغيير.' }); return res; }
+        if (prof.role === 'admin') { res.push({ ok:'دوره <code>admin</code> ويدخل لوحة المالك أصلًا — لم يُمَسّ.' }); return res; }
+        if (!promote){ res.push({ warn:'دوره <code>' + esc(prof.role) + '</code> ولم تطلب رفعه ⇒ ' +
+          '<strong>لن يستطيع دخول لوحة المالك</strong> حتى يُرفَع.' }); return res; }
+        return api('/rest/v1/profiles?id=eq.' + encodeURIComponent(prof.id), {
+          method:'PATCH', body:{ role:'owner' }, prefer:'return=representation'
+        }).then(function(ur){
+          res.push(ur.ok
+            ? { ok:'رُفع دوره من <code>' + esc(prof.role) + '</code> إلى <code>owner</code> ⇒ ' +
+                'يدخل من «دخول المالك» بنفس رقمه وكلمة سرّه.' }
+            : { warn:'رُبط المكان لكنّ رفع الدور فشل (' + ur.status + ') ⇒ ' +
+                '<strong>لن يستطيع دخول لوحة المالك</strong>. ارفعه من تبويب «العملاء» أو من محرّر SQL.' });
+          return res;
+        });
+      });
+  })
+  .then(function(extra){
+    var li = done.map(function(x){ return LI_OK + x + '</span></li>'; });
+    (extra || []).forEach(function(x){
+      li.push((x.ok ? LI_OK + x.ok : LI_NO + x.warn) + '</span></li>');
+    });
+    li.push(LI_OK + 'ظاهر في <b>التطبيق</b> فورًا' +
+      (body.active ? '.' : ' — <strong>إلّا أنك أنشأته موقوفًا</strong> فلن يراه اللاعبون حتى تفعّله.') +
+      '</span></li>');
+    li.push(LI_NO + 'غير ظاهر على <b>الموقع</b> بعد: صفحات <code>/places</code> تُولَّد وقت البناء ' +
+      '⇒ يحتاج <code>build.ps1</code> ثمّ نشرًا.</span></li>');
+    addResult('ok', '<h3>تمّ إنشاء «' + esc(name) + '»</h3><ul>' + li.join('') + '</ul>');
+    $('#addForm').reset();
+    $('#fieldRows').innerHTML = ''; rowSeq = 0;
+    loadAll();     // الجداول تعرف بالمكان الجديد فورًا
+  })
+  .catch(function(ex){
+    var li = done.map(function(x){ return LI_OK + x + '</span></li>'; });
+    var msg, r = ex && ex.r;
+    var detail = r && r.data && (r.data.message || r.data.hint) ? ' — ' + esc(r.data.message || r.data.hint) : '';
+    if (ex && ex.step === 'place'){
+      msg = 'فشل إنشاء المكان (' + (r ? r.status : '?') + ')' + detail + '. ' +
+        (r && r.status === 401 ? 'انتهت جلستك — اخرج وادخل من جديد.' :
+         r && r.status === 403 ? 'حسابك ليس أدمن في القاعدة.' : 'لم يُكتب شيء.');
+    } else if (ex && ex.step === 'fields'){
+      msg = 'أُنشئ المكان ثمّ فشلت إضافة الملاعب (' + (r ? r.status : '?') + ')' + detail + '. ' +
+        '<strong>وحُذف المكان</strong> كي لا يبقى مكانٌ فارغ لا يراه أحد — أعد المحاولة كاملةً.';
+    } else {
+      msg = 'خطأ غير متوقّع: ' + esc(String((ex && ex.message) || ex));
+    }
+    addResult('err', '<h3>لم يكتمل الإنشاء</h3><ul>' + li.join('') +
+      LI_NO + msg + '</span></li></ul>');
+  })
+  .then(function(){ btn.disabled = false; btn.textContent = 'أنشئ المكان'; });
+});
 
 /* ── سجلّ التدقيق ──────────────────────────────────────────────────────────
    مصدر واحد للحقيقة (`feedRows`) يغذّيه مصدران: البثّ الحيّ والتحديث الدوري.
@@ -1017,7 +2176,12 @@ function scheduleRefresh(){
   clearTimeout(RT.refT);
   var exp = jwtExp(S && S.at);
   if (!exp) return;
-  RT.refT = setTimeout(refreshToken, Math.max(10000, exp - Date.now() - 120000));
+  // ⚠️ setTimeout يخزّن المهلة في 32 بت: ما تجاوز 2³¹−1 يلتفّ ويُطلَق **فورًا**.
+  // توكن Supabase ساعةٌ فلا يبلغها أبدًا، لكنّ توكنًا بعيد الانتهاء يقلب
+  // التجديد إلى حلقة لا تتوقّف (مقيس: 637 ألف طلب في ثوانٍ). الحدّ يمنعها،
+  // وأسوأ ما يحدث معه تجديدٌ مبكر لا حلقة.
+  var wait = Math.min(exp - Date.now() - 120000, 2147483000);
+  RT.refT = setTimeout(refreshToken, Math.max(10000, wait));
 }
 function refreshToken(){
   if (!S || !S.rt) return sessionEnded();
@@ -1040,7 +2204,7 @@ function sessionEnded(){
   var err = $('#loginErr'); err.textContent = 'انتهت الجلسة — ادخل من جديد'; err.classList.remove('hide');
 }
 
-/* ── إدارة المستخدمين ── */
+/* ── إدارة الحسابات ── */
 $('#usrGo').addEventListener('click', function(){
   var q = normPhone($('#usrQ').value);
   var out = $('#usrOut');
@@ -1050,18 +2214,43 @@ $('#usrGo').addEventListener('click', function(){
     var rows = r.data || [];
     if (!rows.length){ out.innerHTML = '<p class="muted-row">لا حساب بهذا الرقم</p>'; return; }
     out.innerHTML = rows.map(function(u){
+      /* زرّ الدور: player ⇄ owner فقط. حساب `admin` لا يُمَسّ من هنا —
+         لا رفعًا إليه (اللوحة كلّها تُفتَح بالدور فلا يُوهَب بضغطة) ولا نزولًا
+         عنه (فيقفل آخرُ أدمن نفسه خارج لوحته بلا طريق للعودة إلّا محرّر SQL). */
+      var canRole = (u.role === 'player' || u.role === 'owner');
+      var toOwner = (u.role === 'player');
       return '<div class="usr-card" data-id="' + esc(u.id) + '">' +
         '<span class="nm">' + esc(u.name || '(بلا اسم)') + '</span>' +
         '<span class="ph" dir="ltr">' + esc(u.phone) + '</span>' +
         '<span class="badge">' + esc(u.role) + '</span>' +
         (u.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') +
+        '<span class="acts">' +
+        (canRole ? '<button class="btn btn-sec" data-role="' + (toOwner ? 'owner' : 'player') + '">' +
+          (toOwner ? 'اجعله صاحب ملعب' : 'أعده لاعبًا') + '</button>' : '') +
         '<button class="btn ' + (u.active ? 'btn-sec' : 'btn-pri') + '" data-act="' + (u.active ? '0' : '1') + '">' +
-        (u.active ? 'إيقاف الحساب' : 'إعادة التفعيل') + '</button></div>';
+        (u.active ? 'إيقاف الحساب' : 'إعادة التفعيل') + '</button></span></div>';
     }).join('');
   });
 });
 
 $('#usrOut').addEventListener('click', function(e){
+  var rb = e.target.closest('button[data-role]');
+  if (rb){
+    var rid = rb.closest('.usr-card').getAttribute('data-id');
+    var want = rb.getAttribute('data-role');
+    if (!confirm(want === 'owner'
+      ? 'رفع هذا الحساب إلى «صاحب ملعب»؟ سيستطيع الدخول من «دخول المالك» ورؤية حجوزات الأماكن المربوطة به.'
+      : 'إعادة هذا الحساب إلى «لاعب»؟ سيفقد الدخول إلى لوحة المالك، وروابطه بالأماكن تبقى كما هي.')) return;
+    rb.disabled = true;
+    api('/rest/v1/profiles?id=eq.' + encodeURIComponent(rid), {
+      method:'PATCH', body:{ role: want }, prefer:'return=representation'
+    }).then(function(r){
+      rb.disabled = false;
+      if (!r.ok){ alert('تعذّر تغيير الدور (' + r.status + ') — تأكّد أن حسابك أدمن'); return; }
+      $('#usrGo').click();
+    });
+    return;
+  }
   var btn = e.target.closest('button[data-act]'); if (!btn) return;
   var card = btn.closest('.usr-card'), id = card.getAttribute('data-id');
   var to = btn.getAttribute('data-act') === '1';
@@ -1083,8 +2272,8 @@ try {
   var saved = JSON.parse(sessionStorage.getItem('mustadaira:admin') || 'null');
   if (saved && saved.at) {
     S = saved;
-    var exp = jwtExp(S.at);
-    if (exp && exp - Date.now() < 120000) { refreshToken().then(function(){ if (S) start(); }); }
+    var exp0 = jwtExp(S.at);
+    if (exp0 && exp0 - Date.now() < 120000) { refreshToken().then(function(){ if (S) start(); }); }
     else start();
   }
 } catch(_){}
