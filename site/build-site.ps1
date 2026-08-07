@@ -180,6 +180,26 @@ try {
     }
 }
 
+# ---- which sports have at least one live field ----
+# Same rule the app applies, against the same rows: a sport is open when a live
+# field of that sport sits in a live venue. Both lists were already filtered to
+# active=true above, so membership of this table IS the "open" flag.
+#
+# A field row with no 'sport' property reads as football, which is what every
+# row is before migration 13 adds the column - so this is correct both before
+# and after that migration runs.
+$SportLive = @{}
+if ($null -ne $PlacesData) {
+    $livePlaceIds = @{}
+    foreach ($p in @($PlacesData.places)) { $livePlaceIds[[string]$p.id] = $true }
+    foreach ($f in @($PlacesData.fields)) {
+        if (-not $livePlaceIds.ContainsKey([string]$f.place_id)) { continue }
+        $sp = [string]$f.sport
+        if ([string]::IsNullOrWhiteSpace($sp)) { $sp = 'football' }
+        $SportLive[$sp] = $true
+    }
+}
+
 # ---- normalise the directory into one model, shared by both languages ----
 function HtmlEnc([string]$s) {
     if ($null -eq $s) { return '' }
@@ -536,6 +556,22 @@ foreach ($lang in $Langs) {
         # venue pages print. Nothing here is typed by hand: with no rows the
         # tile is not built at all (honesty rule m5), which is why priceSpan is
         # empty rather than "0" when the model is empty.
+        # ---- which sports are actually open ----
+        # Decision 7: the app is the single source of truth for what is bookable,
+        # and the site mirrors it. In the app a sport is open when it has at
+        # least one live field - not because a boolean was typed somewhere. So
+        # this reads the same rows, and the two can no longer disagree: the site
+        # cannot promise a sport the app does not serve.
+        #
+        # $SportLive is built once from the fetched fields (see above). Before
+        # migration 13 the column does not exist, every field reads as football,
+        # and the section renders exactly as it did before this change.
+        foreach ($sk in @('football','padel','basket','tennis','volley')) {
+            $on = $SportLive.ContainsKey($sk)
+            $vars['sportSt' + $sk]  = $(if ($on) { Tx $T 'sportLive' } else { Tx $T 'sportSoon' })
+            $vars['sportCls' + $sk] = $(if ($on) { ' sport-live' } else { '' })
+        }
+
         $vars['priceSpan'] = ''
         if ($PlaceModel.Count -gt 0) {
             $allPrices = @($PlaceModel | ForEach-Object { $_.fields } | ForEach-Object { [double]$_.price })

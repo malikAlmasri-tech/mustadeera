@@ -84,7 +84,53 @@ const I18N = {
     fieldPhotos:'صور الملعب', lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
     sportsAria:'اختر الرياضة', sportFootball:'كرة القدم', sportPadel:'بادل', sportBasket:'كرة السلة', sportTennis:'تنس', sportVolley:'كرة الطائرة', soonBadge:'قريباً',
     comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} تُحمّي في غرفة الملابس — وستنزل أرض الملعب قريباً.', backToFootball:'عرض ملاعب كرة القدم',
-    sportsHint:'المستديرة تحجز الملاعب الرياضية كلّها. المفتوح للحجز الآن كرة القدم — وباقي الرياضات تُفتح فور تسجيل ملاعبها.',
+    sportsHint:'المستديرة تحجز الملاعب الرياضية كلّها. ما تراه مفتوحاً هنا هو ما سُجّلت ملاعبه فعلاً — وما عليه «قريباً» ينتظر ملعبه الأول.',
+    backToSport:'اعرض ملاعب {sport}',
+    /* ── مواصفات الملعب (تختلف باختلاف الرياضة) ──
+       كل مفتاح هنا يقابل مفتاحاً في `FIELD_SPECS`، وكل قيمة تقابل خياراً فيه.
+       ⚠️ ما لا ترجمة له **لا يُعرَض إطلاقاً** — لا يُكتب حرفياً ولا يُخترع له
+       نصّ (م5، ودرسُ المرافق: قيمة عربية حرّة تُقرأ عربيةً في الواجهة الإنجليزية). */
+    specsTitle:'مواصفات الملعب',
+    specL_enclosure:'الموقع', spec_enclosure_outdoor:'مكشوف', spec_enclosure_indoor:'صالة مغلقة', spec_enclosure_covered:'مسقوف',
+    specL_lights:'إضاءة', spec_lights_yes:'إضاءة ليلية',
+    specL_seating:'جلسات', spec_seating_yes:'مدرّج للمشاهدين',
+    specL_surface:'الأرضية',
+    spec_surface_grass_synthetic:'عشب صناعي', spec_surface_grass_natural:'عشب طبيعي',
+    spec_surface_rubber:'مطّاطية', spec_surface_sand:'رملية',
+    spec_surface_parquet:'باركيه', spec_surface_pu:'بولي يوريثان', spec_surface_asphalt:'أسفلت',
+    spec_surface_hard:'صلبة (Hard)', spec_surface_clay:'ترابية (Clay)', spec_surface_grass:'عشب',
+    spec_surface_carpet:'سجّاد', spec_surface_indoor_court:'أرضية صالة', spec_surface_beach_sand:'رمل شاطئي',
+    specL_court:'نوع الملعب',
+    spec_court_double:'زوجي', spec_court_single:'فردي',
+    spec_court_full:'ملعب كامل', spec_court_half:'نصف ملعب',
+    specL_walls:'الجدران', spec_walls_glass:'زجاج', spec_walls_mesh:'شبك', spec_walls_mixed:'زجاج وشبك',
+    specL_panoramic:'الرؤية', spec_panoramic_yes:'بانورامي',
+    specL_rackets:'المضارب', spec_rackets_free:'مضارب مجاناً', spec_rackets_paid:'مضارب برسوم',
+    specL_hoop:'السلة', spec_hoop_standard:'ارتفاع نظامي (3.05م)', spec_hoop_adjustable:'ارتفاع قابل للتعديل',
+    specL_net:'الشبكة', spec_net_men:'شبكة رجال (2.43م)', spec_net_women:'شبكة سيدات (2.24م)',
+    spec_net_mixed:'شبكة مختلطة', spec_net_youth:'شبكة ناشئين',
+    /* ── الإشعارات ──
+       العنوان والنصّ يُكتبان **هنا** لا في القاعدة: الصفّ يحمل `kind` ومعطياته
+       فقط، لأن نصًّا مخزَّناً يُجمَّد على لغة لحظة كتابته — فمن بدّل لغته يقرأ
+       إشعاراته القديمة بلغته السابقة إلى الأبد. */
+    notifsTitle:'الإشعارات', notifsAria:'الإشعارات', notifsEmpty:'لا إشعارات بعد',
+    notifsEmptySub:'هنا يصلك ردّ الملعب على طلبك، وتصل صاحبَ الملعب طلباتُ الحجز الجديدة.',
+    notifsMarkAll:'علّم الكل كمقروء', notifsNew:'جديد',
+    notifsOff:'الإشعارات غير مُفعّلة على الخادم بعد',
+    notifsOffSub:'الجدول غير موجود في القاعدة (ترحيل ١٤ لم يُشغَّل). الحجز والتأكيد يعملان كما هما — والإشعارات وحدها هي المعطّلة.',
+    notifsPermTitle:'تفعيل الإشعارات', notifsPermAsk:'نُعلمك فور ردّ الملعب على طلبك.',
+    ntfNewTitle:'طلب حجز جديد', ntfNewBody:'{name} — {field} · {day} {time}',
+    ntfConfirmedTitle:'تأكّد حجزك', ntfConfirmedBody:'{place} — {field} · {day} {time}',
+    ntfRejectedTitle:'اعتذر الملعب عن طلبك', ntfRejectedBody:'{place} — {day} {time}',
+    ntfCancelledTitle:'أُلغي حجزك', ntfCancelledBody:'{place} — {day} {time}',
+    ntfMovedTitle:'نُقل موعد حجز', ntfMovedBody:'{name} — {field} · صار {day} {time}',
+    ntfReason:'السبب: {r}',
+    /* ── لوح متابعة الحجز على الرئيسية ── */
+    trkPending:'بانتظار ردّ الملعب', trkConfirmed:'حجزك مؤكّد', trkTitle:'حجزك القادم',
+    trkStarts:'يبدأ بعد', trkNow:'بدأت المباراة', trkSoon:'يبدأ الآن',
+    trkD:'{n} يوم', trkH:'{n} ساعة', trkM:'{n} دقيقة',
+    trkOpen:'تفاصيل الحجز', trkPendingHint:'أرسلنا طلبك؛ يظهر التأكيد هنا فور ردّ الملعب.',
+    trkConfirmedHint:'خانتك محجوزة — احضر قبل الموعد بقليل.',
     servicesTitle:'الخدمات والمرافق', chooseFieldH:'اختر الملعب', chooseDay:'اختر اليوم', chooseTime:'اختر الوقت',
     available:'متوفرة', noServices:'لم تُضف معلومات عن الخدمات بعد.', noTimesDay:'اكتمل جدول هذا اليوم بالكامل — جرّب يوماً آخر قريباً منه.',
     /* حالة اليوم على زرّه. ⚠️ «باقي {n}» لا «{n} أوقات»: العدد يأتي **بعد** الاسم
@@ -215,7 +261,23 @@ const I18N = {
     aiReviewTitle:'ملخّص التقييمات', aiReviewSub:'قراءة ذكية لتقييمات اللاعبين: ما الذي يعجبهم وما الذي يشتكون منه.',
     aiRegenerate:'تحديث التحليل', aiWeatherTitle:'تنبيه الطقس والتسعير',
     aiFail:'تعذّر توليد التحليل حالياً — جرّب «تحديث التحليل» بعد قليل.',
-    aiNotConfigured:'ميزات الذكاء الاصطناعي غير مفعّلة بعد — أضِف GEMINI_API_KEY (أو OPENAI_API_KEY) في Script Properties على Apps Script.',
+    aiNotConfigured:'الذكاء الاصطناعي غير مفعّل بعد: الدالّة منشورة لكن بلا مفتاح نموذج. اضبط GEMINI_API_KEY في أسرار Supabase (‏supabase secrets set).',
+    aiNotDeployed:'الذكاء الاصطناعي غير منشور بعد. انشر دالّة الحافّة مرّة واحدة (‏supabase functions deploy ai) ثم اضبط GEMINI_API_KEY في أسرارها.',
+    aiNeedHistory:'لا يكفي التاريخ بعد لتحليل يُعتمد عليه — عندك {n} من الأيام فيها حجوزات، والحدّ سبعة. توصيةٌ من أيام معدودة تصف صدفةً لا نمطاً.',
+    aiNoPlace:'حسابك غير مربوط بمكان بعد — لا أرقام تُحلَّل.',
+    aiComputedLbl:'تحليل محسوب من أرقامك (بلا ذكاء اصطناعي)',
+    /* جُمل التحليل المحسوب — كلٌّ منها من رقم مقيس، ولا واحدة منها تُنشَر
+       بلا الرقم الذي يسندها. والعدد **بعد** الاسم فيصحّ مع أي رقم عربي. */
+    ciOccT:'الإشغال', ciOccA:'إشغالك {occ}٪ من طاقتك في آخر ٣٠ يوماً. كل نقطة مئوية تساوي نحو {jod} د.أ شهرياً بمتوسّط سعرك الحالي.',
+    ciCancelT:'الإلغاء مرتفع', ciCancelA:'{p}٪ من الطلبات انتهت إلغاءً أو رفضاً ({n} منها). راجع أوقاتاً تعرضها وهي غير متاحة فعلاً.',
+    ciWeekT:'يومك الأضعف', ciWeekA:'{lo} أضعف أيامك ({a} من الحجوزات) مقابل {hi} ({b}). خصمٌ على اليوم الضعيف يملأ خانات لا تُباع أصلاً.',
+    ciStaleT:'طلبات فات موعدها', ciStaleA:'{n} من الطلبات ما زالت معلّقة وقد مضى موعدها. الطلب المعلّق يحجز خانته ويمنع غيره ثم يضيع.',
+    ciRetT:'العملاء العائدون', ciRetA:'{p}٪ من عملائك حجزوا أكثر من مرّة ({n} من {u}). العائد أرخص من الجديد بمراحل.',
+    ciFreeT:'الأسبوع القادم', ciFreeA:'{n} من الخانات ما زالت فارغة في الأيام السبعة القادمة — وهي وحدها ما يمكن بيعه الآن.',
+    wxT_danger:'أمطار متوقعة في الأيام القادمة', wxT_warn:'تقلبات جوية قادمة', wxT_info:'الأجواء مناسبة للعب',
+    wxA_danger:'احتمال مطر مرتفع — أرسل تذكيرات تأكيد مبكرة لأصحاب الحجوزات، ووفّر خيار تغيير الموعد بدل الإلغاء.',
+    wxA_warn:'احتمال مطر أو حرارة مرتفعة — تابع الطلبات المعلّقة مبكراً وأبقِ اللاعبين على اطلاع.',
+    wxA_info:'الأجواء ممتازة خلال ٣ أيام — خصم بسيط على الخانات الفارغة قد يملؤها.',
     aiNoInsights:'لا توصيات بعد — كلما زادت الحجوزات صارت التوصيات أدق.',
     aiNoReviews:'لا تقييمات بعد — عندما يقيّم اللاعبون مكانك سيظهر الملخّص هنا.',
     aiPraises:'ما يمدحه اللاعبون', aiComplaints:'ما يشتكون منه',
@@ -330,7 +392,44 @@ const I18N = {
     fieldPhotos:'Field photos', lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
     sportsAria:'Choose a sport', sportFootball:'Football', sportPadel:'Padel', sportBasket:'Basketball', sportTennis:'Tennis', sportVolley:'Volleyball', soonBadge:'Soon',
     comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are warming up in the locker room — hitting the pitch soon.', backToFootball:'Show football fields',
-    sportsHint:'AL-Mustadira books sports venues of every kind. Football is what is open for booking now — the other sports open as soon as their venues are registered.',
+    sportsHint:'AL-Mustadira books sports venues of every kind. What you see open here is what actually has venues registered — anything marked “Soon” is waiting for its first one.',
+    backToSport:'Show {sport} venues',
+    specsTitle:'Field specs',
+    specL_enclosure:'Setting', spec_enclosure_outdoor:'Outdoor', spec_enclosure_indoor:'Indoor hall', spec_enclosure_covered:'Covered',
+    specL_lights:'Lighting', spec_lights_yes:'Floodlights',
+    specL_seating:'Seating', spec_seating_yes:'Spectator seating',
+    specL_surface:'Surface',
+    spec_surface_grass_synthetic:'Synthetic grass', spec_surface_grass_natural:'Natural grass',
+    spec_surface_rubber:'Rubber', spec_surface_sand:'Sand',
+    spec_surface_parquet:'Parquet', spec_surface_pu:'Polyurethane', spec_surface_asphalt:'Asphalt',
+    spec_surface_hard:'Hard court', spec_surface_clay:'Clay', spec_surface_grass:'Grass',
+    spec_surface_carpet:'Carpet', spec_surface_indoor_court:'Indoor court floor', spec_surface_beach_sand:'Beach sand',
+    specL_court:'Court type',
+    spec_court_double:'Doubles', spec_court_single:'Singles',
+    spec_court_full:'Full court', spec_court_half:'Half court',
+    specL_walls:'Walls', spec_walls_glass:'Glass', spec_walls_mesh:'Mesh', spec_walls_mixed:'Glass & mesh',
+    specL_panoramic:'View', spec_panoramic_yes:'Panoramic',
+    specL_rackets:'Rackets', spec_rackets_free:'Rackets included', spec_rackets_paid:'Rackets for a fee',
+    specL_hoop:'Hoop', spec_hoop_standard:'Regulation height (3.05m)', spec_hoop_adjustable:'Adjustable height',
+    specL_net:'Net', spec_net_men:'Men’s net (2.43m)', spec_net_women:'Women’s net (2.24m)',
+    spec_net_mixed:'Mixed net', spec_net_youth:'Youth net',
+    notifsTitle:'Notifications', notifsAria:'Notifications', notifsEmpty:'No notifications yet',
+    notifsEmptySub:'The venue’s reply to your request lands here — and new booking requests land with the venue owner.',
+    notifsMarkAll:'Mark all as read', notifsNew:'New',
+    notifsOff:'Notifications are not enabled on the server yet',
+    notifsOffSub:'The table does not exist in the database (migration 14 has not been run). Booking and confirmation work exactly as before — only notifications are off.',
+    notifsPermTitle:'Turn on notifications', notifsPermAsk:'We’ll tell you the moment the venue replies to your request.',
+    ntfNewTitle:'New booking request', ntfNewBody:'{name} — {field} · {day} {time}',
+    ntfConfirmedTitle:'Your booking is confirmed', ntfConfirmedBody:'{place} — {field} · {day} {time}',
+    ntfRejectedTitle:'The venue declined your request', ntfRejectedBody:'{place} — {day} {time}',
+    ntfCancelledTitle:'Your booking was cancelled', ntfCancelledBody:'{place} — {day} {time}',
+    ntfMovedTitle:'A booking was moved', ntfMovedBody:'{name} — {field} · now {day} {time}',
+    ntfReason:'Reason: {r}',
+    trkPending:'Awaiting the venue’s reply', trkConfirmed:'Booking confirmed', trkTitle:'Your next booking',
+    trkStarts:'Starts in', trkNow:'Kick-off has passed', trkSoon:'Starting now',
+    trkD:'{n}d', trkH:'{n}h', trkM:'{n}m',
+    trkOpen:'Booking details', trkPendingHint:'Your request was sent; the confirmation shows up here as soon as the venue replies.',
+    trkConfirmedHint:'Your slot is held — get there a little early.',
     servicesTitle:'Services & Amenities', chooseFieldH:'Choose the field', chooseDay:'Choose the day', chooseTime:'Choose the time',
     available:'Available', noServices:'No services information has been added yet.', noTimesDay:'This day is fully booked — try another one nearby.',
     secSession:'Session',
@@ -455,7 +554,21 @@ const I18N = {
     aiReviewTitle:'AI Review Summary', aiReviewSub:'A smart read of player reviews: what they love and what they complain about.',
     aiRegenerate:'Refresh analysis', aiWeatherTitle:'Weather & Pricing Alert',
     aiFail:'Couldn’t generate the analysis right now — try “Refresh analysis” in a bit.',
-    aiNotConfigured:'AI features aren’t enabled yet — add GEMINI_API_KEY (or OPENAI_API_KEY) to Script Properties in Apps Script.',
+    aiNotConfigured:'AI isn’t enabled yet: the function is deployed but has no model key. Set GEMINI_API_KEY in your Supabase secrets (supabase secrets set).',
+    aiNotDeployed:'AI isn’t deployed yet. Deploy the edge function once (supabase functions deploy ai), then set GEMINI_API_KEY in its secrets.',
+    aiNeedHistory:'Not enough history yet for analysis worth trusting — you have {n} days with bookings, and the threshold is seven. Advice drawn from a handful of days describes a coincidence, not a pattern.',
+    aiNoPlace:'Your account isn’t linked to a venue yet — there are no numbers to analyse.',
+    aiComputedLbl:'Computed from your own numbers (no AI)',
+    ciOccT:'Occupancy', ciOccA:'You are at {occ}% of capacity over the last 30 days. Each percentage point is worth about {jod} JOD a month at your current average price.',
+    ciCancelT:'Cancellations are high', ciCancelA:'{p}% of requests ended cancelled or rejected ({n} of them). Check for times you advertise but cannot actually give.',
+    ciWeekT:'Your weakest day', ciWeekA:'{lo} is your weakest day ({a} bookings) against {hi} ({b}). A discount on the weak day fills slots that go unsold anyway.',
+    ciStaleT:'Requests past their date', ciStaleA:'{n} requests are still pending after their play date passed. A pending request holds its slot, blocks others, then expires.',
+    ciRetT:'Returning customers', ciRetA:'{p}% of your customers booked more than once ({n} of {u}). A returning one costs far less than a new one.',
+    ciFreeT:'The week ahead', ciFreeA:'{n} slots are still free across the next seven days — and they are the only thing you can sell right now.',
+    wxT_danger:'Rain expected in the coming days', wxT_warn:'Changing weather ahead', wxT_info:'Good playing weather',
+    wxA_danger:'High chance of rain — send confirmation reminders early and offer rescheduling instead of cancelling.',
+    wxA_warn:'Possible rain or high heat — follow up on pending requests early and keep players informed.',
+    wxA_info:'Excellent weather for the next 3 days — a small discount on empty slots could fill them.',
     aiNoInsights:'No recommendations yet — the more bookings, the sharper the advice.',
     aiNoReviews:'No reviews yet — once players rate your venue, the summary appears here.',
     aiPraises:'What players praise', aiComplaints:'What they complain about',
@@ -631,6 +744,64 @@ const COURT = {
 const courtSvg = (key) => COURT[key]
   ? '<svg class="court-svg" viewBox="0 0 160 100" aria-hidden="true">'+COURT[key]+'</svg>'
   : '';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   مواصفات الملعب — ما يختلف باختلاف الرياضة
+
+   ⚑ **هذا الجدول هو مصدر الحقيقة**، ونسخته في `site/admin.html` مرآةٌ له
+     (نفس المفاتيح ونفس الخيارات بنفس الترتيب). لماذا نسخة لا استيراد: اللوحة
+     صفحة مستقلّة لا تقرأ من `app/` — وهي القاعدة المعمارية للمستودع نفسها
+     (‏`README.md`: «لا يقرأ أحدهما من الآخر»). ونفس ما يجري لـ`COURT`.
+     ⚠️ فأيّ خيار يُضاف هنا يُضاف هناك، وإلّا كتبته اللوحة ولم يعرضه التطبيق.
+
+   ⚑ **المفردات مغلقة عمداً.** ولا يُعرَض مفتاحٌ ولا قيمةٌ بلا ترجمة في
+     اللغتين — لأن التطبيق ثنائي اللغة، ودرسُ عمود المرافق النصّي الحرّ مقيس:
+     «بأجرة» و«حتى 20 سيارة» دخلتا القاعدة فصار مستخدم الإنجليزية يقرؤهما
+     بالعربية. ما لا يُترجَم لا يُعرَض، ولا يُخترَع له نصّ (م5).
+
+   ⚑ `hideWhen`: قيمةٌ لا يستحقّ ذكرها. «بلا إضاءة» ليست معلومة يبحث عنها
+     أحد — هي غيابُ معلومة، وعرضها يزحم أربع شرائح تهمّ فعلاً. أمّا المفاتيح
+     بلا `hideWhen` (الأرضية · نوع الملعب) فكل قيمها تفيد.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SPORT_KEYS = ['football','padel','basket','tennis','volley'];
+const FIELD_SPECS = {
+  football: [ { key:'surface', opts:['grass_synthetic','grass_natural','rubber','sand'] } ],
+  padel:    [ { key:'court',   opts:['double','single'] },
+              { key:'walls',   opts:['glass','mesh','mixed'] },
+              { key:'panoramic', opts:['yes','no'], hideWhen:'no' },
+              { key:'rackets', opts:['free','paid','no'], hideWhen:'no' } ],
+  basket:   [ { key:'court',   opts:['full','half'] },
+              { key:'surface', opts:['parquet','pu','asphalt','rubber'] },
+              { key:'hoop',    opts:['standard','adjustable'] } ],
+  tennis:   [ { key:'surface', opts:['hard','clay','grass','carpet'] },
+              { key:'court',   opts:['single','double'] } ],
+  volley:   [ { key:'surface', opts:['indoor_court','beach_sand','grass'] },
+              { key:'net',     opts:['men','women','mixed','youth'] } ],
+};
+/* مشتركة بين الرياضات الخمس — تأتي بعد الخاصّة بالرياضة في العرض */
+const FIELD_SPECS_COMMON = [
+  { key:'enclosure', opts:['outdoor','indoor','covered'] },
+  { key:'lights',    opts:['yes','no'], hideWhen:'no' },
+  { key:'seating',   opts:['yes','no'], hideWhen:'no' },
+];
+const specsFor = (sport) => [...(FIELD_SPECS[sport] || FIELD_SPECS.football), ...FIELD_SPECS_COMMON];
+const fieldSport = (f) => SPORT_KEYS.includes(f && f.sport) ? f.sport : 'football';
+
+/* الشرائح المعروضة لملعب واحد: قيمة معروفة + ترجمة موجودة + ليست المخفيّة.
+   تُعيد [{key,label,text}] — والواجهة لا تعرف بمفتاح لم يمرّ من هنا. */
+function fieldSpecChips(f){
+  const attrs = (f && f.attrs && typeof f.attrs === 'object' && !Array.isArray(f.attrs)) ? f.attrs : {};
+  const out = [];
+  specsFor(fieldSport(f)).forEach(spec => {
+    const v = String(attrs[spec.key] == null ? '' : attrs[spec.key]).trim();
+    if (!v || v === spec.hideWhen) return;
+    if (!spec.opts.includes(v)) return;                       // قيمة خارج المفردات ⇒ تُتجاهَل
+    const tk = 'spec_' + spec.key + '_' + v, lk = 'specL_' + spec.key;
+    if (!I18N.ar[tk] || !I18N.en[tk] || !I18N.ar[lk] || !I18N.en[lk]) return;   // بلا ترجمة ⇒ لا تُعرَض
+    out.push({ key: spec.key, label: t(lk), text: t(tk) });
+  });
+  return out;
+}
 
 /* ===================== DOM UTILS ===================== */
 const $  = (sel, root=document) => root.querySelector(sel);
@@ -883,9 +1054,14 @@ function sbAmenities(p){
 }
 // الأوقات: jsonb [{h,label}] ⟵⟶ النصّ "8=label|10=label" الذي يفهمه parseSlots
 const sbSlotsToText = (arr) => Array.isArray(arr) ? arr.map(s => `${s.h}=${s.label}`).join('|') : String(arr||'');
+/* ⚠️ `sport` و`attrs` يأتيان من ترحيل 13. وقبل تشغيله لا وجود للعمودين إطلاقاً
+   ⇒ `f.sport` تكون `undefined`، و`fieldSport` تقرؤها **كرة قدم** لا خطأً.
+   وهذا هو ما يجعل التطبيق يعمل كما هو قبل الترحيل: كل ملعب كرة قدم كما كان. */
 const sbField = (f) => ({
   field_id: String(f.id), place_id: String(f.place_id), field_name: f.name, size: f.size,
-  price: Number(f.price||0), slots: sbSlotsToText(f.slots), active: !!f.active, image_url: f.image_url || ''
+  price: Number(f.price||0), slots: sbSlotsToText(f.slots), active: !!f.active, image_url: f.image_url || '',
+  sport: fieldSport(f),
+  attrs: (f.attrs && typeof f.attrs === 'object' && !Array.isArray(f.attrs)) ? f.attrs : {}
 });
 const sbPlace = (p, stat) => ({
   place_id: String(p.id), place_name: p.name, city: p.city, region: p.region, type: p.type,
@@ -1098,6 +1274,40 @@ const API = {
         return { success:true, bookings:(r.data||[]).map(sbBooking),
                  player:{ player_id:s.uid, name:s.name, phone:s.phone, verified: !!s.verified } };
       }
+      /* ── الإشعارات ───────────────────────────────────────────────────────
+         الصفوف تُكتب داخل القاعدة (‏migration/14) ولا يكتبها أحد من هنا.
+         و`notif_read` تقصر القراءة على `profile_id = auth.uid()` ⇒ لا مرشِّح
+         على المستخدم في الرابط أصلاً: RLS هو المرشِّح، وإضافةُ واحدٍ هنا كانت
+         ستوهم بأن الأمان في الرابط لا في القاعدة.
+         ⚠️ ترحيل 14 معلَّق ⇒ الجدول غير موجود وPostgREST يردّ 404/`PGRST205`.
+            نميّز هذه الحالة بعينها (`missing:true`) كي تقول الواجهةُ سببها
+            صراحةً بدل قائمة فارغة تُوهم بأنه «لا جديد». */
+      case 'getNotifications': {
+        const tok = extra.token || Session.player() || Session.owner();
+        const s = await sbSession(tok, !Session.player());
+        if (!s) return { success:false, message:'سجّل دخولك أول' };
+        const r = await sbRest('/notifications?select=id,created_at,kind,booking_id,place_id,data,read_at,delivered_at&order=created_at.desc&limit=50', { token:s.at, key });
+        if (!r.ok){
+          const missing = r.status === 404 || String(r.raw||'').includes('PGRST205');
+          return { success:false, missing, message:'تعذّر جلب البيانات' };
+        }
+        return { success:true, notifications: r.data || [] };
+      }
+      case 'markNotifications': {
+        const tok = extra.token || Session.player() || Session.owner();
+        const s = await sbSession(tok, !Session.player());
+        if (!s || !extra.ids || !extra.ids.length) return { success:false };
+        const body = {};
+        if (extra.read)      body.read_at = new Date().toISOString();
+        if (extra.delivered) body.delivered_at = new Date().toISOString();
+        /* المُشغِّل `t_notif_guard` في القاعدة يُعيد كل حقل آخر إلى قيمته
+           القديمة قسراً ⇒ حتى لو أُرسل غيرهما لا يُكتب. الحارس هناك لا هنا،
+           لأن السياسة تحكم **الصفوف لا الأعمدة**. */
+        const r = await sbRest(`/notifications?id=in.(${extra.ids.map(encodeURIComponent).join(',')})`,
+          { method:'PATCH', token:s.at, body });
+        return { success: r.ok };
+      }
+
       case 'getPlayerProfile': {
         const s = await sbSession(extra.player_token, false);
         if (!s) return { success:false, message:'سجّل دخولك أول' };
@@ -1230,11 +1440,28 @@ const API = {
       case 'ownerAddField': {
         const s = await sbSession(data.owner_token, true);
         if (!s) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
-        const r = await sbRest('/fields', { method:'POST', token:s.at, prefer:'return=representation', body:{
+        /* رياضة الملعب الجديد = رياضة ملاعب هذا المكان، لا `'football'` الافتراضية.
+           بلا هذا السطر يُضيف صاحبُ نادي بادل ملعبًا من التطبيق فيُكتب **كرة قدم**،
+           فيختفي من تصفّح البادل ويظهر في تصفّح كرة القدم — عطلٌ صامت لا يفهم
+           صاحبه سببه. والقيمة تُقرأ من ملاعبه الحالية لأنها الحقيقة المسجَّلة،
+           ولا شاشةَ في التطبيق تسأل عنها بعد (الرياضة تُسجَّل من `/admin`). */
+        const own = (State.ownerData && State.ownerData.fields) || [];
+        const sport = SPORT_KEYS.includes(data.sport) ? data.sport
+                    : (own.length ? fieldSport(own[0]) : 'football');
+        const body = {
           place_id: s.place_id, name: String(data.field_name||'ملعب').trim(), size: data.size || '5×5',
           price: Number(data.price||0), slots: parseSlots(data.slots).map(x => ({ h:x.hour, label:x.label })),
-          image_url: data.image_url || '', active: true
-        }});
+          image_url: data.image_url || '', active: true, sport
+        };
+        let r = await sbRest('/fields', { method:'POST', token:s.at, prefer:'return=representation', body });
+        /* ترحيل 13 معلَّق على المالك ⇒ العمود غير موجود، وPostgREST يردّ
+           `PGRST204: column "sport" ... does not exist`. **إضافة الملعب أهمّ من
+           تسجيل رياضته**، فنعيدها بلا العمود بدل أن نُفشل عملًا صحيحًا لأجل
+           حقلٍ لم يُنشأ بعد. وكل الملاعب حينها كرة قدم أصلًا، فلا شيء يُفقَد. */
+        if (!r.ok && String(r.raw||'').includes('PGRST204')){
+          delete body.sport;
+          r = await sbRest('/fields', { method:'POST', token:s.at, prefer:'return=representation', body });
+        }
         if (!r.ok) return { success:false, message:'صار خطأ، حاول كمان مرة' };
         return { success:true, message:'تمت إضافة الملعب' };
       }
@@ -1255,19 +1482,53 @@ const API = {
     }
   },
 
-  /* طلبات AI ما زالت على Apps Script (لم تُرحَّل — تحتاج مفتاح Gemini على الخادم).
-     تفشل بهدوء إن لم يكن منشورًا، والواجهة تعالج الفشل أصلًا. */
-  async getAi(action, extra={}, key) {
-    const params = new URLSearchParams({ action, ...extra });
-    const res = await fetchWithTimeout(`${CONFIG.API_URL}?${params}`, {}, CONFIG.AI_TIMEOUT, key);
-    if (!res.ok) throw new Error('API GET failed');
-    return res.json();
+  /* ═══════════════════════════════════════════════════════════════════════
+     لوحات AI — دالّة حافّة على Supabase، لا Apps Script
+
+     ⚑ **ما كان قبل هذا لم يكن بطيئًا، كان مستحيلًا.** الطلب كان يذهب إلى
+       Apps Script حاملًا توكن Supabase، وهناك `validateOwnerToken` تنتظر
+       التوكن القديم (`base64(id|phone)`) ⇒ **كل طلب يُردّ بـ«انتهت جلستك»**
+       مهما كانت طازجة. ولو مرّ لقرأ من Google Sheets التي توقّفت عن استقبال
+       الكتابة يوم انتقل الحجز إلى Postgres. عطلان مستقلّان في المسار نفسه،
+       وكلاهما يظهر للمالك رسالةً واحدة تقول «جرّب بعد قليل» — وهي كذبة:
+       المحاولة لن تنجح أبدًا.
+
+     ⚑ والمفتاح لا يصل المتصفّح: يعيش في أسرار Supabase وتقرؤه الدالّة وحدها.
+       ولذلك لا يمكن أن تعمل هذه اللوحات «بلا عمل على المالك» — مفتاحُ نموذجٍ
+       في يد كل مستخدم ليس سرًّا، وهذا ليس نقصًا في التنفيذ بل حدُّ المسألة.
+
+     ⚑ **وما دامت غير منشورة لا شيء يتعلّق**: 404 تُترجَم `ai_not_deployed`،
+       والواجهة تعرض **تحليلًا محسوبًا من أرقام المالك نفسها** وتقول صراحةً
+       إنه محسوب لا ذكاء اصطناعي. الطقس يعمل بلا الدالّة أصلًا (م5).
+     ═══════════════════════════════════════════════════════════════════════ */
+  async getAi(kind, extra={}, key) {
+    const s = await sbSession(Session.owner(), true);
+    if (!s) return { success:false, code:'session' };
+    if (!s.place_id) return { success:false, code:'no_place' };
+    let res;
+    try{
+      res = await fetchWithTimeout(`${SB.URL}/functions/v1/ai`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', apikey: SB.KEY, Authorization:'Bearer ' + s.at },
+        body: JSON.stringify({ kind, lang: extra.lang === 'en' ? 'en' : 'ar', place_id: s.place_id })
+      }, CONFIG.AI_TIMEOUT, key);
+    }catch(e){
+      if (isAbort(e) || isTimeout(e)) throw e;
+      return { success:false, code:'ai_not_deployed' };     // الشبكة وصلت المضيف ولم تجد المسار
+    }
+    // 404 = الدالّة غير منشورة · 401/403 = الجلسة أو الملكية، وكلاهما له نصّه
+    if (res.status === 404) return { success:false, code:'ai_not_deployed' };
+    let data = null; try { data = await res.json(); } catch(_){ data = null; }
+    if (!data) return { success:false, code: res.ok ? 'ai_failed' : 'ai_not_deployed' };
+    return data;
   }
 };
 
 /* ===================== STATE (حالة مغلّفة) ===================== */
 const State = {
-  places: [], publicBookings: [], bookedSlots: {},
+  // `allPlaces` ما وصل من الخادم · `places` مشتقّة منها بملاعب الرياضة الحالية (applySportScope)
+  allPlaces: [], places: [], dataLoaded: false,
+  publicBookings: [], bookedSlots: {},
   publicBookingsFetchedAt: 0,                                 // آخر جلب ناجح للحجوزات العامة (كاش قصير)
   favOnly: false,                                             // عرض المفضّلة فقط (محلي)
   sport: 'football',                                          // الرياضة المختارة (كرة القدم متاحة، والبقية قريباً)
@@ -1298,13 +1559,43 @@ const State = {
 function normalizePlaces(remote){
   return (remote||[]).map(p => ({
     ...p, place_id:String(p.place_id), rating:safeRating(p.rating), reviews:safeReviews(p.reviews),
-    fields:(p.fields||[]).map(f => ({ ...f, field_id:String(f.field_id), place_id:String(f.place_id) }))
+    /* `sport` يُطبَّع هنا أيضاً لا في `sbField` وحدها: هذا المسار يمرّ عليه
+       **الكاش المحفوظ** الذي كُتب قبل ترحيل 13 (بلا العمود أصلاً). */
+    fields:(p.fields||[]).map(f => ({ ...f, field_id:String(f.field_id), place_id:String(f.place_id),
+      sport: fieldSport(f), attrs: (f.attrs && typeof f.attrs==='object' && !Array.isArray(f.attrs)) ? f.attrs : {} }))
   }));
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   الرياضة تقصّ **البيانات** لا العرض.
+
+   البديل الذي رُفض: أن تفحص كل دالّة عرض `State.sport` بنفسها. ذلك يعني
+   تعديل `renderPlaces` و`placeAvailability` و`distinctSizes` و`distinctTypes`
+   وتبويبات المناطق وشريط الأرقام وصفحة التفاصيل — سبعة مواضع، ونسيانُ واحد
+   يُظهر ملعب بادل في تصفية كرة القدم بلا أن يصرخ شيء.
+
+   بدلاً منه: `State.allPlaces` هي ما وصل من الخادم، و`State.places` **مشتقّة**
+   منها بملاعب الرياضة الحالية وحدها. فكل ما بُني على `State.places` — وهو
+   كل شيء — صار مقصوراً على الرياضة بلا سطر واحد فيه.
+   ⚠️ ومكانٌ لا ملعب له في هذه الرياضة يسقط كلّياً، تماماً كما يُسقط
+   `sbGetInitialData` المكانَ بلا ملاعب: مكانٌ لا تستطيع حجز شيء فيه لا يُعرَض.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function applySportScope(){
+  const sp = SPORT_KEYS.includes(State.sport) ? State.sport : 'football';
+  State.places = (State.allPlaces || [])
+    .map(p => ({ ...p, fields: (p.fields||[]).filter(f => fieldSport(f) === sp) }))
+    .filter(p => p.fields.length > 0);
+}
+/* «هل لهذه الرياضة ملعب فعلاً؟» — تُقرأ من البيانات لا من قيمة مكتوبة بيد.
+   ⚠️ قبل وصول أيّ بيانات لا تُسأل هذه الدالّة أصلاً (‏`State.dataLoaded`)، وإلّا
+      لومض شريط الرياضات «قريباً» على الخمس جميعاً ثمّ تراجع. */
+const sportHasVenues = (key) => (State.allPlaces||[]).some(p => (p.fields||[]).some(f => fieldSport(f) === key));
 function buildBookedSlots(remote){
   State.publicBookings = Array.isArray(remote) ? remote : [];
   State.bookedSlots = {};
-  State.places.forEach(p => p.fields.forEach(f => State.bookedSlots[f.field_id] = {}));
+  /* من `allPlaces` لا `places`: تبديل الرياضة لا يُعيد الجلب، فلو بُذرت مفاتيح
+     الرياضة الحالية وحدها لبقيت ملاعب الرياضات الأخرى بلا مفتاح حتى الجلبة التالية. */
+  (State.allPlaces||[]).forEach(p => p.fields.forEach(f => State.bookedSlots[f.field_id] = {}));
   State.publicBookings.forEach(b => {
     const s = normStatus(b); if (s==='cancelled'||s==='rejected') return;
     const fid = String(b.field_id||'').trim(); const hour = Number(b.hour); const date = String(b.date||'').trim().split('T')[0];
@@ -1319,8 +1610,10 @@ const cacheSave = (d) => { try { localStorage.setItem(CONFIG.CACHE_KEY, JSON.str
 async function loadInitialData(force=false){
   const r = await API.get('getInitialData', { force:force?'1':'0' }, 'initialData');
   const remote = Array.isArray(r) ? r : (r.places||[]);
-  State.places = normalizePlaces(remote);
-  if (State.places.length) cacheSave(State.places);
+  State.allPlaces = normalizePlaces(remote);
+  State.dataLoaded = true;
+  applySportScope();
+  if (State.allPlaces.length) cacheSave(State.allPlaces);
   buildBookedSlots(r.bookings||[]);
   State.publicBookingsFetchedAt = Date.now();                 // بيانات حجوزات طازجة من الخادم
 }
@@ -1336,11 +1629,14 @@ async function ensurePublicBookings(maxAgeMs = 45000){
   await loadPublicBookings();
 }
 async function loadData(opts={}){
-  try { await loadInitialData(!!opts.force); renderRegionTabs(); renderLandingRegions(); updateTrust(); return true; }
+  /* شريط الرياضات يُعاد رسمه مع كل جلبة لأن حالة كل رياضة («متاح»/«قريباً»)
+     مشتقّة من البيانات نفسها: ملعب بادل يُسجَّل في اللوحة الآن ⇒ تُفتَح بادل
+     عند أوّل تحديث، بلا نشر نسخة جديدة من التطبيق. */
+  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
     const cached = cacheRead();
-    if (cached && cached.length){ State.places = normalizePlaces(cached); buildBookedSlots([]); renderRegionTabs(); renderLandingRegions(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
+    if (cached && cached.length){ State.allPlaces = normalizePlaces(cached); State.dataLoaded = true; applySportScope(); buildBookedSlots([]); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
     return false;
   }
 }
@@ -1557,32 +1853,54 @@ function renderRegionTabs(){
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
 
-/* ===================== الرياضات (تقسيمة أعلى الرئيسية) =====================
-   كرة القدم هي المتاحة حالياً؛ باقي الرياضات تعرض حالة «سيتم إضافتها قريباً» */
+/* ═══════════════════════════════════════════════════════════════════════════
+   الرياضات (تقسيمة أعلى الرئيسية)
+
+   ⚑ **`ready` لم تعد مكتوبة هنا.** كانت `{football:true, …:false}` قيمةً في
+     الكود، فكان فتح البادل يستلزم نشر نسخة جديدة من التطبيق **بعد** تسجيل
+     ملاعبها — وبينهما نافذةٌ يرى فيها اللاعب «قريباً» وفي القاعدة ملاعب بادل
+     جاهزة (أو أسوأ: العكس، فيُفتَح البابُ على لا شيء).
+     الآن تُشتقّ من البيانات: رياضةٌ لها ملعبٌ نشط واحد **هي** المفتوحة.
+     وهذا يجعل «إضافة مكان» في `/admin` هي الفعل الذي يفتح الرياضة — بضغطة.
+   ⚑ قرار ٧ محفوظ: هذا الجدول ما زال مصدر الحقيقة لأسماء الرياضات وأيقوناتها،
+     وقسم «الرياضات» في الموقع مرآةٌ له يقرأ حالته من العرض `sport_availability`
+     وقت البناء ⇒ لا يَعِد الموقع بما لا يعطيه التطبيق.
+   ═══════════════════════════════════════════════════════════════════════════ */
 const SPORTS=[
-  {key:'football', label:'sportFootball', icon:'ball',   ready:true},
-  {key:'padel',    label:'sportPadel',    icon:'padel',  ready:false},
-  {key:'basket',   label:'sportBasket',   icon:'basket', ready:false},
-  {key:'tennis',   label:'sportTennis',   icon:'tennis', ready:false},
-  {key:'volley',   label:'sportVolley',   icon:'volley', ready:false},
+  {key:'football', label:'sportFootball', icon:'ball'},
+  {key:'padel',    label:'sportPadel',    icon:'padel'},
+  {key:'basket',   label:'sportBasket',   icon:'basket'},
+  {key:'tennis',   label:'sportTennis',   icon:'tennis'},
+  {key:'volley',   label:'sportVolley',   icon:'volley'},
 ];
+/* قبل وصول البيانات لا حكم: لا شارة «قريباً» ولا وعد بالفتح. الوسم الوحيد
+   الصادق حينها هو **لا وسم** — والشريط يُعاد رسمه فور وصول أوّل جلبة. */
+const sportReady = (key) => !State.dataLoaded || sportHasVenues(key);
+const sportSoon  = (key) => State.dataLoaded && !sportHasVenues(key);
 function renderSportTabs(){
   const el=$('#sportTabs'); if(!el) return; clear(el);
   SPORTS.forEach(s=>{
-    const active=State.sport===s.key;
+    const active=State.sport===s.key, soon=sportSoon(s.key);
     // حبّة مضغوطة: أيقونة + اسم على سطر واحد، وشارة «قريباً» داخل الحبّة بعد الاسم
     const ic=h('span',{class:'sport-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'});
     const b=h('button',{class:'sport-tab'+(active?' active':''), type:'button',
       'aria-pressed':active?'true':'false',
-      'aria-label': s.ready ? t(s.label) : t(s.label)+' — '+t('soonBadge')},
+      'aria-label': soon ? t(s.label)+' — '+t('soonBadge') : t(s.label)},
       ic,
       h('span',{class:'sport-name'}, t(s.label)));
-    if(!s.ready) b.append(h('span',{class:'sport-soon','aria-hidden':'true'}, t('soonBadge')));
+    if(soon) b.append(h('span',{class:'sport-soon','aria-hidden':'true'}, t('soonBadge')));
     b.addEventListener('click', ()=>setSport(s.key));
     el.append(b);
   });
 }
-function setSport(k){ if(State.sport===k) return; State.sport=k; renderSportTabs(); renderSportDropdown(); updateSportSections(); renderPlaces(); }
+function setSport(k){
+  if(State.sport===k) return;
+  State.sport=k;
+  applySportScope();                    // البيانات تُقصّ أولاً، ثمّ يُرسَم ما بُني عليها
+  State.filter='all';                   // منطقة كرة القدم قد لا توجد في البادل أصلاً
+  renderSportTabs(); renderSportDropdown(); updateSportSections();
+  renderRegionTabs(); updateFilterBar(); renderPlaces();
+}
 /* قائمة الرياضات المنسدلة في شريط التصفّح (مزامنة مع مبدّل الفلاتر عبر setSport) */
 function renderSportDropdown(){
   const cur=SPORTS.find(s=>s.key===State.sport)||SPORTS[0];
@@ -1594,7 +1912,7 @@ function renderSportDropdown(){
     const item=h('button',{class:'sport-dd-item'+(active?' active':''), type:'button', role:'option', 'aria-selected':active?'true':'false'},
       h('span',{class:'sport-dd-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'}),
       h('span',{class:'sport-dd-lbl'}, t(s.label)));
-    if(!s.ready) item.append(h('span',{class:'sport-dd-soon'}, t('soonBadge')));
+    if(sportSoon(s.key)) item.append(h('span',{class:'sport-dd-soon'}, t('soonBadge')));
     item.addEventListener('click',()=>{ setSport(s.key); closeSportDD(); });
     menu.append(item);
   });
@@ -1608,10 +1926,11 @@ function closeSportDD(){
   const dd=$('#sportDD'); if(!dd || !dd.classList.contains('open')) return;
   dd.classList.remove('open'); $('#sportDDMenu').hidden=true; $('#sportDDBtn')?.setAttribute('aria-expanded','false');
 }
-/* إخفاء أدوات كرة القدم (المناطق/العنوان) عند اختيار رياضة غير متوفرة بعد.
+/* إخفاء أدوات التصفّح (المناطق/العنوان) عند اختيار رياضة لا ملعب لها بعد —
+   المعيار الآن **وجود ملاعب** لا اسم الرياضة: تصفيةُ لا شيء بمناطق لا شيء عبث.
    زرّ الفلاتر يبقى ظاهرًا لأن مُبدِّل الرياضات صار داخل ورقة الفلاتر (وإلا انحبس المستخدم). */
 function updateSportSections(){
-  const off=State.sport!=='football';
+  const off=sportSoon(State.sport);
   ['#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
 }
 
@@ -1901,13 +2220,18 @@ function renderPlaces(opts){
   const quiet = !!(opts && opts.quiet);
   const el = $('#placesList'); if(!el) return;
   el.dataset.view = State.view; updateViewToggle();
-  // رياضة غير متوفرة بعد ⇒ حالة «قريباً» بدل القائمة
-  if(State.sport && State.sport!=='football'){
+  /* رياضة بلا ملعب واحد ⇒ حالة «قريباً» بدل القائمة.
+     ⚠️ والزرّ لم يعد «عرض ملاعب كرة القدم» دائمًا: لو كانت كرة القدم نفسها هي
+     الفارغة لأعاد المستخدمَ إلى نفس الفراغ. يشير إلى **أوّل رياضة لها ملاعب
+     فعلًا**، وإن لم تكن هناك واحدة فلا زرّ أصلًا (لا وجهة تُقترَح). */
+  if(sportSoon(State.sport)){
     clear(el); setPlacesCount(0);
     const s=SPORTS.find(x=>x.key===State.sport);
+    const alt=SPORTS.find(x=>x.key!==State.sport && sportHasVenues(x.key));
     el.append(emptyState({ iconHtml:courtSvg(State.sport), icon:'⏳',
       title:t('comingSoonTitle'), sub:t('comingSoonSub',{sport:t(s?s.label:'sportFootball')}),
-      actionLabel:t('backToFootball'), action:()=>setSport('football') }));
+      actionLabel: alt ? t('backToSport',{sport:t(alt.label)}) : '',
+      action: alt ? (()=>setSport(alt.key)) : null }));
     return;
   }
   updateFilterBar();
@@ -2140,6 +2464,18 @@ function renderDetailHero(){
   }
   else { emoji.style.display=''; hero.style.background='var(--forest-2)'; }
   renderDetailThumbs(imgs);
+  renderFieldSpecs(field);
+}
+/* مواصفات الملعب المحدَّد. لا تُعرَض إلّا ما مرّ من `fieldSpecChips`:
+   قيمةٌ داخل المفردات، ولها ترجمة في اللغتين، وليست القيمة المخفيّة.
+   ⇒ ملعبٌ بلا مواصفات مسجَّلة لا لوح له أصلًا، ولا عنوان فوق فراغ. */
+function renderFieldSpecs(field){
+  const wrap=$('#fieldSpecs'), el=$('#specChips'); if(!el) return; clear(el);
+  const chips = field ? fieldSpecChips(field) : [];
+  if(wrap) wrap.hidden = !chips.length;
+  chips.forEach(c => el.append(h('span',{class:'spec-chip','title':c.label},
+    h('span',{class:'spec-chip-l'}, c.label),
+    h('span',{class:'spec-chip-v'}, c.text))));
 }
 /* مصغّرات صور الملعب المحدَّد — تظهر أسفل اختيار الملعب؛ الضغط يفتح المعرض المكبّر */
 function renderDetailThumbs(imgs){
@@ -3102,13 +3438,20 @@ function aiSkeleton(n=3){
   return box;
 }
 /* رسالة فشل موحّدة + زر إعادة محاولة (لا زر عند غياب مفتاح الـAPI — الحل عند المالك لا هنا) */
+/* الأكواد التي **لا يُعيدها زرُّ المحاولة**: علّتها عند المالك لا في الشبكة —
+   دالّة غير منشورة · مفتاح غير مضبوط · تاريخ أقصر من أسبوع. زرُّ «أعد المحاولة»
+   عليها يَعِد بما لن يقع، ويُدرِّب صاحبه على أن يضغطه بلا فائدة. */
+const AI_TERMINAL = ['ai_not_configured','ai_not_deployed','not_enough_data','no_place'];
 function aiErrorBox(res, retry){
   const code=res&&res.code;
   const msg = code==='ai_not_configured' ? t('aiNotConfigured')
+            : code==='ai_not_deployed'  ? t('aiNotDeployed')
+            : code==='not_enough_data'  ? t('aiNeedHistory',{n:(res&&res.days)||0})
+            : code==='no_place'         ? t('aiNoPlace')
             : code==='weather_failed' ? t('aiWeatherFail')
             : code==='timeout' ? t('apiTimeout') : t('aiFail');
-  const box=h('div',{class:'ai-alert'+(code==='ai_not_configured'?' info':'')}, msg);
-  if(retry && code!=='ai_not_configured'){
+  const box=h('div',{class:'ai-alert'+(AI_TERMINAL.includes(code)?' info':'')}, msg);
+  if(retry && !AI_TERMINAL.includes(code)){
     const l=h('span',{class:'link',role:'button',tabindex:'0'}, t('aiRetry'));
     l.addEventListener('click',retry);
     l.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); retry(); } });
@@ -3125,8 +3468,14 @@ async function loadAi(kind, targetSel, render, force){
   ai[kind+'Loading']=true;
   clear(el); el.append(kind==='weather' ? h('div',{class:'ai-weather'}, aiSkeleton()) : aiSkeleton());
   try{
-    const action = kind==='insights'?'aiInsights' : kind==='reviews'?'aiReviews' : 'aiWeather';
-    const res = await API.getAi(action, { owner_token:Session.owner(), lang, force:force?'1':'0' }, 'ai_'+kind);
+    let res = await API.getAi(kind, { lang }, 'ai_'+kind);
+    /* الطقس **لا يحتاج الدالّة ولا مفتاحًا**: Open-Meteo عامّة بلا مفتاح
+       وتسمح بالقراءة من المتصفّح. فإن لم تُنشَر الدالّة نجلبه مباشرةً هنا
+       ونكتب النصيحة بقاعدة ثابتة. غيابُ مفتاحِ نموذجٍ يكلّفك الجملة لا البيانات. */
+    if(kind==='weather' && res && !res.success && (res.code==='ai_not_deployed' || res.code==='ai_not_configured')){
+      const local = await fetchWeatherLocal();
+      if(local) res = local;
+    }
     ai[kind]=res; ai[kind+'Lang']=lang;
     if(res && !res.success) console.warn('AI ['+kind+'] failed — code:', res.code||'(none)', res.detail?('· detail: '+res.detail):'');
   }catch(e){
@@ -3139,6 +3488,126 @@ async function loadAi(kind, targetSel, render, force){
 const loadAiInsights=(force)=>loadAi('insights','#aiInsights',renderAiInsights,force);
 const loadAiReviews=(force)=>loadAi('reviews','#aiReviews',renderAiReviews,force);
 const loadAiWeather=(force)=>loadAi('weather','#aiWeatherWrap',renderAiWeather,force);
+
+/* ── الطقس بلا خادم ──────────────────────────────────────────────────────
+   Open-Meteo واجهة عامّة **بلا مفتاح** وترسل `Access-Control-Allow-Origin: *`
+   ⇒ يجلبها المتصفّح مباشرةً. فالتوقّعات نفسها لا تتوقّف على شيء عند المالك،
+   ولا يبقى معلَّقًا عليه إلّا جملةُ النصيحة. والنصيحة هنا **قاعدة ثابتة**
+   لا نموذج، ولذلك تُوسَم `ai:false` فتكتب الواجهة «نصيحة تلقائية» لا
+   «ذكاء اصطناعي» — الوسم يقول ما هو، ولا يُنسَب إلى النموذج ما لم يكتبه. */
+const WX_CITY = {
+  'عمان':[31.95,35.93], 'عمّان':[31.95,35.93], 'amman':[31.95,35.93],
+  'الزرقاء':[32.07,36.09], 'zarqa':[32.07,36.09],
+  'اربد':[32.55,35.85], 'إربد':[32.55,35.85], 'irbid':[32.55,35.85],
+  'العقبة':[29.53,35.01], 'aqaba':[29.53,35.01], 'السلط':[32.04,35.73], 'salt':[32.04,35.73],
+  'مادبا':[31.72,35.79], 'madaba':[31.72,35.79], 'جرش':[32.27,35.89], 'jerash':[32.27,35.89],
+  'عجلون':[32.33,35.75], 'ajloun':[32.33,35.75], 'الكرك':[31.18,35.70], 'karak':[31.18,35.70],
+  'معان':[30.19,35.73], 'maan':[30.19,35.73], 'الطفيلة':[30.84,35.60], 'tafilah':[30.84,35.60],
+  'المفرق':[32.34,36.21], 'mafraq':[32.34,36.21],
+};
+const wxCategory = (c) => c===0?'sunny' : c<=3?'cloudy' : (c===45||c===48)?'fog'
+  : (c>=51&&c<=67)?'rain' : (c>=71&&c<=77)?'snow' : (c>=80&&c<=82)?'rain'
+  : (c>=85&&c<=86)?'snow' : c>=95?'storm' : 'cloudy';
+async function fetchWeatherLocal(){
+  const city = String(State.ownerData?.place?.city || '').trim().toLowerCase();
+  const [lat, lon] = WX_CITY[city] || [31.95, 35.93];
+  try{
+    const r = await fetchWithTimeout(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max` +
+      `&forecast_days=3&timezone=Asia%2FAmman`, {}, CONFIG.API_TIMEOUT, 'wxLocal');
+    if(!r.ok) return null;
+    const d = (await r.json()).daily; if(!d || !d.time) return null;
+    const days = d.time.map((date,i)=>({
+      date, category: wxCategory(Number(d.weather_code[i])),
+      tmax: Math.round(d.temperature_2m_max[i]), tmin: Math.round(d.temperature_2m_min[i]),
+      rain_prob: Math.round(d.precipitation_probability_max[i]||0),
+      wind_kmh: Math.round(d.wind_speed_10m_max[i]||0),
+    }));
+    return { success:true, ai:false, days, generated_at:new Date().toISOString() };
+  }catch(_){ return null; }
+}
+/* شدّة التنبيه وجملته بقواعد ثابتة — تُقرأ من نفس الأرقام المعروضة فوقها،
+   فلا تقول شيئًا لا يستطيع القارئ التحقّق منه بعينه. */
+function wxRuleAdvice(days){
+  const rain = Math.max(0, ...days.map(d=>d.rain_prob||0));
+  const heat = Math.max(0, ...days.map(d=>d.tmax||0));
+  const rough = days.some(d=>d.category==='storm'||d.category==='snow');
+  const severity = (rough || rain>=60) ? 'danger' : (rain>=35 || heat>=38) ? 'warn' : 'info';
+  return { severity, title: t('wxT_'+severity), advice: t('wxA_'+severity) };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   تحليل محسوب — لا نموذج، ولا يُسمّى ذكاءً اصطناعيًّا
+
+   حين لا تكون الدالّة منشورة أو المفتاح مضبوطًا، البديلُ ليس لوحًا فارغًا ولا
+   دوّامة لا تنتهي: **جُملٌ كلٌّ منها من رقم مقيس في `State.ownerData`** — نفس
+   منطق «ماذا تقول الأرقام؟» في `/admin`. وكلٌّ منها يُنشَر فقط إن كان الرقم
+   الذي يسنده موجودًا؛ وما تعجز عنه الأرقام لا يُقال (م5).
+   ⚠️ والوسم صريح: «تحليل محسوب من أرقامك» لا «ذكاء اصطناعي». تسميةُ الحساب
+      ذكاءً اصطناعيًّا كذبةٌ صغيرة تُفقد كل شارة في التطبيق معناها.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function computedInsights(){
+  const bs = State.ownerData?.bookings || [], fs = State.ownerData?.fields || [];
+  if(!bs.length || !fs.length) return [];
+  const td = today(), from = dateAfter(-30);
+  const past = bs.filter(b => { const d=String(b.date||'').split('T')[0]; return d>=from && d<=td; });
+  if(!past.length) return [];
+  const conf = past.filter(b=>normStatus(b)==='confirmed');
+  const lost = past.filter(b=>['cancelled','rejected'].includes(normStatus(b)));
+  const slotsDay = fs.filter(f=>f.active!==false).reduce((s,f)=>s+fieldSlots(f).length,0);
+  const cap = slotsDay*30;
+  const out = [];
+
+  if(cap>0){
+    const occ = Math.round(conf.length/cap*100);
+    const avg = conf.length ? conf.reduce((s,b)=>s+Number(b.price||0),0)/conf.length : 0;
+    out.push({ type: occ<35?'warning':'opportunity', title:t('ciOccT'),
+      advice:t('ciOccA',{ occ, jod: Math.round(cap/100*avg) }) });
+  }
+  if(past.length>=10){
+    const rate = Math.round(lost.length/past.length*100);
+    if(rate>=15) out.push({ type:'warning', title:t('ciCancelT'), advice:t('ciCancelA',{p:rate, n:lost.length}) });
+  }
+  /* اليوم الأضعف — يُقال فقط إن كان أضعف بفارق يُعتدّ به عن الأقوى.
+     ⚠️ الأيام السبعة تُبذَر بصفر قبل العدّ، ولولا ذلك **لاستحال أن يظهر اليوم
+        الميّت أصلًا**: يومٌ بلا حجز واحد لا يدخل الجدول فلا يُرشَّح للأضعف،
+        فتقول اللوحة «السبت أضعف أيامك بثلاثة» ويوم الثلاثاء صفرٌ تامّ.
+        وهو بالضبط اليوم الذي جاء المالك يسأل عنه. (مقيس على بيانات مصطنعة
+        فيها ثلاثاء فارغ عمدًا — وقد أُخفي.) والنافذة ٣٠ يومًا فكل يوم أسبوع
+        وقع فيها أربع مرّات على الأقلّ: صفرُه غيابٌ حقيقي لا نقصُ عيّنة. */
+  if(conf.length>=14){
+    const byDay = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
+    conf.forEach(b=>{ const w=new Date(String(b.date).split('T')[0]+'T12:00:00').getDay(); byDay[w]=(byDay[w]||0)+1; });
+    const ks = Object.keys(byDay);
+    if(ks.length>=3){
+      const hi = ks.reduce((a,k)=>byDay[k]>byDay[a]?k:a, ks[0]);
+      const lo = ks.reduce((a,k)=>byDay[k]<byDay[a]?k:a, ks[0]);
+      if(byDay[hi] >= byDay[lo]*2){
+        const nm = (w)=>{ try{ return new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar',{weekday:'long'}).format(new Date(Date.UTC(2024,0,7+Number(w)))); }catch(_){ return ''; } };
+        out.push({ type:'pricing', title:t('ciWeekT'), advice:t('ciWeekA',{lo:nm(lo), hi:nm(hi), a:byDay[lo], b:byDay[hi]}) });
+      }
+    }
+  }
+  // الطلبات المعلّقة التي فات موعدها — كلٌّ منها خانةٌ حجزها ولم تُبَع
+  const stale = bs.filter(b => normStatus(b)==='pending' && String(b.date||'').split('T')[0] < td).length;
+  if(stale) out.push({ type:'warning', title:t('ciStaleT'), advice:t('ciStaleA',{n:stale}) });
+  // العائدون بالهاتف لا بالحساب: الشخص نفسه يحجز ضيفًا ومسجَّلًا فيُعدّ مرّتين
+  if(conf.length>=10){
+    const seen={}; conf.forEach(b=>{ const p=normalizePhone(b.phone||''); if(p) seen[p]=(seen[p]||0)+1; });
+    const uniq=Object.keys(seen).length, ret=Object.values(seen).filter(n=>n>1).length;
+    if(uniq) out.push({ type: ret/uniq<0.2?'marketing':'opportunity', title:t('ciRetT'),
+      advice:t('ciRetA',{p:Math.round(ret/uniq*100), n:ret, u:uniq}) });
+  }
+  // الخانات الفارغة في الأسبوع القادم — ما زال يمكن بيعها
+  if(slotsDay>0){
+    const to = dateAfter(7);
+    const next = bs.filter(b=>{ const d=String(b.date||'').split('T')[0]; return d>td && d<=to && ['pending','confirmed'].includes(normStatus(b)); }).length;
+    const free = Math.max(0, slotsDay*7 - next);
+    if(free) out.push({ type:'opportunity', title:t('ciFreeT'), advice:t('ciFreeA',{n:free}) });
+  }
+  return out.slice(0,6);
+}
 /* سطر «آخر تحديث» أسفل كل لوحة */
 function aiMetaLine(res){
   let s='';
@@ -3148,23 +3617,44 @@ function aiMetaLine(res){
 function renderAiInsights(){
   const el=$('#aiInsights'); if(!el) return; clear(el);
   const res=aiState().insights; if(!res) return;
-  if(!res.success){ el.append(aiErrorBox(res, ()=>loadAiInsights(true))); return; }
-  const list=res.insights||[];
-  if(!list.length){ el.append(h('div',{class:'ai-alert info'}, t('aiNoInsights'))); return; }
-  list.forEach(it=>{
+  const paint=(list)=>list.forEach(it=>{
     el.append(h('div',{class:'ai-insight t-'+String(it.type||'opportunity')},
       h('span',{class:'ai-i-ico','aria-hidden':'true'}, AI_TYPE_ICON[it.type]||'🤖'),
       h('div',{},
         h('div',{class:'ai-i-title'}, String(it.title||'')),
         h('div',{class:'ai-i-text'}, String(it.advice||'')))));
   });
+  if(!res.success){
+    /* الفشل لا يعني الفراغ: نعرض ما تستطيع الأرقام قوله، **موسومًا بما هو**.
+       والسبب يُقال فوقه كي يعرف المالك ما ينقصه إن أراد الأعمق. */
+    const own = computedInsights();
+    el.append(aiErrorBox(res, ()=>loadAiInsights(true)));
+    if(own.length){ el.append(h('div',{class:'ai-chip-lbl'}, t('aiComputedLbl'))); paint(own); }
+    return;
+  }
+  const list=res.insights||[];
+  if(!list.length){ el.append(h('div',{class:'ai-alert info'}, t('aiNoInsights'))); return; }
+  paint(list);
   el.append(aiMetaLine(res)||'');
 }
 function renderAiReviews(){
   const el=$('#aiReviews'); if(!el) return; clear(el);
   const res=aiState().reviews; if(!res) return;
   if(res.empty){ el.append(h('div',{class:'ai-alert info'}, t('aiNoReviews'))); return; }
-  if(!res.success){ el.append(aiErrorBox(res, ()=>loadAiReviews(true))); return; }
+  if(!res.success){
+    el.append(aiErrorBox(res, ()=>loadAiReviews(true)));
+    /* ما يُقال بلا نموذج: العدد والمتوسّط والتوزيع — أرقامٌ عند المالك أصلًا.
+       ⚠️ ولا يُقال أكثر: «ما يمدحه اللاعبون» و«ما يشتكون منه» يتطلّبان قراءة
+       نصٍّ حرّ، واستخراجُهما بمطابقة كلمات يخترع نمطًا من صدفة (م5). */
+    const st = State.ownerData?.place;
+    if(st && st.reviews > 0){
+      el.append(h('div',{class:'ai-sentiment '+(st.rating>=4?'positive':st.rating>=3?'mixed':'negative')},
+        h('span',{}, t('aiComputedLbl')),
+        h('span',{'aria-hidden':'true'}, '·'),
+        h('span',{}, t('aiReviewsCount',{n:st.reviews, avg:String(st.rating)}))));
+    }
+    return;
+  }
   const sent=['positive','mixed','negative'].includes(res.sentiment)?res.sentiment:'mixed';
   el.append(h('div',{class:'ai-sentiment '+sent},
     h('span',{}, t('aiSentiment_'+sent)),
@@ -3185,6 +3675,13 @@ function renderAiWeather(){
   const el=$('#aiWeatherWrap'); if(!el) return; clear(el);
   const res=aiState().weather; if(!res) return;
   if(!res.success){ el.append(h('div',{class:'ai-weather'}, aiErrorBox(res, ()=>loadAiWeather(true)))); return; }
+  /* الشدّة والجملة تُحسبان هنا حين لا يكتبهما النموذج — من نفس الأيام
+     المعروضة تحتها، فيستطيع القارئ التحقّق منهما بعينه. */
+  if(!res.severity || !res.advice){
+    const r = wxRuleAdvice(res.days||[]);
+    res.severity = res.severity || r.severity;
+    if(!res.advice){ res.advice = r.advice; res.title = res.title || r.title; res.ai = false; }
+  }
   const sev=['warn','danger'].includes(res.severity)?res.severity:'';
   const banner=h('div',{class:('ai-weather '+sev).trim()});
   banner.append(h('div',{class:'ai-w-head'},
@@ -3207,6 +3704,342 @@ function renderAiWeather(){
   adv.append(String(res.advice||''));
   banner.append(adv);
   el.append(banner);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   الإشعارات — مركزٌ داخل التطبيق، وإظهارٌ على شريط الجهاز
+
+   ⚑ **مصدر الحقيقة صفٌّ في القاعدة**، يكتبه مُشغِّل داخل نفس معاملة الحجز
+     (‏migration/14). فلا يضيع إشعار لأن الشبكة انقطعت بعد نجاح الحجز، ولا
+     يستطيع عميلٌ تلفيق إشعار لغيره (لا سياسة `insert` لأحد).
+   ⚑ **النصّ يُكتب هنا** من `kind` + `data` بلغة المستخدم **الحالية**، لا في
+     القاعدة: نصٌّ مخزَّن يُجمَّد على لغة لحظة كتابته.
+   ⚑ **الوصول بالاستطلاع لا بالبثّ**، وهذا قرار لا نقص: البثّ الحيّ يفتح
+     WebSocket دائمًا على هاتف، مقابل تعجيلٍ لحدثٍ زمنُه دقائق أصلًا (ردّ
+     صاحب ملعب). والاستطلاع يجري مع دورة التحديث القائمة **ومع كل عودة إلى
+     التطبيق** — وهي اللحظة التي يقرأ فيها المستخدم فعلًا.
+   ⚑ ⚠️ **ولا يوقظ هاتفًا مغلقًا**: هذه إشعارات محلّية لا دفع. إيقاظ الجهاز
+     يحتاج FCM ومشروع Firebase (بنية عند المالك). والصفّ باقٍ في القاعدة على
+     أي حال، فيُقرأ عند أوّل فتح ولا يضيع.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const Notifs = {
+  rows: [], missing: false, loading: false, asked: false,
+
+  unread(){ return this.rows.filter(n => !n.read_at).length; },
+
+  /* بصمة المجموعة: المعرّفات وحدها تكفي — الصفوف لا تُعدَّل بعد كتابتها
+     (‏`t_notif_guard` يمنع ذلك في القاعدة)، فمجيء معرّف جديد هو كل الخبر. */
+  sig(){ return this.rows.map(n => n.id).join('|'); },
+
+  /* عزلُ اتّجاهٍ في نصّ عارٍ: الإشعار على شريط النظام لا DOM فيه ولا `<bdi>`.
+     البديل المكافئ محارف Unicode: LRI…PDI تفعل ما يفعله `<bdi dir="ltr">`.
+     وبدونها ينقلب مدى الوقت في السطر العربي فيسبق الانتهاءُ الابتداء
+     («10:00 - 8:00» بدل «8:00 - 10:00») — نفس عطل «40–60» في الموقع. */
+  _iso(s){ return '⁦' + String(s == null ? '' : s) + '⁩'; },
+
+  /* الوقت يُولَّد من `hour` لا يُقرأ من `time_label`: التسمية المخزَّنة عربية
+     دائمًا (قيمة كنسية في بروتوكول الحجز)، فقراءتها كما هي تُظهر «8:00 - 10:00 م»
+     لمستخدم الإنجليزية. و`slotDisplay` تعرف كيف تكتبها بلغته. */
+  _time(d){
+    const hr = Number(d && d.hour);
+    if (!Number.isNaN(hr)) return slotDisplay({ hour:hr, startHour:hr, endHour:hr+2, label:(d && d.time_label) || '' });
+    return String((d && d.time_label) || '');
+  },
+
+  /* النصّ من النوع ومعطياته. نوعٌ لا نعرفه ⇒ `null` ولا يُعرَض شيء:
+     صفٌّ من نسخة خادم أحدث لا يُخترَع له عنوان (م5). */
+  text(n){
+    const d = (n && n.data) || {}, K = {
+      booking_new:       ['ntfNewTitle',       'ntfNewBody'],
+      booking_confirmed: ['ntfConfirmedTitle', 'ntfConfirmedBody'],
+      booking_rejected:  ['ntfRejectedTitle',  'ntfRejectedBody'],
+      booking_cancelled: ['ntfCancelledTitle', 'ntfCancelledBody'],
+      booking_moved:     ['ntfMovedTitle',     'ntfMovedBody'],
+    }[n && n.kind];
+    if (!K) return null;
+    const vars = {
+      name:  d.customer_name || '',
+      place: d.place_name || '',
+      field: d.field_name || '',
+      day:   d.booking_date ? (dayLabel(d.booking_date) + ' ' + shortDate(String(d.booking_date).split('T')[0])) : '',
+      time:  this._time(d),
+    };
+    const reason = (n.kind === 'booking_rejected' || n.kind === 'booking_cancelled') && d.cancel_reason
+      ? t('ntfReason', { r: d.cancel_reason }) : '';
+    /* نسختان من الجسد: `body` خام تُقسَّم في الـDOM ويُلَفّ المدى الزمني
+       بـ`<bdi dir="ltr">`، و`bodyNative` نصٌّ عارٍ لشريط النظام حيث لا DOM
+       فيُعزَل المدى بمحارف Unicode المكافئة. */
+    return { title: t(K[0]), body: t(K[1], vars), reason, vars,
+             bodyNative: t(K[1], { ...vars, time: vars.time ? this._iso(vars.time) : '' }) };
+  },
+
+  /* معرّف الإشعار على الجهاز عدد صحيح موجب، ومعرّف الصفّ uuid ⇒ تجزئة ثابتة.
+     ثابتةٌ عمدًا: إعادة عرض نفس الإشعار **تستبدله** ولا تكوّم نسخًا منه. */
+  _devId(uuid){
+    let hsh = 5381; const s = String(uuid || '');
+    for (let i = 0; i < s.length; i++) hsh = ((hsh * 33) ^ s.charCodeAt(i)) >>> 0;
+    return (hsh % 2000000000) + 1;
+  },
+
+  async load(opts = {}){
+    if (this.loading) return;
+    if (!Session.player() && !Session.owner()){ this.rows = []; this.paint(); return; }
+    this.loading = true;
+    try {
+      const res = await API.get('getNotifications', {}, 'notifs');
+      if (res && res.success){
+        this.missing = false;
+        const before = this.sig();
+        this.rows = (res.notifications || []).filter(n => this.text(n));   // ما لا نصّ له لا يُعدّ ولا يُعرَض
+        this.paint();
+        /* تغيّرُ الإشعارات هو **إشارة** تغيّر الحجوزات: كل إشعار يكتبه مُشغِّل
+           على `bookings`. فيُجلَب لوح المتابعة عندها وحدها بدل جلبه كل دورة —
+           طلبٌ يُوفَّر في كل دورة لا جديد فيها، وهي أغلب الدورات. */
+        if (this.sig() !== before) Tracker.refresh();
+        if (!opts.silent) await this.deliver();
+      } else if (res && res.missing){
+        this.missing = true; this.rows = []; this.paint();
+      }
+    } catch(e){ /* انقطاع شبكة ⇒ نُبقي ما بين أيدينا؛ الإشعار ليس عملية يفشل بها المستخدم */ }
+    this.loading = false;
+  },
+
+  /* الإظهار على شريط الجهاز: ما لم يُظهَر بعد فقط، والأحدث خمسة لا أكثر —
+     خمسة إشعارات تُقرأ، وعشرون تُمسح جملةً. و`delivered_at` يُكتب في القاعدة
+     لا في الذاكرة كي لا يُعاد الإظهار بعد إعادة تثبيت التطبيق. */
+  async deliver(){
+    const api = window.__notify;
+    if (!api) return;                                   // متصفّح أو بلا بلَغن ⇒ المركز وحده
+    const fresh = this.rows.filter(n => !n.delivered_at && !n.read_at).slice(0, 5);
+    if (!fresh.length) return;
+    const ok = await api.ensure(false);                 // بلا إلحاح: الطلب له لحظته (`askPermission`)
+    if (!ok) return;
+    const items = fresh.map(n => {
+      const tx = this.text(n);
+      return { id: this._devId(n.id), nid: String(n.id),
+               title: tx.title, body: tx.bodyNative + (tx.reason ? ' — ' + tx.reason : '') };
+    });
+    const shown = await api.show(items);
+    if (!shown) return;
+    const ids = fresh.map(n => n.id);
+    fresh.forEach(n => { n.delivered_at = new Date().toISOString(); });
+    API.get('markNotifications', { ids, delivered:true }, 'notifsMark').catch(()=>{});
+  },
+
+  /* طلب الإذن في لحظته: بعد أوّل حجز يرسله اللاعب، وعند دخول المالك — حيث
+     يكون الجواب على «لماذا تُسألني؟» أمام عينه. نافذةُ إذنٍ عند الإقلاع
+     تُرفَض ثمّ لا يعود أندرويد يسمح بطلبها. */
+  async askPermission(){
+    if (this.asked || !window.__notify) return;
+    this.asked = true;
+    try { await window.__notify.ensure(true); } catch(_){}
+  },
+
+  paint(){
+    const n = this.unread();
+    /* جرسٌ للضيف لا يرنّ أبدًا — لا صفوف له في القاعدة أصلًا — ويُقرأ عطلًا
+       في التطبيق لا حالةً في حسابه. فيظهر بوجود جلسة وحدها. */
+    const hb = $('#homeNotifBtn'); if (hb) hb.hidden = !(Session.player() || Session.owner());
+    $$('.notif-btn').forEach(btn => {
+      let bd = btn.querySelector('.notif-badge');
+      btn.setAttribute('aria-label', n ? t('notifsTitle') + ' — ' + t('notifsNew') : t('notifsTitle'));
+      if (!n){ if (bd) bd.remove(); return; }
+      if (!bd){ bd = h('span',{class:'notif-badge','aria-hidden':'true'}); btn.append(bd); }
+      bd.textContent = n > 9 ? '9+' : String(n);
+    });
+    if ($('#modal-notifs')?.classList.contains('show')) this.render();
+  },
+
+  render(){
+    const el = $('#notifList'); if (!el) return; clear(el);
+    const mk = $('#notifMarkAll'); if (mk) mk.hidden = !this.unread();
+
+    if (this.missing){
+      el.append(h('div',{class:'notif-empty'},
+        h('div',{class:'notif-empty-t'}, t('notifsOff')),
+        h('div',{class:'notif-empty-s'}, t('notifsOffSub'))));
+      return;
+    }
+    if (!this.rows.length){
+      el.append(h('div',{class:'notif-empty'},
+        h('div',{class:'notif-empty-t'}, t('notifsEmpty')),
+        h('div',{class:'notif-empty-s'}, t('notifsEmptySub'))));
+      return;
+    }
+    this.rows.forEach(n => {
+      const tx = this.text(n); if (!tx) return;
+      const row = h('button',{class:'notif-row'+(n.read_at?'':' unread'), type:'button'},
+        h('span',{class:'notif-dot','aria-hidden':'true'}),
+        h('span',{class:'notif-main'},
+          h('span',{class:'notif-t'}, tx.title),
+          /* القيم داخل الجملة معزولة اتّجاهيًّا: اسمُ ملعبٍ عربي داخل جملة
+             إنجليزية ينقلب، ومدى وقتٍ داخل جملة عربية يسبق انتهاؤه ابتداءَه. */
+          h('span',{class:'notif-b'}, ...this._bodyParts(tx)),
+          tx.reason ? h('span',{class:'notif-r'}, tx.reason) : null,
+          h('span',{class:'notif-time'}, relTime(n.created_at))));
+      row.addEventListener('click', ()=>this.openRow(n));
+      el.append(row);
+    });
+  },
+
+  /* الجملة كاملةً في ملفّ اللغة ثمّ تُقسَّم على قيمتها — لا تُركَّب من قطع،
+     وإلّا استحال ترتيبُ الكلمات في إحدى اللغتين.
+     ⚠️ و`dir="ltr"` لا `<bdi>` وحده: الأرقام الأوروبية ليست محارف قوية فلا
+     تحسم اتّجاه العزل، والمدى «8:00 - 10:00» ينقلب في السطر العربي بدونها. */
+  _bodyParts(tx){
+    const time = tx.vars.time, body = String(tx.body);
+    if (!time || !body.includes(time)) return [body];
+    const [before, ...rest] = body.split(time);
+    return [before, h('bdi',{dir:'ltr'}, time), rest.join(time)];
+  },
+
+  openRow(n){
+    if (!n.read_at){
+      n.read_at = new Date().toISOString();
+      API.get('markNotifications', { ids:[n.id], read:true }, 'notifsMark').catch(()=>{});
+      this.paint();
+    }
+    Modal.close('modal-notifs', true);
+    // المالك إلى حجوزاته، واللاعب إلى حجوزاته — كلاهما حيث ينتظره الفعل التالي
+    if (Session.owner()){ showPage('owner'); showOwnerTab('bookings'); }
+    else if (Session.player()) showPage('bookings');
+  },
+
+  open(){
+    Modal.open('modal-notifs');
+    this.render();
+    this.load({ silent:true });
+  },
+
+  markAll(){
+    const ids = this.rows.filter(n => !n.read_at).map(n => n.id);
+    if (!ids.length) return;
+    const now = new Date().toISOString();
+    this.rows.forEach(n => { if (!n.read_at) n.read_at = now; });
+    this.paint(); this.render();
+    API.get('markNotifications', { ids, read:true }, 'notifsMark').catch(()=>{});
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   لوح متابعة الحجز على الرئيسية
+
+   السؤال الذي يفتح اللاعبُ التطبيقَ من أجله بعد أن يحجز ليس «أين ألعب؟» بل
+   **«هل ردّوا عليّ؟ ومتى موعدي؟»** — وكان جوابه مدفونًا خلف نقرتين في
+   «حجوزاتي». هذا اللوح يرفعه إلى أوّل ما تقع عليه العين.
+
+   ⚑ **حجز واحد لا قائمة**: الأقرب زمنًا من غير الملغى ولا المرفوض. قائمةٌ هنا
+     تصير «حجوزاتي» ثانيةً في غير موضعها.
+   ⚑ **العدّاد يُحسب من الساعة لا من نصّ الوقت**: `hour` عدد، و`time_label`
+     نصّ عربي كنسي لا يُحلَّل.
+   ⚑ **ولا يُعرَض شيء ما لم يوجد حجز** (م5): لوحٌ يقول «لا حجز» يزحم أعلى
+     الصفحة كلَّ يوم لا يلعب فيه أحد.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const Tracker = {
+  booking: null, timer: null,
+
+  /* الحجوزات تُجلَب هنا لا تُقرأ من صفحة «حجوزاتي»: الرئيسية قد تُفتَح قبلها
+     أصلًا، وربطُ لوحٍ بصفحةٍ لم تُزَر بعد يجعله فارغًا بلا سبب ظاهر. */
+  async refresh(){
+    if (!Session.player()){ this.booking = null; this.paint(); return; }
+    try {
+      const res = await API.get('getPlayerBookings', { player_token: Session.player() }, 'trackerBk');
+      if (!res || !res.success) return;
+      this.booking = this.pick(res.bookings || []);
+      this.paint();
+    } catch(_){ /* شبكة ⇒ نُبقي آخر ما عُرض؛ العدّاد يواصل من نفس الحجز */ }
+  },
+
+  /* الأقرب بدءًا ممّا لم يمضِ بعد. المقارنة بلحظة **بدء** المباراة لا بيومها:
+     حجزُ اليوم الثامنة مساءً يبقى قادمًا حتى الثامنة، ولا يسقط منذ منتصف الليل. */
+  pick(list){
+    const now = Date.now();
+    return (list || [])
+      .filter(b => { const s = normStatus(b); return s === 'pending' || s === 'confirmed'; })
+      .map(b => ({ b, at: this.startAt(b) }))
+      .filter(x => x.at != null && x.at > now - 2 * 3600 * 1000)   // ساعتان بعد البدء: المباراة نفسها
+      .sort((x, y) => x.at - y.at)
+      .map(x => x.b)[0] || null;
+  },
+
+  startAt(b){
+    const d = String(b.date || '').split('T')[0], hr = Number(b.hour);
+    if (!d || Number.isNaN(hr)) return null;
+    const dt = new Date(d + 'T00:00:00'); if (isNaN(dt)) return null;
+    dt.setHours(hr, 0, 0, 0);
+    return dt.getTime();
+  },
+
+  /* «بعد ٣ ساعات» — بوحدتين على الأكثر. الوحدة الثالثة («يومان و٤ ساعات
+     و١٢ دقيقة») لا تغيّر قرارًا وتُطيل السطر. و`countNoun` غير لازم: كل نصّ
+     هنا «{n} يوم/ساعة/دقيقة» بالعدد **بعد** الاسم فيصحّ مع أي رقم. */
+  countdown(ms){
+    if (ms <= 0) return t('trkNow');
+    const m = Math.floor(ms / 60000), d = Math.floor(m / 1440), hr = Math.floor((m % 1440) / 60), mi = m % 60;
+    if (d > 0) return t('trkD', { n:d }) + (hr ? ' · ' + t('trkH', { n:hr }) : '');
+    if (hr > 0) return t('trkH', { n:hr }) + (mi ? ' · ' + t('trkM', { n:mi }) : '');
+    return t('trkM', { n: Math.max(1, mi) });
+  },
+
+  /* نبضة الدقيقة: تُعيد رسم الرقم وحده. وتتوقّف حين لا لوح — مؤقّتٌ يدور على
+     صفحة لا شيء فيها يستهلك بطارية بلا أثر يُرى. */
+  tick(){
+    if (!this.booking) return;
+    const at = this.startAt(this.booking);
+    const el = $('#trkCount'); if (!el || at == null) return;
+    const left = at - Date.now();
+    el.textContent = left <= -60000 ? t('trkNow') : this.countdown(left);
+  },
+
+  paint(){
+    const wrap = $('#trackerWrap'); if (!wrap) return;
+    clearInterval(this.timer); this.timer = null;
+    const b = this.booking;
+    if (!b || !Session.player()){ wrap.hidden = true; clear(wrap); return; }
+
+    const st = normStatus(b), pending = st === 'pending';
+    const at = this.startAt(b), left = at == null ? 0 : at - Date.now();
+    clear(wrap); wrap.hidden = false;
+
+    const slot = { hour:Number(b.hour), startHour:Number(b.hour), endHour:Number(b.hour)+2, label:b.time || '' };
+    const card = h('button',{ class:'trk'+(pending?' is-pending':' is-confirmed'), type:'button',
+      'aria-label': (pending ? t('trkPending') : t('trkConfirmed')) + ' — ' + t('trkOpen') },
+      h('div',{class:'trk-top'},
+        h('span',{class:'trk-state'},
+          h('span',{class:'trk-pulse','aria-hidden':'true'}),
+          pending ? t('trkPending') : t('trkConfirmed')),
+        h('span',{class:'trk-title'}, t('trkTitle'))),
+      h('div',{class:'trk-where'},
+        h('bdi',{}, b.place_name || ''),
+        b.field_name ? h('span',{class:'trk-sep','aria-hidden':'true'}, '·') : null,
+        b.field_name ? h('bdi',{}, b.field_name) : null),
+      h('div',{class:'trk-when'},
+        h('span',{}, dayLabel(b.date) + ' ' + shortDate(String(b.date).split('T')[0])),
+        h('span',{class:'trk-sep','aria-hidden':'true'}, '·'),
+        // مدى وقتٍ داخل جملة عربية ينقلب بلا عزل صريح فيسبق الانتهاءُ الابتداء
+        h('bdi',{dir:'ltr'}, slotDisplay(slot))),
+      h('div',{class:'trk-foot'},
+        h('span',{class:'trk-left'},
+          h('span',{class:'trk-left-l'}, t('trkStarts')),
+          h('span',{class:'trk-left-v', id:'trkCount'}, left <= -60000 ? t('trkNow') : this.countdown(left))),
+        h('span',{class:'trk-hint'}, pending ? t('trkPendingHint') : t('trkConfirmedHint'))));
+    card.addEventListener('click', ()=>showPage('bookings'));
+    wrap.append(card);
+
+    this.tick();
+    this.timer = setInterval(()=>this.tick(), 60000);
+  },
+};
+
+/* «قبل دقيقتين» — بجموع عربية صحيحة مجّانًا (Intl يتكفّل بالمعدود) */
+function relTime(iso){
+  try{
+    const diff = (new Date(iso).getTime() - Date.now()) / 1000;
+    const rtf = new Intl.RelativeTimeFormat(State.lang==='en'?'en':'ar', { numeric:'auto' });
+    const units = [['year',31536000],['month',2592000],['day',86400],['hour',3600],['minute',60]];
+    for (const [u, s] of units){ if (Math.abs(diff) >= s) return rtf.format(Math.round(diff/s), u); }
+    return rtf.format(Math.round(diff), 'second');
+  }catch(_){ return ''; }
 }
 
 /* ===================== ACTIONS (controllers) ===================== */
@@ -3693,6 +4526,12 @@ if(window.visualViewport){
 function autoRefreshActive(){ return $('#page-home')?.classList.contains('active') || $('#page-detail')?.classList.contains('active') || ($('#page-owner')?.classList.contains('active') && !!Session.owner()); }
 async function refreshVisible(){
   if (document.hidden || !autoRefreshActive()) return;
+  /* الإشعارات **قبل** حارس المودال وقبل الخروج المبكّر: هي أخفّ طلب في الدورة
+     (خمسون صفًّا بلا انضمام) ولا تُعيد رسم شيء تحت نافذة مفتوحة — إنّما تحدّث
+     رقمًا على جرس. وربطُها بحارسٍ وُضع لمنع إعادة الرسم كان سيصمتها كلّما فتح
+     المستخدم نافذة، وهي اللحظة التي يطول فيها بقاؤه. */
+  Notifs.load();
+  Tracker.tick();
   if (document.body.classList.contains('modal-open')) return;                              // مودال مفتوح — لا تُعد الرسم تحته
   if ($('#page-owner')?.classList.contains('active')){ await refreshOwnerSilent(); return; }
   const onDetail = $('#page-detail')?.classList.contains('active');
@@ -3754,6 +4593,7 @@ async function playerLogin(btn){
       Session.setOwner('') /* لا مالك */; Session.setPlayer(res.player_token, remember);
       State.player=res.player; State.guest=false;
       updatePlayerGreeting();
+      Notifs.load(); Tracker.refresh();      // الجرس ولوح المتابعة يخصّان هذا الحساب لا سابقه
       if(!State.places.length){ placesSkeleton(); await loadData(); }
       if(await resumePendingBooking()) return;          // استئناف حجز الضيف إن وُجد
       showPage('home');
@@ -3995,7 +4835,9 @@ async function ownerLogin(btn){
       const res=await API.get('ownerLogin',{phone,password});
       if(!res.success){ toast(apiMsg(res.message)||t('loginFailRetry'),'error'); return; }
       Session.setOwner(res.owner_token, !!$('#ownerRemember')?.checked); State.player=null;
+      Tracker.booking=null; Tracker.paint();     // لوح اللاعب لا يخصّ المالك
       showPage('owner'); await loadOwnerDashboard();
+      Notifs.load(); Notifs.askPermission();     // الطلبات هي عمله — والسؤال في موضعه
     }catch(_){ toast(t('connLag'),'error'); }
   });
 }
@@ -4015,6 +4857,10 @@ async function deleteAccount(btn){
 }
 function doLogout(){
   Session.clear(); State.player=null; State.owner=null; State.ownerData=null; State.guest=false;
+  /* إشعارات الحساب السابق ولوح حجزه لا يبقيان على شاشة من خرج — والجهاز قد
+     يُسلَّم لغيره. الصفوف باقية في القاعدة وتعود بعودته، وما يُمحى هنا الذاكرة. */
+  Notifs.rows=[]; Notifs.missing=false; Notifs.asked=false; Notifs.paint();
+  Tracker.booking=null; Tracker.paint();
   $('#nav-player').classList.remove('show'); $('#nav-owner').classList.remove('show');
   showPage('welcome');
 }
@@ -4081,6 +4927,11 @@ async function confirmBooking(btn){
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
       Modal.close('modal-booking'); showBookingSuccess({place,field,date,hour}, res.booking_id);
       if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
+      Tracker.refresh();          // اللوح يظهر على الرئيسية فور إرسال الطلب لا بعد دورة
+      /* لحظة طلب الإذن: الطلب أُرسل للتوّ وينتظر ردًّا، فالسؤال «أنُعلمك حين
+         يردّون؟» جوابه أمام عينه. طلبُه عند الإقلاع يُرفَض ثمّ لا يعود
+         أندرويد يسمح بطرحه — والرفض حينها رفضٌ لسؤال لم يُفهَم بعد. */
+      Notifs.askPermission();
     }catch(_){ toast(t('bookingConnLag'),'error'); }
   });
 }
@@ -4307,7 +5158,7 @@ function setLanguage(lang){
   $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderSportTabs(); renderSportDropdown(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
     HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     updatePlayerGreeting();
@@ -4316,6 +5167,11 @@ function setLanguage(lang){
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
     // نصوص تحمل قيمة أو حالة ⇒ خارج data-i18n، فتُعاد بناءً هنا (انظر Verify.syncText)
     renderPwFeedback(); renderVerifyBadge();
+    /* الإشعارات ولوح المتابعة يُكتب نصّهما من معطيات لا من `data-i18n` (النوع +
+       المكان + الموعد)، فلا يمسّهما تبديل اللغة إلّا بإعادة بنائهما.
+       ⚠️ مقيس: بدون هذين السطرين يبقى اللوح إنجليزيًّا بعد الرجوع إلى العربية
+          — ونصُّه مكتوبٌ منذ آخر جلبة، فلا شيء يعيد كتابته حتى الجلبة التالية. */
+    Notifs.paint(); Tracker.paint();
     if($('#page-verifyPhone')?.classList.contains('active')) Verify.syncText();
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
     // نصوص التبويبات تغيّرت ⇒ عروض الأزرار تغيّرت. قفزة لا انزلاق: الحبّة
@@ -4423,6 +5279,8 @@ const Actions = {
   setView:(btn)=>setViewMode(btn.dataset.view||'grid'),
   setDetailTab:(btn)=>setDetailTab(btn.dataset.dtab||'book'),
   toggleSportDD:()=>toggleSportDD(),
+  openNotifs:()=>Notifs.open(), notifsMarkAll:()=>Notifs.markAll(),
+  openTracker:()=>{ if(Session.player()) showPage('bookings'); },
   navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
   /* مبدّل لاعب/مالك: المؤشّر ينزلق بـ--seg-i (CSS)، واللوحان يتبادلان بصنف .off لا بـhidden
      (hidden يصفّر ارتفاع الغلاف ⇒ قفزة). الارتفاع يبقى = أطول لوح دائمًا. */
@@ -4616,6 +5474,12 @@ $('#ownerStatusFilter')?.addEventListener('change', renderOwnerBookings);
 $('#ownerSearch')?.addEventListener('input', debounce(()=>renderOwnerBookings(), CONFIG.SEARCH_DEBOUNCE));
 // تحديث تلقائي عند العودة للتبويب
 document.addEventListener('visibilitychange', ()=>{ manageAutoRefresh(); if(!document.hidden&&autoRefreshActive()) refreshVisible(); });
+/* العودة إلى التطبيق هي اللحظة التي يُقرأ فيها الإشعار فعلًا — فتُجلَب حينها
+   مهما كانت الصفحة، بلا انتظار الدورة. و`autoRefreshActive` لا تشمل «حجوزاتي»
+   ولا «حسابي»، وهما صفحتان يفتحهما المنتظِر تحديدًا. */
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ Notifs.load(); Tracker.refresh(); } });
+/* نقر إشعار الجهاز ⇒ فتح المركز، ومن سطره إلى الصفحة المعنيّة. */
+document.addEventListener('app:notification-tap', ()=>{ Notifs.load({silent:true}); Notifs.open(); });
 // تفعيل السحب لإغلاق كل النوافذ
 $$('.modal-overlay').forEach(enableSwipe);
 
@@ -4707,13 +5571,18 @@ async function init(){
   initStickyDedup();         // منع تكرار زرّ متابعة الحجز (اللاصق × الداخلي)
   initAuthForms();           // شروط كلمة السرّ الحيّة + خانات كود التحقّق
   loadData().then(updateTrust);
+  Notifs.load();             // الجرس يعرف عدده قبل أن ينظر إليه المستخدم
   if (Session.owner()){
-    $('#nav-owner').classList.add('show'); showPage('owner'); loadOwnerDashboard(); return;
+    $('#nav-owner').classList.add('show'); showPage('owner'); loadOwnerDashboard();
+    /* المالك يُسأل عن الإذن هنا: الطلبات هي عمله، والسؤال يقع وهو يفتح لوحته
+       لا وهو يفتح التطبيق لأول مرّة ولا يعرف بعدُ ما هذا التطبيق أصلًا. */
+    Notifs.askPermission();
+    return;
   }
   if (Session.player()){
     try{
       const res=await API.get('getPlayerBookings',{ player_token:Session.player() }, 'playerBookings');
-      if (res.success){ State.player=res.player; State.guest=false; updatePlayerGreeting(); showPage('home'); placesSkeleton(); await loadData(); renderPlaces(); return; }
+      if (res.success){ State.player=res.player; State.guest=false; updatePlayerGreeting(); showPage('home'); placesSkeleton(); await loadData(); renderPlaces(); Tracker.refresh(); return; }
       Session.clear();
     }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
   }

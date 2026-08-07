@@ -324,7 +324,15 @@ html.dark .pl-del{color:#FF8A90}
   border-radius:var(--r-sm);cursor:pointer}
 html.dark .fr-del{color:#FF8A90}
 .fr-del[disabled]{opacity:.4;cursor:not-allowed}
-.fr-lbl{display:block;font-size:13.5px;font-weight:700;margin-bottom:8px}
+.fr-lbl{display:block;font-size:13.5px;font-weight:700;margin-bottom:8px;margin-top:4px}
+/* المواصفات صفٌّ من القوائم داخل صفّ الملعب — تفصلها مسافة عن الأوقات تحتها */
+.fld-row .fr-specs{margin-bottom:14px}
+/* حقل الصور خارج `.ad-f` (لا تسمية فوقه بل `.fr-lbl` قبله) فيحتاج أنماطه */
+.fr-imgs{width:100%;min-height:64px;padding:11px 14px;line-height:1.7;resize:vertical;
+  font-family:inherit;font-size:16px;background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:var(--r-sm)}
+.fr-imgs:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.fr-imgnote{margin:8px 0 4px}
 .slotset{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .slot-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;font-size:13.5px;
   font-weight:600;background:var(--surface);border:1px solid var(--line);
@@ -632,6 +640,7 @@ html.dark .res .no{color:#FF8A90}
       بينما البقيّة <code>×</code> — شريحتان لحجم واحد. ولكل قائمة خيار
       <strong>«أخرى…»</strong> يفتح حقلًا حرًّا حين تحتاج قيمة جديدة فعلًا،
       فيصير إدخالها <em>قرارًا</em> لا زلّة لوحة مفاتيح.</p>
+    <p class="frm-n" id="mig13Note" hidden></p>
     <div id="addRes"></div>
     <form id="addForm" novalidate>
       <div class="frm">
@@ -645,15 +654,21 @@ html.dark .res .no{color:#FF8A90}
           <input class="oth" hidden autocomplete="off" placeholder="اكتب اسم المنطقة الجديدة"></label>
         <label class="ad-f"><span>هاتف المكان</span>
           <input id="f_phone" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
-        <label class="ad-f"><span>نوع الأرضية</span>
+        
+        <label class="ad-f"><span>نوع المكان</span>
           <select id="f_type" class="oth-sel">
             <option value="عشب صناعي">عشب صناعي</option>
             <option value="عشب طبيعي">عشب طبيعي</option>
             <option value="صالة مغلقة">صالة مغلقة</option>
             <option value="أرضية مطّاطية">أرضية مطّاطية</option>
+            <option value="ملعب بادل">ملعب بادل</option>
+            <option value="ملعب تنس">ملعب تنس</option>
+            <option value="ملعب سلة">ملعب سلة</option>
+            <option value="ملعب طائرة">ملعب طائرة</option>
+            <option value="مجمّع متعدّد الرياضات">مجمّع متعدّد الرياضات</option>
             <option value="__other">أخرى…</option>
           </select>
-          <input class="oth" hidden autocomplete="off" placeholder="اكتب نوع الأرضية"></label>
+          <input class="oth" hidden autocomplete="off" placeholder="اكتب نوع المكان"></label>
         <label class="ad-f"><span>رابط الخريطة</span>
           <input id="f_map" type="url" dir="ltr" placeholder="https://maps.app.goo.gl/..."></label>
         <label class="ad-f"><span>لون البطاقة في التطبيق</span>
@@ -687,6 +702,20 @@ html.dark .res .no{color:#FF8A90}
         التطبيق يُسقط الأماكن الفارغة عمدًا، فلا يرى اللاعب مكانًا لا يستطيع حجز شيء فيه.
         ولذلك الملعب الأوّل إلزامي هنا. السعر بالساعة، والأوقات هي الخانات التي
         سيراها اللاعب قابلة للحجز.</p>
+      <p class="frm-n">🏟️ <strong>الرياضة تُسجَّل على الملعب لا على المكان</strong>، فمجمّعٌ
+        واحد يضمّ ملعب كرة قدم وملعبَي بادل يُسجَّل مكانًا واحدًا كما هو في الواقع —
+        بلا تمزيقه إلى مكانين بنفس العنوان ونفس الهاتف. والتطبيق يعرض لكل رياضة
+        ملاعبَها وحدها.
+        <br>⚡ <strong>وهذا هو ما يفتح الرياضة للحجز.</strong> شارة «قريبًا» في التطبيق
+        ليست قيمة مكتوبة في الكود بل <strong>مشتقّة من وجود ملعب نشط</strong> —
+        فأوّل ملعب بادل تسجّله هنا يُنزل الشارة عن البادل ويفتحها للحجز عند أوّل تحديث،
+        بلا نشر نسخة جديدة من التطبيق.
+        <br>📐 و<strong>الأبعاد أرقام لا كلمات</strong> في كل رياضة (بادل <code>20×10</code>·
+        سلة <code>28×15</code>): التطبيق يعرض هذا الحقل <strong>حرفيًّا</strong> ويبني منه
+        شرائح تصفية، و«زوجي» كانت ستُقرأ عربيةً في الواجهة الإنجليزية. أمّا المعنى
+        (زوجي/فردي · كامل/نصف) فمحلّه <strong>المواصفات</strong> داخل الصفّ، ولها ترجمة
+        في اللغتين. وكل مواصفة تُترك «غير مسجَّلة» <strong>لا تُعرَض للاعب أصلًا</strong> —
+        لا تُخمَّن ولا يُخترَع لها نصّ.</p>
       <div id="fieldRows"></div>
       <button type="button" class="btn btn-sec" id="addRow">+ أضف ملعبًا آخر</button>
 
@@ -729,7 +758,7 @@ html.dark .res .no{color:#FF8A90}
   </div>
 
   <p class="note" id="dataNote"></p>
-  <p class="note">بناء 2026-07-31</p>
+  <p class="note">بناء 2026-08-06</p>
 </main>
 
 <script>
@@ -1006,6 +1035,21 @@ function start(){
    ⚠️ الحجوزات تحمل أرقام العملاء. تبقى في الذاكرة ولا تُخزَّن ولا تُرسَل.
    ═══════════════════════════════════════════════════════════════════════════ */
 var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], truncated:false };
+var HAS_SPORT = true;    // هل شُغّل ترحيل 13؟ يُقاس من ردّ القاعدة لا يُفترَض
+
+/* الأعمدة تُذكَر صراحةً (لا `select=*`) وهذا مقصود، لكنّه يعني أن **عمودًا
+   غير موجود يُفشل الاستعلام كلّه**: `fields.sport` قبل ترحيل 13 يجعل الردّ
+   400 فتخلو `D.fields` — ومعها جدول الملاعب والطاقة والإشغال وحصّة كل مكان.
+   فنسأل بالعمودين، وإن رُفضا سألنا بلا الاثنين. الجولة الثانية لا تقع إلّا
+   في حالة «قبل الترحيل»، وبعده لا تقع أبدًا. */
+function fetchFields(){
+  var BASE = 'id,place_id,name,size,price,slots,active,image_url';
+  return api('/rest/v1/fields?select=' + BASE + ',sport,attrs').then(function(r){
+    if (r.ok) { HAS_SPORT = true; return r; }
+    HAS_SPORT = false;
+    return api('/rest/v1/fields?select=' + BASE);
+  });
+}
 
 function loadAll(){
   return Promise.all([
@@ -1014,7 +1058,7 @@ function loadAll(){
     api('/rest/v1/bookings?select=id,created_at,booking_date,hour,time_label,place_id,field_id,' +
         'customer_name,customer_phone,player_id,price,status,source,cancel_reason' +
         '&order=booking_date.desc&limit=' + BK_LIMIT),
-    api('/rest/v1/fields?select=id,place_id,name,size,price,slots,active'),
+    fetchFields(),
     // بلا `active` في المرشِّح عمدًا: الأدمن يرى المخفيّ كي يستطيع إظهاره.
     // (‏places_read يسمح بذلك: `active or is_admin() or owns_place`.)
     api('/rest/v1/places?select=id,name,city,region,type,phone,active&order=name'),
@@ -1706,8 +1750,77 @@ var rowSeq = 0;
    الملاعب تتكرّر، وأي معرّف فيها يتكرّر معها. */
 var OTHER = '__other';
 var OPT_OTHER = '<option value="' + OTHER + '">أخرى…</option>';
-var SIZE_OPTS = ['5×5','6×6','7×7','8×8','9×9','11×11'].map(function(s){
-  return '<option value="' + s + '">' + s + '</option>'; }).join('') + OPT_OTHER;
+/* ═══════════════════════════════════════════════════════════════════════════
+   الرياضات ومواصفاتها — **مرآة `SPORTS` و`FIELD_SPECS` في app/src/app.js**
+
+   نسخة لا استيراد: اللوحة صفحة مستقلّة لا تقرأ من `app/`، وهي قاعدة المستودع
+   نفسها (README: «لا يقرأ أحدهما من الآخر»)، ونفس ما يجري لمخطّطات `COURT`.
+   ⚠️ فأيّ خيار يُضاف هنا يُضاف هناك أيضًا. وما يُكتب هنا ولا يعرفه التطبيق
+      **لا يُعرَض للاعب إطلاقًا** — لا يُكتب حرفيًّا ولا يُخترَع له نصّ (م5).
+
+   والحجم (`size`) **أرقام لا كلمات** في كل رياضة: التطبيق يعرضه حرفيًّا ويبني
+   منه شرائح التصفية، و«مزدوج» كانت ستُقرأ عربيةً في الواجهة الإنجليزية.
+   والمعنى (زوجي/فردي · كامل/نصف) محلّه `attrs.court` وله ترجمة في اللغتين.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var SPORTS = [
+  { key:'football', name:'كرة القدم',   sizes:['5×5','6×6','7×7','8×8','9×9','11×11'], type:'عشب صناعي' },
+  { key:'padel',    name:'بادل',         sizes:['20×10','20×6'],                        type:'ملعب بادل' },
+  { key:'basket',   name:'كرة السلة',    sizes:['28×15','15×14'],                       type:'أرضية صلبة' },
+  { key:'tennis',   name:'تنس',          sizes:['23.8×11','23.8×8.2'],                  type:'ملعب تنس' },
+  { key:'volley',   name:'كرة الطائرة',  sizes:['18×9','16×8'],                         type:'ملعب طائرة' }
+];
+var SPEC_LABEL = {
+  enclosure:'الموقع', lights:'الإضاءة', seating:'الجلسات', surface:'الأرضية',
+  court:'نوع الملعب', walls:'الجدران', panoramic:'الرؤية', rackets:'المضارب',
+  hoop:'السلة', net:'الشبكة'
+};
+/* [قيمة, ما يعرضه التطبيق] — الفارغ أوّلًا دائمًا: «غير مسجَّل» ليس نقصًا
+   يُملأ بالتخمين. مواصفةٌ لا تعرفها لا تُكتب، ولا تُعرَض في التطبيق أصلًا. */
+var SPEC_VALS = {
+  enclosure: [['outdoor','مكشوف'],['indoor','صالة مغلقة'],['covered','مسقوف']],
+  lights:    [['yes','إضاءة ليلية'],['no','بلا إضاءة ليلية']],
+  seating:   [['yes','مدرّج للمشاهدين'],['no','بلا مدرّج']],
+  walls:     [['glass','زجاج'],['mesh','شبك'],['mixed','زجاج وشبك']],
+  panoramic: [['yes','بانورامي'],['no','غير بانورامي']],
+  rackets:   [['free','مضارب مجاناً'],['paid','مضارب برسوم'],['no','بلا مضارب']],
+  hoop:      [['standard','ارتفاع نظامي (3.05م)'],['adjustable','ارتفاع قابل للتعديل']],
+  net:       [['men','شبكة رجال (2.43م)'],['women','شبكة سيدات (2.24م)'],['mixed','شبكة مختلطة'],['youth','شبكة ناشئين']]
+};
+/* `surface` و`court` قيمتاهما تختلفان باختلاف الرياضة ⇒ تُفهرَسان بالرياضة */
+var SPEC_VALS_BY_SPORT = {
+  football: { surface:[['grass_synthetic','عشب صناعي'],['grass_natural','عشب طبيعي'],['rubber','مطّاطية'],['sand','رملية']] },
+  padel:    { court:[['double','زوجي'],['single','فردي']] },
+  basket:   { court:[['full','ملعب كامل'],['half','نصف ملعب']],
+              surface:[['parquet','باركيه'],['pu','بولي يوريثان'],['asphalt','أسفلت'],['rubber','مطّاطية']] },
+  tennis:   { surface:[['hard','صلبة (Hard)'],['clay','ترابية (Clay)'],['grass','عشب'],['carpet','سجّاد']],
+              court:[['single','فردي'],['double','زوجي']] },
+  volley:   { surface:[['indoor_court','أرضية صالة'],['beach_sand','رمل شاطئي'],['grass','عشب']] }
+};
+/* ترتيب المواصفات لكل رياضة — نفس ترتيب `FIELD_SPECS` + `FIELD_SPECS_COMMON` */
+var SPEC_ORDER = {
+  football: ['surface'],
+  padel:    ['court','walls','panoramic','rackets'],
+  basket:   ['court','surface','hoop'],
+  tennis:   ['surface','court'],
+  volley:   ['surface','net']
+};
+var SPEC_COMMON = ['enclosure','lights','seating'];
+function sportOf(key){
+  for (var i=0;i<SPORTS.length;i++) if (SPORTS[i].key===key) return SPORTS[i];
+  return SPORTS[0];
+}
+function specKeys(sport){ return (SPEC_ORDER[sport]||SPEC_ORDER.football).concat(SPEC_COMMON); }
+function specVals(sport, key){
+  var bySport = SPEC_VALS_BY_SPORT[sport] || {};
+  return bySport[key] || SPEC_VALS[key] || [];
+}
+var SPORT_OPTS = SPORTS.map(function(s){
+  return '<option value="' + s.key + '">' + esc(s.name) + '</option>'; }).join('');
+function sizeOptsFor(sport){
+  return sportOf(sport).sizes.map(function(s){
+    return '<option value="' + s + '">' + s + '</option>'; }).join('') + OPT_OTHER;
+}
+var SIZE_OPTS = sizeOptsFor('football');
 
 /* المرافق: القيم الأربع التي يعرف `amenityValueText` في التطبيق ترجمتها،
    وما عداها يُعرَض حرفيًّا بلا ترجمة. الفارغ = لا أيقونة أصلًا. */
@@ -1739,7 +1852,21 @@ document.addEventListener('change', function(e){
 /* بعد أي reset تعود القوائم إلى خيارها الأوّل — والحقول المكشوفة لا تُخفى وحدها */
 function syncAllOth(){ document.querySelectorAll('select.oth-sel').forEach(syncOth); }
 
-function fieldRowHtml(i, price){
+/* المواصفات: قائمة لكل مفتاح، وخيارها الأوّل **فارغ** — «غير مسجَّلة» حالةٌ
+   صادقة لا نقصٌ يُملأ بالتخمين، والتطبيق لا يعرض ما لم يُملأ أصلًا. */
+function specsHtml(sport){
+  return specKeys(sport).map(function(k){
+    var vals = specVals(sport, k);
+    if (!vals.length) return '';
+    return '<label class="ad-f"><span>' + esc(SPEC_LABEL[k] || k) + '</span>' +
+      '<select class="fr-spec" data-spec="' + k + '">' +
+      '<option value="">— غير مسجَّلة —</option>' +
+      vals.map(function(v){ return '<option value="' + v[0] + '">' + esc(v[1]) + '</option>'; }).join('') +
+      '</select></label>';
+  }).join('');
+}
+function fieldRowHtml(i, price, sport){
+  sport = sport || 'football';
   var chips = SLOT_ALL.map(function(s){
     return '<label class="slot-chip"><input type="checkbox" class="fr-slot" value="' + s.h +
       '" checked><span>' + esc(s.label) + '</span></label>';
@@ -1748,15 +1875,26 @@ function fieldRowHtml(i, price){
     '<div class="fr-t"><b>ملعب داخل هذا المكان</b>' +
       '<button type="button" class="fr-del">حذف</button></div>' +
     '<div class="frm">' +
+      '<label class="ad-f"><span>الرياضة *</span>' +
+        '<select class="fr-sport">' + SPORT_OPTS + '</select></label>' +
       '<label class="ad-f"><span>اسم الملعب</span>' +
         '<input class="fr-name" value="ملعب ' + i + '" autocomplete="off"></label>' +
-      '<label class="ad-f"><span>الحجم</span>' +
-        '<select class="fr-size oth-sel">' + SIZE_OPTS + '</select>' +
-        '<input class="oth" hidden autocomplete="off" placeholder="مثال: 8×8 — بعلامة × لا حرف x"></label>' +
+      '<label class="ad-f"><span>الأبعاد (م)</span>' +
+        '<select class="fr-size oth-sel">' + sizeOptsFor(sport) + '</select>' +
+        '<input class="oth" hidden autocomplete="off" placeholder="أرقام لا كلمات — بعلامة × لا حرف x"></label>' +
       '<label class="ad-f"><span>سعر الساعة (د.أ)</span>' +
         '<input class="fr-price" type="number" min="0" step="1" inputmode="numeric" dir="ltr" value="' +
         esc(String(price || '')) + '"></label>' +
     '</div>' +
+    '<span class="fr-lbl">مواصفات هذا الملعب</span>' +
+    '<div class="frm fr-specs">' + specsHtml(sport) + '</div>' +
+    '<span class="fr-lbl">صور الملعب</span>' +
+    '<textarea class="fr-imgs" rows="2" dir="ltr" spellcheck="false" ' +
+      'placeholder="https://... (رابط في كل سطر، أو مفصولة بفواصل)"></textarea>' +
+    '<p class="frm-n fr-imgnote">أول رابط هو صورة الغلاف في صفحة الملعب. ' +
+      '<strong>روابط <code>http(s)</code> فقط</strong> — التطبيق يُسقط ما عداها صامتًا ' +
+      '(‏<code>fieldImages</code>)، فلا ترفع ملفًّا من جهازك هنا: الرابط لا الملفّ. ' +
+      'وملعبٌ بلا صورة يعرض رمز الرياضة بدلًا منها، ولا تُخترَع له صورة.</p>' +
     '<span class="fr-lbl">الأوقات المتاحة للحجز</span>' +
     '<div class="slotset">' + chips + '</div>' +
     '<div class="slot-quick">' +
@@ -1766,9 +1904,25 @@ function fieldRowHtml(i, price){
       '<button type="button" class="qk" data-qk="none">تفريغ</button>' +
     '</div></div>';
 }
+/* تبديل الرياضة يُعيد بناء الأبعاد والمواصفات معًا: مقاسات كرة القدم لا معنى
+   لها في التنس، و«نوع الجدران» لا معنى له في السلة. وما كان مختارًا يسقط
+   عمدًا — قيمةٌ من رياضةٍ أخرى ليست قيمةً ناقصة، هي قيمةٌ **خاطئة**. */
+function onSportChange(row){
+  var sp = row.querySelector('.fr-sport').value;
+  var sizeSel = row.querySelector('.fr-size');
+  sizeSel.innerHTML = sizeOptsFor(sp);
+  syncOth(sizeSel);
+  row.querySelector('.fr-specs').innerHTML = specsHtml(sp);
+}
 function addFieldRow(){
   var price = D.fields.length ? capacity().medPrice : '';
-  $('#fieldRows').insertAdjacentHTML('beforeend', fieldRowHtml(++rowSeq, price));
+  /* الملعب الجديد يرث رياضة سابقه: مكانٌ فيه أربعة ملاعب بادل يُملأ بأربع
+     نقرات لا بأربع نقرات وأربع قوائم. وأوّل صفّ يبدأ بكرة القدم. */
+  var rows = document.querySelectorAll('#fieldRows .fld-row');
+  var last = rows.length ? rows[rows.length-1].querySelector('.fr-sport') : null;
+  $('#fieldRows').insertAdjacentHTML('beforeend', fieldRowHtml(++rowSeq, price, last ? last.value : 'football'));
+  var added = $('#fieldRows').lastElementChild;
+  if (last) added.querySelector('.fr-sport').value = last.value;
   syncDelButtons();
 }
 function syncDelButtons(){
@@ -1777,6 +1931,10 @@ function syncDelButtons(){
   rows.forEach(function(r){ r.querySelector('.fr-del').disabled = (rows.length === 1); });
 }
 $('#addRow').addEventListener('click', addFieldRow);
+$('#fieldRows').addEventListener('change', function(e){
+  var sel = e.target && e.target.closest ? e.target.closest('.fr-sport') : null;
+  if (sel) onSportChange(sel.closest('.fld-row'));
+});
 $('#fieldRows').addEventListener('click', function(e){
   var del = e.target.closest('.fr-del');
   if (del && !del.disabled){ del.closest('.fld-row').remove(); syncDelButtons(); return; }
@@ -1817,6 +1975,18 @@ function renderAddLists(){
     s.innerHTML = AMEN_OPTS;
   });
   if (!document.querySelector('#fieldRows .fld-row')) addFieldRow();
+
+  /* يُقال **قبل** ملء النموذج لا بعد رفضه: من يملأ نموذجًا كاملًا ثمّ يُردّ
+     يقرأ الرفض عطلًا في اللوحة، ومن يقرأ السبب أوّلًا يشغّل الملفّ ويمضي. */
+  var mn = $('#mig13Note');
+  if (mn){
+    mn.hidden = HAS_SPORT;
+    if (!HAS_SPORT) mn.innerHTML = '⚠️ <strong>ترحيل ١٣ لم يُشغَّل بعد</strong> — العمودان ' +
+      '<code>fields.sport</code> و<code>fields.attrs</code> غير موجودين في القاعدة، ' +
+      'فكل ملعب تُنشئه هنا <strong>سيُرفَض</strong> ما دام يحمل رياضةً ومواصفات. ' +
+      'شغّل <code>migration/13_field_sports.sql</code> مرّة واحدة من محرّر SQL ' +
+      'ثمّ حدّث هذه الصفحة. (وبقيّة اللوحة تعمل كما هي.)';
+  }
 }
 
 /* ── الأماكن الموجودة: إخفاء/إظهار وحذف ──────────────────────────────────────
@@ -1829,9 +1999,14 @@ function renderAddLists(){
 function renderPlaceAdmin(){
   var out = $('#plList'); if (!out) return;
   if (!D.places.length){ out.innerHTML = '<p class="muted-row">لا أماكن في القاعدة</p>'; return; }
-  var bk = {}, fl = {}, rv = {};
+  var bk = {}, fl = {}, rv = {}, sp = {};
   D.adminPlaces.forEach(function(p){ bk[String(p.id)] = +p.bookings || 0; });
-  D.fields.forEach(function(f){ fl[String(f.place_id)] = (fl[String(f.place_id)]||0) + 1; });
+  D.fields.forEach(function(f){
+    var k = String(f.place_id);
+    fl[k] = (fl[k]||0) + 1;
+    // رياضات المكان مشتقّة من ملاعبه — لا عمود لها عليه، والمجمّع قد يحمل أكثر من واحدة
+    (sp[k] || (sp[k] = {}))[f.sport || 'football'] = 1;
+  });
   D.reviews.forEach(function(r){ rv[String(r.place_id)] = (rv[String(r.place_id)]||0) + 1; });
 
   // المخفيّ أوّلًا: هو ما جئت إلى هذه القائمة من أجله غالبًا
@@ -1840,9 +2015,11 @@ function renderPlaceAdmin(){
   });
   out.innerHTML = rows.map(function(p){
     var id = String(p.id), nb = bk[id]||0, nf = fl[id]||0, nr = rv[id]||0;
+    var sports = Object.keys(sp[id]||{}).map(function(k){ return sportOf(k).name; });
     var meta = [esc(p.city||'—'), esc(p.region||'—'),
+                (sports.length ? esc(sports.join(' + ')) : null),
                 countNoun(nf,'ملعب واحد','ملعبان','ملاعب','ملعبًا'),
-                countNoun(nb,'حجز واحد','حجزان','حجوزات','حجزًا')].join(' · ');
+                countNoun(nb,'حجز واحد','حجزان','حجوزات','حجزًا')].filter(Boolean).join(' · ');
     return '<div class="ad-pl' + (p.active ? '' : ' off') + '" data-id="' + esc(id) +
              '" data-name="' + esc(p.name) + '" data-bk="' + nb + '" data-fl="' + nf + '" data-rv="' + nr + '">' +
       '<span class="nm">' + esc(p.name) + '</span>' +
@@ -1956,7 +2133,34 @@ $('#addForm').addEventListener('submit', function(e){
     if (!(price >= 0) || isNaN(price)) errs.push('سعر الملعب «' + esc(fname) + '» غير صالح.');
     var size = pick(r.querySelector('.fr-size'));
     if (!size) errs.push('حجم الملعب «' + esc(fname) + '» فارغ — اخترتَ «أخرى…» ولم تكتب شيئًا.');
-    rows.push({ name:fname, size:size, price:price, slots:slots });
+    var sport = r.querySelector('.fr-sport').value;
+
+    /* المواصفات: ما اختير فقط. الفارغ **لا يُكتب مفتاحًا فارغًا** — مفتاحٌ
+       قيمته '' يمرّ من قيد `jsonb_typeof = object` ثمّ يسقط في الواجهة على
+       أي حال، فتركُه يُثقل الصفّ بلا فائدة. */
+    var attrs = {};
+    r.querySelectorAll('.fr-spec').forEach(function(s){
+      var v = String(s.value||'').trim();
+      if (v) attrs[s.getAttribute('data-spec')] = v;
+    });
+
+    /* الصور: نفس ما يقبله `fieldImages` في التطبيق حرفيًّا — فصل بفاصلة أو
+       سطر أو شرطة رأسية، http(s) فقط، وبلا تكرار. ما يُرفَض هنا يُقال للمالك
+       بدل أن يُحفَظ ثمّ يختفي صامتًا من التطبيق. */
+    var rawImgs = String(r.querySelector('.fr-imgs').value||'').split(/[,\n|]+/)
+      .map(function(s){ return s.trim(); }).filter(Boolean);
+    var imgs = [], bad = [];
+    rawImgs.forEach(function(u){
+      if (!/^https?:\/\//i.test(u)) { bad.push(u); return; }
+      if (imgs.indexOf(u) === -1) imgs.push(u);
+    });
+    if (bad.length) errs.push('صور الملعب «' + esc(fname) + '»: ' +
+      countNoun(bad.length,'رابط واحد','رابطان','روابط','رابطًا') +
+      ' لا يبدأ بـ<code>http</code> ⇒ التطبيق يُسقطه صامتًا. أوّلها: <code>' +
+      esc(bad[0].slice(0,60)) + '</code>');
+
+    rows.push({ name:fname, size:size, price:price, slots:slots,
+                sport:sport, attrs:attrs, image_url:imgs.join(',') });
   });
   if (!rows.length) errs.push('لا بدّ من ملعب واحد على الأقلّ.');
 
@@ -1996,12 +2200,20 @@ $('#addForm').addEventListener('submit', function(e){
     }
     placeId = r.data[0].id;
     done.push('أُنشئ المكان <b>' + esc(name) + '</b> في ' + esc(city) + ' — ' + esc(region) + '.');
-    return api('/rest/v1/fields', {
-      method:'POST', prefer:'return=representation',
-      body: rows.map(function(f){
-        return { place_id:placeId, name:f.name, size:f.size, price:f.price, slots:f.slots, active:true };
-      })
+    var full = rows.map(function(f){
+      return { place_id:placeId, name:f.name, size:f.size, price:f.price, slots:f.slots,
+               active:true, image_url:f.image_url, sport:f.sport, attrs:f.attrs };
     });
+    return api('/rest/v1/fields', { method:'POST', prefer:'return=representation', body:full })
+      .then(function(r){
+        /* ترحيل 13 لم يُشغَّل ⇒ العمودان غير موجودين وPostgREST يردّ `PGRST204`.
+           **ولا نُعيدها منقوصة هنا**، خلافًا لما يفعله التطبيق عند إضافة ملعب:
+           هناك الملعب كرة قدم على أي حال فلا شيء يُفقَد، أمّا هنا فالمالك اختار
+           «بادل» صراحةً — وكتابته كرةَ قدم صامتًا تصنع بيانات كاذبة يصعب تتبّعها.
+           نفشل ونقول السبب والملفّ، فيُشغَّل ثمّ يُعاد النموذج كما هو. */
+        if (!r.ok && String(r.raw||'').indexOf('PGRST204') !== -1) r.migration13 = true;
+        return r;
+      });
   })
   .then(function(r){
     if (!r.ok){
@@ -2012,6 +2224,21 @@ $('#addForm').addEventListener('submit', function(e){
     var caps = rows.reduce(function(a,f){ return a + f.slots.length; }, 0);
     done.push('أُضيف ' + countNoun(rows.length,'ملعب واحد','ملعبان','ملاعب','ملعبًا') +
       ' بطاقة ' + countNoun(caps,'خانة واحدة','خانتين','خانات','خانة') + ' يوميًّا.');
+
+    /* الرياضات المسجَّلة — وأيّها كان مغلقًا قبل هذا المكان.
+       ⚠️ يُقاس **قبل** `loadAll()`: بعده تصير الرياضة موجودة فيضيع الخبر.
+       والخبر هو الأهمّ في الشاشة: «قريبًا» في التطبيق مشتقّة من وجود ملعب،
+       فأوّل ملعب بادل يفتح البادل للحجز فورًا — والمالك يستحقّ أن يعرف. */
+    var had = {};
+    D.fields.forEach(function(f){ if (f.sport) had[f.sport] = 1; });
+    var opened = [], used = {};
+    rows.forEach(function(f){
+      if (used[f.sport]) return; used[f.sport] = 1;
+      if (!had[f.sport]) opened.push(sportOf(f.sport).name);
+    });
+    if (opened.length) done.push('<strong>فُتحت للحجز: ' + esc(opened.join(' · ')) + '</strong> — ' +
+      'كانت تحمل شارة «قريبًا» في التطبيق، وحالة كل رياضة مشتقّة من وجود ملعب نشط لها. ' +
+      'أمّا على <b>الموقع</b> فتُقرأ وقت البناء ⇒ تحتاج <code>build.ps1</code> ونشرًا.');
     if (!ownerPhone) return null;
     return api('/rest/v1/profiles?select=id,name,role&phone=eq.' + encodeURIComponent(normPhone(ownerPhone)));
   })
@@ -2074,6 +2301,12 @@ $('#addForm').addEventListener('submit', function(e){
       msg = 'فشل إنشاء المكان (' + (r ? r.status : '?') + ')' + detail + '. ' +
         (r && r.status === 401 ? 'انتهت جلستك — اخرج وادخل من جديد.' :
          r && r.status === 403 ? 'حسابك ليس أدمن في القاعدة.' : 'لم يُكتب شيء.');
+    } else if (ex && ex.step === 'fields' && r && r.migration13){
+      msg = '<strong>ترحيل قاعدة البيانات ١٣ لم يُشغَّل بعد.</strong> العمودان ' +
+        '<code>fields.sport</code> و<code>fields.attrs</code> غير موجودين، فالقاعدة ترفض ' +
+        'تسجيل رياضة الملعب ومواصفاته. شغّل <code>migration/13_field_sports.sql</code> ' +
+        'مرّة واحدة من محرّر SQL ثمّ أعد الإرسال — <strong>النموذج ما زال ممتلئًا كما هو</strong>. ' +
+        '<br>وحُذف المكان الذي أُنشئ قبل قليل، فلن يتكرّر اسمه.';
     } else if (ex && ex.step === 'fields'){
       msg = 'أُنشئ المكان ثمّ فشلت إضافة الملاعب (' + (r ? r.status : '?') + ')' + detail + '. ' +
         '<strong>وحُذف المكان</strong> كي لا يبقى مكانٌ فارغ لا يراه أحد — أعد المحاولة كاملةً.';

@@ -288,6 +288,9 @@
           <div class="home-loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="cityAmman">عمّان</span></div>
         </div>
         <div class="home-tools">
+          <!-- الجرس: مخفيّ للضيف (لا صفوف له في القاعدة أصلاً، فجرسٌ لا يرنّ أبداً
+               يُقرأ عطلاً). يُظهره `Notifs.paint` عند وجود جلسة. -->
+          <button class="icon-btn notif-btn" id="homeNotifBtn" data-action="openNotifs" data-i18n-aria="notifsTitle" aria-label="الإشعارات" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
           <button class="icon-btn" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
           <button class="icon-btn" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
         </div>
@@ -298,6 +301,12 @@
         <button class="search-btn" data-action="search" data-i18n="search">بحث</button>
       </div>
     </header>
+    <!-- ===== لوح متابعة الحجز =====
+         يُبنى في JS ويبقى مخفيًّا ما لم يكن للاعب حجزٌ قادم فعلًا: لوحٌ فارغ
+         يقول «لا حجز لديك» يزحم أعلى الرئيسية كلَّ يوم لا يلعب فيه أحد.
+         موضعه **بعد الرأس وقبل شريط التصفّح** عمدًا: الأمر الأوّل الذي جاء من
+         أجله من عنده حجز، ولا يزيح شيئًا عمّن ليس عنده. -->
+    <div class="trk-wrap" id="trackerWrap" hidden></div>
     <!-- شريط تصفّح لاصق موحّد (نمط Airbnb/Careem): زرّ الفلاتر مثبّت + الرياضات + فاصل + المناطق
          في مسار انزلاق أفقي واحد — بدل صفّين منفصلين يستهلكان مساحة رأسية على الهاتف. -->
     <!-- غلاف لاصق واحد يضمّ شريط التصفّح + شرائح الفلاتر المفعّلة.
@@ -365,6 +374,13 @@
         <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
           <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
           <div class="subfields" id="subFields"></div>
+          <!-- مواصفات الملعب المحدَّد — تختلف باختلاف الرياضة (FIELD_SPECS في app.js).
+               مخفيّ ما لم تكن هناك مواصفة **معروفة ومترجَمة** واحدة على الأقل:
+               عنوانٌ فوق فراغ يقرأه المستخدم «نقص بيانات» لا «لا مواصفات». -->
+          <div class="field-specs" id="fieldSpecs" hidden>
+            <div class="field-photos-title" data-i18n="specsTitle">مواصفات الملعب</div>
+            <div class="spec-chips" id="specChips"></div>
+          </div>
           <!-- صور الملعب المحدَّد — مصغّرات تفتح المعرض المكبّر -->
           <div class="field-photos" id="fieldPhotos" hidden>
             <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
@@ -546,6 +562,7 @@
           <div class="muted-white" id="ownerPlaceTitle">…</div>
         </div>
         <div style="display:flex;gap:8px">
+          <button class="ghost-btn notif-btn" id="ownerNotifBtn" data-action="openNotifs" data-i18n-aria="notifsTitle" aria-label="الإشعارات"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
           <button class="ghost-btn" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
           <button class="ghost-btn" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
           <button class="ghost-btn" data-action="logout" data-i18n="logout">خروج</button>
@@ -893,6 +910,21 @@
       <textarea class="finput" id="reasonInput" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." data-i18n-ph="reasonPlaceholder" style="margin-bottom:18px"></textarea>
       <button class="sbtn" id="reasonConfirm" style="background:var(--danger-btn)!important" data-i18n="confirmWord">تأكيد</button>
       <button class="cbtn" id="reasonCancel" data-i18n="backWord">رجوع</button>
+    </div>
+  </div>
+
+  <!-- ============ NOTIFICATIONS (مركز الإشعارات) ============
+       القائمة تُبنى في JS من صفوف القاعدة: النصّ يُكتب بلغة المستخدم الحالية
+       لا يُقرأ مخزَّناً، فمن بدّل لغته يقرأ إشعاراته القديمة بلغته الجديدة. -->
+  <div class="modal-overlay" id="modal-notifs" role="dialog" aria-modal="true" aria-labelledby="ntfTitle">
+    <div class="modal" data-modal="notifs">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="ntf-head">
+        <div class="modal-title" id="ntfTitle" data-i18n="notifsTitle">الإشعارات</div>
+        <button class="link ntf-mark" type="button" id="notifMarkAll" data-action="notifsMarkAll" data-i18n="notifsMarkAll" hidden>علّم الكل كمقروء</button>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+      <button class="cbtn" data-action="closeModal" data-i18n="backWord">رجوع</button>
     </div>
   </div>
 

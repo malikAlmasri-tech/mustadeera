@@ -83,7 +83,10 @@ koora/
 ├── android/               ← 🟣 مشروع أندرويد (Capacitor)
 │   └── SIGNING.md         ← ⭐ إنشاء مفتاح التوقيع وبناء نسخة release
 │
-├── backend/Code.gs        ← ⚠️ Apps Script — لم يبقَ منه إلّا الـAI (اقرأ أدناه)
+├── backend/Code.gs        ← ⛔ Apps Script — **لم يعد يُنادى إطلاقًا** (اقرأ أدناه)
+│
+├── supabase/functions/ai/ ← 🤖 دالّة الحافّة: لوحات AI الثلاث (تحلّ محلّ Code.gs)
+├── tools/                 ← 🔍 حرّاس اتّساق: مرآة المواصفات · تكافؤ مفاتيح اللغتين
 │
 ├── docs/                  ← 📚 مراجع لا تُنفَّذ
 │   ├── plans/             ← الخطط الثلاث (① التطبيق · ② الموقع · ترحيل القاعدة)
@@ -119,6 +122,20 @@ powershell -ExecutionPolicy Bypass -File build.ps1
 npx cap sync android
 ```
 
+**حرّاس الاتّساق** (يُنصح بتشغيلهما بعد أي تعديل على الرياضات أو نصوص الواجهة):
+
+```bash
+node tools/check-spec-mirror.js
+```
+
+```bash
+node tools/check-i18n-parity.js app/src/app.js
+```
+
+الأوّل يقارن `FIELD_SPECS` في `app/src/app.js` بمرآته في `site/admin.html` ويتحقّق أن لكل
+خيار تسميةً بالعربية والإنجليزية — **خيارٌ تكتبه اللوحة ولا يعرفه التطبيق لا يُعرَض للاعب
+إطلاقًا، بلا خطأ ولا أثر.** والثاني يتحقّق من تكافؤ مفاتيح `I18N.ar`/`I18N.en`.
+
 ```bash
 cd android && .\gradlew.bat assembleDebug
 ```
@@ -132,14 +149,16 @@ cd android && .\gradlew.bat assembleDebug
 
 ---
 
-## ⚠️ حالة `backend/Code.gs`
+## ⛔ حالة `backend/Code.gs` — ميّت، ويُحتفَظ به مرجعًا فقط
 
-الباكند القديم (Apps Script + Google Sheets). **كل شيء انتقل إلى Postgres/Supabase**
-عدا شيء واحد: **لوحات الذكاء الاصطناعي الثلاث** في لوحة المالك (`aiInsights` ·
-`aiReviews` · `aiWeather`) ما زالت تناديه، لأن Gemini يحتاج مفتاحًا على خادم.
+الباكند القديم (Apps Script + Google Sheets). **لا سطر في التطبيق يناديه بعد 2026-08-06.**
 
-**لا تطوّره.** إمّا يبقى خادمَ AI فقط، أو يُنقل الـAI إلى Supabase Edge Function
-ويُوقَف نهائيًّا (P5). القرار للمالك.
+آخر ما بقي فيه كان لوحات الذكاء الاصطناعي الثلاث، **وكانت معطّلة لا بطيئة**: التطبيق
+يرسل توكن Supabase و`validateOwnerToken` هناك تنتظر التوكن القديم ⇒ كل طلب يُردّ
+بـ«انتهت جلستك»؛ ولو مرّ لقرأ من Sheets التي توقّفت عن استقبال الكتابة يوم انتقل الحجز
+إلى Postgres. محلّها الآن [`supabase/functions/ai/index.ts`](supabase/functions/ai/index.ts).
+
+**لا تطوّره ولا تعد إليه.** يبقى في المستودع لأن فيه منطق أعمال قديمًا قد يُراجَع.
 
 ---
 

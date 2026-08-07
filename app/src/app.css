@@ -328,6 +328,74 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
 .home-tools{display:flex;align-items:center;gap:8px}
 .icon-btn{min-width:var(--tap);min-height:var(--tap);display:grid;place-items:center;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:14px;font-size:16px;backdrop-filter:blur(8px);transition:background var(--t-fast),transform var(--t-fast)}
 .icon-btn:hover{background:rgba(255,255,255,.24)}.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:20px;height:20px}
+
+/* ── الجرس وشارته ──
+   الشارة على الحافّة المنطقية العليا: `inset-inline-end` لا `right` كي تنتقل
+   إلى الجهة الصحيحة في LTR بلا قاعدة ثانية. و`transform` هنا **متناظر**
+   (‏translate على المحورين بنفس المقدار في الاتجاهين) فلا يحتاج `--dirx`. */
+.notif-btn{position:relative}
+.notif-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:19px;height:19px;padding:0 5px;
+  display:grid;place-items:center;border-radius:999px;background:var(--danger);color:#fff;
+  font-size:10.5px;font-weight:900;line-height:1;border:2px solid var(--emerald);
+  font-variant-numeric:tabular-nums}
+/* على الرأس الداكن للمالك حدُّ الشارة يطابق ما تحته لا لون الرئيسية */
+.app-header.compact .notif-badge{border-color:var(--forest-2)}
+
+/* ── مركز الإشعارات ── */
+.ntf-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.ntf-head .modal-title{margin-bottom:0}
+.ntf-mark{margin-inline-start:auto;font-size:12.5px;flex:none}
+.notif-list{max-height:min(62vh,460px);overflow-y:auto;overscroll-behavior:contain;
+  margin:0 calc(var(--s-5) * -1) 16px;padding:0 var(--s-5)}
+.notif-row{display:flex;gap:11px;width:100%;text-align:start;padding:13px 0;
+  border-bottom:1px solid var(--line);background:none}
+.notif-row:last-child{border-bottom:0}
+/* النقطة تحمل «غير مقروء» بالشكل لا باللون وحده — من لا يميّز اللون يرى
+   دائرة مصمتة مقابل فراغ، وهذا فرق يُرى بلا لون. */
+.notif-dot{flex:none;width:9px;height:9px;margin-top:6px;border-radius:999px;background:transparent}
+.notif-row.unread .notif-dot{background:var(--mint-electric)}
+.notif-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.notif-t{font-size:14px;font-weight:800;color:var(--ink)}
+.notif-row.unread .notif-t{color:var(--emerald)}
+body.dark .notif-row.unread .notif-t{color:var(--copper-primary)}
+.notif-b{font-size:13px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
+.notif-r{font-size:12.5px;color:var(--danger-ink);line-height:1.6}
+/* `--muted` (6.2:1) لا `--soft` (2.87:1): «قبل ٤ دقائق» معلومة تُقرأ لا زخرفة —
+   وهي التي تفرّق بين إشعارٍ وصل الآن وإشعارٍ مضى عليه يومان. */
+.notif-time{font-size:11.5px;color:var(--muted);margin-top:2px}
+.notif-empty{padding:34px 6px;text-align:center}
+.notif-empty-t{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:7px}
+.notif-empty-s{font-size:13px;color:var(--muted);line-height:1.75}
+
+/* ═══ لوح متابعة الحجز على الرئيسية ═══
+   لوحٌ واحد لا قائمة، وحالته محمولة على **الشكل** لا اللون وحده: المعلّق
+   نبضةٌ متحرّكة وحدّ متقطّع، والمؤكّد نقطةٌ ثابتة وحدّ متّصل. */
+.trk-wrap{padding:14px var(--s-5) 0}
+.trk{display:block;width:100%;text-align:start;padding:15px 16px;border-radius:var(--r-xl);
+  background:var(--surface);border:1.5px solid var(--line-2);box-shadow:var(--shadow-card);
+  transition:transform var(--t-fast),box-shadow var(--t-fast)}
+.trk:active{transform:scale(.985)}
+.trk.is-pending{border-style:dashed}
+.trk-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.trk-state{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--ink-2)}
+.trk-title{margin-inline-start:auto;font-size:11px;font-weight:700;color:var(--muted)}
+.trk-pulse{width:9px;height:9px;border-radius:999px;background:var(--mint-electric);flex:none}
+.trk.is-pending .trk-pulse{background:var(--warning);animation:trkPulse 1.8s var(--ease-out) infinite}
+@keyframes trkPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.72);opacity:.55}}
+.trk-where{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.45;
+  display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+.trk-when{margin-top:4px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px}
+.trk-sep{color:var(--soft)}
+.trk-foot{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.trk-left{display:inline-flex;align-items:baseline;gap:6px;flex:none}
+.trk-left-l{font-size:11.5px;font-weight:700;color:var(--muted)}
+.trk-left-v{font-size:14px;font-weight:900;color:var(--emerald);font-variant-numeric:tabular-nums}
+body.dark .trk-left-v{color:var(--copper-primary)}
+.trk-hint{font-size:11.5px;color:var(--muted);line-height:1.6;flex:1;min-width:150px}
+/* كتم الحركة: النبضة زخرفة، والحالة مكتوبة نصًّا فوقها على أي حال */
+@media (prefers-reduced-motion:reduce){ .trk.is-pending .trk-pulse{animation:none} }
 .pill{background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:5px}
 .pill svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
@@ -1942,6 +2010,18 @@ html[lang="en"] .form-label{letter-spacing:.02em}
   background:var(--line-2)}
 
 /* ---------- صور الملعب المحدَّد (أسفل اختيار الملعب) ---------- */
+/* ── مواصفات الملعب: شريحة بسطرين (التسمية فوق القيمة) ──
+   لماذا سطران لا «التسمية: القيمة» في سطر: القيم متفاوتة الطول
+   («عشب صناعي» · «ارتفاع نظامي (3.05م)»)، وسطرٌ واحد يجعل الشرائح متباينة
+   العرض جدًّا فتتكسّر الشبكة. والتسمية بلون خافت لأنها السياق لا الخبر.
+   ⚠️ `--muted` لا `--soft`: هذه معلومة تُقرأ لا زخرفة (6.2:1 مقابل 2.87:1). */
+.field-specs{margin-top:14px}
+.spec-chips{display:flex;flex-wrap:wrap;gap:8px}
+.spec-chip{display:inline-flex;flex-direction:column;gap:2px;padding:8px 12px;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-sm);min-width:0}
+.spec-chip-l{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.spec-chip-v{font-size:13px;font-weight:700;color:var(--ink)}
+
 .field-photos{margin-top:14px}
 .field-photos-title{font-size:12px;font-weight:800;color:var(--soft);margin-bottom:9px}
 .field-photos .detail-thumbs{padding:0;margin-top:0}

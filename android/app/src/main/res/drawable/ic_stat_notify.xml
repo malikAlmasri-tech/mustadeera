@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Small icon for the status bar (Local Notifications).
+
+  Android draws ONLY the alpha channel of this drawable and tints it itself, so
+  the shape must read as a silhouette: solid white, no colour, no gradient.
+  Passing the launcher icon instead is the common mistake - it is a full-colour
+  square and Android flattens it to a featureless white blob.
+
+  The shape is the brand ball reduced to what survives at 24dp: a ring plus the
+  centre pentagon. Finer pitch lines disappear at this size, so they are not
+  drawn at all rather than drawn as mud.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- ring: outer circle minus inner circle, evenOdd knocks the middle out -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M2,12 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z M4.3,12 a7.7,7.7 0 1,0 15.4,0 a7.7,7.7 0 1,0 -15.4,0 Z" />
+    <!-- centre pentagon -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,7.1 L15.9,9.94 L14.41,14.53 L9.59,14.53 L8.1,9.94 Z" />
+</vector>
