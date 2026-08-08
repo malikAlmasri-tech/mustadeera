@@ -20,6 +20,18 @@ const CONFIG = {
   AUTO_REFRESH_MS: 90 * 1000,
   SEARCH_DEBOUNCE: 300,
   COMMISSION: 0.10,
+  /* مهلة إلغاء اللاعب — بالساعات قبل بدء الخانة.
+     ⚠️ **مصدر واحد**: لا يُكتب الرقم في أي موضع آخر من الواجهة. ونظيرُه في
+     القاعدة صفٌّ في `app_settings` (‏`player_cancel_window_hours`) يفرضه
+     مُشغِّلُ `t_booking_cancel_window` — الواجهة تُخفي الزرّ، والقاعدة تردّ
+     الطلب. ولو اختلف الرقمان يومًا فالخادم هو الحكم، ورسالة الرفض تحمل
+     رقمه هو لا رقمنا (‏`cancel_window_closed:<n>`). */
+  CANCEL_WINDOW_H: 6,
+  /* مهلة ردّ المالك على الطلب — نظيرها في القاعدة `owner_reply_deadline_hours`،
+     وتفرضها `expire_stale_bookings()`. والقيمة هنا **للعرض وحده** (العدّاد على
+     البطاقة)؛ من يُلغي فعلًا هو الخادم. و`REPLY_WARN_H` عتبة اللون البرتقالي. */
+  REPLY_DEADLINE_H: 24,
+  REPLY_WARN_H: 6,
   API_TIMEOUT: 14000,   // مهلة الطلبات (14ث) قبل الإلغاء التلقائي
   AI_TIMEOUT: 45000,    // مهلة طلبات AI (نموذج + طقس عبر الخادم — أبطأ من الطلبات العادية)
 };
@@ -350,6 +362,37 @@ const I18N = {
     payCardWhy:'ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا: التطبيق ما بيشوف الرقم ولا بيخزّنه.',
     paySoonToast:'الدفع بالبطاقة لسا ما اشتغل — الدفع نقداً في الملعب.',
     payCardsTitle:'بطاقاتي', payNoCards:'ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.',
+    // ---- (١١أ) مهلة إلغاء اللاعب ----
+    // القاعدة تُقال **في جملة التأكيد نفسها** لا في حاشية: من يقرأ حاشيةً بعد
+    // أن ضغط «تأكيد» لم يعد أمامه قرار. و{h} من CONFIG.CANCEL_WINDOW_H وحده.
+    cancelWindowHint:'بتقدر تلغي لحدّ {h} قبل بدء الموعد، وحجزك لسا داخل المهلة.',
+    cancelTooLateTitle:'ما عاد ينفع تلغي من التطبيق',
+    cancelTooLateSub:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك ولا وقت لبيعها لغيرك. إذا صار طارئ، احكِ مع الملعب مباشرة.',
+    cancelTooLateNoPhone:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك. ما عنّا رقم هذا الملعب في التطبيق — لاقيه على صفحة الملعب أو على المكان نفسه.',
+    cancelWindowServer:'ما عاد ينفع تلغي هذا الحجز: باقي أقلّ من {h} على موعده. احكِ مع الملعب مباشرة.',
+    callVenue:'اتصل بالملعب', waVenue:'واتساب الملعب',
+    // ---- (١١ب) انقضاء مهلة ردّ المالك ----
+    expiredReason:'ما وصل ردّ من الملعب خلال المهلة، فانلغى الطلب وصارت الخانة متاحة لغيرك.',
+    statusExpired:'انقضت المهلة',
+    // {rel} من Intl.RelativeTimeFormat ⇒ «خلال ساعتين» و«خلال ٣ ساعات» تصحّان معاً
+    deadlineLeft:'مهلة الردّ {rel}',
+    deadlineOver:'فاتت مهلة الردّ',
+    otSoonestFirst:'الأقرب لانقضاء مهلته أوّلاً',
+    expirySweepNote:'الطلب اللي بتفوت مهلته بينلغي عند أوّل فتح للوحة — مش لحظة بلحظة — وبترجع خانته متاحة.',
+    expirySweepOff:'الانقضاء التلقائي غير مُفعّل على الخادم بعد (ترحيل 15). المهلة معروضة عشان تشوفها، بس الطلب بيضلّ معلّقاً حتى تردّ عليه بإيدك.',
+    // ---- (١١ج) لم يحضر ----
+    noShowBtn:'لم يحضر', noShowUndoBtn:'تراجع عن «لم يحضر»',
+    noShowBadge:'لم يحضر',
+    noShowAskTitle:'تسجيل عدم الحضور',
+    noShowAskMsg:'رح نسجّل إنّ صاحب هذا الحجز ما حضر. الحجز بيضلّ مؤكّداً وبيضلّ محسوباً عليك عمولةً، والتطبيق ما بيحصّل ولا بيخصم من حدا — التحصيل بينك وبين اللاعب حسب سياسة ملعبك. وتقدر تتراجع بأي وقت.',
+    noShowUndoAskTitle:'تراجع عن «لم يحضر»',
+    noShowUndoAskMsg:'رح نشيل علامة «لم يحضر» عن هذا الحجز، وبيرجع يُقرأ حضوراً عادياً في تقاريرك.',
+    noShowOk:'تم التسجيل', noShowUndone:'تم التراجع',
+    noShowTooEarly:'ما فينا نسجّل «لم يحضر» قبل ما ينتهي وقت الخانة.',
+    noShowForbidden:'هذا الحجز مش تبع ملعبك.',
+    noShowNotReady:'تسجيل عدم الحضور غير مُفعّل على الخادم بعد — شغّل الترحيل 16.',
+    noShowFail:'تعذّر الحفظ، جرّب كمان مرة',
+    econNoShow:'لم يحضروا', econNoShowSub:'خانة انباعت وما انلعبت — لا هي ضائعة ولا هي إيراد عادي',
   },
   en: {
     brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -638,6 +681,34 @@ const I18N = {
     payCardWhy:'And when it does, your card number is typed at the payment gateway, not here: the app never sees it and never stores it.',
     paySoonToast:'Card payment isn’t live yet — payment is cash at the venue.',
     payCardsTitle:'My cards', payNoCards:'No saved card — every booking is paid in cash at the venue today.',
+    // ---- (11a) Player cancellation window ----
+    cancelWindowHint:'You can cancel up to {h} before kick-off. This booking is still inside that window.',
+    cancelTooLateTitle:'Too late to cancel from the app',
+    cancelTooLateSub:'Less than {h} to your slot, so it is held for you and there is no time to resell it. If something came up, call the venue directly.',
+    cancelTooLateNoPhone:'Less than {h} to your slot, so it is held for you. We do not have this venue’s number in the app — find it on the venue page or at the venue itself.',
+    cancelWindowServer:'This booking can no longer be cancelled: less than {h} to its slot. Please call the venue directly.',
+    callVenue:'Call the venue', waVenue:'WhatsApp the venue',
+    // ---- (11b) Owner reply deadline ----
+    expiredReason:'The venue did not reply within the deadline, so the request was cancelled and the slot is open again.',
+    statusExpired:'Deadline passed',
+    deadlineLeft:'Reply due {rel}',
+    deadlineOver:'Reply deadline passed',
+    otSoonestFirst:'Closest to expiring first',
+    expirySweepNote:'A request past its deadline is cancelled when the dashboard is next opened — not minute by minute — and its slot opens up again.',
+    expirySweepOff:'Auto-expiry isn’t enabled on the server yet (migration 15). The deadline is shown so you can see it, but the request stays pending until you answer it yourself.',
+    // ---- (11c) No-show ----
+    noShowBtn:'No-show', noShowUndoBtn:'Undo no-show',
+    noShowBadge:'No-show',
+    noShowAskTitle:'Record a no-show',
+    noShowAskMsg:'We will record that this booking’s holder did not turn up. The booking stays confirmed and still carries commission, and the app does not charge or deduct from anyone — collection is between you and the player under your venue’s policy. You can undo this at any time.',
+    noShowUndoAskTitle:'Undo no-show',
+    noShowUndoAskMsg:'We will remove the no-show mark from this booking, and it will read as a normal attendance in your reports again.',
+    noShowOk:'Recorded', noShowUndone:'Undone',
+    noShowTooEarly:'A no-show cannot be recorded before the slot has ended.',
+    noShowForbidden:'This booking does not belong to your venue.',
+    noShowNotReady:'No-show recording isn’t enabled on the server yet — run migration 16.',
+    noShowFail:'Couldn’t save, please try again',
+    econNoShow:'No-shows', econNoShowSub:'Sold but not played — neither lost nor plain revenue',
   }
 };
 function t(key, params){
@@ -912,6 +983,53 @@ function runtimeStatus(b){ const s=normStatus(b); if(s!=='confirmed')return s; c
 function statusLabel(s){ const m={confirmed:{t:t('statusConfirmed'),c:'badge-green'},pending:{t:t('statusPending'),c:'badge-yellow'},cancelled:{t:t('statusCancelled'),c:'badge-red'},rejected:{t:t('statusRejected'),c:'badge-red'},in_progress:{t:t('statusInProgress'),c:'badge-blue'}}; return m[String(s||'pending').toLowerCase()]||m.pending; }
 const isOwnerManual = (b) => String(b.source||'').trim().toLowerCase()==='owner_manual';
 const isWebsite = (b) => !isOwnerManual(b);
+
+/* ═══ (١١) ساعة الخانة — مهلة الإلغاء · مهلة الردّ · لم يحضر ═══════════════
+   كل ما تحت يعمل على وقت **الجهاز** لأن الجهاز في الأردن والخانة كذلك؛
+   والقاعدة تحسب نفس المقارنة بتوقيت عمّان صراحةً (`amman_now()` في
+   الترحيل 15). الواجهة تُخفي ما سيُرفض؛ **الحكم للقاعدة** لا لها. */
+const slotStartMs = (b) => { const hr=Number(b&&b.hour); const d=String((b&&b.date)||'').split('T')[0];
+  if(!d || Number.isNaN(hr)) return NaN;
+  const ts = new Date(`${d}T${String(hr).padStart(2,'0')}:00:00`).getTime();
+  return Number.isNaN(ts) ? NaN : ts; };
+const cancelDeadlineMs = (b) => { const s=slotStartMs(b); return Number.isNaN(s) ? NaN : s - CONFIG.CANCEL_WINDOW_H*3600e3; };
+/* شرط الإلغاء بلا الزمن (حالة الحجز وحدها) — يفصله عن الزمن كي تعرف الواجهة
+   الفرقَ بين «لا يُلغى لأنه ملغى أصلًا» (لا نعرض شيئًا) و«لا يُلغى لأن الوقت
+   قرب» (نعرض سبباً ورقم الملعب). دمجُهما كان سيُخفي السبب في الحالتين. */
+function cancellableByStatus(b){
+  const s=normStatus(b);
+  return !isFinished(b) && s!=='cancelled' && s!=='rejected' && runtimeStatus(b)!=='in_progress';
+}
+const withinCancelWindow = (b) => { const dl=cancelDeadlineMs(b); return Number.isNaN(dl) ? true : Date.now() < dl; };
+/* «انقضت المهلة» ليست «رفض المالك» — والقيمة الآلية من الترحيل 15 هي الفارق.
+   قبل تشغيله لا وجود للعمود ⇒ `undefined` ⇒ false، فيُقرأ كل مرفوض رفضًا
+   كما كان بالضبط. */
+const isExpiredBooking = (b) => normStatus(b)==='rejected' && String(b&&b.cancel_kind||'')==='expired';
+const isNoShow = (b) => !!(b && b.no_show);
+
+/* المعدود العربي يتغيّر مع العدد (١ · ٢ · ٣-١٠ جمع · ١١+ مفرد منصوب).
+   مرآةُ `countNoun` في `site/admin.html` — نفس القاعدة في الوجهين. */
+function countNoun(n, one, two, few, many){
+  if(n===1) return one;
+  if(n===2) return two;
+  if(n>=3 && n<=10) return n+' '+few;
+  return n+' '+many;
+}
+/* «٦ ساعات» بالعربية و«6 hours» بالإنجليزية — يُستعمل حيثما ذُكرت المهلة،
+   وهي قيمة قابلة للتغيير من CONFIG ⇒ رقمٌ حيّ يسبق معدودًا. */
+const nHours = (n) => (State.lang==='en')
+  ? (n===1 ? '1 hour' : `${n} hours`)
+  : countNoun(n, 'ساعة واحدة', 'ساعتين', 'ساعات', 'ساعة');
+/* فرقٌ زمني بصيغة نسبية — Intl يتكفّل بالمعدود في اللغتين.
+   ⚠️ الوحدة تُختار بالحجم لا بالثابت: «خلال ١٤٠ دقيقة» تُقرأ أسوأ من «خلال ساعتين». */
+function relFromNow(ms){
+  const s = Math.round(ms/1000);
+  const [v,u] = Math.abs(s) < 3600 ? [Math.round(s/60),'minute']
+              : Math.abs(s) < 86400 ? [Math.round(s/3600),'hour']
+              : [Math.round(s/86400),'day'];
+  try{ return new Intl.RelativeTimeFormat(State.lang==='en'?'en':'ar', {numeric:'auto'}).format(v, u); }
+  catch(_){ return String(v); }
+}
 function getTopBy(items, keyFn, labelFn){ const m={}; items.forEach(it=>{const k=keyFn(it)||'-'; if(!m[k])m[k]={count:0,label:labelFn?labelFn(it):k}; m[k].count++;}); return Object.values(m).sort((a,b)=>b.count-a.count)[0]||null; }
 
 /* استخراج كل الأرقام السعرية من أي صيغة: رقم، «40 د.أ»، «40-60» (مدى بحقل واحد)،
@@ -1085,7 +1203,11 @@ const sbBooking = (b) => ({
   city: b.city || '', time: b.time_label || '', hour: Number(b.hour),
   name: b.customer_name || '', phone: b.customer_phone || '', players: b.players_size || '',
   price: Number(b.price||0), source: b.source || 'direct',
-  status: String(b.status||'pending').toLowerCase(), cancel_reason: b.cancel_reason || ''
+  status: String(b.status||'pending').toLowerCase(), cancel_reason: b.cancel_reason || '',
+  /* عمودا الترحيلين 15 و16. قبل تشغيلهما لا يُطلبان أصلًا (‏`bkCols()` أدناه)
+     ⇒ `undefined` هنا، والواجهة تقرؤها «لا انقضاء ولا تخلّف» — أي سلوك اليوم
+     بالضبط. لا قيمة مخترَعة ولا فرعٌ ثالث. */
+  cancel_kind: b.cancel_kind || '', no_show: !!b.no_show
 });
 
 /* ── عمليات القراءة العامة (بلا تسجيل دخول) ── */
@@ -1169,6 +1291,22 @@ async function sbChangePassword(tok, isOwner, currentPassword, newPassword){
 /* ── الحجوزات ── */
 const SB_BK_COLS ='id,created_at,player_id,place_id,field_id,booking_date,hour,time_label,customer_name,customer_phone,players_size,price,source,status,cancel_reason,place_name,field_name,city';
 
+/* ⚠️ **عمودٌ غير موجود يُفشل الاستعلام كلّه** — نفس درس `fields.sport` في
+   `/admin`: `select=…,no_show` قبل ترحيل 16 يردّ 400، فتخلو قائمة الحجوزات
+   كاملةً ويبدو التطبيق مكسورًا لا «ميزةً غير مفعّلة». فنسأل بالعمودين
+   الجديدين، وإن رُفضا سألنا بلا الاثنين — والجولة الثانية لا تقع إلّا في
+   حالة «قبل الترحيل»، وبعده لا تقع أبدًا (العلَم يُحفَظ للجلسة).
+   ولا نخمّن أيّهما الناقص: كلاهما يأتي من ترحيل معلَّق، والسؤال أرخص من التخمين. */
+let SB_BK_EXTRA = ',cancel_kind,no_show';
+async function sbBookingsQuery(path, opts){
+  if (SB_BK_EXTRA){
+    const r = await sbRest(path.replace('{cols}', SB_BK_COLS + SB_BK_EXTRA), opts);
+    if (r.ok) return r;
+    SB_BK_EXTRA = '';   // الترحيلان معلَّقان ⇒ لا نسأل عنهما ثانيةً في هذه الجلسة
+  }
+  return sbRest(path.replace('{cols}', SB_BK_COLS), opts);
+}
+
 async function sbCreateBooking(d, session){
   if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
   const r = await sbRest('/bookings', { method:'POST', token: session.at, prefer:'return=representation', body:{
@@ -1188,9 +1326,54 @@ async function sbUpdateBookingStatus(d, session){
   const patch = { status: d.status };
   if (d.cancel_reason !== undefined) patch.cancel_reason = d.cancel_reason || '';
   const r = await sbRest(`/bookings?id=eq.${d.row_number}`, { method:'PATCH', token: session.at, prefer:'return=representation', body: patch });
-  if (!r.ok) return { success:false, message:'صار خطأ، حاول كمان مرة' };
+  /* مهلة الإلغاء (ترحيل 15): المُشغِّل يرفع `cancel_window_closed:<n>`.
+     ⚠️ ونقرأ **رقم الخادم** لا `CONFIG.CANCEL_WINDOW_H`: لو اختلف الإعداد في
+     القاعدة عن ثابت التطبيق يومًا، فالجملة التي يقرؤها اللاعب يجب أن تحمل
+     الرقم الذي رُفض به فعلًا — لا الرقم الذي كنّا نظنّه. */
+  if (!r.ok){
+    const raw = String(r.raw||'');
+    const m = raw.match(/cancel_window_closed:([\d.]+)/);
+    if (m) return { success:false, code:'cancel_window', hours: Number(m[1]) || CONFIG.CANCEL_WINDOW_H,
+                    message: t('cancelWindowServer', { h: nHours(Number(m[1]) || CONFIG.CANCEL_WINDOW_H) }) };
+    return { success:false, message:'صار خطأ، حاول كمان مرة' };
+  }
   if (!r.data || !r.data.length) return { success:false, message:'ما بتقدر تعدّل حالة الحجز' };   // منعته سياسة RLS
   return { success:true, message:'تم التحديث' };
+}
+
+/* ── كنس الطلبات المنقضية (ترحيل 15) ──────────────────────────────────────
+   لا cron في الخطّة المجانية، فالكنس يجري **عند القراءة**: قبل جلب لوحة
+   المالك وقبل جلب حجوزات اللاعب. والخانق في القاعدة (‏60ث) يجعل النداء
+   المتكرّر بلا كلفة، فلا حاجة إلى خانق ثانٍ هنا.
+   ⚠️ وفشلُه لا يُرى ولا يُقال: هو **صيانة** لا بيانات. قبل الترحيل يردّ
+      404/`PGRST202` — والصفحة التي تليه تعمل كما كانت تمامًا (الطلب المعلّق
+      يبقى معلّقًا، وهو سلوك اليوم). أمّا حيث يهمّ المستخدمَ أن يعرف — لوحة
+      المالك — فالنقص يُقال هناك صراحةً لا هنا. */
+let SWEEP_OK = true;
+async function sbSweepExpiry(session){
+  if (!SWEEP_OK || !session) return;
+  try{
+    const r = await sbFetch('/rest/v1/rpc/expire_stale_bookings', { method:'POST', token: session.at, body:{} });
+    if (r.status === 404 || String(r.raw||'').includes('PGRST202')) SWEEP_OK = false;
+  }catch(_){ /* شبكة — الجلب بعده سيقول ما يقوله */ }
+}
+
+/* ── «لم يحضر» (ترحيل 16) — PATCH على عمود واحد، والقاعدة هي الحارس ──
+   من يستطيع؟ ومتى؟ كلاهما في `fn_booking_no_show_guard`. هنا نُترجم رموزه
+   فقط: `no_show_too_early` · `no_show_forbidden` · وغيابُ العمود نفسه. */
+async function sbSetNoShow(d, session){
+  if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
+  const r = await sbRest(`/bookings?id=eq.${d.row_number}`, { method:'PATCH', token: session.at,
+    prefer:'return=representation', body:{ no_show: !!d.no_show } });
+  if (!r.ok){
+    const raw = String(r.raw||'');
+    if (raw.includes('PGRST204') || r.status === 404) return { success:false, message:t('noShowNotReady') };
+    if (raw.includes('no_show_too_early'))  return { success:false, message:t('noShowTooEarly') };
+    if (raw.includes('no_show_forbidden'))  return { success:false, message:t('noShowForbidden') };
+    return { success:false, message:t('noShowFail') };
+  }
+  if (!(r.data||[]).length) return { success:false, message:t('noShowForbidden') };   // منعته RLS
+  return { success:true, message: d.no_show ? t('noShowOk') : t('noShowUndone') };
 }
 
 /* تعديل موعد حجز معلّق — عبر **دالّة في القاعدة** لا PATCH مباشر.
@@ -1264,7 +1447,8 @@ const API = {
       case 'getPlayerBookings': {
         const s = await sbSession(extra.player_token, false);
         if (!s) return { success:false, message:'سجّل دخولك أول' };
-        const r = await sbRest(`/bookings_full?select=${SB_BK_COLS}&player_id=eq.${s.uid}&order=booking_date.desc,hour.desc`, { token:s.at, key });
+        await sbSweepExpiry(s);
+        const r = await sbBookingsQuery(`/bookings_full?select={cols}&player_id=eq.${s.uid}&order=booking_date.desc,hour.desc`, { token:s.at, key });
         if (!r.ok) return { success:false, message:'تعذّر جلب البيانات' };
         /* `player` يُعاد معها لأن `init()` يستدعي هذه العملية وحدها عند فتح
            التطبيق بجلسة محفوظة، ثمّ يُسند `State.player = res.player` — وكانت
@@ -1317,10 +1501,13 @@ const API = {
       case 'getOwnerData': {
         const s = await sbSession(extra.owner_token, true);
         if (!s) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
+        /* الكنس **قبل** الجلب لا بعده: لو جرى بعده لعرضت اللوحة طلبًا منقضيًا
+           على أنه ينتظر ردًّا، ولوجد المالك زرَّي «قبول/رفض» على شيء انتهى. */
+        await sbSweepExpiry(s);
         const [pl, fl, bk, st] = await Promise.all([
           sbRest(`/places?select=*&id=eq.${s.place_id}`, { token:s.at, key }),
           sbRest(`/fields?select=*&place_id=eq.${s.place_id}&order=name`, { token:s.at }),
-          sbRest(`/bookings_full?select=${SB_BK_COLS}&place_id=eq.${s.place_id}&order=booking_date.desc,hour.desc`, { token:s.at }),
+          sbBookingsQuery(`/bookings_full?select={cols}&place_id=eq.${s.place_id}&order=booking_date.desc,hour.desc`, { token:s.at }),
           sbRest(`/place_stats?select=*&place_id=eq.${s.place_id}`, { token:s.at }),
         ]);
         if (!pl.ok || !(pl.data||[]).length) return { success:false, message:'ما لقينا المكان تبعك' };
@@ -1424,6 +1611,9 @@ const API = {
 
       case 'playerRescheduleBooking':
         return sbRescheduleBooking(data, await sbSession(data.player_token, false));
+
+      case 'ownerSetNoShow':
+        return sbSetNoShow(data, await sbSession(data.owner_token, true));
 
       case 'ownerUpdateField': {
         const s = await sbSession(data.owner_token, true);
@@ -2868,7 +3058,12 @@ function showBookingSuccess(info, bookingId){
 function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
   const status = normStatus(b);
-  const canCancel = !isFinished(b) && status!=='cancelled' && status!=='rejected' && rt!=='in_progress';
+  /* الشرطان مفصولان عمدًا (انظر `cancellableByStatus`): حجزٌ **يصلح** للإلغاء
+     لكنّ وقته قرب ليس كحجزٍ انتهى أمره — الأوّل يستحقّ سببًا ومخرَجًا، والثاني
+     لا يستحقّ شيئًا. دمجُهما في `canCancel` واحدة كان يُخفي الزرَّ في الحالتين
+     بلا كلمة، فيبقى اللاعب يبحث عن زرٍّ حُذف تحت عينيه. */
+  const eligible = cancellableByStatus(b);
+  const canCancel = eligible && withinCancelWindow(b);
   const card = h('div',{class:'card booking-strip '+status, style:{marginBottom:'14px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px',marginBottom:'8px'}},
       h('div',{style:{fontSize:'14px',fontWeight:'800',color:'var(--ink)'}}, b.place_name+' - '+b.field_name),
@@ -2882,7 +3077,11 @@ function playerBookingCard(b){
         h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+(b.players||'')),
         h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(b.price))))
   );
-  if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, t('reasonPrefix')+b.cancel_reason));
+  /* «انقضت المهلة» تُكتب هنا لا تُخزَّن: الصفّ يحمل `cancel_kind` والجملة
+     تُبنى بلغة المستخدم الحالية — نفس مبدأ الإشعارات (ترحيل 14). ولا نُلبس
+     الملعبَ رفضًا لم يقله. */
+  if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box'}, t('expiredReason')));
+  else if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, t('reasonPrefix')+b.cancel_reason));
   if (canCancel){
     const label = b.place_name+' - '+b.field_name;
     const row = h('div',{class:'bk-actions'});
@@ -2894,11 +3093,37 @@ function playerBookingCard(b){
       row.append(ed);
     }
     const btn=h('button',{class:'cbtn bk-act danger-outline-btn'}, t('cancelBookingBtn'));
-    btn.addEventListener('click', ()=>playerCancelBooking(btn, b.row_number, label));
+    btn.addEventListener('click', ()=>playerCancelBooking(btn, b, label));
     row.append(btn);
     card.append(row);
+  } else if (eligible){
+    card.append(cancelClosedPanel(b));
   }
   return card;
+}
+/* رقم الملعب — من `State.allPlaces` لا من الحجز: `bookings_full` تحمل هاتف
+   **العميل** لا هاتف المكان. وإن لم نجده (مكان أُخفي مثلًا) قلنا ذلك ولم
+   نعرض زرًّا لا يتّصل بشيء. */
+function venuePhone(b){
+  const p = (State.allPlaces||[]).find(x => String(x.place_id)===String(b.place_id));
+  const raw = String((p && p.phone) || '').trim();
+  return validPhone(raw) ? raw : '';
+}
+/* اللوح الصادق بعد إغلاق المهلة: لا زرَّ يَعِد بما سيرفضه الخادم، وبدلَه
+   السببُ ومخرَجٌ حقيقي (اتّصال · واتساب). */
+function cancelClosedPanel(b){
+  const hrs = nHours(CONFIG.CANCEL_WINDOW_H);
+  const tel = venuePhone(b);
+  const box = h('div',{class:'reason-box bk-late'},
+    h('div',{style:{fontWeight:'800',color:'var(--ink)',marginBottom:'4px'}}, t('cancelTooLateTitle')),
+    h('div',{}, t(tel ? 'cancelTooLateSub' : 'cancelTooLateNoPhone', { h: hrs })));
+  if (tel){
+    const wa = normalizePhone(tel);
+    box.append(h('div',{class:'bk-actions', style:{marginTop:'10px'}},
+      h('a',{class:'cbtn bk-act', href:'tel:'+tel}, ico('phone','svg-sm'), ' '+t('callVenue')),
+      h('a',{class:'cbtn bk-act', href:'https://wa.me/'+wa, target:'_blank', rel:'noopener'}, ico('wa','svg-sm'), ' '+t('waVenue'))));
+  }
+  return box;
 }
 async function loadPlayerBookings(){
   const list=$('#bookingsList'), stats=$('#playerStats');
@@ -2945,13 +3170,24 @@ function categorizeBookings(list){
 }
 function sectionTitle(title, count){ return h('div',{class:'sec-title', style:{padding:'8px 0 10px'}}, h('span',{}, title), h('span',{class:'mini-badge'}, String(count))); }
 
-async function playerCancelBooking(btn, rowNumber, label){
-  const reason = await askReason(t('playerCancelTitle'), t('playerCancelHint',{label}), t('confirmCancelBtn'));
+async function playerCancelBooking(btn, b, label){
+  /* القاعدة في **جملة التأكيد نفسها** لا في حاشية تحتها: من ضغط «تأكيد» لم
+     يعد أمامه قرار يستفيد من الحاشية. والمهلة تُذكَر مع كونه داخلها الآن —
+     فيعرف أنه يُلغي بحقّه لا في منطقة رمادية. */
+  const hint = t('cancelWindowHint',{ h: nHours(CONFIG.CANCEL_WINDOW_H) }) + ' ' + t('playerCancelHint',{label});
+  const reason = await askReason(t('playerCancelTitle'), hint, t('confirmCancelBtn'));
   if (reason===null) return;
   await withLoading(btn, async()=>{
     try{
-      const res = await API.post({ action:'updateBookingStatus', player_token:Session.player(), row_number:rowNumber, status:'cancelled', cancel_reason: reason || t('playerCancelledDefault') });
-      if (!res.success){ toast(apiMsg(res.message)||t('cancelFail'),'error'); return; }
+      const res = await API.post({ action:'updateBookingStatus', player_token:Session.player(), row_number:b.row_number, status:'cancelled', cancel_reason: reason || t('playerCancelledDefault') });
+      if (!res.success){
+        toast(apiMsg(res.message)||t('cancelFail'),'error');
+        /* رفضته القاعدة لأن المهلة أُغلقت بين الرسم والضغطة (بطاقة مفتوحة
+           منذ ساعة، أو ساعةُ الجهاز مضبوطة للخلف). نعيد الرسم فورًا كي
+           يحلّ اللوحُ الصادقُ محلّ زرٍّ لن يعمل. */
+        if (res.code === 'cancel_window') await loadPlayerBookings();
+        return;
+      }
       toast(t('cancelOk'),'success');
       await loadPlayerBookings(); await loadData();
       if ($('#page-home').classList.contains('active')) renderPlaces();
@@ -3123,7 +3359,15 @@ function renderOwnerToday(){
   const el=$('#ownerToday'); if(!el) return;
   const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const td=today();
   const todayB=all.filter(b=>String(b.date||'').split('T')[0]===td);
-  const pend=todayB.filter(b=>normStatus(b)==='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
+  /* ⚠️ **الترتيب بالمهلة لا بالساعة.** كان الترتيب بساعة اللعب، فيقع الطلب
+     الذي وصل أمس ويكاد ينقضي **تحت** طلبٍ وصل قبل دقيقة لأن مباراته أبكر —
+     وهو بالضبط الطلب الذي جاء المالك من أجله. والمهلة تجمع الاثنين أصلًا:
+     `min(الوصول + المهلة, بدء الخانة)` ⇒ الترتيب بها يقدّم الأقدم **و**
+     يقدّم من موعده الليلة معًا. */
+  const pend=todayB.filter(b=>normStatus(b)==='pending')
+    .sort((a,b)=>{ const x=replyDeadlineMs(a), y=replyDeadlineMs(b);
+                   if(Number.isNaN(x)) return 1; if(Number.isNaN(y)) return -1;
+                   return x-y || Number(a.hour)-Number(b.hour); });
   const conf=todayB.filter(b=>normStatus(b)==='confirmed');
   const revenue=conf.reduce((s,b)=>s+(Number(b.price)||0),0);
   // أوقات اليوم الفارغة (من بيانات المالك مباشرة)
@@ -3137,7 +3381,16 @@ function renderOwnerToday(){
   clear(el);
   if(!todayB.length){ el.append(emptyState({icon:'📅', title:t('noBookingsToday'), sub:t('noBookingsTodaySub')})); return; }
   const rest=todayB.filter(b=>normStatus(b)!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
-  if(pend.length){ el.append(sectionTitle(t('pendingReply'), pend.length)); pend.forEach(b=>el.append(ownerBookingCard(b))); }
+  if(pend.length){
+    el.append(sectionTitle(t('pendingReply'), pend.length));
+    /* حاشيةٌ صادقة عن **آلية** الانقضاء لا وعدٌ بها: بلا cron في الخطّة
+       المجانية، الكنس يقع عند فتح اللوحة. وإن كان ترحيل 15 معلَّقًا فلا
+       انقضاء إطلاقًا — والحاشية تقول ذلك بدل أن تَعِد بما لا يحدث. */
+    el.append(h('div',{class:'ot-note'},
+      h('span',{class:'ot-note-sub'}, t('otSoonestFirst')),
+      h('span',{}, SWEEP_OK ? t('expirySweepNote') : t('expirySweepOff'))));
+    pend.forEach(b=>el.append(ownerBookingCard(b)));
+  }
   if(rest.length){ el.append(sectionTitle(t('restToday'), rest.length)); rest.forEach(b=>el.append(ownerBookingCard(b))); }
 }
 /* ===================== OWNER · CALENDAR TAB (Vanilla) ===================== */
@@ -3293,7 +3546,39 @@ function renderOwnerEcon(bookings){
   else if(occ>=85)decision=t('econHigh');
   setText('oOccupancy',occ+'%'); setText('oLost',formatMoney(lost)); setText('oCancel',cancelRate+'%');
   setText('oBestTime',hourTop?hourTop.label:'-'); setText('oWebShare',webShare+'%'); setText('oReturn',returnRate+'%'); setText('oDecision',decision);
+  /* «لم يحضر» — عدداً وقيمةً. البلاطة تظهر حين يوجد ما يُعرَض فعلاً: صفرٌ
+     دائم قبل ترحيل 16 يُقرأ «ما في تخلّف عن الحضور»، وهو ادّعاء لا قياس. */
+  const noShows = confAll.filter(isNoShow);
+  const nsItem = $('#oNoShowItem');
+  if (nsItem){
+    const on = noShows.length > 0;
+    nsItem.hidden = !on;
+    if (on) setText('oNoShow', `${noShows.length} · ${formatMoney(noShows.reduce((s,b)=>s+(Number(b.price)||0),0))}`);
+  }
 }
+/* ═══ مهلة ردّ المالك (١.٢) ═══════════════════════════════════════════════
+   الموعد النهائي = **الأقرب** من: وصول الطلب + المهلة · وبدء الخانة نفسها.
+   والثاني ليس تفصيلًا: طلبٌ لمباراة الليلة لا يملك حتى الغد ليُردّ عليه —
+   بدونه يبقى الطلب معلّقًا **بعد** أن يمرّ موعده، حاجزًا خانةً مضت.
+   نفس الحساب حرفيًّا في `public.booking_reply_deadline` (ترحيل 15). */
+function replyDeadlineMs(b){
+  const created = new Date(String(b.timestamp||'').replace(' ','T')).getTime();
+  const start = slotStartMs(b);
+  const byAge = Number.isNaN(created) ? NaN : created + CONFIG.REPLY_DEADLINE_H*3600e3;
+  const cands = [byAge, start].filter(v => !Number.isNaN(v));
+  return cands.length ? Math.min(...cands) : NaN;
+}
+/* ثلاث حالات: مريحة · تحت العتبة (برتقالي) · فاتت (أحمر).
+   والنصّ من Intl لا من أيدينا — المعدود العربي يتغيّر مع العدد. */
+function replyDeadlineChip(b){
+  if(normStatus(b)!=='pending') return null;
+  const dl = replyDeadlineMs(b); if(Number.isNaN(dl)) return null;
+  const left = dl - Date.now();
+  if(left <= 0) return { label:t('deadlineOver'), cls:'dl-over' };
+  return { label:t('deadlineLeft',{ rel: relFromNow(left) }),
+           cls: left <= CONFIG.REPLY_WARN_H*3600e3 ? 'dl-warn' : 'dl-ok' };
+}
+
 /* عمر الطلب المعلّق «منذ …» — لون يشتد مع التأخر لتحفيز سرعة الردّ */
 function bookingAge(b){
   if(normStatus(b)!=='pending') return null;
@@ -3306,7 +3591,8 @@ function bookingAge(b){
 function ownerBookingCard(b){
   const lbl=statusLabel(runtimeStatus(b));
   const age=bookingAge(b);
-  const card=h('div',{class:'card booking-strip '+normStatus(b), style:{marginBottom:'14px'}},
+  const dl=replyDeadlineChip(b);
+  const card=h('div',{class:'card booking-strip '+normStatus(b)+(isNoShow(b)?' bk-noshow':''), style:{marginBottom:'14px'}},
     h('div',{style:{display:'flex',justifyContent:'space-between',gap:'8px',alignItems:'flex-start',marginBottom:'9px'}},
       h('div',{class:'owner-bk-head'},
         // أفاتار أحرف العميل (م4، نمط المرجع) — تمييز بصري سريع لصاحب الحجز
@@ -3318,7 +3604,11 @@ function ownerBookingCard(b){
             h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time)))),
       h('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'5px'}},
         h('span',{class:'badge '+lbl.c}, lbl.t),
-        age && h('span',{class:'age-chip '+age.cls}, '⏱ '+age.label))),
+        isNoShow(b) ? h('span',{class:'badge badge-red'}, t('noShowBadge')) : null,
+        age && h('span',{class:'age-chip '+age.cls}, '⏱ '+age.label),
+        // العدّاد تحت العمر: العمر يقول «منذ متى وصل»، والعدّاد يقول «كم بقي» —
+        // والثاني هو الذي يُحرّك، والأوّل هو الذي يُفسّر.
+        dl && h('span',{class:'dl-chip '+dl.cls}, dl.label))),
     h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px',marginBottom:'11px'}},
       h('span',{class:'info-line'}, ico('person','svg-sm'), ' '+(b.name||'-')),
       h('span',{class:'info-line'}, ico('phone','svg-sm'), ' '+(b.phone||'-')),
@@ -3326,7 +3616,8 @@ function ownerBookingCard(b){
       h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+formatCurrency(b.price||0)),
       h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct')))
   );
-  if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
+  if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('expiredReason')));
+  else if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
   const waBtn=()=>h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener',class:'owner-wa-link'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
   if (normStatus(b)==='pending'){
@@ -3338,9 +3629,36 @@ function ownerBookingCard(b){
   } else {
     const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
     actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'), waBtn());
+    /* «لم يحضر» على المؤكّد **بعد انتهاء خانته** وحده. الشرطان نفسهما في
+       `fn_booking_no_show_guard` — الواجهة لا تعرض ما سيرفضه الخادم، والخادم
+       لا يثق بما تعرضه الواجهة. والزرّ يظهر في الحالتين (تعليم ورجوع) لأن
+       علامةً لا تُرفَع يتجنّبها صاحبها فيموت المقياس. */
+    if (normStatus(b)==='confirmed' && isFinished(b)){
+      const ns=h('button',{class:'owner-action '+(isNoShow(b)?'owner-edit':'owner-reject')},
+        isNoShow(b) ? t('noShowUndoBtn') : t('noShowBtn'));
+      ns.addEventListener('click', ()=>ownerToggleNoShow(ns, b));
+      actions.append(ns);
+    }
     card.append(actions);
   }
   return card;
+}
+/* تعليم/رفع «لم يحضر». التأكيد يقول ما يحدث بالضبط، **ولا يَعِد بتحصيل**:
+   التطبيق لا يمسّ مالًا (لا بوّابة دفع أصلًا)، والتحصيل بين المالك واللاعب. */
+async function ownerToggleNoShow(btn, b){
+  const on = !isNoShow(b);
+  const ok = await askConfirm(t(on?'noShowAskTitle':'noShowUndoAskTitle'),
+                              t(on?'noShowAskMsg':'noShowUndoAskMsg'),
+                              t(on?'noShowBtn':'noShowUndoBtn'), null, on);
+  if(!ok) return;
+  await withLoading(btn, async()=>{
+    try{
+      const res = await API.post({ action:'ownerSetNoShow', owner_token:Session.owner(), row_number:b.row_number, no_show:on });
+      if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('noShowFail'),'error'); return; }
+      toast(res.message,'success');
+      await loadOwnerDashboard();
+    }catch(e){ if(!isAbort(e)) toast(t('noShowFail'),'error'); }
+  });
 }
 function renderOwnerBookings(){
   const d=State.ownerData; if(!d) return;

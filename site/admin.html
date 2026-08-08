@@ -462,9 +462,10 @@ html.dark .res .no{color:#FF8A90}
     <div class="chart-grid two">
       <div class="card">
         <h3>أين يتسرّب المال؟</h3>
-        <p class="cap">ثلاثة أرقام مختلفة تمامًا، ويُخلط بينها كثيرًا:
-          ما <strong>ضاع فعلًا</strong> · ما <strong>ما زال معلّقًا</strong> ·
-          و<strong>الطاقة الفارغة</strong> وهي سقفٌ نظري لا هدف.</p>
+        <p class="cap">أرقامٌ مختلفة تمامًا، ويُخلط بينها كثيرًا:
+          ما <strong>ضاع فعلًا</strong> — ومنه ما <strong>انقضت مهلته</strong> بلا ردّ، وهو
+          صمتٌ لا قرار · ما <strong>ما زال معلّقًا</strong> · ومن <strong>لم يحضروا</strong>
+          وهي خانةٌ انباعت وما انلعبت · و<strong>الطاقة الفارغة</strong> وهي سقفٌ نظري لا هدف.</p>
         <div class="mini" id="leak"></div>
       </div>
 
@@ -1067,13 +1068,41 @@ function fetchFields(){
   });
 }
 
+/* نفس الفخّ حرفيًّا على `bookings`: `cancel_kind` (ترحيل 15) و`no_show`
+   (ترحيل 16) عمودان معلَّقان، وذكرُ أحدهما قبل ترحيله يردّ 400 فتخلو
+   `D.bookings` — ومعها **اللوحة كلّها** لا لوحٌ واحد. اسأل بهما، ثمّ بلا
+   أيٍّ منهما، واحفظ ما ثبت. */
+var HAS_EXPIRY = true, HAS_NOSHOW = true;
+function fetchBookings(){
+  var BASE = 'id,created_at,booking_date,hour,time_label,place_id,field_id,' +
+             'customer_name,customer_phone,player_id,price,status,source,cancel_reason';
+  var TAIL = '&order=booking_date.desc&limit=' + BK_LIMIT;
+  return api('/rest/v1/bookings?select=' + BASE + ',cancel_kind,no_show' + TAIL).then(function(r){
+    if (r.ok){ HAS_EXPIRY = true; HAS_NOSHOW = true; return r; }
+    // أيّهما الناقص؟ سؤالان رخيصان أصدقُ من تخمين واحد — والشريط الصحّي
+    // في اللوحة يقول للمالك أيّ ترحيل ينقصه بالاسم.
+    return api('/rest/v1/bookings?select=' + BASE + ',cancel_kind' + TAIL).then(function(r2){
+      if (r2.ok){ HAS_EXPIRY = true; HAS_NOSHOW = false; return r2; }
+      HAS_EXPIRY = false; HAS_NOSHOW = false;
+      return api('/rest/v1/bookings?select=' + BASE + TAIL);
+    });
+  });
+}
+
+/* كنس الطلبات المنقضية — انتهازيًّا قبل الجلب لا بعده.
+   لا cron في الخطّة المجانية (ترحيل 15 §4)، والخانق في القاعدة يجعل النداء
+   المتكرّر بلا كلفة. وفشلُه صامتٌ عمدًا: هو صيانة، والنقص نفسه يُقال في
+   لوح «أين يتسرّب المال؟» باسم الترحيل الناقص. */
+function sweepExpiry(){
+  return api('/rest/v1/rpc/expire_stale_bookings', { method:'POST', body:{} })
+    .then(function(){}, function(){});
+}
+
 function loadAll(){
-  return Promise.all([
+  return sweepExpiry().then(function(){ return Promise.all([
     api('/rest/v1/admin_daily?select=*&limit=120'),
     api('/rest/v1/admin_places?select=*'),
-    api('/rest/v1/bookings?select=id,created_at,booking_date,hour,time_label,place_id,field_id,' +
-        'customer_name,customer_phone,player_id,price,status,source,cancel_reason' +
-        '&order=booking_date.desc&limit=' + BK_LIMIT),
+    fetchBookings(),
     fetchFields(),
     // بلا `active` في المرشِّح عمدًا: الأدمن يرى المخفيّ كي يستطيع إظهاره.
     // (‏places_read يسمح بذلك: `active or is_admin() or owns_place`.)
@@ -1090,7 +1119,7 @@ function loadAll(){
     D.reviews      = r[5].data || [];
     D.truncated    = D.bookings.length >= BK_LIMIT;
     renderAll();
-  });
+  }); });
 }
 
 /* المعلّق يُشتقّ ولا يُقرأ: العرض يعطي bookings و confirmed و lost، ومجال
@@ -1102,13 +1131,28 @@ function pendingOf(d){ return Math.max(0, (+d.bookings||0) - (+d.confirmed||0) -
 /* تجميعة واحدة تُستعمَل في كل نافذة زمنية: العدّ والمال معًا، فلا يُعاد
    حساب نفس الشيء بصيغتين تختلفان بصمت. */
 function agg(rows){
-  var o = { n:0, cf:0, pd:0, ls:0, gmv:0, pending:0, lost:0 };
+  /* ⚠️ خمس حقائق لا ثلاث (الدفعة ١٢). `status` ما زال أربع قيم في المخطّط،
+     لكنّ عمودَي الترحيلين 15 و16 يشقّان اثنتين منها:
+       • rejected + cancel_kind='expired' ⇒ **انقضت المهلة**: لم يقل المالك لا،
+         بل لم يقل شيئًا. دمجُها مع الرفض يُتلف أهمّ مقياس على أداء المالك.
+       • confirmed + no_show ⇒ **خانة انباعت وما انلعبت**: ليست ضائعة (العمولة
+         مستحقّة) وليست إيرادًا عاديًّا (الملعب بقي فارغًا).
+     وقبل الترحيلين لا وجود للعمودين ⇒ `undefined` ⇒ العدّان صفر، والأرقام
+     الثلاثة القديمة تبقى كما كانت بالحرف. لا فرع ثالث ولا قيمة مخترَعة. */
+  var o = { n:0, cf:0, pd:0, ls:0, gmv:0, pending:0, lost:0,
+            exp:0, expired:0, ns:0, noShow:0 };
   rows.forEach(function(b){
     var p = +b.price || 0, st = String(b.status||'pending');
     o.n++;
-    if (st === 'confirmed'){ o.cf++; o.gmv += p; }
+    if (st === 'confirmed'){
+      o.cf++; o.gmv += p;
+      if (b.no_show){ o.ns++; o.noShow += p; }
+    }
     else if (st === 'pending'){ o.pd++; o.pending += p; }
-    else { o.ls++; o.lost += p; }
+    else {
+      o.ls++; o.lost += p;
+      if (String(b.cancel_kind||'') === 'expired'){ o.exp++; o.expired += p; }
+    }
   });
   o.com  = o.gmv * RATE;
   o.avg  = o.cf ? o.gmv / o.cf : 0;
@@ -1358,14 +1402,41 @@ function renderMoney(W){
   var emptySlots = Math.max(0, W.cap.perDay * 30 -
     W.cur.filter(function(b){ var s=b.status; return s==='confirmed'||s==='pending'; }).length);
   var basePrice = c.avg || W.cap.medPrice;
-  $('#leak').innerHTML = miniRows([
-    ['ضاع فعلًا (ملغى/مرفوض) — 30 يومًا', moneyB(c.lost) + ' <span class="mk">· ' + c.ls + ' حجزًا</span>'],
-    ['ما زال معلّقًا — قابل للإنقاذ', moneyB(c.pending) + ' <span class="mk">· ' + c.pd + ' حجزًا</span>'],
-    ['دخلك الضائع من الملغى (10%)', moneyB(c.lost * RATE)],
+  /* خمسة صفوف الآن لا ثلاثة، ولكلٍّ منها معناه المستقلّ:
+       ① ضاع فعلًا — قرارٌ من أحد الطرفين.
+       ② **منه: انقضت المهلة** — ليس قرارًا بل صمت. مفصولٌ لأن علاجه مختلف
+         تمامًا: الأوّل يُعالَج بالسعر والعرض، والثاني بمكالمةٍ للمالك.
+       ③ ما زال معلّقًا — قابل للإنقاذ.
+       ④ **لم يحضروا** — بيع بلا لعب: لا يُطرح من الإيراد ولا يُجمَع مع الضائع.
+       ⑤ الطاقة الفارغة — سقفٌ نظري مكتوبٌ أنه ليس هدفًا.
+     والصفّان الجديدان يظهران **فقط** حين يُقاسان: قبل الترحيلين لا عمود
+     يقيسهما، وصفرٌ لا مصدر له يُقرأ «لا يحدث هذا عندنا» — وهو ادّعاء. */
+  var leakRows = [
+    ['ضاع فعلًا (ملغى/مرفوض) — 30 يومًا', moneyB(c.lost) + ' <span class="mk">· ' + nBooking(c.ls) + '</span>']
+  ];
+  if (HAS_EXPIRY) leakRows.push(
+    ['— منه: انقضت مهلة الردّ', moneyB(c.expired) + ' <span class="mk">· ' + nBooking(c.exp) +
+      ' · لم يردّ المالك، ولم يرفض</span>']);
+  leakRows.push(
+    ['ما زال معلّقًا — قابل للإنقاذ', moneyB(c.pending) + ' <span class="mk">· ' + nBooking(c.pd) + '</span>'],
+    ['دخلك الضائع من الملغى (10%)', moneyB(c.lost * RATE)]);
+  if (HAS_NOSHOW) leakRows.push(
+    ['لم يحضروا — انباعت وما انلعبت', moneyB(c.noShow) + ' <span class="mk">· ' + nBooking(c.ns) +
+      ' · العمولة مستحقّة</span>']);
+  leakRows.push(
     ['خانات فارغة — 30 يومًا', bdi(String(emptySlots)) + ' <span class="mk">من ' + (W.cap.perDay*30) + '</span>'],
-    ['قيمتها النظرية بسعرك الوسطي', moneyB(emptySlots * basePrice) + ' <span class="mk">سقف لا هدف</span>']
-  ]) + '<p class="note">⚠️ السطر الأخير <strong>ليس إيرادًا ضائعًا</strong>. لا ملعب في العالم يمتلئ ' +
+    ['قيمتها النظرية بسعرك الوسطي', moneyB(emptySlots * basePrice) + ' <span class="mk">سقف لا هدف</span>']);
+
+  var leakNote = '<p class="note">⚠️ السطر الأخير <strong>ليس إيرادًا ضائعًا</strong>. لا ملعب في العالم يمتلئ ' +
     '١٠٠٪ في كل خانة من كل يوم؛ الرقم مذكور ليُقاس عليه التحسّن لا ليُطارَد.</p>';
+  if (!HAS_EXPIRY || !HAS_NOSHOW){
+    var miss = [];
+    if (!HAS_EXPIRY) miss.push('<code>15_booking_expiry.sql</code> (فصل «انقضت المهلة» عن «رفض المالك»)');
+    if (!HAS_NOSHOW) miss.push('<code>16_no_show.sql</code> (صفّ «لم يحضروا»)');
+    leakNote += '<p class="note">ℹ️ صفٌّ أو صفّان ناقصان هنا لأن ترحيلًا لم يُشغَّل بعد: ' +
+      miss.join(' · ') + '. وما تراه أعلاه مقيسٌ كاملًا بلا نقص.</p>';
+  }
+  $('#leak').innerHTML = miniRows(leakRows) + leakNote;
 
   var perPoint = W.cap.perDay * 30 * 0.01 * basePrice;
   $('#sens').innerHTML = W.cap.perDay ? miniRows([
