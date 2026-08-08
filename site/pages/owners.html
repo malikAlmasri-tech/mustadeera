@@ -52,3 +52,108 @@
     </div>
   </div>
 </section>
+
+<!-- ============ سجّل ملعبك (٢.٣) ============
+     تحسين تدريجي حقيقي: بلا JS يبقى القسمُ كاملًا مقروءًا ويبقى طريقُ الاتصال
+     ظاهرًا — النموذج نفسه هو الذي يُخفى (‏.js-only داخل .has-js وحده)، لا
+     العكس. زرٌّ يرسل بلا سكربت وعدٌ لا يُوفى، ونصٌّ مخفيّ خلف سكربت قد لا يصل
+     عطلٌ صامت؛ وهذا يتجنّب الاثنين. -->
+<section class="sec sec-alt" id="join">
+  <div class="wrap rv">
+    <div class="join-card">
+      <span class="eyebrow">{{t.joinEyebrow}}</span>
+      <h2 class="h2">{{t.joinTitle}}</h2>
+      <p class="lead">{{t.joinLead}}</p>
+
+      <noscript class="join-fallback"><p>{{t.joinNoJs}} <a href="{{base}}/contact/">{{t.ownPageCta}}</a></p></noscript>
+      <p class="join-fallback js-hide"><a class="btn btn-sec" href="{{base}}/contact/">{{t.joinNoJsCta}}</a></p>
+
+      <form class="join-form js-only" id="joinForm" novalidate>
+        <div class="join-grid">
+          <label class="join-f"><span>{{t.joinName}}</span>
+            <input name="contact_name" required minlength="2" maxlength="80" autocomplete="name"></label>
+          <label class="join-f"><span>{{t.joinPhone}}</span>
+            <input name="phone" required inputmode="tel" maxlength="20" autocomplete="tel" placeholder="07XXXXXXXX"></label>
+          <label class="join-f join-wide"><span>{{t.joinVenue}}</span>
+            <input name="venue_name" required minlength="2" maxlength="120"></label>
+          <label class="join-f"><span>{{t.joinCity}}</span>
+            <select name="city" required><option value="">{{t.joinPick}}</option>{{joinCityOpts}}<option value="__other">{{t.joinOther}}</option></select></label>
+          <label class="join-f"><span>{{t.joinRegion}}</span>
+            <select name="region" required><option value="">{{t.joinPick}}</option>{{joinRegionOpts}}<option value="__other">{{t.joinOther}}</option></select></label>
+          <label class="join-f join-other" data-for="city" hidden><span>{{t.joinCityOther}}</span>
+            <input name="city_other" maxlength="60"></label>
+          <label class="join-f join-other" data-for="region" hidden><span>{{t.joinRegionOther}}</span>
+            <input name="region_other" maxlength="60"></label>
+          <label class="join-f"><span>{{t.joinSport}}</span>
+            <select name="sport" required>{{joinSportOpts}}</select></label>
+          <label class="join-f"><span>{{t.joinCourts}}</span>
+            <input name="courts" type="number" inputmode="numeric" min="1" max="50" value="1"></label>
+          <label class="join-f join-wide"><span>{{t.joinNotes}}</span>
+            <textarea name="notes" rows="3" maxlength="1000"></textarea></label>
+        </div>
+        <p class="join-priv">{{t.joinPrivacy}}</p>
+        <button class="btn btn-pri btn-lg" type="submit">{{t.joinSubmit}}</button>
+        <p class="join-msg" id="joinMsg" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+/* نموذج الانضمام — يُرسل إلى Supabase بالمفتاح العام مباشرةً.
+   لا سياسة قراءة على الجدول لأحد إلّا الأدمن (ترحيل 19)، فالصفّ يُكتب ولا
+   يُقرَأ — ولذلك `Prefer: return=minimal`: لا نطلب ما لا يحقّ لنا.
+   وحدّ المعدّل في القاعدة لا هنا: عدّاد الصفحة يُتجاوَز بإعادة تحميل. */
+(function(){
+  var f = document.getElementById('joinForm'); if (!f) return;
+  /* ⚠️ الكشف يعتمد على **هذا** السكربت لا على `.has-js`: تلك تُزال إن تأخّر
+     `site.js` ثانيتين، وهو ملفّ لا شأن لهذا النموذج به — فكانت ستُخفي نموذجًا
+     يعمل. الشرط الصحيح: «هل جرى هذا السطر؟» لا «هل وصل ملفٌّ آخر؟» */
+  document.getElementById('join').classList.add('join-ready');
+  var msg = document.getElementById('joinMsg');
+  var URL_ = '{{sbBase}}/rest/v1/place_applications';
+  var KEY_ = '{{sbKey}}';
+  var T = { ok:'{{t.joinOk}}', busy:'{{t.joinBusy}}', fail:'{{t.joinFail}}',
+            soon:'{{t.joinTooSoon}}', rate:'{{t.joinRate}}', need:'{{t.joinNeed}}',
+            off:'{{t.joinNotReady}}' };
+
+  // «أخرى…» تفتح حقلًا حرًّا: القيمة الجديدة قرارٌ لا زلّة لوحة مفاتيح
+  f.addEventListener('change', function(e){
+    var s = e.target; if (s.tagName !== 'SELECT') return;
+    var box = f.querySelector('.join-other[data-for="' + s.name + '"]');
+    if (!box) return;
+    var on = s.value === '__other';
+    box.hidden = !on;
+    var inp = box.querySelector('input'); if (inp){ inp.required = on; if (on) inp.focus(); }
+  });
+
+  function say(text, kind){ msg.hidden = false; msg.textContent = text; msg.className = 'join-msg ' + (kind||''); }
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = new FormData(f), body = {};
+    ['contact_name','phone','venue_name','sport','notes'].forEach(function(k){ body[k] = (d.get(k)||'').toString().trim(); });
+    body.city   = d.get('city')   === '__other' ? (d.get('city_other')  ||'').toString().trim() : (d.get('city')||'').toString();
+    body.region = d.get('region') === '__other' ? (d.get('region_other')||'').toString().trim() : (d.get('region')||'').toString();
+    body.courts = Math.max(1, Math.min(50, parseInt(d.get('courts'), 10) || 1));
+    if (!body.contact_name || !body.phone || !body.venue_name || !body.city || !body.region){ say(T.need, 'bad'); return; }
+
+    var btn = f.querySelector('button[type=submit]');
+    btn.disabled = true; say(T.busy);
+    fetch(URL_, { method:'POST',
+      headers:{ apikey:KEY_, Authorization:'Bearer ' + KEY_, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body: JSON.stringify(body) })
+    .then(function(r){
+      if (r.ok){ f.querySelector('.join-grid').hidden = true; btn.hidden = true; say(T.ok, 'good'); return; }
+      return r.text().then(function(tx){
+        if (r.status === 404 || tx.indexOf('PGRST205') > -1) say(T.off, 'bad');
+        else if (tx.indexOf('pa_too_soon') > -1) say(T.soon, 'bad');
+        else if (tx.indexOf('pa_rate_') > -1)    say(T.rate, 'bad');
+        else say(T.fail, 'bad');
+        btn.disabled = false;
+      });
+    })
+    .catch(function(){ say(T.fail, 'bad'); btn.disabled = false; });
+  });
+})();
+</script>

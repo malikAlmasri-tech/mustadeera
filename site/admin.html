@@ -290,6 +290,28 @@ html.dark .brief li.warn::before{color:#E8B84B}
    الاسم `pl-card` فاصطدم بـ`.pl-card` في شبكة `/places` وورث منها
    `flex-direction:column` — فصارت البطاقة عمودًا وأنا لم أكتب ذلك في سطر
    واحد. أي صنف جديد هنا يبدأ بـ`ad-` أو يُفحَص أنه غير موجود هناك. */
+/* ===== صندوق طلبات الانضمام (٢.٣) =====
+   كل صنف هنا بادئته `ad-` للسبب المكتوب أعلاه: فضاء الأسماء مشترك مع site.css. */
+.ad-pa{padding:14px 16px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r);margin-bottom:10px}
+/* الجديد يحمل حدًّا ملوّنًا **وشارةً نصّية**: الحالة لا تُحمَل على اللون وحده. */
+.ad-pa.is-new{border-inline-start:3px solid var(--lime)}
+.ad-pa-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.ad-pa-top b{font-size:16px}
+.badge.ad-pa-st-new{background:var(--lime-soft)}
+.badge.ad-pa-st-rejected{background:rgba(176,39,24,.12);color:#B02718}
+html.dark .badge.ad-pa-st-rejected{color:#FF8A90}
+.ad-pa-notes{margin-top:9px;font-size:13.5px;color:var(--muted);line-height:1.75;white-space:pre-wrap}
+.ad-pa-rev{color:#B02718}
+html.dark .ad-pa-rev{color:#FF8A90}
+.ad-pa-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ad-pa-ok,.ad-pa-no{font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;
+  border-radius:10px;padding:8px 14px;background:none}
+.ad-pa-ok{border:1px solid var(--line-2);color:var(--teal)}
+html.dark .ad-pa-ok{color:var(--lime)}
+.ad-pa-no{border:1px solid rgba(176,39,24,.4);color:#B02718}
+html.dark .ad-pa-no{color:#FF8A90}
+
 .ad-pl{display:flex;flex-direction:row;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;
   background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px}
 /* المخفيّ يبقى مقروءًا وواضحَ الاختلاف: الحدّ المتقطّع يقول «موجود ولا يُعرَض»
@@ -632,6 +654,21 @@ html.dark .res .no{color:#FF8A90}
 
   <!-- ══ إدارة الأماكن: الموجود أوّلًا ثمّ الإضافة ══ -->
   <div class="panel" id="p-add" role="tabpanel" aria-labelledby="tab-add" tabindex="0" hidden>
+  <!-- ══ صندوق طلبات الانضمام (٢.٣) ══
+       أوّل قسم في التبويب عمدًا: هذا وحده هو ما **وصل ولم يُردّ عليه**، وبقيّة
+       التبويب أفعالٌ تبدأ منك. والقبول لا يكتب مكانًا بطريق ثانٍ — يملأ نموذج
+       «إضافة مكان» أدناه بما وصل، فيمرّ بنفس الحرّاس ونفس التراجع. -->
+  <section class="ad-sec" id="paSec">
+    <h2>طلبات انضمام وصلتك <span class="badge" id="paCount" hidden></span></h2>
+    <p class="ad-sub">تُملأ من نموذج «سجّل ملعبك» في صفحة أصحاب الملاعب.
+      <strong>الصفوف تحمل أرقام هواتف حقيقية</strong> ولا يقرؤها إلّا الأدمن —
+      لا سياسة قراءة على الجدول لغيره، والمفتاح العام لا يرى منه صفًّا واحدًا.
+      <strong>القبول</strong> يملأ نموذج «إضافة مكان» أدناه بما وصل كي تراجعه قبل الحفظ؛
+      و<strong>الرفض</strong> يُبقي الصفّ مع سببه — لا يمحوه — فيبقى جواب إن سأل صاحبه.</p>
+    <div id="paMsg"></div>
+    <div id="paList"></div>
+  </section>
+
   <section class="ad-sec">
     <h2>الأماكن الموجودة</h2>
     <p class="ad-sub"><strong>الإخفاء</strong> (‏<code>active=false</code>) يرفع المكان من التطبيق
@@ -1051,8 +1088,9 @@ function start(){
    الجلبة الواحدة تفتح كل ما تحت.
    ⚠️ الحجوزات تحمل أرقام العملاء. تبقى في الذاكرة ولا تُخزَّن ولا تُرسَل.
    ═══════════════════════════════════════════════════════════════════════════ */
-var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], truncated:false };
+var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], apps:[], truncated:false };
 var HAS_SPORT = true;    // هل شُغّل ترحيل 13؟ يُقاس من ردّ القاعدة لا يُفترَض
+var HAS_APPS  = true;    // وهل شُغّل 19؟ نفس القاعدة: يُقاس لا يُفترَض
 
 /* الأعمدة تُذكَر صراحةً (لا `select=*`) وهذا مقصود، لكنّه يعني أن **عمودًا
    غير موجود يُفشل الاستعلام كلّه**: `fields.sport` قبل ترحيل 13 يجعل الردّ
@@ -1109,7 +1147,10 @@ function loadAll(){
     api('/rest/v1/places?select=id,name,city,region,type,phone,active&order=name'),
     // عمودٌ واحد يكفي للعدّ. يُجلَب كي يقول تأكيدُ الحذف **كم تقييمًا** سيُمحى
     // معه بالضبط — «وتقييماته» بلا عدد تأكيدٌ لا يعرف صاحبه ما يوقّع عليه.
-    api('/rest/v1/reviews?select=place_id')
+    api('/rest/v1/reviews?select=place_id'),
+    /* طلبات الانضمام (ترحيل 19). قبله 404/`PGRST205` ⇒ نميّزها كي يقول
+       الصندوق **سببه** بدل قائمة فارغة تُوهم بأنه لا طلبات. */
+    api('/rest/v1/place_applications?select=id,created_at,contact_name,phone,venue_name,city,region,sport,courts,notes,status,review_note,place_id&order=created_at.desc&limit=200')
   ]).then(function(r){
     D.daily        = r[0].data || [];
     D.adminPlaces  = r[1].data || [];
@@ -1117,6 +1158,8 @@ function loadAll(){
     D.fields       = r[3].data || [];
     D.places       = r[4].data || [];
     D.reviews      = r[5].data || [];
+    D.apps         = r[6].ok ? (r[6].data || []) : [];
+    HAS_APPS       = r[6].ok;
     D.truncated    = D.bookings.length >= BK_LIMIT;
     renderAll();
   }); });
@@ -1190,6 +1233,7 @@ function renderAll(){
   renderPlacesTab();
   renderCustomers();
   renderOps(W);
+  renderApps();
   renderAddLists();
   renderPlaceAdmin();
 
@@ -2037,6 +2081,113 @@ $('#fieldRows').addEventListener('click', function(e){
    ما فيها هو ما في `places` حرفيًّا، فاختيارُه يطابق ما تصفّي به الواجهة.
    ⚠️ والقيمة المختارة تُحفَظ قبل إعادة البناء وتُعاد بعده: `loadAll()` يُنادى
    بعد كل عملية، ولو أُعيد ملء القائمة بلا حفظ لضاع اختيار المالك وهو يكتب. */
+/* ═══ صندوق طلبات الانضمام (٢.٣) ═══════════════════════════════════════════
+   الجديد أوّلًا ثمّ المُراجَع، لأن الجديد وحده هو ما ينتظر. */
+var SPORT_AR = { football:'كرة قدم', padel:'بادل', basket:'كرة سلة', tennis:'تنس', volley:'كرة طائرة' };
+var PA_ST = { 'new':'جديد', approved:'مقبول', rejected:'مرفوض' };
+
+function renderApps(){
+  var box = $('#paList'), cnt = $('#paCount');
+  if (!box) return;
+  if (!HAS_APPS){
+    cnt.hidden = true;
+    box.innerHTML = '<p class="frm-n">⚠️ <strong>ترحيل ١٩ لم يُشغَّل بعد</strong> — جدول ' +
+      '<code>place_applications</code> غير موجود، فلا نموذج على الموقع يستقبل شيئًا ولا صندوق هنا. ' +
+      'شغّل <code>migration/19_place_applications.sql</code> مرّة واحدة. ' +
+      '<strong>وهذا ليس «لا طلبات»</strong> — لا مكان تصل إليه أصلًا.</p>';
+    return;
+  }
+  var fresh = D.apps.filter(function(a){ return a.status === 'new'; });
+  cnt.hidden = !fresh.length;
+  cnt.textContent = fresh.length ? countNoun(fresh.length,'طلب واحد','طلبان','طلبات','طلبًا') : '';
+  if (!D.apps.length){
+    box.innerHTML = '<p class="chart-empty">ما وصل طلب بعد. النموذج شغّال على ' +
+      '<code>/owners/</code>، وأوّل طلب يظهر هنا.</p>';
+    return;
+  }
+  var order = { 'new':0, rejected:1, approved:2 };
+  var list = D.apps.slice().sort(function(a,b){
+    return (order[a.status] - order[b.status]) || (String(b.created_at).localeCompare(String(a.created_at)));
+  });
+  box.innerHTML = list.map(function(a){
+    var pending = a.status === 'new';
+    return '<article class="ad-pa' + (pending ? ' is-new' : '') + '" data-pa="' + esc(a.id) + '">' +
+      '<div class="ad-pa-top">' +
+        '<b>' + esc(a.venue_name) + '</b>' +
+        '<span class="badge ad-pa-st-' + esc(a.status) + '">' + esc(PA_ST[a.status] || a.status) + '</span>' +
+      '</div>' +
+      '<div class="mini">' +
+        '<div><span class="mk">صاحب الطلب</span><span class="mv">' + esc(a.contact_name) + ' · ' + bdi(esc(a.phone)) + '</span></div>' +
+        '<div><span class="mk">الموقع</span><span class="mv">' + esc(a.city) + ' — ' + esc(a.region) + '</span></div>' +
+        '<div><span class="mk">الرياضة والعدد</span><span class="mv">' + esc(SPORT_AR[a.sport] || a.sport) + ' · ' +
+          countNoun(+a.courts || 1, 'ملعب واحد','ملعبان','ملاعب','ملعبًا') + '</span></div>' +
+        '<div><span class="mk">وصل</span><span class="mv">' + whenText(new Date(a.created_at)) + '</span></div>' +
+      '</div>' +
+      (a.notes ? '<p class="ad-pa-notes">' + esc(a.notes) + '</p>' : '') +
+      (a.review_note ? '<p class="ad-pa-notes ad-pa-rev">سبب الرفض: ' + esc(a.review_note) + '</p>' : '') +
+      (pending
+        ? '<div class="ad-pa-acts"><button class="ad-pa-ok" data-pa-ok="' + esc(a.id) + '">اقبل — املأ نموذج الإضافة</button>' +
+          '<button class="ad-pa-no" data-pa-no="' + esc(a.id) + '">ارفض</button></div>'
+        : (a.place_id ? '<p class="frm-n">أُنشئ المكان من هذا الطلب.</p>' : '')) +
+    '</article>';
+  }).join('');
+}
+
+/* القبول **لا يكتب مكانًا**: يملأ نموذج «إضافة مكان» أدناه ويترك القرار
+   للأدمن. طريقُ كتابةٍ ثانٍ كان سيتخطّى كل حرّاس النموذج (الاسم المكرّر ·
+   ملعب بلا وقت · التراجع عن مكان بلا ملاعب) ويكرّرها في مكانين. */
+var PA_PENDING = null;   // الطلب الذي جرى قبوله وينتظر حفظ النموذج
+function approveApp(id){
+  var a = D.apps.filter(function(x){ return String(x.id) === String(id); })[0];
+  if (!a) return;
+  PA_PENDING = a;
+  $('#f_name').value = a.venue_name;
+  $('#f_phone').value = a.phone;
+  // المدينة/المنطقة قائمتان مغلقتان هنا كذلك؛ ما لا يطابق يُفتح في «أخرى…»
+  ['#f_city:city', '#f_region:region'].forEach(function(pair){
+    var parts = pair.split(':'), sel = $(parts[0]), want = String(a[parts[1]] || '');
+    if (!sel) return;
+    sel.value = want;
+    if (sel.value !== want){ sel.value = '__other'; syncOth(sel); var o = sel.parentNode.querySelector('.oth'); if (o) o.value = want; }
+    else syncOth(sel);
+  });
+  // صفّ ملعب لكل ملعب طلبه، برياضته
+  $('#fieldRows').innerHTML = ''; rowSeq = 0;
+  var n = Math.max(1, Math.min(20, +a.courts || 1));
+  for (var i = 0; i < n; i++) addFieldRow();
+  document.querySelectorAll('#fieldRows .fr-sport').forEach(function(s){
+    s.value = a.sport; s.dispatchEvent(new Event('change', { bubbles:true }));
+  });
+  paMsg('ok', 'مُلئ النموذج من طلب <b>' + esc(a.venue_name) + '</b>. راجع الأسعار والأوقات والمواصفات ' +
+    '— <strong>لم يكتبها صاحب الطلب</strong> — ثمّ احفظ. ولن يُعلَّم الطلب مقبولًا إلّا بعد أن يُنشأ المكان فعلًا.');
+  var f = $('#addForm'); if (f) f.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function rejectApp(id){
+  var why = window.prompt('سبب الرفض — يبقى في السجلّ ولا يُرسَل تلقائيًّا لأحد:', '');
+  if (why === null) return;
+  api('/rest/v1/place_applications?id=eq.' + encodeURIComponent(id), {
+    method:'PATCH', prefer:'return=representation',
+    body:{ status:'rejected', review_note:String(why).slice(0, 500) }
+  }).then(function(r){
+    if (!r.ok || !(r.data || []).length){ paMsg('err', 'تعذّر الحفظ (' + r.status + ').'); return; }
+    paMsg('ok', 'سُجّل الرفض. الصفّ باقٍ مع سببه — لم يُحذف.');
+    loadAll();
+  });
+}
+
+function paMsg(kind, html){
+  var el = $('#paMsg'); if (!el) return;
+  el.innerHTML = '<div class="res ' + (kind === 'ok' ? 'ok' : 'err') + '">' + html + '</div>';
+}
+
+document.addEventListener('click', function(e){
+  var ok = e.target.closest && e.target.closest('[data-pa-ok]');
+  if (ok){ approveApp(ok.getAttribute('data-pa-ok')); return; }
+  var no = e.target.closest && e.target.closest('[data-pa-no]');
+  if (no){ rejectApp(no.getAttribute('data-pa-no')); }
+});
+
 function renderAddLists(){
   function fill(id, vals, ph){
     var el = $(id); if (!el) return;
@@ -2378,6 +2529,20 @@ $('#addForm').addEventListener('submit', function(e){
     addResult('ok', '<h3>تمّ إنشاء «' + esc(name) + '»</h3><ul>' + li.join('') + '</ul>');
     $('#addForm').reset(); syncAllOth();
     $('#fieldRows').innerHTML = ''; rowSeq = 0;
+    /* الطلب يُعلَّم مقبولًا **بعد** أن يوجد المكان فعلًا، ويحمل معرّفه — لا
+       عند الضغط على «اقبل». الترتيب يهمّ: لو عُلّم أوّلًا وفشل الإنشاء لبقي
+       طلبٌ «مقبول» بلا مكان، ولا أحد يعرف أنه لم يُنفَّذ. */
+    if (PA_PENDING){
+      var paId = PA_PENDING.id; PA_PENDING = null;
+      api('/rest/v1/place_applications?id=eq.' + encodeURIComponent(paId), {
+        method:'PATCH', prefer:'return=representation', body:{ status:'approved', place_id:placeId }
+      }).then(function(pr){
+        if (!pr.ok || !(pr.data||[]).length) paMsg('err', 'أُنشئ المكان، لكن تعذّر تعليم الطلب مقبولًا (' + pr.status + '). علّمه يدويًّا.');
+        else paMsg('ok', 'أُنشئ المكان وعُلّم الطلب <b>مقبولًا</b> ومربوطًا به.');
+        loadAll();
+      });
+      return;
+    }
     loadAll();     // الجداول تعرف بالمكان الجديد فورًا — و`renderAddLists` تلتقط المدينة/المنطقة الجديدتين
   })
   .catch(function(ex){

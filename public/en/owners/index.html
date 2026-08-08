@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap">
 
-<link rel="stylesheet" href="/build/site.0197fa4d.css">
+<link rel="stylesheet" href="/build/site.8faf38ca.css">
 
 <script>(function(){var r=document.documentElement;try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){r.classList.add('dark');}}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 
@@ -159,6 +159,106 @@
     </div>
   </div>
 </section>
+
+<section class="sec sec-alt" id="join">
+  <div class="wrap rv">
+    <div class="join-card">
+      <span class="eyebrow">Joining</span>
+      <h2 class="h2">Register your venue here</h2>
+      <p class="lead">Fill this in and we will review it. Sending it does not publish your venue: we check the details and call you first.</p>
+
+      <noscript class="join-fallback"><p>It looks like the script did not run for you, which is fine - contact us directly and we will register the venue ourselves: <a href="/en/contact/">Register your pitch</a></p></noscript>
+      <p class="join-fallback js-hide"><a class="btn btn-sec" href="/en/contact/">Contact us to register your venue</a></p>
+
+      <form class="join-form js-only" id="joinForm" novalidate>
+        <div class="join-grid">
+          <label class="join-f"><span>Your name</span>
+            <input name="contact_name" required minlength="2" maxlength="80" autocomplete="name"></label>
+          <label class="join-f"><span>Your phone number</span>
+            <input name="phone" required inputmode="tel" maxlength="20" autocomplete="tel" placeholder="07XXXXXXXX"></label>
+          <label class="join-f join-wide"><span>Venue name</span>
+            <input name="venue_name" required minlength="2" maxlength="120"></label>
+          <label class="join-f"><span>City</span>
+            <select name="city" required><option value="">Choose...</option><option value="عمان">عمان</option><option value="__other">Other...</option></select></label>
+          <label class="join-f"><span>Area</span>
+            <select name="region" required><option value="">Choose...</option><option value="المدينة الرياضية">المدينة الرياضية</option><option value="تلاع العلي">تلاع العلي</option><option value="شارع الجامعة">شارع الجامعة</option><option value="ضاحية الرشيد">ضاحية الرشيد</option><option value="طبربور">طبربور</option><option value="عرجان">عرجان</option><option value="__other">Other...</option></select></label>
+          <label class="join-f join-other" data-for="city" hidden><span>Type the city name</span>
+            <input name="city_other" maxlength="60"></label>
+          <label class="join-f join-other" data-for="region" hidden><span>Type the area name</span>
+            <input name="region_other" maxlength="60"></label>
+          <label class="join-f"><span>Sport</span>
+            <select name="sport" required><option value="football">Football</option><option value="padel">Padel</option><option value="basket">Basketball</option><option value="tennis">Tennis</option><option value="volley">Volleyball</option></select></label>
+          <label class="join-f"><span>Number of courts</span>
+            <input name="courts" type="number" inputmode="numeric" min="1" max="50" value="1"></label>
+          <label class="join-f join-wide"><span>Notes (optional)</span>
+            <textarea name="notes" rows="3" maxlength="1000"></textarea></label>
+        </div>
+        <p class="join-priv">We use your number to contact you about this application only. It is never shown to anyone on the site or in the app.</p>
+        <button class="btn btn-pri btn-lg" type="submit">Send the application</button>
+        <p class="join-msg" id="joinMsg" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+/* نموذج الانضمام — يُرسل إلى Supabase بالمفتاح العام مباشرةً.
+   لا سياسة قراءة على الجدول لأحد إلّا الأدمن (ترحيل 19)، فالصفّ يُكتب ولا
+   يُقرَأ — ولذلك `Prefer: return=minimal`: لا نطلب ما لا يحقّ لنا.
+   وحدّ المعدّل في القاعدة لا هنا: عدّاد الصفحة يُتجاوَز بإعادة تحميل. */
+(function(){
+  var f = document.getElementById('joinForm'); if (!f) return;
+  /* ⚠️ الكشف يعتمد على **هذا** السكربت لا على `.has-js`: تلك تُزال إن تأخّر
+     `site.js` ثانيتين، وهو ملفّ لا شأن لهذا النموذج به — فكانت ستُخفي نموذجًا
+     يعمل. الشرط الصحيح: «هل جرى هذا السطر؟» لا «هل وصل ملفٌّ آخر؟» */
+  document.getElementById('join').classList.add('join-ready');
+  var msg = document.getElementById('joinMsg');
+  var URL_ = 'https://nxqddfuwtrsabprxcfez.supabase.co/rest/v1/place_applications';
+  var KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWRkZnV3dHJzYWJwcnhjZmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNDkwNDcsImV4cCI6MjEwMDYyNTA0N30.SOL5yoyeDZpJOEneH9rgqGc5P6HswMw5fR9d76Uh0wA';
+  var T = { ok:'Your application arrived. One of us reads it and calls you on the number you gave. We cannot promise a specific reply time, but the application is recorded and will not be lost.', busy:'Sending...', fail:'The application could not be sent. Please try again, or contact us directly.',
+            soon:'We received an application from this number a moment ago. Please wait ten minutes, or contact us directly.', rate:'Several applications have come from this number today. Please contact us directly and we will take it from there.', need:'Please complete the required fields before sending.',
+            off:'Applications aren't enabled on the server yet. Please contact us directly and we will register your venue.' };
+
+  // «أخرى…» تفتح حقلًا حرًّا: القيمة الجديدة قرارٌ لا زلّة لوحة مفاتيح
+  f.addEventListener('change', function(e){
+    var s = e.target; if (s.tagName !== 'SELECT') return;
+    var box = f.querySelector('.join-other[data-for="' + s.name + '"]');
+    if (!box) return;
+    var on = s.value === '__other';
+    box.hidden = !on;
+    var inp = box.querySelector('input'); if (inp){ inp.required = on; if (on) inp.focus(); }
+  });
+
+  function say(text, kind){ msg.hidden = false; msg.textContent = text; msg.className = 'join-msg ' + (kind||''); }
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = new FormData(f), body = {};
+    ['contact_name','phone','venue_name','sport','notes'].forEach(function(k){ body[k] = (d.get(k)||'').toString().trim(); });
+    body.city   = d.get('city')   === '__other' ? (d.get('city_other')  ||'').toString().trim() : (d.get('city')||'').toString();
+    body.region = d.get('region') === '__other' ? (d.get('region_other')||'').toString().trim() : (d.get('region')||'').toString();
+    body.courts = Math.max(1, Math.min(50, parseInt(d.get('courts'), 10) || 1));
+    if (!body.contact_name || !body.phone || !body.venue_name || !body.city || !body.region){ say(T.need, 'bad'); return; }
+
+    var btn = f.querySelector('button[type=submit]');
+    btn.disabled = true; say(T.busy);
+    fetch(URL_, { method:'POST',
+      headers:{ apikey:KEY_, Authorization:'Bearer ' + KEY_, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body: JSON.stringify(body) })
+    .then(function(r){
+      if (r.ok){ f.querySelector('.join-grid').hidden = true; btn.hidden = true; say(T.ok, 'good'); return; }
+      return r.text().then(function(tx){
+        if (r.status === 404 || tx.indexOf('PGRST205') > -1) say(T.off, 'bad');
+        else if (tx.indexOf('pa_too_soon') > -1) say(T.soon, 'bad');
+        else if (tx.indexOf('pa_rate_') > -1)    say(T.rate, 'bad');
+        else say(T.fail, 'bad');
+        btn.disabled = false;
+      });
+    })
+    .catch(function(){ say(T.fail, 'bad'); btn.disabled = false; });
+  });
+})();
+</script>
 </main>
 <footer class="ft">
   <div class="wrap ft-in">

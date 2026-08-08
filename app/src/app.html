@@ -905,6 +905,65 @@
     </div>
   </div>
 
+  <!-- ============ CLOSE A DAY (٢.١) ============
+       الإغلاق ليس حجزاً، ولذلك نافذته منفصلة عن «حجز خارجي»: الأولى تسحب خانة
+       من العرض، والثانية تبيعها. وخلطهما هو ما جعل المالك يزوّر حجوزات وهمية
+       لإغلاق يوم صيانة، فتدخل إيراده وإشغاله. -->
+  <div class="modal-overlay" id="modal-closure" role="dialog" aria-modal="true" aria-labelledby="clTitle">
+    <div class="modal" data-modal="closure">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="clTitle" data-i18n="closeDayTitle">إغلاق يوم</div>
+      <div class="modal-sub" id="clWhen"></div>
+      <label class="form-label" data-i18n="closeFieldLbl">الملعب</label>
+      <select class="finput" id="clField" style="margin-bottom:13px"></select>
+      <label class="form-label" data-i18n="closeScopeLbl">المدى</label>
+      <select class="finput" id="clScope" style="margin-bottom:13px">
+        <option value="day" data-i18n="closeWholeDay">اليوم كلّه</option>
+        <option value="hours" data-i18n="closeSomeHours">ساعات منه</option>
+      </select>
+      <div class="grid-2" id="clHours" hidden style="margin-bottom:13px">
+        <div><label class="form-label" data-i18n="closeFromLbl">من الساعة</label><select class="finput" id="clFrom"></select></div>
+        <div><label class="form-label" data-i18n="closeToLbl">حتى الساعة</label><select class="finput" id="clTo"></select></div>
+      </div>
+      <label class="form-label" data-i18n="closeReasonLbl">السبب — يقرؤه اللاعبون</label>
+      <input class="finput" id="clReason" data-i18n-ph="closeReasonPh" placeholder="صيانة الأرضية" style="margin-bottom:8px">
+      <div class="modal-sub" data-i18n="closeReasonWhy">يوم مظلم بلا سبب يُقرأ عطلاً في التطبيق. اكتب سبباً قصيراً.</div>
+      <div id="clResult" class="cl-result" hidden></div>
+      <button class="sbtn" data-action="saveClosure" style="margin-top:8px" data-i18n="closeDayBtn">أغلِق</button>
+      <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ============ PRICING RULES (٢.٢) ============
+       الحسم في القاعدة (`resolve_field_price`)، وهذه الشاشة تكتب القواعد وتعرض
+       **ناتجها** على سبعة أيام: المالك يرى ما بناه فعلاً لا ما نواه. -->
+  <div class="modal-overlay" id="modal-pricing" role="dialog" aria-modal="true" aria-labelledby="prTitle">
+    <div class="modal" data-modal="pricing">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="prTitle" data-i18n="pricingTitle">تسعير الساعات</div>
+      <div class="modal-sub" id="prField"></div>
+      <div id="prNotReady" class="cl-result warn" hidden></div>
+      <div id="prList"></div>
+      <div class="pr-form" id="prForm">
+        <div class="form-label" data-i18n="ruleDaysLbl">الأيام — بلا اختيار = كل الأيام</div>
+        <div class="pr-days" id="prDays"></div>
+        <div class="grid-2" style="margin:11px 0">
+          <div><label class="form-label" data-i18n="ruleFromLbl">من الساعة</label><select class="finput" id="prFrom"></select></div>
+          <div><label class="form-label" data-i18n="ruleToLbl">حتى الساعة</label><select class="finput" id="prTo"></select></div>
+        </div>
+        <div class="grid-2" style="margin-bottom:11px">
+          <div><label class="form-label" data-i18n="rulePriceLbl">السعر</label><input class="finput" id="prPrice" type="number" inputmode="numeric" placeholder="55"></div>
+          <div><label class="form-label" data-i18n="rulePriorityLbl">الأولوية</label><input class="finput" id="prPriority" type="number" inputmode="numeric" value="10"></div>
+        </div>
+        <button class="cbtn" data-action="addPriceRule" data-i18n="ruleAddBtn">أضِف القاعدة</button>
+      </div>
+      <div class="sec-title" style="padding:16px 0 8px"><span data-i18n="priceGridTitle">النتيجة — سبعة أيام</span></div>
+      <div class="modal-sub" data-i18n="priceGridSub">هذا ما سيراه اللاعب فعلاً. الفارغ = السعر الأساسي للملعب.</div>
+      <div id="prGrid" class="pr-grid"></div>
+      <button class="cbtn" data-action="closeModal" style="margin-top:12px" data-i18n="closeWord">إغلاق</button>
+    </div>
+  </div>
+
   <!-- ============ REASON MODAL ============ -->
   <div class="modal-overlay" id="modal-reason" role="dialog" aria-modal="true" aria-labelledby="reasonTitle" aria-describedby="reasonHint">
     <div class="modal" data-modal="reason">

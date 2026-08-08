@@ -1993,6 +1993,68 @@ html[lang="en"] .form-label{letter-spacing:.02em}
 /* لوح «فاتت مهلة الإلغاء» في «حجوزاتي» — يحمل سببًا ومخرجًا، لا زرًّا معطَّلًا */
 .reason-box.bk-late{background:var(--warning-soft);color:var(--warning-ink)}
 
+/* ═══════════ (٢.١) الإغلاق ═══════════
+   المغلق **ليس** نوعًا من المحجوز، فلا يأخذ لونه: المحجوز باعه غيرُك (رمادي
+   محايد)، والمغلق سُحب من العرض (مخطَّط مائل يقول «ليس معروضًا أصلًا»).
+   والحالة محمولة على الوسم النصّي كذلك لا على اللون وحده. */
+.tbtn.closed{
+  cursor:not-allowed;color:var(--muted);border-color:var(--line);
+  background-image:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--muted) 12%,transparent) 6px 12px);
+}
+.tbtn.closed .t-tag.t-closed{background:var(--warning-soft);color:var(--warning-ink)}
+/* السعر المختلف على زرّ الوقت — قبل النقر لا في نافذة المراجعة.
+   ⚠️ كان `--auth-lime-ink` فقاس **4.31:1** على السطح الفاتح عند 10px (راسب،
+      والمطلوب 4.5) بينما يقيس 6.79 في الليلي — نفس الفخّ المسجَّل: الخطأ لا
+      يُرى في الثيم الداكن إطلاقًا. و`--warning-ink` هو الصحيح دلاليًّا كذلك:
+      سعرٌ يخالف الأساسي **تنبيهٌ** لا بشرى، فلا يُصبَغ بلون النجاح. */
+.t-price{display:block;font-size:10px;font-weight:800;color:var(--warning-ink);margin-top:2px}
+.day-btn.day-closed{opacity:.75}
+.d-state.is-closed{color:var(--warning-ink);font-weight:800}
+.closed-note{background:var(--warning-soft);color:var(--warning-ink);border-radius:12px;padding:11px 13px;
+  font-size:12px;line-height:1.65;display:flex;flex-direction:column;gap:3px}
+.closed-note .closed-ttl{font-weight:900;font-size:13px}
+
+/* لوح الإغلاق في تقويم المالك */
+.cl-panel{padding:13px}
+.cl-state{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:700;margin-bottom:6px}
+.cl-state.open{color:var(--ok-ink)}
+.cl-state.closed{color:var(--warning-ink)}
+.cl-state .cl-f{font-weight:900;color:var(--ink)}
+.cl-undo{margin-inline-start:auto}
+/* نتيجة محاولة الإغلاق — **داخل** النافذة لا توستًا يختفي: هذه قائمة من
+   سيتأذّى، ويحتاجها المالك أمامه ليتصرّف. */
+.cl-result{background:var(--danger-soft);color:var(--danger-ink);border-radius:12px;padding:11px 13px;margin:12px 0;font-size:12px;line-height:1.7}
+.cl-result.warn{background:var(--warning-soft);color:var(--warning-ink)}
+.cl-conf-ttl{font-weight:900;font-size:13px;margin-bottom:4px}
+.cl-conf-sub{margin-bottom:8px}
+.cl-conf-list{display:flex;flex-direction:column;gap:5px}
+.cl-conf-row{display:flex;justify-content:space-between;gap:10px;background:var(--surface-solid,#fff1);
+  border-radius:8px;padding:6px 9px;font-weight:700}
+body.dark .cl-conf-row{background:rgba(255,255,255,.06)}
+
+/* ═══════════ (٢.٢) التسعير ═══════════ */
+.pr-empty{font-size:12px;color:var(--muted);padding:10px 0}
+.pr-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line)}
+.pr-row-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pr-price{font-size:14px;font-weight:900;color:var(--ink)}
+.pr-when{font-size:11px;color:var(--muted)}
+.pr-prio{font-size:11px;font-weight:800;color:var(--soft)}
+.pr-del{flex-shrink:0}
+.pr-form{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.pr-days{display:flex;gap:6px;flex-wrap:wrap}
+/* شبكة القراءة الراجعة: صفٌّ لكل يوم وخليّة لكل خانة. تمرير أفقي داخلها
+   وحدها — الصفحة نفسها لا تتمرّر عرضًا. */
+.pr-grid{display:flex;flex-direction:column;gap:7px;margin-top:9px}
+.pr-gd{display:flex;gap:6px;align-items:center;overflow-x:auto;padding-bottom:2px}
+.pr-gd-day{flex:0 0 auto;min-width:58px;font-size:11px;font-weight:800;color:var(--ink-2)}
+.pr-gd-cell{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1px;
+  border:1px solid var(--line);border-radius:8px;padding:4px 7px;min-width:56px}
+.pr-gd-cell.on{border-color:var(--primary);background:var(--primary-soft)}
+.pr-gd-h{font-size:9px;color:var(--soft)}
+.pr-gd-v{font-size:11px;font-weight:800;color:var(--ink)}
+.pr-gd-v.dim{color:var(--soft);font-weight:600}
+.pr-grid-load{font-size:12px;color:var(--muted)}
+
 /* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
 .otab{position:relative}
 .tab-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;display:grid;place-items:center;

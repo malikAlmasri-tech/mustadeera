@@ -572,6 +572,33 @@ foreach ($lang in $Langs) {
             $vars['sportCls' + $sk] = $(if ($on) { ' sport-live' } else { '' })
         }
 
+        # ---- the join form's closed lists (2.3) ----
+        # Cities and regions come from the SAME rows the directory prints, not
+        # from a hand-typed list. Free text would create "Amman" twice in two
+        # spellings, and the site's own region filter splits silently on that -
+        # the exact failure the admin panel's closed lists were built to stop.
+        # The "other" escape is a real option, so a new value is a decision.
+        $cityOpts = ''; $regionOpts = ''
+        if ($PlaceModel.Count -gt 0) {
+            foreach ($c in (@($PlaceModel | ForEach-Object { $_.city })  | Where-Object { $_ -ne '' } | Sort-Object -Unique)) {
+                $cityOpts += '<option value="' + (HtmlEnc $c) + '">' + (HtmlEnc $c) + '</option>'
+            }
+            foreach ($r in (@($PlaceModel | ForEach-Object { $_.region }) | Where-Object { $_ -ne '' } | Sort-Object -Unique)) {
+                $regionOpts += '<option value="' + (HtmlEnc $r) + '">' + (HtmlEnc $r) + '</option>'
+            }
+        }
+        $vars['joinCityOpts']   = $cityOpts
+        $vars['joinRegionOpts'] = $regionOpts
+        # Sport labels come from the strings files, so both languages stay in step.
+        $sportOpts = ''
+        $sportKeyMap = [ordered]@{ football='sportFootball'; padel='sportPadel'; basket='sportBasket'; tennis='sportTennis'; volley='sportVolley' }
+        foreach ($sk in $sportKeyMap.Keys) {
+            $sportOpts += '<option value="' + $sk + '">' + (HtmlEnc (Tx $T $sportKeyMap[$sk])) + '</option>'
+        }
+        $vars['joinSportOpts'] = $sportOpts
+        $vars['sbBase'] = ($SbUrl -replace '/rest/v1$', '')
+        $vars['sbKey']  = $SbKey
+
         $vars['priceSpan'] = ''
         if ($PlaceModel.Count -gt 0) {
             $allPrices = @($PlaceModel | ForEach-Object { $_.fields } | ForEach-Object { [double]$_.price })

@@ -58,8 +58,11 @@ trust2 = You pay the pitch price - no extra fee on you
 trust3 = Ratings come from players who actually booked
 
 # ---------- Sports ----------
-# Each sport's status here mirrors SPORTS in app/src/app.js (ready:true/false).
-# When a sport opens in the app, change its badge here - never before.
+# No status badge is typed here at all: the status is derived at build time
+# from the database ($SportLive in build-site.ps1), from the same rows the app
+# reads (sportHasVenues). The site therefore cannot promise a sport the app
+# does not serve (decision 7). sportLive/sportSoon are the two badge texts,
+# not the decision between them.
 sportsEyebrow = The sports
 sportsTitle = A platform for every sports venue - it started with football.
 sportsLead = AL-Mustadira is not a football app. It was built to book sports venues generally, and all five sports have been in the app since day one. What is open for booking right now is football pitches, because those are the venues actually registered with us; everything else carries an explicit "Soon" badge - we never list a venue you cannot book.
@@ -462,3 +465,37 @@ plEmpty = No venue matches your search. Try a shorter name, or clear the city fi
 # the venues listed here - we do not have those (honesty rule 5).
 photoPlayersAlt = Players competing for the ball during a football match
 photoKickAlt = A player striking the ball on a floodlit pitch at night
+
+# ---------- (2.3) "Register your venue" form ----------
+# Honesty rule 5: no response-time promise we have not committed to. The
+# sentence says what actually happens - a human reads it and calls back.
+joinEyebrow = Joining
+joinTitle = Register your venue here
+joinLead = Fill this in and we will review it. Sending it does not publish your venue: we check the details and call you first.
+joinNoJs = It looks like the script did not run for you, which is fine - contact us directly and we will register the venue ourselves:
+joinNoJsCta = Contact us to register your venue
+joinName = Your name
+joinPhone = Your phone number
+joinVenue = Venue name
+joinCity = City
+joinRegion = Area
+joinCityOther = Type the city name
+joinRegionOther = Type the area name
+joinPick = Choose...
+joinOther = Other...
+joinSport = Sport
+joinCourts = Number of courts
+joinNotes = Notes (optional)
+joinPrivacy = We use your number to contact you about this application only. It is never shown to anyone on the site or in the app.
+joinSubmit = Send the application
+joinBusy = Sending...
+joinOk = Your application arrived. One of us reads it and calls you on the number you gave. We cannot promise a specific reply time, but the application is recorded and will not be lost.
+joinFail = The application could not be sent. Please try again, or contact us directly.
+joinTooSoon = We received an application from this number a moment ago. Please wait ten minutes, or contact us directly.
+joinRate = Several applications have come from this number today. Please contact us directly and we will take it from there.
+joinNeed = Please complete the required fields before sending.
+joinNotReady = Applications aren't enabled on the server yet. Please contact us directly and we will register your venue.
+
+# ---------- (2.3) Venue application data ----------
+privJoinTitle = Venue applications
+privJoinBody = If you fill in the "Register your venue" form on the owners page, we store what you wrote: your name, your phone number, the venue's name, its city and area, its sport and number of courts, and your note if you left one. We use this to contact you about that application only. The row is readable by platform administrators alone - it never appears on the site, in the app, or to other venue owners, and it is the database itself that enforces this, not the page. We do not auto-delete rejected applications: we keep them with their reason so there is an answer if you ask later, and we delete one on request.
