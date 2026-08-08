@@ -136,6 +136,10 @@ const I18N = {
     ntfRejectedTitle:'اعتذر الملعب عن طلبك', ntfRejectedBody:'{place} — {day} {time}',
     ntfCancelledTitle:'أُلغي حجزك', ntfCancelledBody:'{place} — {day} {time}',
     ntfMovedTitle:'نُقل موعد حجز', ntfMovedBody:'{name} — {field} · صار {day} {time}',
+    // انقضاء المهلة (ترحيل 15) — ليس رفضًا، والنصّ يقول ذلك
+    ntfExpiredTitle:'انقضت مهلة طلبك', ntfExpiredBody:'{place} — {day} {time} · ما وصل ردّ من الملعب، والخانة صارت متاحة لغيرك',
+    // تحرّرت خانة كنت تنتظرها (ترحيل 20)
+    ntfSlotFreeTitle:'فضيت الخانة اللي كنت مستنيها', ntfSlotFreeBody:'{place} — {day} {time} · احجزها قبل غيرك',
     ntfReason:'السبب: {r}',
     /* ── لوح متابعة الحجز على الرئيسية ── */
     trkPending:'بانتظار ردّ الملعب', trkConfirmed:'حجزك مؤكّد', trkTitle:'حجزك القادم',
@@ -260,7 +264,7 @@ const I18N = {
     star1:'نجمة واحدة', star2:'نجمتان', star3:'3 نجوم', star4:'4 نجوم', star5:'5 نجوم',
     phRegName:'محمد أحمد', phRegPass:'6 خانات على الأقل', phAccName:'اسم اللاعب', phManualName:'أبو أحمد', phFieldName:'ملعب 1',
     placeStatsTitle:'إحصائيات الملعب',
-    skipLink:'تخطَّ إلى المحتوى الرئيسي', cityAmman:'عمّان', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
+    skipLink:'تخطَّ إلى المحتوى الرئيسي', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
     firstVisitWelcome:'أهلاً بك في المستديرة! 👋 اختر الملعب واليوم والوقت، وأرسل طلبك في ثوانٍ — بلا مكالمة واحدة.',
     addToCalendar:'أضِف إلى التقويم',
@@ -438,6 +442,19 @@ const I18N = {
     priceGridSub:'هذا ما سيراه اللاعب فعلاً. الفارغ = السعر الأساسي للملعب.',
     priceGridBase:'الأساسي {v}',
     closeWord:'إغلاق',
+    // ---- (١٣) بدائل خانة محجوزة ----
+    altAskTitle:'هذا الوقت محجوز',
+    altAskSub:'كنت تدوّر على {day} الساعة {time}. هاي أقرب البدائل الموجودة فعلاً:',
+    altSheetNone:'ما لقينا بديلاً قريباً لهذا الوقت — لا على ملعب ثاني ولا بيوم قريب. جرّب وقتاً ثانياً أو مكاناً ثانياً.',
+    altKindField:'نفس الوقت — على {f}',
+    altKindHour:'نفس اليوم — أقرب وقت فاضي',
+    altKindDay:'نفس الوقت — يوم {d}',
+    altKindPlace:'نفس الوقت — في {p}',
+    watchBtn:'نبّهني إذا فضيت',
+    watchDone:'رح ننبّهك',
+    watchOk:'سجّلنا طلبك. إذا انلغى هذا الحجز بنبعثلك إشعار.',
+    watchFail:'تعذّر التسجيل، جرّب كمان مرة',
+    watchNotReady:'التنبيه غير مُفعّل على الخادم بعد.',
   },
   en: {
     brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -512,6 +529,8 @@ const I18N = {
     ntfRejectedTitle:'The venue declined your request', ntfRejectedBody:'{place} — {day} {time}',
     ntfCancelledTitle:'Your booking was cancelled', ntfCancelledBody:'{place} — {day} {time}',
     ntfMovedTitle:'A booking was moved', ntfMovedBody:'{name} — {field} · now {day} {time}',
+    ntfExpiredTitle:'Your request timed out', ntfExpiredBody:'{place} — {day} {time} · the venue did not reply, and the slot is open again',
+    ntfSlotFreeTitle:'A slot you were waiting for is free', ntfSlotFreeBody:'{place} — {day} {time} · book it before someone else does',
     ntfReason:'Reason: {r}',
     trkPending:'Awaiting the venue’s reply', trkConfirmed:'Booking confirmed', trkTitle:'Your next booking',
     trkStarts:'Starts in', trkNow:'Kick-off has passed', trkSoon:'Starting now',
@@ -629,7 +648,7 @@ const I18N = {
     star1:'One star', star2:'Two stars', star3:'3 stars', star4:'4 stars', star5:'5 stars',
     phRegName:'John Smith', phRegPass:'At least 6 characters', phAccName:'Player name', phManualName:'Booker name', phFieldName:'Field 1',
     placeStatsTitle:'Field stats',
-    skipLink:'Skip to main content', cityAmman:'Amman', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
+    skipLink:'Skip to main content', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
     firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Pick your field, day and time, and send your request in seconds — not a single phone call.',
     addToCalendar:'Add to calendar',
@@ -799,6 +818,19 @@ const I18N = {
     priceGridSub:'This is what the player will actually see. Blank = the field’s base price.',
     priceGridBase:'Base {v}',
     closeWord:'Close',
+    // ---- (13) Alternatives for a booked slot ----
+    altAskTitle:'That time is booked',
+    altAskSub:'You were after {day} at {time}. Here are the closest alternatives that actually exist:',
+    altSheetNone:'We could not find a close alternative for that time — not on another pitch, not on a nearby day. Try another time or another venue.',
+    altKindField:'Same time — on {f}',
+    altKindHour:'Same day — nearest free time',
+    altKindDay:'Same time — {d}',
+    altKindPlace:'Same time — at {p}',
+    watchBtn:'Tell me if it frees up',
+    watchDone:'We’ll tell you',
+    watchOk:'Noted. If this booking is cancelled we will send you a notification.',
+    watchFail:'Couldn’t save, please try again',
+    watchNotReady:'Slot alerts aren’t enabled on the server yet.',
   }
 };
 function t(key, params){
@@ -1499,6 +1531,68 @@ async function sbSweepExpiry(session){
   }catch(_){ /* شبكة — الجلب بعده سيقول ما يقوله */ }
 }
 
+/* ═══ الأحداث (ترحيل 21) — قياسٌ لا يُبطئ ولا يكسر ═══════════════════════
+   ⚑ القائمة **مغلقة وفي مكان واحد**، ومرآتها قيدٌ في القاعدة: نوعٌ يُضاف هنا
+     بلا هناك يُرفَض بـ400، ونوعٌ هناك بلا هنا لا يُرسله أحد.
+   ⚑ والإرسال **دفعةً كل بضع ثوانٍ** بلا انتظار وبلا رسالة عند الفشل: غيابُ
+     القياس مقبول، وحجزٌ يتعثّر لأن سطر تحليلات فشل ليس مقبولًا. ولذلك لا
+     `await` على أيٍّ من هذه النداءات في أي مسار.
+   ⚑ ولا يحمل شيئًا عن **الشخص**: لا رقم ولا اسم ولا موقع. و`profile_id`
+     يكتبه الخادم من الجلسة (`fn_events_guard`) ولا نرسله أصلًا. */
+const EV = { SEARCH_EMPTY:'search_empty', PLACE_VIEW:'place_view',
+             BOOKING_STARTED:'booking_started', BOOKING_SUBMITTED:'booking_submitted',
+             SLOT_WATCH:'slot_watch' };
+const Track = (()=>{
+  let q = [], timer = 0, dead = false;
+  async function flush(){
+    timer = 0;
+    if (dead || !q.length) return;
+    const batch = q; q = [];
+    try{
+      const s = sbParse(Session.player() || Session.owner());
+      const r = await sbRest('/events', { method:'POST', token: s ? s.at : undefined,
+        prefer:'return=minimal', body: batch });
+      // الجدول غير موجود (ترحيل 21 معلَّق) ⇒ نكفّ عن المحاولة لهذه الجلسة.
+      if (r.status === 404 || String(r.raw||'').includes('PGRST205')) dead = true;
+    }catch(_){ /* شبكة — الدفعة تسقط، ولا أحد يُخبَر */ }
+  }
+  /* ⚠️ **بحثٌ واحد لا صفٌّ لكل حرف.** `renderPlaces` مربوطة بـ`input` مؤجَّلة،
+     فكتابة «صويلح» تمرّ على ستّ قوائم فارغة ⇒ ستّة صفوف لسؤال واحد، وأعلى
+     بحثٍ فارغ يبدو ستّة أبحاثٍ صغيرة فيضيع الخبر. قاعدتان تحسمانها:
+       ① مهلة أطول من مهلة العرض (١.٢ث) — الكتابة تُلغي ما قبلها.
+       ② والكلمة الأطول **تبتلع** بادئتها: «صو» ثمّ «صويلح» سؤالٌ واحد. */
+  let sq = null, stimer = 0;
+  function settleSearch(){
+    stimer = 0;
+    if (!sq) return;
+    const p = sq; sq = null;
+    push(EV.SEARCH_EMPTY, p);
+  }
+  function push(kind, payload){
+    if (dead || !EV_OK(kind)) return;
+    q.push({ kind, payload: payload || {} });
+    if (q.length >= 20) { flush(); return; }            // سقف للدفعة كي لا تكبر بلا حدّ
+    if (!timer) timer = setTimeout(flush, 4000);
+  }
+  return {
+    push,
+    searchEmpty(payload){
+      if (dead) return;
+      const prev = sq && String(sq.q||''), next = String(payload.q||'');
+      if (!next) return;
+      // بادئةٌ سابقة تُستبدَل بالأطول؛ وكلمةٌ مختلفة تمامًا تُرسَل هي وسابقتها.
+      if (prev && next.indexOf(prev) !== 0 && prev.indexOf(next) !== 0) settleSearch();
+      sq = payload;
+      clearTimeout(stimer); stimer = setTimeout(settleSearch, 1200);
+    },
+    flushNow(){ settleSearch(); return flush(); }
+  };
+})();
+const EV_OK = (k) => Object.values(EV).includes(k);
+/* البحث يُطبَّع قبل التسجيل: «الجبيهه» و«الجبيهة » و«الجبيهة» سؤالٌ واحد،
+   وثلاثة صفوف عنه تجعل أعلى بحثٍ فارغ يبدو ثلاثة أبحاثٍ صغيرة. */
+const normQuery = (s) => normalizeText(s).slice(0, 60);
+
 /* ── الإغلاقات (ترحيل 17) — الكتابة عبر دالّة، والقراءة مباشرة ──
    الدالّة تُرجع التعارض **مفصّلًا** (بالاسم والوقت) بدل رمز خطأ عارٍ، فالمالك
    يرى مَن سيتأذّى قبل أن يقرّر. والمُشغِّل في القاعدة هو الحارس الحقيقي — يعمل
@@ -1555,6 +1649,20 @@ async function sbDelPriceRule(id, session){
   const r = await sbRest(`/field_price_rules?id=eq.${id}`, { method:'DELETE', token: session.at, prefer:'return=representation' });
   if (!r.ok) return { success:false, message:t('ruleFail') };
   if (!(r.data||[]).length) return { success:false, message:t('closeForbidden') };   // منعته RLS
+  return { success:true };
+}
+
+/* ── «نبّهني إذا فضيت» (ترحيل 20) ──
+   ⚠️ الزرّ **لا يظهر** ما لم يكن الجدول موجودًا: نيّةٌ نقبلها ولا نستطيع الوفاء
+      بها أسوأ من ألّا نعرضها. ولذلك نقيس الوجود مرّة عند أوّل محاولة ونحفظ. */
+let WATCH_OK = true;
+async function sbWatchSlot(d, session){
+  if (!session) return { success:false, message:'سجّل دخولك أول' };
+  const r = await sbRest('/slot_watch', { method:'POST', token: session.at,
+    prefer:'return=minimal,resolution=ignore-duplicates',
+    body:{ profile_id: session.uid, field_id: d.field_id, watch_date: d.date, hour: Number(d.hour) } });
+  if (r.status === 404 || String(r.raw||'').includes('PGRST205')){ WATCH_OK = false; return { success:false, missing:true, message:t('watchNotReady') }; }
+  if (!r.ok) return { success:false, message:t('watchFail') };
   return { success:true };
 }
 
@@ -1815,6 +1923,9 @@ const API = {
 
       case 'ownerSetNoShow':
         return sbSetNoShow(data, await sbSession(data.owner_token, true));
+
+      case 'watchSlot':
+        return sbWatchSlot(data, await sbSession(data.player_token, false));
 
       case 'ownerCloseField':
         return sbCloseField(data, await sbSession(data.owner_token, true));
@@ -2567,12 +2678,15 @@ function setViewMode(v){
   renderPlaces();
 }
 function updateViewToggle(){
-  $$('.vt-btn').forEach(b=>{ const on=b.dataset.view===State.view; b.classList.toggle('active',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+  // `on` صنفًا **وaria-pressed** معًا: الزرّ صار شريحة نصّية في ورقة الفلاتر،
+  // وشريحة الفلاتر تُضيء بـ`.on` لا بـ`.active`.
+  $$('.vt-btn').forEach(b=>{ const on=b.dataset.view===State.view;
+    b.classList.toggle('active',on); b.classList.toggle('on',on);
+    b.setAttribute('aria-pressed',on?'true':'false'); });
 }
 function updateFilterBar(){
   const c=$('#filterCount'); const n=activeFilterCount();
   if(c){ c.textContent=n; c.hidden=n===0; }
-  const sc=$('#sortCurrent'); if(sc) sc.textContent=t('sortLabel')+': '+t(SORT_LABEL[State.sort]||'sortDefault');
   const fb=$('#filterBtn'); if(fb) fb.classList.toggle('has-filters', n>0);
   renderFilterChips();
 }
@@ -2704,7 +2818,8 @@ function renderPlaces(opts){
     return;
   }
   updateFilterBar();
-  const q = normalizeText($('#searchInput')?.value || '');
+  const rawQ = $('#searchInput')?.value || '';
+  const q = normalizeText(rawQ);
   const favs = State.favOnly ? favGet() : null;
   let list = State.places.filter(p=>{
     const regionOk = State.filter==='all' || normalizeText(p.region)===normalizeText(State.filter);
@@ -2722,6 +2837,11 @@ function renderPlaces(opts){
       return;
     }
     const hasAny = q || State.filter!=='all' || activeFilterCount()>0;
+    /* ⚠️ **بحثٌ فارغ = خريطة توسّع** (٣.٣). الكلمة التي تتكرّر بلا نتيجة تسمّي
+       المنطقة التي لا عرض فيها، وهي معروفة اليوم لصاحب البحث وحده ثمّ تضيع.
+       والتسجيل مشروط بوجود كلمة بحث فعلية: «صفّرتُ الفلاتر فخلت القائمة»
+       ليس طلبًا لم يُلبَّ. والكلمة تُطبَّع فلا تصير ثلاثةَ صفوف لسؤال واحد. */
+    if (q) Track.searchEmpty({ q: normQuery(rawQ), region: State.filter, sport: State.sport });
     el.append(emptyState({ icon:'🔍', title:t('noResultsTitle'),
       sub: hasAny ? t('noResultsSub') : t('noResultsSubPlain'),
       actionLabel: hasAny?t('clearFiltersBtn'):null, action: hasAny?()=>{ resetAllFilters(); renderRegionTabs(); renderPlaces(); }:null }));
@@ -2862,6 +2982,7 @@ async function openDetail(placeId, opts={}){
   setDetailTab('book');                                   // ابدأ دائماً على تبويب الحجز
   renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderRatingDist(place); renderDetailSticky();
   showPage('detail');
+  Track.push(EV.PLACE_VIEW, { place_id:String(place.place_id), sport:State.sport });
   /* شبكة الأسعار **بعد** إظهار الصفحة لا قبله: الأسعار المختلفة استثناء لا
      قاعدة، وحجبُ الشاشة على طلبٍ يعود فارغًا في أغلب الأماكن ثمنٌ بلا مقابل.
      وحين تصل يُعاد رسم الأوقات وحدها. */
@@ -3082,7 +3203,16 @@ function timeButton(slot, taken, selected, onClick, opts){
     'aria-pressed': (selected&&!dead)?'true':'false',
     'aria-label': disp+' — '+stateLbl+(o.price!=null?' — '+formatCurrency(o.price):'')}, disp);
   if (dead){
-    b.setAttribute('disabled','');
+    /* ⚠️ `disabled` **يمنع الحدث** حتى على الأب — فالزرّ القابل للنقر رغم أنه
+       محجوز لا يجوز أن يحمله. نستعمل `aria-disabled` بدله: القارئ يقول
+       «محجوز» والزرّ يبقى مسموعًا للنقر. وبلا `onTaken` يعود `disabled` كما كان. */
+    if (o.onTaken){
+      b.setAttribute('aria-disabled','true');
+      b.classList.add('taken-alt');
+      b.addEventListener('click', o.onTaken);
+    } else {
+      b.setAttribute('disabled','');
+    }
     b.append(h('span',{class:'t-tag'+(closed?' t-closed':'')}, closed ? t('closedTag') : (o.tag || t('bookedTag'))));
   } else {
     // السعر المختلف على الزرّ نفسه — قبل النقر لا بعده
@@ -3132,9 +3262,15 @@ function renderDetailTimes(){
       const cl=slotClosure(fld.field_id, date, s.hour);
       // السعر يُمرَّر فقط حين يختلف — تمريره دائمًا يملأ الشبكة برقم مكرّر
       const pr=(!cl && !taken.includes(s.hour) && slotPriceDiffers(fld, date, s.hour)) ? slotPrice(fld, date, s.hour) : null;
-      const btn=timeButton(s, taken.includes(s.hour), State.detail.hour===s.hour,
+      const isTaken = taken.includes(s.hour);
+      const btn=timeButton(s, isTaken, State.detail.hour===s.hour,
         ()=>{ State.detail.hour=s.hour; renderDetailTimes(); },
-        { closed:!!cl, reason: cl ? cl.reason : '', price: pr });
+        { closed:!!cl, reason: cl ? cl.reason : '', price: pr,
+          /* ⚠️ **المحجوز يُنقَر، والمغلق لا** (٣.٢). محجوزٌ يعني «أراد غيرُك
+             هذا الوقت» — وهذا سؤالٌ له جواب: أين أجده؟ ومغلقٌ يعني «لا أحد
+             يلعب هنا» — لا بديل يُشتقّ منه على هذا الملعب في هذا الوقت.
+             ولذلك بديلُ الأوّل لوحٌ فيه اقتراحات، والثاني يبقى صامتًا. */
+          onTaken: (!cl && isTaken) ? (()=>openAltSheet(fld, date, s)) : null });
       btn.style.animationDelay=`${i*0.04}s`; el.append(btn);
     });
   });
@@ -3188,6 +3324,124 @@ function findAlternative(){
   }
   return null;
 }
+/* ═══ (٣.٢) لوح بدائل خانةٍ بعينها ═══════════════════════════════════════
+   «البديل الذكي» القديم لا يعمل إلّا حين يمتلئ **اليوم كلّه**. ومن يريد الخميس
+   ٨ مساءً تحديدًا فيجدها محجوزة يصطدم بزرٍّ ميّت ولا شيء بعده — وهو أكثر ما
+   يحدث فعلًا: الساعة المطلوبة قليلة، لا اليوم.
+   الترتيب مقصود من الأقرب إلى ما طلبه:
+     ① نفس الساعة · نفس المكان · ملعب آخر  (الموعد محفوظ تمامًا)
+     ② أقرب ساعة فارغة · نفس اليوم         (اليوم محفوظ)
+     ③ نفس الساعة · أقرب يوم                (الساعة محفوظة)
+     ④ نفس الساعة · مكان آخر في نفس المنطقة (المكان يتغيّر، وهو آخر ما يُتنازَل عنه)
+   ولا يُعرَض إلّا الموجود فعلًا: لا لوح فارغ ولا بطاقة نائبة (م5). */
+function slotAlternatives(field, date, slot){
+  const out = [];
+  const place = State.detail.place;
+  const free = (f, d, hr) => {
+    if(f.active===false) return false;
+    if(!fieldSlots(f).some(s=>s.hour===hr)) return false;
+    if(!isSlotOpen(f.field_id, d, hr)) return false;
+    return !((State.bookedSlots[f.field_id]?.[d])||[]).includes(hr);
+  };
+  // ① ملعب آخر في نفس المكان، نفس الساعة
+  (place?.fields||[]).forEach(f=>{
+    if(String(f.field_id)===String(field.field_id)) return;
+    if(free(f, date, slot.hour)) out.push({ kind:'field', place, field:f, date, hour:slot.hour });
+  });
+  // ② أقرب ساعة في نفس اليوم على نفس الملعب — الأقرب زمنيًّا لا الأولى في الجدول
+  const sameDay = fieldSlots(field).filter(s=>free(field, date, s.hour))
+    .sort((a,b)=>Math.abs(a.hour-slot.hour)-Math.abs(b.hour-slot.hour));
+  if(sameDay[0]) out.push({ kind:'hour', place, field, date, hour:sameDay[0].hour });
+  // ③ نفس الساعة في أقرب يوم قادم
+  let start=0; for(let i=0;i<7;i++){ if(dateAfter(i)===date){ start=i; break; } }
+  for(let i=start+1;i<7;i++){
+    const d=dateAfter(i);
+    if(free(field, d, slot.hour)){ out.push({ kind:'day', place, field, date:d, hour:slot.hour }); break; }
+  }
+  // ④ مكان آخر في نفس المنطقة، نفس اليوم والساعة
+  const region = normalizeText(place?.region||'');
+  for(const p of (State.places||[])){
+    if(String(p.place_id)===String(place?.place_id)) continue;
+    if(region && normalizeText(p.region||'')!==region) continue;
+    const f=(p.fields||[]).find(x=>free(x, date, slot.hour));
+    if(f){ out.push({ kind:'place', place:p, field:f, date, hour:slot.hour }); break; }
+  }
+  return out.slice(0, 4);
+}
+function openAltSheet(field, date, slot){
+  State.altAsk = { field, date, slot };
+  const el=$('#altList'); if(!el) return;
+  setText('altAskTitle', t('altAskTitle'));
+  setText('altAskSub', t('altAskSub',{ day: dayLabel(date), time: slotDisplay(slot) }));
+  clear(el);
+  const list = slotAlternatives(field, date, slot);
+  if(!list.length){
+    el.append(h('div',{class:'alt-none'}, t('altSheetNone')));
+  } else {
+    const label = {
+      field: (a)=>t('altKindField',{ f:a.field.field_name }),
+      hour:  (a)=>t('altKindHour'),
+      day:   (a)=>t('altKindDay',{ d:dayLabel(a.date) }),
+      place: (a)=>t('altKindPlace',{ p:a.place.place_name })
+    };
+    list.forEach(a=>{
+      const sl = fieldSlots(a.field).find(s=>s.hour===a.hour);
+      const row=h('button',{class:'alt-row', type:'button'},
+        h('span',{class:'alt-row-main'},
+          h('span',{class:'alt-row-why'}, label[a.kind](a)),
+          h('span',{class:'alt-row-when'},
+            h('bdi',{}, a.place.place_name), ' · ', h('bdi',{}, a.field.field_name), ' · ',
+            dayLabel(a.date), ' · ', h('bdi',{dir:'ltr'}, sl?slotDisplay(sl):''))),
+        h('span',{class:'alt-row-go'}, h('bdi',{dir:'ltr'}, formatCurrency(slotPrice(a.field, a.date, a.hour)))));
+      row.addEventListener('click', ()=>{ Modal.close('modal-alt', true); goToAlternative(a); });
+      el.append(row);
+    });
+  }
+  /* «نبّهني» — يظهر فقط حين نستطيع الوفاء: جلسةٌ قائمة **و**جدولُ الرغبات
+     موجود (ترحيل 20) **و**الإشعارات مفعّلة (14، وهي شرط 20 أصلًا). */
+  const w=$('#altWatch');
+  const can = !!Session.player() && WATCH_OK;
+  w.hidden = !can;
+  if(can){ w.disabled=false; w.textContent=t('watchBtn'); w.onclick=()=>watchThisSlot(w); }
+  Modal.open('modal-alt');
+}
+function goToAlternative(a){
+  if(String(a.place.place_id)!==String(State.detail.place.place_id)){
+    openDetail(a.place.place_id).then(()=>{
+      State.detail.field=a.field; State.detail.date=a.date; State.detail.hour=a.hour;
+      renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky();
+    });
+    return;
+  }
+  State.detail.field=a.field; State.detail.date=a.date; State.detail.hour=a.hour;
+  setText('dPrice', formatCurrency(a.field.price));
+  renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky();
+  scrollToDetailSection('time');
+}
+async function watchThisSlot(btn){
+  const a=State.altAsk; if(!a) return;
+  /* ⚠️ **لا تكتب حالة الزرّ داخل `withLoading`.** الغلاف يحفظ `innerHTML` قبل
+     السبينر ويُعيده في `finally` ⇒ أي نصّ نكتبه بالداخل يُمحى بعد ثوانٍ من
+     كتابته، فيعود الزرّ يقول «نبّهني» وقد سُجّلت الرغبة فعلًا — فيضغط ثانيةً.
+     مقيس. الحالة النهائية تُكتب **بعد** انتهاء الغلاف. */
+  let ok=false, gone=false;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'watchSlot', player_token:Session.player(),
+      field_id:a.field.field_id, date:a.date, hour:a.slot.hour });
+    if(!r || !r.success){
+      toast(apiMsg(r&&r.message)||t('watchFail'),'error');
+      gone = !!(r && r.missing);               // لن ينجح مرّة ثانية في هذه الجلسة
+      return;
+    }
+    ok=true;
+  });
+  if(gone){ btn.hidden=true; return; }
+  if(!ok) return;
+  Track.push(EV.SLOT_WATCH, { field_id:String(a.field.field_id), hour:a.slot.hour });
+  btn.disabled=true; clear(btn); btn.append(document.createTextNode(t('watchDone')));
+  toast(t('watchOk'),'success');
+}
+
 function alternativePanel(){
   const alt = findAlternative();
   const box = h('div',{class:'alt-panel', style:{gridColumn:'1/-1'}});
@@ -3290,6 +3544,7 @@ function openBookingReview(){
   // ضيف؟ احفظ الاختيار وافتح خيار الدخول (تظهر المراجعة بعد الدخول)
   if(!Session.player()){ savePendingBooking(); openAuthChoice(); return; }
   State.booking = { place, field, date, hour };   // لقطة متطابقة مع التفاصيل
+  Track.push(EV.BOOKING_STARTED, { place_id:String(place.place_id), hour:Number(hour) });
   renderReview();
   Modal.open('modal-booking');
 }
@@ -4449,6 +4704,11 @@ const Notifs = {
       booking_rejected:  ['ntfRejectedTitle',  'ntfRejectedBody'],
       booking_cancelled: ['ntfCancelledTitle', 'ntfCancelledBody'],
       booking_moved:     ['ntfMovedTitle',     'ntfMovedBody'],
+      /* ⚠️ هذان يأتيان من ترحيلَي 15 و20، وبلا سطريهما هنا تصل الصفوف
+         ويُرجع `text()` قيمة فارغة فلا يُعرَض شيء — إشعارٌ موجود لا يُقرأ.
+         و«انقضت المهلة» له نصّه لا نصّ الرفض: الأوّل صمتٌ والثاني قرار. */
+      booking_expired:   ['ntfExpiredTitle',   'ntfExpiredBody'],
+      slot_free:         ['ntfSlotFreeTitle',  'ntfSlotFreeBody'],
     }[n && n.kind];
     if (!K) return null;
     const vars = {
@@ -5818,6 +6078,7 @@ async function confirmBooking(btn){
       if(res.price != null && Number(res.price) !== Number(shown)){
         toast(t('priceChanged',{ from: formatCurrency(shown), to: formatCurrency(res.price) }), 'warn', 6000);
       }
+      Track.push(EV.BOOKING_SUBMITTED, { place_id:String(place.place_id), hour:Number(hour) });
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
       Modal.close('modal-booking'); showBookingSuccess({place,field,date,hour}, res.booking_id);
       if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
@@ -6145,7 +6406,7 @@ function switchLanguage(lang){
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, changePassword, toggleTheme, toggleLang,
   deleteAccount, dismissOffline:()=>Offline.hide(),
-  search:()=>renderPlaces(), refreshPlaces:async()=>{ try{localStorage.removeItem(CONFIG.CACHE_KEY);}catch(_){} await loadData({force:true}); renderPlaces(); },
+  search:()=>renderPlaces(),
   openFilters, applyFilters, clearFiltersSheet,
   openBooking: openBookingReview,
   changeTime:()=>{ Modal.close('modal-booking'); scrollToDetailSection('time','#detailDays .day-btn'); },

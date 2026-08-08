@@ -286,6 +286,25 @@ html.dark .brief li.warn::before{color:#E8B84B}
    الاسم `pl-card` فاصطدم بـ`.pl-card` في شبكة `/places` وورث منها
    `flex-direction:column` — فصارت البطاقة عمودًا وأنا لم أكتب ذلك في سطر
    واحد. أي صنف جديد هنا يبدأ بـ`ad-` أو يُفحَص أنه غير موجود هناك. */
+/* ===== شريط الحالة (٣.٤) =====
+   ⚠️ الحالة محمولة على **الرقم والكلمة** لا على اللون وحده: كل شريحة تقول
+   عددها واسمها، واللون تشديدٌ فوقهما لا بديلٌ عنهما. */
+.ad-strip{margin:0 0 6px}
+.ad-chips{display:flex;gap:8px;flex-wrap:wrap}
+.ad-chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
+  border:1px solid var(--line);border-radius:999px;padding:6px 13px;color:var(--muted)}
+.ad-chip b{font-size:15px;font-weight:900;color:var(--ink)}
+.ad-chip.ok{border-color:var(--line-2);color:var(--teal)}
+html.dark .ad-chip.ok{color:var(--lime)}
+.ad-chip.warn{border-color:rgba(154,106,30,.45);color:#7A5210}
+html.dark .ad-chip.warn{color:#F0C070}
+.ad-chip.bad{border-color:rgba(176,39,24,.45);color:#B02718}
+html.dark .ad-chip.bad{color:#FF8A90}
+.ad-mig{margin-top:8px;font-size:13.5px}
+.ad-mig summary{cursor:pointer;color:var(--muted);font-weight:700}
+.ad-mig ul{margin:8px 0 0;padding-inline-start:20px;color:var(--ink-2);line-height:1.9}
+.ad-h3{font-size:16px;margin:22px 0 6px}
+
 /* ===== صندوق طلبات الانضمام (٢.٣) =====
    كل صنف هنا بادئته `ad-` للسبب المكتوب أعلاه: فضاء الأسماء مشترك مع site.css. */
 .ad-pa{padding:14px 16px;background:var(--surface-2);border:1px solid var(--line);
@@ -407,17 +426,19 @@ html.dark .res .no{color:#FF8A90}
     <button class="ad-out" id="out">خروج</button>
   </div>
 
+  <div class="ad-strip" id="adStrip" role="status" aria-live="polite"></div>
+
   <div class="tabs" role="tablist" aria-label="أقسام اللوحة">
-    <button class="tab" role="tab" id="tab-over"  aria-controls="p-over"  aria-selected="true">الملخّص</button>
+    <button class="tab" role="tab" id="tab-over"  aria-controls="p-over"  aria-selected="false">الملخّص</button>
     <button class="tab" role="tab" id="tab-money" aria-controls="p-money" aria-selected="false">المال</button>
     <button class="tab" role="tab" id="tab-place" aria-controls="p-place" aria-selected="false">الملاعب</button>
     <button class="tab" role="tab" id="tab-cust"  aria-controls="p-cust"  aria-selected="false">العملاء</button>
-    <button class="tab" role="tab" id="tab-ops"   aria-controls="p-ops"   aria-selected="false">التشغيل</button>
+    <button class="tab" role="tab" id="tab-ops"   aria-controls="p-ops"   aria-selected="true">التشغيل</button>
     <button class="tab" role="tab" id="tab-add"   aria-controls="p-add"   aria-selected="false">➕ إدارة الأماكن</button>
     <button class="tab" role="tab" id="tab-log"   aria-controls="p-log"   aria-selected="false">السجلّ</button>
   </div>
 
-  <div class="panel" id="p-over" role="tabpanel" aria-labelledby="tab-over" tabindex="0">
+  <div class="panel" id="p-over" role="tabpanel" aria-labelledby="tab-over" tabindex="0" hidden>
     <div class="kpis" id="kpis"></div>
 
     <div class="card" style="margin-bottom:20px">
@@ -591,8 +612,17 @@ html.dark .res .no{color:#FF8A90}
     </section>
   </div>
 
-  <div class="panel" id="p-ops" role="tabpanel" aria-labelledby="tab-ops" tabindex="0" hidden>
+  <div class="panel" id="p-ops" role="tabpanel" aria-labelledby="tab-ops" tabindex="0">
     <div id="opsAlerts"></div>
+
+    <section class="ad-sec" id="demandSec">
+      <h2>الطلب الذي لم يُلبَّ</h2>
+      <p class="ad-sub">ثلاثة أسئلة لا تجيب عنها <code>bookings</code> لأنها لا تسجّل
+        إلّا من نجح: <strong>أين بحث الناس ولم يجدوا؟</strong> ·
+        <strong>أين نظروا ولم يحجزوا؟</strong> · <strong>أيّ ساعة أرادوها وكانت محجوزة؟</strong>
+        وكلّها لا تُقاس بأثر رجعي — إمّا تُسجَّل حين تقع أو لا توجد أبدًا.</p>
+      <div id="demandBody"></div>
+    </section>
 
     <section class="ad-sec">
       <h2>قائمة العمل — حجوزات معلّقة</h2>
@@ -1051,10 +1081,15 @@ function start(){
   $('#panel').classList.remove('hide');
   $('#who').textContent = (S.name || '') + ' · ' + (S.phone || '');
   RT.dead = false;
-  // التبويب المفتوح يُستعاد من العنوان: تحديث الصفحة لا يعيدك إلى البداية
+  /* التبويب المفتوح يُستعاد من العنوان: تحديث الصفحة لا يعيدك إلى البداية.
+     ⚠️ **والافتراضي صار «التشغيل» لا «الملخّص»** (٣.٤): الملخّص أثرٌ شهري
+        يُقرأ مرّةً كل حين، أمّا سؤال كل زيارة تقريبًا فهو «هل في شي مستنّي
+        ردّي؟» — وجوابه قائمةُ العمل. والروابط العميقة القديمة تعمل كما هي:
+        الشرط على الهاش لم يتغيّر، الافتراضي وحده هو الذي تغيّر. */
   var h = (location.hash || '').replace('#','');
-  showTab(TABS.indexOf(h) !== -1 ? h : 'over');
-  loadAll();
+  showTab(TABS.indexOf(h) !== -1 ? h : 'ops');
+  // صحّة الترحيلات تُقاس **قبل** أوّل رسم كي لا يومض الشريط «محدَّثة» ثمّ يتراجع
+  probeMigrations().then(function(){ return loadAll(); });
   loadFeed().then(function(){ rtPaint(); schedulePoll(); rtConnect(); });
   scheduleRefresh();
 }
@@ -1069,9 +1104,12 @@ function start(){
    الجلبة الواحدة تفتح كل ما تحت.
    ⚠️ الحجوزات تحمل أرقام العملاء. تبقى في الذاكرة ولا تُخزَّن ولا تُرسَل.
    ═══════════════════════════════════════════════════════════════════════════ */
-var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], apps:[], truncated:false };
+var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], apps:[],
+          funnel:[], emptyQ:[], demand:[], truncated:false };
 var HAS_SPORT = true;    // هل شُغّل ترحيل 13؟ يُقاس من ردّ القاعدة لا يُفترَض
 var HAS_APPS  = true;    // وهل شُغّل 19؟ نفس القاعدة: يُقاس لا يُفترَض
+var HAS_EVENTS = true;   // 21 — القياس
+var HAS_WATCH  = true;   // 20 — «نبّهني إذا فضيت»
 
 /* الأعمدة تُذكَر صراحةً (لا `select=*`) وهذا مقصود، لكنّه يعني أن **عمودًا
    غير موجود يُفشل الاستعلام كلّه**: `fields.sport` قبل ترحيل 13 يجعل الردّ
@@ -1131,7 +1169,12 @@ function loadAll(){
     api('/rest/v1/reviews?select=place_id'),
     /* طلبات الانضمام (ترحيل 19). قبله 404/`PGRST205` ⇒ نميّزها كي يقول
        الصندوق **سببه** بدل قائمة فارغة تُوهم بأنه لا طلبات. */
-    api('/rest/v1/place_applications?select=id,created_at,contact_name,phone,venue_name,city,region,sport,courts,notes,status,review_note,place_id&order=created_at.desc&limit=200')
+    api('/rest/v1/place_applications?select=id,created_at,contact_name,phone,venue_name,city,region,sport,courts,notes,status,review_note,place_id&order=created_at.desc&limit=200'),
+    /* عروض ترحيل 21 (والثالث من 20). كلٌّ منها قد يكون غير موجود، ولذلك
+       تُطلَب منفصلةً: عرضٌ ناقص يُفشل نفسه ولا يُفشل الاثنين الآخرين. */
+    api('/rest/v1/admin_funnel?select=*&limit=90'),
+    api('/rest/v1/admin_empty_searches?select=*&limit=30'),
+    api('/rest/v1/admin_slot_demand?select=*&limit=30')
   ]).then(function(r){
     D.daily        = r[0].data || [];
     D.adminPlaces  = r[1].data || [];
@@ -1141,6 +1184,11 @@ function loadAll(){
     D.reviews      = r[5].data || [];
     D.apps         = r[6].ok ? (r[6].data || []) : [];
     HAS_APPS       = r[6].ok;
+    D.funnel       = r[7].ok ? (r[7].data || []) : [];
+    D.emptyQ       = r[8].ok ? (r[8].data || []) : [];
+    D.demand       = r[9].ok ? (r[9].data || []) : [];
+    HAS_EVENTS     = r[7].ok;
+    HAS_WATCH      = r[9].ok;
     D.truncated    = D.bookings.length >= BK_LIMIT;
     renderAll();
   }); });
@@ -1214,6 +1262,8 @@ function renderAll(){
   renderPlacesTab();
   renderCustomers();
   renderOps(W);
+  renderDemand();
+  renderStrip(W);
   renderApps();
   renderAddLists();
   renderPlaceAdmin();
@@ -2062,6 +2112,147 @@ $('#fieldRows').addEventListener('click', function(e){
    ما فيها هو ما في `places` حرفيًّا، فاختيارُه يطابق ما تصفّي به الواجهة.
    ⚠️ والقيمة المختارة تُحفَظ قبل إعادة البناء وتُعاد بعده: `loadAll()` يُنادى
    بعد كل عملية، ولو أُعيد ملء القائمة بلا حفظ لضاع اختيار المالك وهو يكتب. */
+/* ═══ شريط الحالة + صحّة الترحيلات (٣.٤) ═══════════════════════════════════
+   ⚠️ **لا يُفترَض شيء — كلّ سطر مقيسٌ من ردّ القاعدة.** الجداول تُسأل بطلب
+      `limit=0` (‏رأسٌ بلا صفوف: أرخص سؤال يفرّق بين «موجود» و«غير موجود»)،
+      والدوالّ تُنادى بوسائط فارغة ويُقرأ رمز الردّ لا نتيجته: `PGRST202`
+      تعني «غير موجودة»، وأيّ خطأ آخر يعني «موجودة ورفضت الوسائط» — وهو
+      إثباتُ وجود. */
+var MIG = [
+  { n:'08', label:'بثّ سجلّ التدقيق',        kind:'soft', probe:null },
+  { n:'09', label:'تعديل موعد الحجز',        kind:'rpc',  name:'player_reschedule_booking' },
+  { n:'10', label:'ربط مالك بمكان',          kind:'soft', probe:null },
+  { n:'11', label:'تأكيد رقم الهاتف',        kind:'rpc',  name:'request_phone_code' },
+  { n:'12', label:'وسيلة الدفع',             kind:'col',  table:'bookings', col:'payment_method' },
+  { n:'13', label:'رياضة الملعب',            kind:'col',  table:'fields',   col:'sport' },
+  { n:'14', label:'الإشعارات',               kind:'tbl',  table:'notifications' },
+  { n:'15', label:'مهلة الإلغاء والانقضاء',  kind:'tbl',  table:'app_settings' },
+  { n:'16', label:'لم يحضر',                 kind:'col',  table:'bookings', col:'no_show' },
+  { n:'17', label:'إغلاق الأيام',            kind:'tbl',  table:'field_closures' },
+  { n:'18', label:'التسعير بالساعة',         kind:'tbl',  table:'field_price_rules' },
+  { n:'19', label:'طلبات الانضمام',          kind:'tbl',  table:'place_applications' },
+  { n:'20', label:'نبّهني إذا فضيت',          kind:'tbl',  table:'slot_watch' },
+  { n:'21', label:'قياس الطلب',              kind:'tbl',  table:'events' }
+];
+var MIG_STATE = {};
+
+function probeMigrations(){
+  var jobs = MIG.filter(function(m){ return m.kind !== 'soft'; }).map(function(m){
+    var q;
+    if (m.kind === 'tbl') q = api('/rest/v1/' + m.table + '?select=*&limit=0');
+    else if (m.kind === 'col') q = api('/rest/v1/' + m.table + '?select=' + m.col + '&limit=0');
+    else q = api('/rest/v1/rpc/' + m.name, { method:'POST', body:{} });
+    return q.then(function(r){
+      // للدوالّ: أي ردّ غير 404/PGRST202 دليلُ وجود — حتى الرفض.
+      MIG_STATE[m.n] = (m.kind === 'rpc')
+        ? !(r.status === 404 || (r.data && String(r.data.code||'') === 'PGRST202'))
+        : r.ok;
+    }, function(){ MIG_STATE[m.n] = false; });
+  });
+  return Promise.all(jobs);
+}
+
+/* ═══ الطلب الذي لم يُلبَّ (٣.٣) ═══════════════════════════════════════════
+   ⚠️ كل رقم هنا معه **نافذته ومقامه**: «٣٠٪ تحويل» بلا «من كم؟» و«خلال متى؟»
+      رقمٌ لا يُقارَن بشيء. والتجميع في القاعدة (عروض ترحيل 21) لا هنا. */
+function renderDemand(){
+  var el = $('#demandBody'); if (!el) return;
+  if (!HAS_EVENTS){
+    el.innerHTML = '<p class="frm-n">⚠️ <strong>ترحيل ٢١ لم يُشغَّل بعد</strong> — جدول ' +
+      '<code>events</code> غير موجود، فلا شيء يُسجَّل ولا شيء يُقاس. ' +
+      'شغّل <code>migration/21_events.sql</code> مرّة واحدة. ' +
+      '<strong>وهذا ليس «لا طلب غير ملبّى»</strong> — لا مقياس أصلًا. ' +
+      'والقياس <strong>لا يعمل بأثر رجعي</strong>: ما مضى قبل التشغيل لن يظهر أبدًا.</p>';
+    return;
+  }
+  var f = D.funnel || [];
+  var days = f.length;
+  var v = f.reduce(function(a,r){ return a + (+r.viewed||0); }, 0);
+  var st = f.reduce(function(a,r){ return a + (+r.started||0); }, 0);
+  var sb = f.reduce(function(a,r){ return a + (+r.submitted||0); }, 0);
+
+  var html = '';
+  if (!v && !st && !sb){
+    html += '<p class="chart-empty">القياس شغّال ولم يصل حدثٌ بعد. ' +
+      'أوّل فتح لصفحة ملعب من التطبيق يملأ هذا اللوح.</p>';
+  } else {
+    // نسبتان لا ثلاث: كل واحدة مقامها الخطوة التي قبلها مباشرة، ومكتوبٌ أيّها.
+    var r1 = v  ? Math.round(st/v*100)  : null;
+    var r2 = st ? Math.round(sb/st*100) : null;
+    html += miniRows([
+      ['فتحوا صفحة ملعب', bdi(String(v)) + ' <span class="mk">حدثًا · آخر ' + nDay(days) + '</span>'],
+      ['وصلوا إلى نافذة المراجعة', bdi(String(st)) +
+        (r1 === null ? '' : ' <span class="mk">' + numL(r1 + '%') + ' من ' + bdi(String(v)) + '</span>')],
+      ['أرسلوا الطلب', bdi(String(sb)) +
+        (r2 === null ? '' : ' <span class="mk">' + numL(r2 + '%') + ' من ' + bdi(String(st)) + '</span>')]
+    ]);
+    html += '<p class="note">⚠️ المقام في كل سطر هو <strong>الخطوة التي قبله</strong> لا ' +
+      'المجموع، والنافذة ' + nDay(days) + ' فيها حدثٌ واحد على الأقلّ — لا ٩٠ يومًا كاملة. ' +
+      'والحجز <strong>اليدوي</strong> الذي يُدخله المالك لا يمرّ بالتطبيق فلا حدث له: ' +
+      'فرقٌ صغير عن <code>bookings</code> في نفس النافذة طبيعي، وليس خطأ في العدّ.</p>';
+  }
+
+  var q = D.emptyQ || [];
+  html += '<h3 class="ad-h3">أكثر ما بُحث عنه ولم يُوجَد</h3>';
+  html += q.length
+    ? '<p class="ad-sub">كل صفّ منطقةٌ أو اسمٌ طلبه ناسٌ ولا عرض لنا فيه — وهذه ' +
+      '<strong>خريطة توسّع</strong> لا قائمة أخطاء.</p>' +
+      miniRows(q.slice(0,10).map(function(r){
+        return [esc(r.q), bdi(String(r.n)) + ' <span class="mk">آخر مرّة ' + esc(whenText(new Date(r.last_at))) + '</span>'];
+      }))
+    : '<p class="chart-empty">ما في بحثٌ خرج فارغًا في آخر ٩٠ يومًا.</p>';
+
+  var w = D.demand || [];
+  html += '<h3 class="ad-h3">خانات أرادها ناس وكانت محجوزة</h3>';
+  html += HAS_WATCH
+    ? (w.length
+        ? '<p class="ad-sub">مَن ضغط «نبّهني إذا فضيت». الساعة التي تتكرّر هنا هي ' +
+          'الساعة التي يفوق طلبُها عرضَك — وهي أوّل ما يستحقّ ملعبًا إضافيًّا أو سعرًا أعلى.</p>' +
+          miniRows(w.slice(0,10).map(function(r){
+            return [esc(r.place_name) + ' — ' + esc(r.field_name),
+                    bdi(String(r.wants)) + ' <span class="mk">' + esc(r.watch_date) + ' · ' +
+                    numL(String(r.hour) + ':00') + '</span>'];
+          }))
+        : '<p class="chart-empty">ما سجّل أحدٌ رغبةً في خانة محجوزة بعد.</p>')
+    : '<p class="frm-n">⚠️ <strong>ترحيل ٢٠ لم يُشغَّل</strong> — زرّ «نبّهني إذا فضيت» ' +
+      'لا يظهر في التطبيق أصلًا (لا نقبل نيّةً لا نستطيع الوفاء بها)، فلا شيء يُقاس هنا.</p>';
+
+  el.innerHTML = html;
+}
+
+function renderStrip(W){
+  var el = $('#adStrip'); if (!el) return;
+  var pend = D.bookings.filter(function(b){ return b.status === 'pending'; });
+  var today = ymd(new Date());
+  // «فات موعده» و«بلا ردّ >٢٤س» فكرتان مختلفتان — والثانية عن تاريخ **الطلب**
+  var overdue = pend.filter(function(b){
+    if (String(b.booking_date) < today) return true;
+    return (Date.now() - new Date(b.created_at).getTime()) > 24*3600e3;
+  });
+  var apps = HAS_APPS ? D.apps.filter(function(a){ return a.status === 'new'; }).length : 0;
+
+  var missing = MIG.filter(function(m){ return m.kind !== 'soft' && MIG_STATE[m.n] === false; });
+  var chips = [
+    '<span class="ad-chip' + (pend.length ? ' warn' : '') + '"><b>' + pend.length + '</b> بانتظار ردّ</span>',
+    '<span class="ad-chip' + (overdue.length ? ' bad' : '') + '"><b>' + overdue.length + '</b> فات وقتها</span>'
+  ];
+  if (HAS_APPS) chips.push('<span class="ad-chip' + (apps ? ' warn' : '') + '"><b>' + apps + '</b> طلب انضمام</span>');
+  chips.push(missing.length
+    ? '<span class="ad-chip bad" id="migChip"><b>' + missing.length + '</b> ترحيل ناقص</span>'
+    : '<span class="ad-chip ok">قاعدة البيانات محدَّثة</span>');
+
+  var det = '';
+  if (missing.length){
+    det = '<details class="ad-mig"><summary>أيّها ناقص؟</summary><ul>' +
+      missing.map(function(m){
+        return '<li><code>' + m.n + '_…sql</code> — ' + esc(m.label) + '</li>';
+      }).join('') +
+      '</ul><p class="note">المقياس ردُّ القاعدة على سؤال مباشر لكلٍّ، لا قائمة مكتوبة بيد. ' +
+      'وما عدا هذه يعمل كاملًا — كلّ ميزة معلَّقة تقول نقصها في مكانها.</p></details>';
+  }
+  el.innerHTML = '<div class="ad-chips">' + chips.join('') + '</div>' + det;
+}
+
 /* ═══ صندوق طلبات الانضمام (٢.٣) ═══════════════════════════════════════════
    الجديد أوّلًا ثمّ المُراجَع، لأن الجديد وحده هو ما ينتظر. */
 var SPORT_AR = { football:'كرة قدم', padel:'بادل', basket:'كرة سلة', tennis:'تنس', volley:'كرة طائرة' };

@@ -1077,8 +1077,6 @@ select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
 html[dir="ltr"] .browse-rail .filter-btn::after{background:linear-gradient(to right,var(--surface),transparent)}
 /* فاصل رفيع بين الرياضات والمناطق */
 .browse-div{flex-shrink:0;width:1px;height:26px;background:var(--line-2);margin-inline:3px;border-radius:1px}
-.sec-title-end{display:inline-flex;align-items:center;gap:12px;min-width:0}
-.sort-current{font-size:11.5px;font-weight:700;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .filter-btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 15px;min-height:42px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}
 .filter-btn:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}
 .filter-btn:active{transform:scale(.97)}
@@ -1086,7 +1084,6 @@ html[dir="ltr"] .browse-rail .filter-btn::after{background:linear-gradient(to ri
 body.dark .filter-btn.has-filters{background:rgba(15,75,83,.12)}
 .filter-btn svg{flex-shrink:0}
 .filter-count{min-width:20px;height:20px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:11px;font-weight:900;line-height:1}
-.sort-current{font-size:11.5px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .fx-group{border:none;margin:0 0 16px;padding:0}
 .fx-label{font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:9px;display:block;padding:0}
@@ -2055,6 +2052,23 @@ body.dark .cl-conf-row{background:rgba(255,255,255,.06)}
 .pr-gd-v.dim{color:var(--soft);font-weight:600}
 .pr-grid-load{font-size:12px;color:var(--muted)}
 
+/* ═══════════ (٣.٢) لوح بدائل خانة محجوزة ═══════════
+   الزرّ المحجوز صار قابلاً للنقر (‏`aria-disabled` لا `disabled`)، فلا بدّ أن
+   **يبدو** كذلك: مؤشّر يد وحدٌّ يستجيب للمس. والمغلق يبقى `disabled` فعلاً. */
+.tbtn.taken-alt{cursor:pointer}
+.tbtn.taken-alt:active{transform:scale(.97)}
+@media(hover:hover){ .tbtn.taken-alt:hover{border-color:var(--line-2);color:var(--ink-2)} }
+.alt-list{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
+.alt-row{display:flex;align-items:center;gap:10px;width:100%;text-align:start;
+  border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:transparent;
+  font:inherit;color:var(--ink);cursor:pointer;transition:border-color var(--t-base),background-color var(--t-base)}
+.alt-row:active{transform:scale(.99)}
+@media(hover:hover){ .alt-row:hover{border-color:var(--primary);background:var(--primary-soft)} }
+.alt-row-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.alt-row-why{font-size:13px;font-weight:800;color:var(--ink)}
+.alt-row-when{font-size:11.5px;color:var(--muted);line-height:1.6}
+.alt-row-go{flex-shrink:0;font-size:13px;font-weight:900;color:var(--ink-2)}
+
 /* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
 .otab{position:relative}
 .tab-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;display:grid;place-items:center;
@@ -2244,15 +2258,14 @@ html[lang="en"] .place-sub{font-size:12px}
 /* شارة الدوام في صفحة التفاصيل */
 .detail-hours svg{width:12px;height:12px}
 
-/* ===================== VIEW MODES (م2) — تبديل شبكة/قائمة ===================== */
-.view-toggle{display:inline-flex;gap:3px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;flex-shrink:0}
-.vt-btn{position:relative;width:40px;height:30px;border-radius:999px;display:grid;place-items:center;color:var(--muted);
-  transition:background-color var(--t-base),color var(--t-base),transform .2s var(--ease-spring)}
-.vt-btn::before{content:'';position:absolute;inset:-8px -2px}   /* منطقة لمس فعلية ≥44px دون تضخيم الشكل */
-.vt-btn svg{width:16px;height:16px;display:block}
-.vt-btn:active{transform:scale(.92)}
-.vt-btn.active{background:var(--g-btn);color:#0B2227;box-shadow:var(--shadow-xs)}
-@media(hover:hover){ .vt-btn:not(.active):hover{color:var(--ink);background:var(--primary-soft)} }
+/* ===================== VIEW MODES (م2) — تبديل شبكة/قائمة =====================
+   ⚠️ انتقل من عنوان القسم إلى **ورقة الفلاتر** (٣.١)، فصار شريحتين نصّيتين
+   لا زرَّي أيقونة: داخل الورقة مساحةٌ للكلمة، والكلمة أوضح من مربّعين. ولذلك
+   لم تعد `.view-toggle` تحمل إطارًا ولا خلفية — تلك كانت لتجميع زرَّين صغيرين
+   في صفٍّ مزدحم. والشكل الآن من `.fx-chip` كبقيّة شرائح الورقة. */
+.view-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.vt-btn{position:relative;transition:background-color var(--t-base),color var(--t-base),transform .2s var(--ease-spring)}
+.vt-btn:active{transform:scale(.96)}
 
 /* وضع القائمة: بطاقة أفقية مدمجة — نفس markup البطاقة، التخطيط CSS فقط */
 .places-list[data-view="list"]{display:flex;flex-direction:column;gap:14px}
@@ -2290,7 +2303,6 @@ html[lang="en"] .place-sub{font-size:12px}
    ⇒ صفّ الهيدر لا يلتفّ لسطرين وشريط العنوان يبقى سطرًا واحدًا — تقليل التكدّس الرأسي. */
 @media(max-width:480px){
   .app-header.home .pill{display:none}
-  .sec-title .sort-current{display:none}
 }
 /* شاشات صغيرة جدًا: يُخفى الترحيب الثانوي + يُصغَّر البراند والأدوات كي يبقى صفّ الهيدر سطرًا واحدًا */
 @media(max-width:380px){
@@ -2301,7 +2313,6 @@ html[lang="en"] .place-sub{font-size:12px}
   .app-header.home .home-tools{gap:6px}
   .app-header.home .home-tools .icon-btn{min-width:40px;padding-inline:8px}
   .sec-title{gap:8px;font-size:15px}
-  .sec-title-end{gap:10px}
   .sec-title .link{display:none}   /* التحديث اليدوي يُخفى (تحديث تلقائي كل 90ث) — يبقى العنوان والعدّاد وتبديل العرض */
 }
 @media(min-width:1024px){
@@ -2560,9 +2571,6 @@ body.dark .bnav{box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -12px rgba(0,0,0,.
 .greet-eyebrow{font-size:13px;font-weight:600;color:var(--muted);line-height:1.2}
 .greet-name{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.15;
   font-family:'Montserrat','Changa','Cairo',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.home-loc{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:12px;font-weight:700;color:var(--muted);width:fit-content;max-width:100%}
-.home-loc svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;color:var(--primary)}
-.home-loc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* الأدوات على الهيدر الأبيض: أيقونات داكنة على سطح محايد */
 .app-header.home .home-tools{flex-shrink:0}
 .app-header.home .home-tools .icon-btn{background:var(--surface-muted)!important;border:1px solid var(--line)!important;

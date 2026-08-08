@@ -285,7 +285,12 @@
         <div class="home-greet">
           <div class="greet-eyebrow" id="greetEyebrow" data-i18n="greetEvening">مساء الخير</div>
           <div class="greet-name" id="playerWelcome">أهلاً بك</div>
-          <div class="home-loc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="cityAmman">عمّان</span></div>
+          <!-- ⚠️ حُذف دبّوس الموقع و«عمّان» المكتوبة (٣.١): التطبيق **لا يعرف**
+               أين المستخدم — لا إذن موقع ولا اختيار مدينة — فالأيقونة كانت
+               تدّعي معرفةً لا نملكها، ويقرؤها من هو خارج عمّان تحديدًا خاطئًا.
+               ولا نستبدلها بمصفّي مدينة: المدن كلّها واحدة في القاعدة اليوم
+               (م5 — لا نعرض مصفّيًا لا يصفّي شيئًا). والمنطقة تصفّي فعلًا وهي
+               في الشريط اللاصق تحت. -->
         </div>
         <div class="home-tools">
           <!-- الجرس: مخفيّ للضيف (لا صفوف له في القاعدة أصلاً، فجرسٌ لا يرنّ أبداً
@@ -338,7 +343,14 @@
     <!-- شرائح الفلاتر المفعّلة — تُبنى من State.fx/State.filter، ومخفيّة تمامًا حين لا فلتر -->
     <div class="fchips-bar" id="fchipsBar" data-i18n-aria="fchipsAria" aria-label="الفلاتر المفعّلة" hidden></div>
     </div>
-    <div class="sec-title"><span class="sec-title-main"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="sec-title-end"><span class="sort-current" id="sortCurrent">الترتيب: الافتراضي</span><span class="view-toggle" role="group" data-i18n-aria="viewModeAria" aria-label="طريقة العرض"><button type="button" class="vt-btn active" data-action="setView" data-view="grid" data-i18n-aria="viewGrid" aria-label="عرض شبكي" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></button><button type="button" class="vt-btn" data-action="setView" data-view="list" data-i18n-aria="viewList" aria-label="عرض قائمة" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="4.5" height="4.5" rx="1"/><path d="M11.5 6.2H21"/><rect x="3.5" y="13.5" width="4.5" height="4.5" rx="1"/><path d="M11.5 15.7H21"/></svg></button></span><span class="link" data-action="refreshPlaces" data-i18n="refresh">تحديث</span></span></div>
+    <!-- ⚠️ صفٌّ واحد لا أربعة عناصر (٣.١). كان يحمل: العدد · الترتيب · مبدّل
+         العرض · «تحديث». والثلاثة الأخيرة ذهبت:
+         • **«تحديث»** تكرارٌ لـ«السحب للتحديث» الموجود على هذه الصفحة نفسها،
+           ويأكل مكانًا في أزحم صفّ فيها.
+         • **الترتيب ومبدّل العرض** انتقلا إلى ورقة الفلاتر — وهي المكان الذي
+           يفتحه من يريد ضبط القائمة أصلًا، وفيها الترتيب مذكورٌ منذ البداية.
+         والعدد يبقى **مع العنوان** لأنه جوابُ «كم نتيجة؟» لا أداةً ثالثة. -->
+    <div class="sec-title sec-title-home"><span class="sec-title-main"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span></div>
     <div class="places-list" id="placesList"></div>
   </section>
 
@@ -790,6 +802,17 @@
         <p class="fx-hint" data-i18n="sportsHint">المستديرة تحجز الملاعب الرياضية كلّها. المفتوح للحجز الآن كرة القدم — وباقي الرياضات تُفتح فور تسجيل ملاعبها.</p>
       </fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sortLabel">الترتيب</legend><div class="fx-chips" id="fxSort"></div></fieldset>
+      <!-- مبدّل العرض جاء من عنوان القسم (٣.١): من يريد ضبط شكل القائمة يفتح
+           هذه الورقة، ولا حاجة إلى زرَّين دائمَين فوق البطاقات.
+           ⚠️ ويُطبَّق **فورًا** لا عند «تطبيق»: هو تفضيل عرضٍ محفوظ لا مرشِّح
+           يغيّر النتائج، فوضعه في المسودّة كان سيجعل «تطبيق (1)» تعدّ ما ليس
+           تصفية. -->
+      <fieldset class="fx-group"><legend class="fx-label" data-i18n="viewModeAria">طريقة العرض</legend>
+        <div class="fx-chips view-toggle" role="group">
+          <button type="button" class="fx-chip vt-btn" data-action="setView" data-view="grid" data-i18n="viewGrid" aria-pressed="true">عرض شبكي</button>
+          <button type="button" class="fx-chip vt-btn" data-action="setView" data-view="list" data-i18n="viewList" aria-pressed="false">عرض قائمة</button>
+        </div>
+      </fieldset>
       <div class="fx-group"><label class="fx-label" for="fxRegion" data-i18n="regionLbl">المنطقة</label><select class="finput" id="fxRegion"></select></div>
       <div class="fx-group"><div class="fx-label" data-i18n="priceJod">السعر (دينار)</div>
         <div class="grid-2"><input class="finput" id="fxMin" type="number" inputmode="numeric" min="0" placeholder="من" data-i18n-ph="from"><input class="finput" id="fxMax" type="number" inputmode="numeric" min="0" placeholder="إلى" data-i18n-ph="to"></div>
@@ -902,6 +925,20 @@
       <label class="checkbox-row"><input type="checkbox" id="fieldActive" checked> <span data-i18n="activeLbl">نشط</span></label>
       <button class="sbtn" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ============ ALTERNATIVES FOR ONE SLOT (٣.٢) ============
+       يفتحها نقرُ وقتٍ **محجوز**. القائمة تُبنى في JS من `State.bookedSlots`
+       وحدها — لا طلب شبكة: الجلبة الواحدة تحمل الأيام السبعة لكل الملاعب. -->
+  <div class="modal-overlay" id="modal-alt" role="dialog" aria-modal="true" aria-labelledby="altAskTitle">
+    <div class="modal" data-modal="alt">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="altAskTitle">هذا الوقت محجوز</div>
+      <div class="modal-sub" id="altAskSub"></div>
+      <div id="altList" class="alt-list"></div>
+      <button class="cbtn" id="altWatch" hidden></button>
+      <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
     </div>
   </div>
 
