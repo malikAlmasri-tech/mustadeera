@@ -2069,6 +2069,68 @@ body.dark .cl-conf-row{background:rgba(255,255,255,.06)}
 .alt-row-when{font-size:11.5px;color:var(--muted);line-height:1.6}
 .alt-row-go{flex-shrink:0;font-size:13px;font-weight:900;color:var(--ink-2)}
 
+/* ═══════════ (٤) المباريات المفتوحة ═══════════ */
+/* مبدّل «ملاعب/مباريات» — في صفّ العنوان لا في صفّ جديد (٣.١ دفعت ثمنه) */
+.mode-seg{display:inline-flex;gap:2px;background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:2px;flex-shrink:0;margin-inline-start:auto}
+.mode-btn{font:inherit;font-size:12px;font-weight:800;color:var(--muted);background:none;
+  border-radius:999px;padding:5px 12px;white-space:nowrap;cursor:pointer;
+  transition:background-color var(--t-base),color var(--t-base)}
+.mode-btn.active{background:var(--g-btn);color:#0B2227;box-shadow:var(--shadow-xs)}
+@media(hover:hover){ .mode-btn:not(.active):hover{color:var(--ink)} }
+
+.games-list{display:flex;flex-direction:column;gap:12px;padding:0 var(--pad,16px) 20px}
+.game-card{background:var(--surface-solid);border:1px solid var(--line);border-radius:14px;padding:13px 14px;
+  display:flex;flex-direction:column;gap:9px;animation:fadeUp .4s var(--ease-out) both}
+body.dark .game-card{background:var(--surface)}
+.game-card.is-mine{border-color:var(--primary)}
+.gc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.gc-place{font-size:14px;font-weight:900;color:var(--ink)}
+.gc-meta{font-size:11.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px}
+/* «٧/١٠» نسبةٌ لاتينية داخل سطر عربي ⇒ معزولة بـ<bdi dir="ltr"> في الـJS.
+   والقلّة تُقال بالنصّ (العدد نفسه) واللون تشديدٌ فوقه. */
+.gc-seats{flex-shrink:0;font-size:14px;font-weight:900;color:var(--ink-2);
+  border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.gc-seats.few{color:var(--warning-ink);border-color:rgba(154,106,30,.45)}
+.gc-row{display:flex;gap:14px;flex-wrap:wrap}
+/* ⚠️ «تقديري» ليست زخرفة — هي الكلمة التي تمنع قراءةَ الرقم سعرًا مقطوعًا،
+   وهي الفرق بين معلومةٍ وبين وعدٍ بالدفع. و`--soft` قاست **2.87:1** (راسب)
+   وهو المزلق المسجَّل حرفيًّا: للزخرفة لا لتلميحٍ يحمل معلومة. `--muted` = 6.2:1. */
+.gc-est{font-size:10.5px;color:var(--muted);font-weight:800}
+.gc-join{margin-top:2px}
+.gc-mine{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--ok-ink)}
+
+/* اختيار نوع المباراة داخل نافذة المراجعة */
+.gm-open-fields{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line)}
+.gm-live{font-size:12px;color:var(--muted);line-height:1.7;margin-top:9px}
+.gm-share{color:var(--warning-ink);font-weight:800}
+
+/* شارة المباراة على بطاقة حجز اللاعب */
+.bk-open{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;
+  border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
+.bk-open-badge{font-size:11px;font-weight:900;border-radius:999px;padding:3px 9px;
+  background:var(--warning-soft);color:var(--warning-ink)}
+.bk-open-badge.live{background:var(--mint-soft);color:var(--ok-ink)}
+.bk-open-txt{font-size:11.5px;color:var(--muted);line-height:1.65;flex:1 1 140px}
+.booking-strip.joined-strip{border-inline-start-color:var(--info)}
+
+/* لوح الانضمام — الشروط قائمةٌ تُقرأ، لا فقرةٌ تُتخطّى */
+.jn-where{margin-bottom:12px;display:flex;flex-direction:column;gap:4px}
+.jn-line{font-size:13px;color:var(--muted)}
+.jn-line.strong{font-size:15px;font-weight:900;color:var(--ink)}
+.jn-terms{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:9px}
+.jn-terms li{position:relative;padding-inline-start:20px;font-size:12.5px;line-height:1.75;color:var(--ink-2)}
+.jn-terms li::before{content:'';position:absolute;inset-inline-start:4px;top:.62em;
+  width:6px;height:6px;border-radius:50%;background:var(--primary)}
+.mt-seats{font-size:13px;font-weight:800;color:var(--ink-2);margin-top:8px}
+.mt-players{display:flex;flex-direction:column}
+
+/* لوح المالك (٤.٥) — خبرٌ واحد، ومعه حدُّ مسؤوليّته */
+.own-open{display:flex;flex-direction:column;gap:4px;margin:0 0 11px;
+  border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
+.own-open-badge{font-size:11px;font-weight:900;color:var(--ok-ink)}
+.own-open-note{font-size:11px;color:var(--muted);line-height:1.65}
+
 /* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
 .otab{position:relative}
 .tab-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;display:grid;place-items:center;

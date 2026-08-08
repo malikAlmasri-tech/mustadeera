@@ -350,8 +350,14 @@
          • **الترتيب ومبدّل العرض** انتقلا إلى ورقة الفلاتر — وهي المكان الذي
            يفتحه من يريد ضبط القائمة أصلًا، وفيها الترتيب مذكورٌ منذ البداية.
          والعدد يبقى **مع العنوان** لأنه جوابُ «كم نتيجة؟» لا أداةً ثالثة. -->
-    <div class="sec-title sec-title-home"><span class="sec-title-main"><span data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span></div>
+    <!-- ⚠️ مبدّل «ملاعب / مباريات» **داخل صفّ العنوان** لا في صفٍّ جديد: الصفّ
+         الذي فرغ في ٣.١ (الترتيب · مبدّل العرض · تحديث) هو الذي يدفع ثمنه،
+         فلا يعود ما وفّرناه. وليس عنصرًا خامسًا في الشريط السفلي: ذاك أُعيد
+         بناؤه حول حبّة منزلقة وأربعة أزرار، وخامسٌ يكسر هندسته عند 375px.
+         ويُخفى كلّه ما لم يكن ترحيل 22 مُشغَّلًا — لا تبويب يفتح على «غير مفعّل». -->
+    <div class="sec-title sec-title-home"><span class="sec-title-main"><span id="secTitleTxt" data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات" hidden><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
     <div class="places-list" id="placesList"></div>
+    <div class="games-list" id="gamesList" hidden></div>
   </section>
 
   <!-- ============ DETAIL ============ -->
@@ -753,6 +759,32 @@
            اللاعب يسأل «طيب كيف بدفع؟»، وإظهاره مفتوحًا يَعِد بما لا نعطيه (م5).
            ⚠️ لا حقل بطاقة هنا ولا في أي مكان من التطبيق — رقم البطاقة يُكتب عند
               بوّابة الدفع وحدها، فلا يمرّ علينا ولا يُخزَّن (ترحيل 12). -->
+      <!-- ============ نوع المباراة (٤.٢) ============
+           بنفس لغة اختيار الدفع (`pay-pick`) عمدًا: قرارٌ آخر على شاشة يعرفها
+           اللاعب، لا خطوةٌ جديدة في المسار. والمؤشّر يبقى «الملعب · الموعد ·
+           التأكيد» ثلاثَ خطوات كما هو.
+           ويُخفى كلّه ما لم يكن ترحيل 22 مُشغَّلًا. -->
+      <div class="pay-pick" id="matchPick" role="radiogroup" data-i18n-aria="gmPickTitle" aria-label="نوع المباراة" hidden>
+        <div class="pay-pick-title" data-i18n="gmPickTitle">نوع المباراة</div>
+        <button type="button" class="pay-opt is-on" role="radio" aria-checked="true" data-vis="private" data-action="visPick">
+          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4 6.5V12c0 5 3.4 8.2 8 9 4.6-.8 8-4 8-9V6.5L12 3Z"/></svg></span>
+          <span class="pay-txt"><b data-i18n="gmPrivate">مباراة خاصّة</b><small data-i18n="gmPrivateSub">شبابك معك، وما حدا بيشوف الحجز.</small></span>
+          <span class="pay-dot" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="pay-opt" role="radio" aria-checked="false" data-vis="open" data-action="visPick">
+          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M15 19c0-2.2 1.4-3.7 3.4-3.7 1.2 0 2.1.5 2.6 1.2"/></svg></span>
+          <span class="pay-txt"><b data-i18n="gmOpen">مباراة مفتوحة</b><small data-i18n="gmOpenSub">ناقصك لاعبين؟ انشر مقاعدك للي بالتطبيق.</small></span>
+          <span class="pay-dot" aria-hidden="true"></span>
+        </button>
+        <div class="gm-open-fields" id="gmFields" hidden>
+          <div class="grid-2">
+            <div><label class="form-label" for="gmNeeded" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="gmNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
+            <div><label class="form-label" for="gmBrought" data-i18n="gmBrought">معك كم</label><input class="finput" id="gmBrought" type="number" inputmode="numeric" min="1" max="40" value="1"></div>
+          </div>
+          <p class="gm-live" id="gmLive"></p>
+        </div>
+      </div>
+
       <div class="pay-pick" role="radiogroup" data-i18n-aria="payTitle" aria-label="وسيلة الدفع">
         <div class="pay-pick-title" data-i18n="payTitle">وسيلة الدفع</div>
         <button type="button" class="pay-opt is-on" role="radio" aria-checked="true" data-pay="cash" data-action="payPick">
@@ -925,6 +957,45 @@
       <label class="checkbox-row"><input type="checkbox" id="fieldActive" checked> <span data-i18n="activeLbl">نشط</span></label>
       <button class="sbtn" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ============ JOIN AN OPEN MATCH (٤.٣) ============
+       نافذةٌ واحدة قبل التزامٍ واحد. وكل سطر فيها موجودٌ لأن غيابه يخلق سوء فهم:
+       أين ومتى · **من يقبض ومن لا يقبض** · وأن الانسحاب المتأخّر يؤذي غيرك. -->
+  <div class="modal-overlay" id="modal-join" role="dialog" aria-modal="true" aria-labelledby="jnTitle">
+    <div class="modal" data-modal="join">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="jnTitle" data-i18n="joinTitle">تنضمّ لهذه المباراة؟</div>
+      <div id="jnWhere" class="jn-where"></div>
+      <ul class="jn-terms">
+        <li id="jnShare"></li>
+        <li data-i18n="joinTermPay">بتدفع حصّتك <strong>في الملعب لإدارته</strong>. التطبيق ما بيقبض ولا بيحوّل ولا بيضمن — الحساب بينكم.</li>
+        <li data-i18n="joinTermLate">إذا انسحبت قبل المباراة بشوي، بتضلّ مقعدك فاضي وبيتأذّى باقي الشباب. انسحب بدري إذا ما بتقدر.</li>
+        <li data-i18n="joinTermNames">المضيف بيشوف اسمك الأوّل بس، وإنت بتشوف اسمه الأوّل بس. ما في أرقام ولا محادثة داخل التطبيق.</li>
+      </ul>
+      <button class="sbtn" data-action="confirmJoin" data-i18n="joinConfirm">انضمّ</button>
+      <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ============ HOST: MANAGE THE MATCH (٤.٢) ============ -->
+  <div class="modal-overlay" id="modal-match" role="dialog" aria-modal="true" aria-labelledby="mtTitle">
+    <div class="modal" data-modal="match">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="mtTitle" data-i18n="matchManageTitle">مباراتك المفتوحة</div>
+      <div class="modal-sub" id="mtWhere"></div>
+      <div id="mtSeats" class="mt-seats"></div>
+      <div class="sec-title" style="padding:14px 0 6px"><span data-i18n="matchPlayers">اللي انضمّوا</span></div>
+      <div id="mtPlayers" class="mt-players"></div>
+      <div class="grid-2" style="margin:14px 0 4px">
+        <div><label class="form-label" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="mtNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
+        <div><label class="form-label" data-i18n="gmBrought">معك كم</label><input class="finput" id="mtBrought" type="number" inputmode="numeric" min="1" max="40"></div>
+      </div>
+      <button class="cbtn" data-action="saveMatch" data-i18n="saveBtn">حفظ</button>
+      <button class="cbtn" data-action="closeMatchSeats" data-i18n="matchCloseSeats">العدد اكتمل — سكّر المقاعد</button>
+      <button class="cbtn" data-action="makeMatchPrivate" data-i18n="matchMakePrivate">رجّعها مباراة خاصّة</button>
+      <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
     </div>
   </div>
 

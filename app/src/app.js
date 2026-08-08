@@ -455,6 +455,60 @@ const I18N = {
     watchOk:'سجّلنا طلبك. إذا انلغى هذا الحجز بنبعثلك إشعار.',
     watchFail:'تعذّر التسجيل، جرّب كمان مرة',
     watchNotReady:'التنبيه غير مُفعّل على الخادم بعد.',
+    // ---- (١٤) المباريات المفتوحة ----
+    modeAria:'ملاعب أو مباريات', modeVenues:'ملاعب', modeGames:'مباريات',
+    modeGamesTitle:'مباريات ناقصها لاعبين',
+    gmPickTitle:'نوع المباراة',
+    gmPrivate:'مباراة خاصّة', gmPrivateSub:'شبابك معك، وما حدا بيشوف الحجز.',
+    gmOpen:'مباراة مفتوحة', gmOpenSub:'ناقصك لاعبين؟ انشر مقاعدك للي بالتطبيق.',
+    gmNeeded:'العدد المطلوب', gmBrought:'معك كم',
+    gmLiveBad:'اكتب عدداً صحيحاً: المطلوب اثنان فأكثر، واللي معك ما بيزيد عنه.',
+    gmLiveSeats:'بتنشر {noun}.',
+    // ⚠️ «تقديرية» و«لإدارة الملعب» كلمتان لا تُحذفان: التطبيق لا يقبض ولا يضمن
+    gmLiveShare:'حصّة الواحد تقديرياً {v} — تتدفع في الملعب لإدارته.',
+    gmShareTag:'تقديري',
+    gmBadgeLive:'مباراة مفتوحة', gmBadgeWaiting:'مفتوحة — بعد التأكيد',
+    gmCardLive:'منشورة، وباقي مقاعد لسا ما انحجزت: {n}',
+    gmCardWaiting:'ما انعرض ولا مقعد بعد. المقاعد بتنشر لحظة ما يأكّد الملعب حجزك — الحجز طلب لحدّ ما يردّوا.',
+    gmManage:'إدارة المباراة',
+    matchManageTitle:'مباراتك المفتوحة', matchPlayers:'اللي انضمّوا',
+    matchCloseSeats:'العدد اكتمل — سكّر المقاعد', matchMakePrivate:'رجّعها مباراة خاصّة',
+    gmSeatsState:'باقي {noun} · انضمّ {joined}',
+    gmNoPlayersYet:'ما انضمّ حدا بعد.',
+    gmRemove:'أخرِجه', gmRemoveTitle:'إخراج لاعب',
+    gmRemoveMsg:'رح نشيل {n} من المباراة وبيوصله إشعار، وبيرجع مقعده متاح لغيره.',
+    gmRemoved:'تم إخراجه', gmSaved:'تم الحفظ',
+    gmSeatsClosed:'سكّرنا المقاعد. المباراة ما عادت تظهر لغيرك.',
+    gmNowPrivate:'رجعت مباراة خاصّة.',
+    gmHostIs:'المضيف: {n}', gmHostUnknown:'لاعب',
+    gmJoinBtn:'انضمّ', gmYouIn:'إنت داخل هالمباراة', gmYouParticipant:'مشارك',
+    grpJoined:'مباريات انضممت لها',
+    gmLeaveBtn:'انسحب', gmLeaveTitle:'تنسحب من المباراة؟',
+    gmLeaveMsg:'بيرجع مقعدك متاح لغيرك وبيوصل المضيف إشعار. إذا المباراة قريبة، انسحابك بيصعّب عليهم يلاقوا بديل.',
+    gmLeft:'انسحبت من المباراة', gmJoined:'انضممت! نشوفك بالملعب.',
+    gmNoneTitle:'ما في مباريات مفتوحة هلّق',
+    gmNoneSub:'لمّا يحجز حدا ملعب وينقصه لاعبين، بتلاقي مباراته هون. وإنت كمان بتقدر تفتح وحدة وقت ما تحجز.',
+    gmNoneCta:'تصفّح الملاعب',
+    gmLoadFail:'تعذّر جلب المباريات',
+    joinTitle:'تنضمّ لهذه المباراة؟', joinConfirm:'انضمّ',
+    joinTermShare:'حصّتك التقديرية {v}.',
+    joinTermPay:'بتدفع حصّتك في الملعب لإدارته. التطبيق ما بيقبض ولا بيحوّل ولا بيضمن — الحساب بينكم.',
+    joinTermLate:'إذا انسحبت قبل المباراة بشوي، بيضلّ مقعدك فاضي وبيتأذّى باقي الشباب. انسحب بدري إذا ما بتقدر.',
+    joinTermNames:'المضيف بيشوف اسمك الأوّل بس، وإنت بتشوف اسمه الأوّل بس. ما في أرقام ولا محادثة داخل التطبيق.',
+    gmOwnerNote:'مسؤوليتك ما تغيّرت: حجز واحد، وصاحب حجز واحد، وهو اللي بيدفع. ترتيب اللاعبين بينهم.',
+    gmNotReady:'المباريات المفتوحة غير مُفعّلة على الخادم بعد — شغّل الترحيل 22.',
+    gmErrGeneric:'صار خطأ، حاول كمان مرة',
+    gmErrAuth:'سجّل دخولك أول', gmErrMissing:'ما لقينا هالمباراة',
+    gmErrNotOpen:'هالمباراة ما عادت مفتوحة', gmErrPast:'موعد المباراة راح',
+    gmErrHost:'إنت صاحب هالحجز', gmErrFull:'المقاعد اكتملت — سبقك غيرك',
+    gmErrForbidden:'هالمباراة مش تبعك', gmErrCounts:'الأعداد ناقصة',
+    gmErrBelow:'ما بتقدر تنزّل العدد تحت اللي انضمّوا. انضمّ {n}، وأقلّ عدد مسموح {min}.',
+    gmErrHasPlayers:'ما بتقدر ترجّعها خاصّة وفي {n} انضمّوا. أخرِجهم أوّلاً أو خلّيها مفتوحة.',
+    // ---- إشعارات المباريات (ترحيل 22) ----
+    ntfGameJoinedTitle:'انضمّ لاعب لمباراتك', ntfGameJoinedBody:'{who} · {place} — {day} {time} · باقي {seats}',
+    ntfGameLeftTitle:'انسحب لاعب من مباراتك', ntfGameLeftBody:'{who} · {place} — {day} {time} · باقي {seats}',
+    ntfGameFullTitle:'اكتمل عدد مباراتك', ntfGameFullBody:'{place} — {day} {time} · ما عاد في مقاعد',
+    ntfGameOffTitle:'مباراة كنت داخلها انلغت', ntfGameOffBody:'{place} — {day} {time}',
   },
   en: {
     brandTag:'Your field, seconds away', nav_features:'Features', nav_how:'How it works', nav_stats:'Stats',
@@ -831,6 +885,59 @@ const I18N = {
     watchOk:'Noted. If this booking is cancelled we will send you a notification.',
     watchFail:'Couldn’t save, please try again',
     watchNotReady:'Slot alerts aren’t enabled on the server yet.',
+    // ---- (14) Open matches ----
+    modeAria:'Venues or matches', modeVenues:'Venues', modeGames:'Matches',
+    modeGamesTitle:'Matches short of players',
+    gmPickTitle:'Match type',
+    gmPrivate:'Private match', gmPrivateSub:'Your own crew. Nobody sees the booking.',
+    gmOpen:'Open match', gmOpenSub:'Short of players? Publish your spare seats.',
+    gmNeeded:'Players needed', gmBrought:'You have',
+    gmLiveBad:'Enter valid numbers: at least two needed, and no more than that with you.',
+    gmLiveSeats:'You’ll publish {noun}.',
+    gmLiveShare:'Estimated share per person {v} — paid at the venue, to its operator.',
+    gmShareTag:'estimate',
+    gmBadgeLive:'Open match', gmBadgeWaiting:'Open — once confirmed',
+    gmCardLive:'Published, seats still free: {n}',
+    gmCardWaiting:'No seat has been shown yet. Seats go live the moment the venue confirms — until then a booking is only a request.',
+    gmManage:'Manage the match',
+    matchManageTitle:'Your open match', matchPlayers:'Who joined',
+    matchCloseSeats:'We’re full — close the seats', matchMakePrivate:'Make it private again',
+    gmSeatsState:'{noun} left · {joined} joined',
+    gmNoPlayersYet:'Nobody has joined yet.',
+    gmRemove:'Remove', gmRemoveTitle:'Remove a player',
+    gmRemoveMsg:'We will remove {n} from the match and notify them, and the seat becomes available again.',
+    gmRemoved:'Removed', gmSaved:'Saved',
+    gmSeatsClosed:'Seats closed. The match no longer appears to anyone else.',
+    gmNowPrivate:'It is a private match again.',
+    gmHostIs:'Host: {n}', gmHostUnknown:'a player',
+    gmJoinBtn:'Join', gmYouIn:'You’re in this match', gmYouParticipant:'Participant',
+    grpJoined:'Matches you joined',
+    gmLeaveBtn:'Leave', gmLeaveTitle:'Leave the match?',
+    gmLeaveMsg:'Your seat becomes available again and the host is notified. If the match is close, leaving now makes it hard for them to find a replacement.',
+    gmLeft:'You left the match', gmJoined:'You’re in. See you at the pitch.',
+    gmNoneTitle:'No open matches right now',
+    gmNoneSub:'When someone books a pitch and is short of players, their match shows up here. You can open one yourself when you book.',
+    gmNoneCta:'Browse venues',
+    gmLoadFail:'Couldn’t load the matches',
+    joinTitle:'Join this match?', joinConfirm:'Join',
+    joinTermShare:'Your estimated share is {v}.',
+    joinTermPay:'You pay your share at the venue, to its operator. The app does not collect, transfer or guarantee anything — the settlement is between you.',
+    joinTermLate:'If you pull out shortly before the match, your seat stays empty and the others are left short. Leave early if you can’t make it.',
+    joinTermNames:'The host sees your first name only, and you see theirs. No phone numbers, and no chat inside the app.',
+    gmOwnerNote:'Nothing changes for you: one booking, one booking holder, and they are the payer. The players sort themselves out.',
+    gmNotReady:'Open matches aren’t enabled on the server yet — run migration 22.',
+    gmErrGeneric:'Something went wrong, please try again',
+    gmErrAuth:'Please log in first', gmErrMissing:'We couldn’t find that match',
+    gmErrNotOpen:'That match is no longer open', gmErrPast:'That match has already started',
+    gmErrHost:'This is your own booking', gmErrFull:'The seats filled up — someone got there first',
+    gmErrForbidden:'That match isn’t yours', gmErrCounts:'The numbers are missing',
+    gmErrBelow:'You can’t drop the total below the number who joined. {n} joined, so the minimum is {min}.',
+    gmErrHasPlayers:'You can’t make it private with {n} already joined. Remove them first, or keep it open.',
+    // ---- Open-match notifications (migration 22) ----
+    ntfGameJoinedTitle:'Someone joined your match', ntfGameJoinedBody:'{who} · {place} — {day} {time} · {seats} left',
+    ntfGameLeftTitle:'Someone left your match', ntfGameLeftBody:'{who} · {place} — {day} {time} · {seats} left',
+    ntfGameFullTitle:'Your match is full', ntfGameFullBody:'{place} — {day} {time} · no seats left',
+    ntfGameOffTitle:'A match you joined is off', ntfGameOffBody:'{place} — {day} {time}',
   }
 };
 function t(key, params){
@@ -1142,6 +1249,11 @@ function countNoun(n, one, two, few, many){
 const nHours = (n) => (State.lang==='en')
   ? (n===1 ? '1 hour' : `${n} hours`)
   : countNoun(n, 'ساعة واحدة', 'ساعتين', 'ساعات', 'ساعة');
+/* «مقعد» معدودٌ حيّ يسبق اسمًا ⇒ يمرّ بنفس القاعدة. والصفر له صيغته:
+   «٠ مقاعد» عربيّةٌ صحيحة، و«لا مقاعد» أوضح. */
+const nSeats = (n) => (State.lang==='en')
+  ? (n===0 ? 'no seats' : n===1 ? '1 seat' : `${n} seats`)
+  : (n===0 ? 'لا مقاعد' : countNoun(n, 'مقعد واحد', 'مقعدان', 'مقاعد', 'مقعدًا'));
 /* فرقٌ زمني بصيغة نسبية — Intl يتكفّل بالمعدود في اللغتين.
    ⚠️ الوحدة تُختار بالحجم لا بالثابت: «خلال ١٤٠ دقيقة» تُقرأ أسوأ من «خلال ساعتين». */
 function relFromNow(ms){
@@ -1340,7 +1452,11 @@ const sbBooking = (b) => ({
   /* عمودا الترحيلين 15 و16. قبل تشغيلهما لا يُطلبان أصلًا (‏`bkCols()` أدناه)
      ⇒ `undefined` هنا، والواجهة تقرؤها «لا انقضاء ولا تخلّف» — أي سلوك اليوم
      بالضبط. لا قيمة مخترَعة ولا فرعٌ ثالث. */
-  cancel_kind: b.cancel_kind || '', no_show: !!b.no_show
+  cancel_kind: b.cancel_kind || '', no_show: !!b.no_show,
+  // ترحيل 22. `visibility` غائبة قبله ⇒ `'private'` ⇒ لا شيء يتغيّر عن اليوم.
+  visibility: b.visibility === 'open' ? 'open' : 'private',
+  needed: b.players_needed==null ? null : Number(b.players_needed),
+  brought: b.players_brought==null ? null : Number(b.players_brought)
 });
 
 /* ── عمليات القراءة العامة (بلا تسجيل دخول) ── */
@@ -1465,7 +1581,7 @@ const SB_BK_COLS ='id,created_at,player_id,place_id,field_id,booking_date,hour,t
    الجديدين، وإن رُفضا سألنا بلا الاثنين — والجولة الثانية لا تقع إلّا في
    حالة «قبل الترحيل»، وبعده لا تقع أبدًا (العلَم يُحفَظ للجلسة).
    ولا نخمّن أيّهما الناقص: كلاهما يأتي من ترحيل معلَّق، والسؤال أرخص من التخمين. */
-let SB_BK_EXTRA = ',cancel_kind,no_show';
+let SB_BK_EXTRA = ',cancel_kind,no_show,visibility,players_needed,players_brought';
 async function sbBookingsQuery(path, opts){
   if (SB_BK_EXTRA){
     const r = await sbRest(path.replace('{cols}', SB_BK_COLS + SB_BK_EXTRA), opts);
@@ -1477,12 +1593,27 @@ async function sbBookingsQuery(path, opts){
 
 async function sbCreateBooking(d, session){
   if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
-  const r = await sbRest('/bookings', { method:'POST', token: session.at, prefer:'return=representation', body:{
+  const body = {
     player_id: session.uid, place_id: d.place_id, field_id: d.field_id,
     booking_date: d.date, hour: Number(d.hour), time_label: d.time || '',
     customer_name: d.name || session.name || '', customer_phone: sbPhone(d.phone || session.phone),
     players_size: d.players || '', price: Number(d.price||0), source: d.source || 'direct', status: 'pending'
-  }});
+  };
+  /* أعمدة ترحيل 22 تُرسَل **فقط** حين تُطلَب مباراة مفتوحة: الحجز الخاصّ لا
+     يحملها أصلًا (قيد `bookings_open_counts_chk` يرفض ملأها على الخاصّة)،
+     فإرسالها دائمًا كان يُفشل كلّ حجز عادي قبل الترحيل بلا داعٍ. */
+  if (d.visibility === 'open'){
+    body.visibility = 'open';
+    body.players_needed = Number(d.needed);
+    body.players_brought = Number(d.brought);
+  }
+  let r = await sbRest('/bookings', { method:'POST', token: session.at, prefer:'return=representation', body });
+  /* ترحيل 22 معلَّق والمستخدم اختار «مفتوحة» ⇒ `PGRST204`. **لا نتراجع صامتًا
+     إلى خاصّة**: هو طلب صراحةً أن يُنشر طلبُه، وكتابتُه خاصًّا بلا كلمة تجعله
+     ينتظر منضمّين لن يأتوا. نقولها ونترك له القرار. */
+  if (!r.ok && d.visibility === 'open' && String(r.raw||'').includes('PGRST204')){
+    return { success:false, message: t('gmNotReady') };
+  }
   // 23505 = خرق القيد الفريد ⇒ الخانة حُجزت بين العرض والحفظ. هذا هو الضمان الذي
   // لم يكن موجودًا مع الشيت: التزامن يُحسم في القاعدة لا في منطق التطبيق.
   if (!r.ok) return { success:false, message: (r.raw||'').includes('23505') ? 'هذا الوقت راح، اختار وقت ثاني' : 'صار ضغط على النظام، حاول بعد ثانية' };
@@ -1652,6 +1783,64 @@ async function sbDelPriceRule(id, session){
   return { success:true };
 }
 
+/* ═══ المباريات المفتوحة (ترحيل 22) ═══════════════════════════════════════
+   ⚑ القراءة من **عرض** لا من `bookings`: العرض لا يحمل هاتفًا ولا معرّف لاعب
+     ولا اسمًا كاملًا، فما لا يُذكَر فيه لا يخرج مهما كان الاستعلام.
+   ⚑ والكتابة كلّها **دوالّ**: الانضمام يفحص المقاعد والحالة والزمن تحت قفل
+     صفّ، وإدراجٌ مباشر كان سيتخطّى الثلاثة — ولذلك لا سياسة insert أصلًا.
+   ⚑ وقبل الترحيل: 404/`PGRST205` ⇒ العلَم يسقط، ومبدّل «مباريات» **لا يظهر**. */
+/* ⚠️ `GAMES_OK` يبدأ **`null` = لا نعرف بعد**، لا `true`. بالافتراض المتفائل
+   كان المبدّل ونموذجُ «مفتوحة» يظهران قبل الترحيل، ولا يختفيان إلّا بعد أن
+   يفتح المستخدمُ تبويبَ المباريات ويفشل الطلب — أي يعرض عليه المنتجُ بابًا
+   ثمّ يسحبه. مقيس. الآن: سؤالٌ واحد رخيص (`limit=0`) عند أوّل تحميل بجلسة،
+   وما لا يُعرف لا يُعرَض. */
+let GAMES_OK = null;
+async function sbProbeGames(session){
+  if (GAMES_OK !== null || !session) return GAMES_OK;
+  const r = await sbRest('/open_games?select=id&limit=0', { token: session.at });
+  // 404/PGRST205 = العرض غير موجود. وأي شيء آخر (حتى الرفض) إثباتُ وجود.
+  GAMES_OK = !(r.status === 404 || String(r.raw||'').includes('PGRST205'));
+  return GAMES_OK;
+}
+async function sbGetOpenGames(session, key){
+  if (GAMES_OK === false) return { success:false, missing:true, games:[] };
+  const tok = session ? session.at : undefined;
+  const r = await sbRest(`/open_games?select=*&booking_date=gte.${today()}&order=booking_date,hour`, { token:tok, key });
+  if (!r.ok){
+    const missing = r.status === 404 || String(r.raw||'').includes('PGRST205');
+    if (missing) GAMES_OK = false;
+    return { success:false, missing, games:[] };
+  }
+  return { success:true, games: r.data || [] };
+}
+async function sbMyJoined(session){
+  if (GAMES_OK === false || !session) return [];
+  const r = await sbRest('/booking_players?select=booking_id,joined_at', { token: session.at });
+  return r.ok ? (r.data||[]) : [];
+}
+async function sbGamePlayers(bookingId, session){
+  if (!session) return [];
+  const r = await sbRest(`/open_game_players?select=first_name,joined_at&booking_id=eq.${bookingId}&order=joined_at`, { token: session.at });
+  return r.ok ? (r.data||[]) : [];
+}
+/* ترجمة موحّدة لردود الدوالّ الأربع: رمزٌ آلي ⇒ جملةٌ بلغة المستخدم. */
+const GAME_MSG = { auth:'gmErrAuth', missing:'gmErrMissing', not_open:'gmErrNotOpen',
+                   past:'gmErrPast', host:'gmErrHost', full:'gmErrFull',
+                   forbidden:'gmErrForbidden', bad_counts:'gmErrCounts' };
+async function sbGameRpc(fn, body, session){
+  if (!session) return { success:false, message:t('gmErrAuth') };
+  const r = await sbFetch('/rest/v1/rpc/'+fn, { method:'POST', token: session.at, body });
+  if (r.status === 404 || String(r.raw||'').includes('PGRST202')) return { success:false, missing:true, message:t('gmNotReady') };
+  if (!r.ok) return { success:false, message:t('gmErrGeneric') };
+  const out = r.data || {};
+  if (out.success) return { success:true, ...out };
+  const key = GAME_MSG[out.reason];
+  // `below_joined` و`has_players` يحملان عددًا ⇒ جملتاهما تُبنيان بمعطياتهما
+  if (out.reason === 'below_joined') return { success:false, reason:out.reason, message:t('gmErrBelow',{ n:out.joined, min:out.min_needed }) };
+  if (out.reason === 'has_players')  return { success:false, reason:out.reason, message:t('gmErrHasPlayers',{ n:out.joined }) };
+  return { success:false, reason:out.reason, message: key ? t(key) : t('gmErrGeneric') };
+}
+
 /* ── «نبّهني إذا فضيت» (ترحيل 20) ──
    ⚠️ الزرّ **لا يظهر** ما لم يكن الجدول موجودًا: نيّةٌ نقبلها ولا نستطيع الوفاء
       بها أسوأ من ألّا نعرضها. ولذلك نقيس الوجود مرّة عند أوّل محاولة ونحفظ. */
@@ -1739,6 +1928,14 @@ const API = {
       case 'getInitialData': return sbGetInitialData(key);
       case 'getBookings':    return sbGetBookedSlots(key);
       case 'getPriceGrid':   return sbGetPriceGrid(extra.place_id, key);
+      case 'getOpenGames': {
+        const s = await sbSession(Session.player(), false);
+        const r = await sbGetOpenGames(s, key);
+        r.joined = s ? (await sbMyJoined(s)).map(x=>String(x.booking_id)) : [];
+        return r;
+      }
+      case 'getGamePlayers':
+        return { success:true, players: await sbGamePlayers(extra.booking_id, await sbSession(Session.player(), false)) };
 
       case 'playerLogin': {
         const r = await sbLogin(extra.phone, extra.password, 'player');
@@ -1927,6 +2124,17 @@ const API = {
       case 'watchSlot':
         return sbWatchSlot(data, await sbSession(data.player_token, false));
 
+      case 'joinGame':
+        return sbGameRpc('join_open_game',  { p_booking:String(data.booking_id) }, await sbSession(data.player_token, false));
+      case 'leaveGame':
+        return sbGameRpc('leave_open_game', { p_booking:String(data.booking_id) }, await sbSession(data.player_token, false));
+      case 'removeGamePlayer':
+        return sbGameRpc('remove_open_game_player', { p_booking:String(data.booking_id), p_first_name:String(data.first_name||'') }, await sbSession(data.player_token, false));
+      case 'setOpenGame':
+        return sbGameRpc('set_open_game', { p_booking:String(data.booking_id), p_open:!!data.open,
+          p_needed: data.needed==null?null:Number(data.needed), p_brought: data.brought==null?null:Number(data.brought) },
+          await sbSession(data.player_token, false));
+
       case 'ownerCloseField':
         return sbCloseField(data, await sbSession(data.owner_token, true));
       case 'ownerReopenDay':
@@ -2047,6 +2255,9 @@ const State = {
      وكلتاهما **فارغة قبل ترحيلها** ⇒ كل قارئ يقرأ «لا إغلاق» و«السعر الأساسي»،
      أي سلوك اليوم بالحرف. */
   closures: {}, prices: {}, pricesPlaceId: '',
+  // (٤) المباريات المفتوحة — الوضع الافتراضي «ملاعب»، والمبدّل مخفيّ حتى يثبت
+  // أن ترحيل 22 مُشغَّل وأن هناك جلسة.
+  mode: 'venues', gmVis: 'private', gamesJoined: [], joinGame: null, matchBooking: null,
   publicBookingsFetchedAt: 0,                                 // آخر جلب ناجح للحجوزات العامة (كاش قصير)
   favOnly: false,                                             // عرض المفضّلة فقط (محلي)
   sport: 'football',                                          // الرياضة المختارة (كرة القدم متاحة، والبقية قريباً)
@@ -2210,7 +2421,7 @@ async function loadData(opts={}){
   /* شريط الرياضات يُعاد رسمه مع كل جلبة لأن حالة كل رياضة («متاح»/«قريباً»)
      مشتقّة من البيانات نفسها: ملعب بادل يُسجَّل في اللوحة الآن ⇒ تُفتَح بادل
      عند أوّل تحديث، بلا نشر نسخة جديدة من التطبيق. */
-  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); return true; }
+  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); updateModeSeg(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
     const cached = cacheRead();
@@ -3324,6 +3535,221 @@ function findAlternative(){
   }
   return null;
 }
+/* ═══════════ (٤) المباريات المفتوحة ═══════════════════════════════════════
+   الحصّة **تقديرية دائمًا**: سعر الخانة ÷ عدد اللاعبين. ولا تُخزَّن — تُحسَب من
+   `bookings.price` وهي لقطةٌ لا تتغيّر بتغيّر قواعد التسعير (ترحيل 18)، فما
+   نُشر يبقى صحيحًا. ولا يُكتب «كل واحد بيدفع كذا»: التطبيق لا يقبض ولا يضمن. */
+const gameShare = (price, total) => (total > 0) ? Math.round((Number(price)||0)/total*100)/100 : 0;
+/* اقتراح العدد من حجم الملعب: «5×5» ⇒ عشرة. تلميحٌ لا قاعدة — المضيف يغيّره،
+   وما لا يُقرأ منه رقمان لا يقترح شيئًا (ولا يخترع رقمًا). */
+function suggestedPlayers(field){
+  const m = String((field && field.size) || '').match(/(\d+)\s*[x×X]\s*(\d+)/);
+  if(!m) return null;
+  const n = Number(m[1]) + Number(m[2]);
+  return (n >= 2 && n <= 40) ? n : null;
+}
+/* حالة نموذج «مفتوحة» داخل نافذة المراجعة */
+function renderGmLive(){
+  const box=$('#gmFields'), out=$('#gmLive'); if(!box || box.hidden) return;
+  const need=Number($('#gmNeeded').value), got=Number($('#gmBrought').value);
+  const f=State.detail.field, d=State.detail.date, hr=State.detail.hour;
+  if(!(need>=2) || !(got>=1) || got>need){ out.textContent=t('gmLiveBad'); return; }
+  const seats=need-got;
+  clear(out);
+  out.append(document.createTextNode(t('gmLiveSeats',{ n:seats, noun:nSeats(seats) })+' '));
+  // الحصّة **موسومة** بأنها تقدير ومن يقبضها — لا رقم عارٍ
+  out.append(h('span',{class:'gm-share'},
+    t('gmLiveShare',{ v:formatCurrency(gameShare(slotPrice(f,d,hr), need)) })));
+}
+function setVisPick(vis){
+  State.gmVis = vis;
+  $$('#matchPick .pay-opt').forEach(o=>{ const on=o.dataset.vis===vis;
+    o.classList.toggle('is-on', on); o.setAttribute('aria-checked', on?'true':'false'); });
+  const box=$('#gmFields'); if(box){ box.hidden = vis!=='open'; if(vis==='open') renderGmLive(); }
+}
+
+/* ── قائمة المباريات على الرئيسية ── */
+function gameCard(g, joinedIds){
+  const mine = joinedIds.includes(String(g.id));
+  const seats = Number(g.seats_left||0);
+  const total = Number(g.players_needed||0);
+  const card=h('div',{class:'game-card'+(mine?' is-mine':'')},
+    h('div',{class:'gc-top'},
+      h('div',{class:'gc-where'},
+        h('div',{class:'gc-place'}, h('bdi',{}, g.place_name||''), ' · ', h('bdi',{}, g.field_name||'')),
+        h('div',{class:'gc-meta'}, ico('pin','svg-sm'), ' ', h('bdi',{}, g.region||g.city||''))),
+      h('span',{class:'gc-seats'+(seats<=2?' few':'')},
+        h('bdi',{dir:'ltr'}, `${total-seats}/${total}`))),
+    h('div',{class:'gc-row'},
+      h('span',{class:'info-line muted'}, ico('cal','svg-sm'), ' '+dayLabel(g.booking_date)+' '+shortDate(String(g.booking_date).split('T')[0])),
+      h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' ', h('bdi',{dir:'ltr'}, slotDisplay({hour:Number(g.hour),startHour:Number(g.hour),endHour:Number(g.hour)+2,label:g.time_label||''})))),
+    h('div',{class:'gc-row'},
+      h('span',{class:'info-line muted'}, ico('person','svg-sm'), ' ', h('bdi',{}, g.host_name||t('gmHostUnknown'))),
+      h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' ',
+        h('bdi',{dir:'ltr'}, formatCurrency(gameShare(g.price, total))), ' ', h('small',{class:'gc-est'}, t('gmShareTag')))));
+  if(mine){
+    card.append(h('div',{class:'gc-mine'}, ico('check','svg-sm'), ' '+t('gmYouIn')));
+  } else {
+    const b=h('button',{class:'sbtn gc-join'}, t('gmJoinBtn'));
+    b.addEventListener('click', ()=>openJoinSheet(g));
+    card.append(b);
+  }
+  return card;
+}
+async function renderGames(){
+  const el=$('#gamesList'); if(!el) return;
+  clear(el); el.append(...[0,1].map(()=>h('div',{class:'skeleton-card'}, h('div',{class:'sk-body'}, h('div',{class:'sk sk-line w70'}), h('div',{class:'sk sk-line w45'})))));
+  let res;
+  try{ res = await API.get('getOpenGames', {}, 'openGames'); }
+  catch(e){ if(isAbort(e)) return; clear(el); el.append(emptyState({icon:'📡',title:t('connProblem'),sub:t('connProblemSub')})); return; }
+  clear(el);
+  if(!res.success){
+    // الترحيل معلَّق ⇒ المبدّل نفسه يختفي، فلا يبقى تبويبٌ يفتح على عذر
+    if(res.missing){ updateModeSeg(); setMode('venues'); return; }
+    el.append(emptyState({icon:'⚠️',title:t('gmLoadFail'),sub:t('tryAgain')})); return;
+  }
+  /* ⚠️ **نفس نطاق الرياضة** الذي تراه بقيّة الشاشة: `State.places` مشتقّة من
+     `applySportScope`، فالتصفية بها لا بفحص `State.sport` مرّةً أخرى — موضعٌ
+     ثامن يفحص الرياضة بنفسه هو بالضبط ما رُفض في الدفعة الحادية عشرة. */
+  const scope = new Set((State.places||[]).map(p=>String(p.place_id)));
+  const list = (res.games||[]).filter(g=>scope.has(String(g.place_id)) && Number(g.seats_left)>0);
+  State.gamesJoined = res.joined || [];
+  if(!list.length){
+    el.append(emptyState({ iconHtml:courtSvg(State.sport), icon:'🤝',
+      title:t('gmNoneTitle'), sub:t('gmNoneSub'),
+      actionLabel:t('gmNoneCta'), action:()=>setMode('venues') }));
+    return;
+  }
+  list.forEach((g,i)=>{ const c=gameCard(g, State.gamesJoined); c.style.animationDelay=`${Math.min(i,7)*0.05}s`; el.append(c); });
+}
+/* يُنادى بعد كل جلبة. يسأل القاعدة مرّةً واحدة (‏`GAMES_OK` يبقى بعدها)، ثمّ
+   يُظهر المبدّل أو يُبقيه مخفيًّا. والضيف لا يراه أصلًا: الانضمام يتطلّب حسابًا. */
+async function updateModeSeg(){
+  const seg=$('#modeSeg'); if(!seg) return;
+  const tok=Session.player();
+  if(tok && GAMES_OK === null){
+    try{ await sbProbeGames(await sbSession(tok, false)); }catch(_){}
+  }
+  seg.hidden = (GAMES_OK !== true) || !tok;
+  if(seg.hidden && State.mode==='games') setMode('venues');
+}
+function setMode(m){
+  State.mode = (m==='games') ? 'games' : 'venues';
+  $$('#modeSeg .mode-btn').forEach(b=>{ const on=b.dataset.mode===State.mode;
+    b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
+  const pl=$('#placesList'), gl=$('#gamesList'), cnt=$('#placesCount'), ttl=$('#secTitleTxt');
+  const games = State.mode==='games';
+  if(pl) pl.hidden=games; if(gl) gl.hidden=!games;
+  if(cnt) cnt.hidden = games || !cnt.textContent;
+  if(ttl){ const k = games?'modeGamesTitle':'availableFields'; ttl.textContent=t(k); ttl.setAttribute('data-i18n',k); }
+  // الشريط اللاصق (فلاتر · مناطق · رياضة) يخصّ تصفّح الملاعب وحده
+  const st=$('#homeSticky'); if(st) st.hidden=games;
+  if(games) renderGames();
+}
+/* ── الانضمام ── */
+function openJoinSheet(g){
+  State.joinGame = g;
+  const w=$('#jnWhere'); clear(w);
+  w.append(
+    h('div',{class:'jn-line strong'}, h('bdi',{}, g.place_name||''), ' · ', h('bdi',{}, g.field_name||'')),
+    h('div',{class:'jn-line'}, dayLabel(g.booking_date)+' '+shortDate(String(g.booking_date).split('T')[0])+' · ',
+      h('bdi',{dir:'ltr'}, slotDisplay({hour:Number(g.hour),startHour:Number(g.hour),endHour:Number(g.hour)+2,label:g.time_label||''}))),
+    h('div',{class:'jn-line'}, t('gmHostIs',{ n: g.host_name || t('gmHostUnknown') })));
+  const sh=$('#jnShare'); clear(sh);
+  sh.append(document.createTextNode(t('joinTermShare',{ v: formatCurrency(gameShare(g.price, Number(g.players_needed||0))) })));
+  Modal.open('modal-join');
+}
+async function confirmJoin(btn){
+  const g=State.joinGame; if(!g) return;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'joinGame', player_token:Session.player(), booking_id:g.id });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); await renderGames(); return; }
+    Modal.close('modal-join', true);
+    toast(t('gmJoined'),'success');
+    await renderGames();
+  });
+}
+/* ── المضيف يدير مباراته ── */
+async function openMatchManage(b){
+  State.matchBooking = b;
+  setText('mtWhere', `${b.place_name} · ${b.field_name} — ${dayLabel(b.date)} ${shortDate(b.date)}`);
+  $('#mtNeeded').value = b.needed || '';
+  $('#mtBrought').value = b.brought || '';
+  clear($('#mtPlayers')); $('#mtPlayers').append(h('div',{class:'pr-empty'}, t('loadingBookings')));
+  Modal.open('modal-match');
+  const res = await API.get('getGamePlayers', { booking_id: b.row_number }, 'gamePlayers');
+  const players = (res && res.players) || [];
+  const taken = players.length;
+  const seats = Math.max(Number(b.needed||0) - Number(b.brought||0) - taken, 0);
+  setText('mtSeats', t('gmSeatsState',{ n:seats, noun:nSeats(seats), joined:taken }));
+  const box=$('#mtPlayers'); clear(box);
+  if(!players.length){ box.append(h('div',{class:'pr-empty'}, t('gmNoPlayersYet'))); return; }
+  players.forEach(p=>{
+    const name = p.first_name || t('gmHostUnknown');
+    const rm=h('button',{class:'owner-action owner-reject pr-del'}, t('gmRemove'));
+    rm.addEventListener('click', ()=>removeGamePlayer(rm, b, name));
+    box.append(h('div',{class:'pr-row'}, h('span',{class:'pr-row-main'}, h('bdi',{}, name)), rm));
+  });
+}
+async function removeGamePlayer(btn, b, name){
+  const ok = await askConfirm(t('gmRemoveTitle'), t('gmRemoveMsg',{ n:name }), t('gmRemove'), null, true);
+  if(!ok) return;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'removeGamePlayer', player_token:Session.player(), booking_id:b.row_number, first_name:name });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); return; }
+    toast(t('gmRemoved'),'success');
+    await openMatchManage(b);
+  });
+}
+async function saveMatch(btn){
+  const b=State.matchBooking; if(!b) return;
+  const need=Number($('#mtNeeded').value), got=Number($('#mtBrought').value);
+  if(!(need>=2) || !(got>=1) || got>need){ toast(t('gmLiveBad'),'warn'); return; }
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'setOpenGame', player_token:Session.player(), booking_id:b.row_number, open:true, needed:need, brought:got });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); return; }
+    b.needed=need; b.brought=got;
+    toast(t('gmSaved'),'success');
+    await openMatchManage(b);
+    loadPlayerBookings();
+  });
+}
+/* «العدد اكتمل» = خفضُ المطلوب إلى ما عندك الآن ⇒ صفر مقاعد. لا عمود ثالث
+   لحالة «مغلقة»: حالةٌ تُشتقّ من رقمٍ قائم أصدق من علَمٍ قد يخالفه. */
+async function closeMatchSeats(btn){
+  const b=State.matchBooking; if(!b) return;
+  const res = await API.get('getGamePlayers', { booking_id: b.row_number }, 'gamePlayers2');
+  const taken = ((res && res.players) || []).length;
+  const need = Number(b.brought||1) + taken;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'setOpenGame', player_token:Session.player(), booking_id:b.row_number, open:true, needed:need, brought:Number(b.brought||1) });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); return; }
+    b.needed=need;
+    toast(t('gmSeatsClosed'),'success');
+    Modal.close('modal-match', true); loadPlayerBookings();
+  });
+}
+async function makeMatchPrivate(btn){
+  const b=State.matchBooking; if(!b) return;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'setOpenGame', player_token:Session.player(), booking_id:b.row_number, open:false });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); return; }
+    b.visibility='private'; b.needed=null; b.brought=null;
+    toast(t('gmNowPrivate'),'success');
+    Modal.close('modal-match', true); loadPlayerBookings();
+  });
+}
+async function leaveGame(btn, bookingId){
+  const ok = await askConfirm(t('gmLeaveTitle'), t('gmLeaveMsg'), t('gmLeaveBtn'), null, true);
+  if(!ok) return;
+  await withLoading(btn, async()=>{
+    const r = await API.post({ action:'leaveGame', player_token:Session.player(), booking_id:bookingId });
+    if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); return; }
+    toast(t('gmLeft'),'success');
+    loadPlayerBookings();
+  });
+}
+
 /* ═══ (٣.٢) لوح بدائل خانةٍ بعينها ═══════════════════════════════════════
    «البديل الذكي» القديم لا يعمل إلّا حين يمتلئ **اليوم كلّه**. ومن يريد الخميس
    ٨ مساءً تحديدًا فيجدها محجوزة يصطدم بزرٍّ ميّت ولا شيء بعده — وهو أكثر ما
@@ -3545,6 +3971,19 @@ function openBookingReview(){
   if(!Session.player()){ savePendingBooking(); openAuthChoice(); return; }
   State.booking = { place, field, date, hour };   // لقطة متطابقة مع التفاصيل
   Track.push(EV.BOOKING_STARTED, { place_id:String(place.place_id), hour:Number(hour) });
+  /* اختيار نوع المباراة يُصفَّر عند كل فتح: «مفتوحة» قرارٌ يُتَّخذ لهذه المباراة
+     لا تفضيلٌ يُحفَظ — من فتح مفتوحةً مرّةً لا يعني أنه ينشر مقاعد كلّ حجز بعدها. */
+  const pick=$('#matchPick');
+  if(pick){
+    pick.hidden = (GAMES_OK !== true);
+    setVisPick('private');
+    const sug = suggestedPlayers(field);
+    $('#gmNeeded').value = sug || '';
+    $('#gmBrought').value = '1';
+    // إسناد الخاصّية لا addEventListener: العنصران ثابتان في HTML
+    $('#gmNeeded').oninput = renderGmLive;
+    $('#gmBrought').oninput = renderGmLive;
+  }
   renderReview();
   Modal.open('modal-booking');
 }
@@ -3674,6 +4113,22 @@ function playerBookingCard(b){
      الملعبَ رفضًا لم يقله. */
   if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box'}, t('expiredReason')));
   else if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, t('reasonPrefix')+b.cancel_reason));
+  /* مباراة مفتوحة: شارةٌ على البطاقة وزرُّ إدارة. والحالة تُقال بدقّة —
+     **المعلّقة لم تُنشَر بعد** (قيد ①: لا مقعد قبل التأكيد)، والمؤكّدة منشورة. */
+  if (b.visibility === 'open'){
+    const live = normStatus(b)==='confirmed';
+    const box = h('div',{class:'bk-open'},
+      h('span',{class:'bk-open-badge'+(live?' live':'')}, t(live?'gmBadgeLive':'gmBadgeWaiting')),
+      h('span',{class:'bk-open-txt'}, live
+        ? t('gmCardLive',{ n: Number(b.needed||0)-Number(b.brought||0) })
+        : t('gmCardWaiting')));
+    if(live && !isFinished(b)){
+      const mg=h('button',{class:'cbtn bk-act'}, t('gmManage'));
+      mg.addEventListener('click', ()=>openMatchManage(b));
+      box.append(mg);
+    }
+    card.append(box);
+  }
   if (canCancel){
     const label = b.place_name+' - '+b.field_name;
     const row = h('div',{class:'bk-actions'});
@@ -3735,6 +4190,10 @@ async function loadPlayerBookings(){
     const hidden = (cats.finished.length-recentFin.length) + (cats.cancelled.length-recentCan.length);
     const group=(title, arr)=>{ if(!arr.length) return; list.append(sectionTitle(title, arr.length)); arr.forEach(b=>list.append(playerBookingCard(b))); };
     group(t('grpUpcoming'), cats.upcoming);
+    /* مبارياتٌ انضمّ إليها — **قسمٌ منفصل بشكلٍ مختلف**: هو مشاركٌ لا صاحب
+       حجز، فلا يُلغي ولا يعدّل ولا يرى هاتف أحد. ودمجُها مع حجوزاته كان
+       سيجعله يظنّ أنه يستطيع إلغاءها. */
+    await appendJoinedGames(list);
     group(t('grpPending'), cats.pending);
     group(t('grpPast'), recentFin);
     group(t('grpCancelled'), recentCan);
@@ -3748,6 +4207,39 @@ async function loadPlayerBookings(){
     }
   }catch(e){ if(isAbort(e)) return; clear(list); list.append(emptyState({icon:'📡',title:t('connProblem'),sub:t('connProblemSub')})); }
 }
+/* مباريات انضمّ إليها اللاعب — تُقرأ من `open_games` بالتقاطع مع `booking_players`.
+   ⚠️ ولا تُعرَض المنتهية: العرض نفسه يُسقط ما مضى موعده (شرط الزمن فيه)، فتبقى
+      في تاريخه على الخادم ولا تزحم قائمته. */
+async function appendJoinedGames(list){
+  if(GAMES_OK !== true) return;
+  let res;
+  try{ res = await API.get('getOpenGames', {}, 'joinedGames'); }catch(_){ return; }
+  if(!res || !res.success) return;
+  const mine = new Set((res.joined||[]).map(String));
+  const games = (res.games||[]).filter(g=>mine.has(String(g.id)));
+  if(!games.length) return;
+  list.append(sectionTitle(t('grpJoined'), games.length));
+  games.forEach(g=>{
+    const total=Number(g.players_needed||0), seats=Number(g.seats_left||0);
+    const card=h('div',{class:'card booking-strip joined-strip', style:{marginBottom:'14px'}},
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px',marginBottom:'8px'}},
+        h('div',{style:{fontSize:'14px',fontWeight:'800',color:'var(--ink)'}}, h('bdi',{}, g.place_name||''), ' - ', h('bdi',{}, g.field_name||'')),
+        h('span',{class:'badge badge-blue'}, t('gmYouParticipant'))),
+      h('div',{style:{display:'flex',flexDirection:'column',gap:'5px'}},
+        h('div',{class:'info-line muted'}, ico('cal','svg-sm'), ' '+dayLabel(g.booking_date)+' '+shortDate(String(g.booking_date).split('T')[0])),
+        h('div',{class:'info-line muted'}, ico('clock','svg-sm'), ' ', h('bdi',{dir:'ltr'}, slotDisplay({hour:Number(g.hour),startHour:Number(g.hour),endHour:Number(g.hour)+2,label:g.time_label||''}))),
+        h('div',{class:'info-line muted'}, ico('person','svg-sm'), ' '+t('gmHostIs',{ n:g.host_name||t('gmHostUnknown') })),
+        h('div',{class:'info-line muted'}, ico('money','svg-sm'), ' ', h('bdi',{dir:'ltr'}, formatCurrency(gameShare(g.price, total))), ' ', h('small',{class:'gc-est'}, t('gmShareTag'))),
+        h('div',{class:'info-line muted'}, ico('resize','svg-sm'), ' ', h('bdi',{dir:'ltr'}, `${total-seats}/${total}`))));
+    // ينسحب، ولا يُلغي: الحجز ليس حجزه.
+    const row=h('div',{class:'bk-actions'});
+    const lv=h('button',{class:'cbtn bk-act danger-outline-btn'}, t('gmLeaveBtn'));
+    lv.addEventListener('click', ()=>leaveGame(lv, g.id));
+    row.append(lv); card.append(row);
+    list.append(card);
+  });
+}
+
 /* تصنيف حجوزات اللاعب لأربع مجموعات واضحة */
 function categorizeBookings(list){
   const g={ upcoming:[], pending:[], finished:[], cancelled:[] };
@@ -4244,6 +4736,17 @@ function ownerBookingCard(b){
       h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+formatCurrency(b.price||0)),
       h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct')))
   );
+  /* (٤.٥) المالك يعرف شيئًا واحدًا جديدًا: هذا الحجز مباراة مفتوحة وكم عددها.
+     ولا يُدير مقاعد ولا يرى منضمّين — ومسؤوليّته **لم تتغيّر**: حجزٌ واحد،
+     صاحبُ حجزٍ واحد، دافعٌ واحد. والسطر يقول ذلك صراحةً كي لا يظنّ أنه صار
+     مطالَبًا بتحصيل عشر حصص عند البوّابة. */
+  if (b.visibility === 'open' && normStatus(b)==='confirmed'){
+    const total=Number(b.needed||0);
+    card.append(h('div',{class:'own-open'},
+      h('span',{class:'own-open-badge'}, t('gmBadgeLive'), ' · ',
+        h('bdi',{dir:'ltr'}, `${Math.max(total-Number(b.brought||0),0)}+${Number(b.brought||0)}/${total}`)),
+      h('span',{class:'own-open-note'}, t('gmOwnerNote'))));
+  }
   if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('expiredReason')));
   else if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
@@ -4709,6 +5212,10 @@ const Notifs = {
          و«انقضت المهلة» له نصّه لا نصّ الرفض: الأوّل صمتٌ والثاني قرار. */
       booking_expired:   ['ntfExpiredTitle',   'ntfExpiredBody'],
       slot_free:         ['ntfSlotFreeTitle',  'ntfSlotFreeBody'],
+      game_joined:       ['ntfGameJoinedTitle','ntfGameJoinedBody'],
+      game_left:         ['ntfGameLeftTitle',  'ntfGameLeftBody'],
+      game_full:         ['ntfGameFullTitle',  'ntfGameFullBody'],
+      game_off:          ['ntfGameOffTitle',   'ntfGameOffBody'],
     }[n && n.kind];
     if (!K) return null;
     const vars = {
@@ -4717,6 +5224,9 @@ const Notifs = {
       field: d.field_name || '',
       day:   d.booking_date ? (dayLabel(d.booking_date) + ' ' + shortDate(String(d.booking_date).split('T')[0])) : '',
       time:  this._time(d),
+      // معطيات المباريات المفتوحة (ترحيل 22) — الاسم الأوّل وعدد المقاعد
+      who:   d.first_name || t('gmHostUnknown'),
+      seats: nSeats(Number(d.seats_left||0)),
     };
     const reason = (n.kind === 'booking_rejected' || n.kind === 'booking_cancelled') && d.cancel_reason
       ? t('ntfReason', { r: d.cancel_reason }) : '';
@@ -6068,9 +6578,17 @@ async function confirmBooking(btn){
   }
   const slot=fieldSlots(field).find(s=>s.hour===hour);
   const shown=slotPrice(field, date, hour);
+  // نوع المباراة — والتحقّق قبل الإرسال لا بعد ردّ القاعدة
+  let vis='private', need=null, got=null;
+  if(GAMES_OK === true && State.gmVis==='open'){
+    need=Number($('#gmNeeded').value); got=Number($('#gmBrought').value);
+    if(!(need>=2) || !(got>=1) || got>need){ toast(t('gmLiveBad'),'warn'); return; }
+    vis='open';
+  }
   await withLoading(btn, async()=>{
     try{
-      const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:shown, source:getSource() });
+      const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:shown, source:getSource(),
+        visibility:vis, needed:need, brought:got });
       if(!res.success){ toast(apiMsg(res.message)||t('bookingFailRetry'),'error'); await loadData(); return; }
       /* ⚠️ الخادم هو من يكتب السعر (‏`t_booking_price` في ترحيل 18)، ونحن
          نعرض ما حسبناه. وإن اختلفا — قاعدة تسعير تغيّرت بين فتح الشاشة
@@ -6423,6 +6941,9 @@ const Actions = {
   },
   openManual, saveManual, addField:openAddField, saveField, saveReschedule,
   saveClosure, addPriceRule,
+  setMode:(btn)=>setMode(btn.dataset.mode||'venues'),
+  visPick:(btn)=>setVisPick(btn.dataset.vis||'private'),
+  confirmJoin, saveMatch, closeMatchSeats, makeMatchPrivate,
   clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
   refreshAiInsights:()=>loadAiInsights(true), refreshAiReviews:()=>loadAiReviews(true), refreshAiWeather:()=>loadAiWeather(true),
