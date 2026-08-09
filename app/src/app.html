@@ -366,7 +366,19 @@
          فلا يعود ما وفّرناه. وليس عنصرًا خامسًا في الشريط السفلي: ذاك أُعيد
          بناؤه حول حبّة منزلقة وأربعة أزرار، وخامسٌ يكسر هندسته عند 375px.
          ويُخفى كلّه ما لم يكن ترحيل 22 مُشغَّلًا — لا تبويب يفتح على «غير مفعّل». -->
-    <div class="sec-title sec-title-home"><span class="sec-title-main"><span id="secTitleTxt" data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات" hidden><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
+    <div class="sec-title sec-title-home"><span class="sec-title-main"><span id="secTitleTxt" data-i18n="availableFields">الملاعب المتاحة</span><span class="sec-count" id="placesCount" hidden></span></span><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات" hidden><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span><!--
+      مبدّل الشكل (شبكة/قائمة) عاد إلى صفّ العنوان بعد أن نُقل إلى ورقة الفلاتر
+      في الدفعة 14. النقل كان لإفراغ الصفّ الأزحم، لكنّ الثمن كان أكبر ممّا يبدو:
+      **تفضيلُ عرضٍ يُبدَّل بضغطة صار خلف نقرتين وداخل ورقة**، فلم يعد يُعثَر عليه.
+      وهو ليس مرشِّحًا — لا يغيّر النتائج ولا يُعدّ في «تطبيق (n)» — فمكانه فوق
+      البطاقات التي يغيّرها لا في ورقة التصفية.
+      وأيقونتان لا كلمتان: الصفّ يحمل عنوانًا وعدّادًا، وكلمتا «عرض شبكي/عرض قائمة»
+      كانتا ستُعيدان التكدّس الذي حُلّ. والنسخة في الورقة تبقى — `updateViewToggle`
+      تزامن **كل** `.vt-btn` من `State.view`، فالمصدر واحد ولا انحراف.
+ --><span class="view-seg" role="group" data-i18n-aria="viewModeAria" aria-label="طريقة العرض">
+        <button type="button" class="view-ico vt-btn" data-action="setView" data-view="grid" data-i18n-aria="viewGrid" aria-label="عرض شبكي" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button>
+        <button type="button" class="view-ico vt-btn" data-action="setView" data-view="list" data-i18n-aria="viewList" aria-label="عرض قائمة" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="2"/><rect x="3" y="12.5" width="18" height="5" rx="2"/></svg></button>
+      </span></div>
     <div class="places-list" id="placesList"></div>
     <div class="games-list" id="gamesList" hidden></div>
   </section>

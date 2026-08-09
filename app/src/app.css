@@ -211,6 +211,22 @@ a{color:inherit;text-decoration:none}
 .muted{color:var(--muted)}
 .sec-title{font-size:16px;font-weight:800;color:var(--ink);padding:var(--s-5) var(--s-5) var(--s-4);display:flex;justify-content:space-between;align-items:center;letter-spacing:-.015em}
 .sec-title-main{display:inline-flex;align-items:baseline;gap:8px;min-width:0}
+/* مبدّل الشكل في صفّ العنوان — أيقونتان في غلاف واحد، والحالة **محمولة على
+   الشكل** (خلفية ممتلئة) لا على اللون وحده، كحبّة الشريط السفلي. */
+/* ⚠️ والارتفاع مقصود: الدفعة 14 أنزلت المسافة إلى أوّل بطاقة ٤١ بكسلًا بإفراغ
+   هذا الصفّ، فلا يجوز أن يستردّها هذا الزرّ. مقيس عند 360px في الاتجاهين:
+   الصفّ **٦١ بلا المبدّل و٦٤ معه** — ثلاثة بكسلات، لأن الغلاف (٢٨) أقرب ما
+   يكون إلى ارتفاع سطر العنوان. وبالمقاسات الأولى (٣٢×٢٨) كان الثمن تسعة. */
+.view-seg{display:inline-flex;gap:2px;flex:none;padding:2px;border-radius:10px;
+  background:var(--surface-muted);border:1px solid var(--line)}
+.view-ico{display:grid;place-items:center;width:30px;height:22px;border:0;border-radius:8px;
+  background:transparent;color:var(--muted);cursor:pointer;
+  transition:background-color var(--t-fast),color var(--t-fast)}
+.view-ico svg{width:16px;height:16px;fill:currentColor;stroke:none}
+.view-ico.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow-xs)}
+/* ⚠️ حلقة التركيز بوسمٍ صريح لا داخل `:where()`: نوعيّة `:where()` صفر، فينازعها
+   أي صنف يحمل `box-shadow` — مزلق مسجَّل، ظهر في حلقة التركيز العامّة. */
+button.view-ico:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .sec-count{font-size:12.5px;font-weight:800;color:var(--emerald);background:var(--soft-green);border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums;letter-spacing:0}
 body.dark .sec-count{background:rgba(15,75,83,.16)}
 .sec-title .link{color:var(--emerald);cursor:pointer;font-size:12px;font-weight:800}
@@ -390,9 +406,17 @@ body.dark .notif-row.unread .notif-t{color:var(--copper-primary)}
 .trk-pulse{width:9px;height:9px;border-radius:999px;background:var(--mint-electric);flex:none}
 .trk.is-pending .trk-pulse{background:var(--warning);animation:trkPulse 1.8s var(--ease-out) infinite}
 @keyframes trkPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.72);opacity:.55}}
-.trk-where{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.45;
+/* 🔴 الوزنان مقلوبان عمّا كانا: **الموعد هو العنوان، والمكان هو الحاشية.**
+   كان `.trk-where` أكبر عنصر في البطاقة و`.trk-when` باهتًا تحته — انظر
+   التعليق في `Tracker.paint`. والفارق بينهما يجب أن يكون **صريحًا** لا
+   طفيفًا: تراتبٌ بفارق نصف بكسل ولون واحد يُقرأ سطرين متساويين، فلا يعرف
+   القارئ من أين يبدأ.
+   وأرقام الموعد `tabular-nums`: العدّاد تحته يتغيّر كل دقيقة، وأرقامٌ متفاوتة
+   العرض تجعل السطر يرتجف مع كل تحديث. */
+.trk-when{font-size:19px;font-weight:900;color:var(--ink);line-height:1.35;letter-spacing:-.015em;
+  font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;gap:7px;align-items:baseline}
+.trk-where{margin-top:5px;font-size:13px;font-weight:600;color:var(--muted);line-height:1.45;
   display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
-.trk-when{margin-top:4px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
 .trk-sep{color:var(--soft)}
 /* ⚠️ الذيل **سطران فوق بعضهما** لا عمودان متجاوران. كانا صفًّا واحدًا
    (`العدّاد` بـ`flex:none` و`التلميح` بـ`flex:1;min-width:150px`) بمحاذاة
@@ -2735,10 +2759,19 @@ body.dark{--input-bg:#10161A}
 
 /* ── 12) شاشة الترحيب الأصلية (onboarding خاص بالتطبيق: هيرو Teal + لوح إجراءات سفلي) ── */
 #page-welcome{padding:0!important;background:var(--bg-primary);isolation:isolate}
-.onb{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+/* 🔴 ارتفاع اللوح فوق الهيرو، **ومصدره واحد**.
+   كان رقمين يجب أن يتّفقا مكتوبين في خمسة مواضع: `margin-top` سالبة على اللوح
+   (‏-20 ثمّ -26 تعلوها بترتيب المصدر) و`padding-bottom` على الهيرو (34 ثمّ 40،
+   و30 داخل استعلام `max-height:760`). وعند شاشة ≤760px يخرج الحاصل **٤ بكسلات**
+   بين آخر سطر في الهيرو وحافّة اللوح — فأي زيادة في الخطّ (تكبير الخطّ في
+   أندرويد · سطرٌ ثالث في الوصف العربي) تدفع النصّ **تحت** زرَّي «لاعب» و«صاحب
+   ملعب». والرقمان لم يكونا يعرفان بعضهما، فتغيير أحدهما يكسر الآخر صامتًا.
+   الآن: الارتفاع متغيّر واحد، وحاجزُ الهيرو **مشتقٌّ منه** لا مكتوبًا بجانبه. */
+.onb{--onb-lift:26px;--onb-clear:18px;
+  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 /* الهيرو: تدرّج Teal داكن + توهّج Lime خفيف + حيّز آمن أعلى */
 .onb-hero{position:relative;flex:1 1 auto;min-height:52vh;display:flex;flex-direction:column;color:#fff;overflow:hidden;
-  padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 34px;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) 22px calc(var(--onb-lift) + var(--onb-clear));
   background:linear-gradient(157deg,#0F4B53 0%,#0A343A 56%,#07272C 100%)}
 .onb-hero-bg{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 78% at 82% -6%,rgba(140,198,62,.22),transparent 58%),radial-gradient(96% 62% at -6% 106%,rgba(140,198,62,.12),transparent 56%)}
@@ -2762,7 +2795,7 @@ body.dark{--input-bg:#10161A}
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff}
 .onb-sport svg{width:22px;height:22px}
 /* لوح الإجراءات السفلي — يرتفع فوق الهيرو بزوايا مدوّرة */
-.onb-sheet{flex-shrink:0;background:var(--surface);border-radius:26px 26px 0 0;margin-top:-20px;position:relative;z-index:2;
+.onb-sheet{flex-shrink:0;background:var(--surface);border-radius:26px 26px 0 0;margin-top:calc(-1 * var(--onb-lift));position:relative;z-index:2;
   padding:20px 22px calc(env(safe-area-inset-bottom,0px) + 20px);box-shadow:0 -14px 44px -18px rgba(0,0,0,.35);
   display:flex;flex-direction:column;gap:12px}
 /* المبدّل: حبّة منزلقة حقيقية. الأزرار شفّافة دائمًا (لا خلفية على .active) والمؤشّر
@@ -3041,10 +3074,13 @@ html[dir="ltr"] .intro-name{animation-name:introWipeLTR}
     linear-gradient(to bottom,transparent 22%,rgba(9,45,51,.60) 42%,rgba(9,45,51,.82) 60%,rgba(6,36,41,.93) 82%,rgba(6,36,41,.97) 100%),
     radial-gradient(120% 70% at 84% -8%,rgba(140,198,62,.20),transparent 56%)}
 .onb-hero>*:not(.onb-photo):not(.onb-hero-bg){position:relative;z-index:2}
-.onb-hero{min-height:60vh;padding-bottom:40px}
+.onb-hero{min-height:60vh;padding-bottom:calc(var(--onb-lift) + var(--onb-clear))}
 /* شاشات قصيرة (640-700px): اضغط الهيرو واللوح كي تدخل الشاشة كاملةً بلا تمرير */
 @media(max-height:760px){
-  .onb-hero{min-height:48vh;padding-bottom:30px}
+  /* الضغط يقع على **الارتفاع** لا على الحاجز: الحاجز هو ما يمنع العطل.
+     ‏16+12=28 أقلّ من 30 السابقة، ومع ذلك الفسحة 12px بدل 4px. */
+  .onb{--onb-lift:16px;--onb-clear:12px}
+  .onb-hero{min-height:48vh}
   .onb-eyebrow{margin-bottom:10px}
   .onb-sub{margin-bottom:14px}
   .onb-sheet{gap:10px;padding-top:10px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
@@ -3070,7 +3106,7 @@ html[lang="en"] .onb-eyebrow{letter-spacing:.1em}
 .onb-sport{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);
   box-shadow:0 8px 22px -14px rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 /* اللوح السفلي: يرتفع أكثر فوق الصورة بمقبض علوي كالـbottom sheets الأصلية */
-.onb-sheet{border-radius:28px 28px 0 0;margin-top:-26px;padding-top:12px;
+.onb-sheet{border-radius:28px 28px 0 0;padding-top:12px;
   box-shadow:0 -18px 50px -20px rgba(0,0,0,.45)}
 .onb-grabber{display:block;width:44px;height:4px;border-radius:999px;background:var(--line-2);margin:0 auto 12px}
 .onb-seg{background:var(--surface-muted);padding:4px;border-radius:12px}

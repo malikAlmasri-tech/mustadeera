@@ -5652,15 +5652,23 @@ const Tracker = {
           h('span',{class:'trk-pulse','aria-hidden':'true'}),
           pending ? t('trkPending') : t('trkConfirmed')),
         h('span',{class:'trk-title'}, t('trkTitle'))),
-      h('div',{class:'trk-where'},
-        h('bdi',{}, b.place_name || ''),
-        b.field_name ? h('span',{class:'trk-sep','aria-hidden':'true'}, '·') : null,
-        b.field_name ? h('bdi',{}, b.field_name) : null),
+      /* ⚠️ **الموعد أوّلًا والمكان بعده** — وكان العكس.
+         الدفعة 11 بنت هذا اللوح على جملة صريحة: «السؤال بعد الحجز ليس أين ألعب؟
+         بل هل ردّوا؟ ومتى موعدي؟». ثمّ جاء التنسيق فجعل **اسم الملعب** أكبر
+         عنصر في البطاقة (‏15.5px/800 بلون `--ink`) والموعد سطرًا باهتًا تحته
+         (‏13px بلون `--muted`) — أي أن البطاقة كانت تجيب بأعلى صوتها عن السؤال
+         الذي قال تصميمُها نفسُه إنه ليس السؤال.
+         والترتيب في الـDOM يتبع الترتيب البصري لا يخالفه: قارئ الشاشة يقرأ ما
+         يراه المبصر بالترتيب نفسه. */
       h('div',{class:'trk-when'},
         h('span',{}, dayLabel(b.date) + ' ' + shortDate(String(b.date).split('T')[0])),
         h('span',{class:'trk-sep','aria-hidden':'true'}, '·'),
         // مدى وقتٍ داخل جملة عربية ينقلب بلا عزل صريح فيسبق الانتهاءُ الابتداء
         h('bdi',{dir:'ltr'}, slotDisplay(slot))),
+      h('div',{class:'trk-where'},
+        h('bdi',{}, b.place_name || ''),
+        b.field_name ? h('span',{class:'trk-sep','aria-hidden':'true'}, '·') : null,
+        b.field_name ? h('bdi',{}, b.field_name) : null),
       h('div',{class:'trk-foot'},
         h('span',{class:'trk-left'},
           h('span',{class:'trk-left-l'}, t('trkStarts')),
