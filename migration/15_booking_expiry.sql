@@ -52,15 +52,24 @@ begin;
 --  لماذا جدول لا ثابت في الكود؟ لأن «٦ ساعات» قرارٌ تجاري يتغيّر بالتجربة،
 --  وتغييرُه اليوم يعني تعديل SQL ونشر APK معًا. والقيم ليست أسرارًا —
 --  اللاعب يقرأ المهلة على الشاشة — فالقراءة عامّة والكتابة للأدمن وحده.
+--
+--  🔴 ولماذا `booking_rules` لا `app_settings`؟ لأن الاسم الثاني **محجوز
+--     للترحيل 11** بجدولٍ آخر تمامًا (‏`value text`) وسياسةٍ معاكسة: بلا أي
+--     سياسة، محجوب عن الجميع، لأنه يحمل مزوّد الرسائل. كنتُ سمّيتُه
+--     `app_settings` فاصطدم الملفّان (‏`create table if not exists` تُبقي
+--     الأسبق ويفشل الثاني عند الإدراج)، **والأخطر** أن سياسة القراءة العامّة
+--     هنا كانت ستعلو على جدول 11 فتنشر إعداداته. الإصلاح في
+--     [`23_settings_split.sql`](23_settings_split.sql) لمن شغّل النسخة القديمة.
+--     والدرس: **افحص الترحيلات المعلَّقة قبل حجز اسم، لا القاعدة الحيّة وحدها.**
 -- ───────────────────────────────────────────────────────────────────────────
-create table if not exists public.app_settings (
+create table if not exists public.booking_rules (
   key        text primary key,
   num_value  numeric not null,
   note       text not null default '',
   updated_at timestamptz not null default now()
 );
 
-insert into public.app_settings(key, num_value, note) values
+insert into public.booking_rules(key, num_value, note) values
   ('player_cancel_window_hours', 6,
    'اللاعب يلغي حتى هذا العدد من الساعات قبل بدء الخانة. يطابق CONFIG.CANCEL_WINDOW_H في app/src/app.js'),
   ('owner_reply_deadline_hours', 24,
@@ -69,24 +78,24 @@ insert into public.app_settings(key, num_value, note) values
    'أقلّ فاصل بين كنستين لانقضاء المهلة — يمنع تكرار الكنس مع كل تحديث لوحة')
 on conflict (key) do nothing;
 
-alter table public.app_settings enable row level security;
+alter table public.booking_rules enable row level security;
 
-drop policy if exists settings_read       on public.app_settings;
-drop policy if exists settings_write_admin on public.app_settings;
+drop policy if exists br_read       on public.booking_rules;
+drop policy if exists br_write_admin on public.booking_rules;
 
 -- القراءة عامّة: التطبيق يعرض المهلة للاعب، والقيمة ليست سرًّا.
-create policy settings_read on public.app_settings for select using (true);
-create policy settings_write_admin on public.app_settings for all
+create policy br_read on public.booking_rules for select using (true);
+create policy br_write_admin on public.booking_rules for all
   using (public.is_admin()) with check (public.is_admin());
 
 -- المنح والسياسة **حارسان مستقلّان** ويلزمان معًا: المنح يفتح الباب، والسياسة
--- تقول من يعبره. بلا سطر الكتابة كانت `settings_write_admin` سياسةً على بابٍ مقفل.
-grant select on public.app_settings to anon, authenticated;
-grant insert, update on public.app_settings to authenticated;   -- وRLS تقصرها على الأدمن
+-- تقول من يعبره. بلا سطر الكتابة كانت `br_write_admin` سياسةً على بابٍ مقفل.
+grant select on public.booking_rules to anon, authenticated;
+grant insert, update on public.booking_rules to authenticated;   -- وRLS تقصرها على الأدمن
 
 create or replace function public.setting_num(p_key text, p_default numeric)
 returns numeric language sql stable security definer set search_path = public as $$
-  select coalesce((select num_value from public.app_settings where key = p_key), p_default)
+  select coalesce((select num_value from public.booking_rules where key = p_key), p_default)
 $$;
 
 -- ───────────────────────────────────────────────────────────────────────────
@@ -207,12 +216,12 @@ begin
     return jsonb_build_object('success', true, 'expired', 0, 'skipped', true);
   end if;
 
-  insert into public.app_settings(key, num_value, note)
+  insert into public.booking_rules(key, num_value, note)
   values ('expiry_last_sweep_epoch', extract(epoch from now()), 'آخر كنسة — تُكتب آليًّا')
   on conflict (key) do update set num_value = excluded.num_value, updated_at = now();
 
   /* ⚠️ المهلة تُقرَأ **مرّة واحدة** في متغيّر، والمقارنة مكتوبة هنا صراحةً بدل
-     نداء `booking_reply_deadline()` لكل صفّ. الدالّة تستعلم من `app_settings`
+     نداء `booking_reply_deadline()` لكل صفّ. الدالّة تستعلم من `booking_rules`
      في كل نداء، ووضعُها في `where` يجعل ذلك استعلامًا لكل صفّ من الجدول كلّه
      إن قرّر المخطِّط تقييمها قبل `status = 'pending'`. والنتيجة **مطابقة**
      للدالّة حرفيًّا (`least` نفسه)، والدالّة تبقى للواجهة والتحقّق اليدوي. */
@@ -333,7 +342,7 @@ commit;
 
 -- ─── تحقّق بعد التشغيل ─────────────────────────────────────────────────────
 -- ① الإعدادات الثلاثة موجودة:
---      select key, num_value from public.app_settings order by key;
+--      select key, num_value from public.booking_rules order by key;
 --
 -- ② مهلة الإلغاء تُفرَض في القاعدة لا في الواجهة وحدها. بتوكن لاعب له حجز
 --    مؤكّد يبدأ بعد أقلّ من ٦ ساعات:

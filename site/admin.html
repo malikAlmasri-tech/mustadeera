@@ -2152,7 +2152,9 @@ var MIG = [
   { n:'12', label:'وسيلة الدفع',             kind:'col',  table:'bookings', col:'payment_method' },
   { n:'13', label:'رياضة الملعب',            kind:'col',  table:'fields',   col:'sport' },
   { n:'14', label:'الإشعارات',               kind:'tbl',  table:'notifications' },
-  { n:'15', label:'مهلة الإلغاء والانقضاء',  kind:'tbl',  table:'app_settings' },
+  // ⚠️ `booking_rules` لا `app_settings`: الثاني جدول الترحيل 11 (مزوّد الرسائل)
+  //    وقد تصادم الاسمان — انظر `migration/23_settings_split.sql`.
+  { n:'15', label:'مهلة الإلغاء والانقضاء',  kind:'tbl',  table:'booking_rules' },
   { n:'16', label:'لم يحضر',                 kind:'col',  table:'bookings', col:'no_show' },
   { n:'17', label:'إغلاق الأيام',            kind:'tbl',  table:'field_closures' },
   { n:'18', label:'التسعير بالساعة',         kind:'tbl',  table:'field_price_rules' },
