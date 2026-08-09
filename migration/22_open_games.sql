@@ -134,6 +134,12 @@ create or replace view public.open_games as
     left join lateral (select count(*) as n from public.booking_players bp where bp.booking_id = b.id) j on true
    where b.visibility = 'open'
      and b.status = 'confirmed'                       -- ① لا مقعد قبل التأكيد
+     -- 🔴 ومكانٌ أخفاه الأدمن لا تبقى مبارياته معروضة. العرض `security definer`
+     --    ضمنًا (انظر أعلاه) ⇒ **لا يمرّ بـ`places_read`** التي تحجب غير النشط،
+     --    فبلا هذين السطرين كان «إخفاء من التطبيق» يخفي المكان من الدليل ويترك
+     --    مقاعده تُباع. والإخفاء يقع لسببٍ: نزاع · إغلاق · بيانات خاطئة —
+     --    وأسوأ ما ينتج عنه لاعبٌ ينضمّ إلى ملعبٍ سُحب من المنصّة عمدًا.
+     and p.active and f.active
      and (b.booking_date::timestamp + make_interval(hours => b.hour))
          > (now() at time zone 'Asia/Amman')::timestamp;
 
@@ -185,6 +191,43 @@ begin
     return jsonb_build_object('success', false, 'reason', 'host');
   end if;
 
+  -- 🔴 حسابٌ موقوف أو محذوف (`profiles.active=false`) لا ينضمّ. الإيقاف في
+  --    `/admin` و«حذف الحساب» في التطبيق كلاهما يُنزل هذه الراية وحدها، ولا
+  --    سياسة في القاعدة تقرؤها ⇒ بدون هذا السطر يبقى الموقوف يحجز مقاعد
+  --    الناس ولا يحضر، وهو بالضبط سبب إيقافه.
+  if not exists (select 1 from public.profiles where id = auth.uid() and active) then
+    return jsonb_build_object('success', false, 'reason', 'inactive');
+  end if;
+
+  -- 🔴 مقعدٌ واحد في الساعة الواحدة. بدونه يستطيع حسابٌ واحد أن يحجز مقعدًا في
+  --    **كل** مباراة عند التاسعة مساءً فيُظهرها ممتلئة للجميع ثمّ لا يحضر أيًّا
+  --    منها — وهو أرخص تخريب ممكن هنا لأنه لا يكلّف صاحبه شيئًا (لا مال ولا
+  --    سمعة). والقيد صحيحٌ في ذاته كذلك: لا أحد يلعب مباراتين في وقت واحد.
+  if exists (
+        select 1 from public.booking_players bp
+          join public.bookings ob on ob.id = bp.booking_id
+         where bp.profile_id = auth.uid()
+           and ob.booking_date = b.booking_date
+           and ob.hour = b.hour
+           and ob.status = 'confirmed') then
+    return jsonb_build_object('success', false, 'reason', 'clash');
+  end if;
+
+  -- 🔴 وفرعٌ ثانٍ لنفس القاعدة: **المضيف ليس في `booking_players`**. من حجز
+  --    ملعبه الساعة التاسعة لا يظهر في جدول المنضمّين لحجزه هو، فالفحص أعلاه
+  --    أعمى عنه ⇒ يستضيف مباراته وينضمّ إلى مباراة غيره في الساعة نفسها،
+  --    فيأخذ مقعدًا يعرف سلفًا أنه لن يحضره. والقاعدة واحدة: لا أحد يلعب
+  --    مباراتين معًا — سواء أكان صاحب الحجز أم ضيفًا عليه.
+  if exists (
+        select 1 from public.bookings ob
+         where ob.player_id = auth.uid()
+           and ob.id <> p_booking
+           and ob.booking_date = b.booking_date
+           and ob.hour = b.hour
+           and ob.status in ('pending','confirmed')) then
+    return jsonb_build_object('success', false, 'reason', 'clash');
+  end if;
+
   select count(*) into taken from public.booking_players where booking_id = p_booking;
   left_ := b.players_needed - b.players_brought - taken;
   if left_ <= 0 then
@@ -197,6 +240,25 @@ begin
   return jsonb_build_object('success', true, 'seats_left', left_ - 1);
 end $$;
 
+-- ───────────────────────────────────────────────────────────────────────────
+--  الانسحاب — **بلا مهلة، وهذا قرارٌ لا سهو**
+--
+--  ⚠️ يبدو تناقضًا مع ١.١ (اللاعب لا يُلغي حجزه قبل ٦ ساعات من الصافرة)، وليس
+--     كذلك — لأن ما يُحمى في الحالتين مختلف:
+--     • **إلغاء الحجز** يُلغي الخانة كلّها. بعد المهلة لا يجد الملعب مشتريًا
+--       بديلًا، فتموت الخانة ويخسر المالك بيعةً كاملة. المهلة تحمي **مورد
+--       المالك**.
+--     • **الانسحاب من مباراة** يعيد **مقعدًا واحدًا** إلى العرض فورًا
+--       (‏`seats_left` مشتقّة لا مخزَّنة) — والخانة مباعةٌ ومدفوعة على أي حال،
+--       والمالك لا يتأثّر بعدد الحاضرين.
+--     ومنعُ الانسحاب المتأخّر لا يُحضِر أحدًا: يتحوّل الانسحاب إلى **غياب
+--     صامت**، فيبقى المقعد محجوزًا لمن لن يأتي، ويكتشف المضيف النقص عند
+--     الملعب بدل أن يعرفه قبل ساعة ويجد بديلًا. **الحدّ هنا يزيد الضرر.**
+--
+--  🔔 وليس صامتًا: المضيف يُشعَر بـ`game_left` (القسم 6 أدناه) فيبقى الخبر
+--     في يد من يستطيع التصرّف. ولا عقوبة ولا سمعة — نظام السمعة خارج النطاق
+--     صراحةً، ووسمُ الانسحاب المتأخّر بلا نظامٍ يحاسب عليه شارةٌ بلا معنى.
+-- ───────────────────────────────────────────────────────────────────────────
 create or replace function public.leave_open_game(p_booking uuid)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare gone int;
@@ -244,6 +306,12 @@ begin
   end if;
   if (b.booking_date::timestamp + make_interval(hours => b.hour)) <= (now() at time zone 'Asia/Amman')::timestamp then
     return jsonb_build_object('success', false, 'reason', 'past');
+  end if;
+  -- 🔴 حجزٌ ملغى أو مرفوض أو انقضت مهلته لا يصير مباراةً مفتوحة. لا ينشر مقعدًا
+  --    (العرض يشترط `confirmed`) لكنّه كان يكتب `visibility='open'` وعددين على
+  --    صفٍّ ميّت، فيقرأه كلُّ تقريرٍ يعدّ المباريات المفتوحة.
+  if b.status not in ('pending','confirmed') then
+    return jsonb_build_object('success', false, 'reason', 'not_open');
   end if;
 
   select count(*) into joined from public.booking_players where booking_id = p_booking;
@@ -415,3 +483,15 @@ end $$;
 -- ⑥ قائمة الرفاق لا يراها غريب:
 --      GET /rest/v1/open_game_players?booking_id=eq.<uuid>   بتوكن لاعب لم ينضمّ
 --      ⇒ المتوقّع [] لا أسماء.
+--
+-- ⑦ حسابٌ موقوف لا ينضمّ:
+--      update public.profiles set active = false where id = '<uuid اللاعب>';
+--      -- ثمّ بتوكن ذلك اللاعب:  select public.join_open_game('<uuid>');
+--      ⇒ {"success":false,"reason":"inactive"}      (وأعِد active=true بعدها)
+--
+-- ⑧ لا مقعدان في ساعة واحدة: انضمّ إلى مباراة، ثمّ إلى أخرى بنفس
+--    `booking_date` و`hour`  ⇒ {"success":false,"reason":"clash"}
+--
+-- ⑨ حجزٌ ميّت لا يصير مفتوحًا: ألغِ حجزًا ثمّ
+--      select public.set_open_game('<uuid>', true, 8::smallint, 2::smallint);
+--    ⇒ {"success":false,"reason":"not_open"}

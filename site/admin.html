@@ -487,13 +487,13 @@ html.dark .res .no{color:#FF8A90}
       <div class="card">
         <h3>الشهور — دخلك مقابل حجم المبيعات</h3>
         <p class="cap"><strong>حجم المبيعات</strong> ما يدفعه اللاعبون لأصحاب الملاعب،
-          و<strong>دخلك</strong> عمولتك منه (10%). الصفوف بتاريخ <strong>اللعب</strong>،
+          و<strong>دخلك</strong> عمولتك منه. الصفوف بتاريخ <strong>اللعب</strong>،
           فالشهر <strong>الجارٍ</strong> ناقص لأنه لم ينتهِ، والشهر <strong>القادم</strong>
           ليس فيه إلّا ما حُجز مقدَّمًا — ولا نموّ يُحسَب لأيٍّ منهما.</p>
         <div class="ad-scroll">
           <table id="months"><thead><tr>
             <th>الشهر</th><th class="n">حجوزات</th><th class="n">مؤكّدة</th>
-            <th class="n">حجم المبيعات</th><th class="n">دخلك 10%</th><th class="n">النموّ</th>
+            <th class="n">حجم المبيعات</th><th class="n">دخلك</th><th class="n">النموّ</th>
           </tr></thead><tbody></tbody><tfoot></tfoot></table>
         </div>
       </div>
@@ -533,7 +533,7 @@ html.dark .res .no{color:#FF8A90}
       <div class="ad-scroll">
         <table id="daily"><thead><tr>
           <th>التاريخ</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th><th class="n">معلّقة</th>
-          <th class="n">ملغاة/مرفوضة</th><th class="n">حجم المبيعات</th><th class="n">دخلك 10%</th>
+          <th class="n">ملغاة/مرفوضة</th><th class="n">حجم المبيعات</th><th class="n">دخلك</th>
         </tr></thead><tbody></tbody><tfoot></tfoot></table>
       </div>
     </section>
@@ -860,6 +860,10 @@ var $ = function(s){ return document.querySelector(s); };
 var S = null;   // الجلسة
 
 var RATE = 0.10;            // العمولة — نفس النسبة المكتوبة في admin_daily.commission
+/* ⚠️ لا تُطبَع هذه النسبة في أيّ تسمية معروضة: /admin ملفّ ثابت يُخدَم للجميع،
+   ومن يفتح «عرض المصدر» يقرأ كل نصّ فيه بلا تسجيل دخول. التسميات تقول «دخلك»
+   والرقم يُحسَب. (والثابت نفسه يبقى مقروءًا هنا بالضرورة — الحساب في المتصفّح؛
+   إخفاؤه فعلًا يستلزم نقل الحساب إلى عرضٍ في القاعدة.) */
 var BK_LIMIT = 5000;        // سقف الحجوزات المحمَّلة؛ يُعلَن عند بلوغه
 
 /* توحيد الرقم — نفس منطق التطبيق حرفيًّا كي يطابق البريد المشتقّ المخزَّن */
@@ -885,7 +889,22 @@ function api(path, opts){
     });
   });
 }
-var esc = function(s){ var d = document.createElement('span'); d.textContent = s == null ? '' : s; return d.innerHTML; };
+/* 🔴 تهريبٌ يصلح **داخل السمات** كذلك، لا في نصّ العقدة وحده.
+   تسلسلُ عقدةٍ نصّية (‏`textContent` ثمّ `innerHTML`) يهرّب `& < >` **ولا
+   يهرّب `"`** — وهو تصرّف صحيح للنصّ وخاطئ تمامًا للسمة. و`esc()` هنا مستعملة
+   في عشرة مواضع داخل سمات مزدوجة الاقتباس (‏`data-name="…"` · `<option
+   value="…">` · `title="…"`)، فقيمةٌ تحمل علامة اقتباس تُغلق السمة وتفتح ما
+   بعدها وسمًا جديدًا.
+   والسلسلة القابلة للاستغلال ليست نظرية: `place_applications` يكتبه **anon**
+   من `/owners`، ثمّ يقبل الأدمن الطلب فيملأ نموذج «إضافة مكان» من بياناته،
+   فيصير اسم المكان قيمةَ سمة في هذه اللوحة — أي XSS مخزَّن **بجلسة أدمن**
+   داخل الصفحة التي تقرأ كل شيء.
+   ولذلك تُهرَّب الأربعة يدويًّا لا بالمتصفّح: `&` أوّلًا وإلّا ضاعفَت ما بعدها. */
+var esc = function(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+};
 var money = function(n){ return (Math.round((+n||0)*100)/100).toLocaleString('en') + ' د.أ'; };
 /* داخل جملة عربية يعزل bdi القيمةَ عن اتجاه ما حولها. بلا هذا ينقلب ترتيب
    ما يخالف اتجاه السطر — الأرقام والمدَيات والأسماء اللاتينية معًا. */
@@ -1321,7 +1340,7 @@ function renderKpis(W){
   var run = c.com / 30 * 30.44;   // معدّل شهري من متوسّط يومي — الشهر 30.44 يومًا وسطيًّا
 
   var k = [];
-  k.push('<div class="kpi lead"><span class="k">دخلك — آخر 30 يومًا (عمولة 10%)</span>' +
+  k.push('<div class="kpi lead"><span class="k">دخلك — آخر 30 يومًا</span>' +
     '<span class="v">' + esc(money(c.com)) + '</span>' +
     '<span class="s">' + trendEl(c.com, p.com, 'عن الثلاثين السابقة') + '</span></div>');
 
@@ -1520,7 +1539,7 @@ function renderMoney(W){
       ' · لم يردّ المالك، ولم يرفض</span>']);
   leakRows.push(
     ['ما زال معلّقًا — قابل للإنقاذ', moneyB(c.pending) + ' <span class="mk">· ' + nBooking(c.pd) + '</span>'],
-    ['دخلك الضائع من الملغى (10%)', moneyB(c.lost * RATE)]);
+    ['دخلك الضائع من الملغى', moneyB(c.lost * RATE)]);
   if (HAS_NOSHOW) leakRows.push(
     ['لم يحضروا — انباعت وما انلعبت', moneyB(c.noShow) + ' <span class="mk">· ' + nBooking(c.ns) +
       ' · العمولة مستحقّة</span>']);
@@ -1920,7 +1939,7 @@ function renderOps(W){
    المكان، ويُقال سببها صراحةً بدل «حدث خطأ».
    ═══════════════════════════════════════════════════════════════════════════ */
 var SLOT_ALL = [
-  { h:8,  label:'8:00 - 10:00 ص' },  { h:10, label:'10:00 - 12:00 م' },
+  { h:8,  label:'8:00 - 10:00 ص' },  { h:10, label:'10:00 ص - 12:00 م' },
   { h:12, label:'12:00 - 2:00 م' },  { h:14, label:'2:00 - 4:00 م' },
   { h:16, label:'4:00 - 6:00 م' },   { h:18, label:'6:00 - 8:00 م' },
   { h:20, label:'8:00 - 10:00 م' },  { h:22, label:'10:00 - 12:00 م' }
@@ -2601,6 +2620,14 @@ $('#addForm').addEventListener('submit', function(e){
                 sport:sport, attrs:attrs, image_url:imgs.join(',') });
   });
   if (!rows.length) errs.push('لا بدّ من ملعب واحد على الأقلّ.');
+
+  /* رابط الخريطة بنفس شرط الصور. `type="url"` في الحقل **يقترح ولا يمنع**:
+     المتصفّح يقبل `javascript:alert(1)` عنوانًا صالحًا، والقيمة تُسنَد إلى
+     `href` داخل WebView التطبيق حيث الجسر الأصلي. والقائمة بيضاء لا سوداء. */
+  var mapRaw = val('#f_map');
+  if (mapRaw && !/^https?:\/\//i.test(mapRaw))
+    errs.push('رابط الخريطة لا يبدأ بـ<code>http</code> — يُقبَل <code>https://</code> وحده. ' +
+              'اتركه فارغًا إن لم يكن عندك رابط.');
 
   var dup = D.places.filter(function(p){ return String(p.name).trim() === name; })[0];
   if (dup) errs.push('يوجد مكان بهذا الاسم بالفعل (' + esc(dup.city) + ') — غيّر الاسم أو ميّزه، ' +

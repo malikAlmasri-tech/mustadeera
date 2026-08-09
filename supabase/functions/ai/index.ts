@@ -24,8 +24,14 @@
  *   back is derived from the venue THEY own — ownership is re-checked here
  *   against `place_owners`, never taken from the request body. A caller who
  *   passes someone else's place_id gets 403, not that venue's numbers.
- * • It never hangs: every outbound call is deadline-bounded, and any failure
- *   returns a JSON body the app already knows how to render.
+ * • It never hangs: every outbound call is built inside `withDeadline`, which
+ *   hands the request an AbortSignal it actually cancels on. A slow model call
+ *   surfaces as `deadline_25000ms` and the panel falls back to computed-only
+ *   analysis; any other failure returns a JSON body the app already renders.
+ *   (This line used to be false. The controller existed, the timer fired, and
+ *   the signal reached nothing — see the note on `withDeadline` below. A
+ *   comment describing an intention rather than a behaviour is worse than no
+ *   comment, because the next reader audits the prose instead of the code.)
  *
  * WHAT IT REFUSES TO DO (rule 5 — the honesty rule)
  * -------------------------------------------------
@@ -74,11 +80,39 @@ function aiConfig() {
   return null;
 }
 
-async function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
+/** Deadline-bounded fetch.
+ *
+ * The previous shape took an already-created `Promise<T>` and an AbortController
+ * whose signal was never handed to anything. Two things were wrong with it and
+ * both are invisible at a glance: the promise had already been constructed by
+ * the time the controller existed, and no `fetch` was ever told about the
+ * signal. So `ctl.abort()` fired into the void, `clearTimeout` tidied up a timer
+ * that had done nothing, and the file's own header claimed "it never hangs".
+ *
+ * It takes a factory now, so the signal reaches the request it is meant to cut.
+ * `AbortSignal.timeout` would be shorter, but an explicit controller lets the
+ * rejection carry a name we can tell apart from a network failure — the caller
+ * says "the AI service took too long", not "something went wrong".
+ */
+async function withDeadline<T>(make: (signal: AbortSignal) => Promise<T>, ms: number): Promise<T> {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), ms);
-  try { return await p; } finally { clearTimeout(timer); }
+  try {
+    return await make(ctl.signal);
+  } catch (e) {
+    if ((e as Error)?.name === "AbortError") throw new Error(`deadline_${ms}ms`);
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
 }
+
+/** A place id reaches PostgREST as a raw query fragment, so it has to be a uuid
+ *  and nothing else. RLS still bounds what any of these reads can return — that
+ *  is the real defence and it has not changed — but an `&` inside the value
+ *  would append parameters of the caller's choosing (`limit`, `order`,
+ *  `select`) to a URL we believe we wrote. Reject the shape; don't escape it. */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** PostgREST read AS THE CALLER: their JWT is forwarded, so RLS applies to this
  *  query exactly as it would in the app. This function deliberately does not
@@ -86,9 +120,11 @@ async function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
  *  venue's rows, because the database itself would refuse. */
 async function rest(path: string, jwt: string) {
   const res = await withDeadline(
-    fetch(`${SB_URL}/rest/v1/${path}`, {
-      headers: { apikey: SB_ANON, Authorization: `Bearer ${jwt}` },
-    }),
+    (signal) =>
+      fetch(`${SB_URL}/rest/v1/${path}`, {
+        headers: { apikey: SB_ANON, Authorization: `Bearer ${jwt}` },
+        signal,
+      }),
     DB_DEADLINE_MS,
   );
   if (!res.ok) throw new Error(`rest ${path} -> ${res.status}`);
@@ -136,7 +172,7 @@ async function callModel(sys: string, usr: string): Promise<{ out: any | null; e
         }),
       };
     }
-    const res = await withDeadline(fetch(url, init), AI_DEADLINE_MS);
+    const res = await withDeadline((signal) => fetch(url, { ...init, signal }), AI_DEADLINE_MS);
     if (!res.ok) return { out: null, err: `http_${res.status}: ${(await res.text()).slice(0, 160)}` };
     const body = await res.json();
     const text = cfg.provider === "gemini"
@@ -278,7 +314,7 @@ Deno.serve(async (req) => {
   const kind = String(body.kind || "");
   const lang = body.lang === "en" ? "en" : "ar";
   const placeId = String(body.place_id || "");
-  if (!placeId) return json({ success: false, code: "bad_request" }, 400);
+  if (!UUID_RE.test(placeId)) return json({ success: false, code: "bad_request" }, 400);
   if (!["insights", "reviews", "weather"].includes(kind)) {
     return json({ success: false, code: "bad_request" }, 400);
   }
@@ -309,9 +345,11 @@ Deno.serve(async (req) => {
       const [lat, lon] = CITY[city] || [31.95, 35.93];
 
       const wx = await withDeadline(
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-              `&daily=weather_code,temperature_2m_max,temperature_2m_min,` +
-              `precipitation_probability_max,wind_speed_10m_max&forecast_days=3&timezone=Asia%2FAmman`),
+        (signal) =>
+          fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+                `&daily=weather_code,temperature_2m_max,temperature_2m_min,` +
+                `precipitation_probability_max,wind_speed_10m_max&forecast_days=3&timezone=Asia%2FAmman`,
+                { signal }),
         DB_DEADLINE_MS,
       );
       if (!wx.ok) return json({ success: false, code: "weather_failed", detail: `HTTP ${wx.status}` });

@@ -131,7 +131,7 @@
     </ul>
 
     <h2>Artificial intelligence</h2>
-    <p>The owner dashboard has an analysis feature that uses Google Gemini. What gets sent is <strong>aggregated numbers about the venue</strong> (booking counts, revenue, occupancy, pitch names, weekdays and hours) and <strong>review text without the reviewer's name</strong>. No player names and no phone numbers are ever sent.</p>
+    <p>The owner dashboard has an analysis feature that uses Google Gemini. What gets sent is <strong>aggregated numbers about the venue</strong> (bookings, revenue, occupancy, pitch names, weekdays and hours) and <strong>review text without the reviewer's name</strong>. No player names and no phone numbers are ever sent.</p>
 
     <h2>Payment</h2>
     <p>We collect no payment data because there is no online payment in the platform. We never ask for a card and never store a card number.</p>
@@ -140,10 +140,10 @@
     <p>In a managed database (Supabase / PostgreSQL) protected by row-level security, so no account can read another account's data. All traffic is encrypted over HTTPS.</p>
 
     <h2>Venue applications</h2>
-    <p>If you fill in the "Register your venue" form on the owners page, we store what you wrote: your name, your phone number, the venue's name, its city and area, its sport and number of courts, and your note if you left one. We use this to contact you about that application only. The row is readable by platform administrators alone - it never appears on the site, in the app, or to other venue owners, and it is the database itself that enforces this, not the page. We do not auto-delete rejected applications: we keep them with their reason so there is an answer if you ask later, and we delete one on request.</p>
+    <p>If you fill in the "Register your venue" form we store what you wrote: your name and number, the venue's name, city, area, sport and number of courts, and your note if you left one. We use it to contact you about that application only. The row is readable by platform administrators alone - enforced by the database itself, not by the page. A rejected application keeps its reason so there is an answer if you ask later, and we delete it on request.</p>
 
     <h2>Usage measurement</h2>
-    <p>We record five events so we can see where we fall short: a search that returned nothing (with the search term), opening a venue page, reaching the review step, sending a request, and tapping "tell me if it frees up". None of them carries your name, your number, your location, or any text you type other than the search term itself. The event is linked to your account when you are signed in - to tell one visit from ten, nothing more - and only platform administrators can read these rows; they are never shown to venue owners or to any other user. If you tap "tell me if it frees up" we store the slot you want so we can notify you when it opens, and nobody but you can see what you asked for.</p>
+    <p>We record five events so we can see where we fall short: a search that returned nothing (with the search term), opening a venue page, reaching the review step, sending a request, and tapping "tell me if it frees up". None carries your name, your number, your location, or any text you type other than the search term. The event is linked to your account when you are signed in - to tell one visit from ten, nothing more - and only platform administrators can read these rows: not venue owners, not other users. If you ask to be told about a slot we store it so we can notify you when it opens, and nobody but you can see it.</p>
 
     <h2>Your rights</h2>
     <ul>

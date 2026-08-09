@@ -22,6 +22,8 @@ migration/03_owners.sql
 # ويُنسخ إلى android/ بـ`npx cap sync`، فلا معنى لرفعه.
 app/www/
 app/src/_preview_*.html
+# ونسخة الأصول التي يضعها البناء بجوار المعاينة — الأصل في app/assets/
+app/src/assets/
 
 # ── تبعيات ومخرجات بناء ─────────────────────────────────────────────────────
 node_modules/

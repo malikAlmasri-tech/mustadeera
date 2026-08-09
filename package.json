@@ -1,10 +1,12 @@
 {
-  "name": "koora",
+  "name": "mustadeera",
   "version": "1.0.0",
-  "description": "تطبيق ويب من صفحة واحدة (SPA) لحجز الملاعب: تصفّح، حجز فوري، متابعة الحجوزات، تقييمات، ولوحة تحكّم لأصحاب الملاعب — بواجهة عربية (RTL) ووضع ليلي. الواجهة **Vanilla JS / HTML / CSS** بلا أي مكتبات، والباكند **Google Apps Script + Google Sheets**.",
+  "description": "المستديرة — منصّة حجز ملاعب رياضية في الأردن. وجهان: تطبيق أندرويد مدمج (Capacitor) يجري فيه الحجز وحده، وموقع تسويقي ثابت مع لوحة /admin. Vanilla JS/HTML/CSS بلا مكتبات، والباكند Postgres/Supabase.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "node tools/check-i18n-parity.js && node tools/check-spec-mirror.js && node tools/check-api-messages.js && node tools/check-mirrors.js",
+    "test": "node tools/test-pure.mjs",
+    "test:rest": "node tools/security-matrix.mjs"
   },
   "repository": {
     "type": "git",

@@ -335,12 +335,19 @@ textarea.finput{min-height:96px;resize:vertical;line-height:1.6}
    إلى الجهة الصحيحة في LTR بلا قاعدة ثانية. و`transform` هنا **متناظر**
    (‏translate على المحورين بنفس المقدار في الاتجاهين) فلا يحتاج `--dirx`. */
 .notif-btn{position:relative}
+/* ⚠️ حدُّ الشارة يطابق **ما تحتها** لا لونًا مكتوبًا بيد: الرأسان (الرئيسية
+   والمالك) صارا سطحًا فاتحًا في §8/§9، فبقي الحدُّ `--emerald`/`--forest-2`
+   حلقةً داكنة حول نقطة حمراء على أبيض. و`--surface` يتبع الثيمين معًا. */
 .notif-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:19px;height:19px;padding:0 5px;
   display:grid;place-items:center;border-radius:999px;background:var(--danger);color:#fff;
-  font-size:10.5px;font-weight:900;line-height:1;border:2px solid var(--emerald);
+  font-size:10.5px;font-weight:900;line-height:1;border:2px solid var(--surface);
   font-variant-numeric:tabular-nums}
-/* على الرأس الداكن للمالك حدُّ الشارة يطابق ما تحته لا لون الرئيسية */
-.app-header.compact .notif-badge{border-color:var(--forest-2)}
+/* ⚠️ جرس المالك كان **غير مرئي**: `.ghost-btn` زرٌّ نصّي لا قاعدة فيه تحجّم
+   الـSVG، وأيقونةٌ بـ`viewBox` وحده بلا `width/height` تُحسَب **صفرًا×صفرًا**
+   (مقيس: الزرّ 23.6×38 والأيقونة 0×0 ⇒ زرٌّ فارغ يُقرأ زخرفة). فيصير مربّعًا
+   أيقونيًّا كجرس الرئيسية: حجمٌ صريح وهدف لمس مربّع. */
+.ghost-btn.notif-btn{padding:0;min-width:38px;display:inline-grid;place-items:center}
+.ghost-btn.notif-btn svg{width:19px;height:19px}
 
 /* ── مركز الإشعارات ── */
 .ntf-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
@@ -385,15 +392,22 @@ body.dark .notif-row.unread .notif-t{color:var(--copper-primary)}
 @keyframes trkPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.72);opacity:.55}}
 .trk-where{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.45;
   display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
-.trk-when{margin-top:4px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px}
+.trk-when{margin-top:4px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
 .trk-sep{color:var(--soft)}
+/* ⚠️ الذيل **سطران فوق بعضهما** لا عمودان متجاوران. كانا صفًّا واحدًا
+   (`العدّاد` بـ`flex:none` و`التلميح` بـ`flex:1;min-width:150px`) بمحاذاة
+   `baseline`: التلميح يُحشر في 203px فينكسر سطرين، والقاعدة تُحاذي **السطر
+   الأوّل** منهما وحده ⇒ العدّاد يطفو أعلى اليمين وتحته فراغ بينما التلميح
+   يهبط 18px تحته — كتلةٌ بارتفاع 51px ينشغل منها العدّاد بـ21 فقط. مقيس.
+   بالعمود يبدأ الاثنان من حافّة البداية نفسها، ويأخذ التلميح عرض البطاقة
+   كاملًا (‏316px) فيكفيه سطر. */
 .trk-foot{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);
-  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .trk-left{display:inline-flex;align-items:baseline;gap:6px;flex:none}
 .trk-left-l{font-size:11.5px;font-weight:700;color:var(--muted)}
 .trk-left-v{font-size:14px;font-weight:900;color:var(--emerald);font-variant-numeric:tabular-nums}
 body.dark .trk-left-v{color:var(--copper-primary)}
-.trk-hint{font-size:11.5px;color:var(--muted);line-height:1.6;flex:1;min-width:150px}
+.trk-hint{font-size:11.5px;color:var(--muted);line-height:1.55;align-self:stretch}
 /* كتم الحركة: النبضة زخرفة، والحالة مكتوبة نصًّا فوقها على أي حال */
 @media (prefers-reduced-motion:reduce){ .trk.is-pending .trk-pulse{animation:none} }
 .pill{background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:5px}
@@ -900,6 +914,10 @@ body.dark .fs-mint{opacity:.5}
 .detail-badges{display:flex;gap:8px;margin-bottom:var(--s-5);flex-wrap:wrap}
 .detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--s-5)}
 .action-link{display:flex;align-items:center;justify-content:center;gap:6px;min-height:var(--tap);padding:11px 13px;border-radius:14px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:transform var(--t-fast)}
+/* ⚠️ `[hidden]` قاعدةُ متصفّحٍ بنوعية (0,0,1)، و`.action-link{display:flex}`
+   أعلى منها ⇒ `el.hidden = true` يُكتب في الـDOM ولا يُطبَّق. مزلق مسجَّل،
+   ظهر من قبل في حقلَي «أخرى…» بورقة الانضمام. */
+.action-link[hidden]{display:none}
 .action-link:active{transform:scale(.97)}
 .action-link svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .action-map{background:var(--soft-blue);color:var(--info);border:1.5px solid rgba(111,160,240,.2)}
@@ -2129,6 +2147,9 @@ body.dark .game-card{background:var(--surface)}
 .own-open{display:flex;flex-direction:column;gap:4px;margin:0 0 11px;
   border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
 .own-open-badge{font-size:11px;font-weight:900;color:var(--ok-ink)}
+/* المعلّقة: اللوح نفسه ولون تنبيه — مباراةٌ لم تُنشَر بعد ليست خبرًا سارًّا
+   بل معلومةٌ تسبق قرار القبول. و`--warning-ink` مقيس في الثيمين (5.83/8.26). */
+.own-open-badge.pending{color:var(--warning-ink)}
 .own-open-note{font-size:11px;color:var(--muted);line-height:1.65}
 
 /* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
@@ -2688,6 +2709,9 @@ body.dark .bnav{box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -12px rgba(0,0,0,.
 .app-header.compact .title-row{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .app-header.compact .head-flex>div:last-child{flex-shrink:0}
 .app-header.compact .ghost-btn{padding:8px 11px;font-size:11.5px;min-height:38px;white-space:nowrap}
+/* الجرس مربّع أيقوني لا زرّ نصّي: هذه القاعدة تُعيد ما تسلبه السطرُ أعلاه
+   (نفس النوعية ⇒ الأخير يفوز)، وإلّا عاد الحشو النصّي فضمر الزرّ. */
+.app-header.compact .ghost-btn.notif-btn{padding:0;min-width:38px;width:38px;display:inline-grid;place-items:center}
 
 /* ── 13) أداء الهاتف: إزالة backdrop-filter من الأسطح المعتمة ──
    بعد أن صارت التوكنات أسطحًا صلبة، الضبابية بلا أثر بصري لكنها تُنشئ طبقة دمج GPU
@@ -3288,9 +3312,16 @@ html.theme-swap .thm-ic{animation:none!important}
    في المسار المتحرّك. وقواعد الإيقاف تُوقف `animation` **و**`transition` معًا،
    لأن `animation:none` وحدها لا تمسّ الانتقالات.
    ══════════════════════════════════════════════════════════════════════ */
-.ptr{position:fixed;top:calc(env(safe-area-inset-top) + 6px);inset-inline-start:50%;z-index:150;
+/* ⚠️ التمركز بـ`inset-inline:0` + `margin-inline:auto` بعرضٍ محدَّد، **لا**
+   بـ`inset-inline-start:50%` + `translateX(-50%)`: الأولى منطقية (تصير
+   `right:50%` في RTL) والثانية **فيزيائية** لا تدرك الاتجاه ⇒ في العربية
+   كانتا تدفعان المؤشّر معًا إلى اليسار بعرضه كاملًا، فيظهر «يسار الصفحة لا في
+   المنتصف». والعطل **لا يظهر في الإنجليزية إطلاقًا** فينجو من أي فحص باللغة
+   الواحدة. ومحور Y وحده يبقى في `transform` (تكتبه PullRefresh.paint). */
+.ptr{position:fixed;top:calc(env(safe-area-inset-top) + 6px);inset-inline:0;
+  margin-inline:auto;width:max-content;max-width:100%;z-index:150;
   display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;
-  transform:translate3d(-50%,0,0);opacity:0;will-change:transform,opacity}
+  transform:translate3d(0,0,0);opacity:0;will-change:transform,opacity}
 .ptr.snap{transition:transform var(--t-slow) var(--ease-out),opacity var(--t-base)}
 .ptr-ring{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
   background:var(--surface-solid);border:1.5px solid var(--line-2);box-shadow:var(--shadow-sm);color:var(--emerald)}
@@ -3304,6 +3335,20 @@ html.theme-swap .thm-ic{animation:none!important}
 @media (prefers-reduced-motion:reduce){ .ptr.loading .ptr-ring{animation:none} .ptr.snap{transition:none} }
 
 /* ---------- (٤) طبقة انقطاع الاتصال ---------- */
+/* ===== شريط «نسخة أحدث» =====
+   أسفل الشاشة فوق الشريط السفلي مباشرةً: أعلى الصفحة يزاحم الرأس وهو أزحم
+   صفٍّ في التطبيق (الدفعة الرابعة عشرة أفرغته عمدًا).
+   ⚠️ و`inset-inline:0;margin-inline:auto` لا `inset-inline-start:50%` مع
+   `translateX(-50%)`: الأخيرة **لا تتمركز في RTL** لأن `transform` غير مدرك
+   للاتجاه — مزلق مسجَّل. */
+.ver-bar{position:fixed;inset-inline:0;margin-inline:auto;bottom:calc(var(--bnav-h,64px) + 12px);
+  z-index:8500;width:min(92%,420px);display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);
+  box-shadow:var(--shadow-md);font-size:12.5px;color:var(--ink)}
+.ver-bar[hidden]{display:none}   /* [hidden] نوعيّتها (0,0,1) ⇒ يعلوها أي صنف يضع display */
+.ver-txt{flex:1;line-height:1.45}
+.ver-cta{flex:none;padding:7px 13px;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;text-decoration:none}
+.ver-x{flex:none;width:28px;height:28px;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
 .offline-overlay{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px;
   background:rgba(4,14,17,.72);backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);
   opacity:0;transition:opacity var(--t-slow) var(--ease-out)}

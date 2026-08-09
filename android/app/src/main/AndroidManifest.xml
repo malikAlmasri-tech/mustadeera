@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      allowBackup="false" — وليست قيمة قالب Capacitor الافتراضية.
+      التطبيق يحفظ **جلسة Supabase كاملة** في `localStorage` داخل مجلّد الـWebView
+      (‏`at` + `rt`: توكن وصول وتوكن تحديث). ومع النسخ الاحتياطي التلقائي كان ذلك
+      المجلّد يُرفَع إلى Google Drive ويُستخرَج بـ`adb backup` على جهاز مفتوح
+      المطوّر ⇒ **توكن تحديثٍ في نسخة سحابية = جلسة قابلة للاستعادة على جهاز آخر**،
+      بلا كلمة سرّ ولا رقم هاتف.
+      والثمن المقبول: من ينقل هاتفه يسجّل دخوله مرّة — وهو ما نفعله بأي حال بعد
+      انتهاء التوكن. البديل الأدقّ (‏`dataExtractionRules` تستثني مجلّد الـWebView)
+      يحتاج API 31+ ونسختين من الملفّ، ولا يشتري شيئًا ما دام كلّ ما نخزّنه محلّيًّا
+      إمّا سرًّا (الجلسة) أو تافهًا يُعاد بناؤه (المفضّلة · اللغة · الثيم).
+    -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

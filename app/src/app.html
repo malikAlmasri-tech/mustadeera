@@ -6,10 +6,17 @@
 <meta name="theme-color" content="#0A0F0B">
 <meta name="description" content="المستديرة — منصّة حجز الملاعب الرياضية: كرة القدم والبادل وكرة السلة والتنس والكرة الطائرة. تصفّح الملاعب القريبة منك، اطّلع على الأوقات المتاحة، وأرسل طلب حجزك خلال ثوانٍ.">
 <title data-i18n="docTitle">المستديرة - احجز ملعبك</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- التسلسل الهرمي: Changa للعناوين (طابع رياضي)، Tajawal للنصوص (عربي) · Inter (إنجليزي) -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Changa:wght@600;700;800&family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- الخطوط محزومة داخل الـAPK لا مجلوبة من Google.
+     ثلاثة أسباب، وكلّها تخصّ تطبيقًا أصليًّا لا صفحة ويب:
+     ① أوّل إقلاع بلا شبكة كان يقع على خطّ النظام ⇒ التسلسل الهرمي كلّه
+        (Changa للعناوين · Tajawal للنصّ · Inter للإنجليزية) يختفي.
+     ② IP كلّ مستخدم كان يصل طرفًا ثالثًا عند كل إقلاع، وصفحة الخصوصية لا
+        تذكر ذلك — ولا ينبغي أن تضطرّ.
+     ③ وهو جذر المزلق المسجَّل في CLAUDE.md: خطّ الإنجليزية لا
+        يُحمَّل إلّا عند أوّل استعمال لها، فقياسٌ عند قلب اللغة يقع على
+        مقاييس الخطّ الاحتياطي ويبقى خاطئًا أبدًا.
+     ٢٦٨ كيلوبايت في APK بالميغابايتات. التوليد: node tools/fetch-fonts.mjs -->
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABdDSURBVHhe7ZoHVFRn9sBJNpHhzXszYHb/W5L8s7tns5vdTTZRmM6AFAUVC4KCBWz0mQGmD8P0oatgVxiGZgWjxkSNQYMNBKkzVLEX1OxuymY3TYPn/s/3cPjDEwzuSbac4++cd+a9795X7lfvvd+4uT3lKU95ylOe8oOCK6y/xiS6hYTUlMNQWN9myC3nCKmpF083XCNkpqsMhaWbkJvrCamphpCbrQxlViQj3fgr6nP+q2CmGv9IyCwGhsJ6nqGw3GNoC4CpWwvMzDXAyMgHhiYXGOqHBzrX5pMypn4tMHVrAN1DKCxNhNKaiYmNv6M+/z8WIlUfzJBZ3mPIrYPIYIYmDxgKKzBk5uGDcB3y0cewjtwCDFUWMFGlGNYBQ5l1n1BaDzKk5mnU9/3HwEhSv8VUZB1mIoMzC4ChtA61LDqQcSMNdFUEtQJch8JCHkxtHjAz8oCpygJP/VrwRBWiynrHQ6R6nfr+fyfP4GlGMyG33ie7N2o9bT5ZCYTM6MSlxn4G6gnqnHErgrznodGk4Rm55FDAZaYOhtzcO2y8wgqe6FmqrK8JpTmT+iH/cibFiX9JyK2nGbp1QKBurs4BprYAcJmlkS63RJBKEek0XGbREsqsT5n6daOHAzLcZTz6VWcD01CIDBxgyEwp5P1C449whWUpQ5nVgSqCqckBpiobvEzrwVOVfcJ9qeRFymf9a3BfreDjUtNdQlsAhNxCjlVClXODSDfEUnUR7smZLzFU2ZsZyqxvyZ7iMhodSiuQlaPK/oKhsOZiy0STqfe7uYU/y1RYUzy1eX/2MhQCU2EBT90aYMotNyeLtN5U7R8Umkg7A1dlf0locknjiYw81OqVWIL0BaouFVqK9k1CZtqPxjdDlU1OdqhX4DJzJT1V9xuqPhUvifFFhsx00Eu3BjxVVvAyrAPPjLz7nhLtXKruD8Kk1Wn+mNT8Da7KAQKNa1UOYKIMMVXvu2CoLOFMTe4DQpX1OT1Z6UeVfxdMpVXvZSoEVBFMVc5tpkS3karzvUMkKX+LpZs/85BbAZNbAVdkf0OkGedQ9SZEZCSdSNU/IKSmm1TRRGGk6yKeTxr9/sru4Jcre3397N3s6FIHP7HUIUws7eQvKevkBJf1cH5TUxP5/Ej9iRMRQaOJ9V2YKhewdAtgUuugR7x8FlVtTOasxN1CQiaNLKKlKH7KlFoGGTLzbbfIf/ajhqi+xg2p6GMXl3X7dNm7OV/tvMyDvTd5UH0LHXzYc5MHO69ywN7FGizr4Vwu6+HuqujxXbq9hf9r6rPGxT0pc7uHOh+wVAPQlbmAJWtjqDpUJi1Pe4WWkLHUfbmUQzWSFp/+M4bUPMiQW267hUhGVc5E2NIsfMneO9VS1su6uvsGH2oG+LDzCgcqLrChrIeFjIXSLhZ5XXmRDaU9LCjvZUPVJQ5U3+bC0S/9oKRDsJ763DHB4jVBmDIPsHQT0FV5QEtUr6XqjCIyko5JLQW0ZO0uWrxyClWMQD0AeYuE3PREPWDDURZR1su1VlzgfVZzhwdVl9hQ1seCXde4UH2bR/6W9bFJ48t62WDr8vmo2Ol9t7THB2xdLCjvY0P1AA9KnN4FANSnj8WUKc+5x6t7PWRZQFfnASY1tbrpdM9Q1VzQZeZITJFzgyYxbXeTbBi3ZRliI4F6AJ5uvEWVjUd5Jzuyop97peYu72HLcqD6Dh8ZOmjvYdeX9bBMtnbOTJuT1bjzCheqB7hQ3MHK2nzyNXqJ0/vyrptc2HWDCyUdfAX12eNCF+njMXU+eIj1gKWZBmlJ6reoOiSsUAKTWSrpmgKgpRoTqWIqWLwiiCG3PiAUWX+jJar/RJWPJO94EKO8j1O+9yYfdlzmka1Yc4cP5RfYf63o4+RV9Aj+MFLf5mRvrRkQwN5bPLA5eXsflp3Z9xEftrdPHdNPGZvIyOcxUeZVTJ4FmCofaMmaUqoKwj1RxcKklst0eRbQ4lQzXOXKWv8xHRQi3WQg5NZ7DHkWWsKAqc79gqG0yKh6iC3NPj5V/YLefXf8wN7NISe0iovsb8ovcAvKu31+StVHlDo5puoBAey+zoUSh/cpVFbS4V20vY2zlKr7WGhJ6gV0eTbQU01AS7d8MynR+ApVB1utXIQp8+9jytwH7itlAle54oOgjdldoaA/FRTvKqOl6n1wmbWRjBIVWcMuMXJtPfWFyJU+i6XpXnPpl7S/FV110eer3ddRN+dCzR1fqOznfGhrm/KGS2csShwsafUAH3Zd46Cx3kCVTxhagvowWQGKHKCJddWPyFdLE3BZNqCWn5SSEegqTz8aKjc65oChKRSy22dCZp1wFakv0s1hZBSQzhMhNT2MAC1DlYDyBcqsv3qkWMjuXOYUqFALohm86jILdlzhQlm3r2Hk+8dju9Mnbe8AD3Zd50JpJ7eeKp8QHsuSfkJL0X5BTzOhNR8mxcmGuzaClpiRgCtyAJfnAG2FdLGrXHI0nKOqnwfqM7NAczIEjOdmQE57MBhP+a1EcjzVOJuhzrlHRocy05DxmWuBIbNccVuY+jLSsXVyc/fd8YfyXh7svi6Ayn7WpyWOP80e+f7HUeL0yUAzPeo5Nif3Q6p8QtCStAvo8hygp1vAPSVzYORajSVoFuGyLMC165A/YBm+Sef2TMLRWR3Kpvkg/3AmmFrCwFAfApbGGbDOGQo5DQErHt4fwpBb73mqcsAzg2z5S24rMl9CshKnz3o0y9u72bD3li9UXvC9aG9n/x7J6PFKPxQdDr9vHGydnEI0B+y5iSqAQ06CTwyWpN2AK/OG1n2xboer3D1WysIlxnuEugBoKZmjanflO3Mj0s5FgLg2DBRnZ4PyRKg983Top9aWUMg+HwyFXYGQXc+PQ7oMkX6Gl3YNiupuuFq+1MnfWHNHCPZuFlQPsKH8gndb4ekpP0MypsximIxC4DSjcOQ7x6LUyT+056aA9AtsDlY+VT4haEnqs3SZFTB1HtCSMpJQGVq7MYnhKq7MBVqK9nP3mKEPd5FwOOJkav1CkJ0Nh7TaWQ5Upv5weoD5fOg32S0zIK8lADZ1B0FBvT9ZCUSiKvj5OM2r6NzmYBfV3BGQLV99W4C8tvO5Z1/3RDKmwmKYbNkIXsYiYKTp7SPfSSW8OvzZkg7W5R2X+GQPsrcLvtNjfRSJZBKWariFowqQGOC5VfI/omKPJG0VnrEG0Fo/KVmTPPKWqIPzXllxZMG3SccXgOL8QhAfmz38YtUH00MtTTPu5bfNgHVtgbC1LxCKmgQJLrmtnV9YMyCE0i7kpQmgrI/TVHTSj+mS41KDDOUAvDLywFNuufOL9HSaS0Zla7P3b+3drMGKPh7Yu/gPtrcE/Lq83OD+REGQe5zqRUxs+JrIWAuY2LAfldFWKabj6RbA5dngIdE3U+9ZtD98SdzpxZBwPAKSj83/XHpshtdIuf7E9NC8tpB76zqCobDdH7Z2+8GmZn/Ntnbehl3XBGiswp4bvmji68g9KyBb3gWKG5hyy5demjzw1OQBIdayRspHUuLgJiIHCHmCNgffSZadFywsbeP+L1V3XJ5bIX2dLtIDlmoefF5kJLuoh1jfjYzH08wwaUV6APWexe9EZcefWQaJJxdB/NF5Z6lyhPlUYNia9qBvizoCYH2rEMovToOqS35Q4uAAqgR7D/uCa8xTYcrNbV4ZBTDZUAiTlRZyRRmLUge/du91X6i+zYeSDm8TKitpFxwobvWfeGqdSFSxCOT5xaveRddYoiYaVw1NiJhId5qqj1h0MKp89ZkYSD67GOKOzKuiyl1kn/Sft94RNLjJ6Q8bmwWwtY0HO66gMe97q+gk5xFHy4Wn3LIfGY+GAkNm0FLliK3Nr/+qvId9r+oCH8p7+d+WdQlfKr7w6gulnawvilt5T1AByRofujofJokzyZbG4lWdRDpKW2WDR7J2zBzAgoNRO5afioHk+mUQd3TBNqp8JHlnAiM2dQXAFqcvlPYJwN7L+9uWRt/HencMublqsqkIvIyFgKcb/n/pHUFJh88alANAMYOtg0s2nt3BU9fc5sO2h0vphHBfLWXR4pSX0Tkm1vORs0NIrYAlqi+5ubk9S9VHhB+ItsWcioWEM0th9fsLhpfN8VjTwIuyXwqEkh6/wY1NbF+qnIqn1PQ22f3RUqg0Z1Dlxa1+L1R28z/beZEHu67wwe7gsKur3Z61d3Jv77zkC9vaBROvAJS4xBIz9OgcS9CUEso8QLM/lqrPpuq6CN8fZYw5vRxW1y2BFYcXjOd/j3Ji1jX6xm04J1iIzrec44aNlFHxTDO2eGkLwMtUBEx11iNLm63NO3/fgAD23RSCrZ1/AJUVd3gn7P9IADYH5355h/+4w+sR8Ng0Jm1p+s/Qckgkae8SUgvgUgugYIaq62Le24sXLKuLheXHomH54fl/X7zLb1SGGIsRvYpJrQ5agip8ZDliWzPfsuOSLxS3Bo/yK1xgkowfeyos//BE+w4okyzSjkqylDjYv6zsZX216zIHKnrZXxd3C14u7/BjVnTz7+69LoBSB+tjdD3yngmBiTP4hCIbcBQOJ2XcfFzmZu7u6J9HHor+JuZoFCQ3LIZVh8PkLtnzcbJXMYnpOqFZg/KJDzyS1MOrSFEjX7rjij9UDwihpI0/Zh6BKbfGoq7vlZkPDJRAoaTQ7B2Co6jlh8b61NShMm7a/jt+sPMiGg68vollfyhgKbp0QlMwNPunGg5R5VTC9y88trpxOYgalkDC4blk1oUWI3kLS9HdJmOHNDNg0qxBTKQPRrKCBmGK7eI02O7kQ9VlARS3c8ZcYRhSUztKf3tZNgJDZd0+Urat3XtVzS1f2H/HH+wOwTuu8lKH997qm3zYe0MAtg4+OSE+MViCphhX5AJdkw9YmiGLKqcy7+CCeUtOLb695NB8sptj4swgLN3yKR2tIKkm5FTdx+LloUiWezYgfktfMGxyCGFzqwBKnCgA4gxubeb/duQz6SJtPJOMGazA1OQCU2oZzh5taZvyWlmfz5f7PiKDp36X96jT6Z4pdbAv7rjMAZQ3tDlYupHPnDB4su4oGe8rc8EjRTuu8+EC+eGhO35FoHOPlcp4XGIaxKVDyyeWbvly0moZ2fKGOuGqwq4gKGyfBkXNQtjUIoBtbTzYewsNA87wpidTqnudqcn9BzIcJUwIceZulyy/fg5e3s3vOfSxPxr3f950/k+kw4awtfm+gVzhil4O7LrChVIn6zsDqDEhJIYmQp4DmMwKtDjFBLeewA1Ls2wmZNlAiA2A/Acs1fgJPSGT/AjjyZmJeR0oMAqC/EY/WNfsBxtbfGFLmwAq+gVQ3MG51gJTnnOLLWIyZOa7nplrwBMlSzQ5n00WGX/ueovN6fP+kc/9oapP+PGmc0LKpOhj2HebDzsucqHUwb1dXid0HymfMLhI34HcX5TxwVI0IVQ5FfeVcjYmNrahUBlPMwGaPzCJ4YLHknhyP19VGxxXdHUeZDcHg7UhAPKa/GFtsxDWtwhgi0MAuwf8Ua7e+U4fD3eLNDzPkOhPoZZnZuQDM10/vEwWO7yrDn/FQ+Hyzc31/DdHfkM1hD9rc0y9vBN1/9vkCjBqzpgYi5PJYARPzmylK7KBrsoFulg3j6rmAhNpJuNplgJcbBjq8hLjkPFS05GRG6aKE75v6BsDDuR3hkB+ezDkNvpDwXkhbO2dBsV9Qtjm5K0tbg3zcOnjiepX0L4fkaIiw3FEudO3tPZ+INoLOLf+7B8eWTZLOlgLkTdY1u0DaIdoe4svm6rzWGgifTEtJcOKzrFkbR1ZAeo88JDoVlN16ZGrvbAktQxLNQ24Wh1X5gCebgIsSTNu/s54bkZMVkvA3bzWaVDkmAYbnQEXN5z3H7OHYYsTXBX4jL176oH3/i6Eil7frZINo7faEADgVurkde2+yoU9N1hgc05ppOo8Fiw5s4Rh3Ax4im4DuqaJMqvQBEhmhZI1Q/53fPxzWLqZj4v1G/AU3V1clgP0NDO5xBFo60xubcGTMr7TtdV+4P9mXmsAFLT6/814eOaY6W0XJU2hL1Zd8G2rusL5bFu799AfL8aguG2KCO0H2Ls4ZDxQ1smZSdUZG2GsOyY2HMRV+YBLswBL1JxGGyC0pAw7mfhMNwOWou3DkjMqMZH+EtIh3WNkOMoRID9BbLiLJWfK3dyE35mzQ8g/mP4TNA/knAv4i+ExyYrNLd4z7T2CGzsuTqvMOeAzxh8nhihunfpyRa/355X9PrD3Jpr8eGP6FI/AjJP/EkvRNaD8Hy4xAC7RAx114TQjCn0f0MV6IA9kqCJ3yOBUE5AVo0TX5uv0VJMOWyn5MfXZj0N7YtYvrA3BD7Ia/T/Jr+fhVDlKimxoEmo2t7D3Fzu8h/cbxqO8i3e6+iYKq32g8uLUByUdPqMmx3Ghx6sLydZU5g61KhrzaO9fNnQgw+nIi0MGq/OBQDvDqYbPMXHmYXeRLsot3jg8aT0J2hOBvzDXBz6wNgZ+gtb0kbJNx4Mmrz/rN7+wifdI4mUsSpxT1iOHp7SLA2/fJX0JMhEyMcLDn8US5b/H00xJmMRQhol05zBR5mVMrLtDkxjuYhLDNZpI146JMg/R0gxZtHRzmBsv/5EWe1KMtcE/N9UHDVoaAj/Of2d0D9jeMuW5kdePw9bB16JZv7TLG6oHOGB3cv65fYBRCIU/clsqx9xWKnFq4IHw3Rf7Bnf3SqX/u/Et/jUxuVT5RIgvnuKhPxMwaG4I/CtVNlFsjqn66lsCKO/hwh60fdbjc3XDmTefaCg+Ma9vj3/9rR0J9wW1aSA8nAAzTiTB9AMxJW7C0bH+40ip8acb68NyrS0hkNs2435e8zRDbPlLE/bW4uOnPFfWxdq+9xYb7N0+sPsaF6ou8P9sa/Mb3lf8QXnDvjKUfSDlC8F7ieBbEwuhtXEQcnDp2ZDqyFGBzFikfTgrWlU/62JW5xzQNwSDuSkQNvQHwboOYU9RR+C4zpaLLW2c18r7uA01A77knyD23OBARb/33W1N7MdusX/vTCmN4bJrVt/2O5oI0/bFwOzaVTD7SMznYe9GyTlrOY/k7eOPhvmIT85/X9UaDurzYaA6PQN09cFgPBcIWY0BsKE7ELb2B8GmTr+Dm1q4j/wV1lAndC/tYSsq+tl/332dB7ZOFrmBUtHPv7CxwXviCc/vk7c2L/lf3wNxp2bUiSD4UCzMfG8ZLKhbDvOORPVHHIlOiayJZETtDvufVbWL1ifWLXiQdj4CxHWzQXpqJqhOh0Dm2elgqA8Ca2PgUFzQIoSSK/6wrYf/zTYHJ3/tSe8X7O2CH5d1c0VlPfwLaNOkvI9D/kFi310u+j1SfHJ05unfwTP++1ZZg95Zfn/28VUw+9BiiKhdBktOLYeFhxfejX5vwcfxDVEQd2I+JNTOAdGHYZB+ciYoT4eC9sx00NcHgflcAOQ0TYOCZj9YhyJDpwAqrwlhewf3L7YO9idok7PqEprp0YapACou8L62d7PU1A/5t+K3O/qtWe8tf3fe8ZUQURcLC45EQVRtNCw5vgiWvT8fVh6bB/G1cyHlRBik1c0E+akQyDgzA/T1wWBqCICspgDIJytACOvbBLC5nQf2Hh6U93LJf4bsvsGDndfYUNHPPbi12Z/cqvuPZOb+ZcFh7y45HH50MSxtiIWlpxbDstoIWHFsPsTVzoWkE3NAUjcLZKdCQfOwAtA8YG0KgLzzaBj4QVGrADY7+FB2UQB7B3yhrA+FvtzDtk5vMqHyX0HEoeg3Fn0QbY2ujWqP+WDhYMK5RZByfiGkNi0AWeNcUDbNAm1TKBibQ8DaOh3yHMGwvicItl0KguIr02BTJx+2dfG67D38XHs//187w3/fLD+2+Hexx+bGrPggbEPiibCj4rrZDunJWTdUp0M+yjgd9JHubMBNU8O07tzmwOOFbYFbCtuFq9e3cR67U/SUpzzlKU/5Hvg/dUYgXZ5NNHEAAAAASUVORK5CYII=">
 <link rel="stylesheet" href="app.css">
 </head>
@@ -295,9 +302,13 @@
         <div class="home-tools">
           <!-- الجرس: مخفيّ للضيف (لا صفوف له في القاعدة أصلاً، فجرسٌ لا يرنّ أبداً
                يُقرأ عطلاً). يُظهره `Notifs.paint` عند وجود جلسة. -->
+          <!-- ⚠️ مبدّلا اللغة والثيم **حُذفا من هنا** (طلب المالك: تقليل عناصر الرأس).
+               موضعهما الوحيد الآن بطاقة «التفضيلات» في صفحة «حسابي» — وهي على
+               بُعد نقرةٍ واحدة في الشريط السفلي، وليست إعدادًا يُبدَّل كل دقيقة
+               حتى يستحقّ مكانًا دائمًا فوق كل شاشة. ويبقيان في شاشة الترحيب
+               (قبل الدخول لا شريط سفلي ولا صفحة حساب) وفي رأس المالك (لوحته
+               صفحةٌ واحدة بلا «حسابي»). -->
           <button class="icon-btn notif-btn" id="homeNotifBtn" data-action="openNotifs" data-i18n-aria="notifsTitle" aria-label="الإشعارات" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
-          <button class="icon-btn" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
-          <button class="icon-btn" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
         </div>
       </div>
       <div class="search-bar">
@@ -665,7 +676,13 @@
           <div class="stat-card c-blue"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></span><div class="stat-value" id="oToday">0</div><div class="stat-label" data-i18n="otTodayLbl">حجوزات اليوم</div><div class="stat-hint" data-i18n="hintByPlayDate">حسب تاريخ اللعب</div></div>
         </div>
         <div class="card mb-card">
-          <div class="section-title"><span data-i18n="revenueSummary">ملخص الإيراد</span><span class="mini-badge" data-i18n="commission10">عمولة 10%</span></div>
+          <!-- ⚠️ شارة النسبة حُذفت: النسبة شرطٌ تجاري لا يُطبع على شاشة تُصوَّر
+               وتُشارَك، والأسطر الثلاثة تحتها (إيراد · ربح المنصّة · صافيك) تقول
+               ما يعني المالكَ بأرقامه هو.
+               ⚠️ ولا تُعِد كتابتها هنا ولو في تعليق: تعليقات HTML تُحذف من
+               مخرَج **الموقع** ولا تُحذف من مخرَج **التطبيق** — `app/www/index.html`
+               يُحزَم في الـAPK كما هو، وهو ملفّ يفتحه أيّ أحد. (مقيس.) -->
+          <div class="section-title"><span data-i18n="revenueSummary">ملخص الإيراد</span></div>
           <div class="row-3">
             <div><div class="kpi-val" id="oRevenue">0</div><div class="kpi-lbl" data-i18n="siteRevenue">إيراد الموقع</div></div>
             <div><div class="kpi-val" id="oProfit" style="color:#2563eb">0</div><div class="kpi-lbl" data-i18n="platformProfit">ربح المنصة</div></div>
@@ -847,7 +864,7 @@
       </fieldset>
       <div class="fx-group"><label class="fx-label" for="fxRegion" data-i18n="regionLbl">المنطقة</label><select class="finput" id="fxRegion"></select></div>
       <div class="fx-group"><div class="fx-label" data-i18n="priceJod">السعر (دينار)</div>
-        <div class="grid-2"><input class="finput" id="fxMin" type="number" inputmode="numeric" min="0" placeholder="من" data-i18n-ph="from"><input class="finput" id="fxMax" type="number" inputmode="numeric" min="0" placeholder="إلى" data-i18n-ph="to"></div>
+        <div class="grid-2"><input class="finput" id="fxMin" data-i18n-aria="priceFromAria" aria-label="أقل سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="من" data-i18n-ph="from"><input class="finput" id="fxMax" data-i18n-aria="priceToAria" aria-label="أعلى سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="إلى" data-i18n-ph="to"></div>
       </div>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="fieldSize">حجم الملعب</legend><div class="fx-chips" id="fxSizes"></div></fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="type">النوع</legend><div class="fx-chips" id="fxTypes"></div></fieldset>
@@ -884,9 +901,9 @@
           <label class="star" for="rvStar5" data-star="5" data-i18n-aria="star5" aria-label="5 نجوم">★</label>
         </div>
       </fieldset>
-      <input class="finput" id="rvName" placeholder="اسمك" data-i18n-ph="yourNamePh" style="margin-bottom:11px">
-      <input class="finput" id="rvPhone" type="tel" placeholder="رقم الهاتف" data-i18n-ph="phonePh" style="margin-bottom:11px">
-      <textarea class="finput" id="rvComment" placeholder="تعليق اختياري" data-i18n-ph="commentPh" style="margin-bottom:18px"></textarea>
+      <input class="finput" id="rvName" data-i18n-aria="yourNamePh" aria-label="اسمك" placeholder="اسمك" data-i18n-ph="yourNamePh" style="margin-bottom:11px">
+      <input class="finput" id="rvPhone" data-i18n-aria="phonePh" aria-label="رقم الهاتف" type="tel" placeholder="رقم الهاتف" data-i18n-ph="phonePh" style="margin-bottom:11px">
+      <textarea class="finput" id="rvComment" data-i18n-aria="commentPh" aria-label="تعليق اختياري" placeholder="تعليق اختياري" data-i18n-ph="commentPh" style="margin-bottom:18px"></textarea>
       <button class="sbtn" data-action="submitReview" data-i18n="submitReviewBtn">إرسال التقييم</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
@@ -898,17 +915,17 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="mTitle" data-i18n="manualTitle">إضافة حجز خارجي</div>
       <div class="modal-sub" data-i18n="manualSub">يضاف كمؤكد مباشرة ويغلق الوقت أمام اللاعبين.</div>
-      <label class="form-label" data-i18n="fieldLbl">الملعب</label>
+      <label class="form-label" for="mField" data-i18n="fieldLbl">الملعب</label>
       <select class="finput" id="mField" style="margin-bottom:13px"></select>
       <label class="form-label" data-i18n="dayLbl">اليوم</label>
       <div class="days-row" id="mDays" style="margin-bottom:14px"></div>
       <label class="form-label" data-i18n="timeLbl">الوقت</label>
       <div class="times-grid cols-2" id="mTimes" style="margin-bottom:16px"></div>
       <div class="grid-2" style="margin-bottom:13px">
-        <div><label class="form-label" data-i18n="ownerNameLbl">اسم صاحب الحجز</label><input class="finput" id="mName" placeholder="أبو أحمد" data-i18n-ph="phManualName"></div>
-        <div><label class="form-label" data-i18n="phone">رقم الهاتف</label><input class="finput" id="mPhone" type="tel" placeholder="079xxxxxxx"></div>
+        <div><label class="form-label" for="mName" data-i18n="ownerNameLbl">اسم صاحب الحجز</label><input class="finput" id="mName" placeholder="أبو أحمد" data-i18n-ph="phManualName"></div>
+        <div><label class="form-label" for="mPhone" data-i18n="phone">رقم الهاتف</label><input class="finput" id="mPhone" type="tel" placeholder="079xxxxxxx"></div>
       </div>
-      <label class="form-label" data-i18n="priceLbl">السعر</label>
+      <label class="form-label" for="mPrice" data-i18n="priceLbl">السعر</label>
       <input class="finput" id="mPrice" type="number" inputmode="numeric" placeholder="40" style="margin-bottom:13px">
       <label class="form-label" for="mRepeat" data-i18n="repeatWeeksLbl">كرّر أسبوعياً</label>
       <select class="finput" id="mRepeat" style="margin-bottom:18px"></select>
@@ -942,13 +959,13 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="fieldTitle" data-i18n="editFieldTitle">تعديل ملعب</div>
       <input type="hidden" id="fieldId">
-      <label class="form-label" data-i18n="fieldNameLbl">اسم الملعب</label>
+      <label class="form-label" for="fieldName" data-i18n="fieldNameLbl">اسم الملعب</label>
       <input class="finput" id="fieldName" placeholder="ملعب 1" data-i18n-ph="phFieldName" style="margin-bottom:13px">
       <div class="grid-2" style="margin-bottom:13px">
-        <div><label class="form-label" data-i18n="sizeLbl">الحجم</label><input class="finput" id="fieldSize" placeholder="6×6"></div>
-        <div><label class="form-label" data-i18n="priceLbl">السعر</label><input class="finput" id="fieldPrice" type="number" inputmode="numeric" placeholder="40"></div>
+        <div><label class="form-label" for="fieldSize" data-i18n="sizeLbl">الحجم</label><input class="finput" id="fieldSize" placeholder="6×6"></div>
+        <div><label class="form-label" for="fieldPrice" data-i18n="priceLbl">السعر</label><input class="finput" id="fieldPrice" type="number" inputmode="numeric" placeholder="40"></div>
       </div>
-      <label class="form-label" data-i18n="slotsLbl">الأوقات</label>
+      <label class="form-label" for="fieldSlots" data-i18n="slotsLbl">الأوقات</label>
       <select class="finput" id="fieldSlots" style="margin-bottom:13px">
         <option value="full" data-i18n="slotFull">Full — كل اليوم</option>
         <option value="morning" data-i18n="slotMorning">Morning — صباحي</option>
@@ -989,8 +1006,8 @@
       <div class="sec-title" style="padding:14px 0 6px"><span data-i18n="matchPlayers">اللي انضمّوا</span></div>
       <div id="mtPlayers" class="mt-players"></div>
       <div class="grid-2" style="margin:14px 0 4px">
-        <div><label class="form-label" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="mtNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
-        <div><label class="form-label" data-i18n="gmBrought">معك كم</label><input class="finput" id="mtBrought" type="number" inputmode="numeric" min="1" max="40"></div>
+        <div><label class="form-label" for="mtNeeded" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="mtNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
+        <div><label class="form-label" for="mtBrought" data-i18n="gmBrought">معك كم</label><input class="finput" id="mtBrought" type="number" inputmode="numeric" min="1" max="40"></div>
       </div>
       <button class="cbtn" data-action="saveMatch" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeMatchSeats" data-i18n="matchCloseSeats">العدد اكتمل — سكّر المقاعد</button>
@@ -1022,18 +1039,18 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="clTitle" data-i18n="closeDayTitle">إغلاق يوم</div>
       <div class="modal-sub" id="clWhen"></div>
-      <label class="form-label" data-i18n="closeFieldLbl">الملعب</label>
+      <label class="form-label" for="clField" data-i18n="closeFieldLbl">الملعب</label>
       <select class="finput" id="clField" style="margin-bottom:13px"></select>
-      <label class="form-label" data-i18n="closeScopeLbl">المدى</label>
+      <label class="form-label" for="clScope" data-i18n="closeScopeLbl">المدى</label>
       <select class="finput" id="clScope" style="margin-bottom:13px">
         <option value="day" data-i18n="closeWholeDay">اليوم كلّه</option>
         <option value="hours" data-i18n="closeSomeHours">ساعات منه</option>
       </select>
       <div class="grid-2" id="clHours" hidden style="margin-bottom:13px">
-        <div><label class="form-label" data-i18n="closeFromLbl">من الساعة</label><select class="finput" id="clFrom"></select></div>
-        <div><label class="form-label" data-i18n="closeToLbl">حتى الساعة</label><select class="finput" id="clTo"></select></div>
+        <div><label class="form-label" for="clFrom" data-i18n="closeFromLbl">من الساعة</label><select class="finput" id="clFrom"></select></div>
+        <div><label class="form-label" for="clTo" data-i18n="closeToLbl">حتى الساعة</label><select class="finput" id="clTo"></select></div>
       </div>
-      <label class="form-label" data-i18n="closeReasonLbl">السبب — يقرؤه اللاعبون</label>
+      <label class="form-label" for="clReason" data-i18n="closeReasonLbl">السبب — يقرؤه اللاعبون</label>
       <input class="finput" id="clReason" data-i18n-ph="closeReasonPh" placeholder="صيانة الأرضية" style="margin-bottom:8px">
       <div class="modal-sub" data-i18n="closeReasonWhy">يوم مظلم بلا سبب يُقرأ عطلاً في التطبيق. اكتب سبباً قصيراً.</div>
       <div id="clResult" class="cl-result" hidden></div>
@@ -1056,12 +1073,12 @@
         <div class="form-label" data-i18n="ruleDaysLbl">الأيام — بلا اختيار = كل الأيام</div>
         <div class="pr-days" id="prDays"></div>
         <div class="grid-2" style="margin:11px 0">
-          <div><label class="form-label" data-i18n="ruleFromLbl">من الساعة</label><select class="finput" id="prFrom"></select></div>
-          <div><label class="form-label" data-i18n="ruleToLbl">حتى الساعة</label><select class="finput" id="prTo"></select></div>
+          <div><label class="form-label" for="prFrom" data-i18n="ruleFromLbl">من الساعة</label><select class="finput" id="prFrom"></select></div>
+          <div><label class="form-label" for="prTo" data-i18n="ruleToLbl">حتى الساعة</label><select class="finput" id="prTo"></select></div>
         </div>
         <div class="grid-2" style="margin-bottom:11px">
-          <div><label class="form-label" data-i18n="rulePriceLbl">السعر</label><input class="finput" id="prPrice" type="number" inputmode="numeric" placeholder="55"></div>
-          <div><label class="form-label" data-i18n="rulePriorityLbl">الأولوية</label><input class="finput" id="prPriority" type="number" inputmode="numeric" value="10"></div>
+          <div><label class="form-label" for="prPrice" data-i18n="rulePriceLbl">السعر</label><input class="finput" id="prPrice" type="number" inputmode="numeric" placeholder="55"></div>
+          <div><label class="form-label" for="prPriority" data-i18n="rulePriorityLbl">الأولوية</label><input class="finput" id="prPriority" type="number" inputmode="numeric" value="10"></div>
         </div>
         <button class="cbtn" data-action="addPriceRule" data-i18n="ruleAddBtn">أضِف القاعدة</button>
       </div>
@@ -1078,7 +1095,7 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="reasonTitle" data-i18n="reasonTitleDefault">سبب التحديث</div>
       <div class="modal-sub" id="reasonHint"></div>
-      <textarea class="finput" id="reasonInput" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." data-i18n-ph="reasonPlaceholder" style="margin-bottom:18px"></textarea>
+      <textarea class="finput" id="reasonInput" data-i18n-aria="reasonPlaceholder" aria-label="سبب التحديث" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." data-i18n-ph="reasonPlaceholder" style="margin-bottom:18px"></textarea>
       <button class="sbtn" id="reasonConfirm" style="background:var(--danger-btn)!important" data-i18n="confirmWord">تأكيد</button>
       <button class="cbtn" id="reasonCancel" data-i18n="backWord">رجوع</button>
     </div>
@@ -1146,6 +1163,16 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9"/></svg>
     </div>
     <div class="ptr-txt" id="ptrTxt"></div>
+  </div>
+
+  <!-- ============ نسخة متخلّفة ============
+       شريطٌ ناصح لا حاجب: التوزيع بـAPK مباشر بلا متجر يدفع التحديث، فإغلاق
+       التطبيق في وجه صاحبه عقابٌ على عطلٍ ليس عطله. والرابط هو المخرج الوحيد.
+       role=status لا alert: خبرٌ يُقرأ عند فراغه، لا مقاطعة. -->
+  <div class="ver-bar" id="verBar" role="status" hidden>
+    <span class="ver-txt" id="verTxt" data-i18n="verOld">في نسخة أحدث من التطبيق — نزّلها عشان كل الميزات تشتغل.</span>
+    <a class="ver-cta" id="verCta" href="https://mustadeera.vercel.app/download/" target="_blank" rel="noopener" data-i18n="verCta">نزّل</a>
+    <button class="ver-x" id="verX" data-i18n-aria="verClose" aria-label="إغلاق">&times;</button>
   </div>
 
   <!-- ============ انقطاع الاتصال ============

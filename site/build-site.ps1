@@ -453,7 +453,14 @@ function Render-PlaceBody($p, $T, [string]$base) {
     }
 
     [void]$sb.Append('<div class="hero-cta cta-start"><a class="btn btn-pri btn-lg" href="' + $base + '/download/">' + (Tx $T 'plBookCta') + '</a>')
-    if ($p.map) { [void]$sb.Append('<a class="btn btn-sec btn-lg" href="' + (HtmlEnc $p.map) + '" rel="noopener nofollow">' + (Tx $T 'plMapCta') + '</a>') }
+    # HtmlEnc escapes the quote so the attribute cannot be broken out of, but it
+    # says nothing about the SCHEME - and a href is not safer than a src. The app
+    # already gates image_url on http(s) (fieldImages); map_link never was, on
+    # either surface. Whitelist the scheme; a link we will not vouch for is not
+    # rendered at all rather than rendered broken.
+    if ($p.map -and $p.map -match '^(?i)https?://') {
+        [void]$sb.Append('<a class="btn btn-sec btn-lg" href="' + (HtmlEnc $p.map) + '" rel="noopener nofollow">' + (Tx $T 'plMapCta') + '</a>')
+    }
     [void]$sb.Append('</div>')
     [void]$sb.Append('<p class="pl-updated">' + (Tx $T 'plUpdated') + ' ' + $BuildStamp + ' &middot; ' + (Tx $T 'plLiveNote') + '</p>')
     [void]$sb.Append('</div></section>')
@@ -726,7 +733,13 @@ Disallow: /admin
 Sitemap: $SiteOrigin/sitemap.xml
 "@
 
-# ---- static passthrough: _headers, _redirects, assets ----
+# ---- static passthrough: assets ----
+# _headers and _redirects lived here until 2026-08-09. They were Cloudflare
+# Pages syntax on a Vercel deployment (owner decision 3), so nothing ever read
+# them - and they had drifted into claiming protection the site did not have:
+# HSTS and the /ar/* redirect were in them and NOT in vercel.json. Two files
+# describing the same contract will always disagree eventually; the one that
+# is not enforced is the one that lies. vercel.json is now the only source.
 $staticDir = Join-Path $SiteDir 'static'
 if (Test-Path $staticDir) {
     Get-ChildItem -Path $staticDir -File -Recurse | ForEach-Object {
@@ -751,10 +764,11 @@ foreach ($f in @('logo-nav.png', 'logo-nav-dark.png', 'logo-mark.png', 'logo-mar
 # ---- the SPA is NOT published here ----
 # Owner decision (2026-07-28): booking happens in the Android app only.
 # A browser copy would be a second front-end writing to a second database
-# (it still speaks to Apps Script/Sheets while the app speaks to Postgres),
-# which is exactly the double-booking hazard stage (D) existed to close.
+# (it spoke to Apps Script/Sheets while the app speaks to Postgres - that
+# backend has been dead since 2026-08-06), which is exactly the double-booking
+# hazard stage (D) existed to close.
 # Removing it closes that hazard without touching the live app.
-# /app/* now redirects to the download page - see site/static/_redirects.
+# /app/* now redirects to the download page - see "redirects" in vercel.json.
 
 # ---- report ----
 $totalBytes = (Get-ChildItem $Out -Recurse -File | Measure-Object Length -Sum).Sum

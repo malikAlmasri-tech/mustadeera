@@ -14,7 +14,15 @@
 
 /* ===================== CONFIG ===================== */
 const CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycby2x_4M12nac0FIk-kVOsB-lg0cOSI283cvjT5yR5cv0BIqiI2u6Pmuf4XEa4bGy6bl/exec",
+  /* ⚠️ `API_URL` (رابط Apps Script) حُذف في 2026-08-09. كان مذكورًا هنا مرّةً
+     واحدة ولا يُنادى من سطر واحد منذ انتقال الـAI إلى دالّة الحافّة
+     (2026-08-06)، ومعه سطران في `connect-src` بالـCSP. سطحُ هجومٍ بلا مقابل،
+     ورابطٌ حيّ في مستودع عامّ وفي كل APK يُنزَّل. */
+  /* رقم بناء هذه النسخة — **مرآةُ `versionCode` في `android/app/build.gradle`**،
+     يقارنهما `tools/check-mirrors.js`. تقرأ القاعدةُ منه أدنى إصدار مقبول
+     (‏`min_app_version` في `booking_rules`، ترحيل 27) فيعرف صاحب الهاتف أنّ
+     نسخته تخلّفت — وبدونه لا يعرف: التوزيع بـAPK مباشر بلا متجر يدفع تحديثًا. */
+  APP_BUILD: 1,
   CACHE_KEY: "mustadaira:places_cache_v8",
   CACHE_MS: 10 * 60 * 1000,
   AUTO_REFRESH_MS: 90 * 1000,
@@ -40,7 +48,14 @@ const CONFIG = {
    لتوليد التسمية حسب اللغة. الحقل label هو القيمة الكنسية المُرسلة للخادم (بروتوكول حجز،
    يطابقه الباكند العربي) فيبقى ثابتاً؛ العرض الإنجليزي يُولَّد من الساعات عبر slotDisplay(). */
 const DEFAULT_SLOTS = [
-  {label:'8:00 - 10:00 ص',hour:8,startHour:8,endHour:10},{label:'10:00 - 12:00 م',hour:10,startHour:10,endHour:12},{label:'12:00 - 2:00 م',hour:12,startHour:12,endHour:14},
+  /* ⚠️ العاشرة صباحًا تحمل «ص» صراحةً، وهي الخانة الوحيدة التي تحتاجها:
+     بدونها تطابق تسميتُها تسميةَ العاشرة ليلًا (`hour:22`) **حرفًا بحرف**،
+     فيُقرأ الحجز في «حجوزاتي» وفي نافذة المراجعة وفي نصّ الإشعار وفي رسالة
+     الواتساب بلا ما يميّز صباحًا من ليل. والهوية بـ`hour` فالبيانات سليمة —
+     المعروضُ وحده كان ملتبسًا. و`enSlotLabel` تفعلها صحيحةً في الإنجليزية
+     منذ البداية (‏10:00 AM - 12:00 PM مقابل 10:00 PM - 12:00 AM)، أي أن
+     **اللغة الأساسية كانت المعطوبة وحدها**. */
+  {label:'8:00 - 10:00 ص',hour:8,startHour:8,endHour:10},{label:'10:00 ص - 12:00 م',hour:10,startHour:10,endHour:12},{label:'12:00 - 2:00 م',hour:12,startHour:12,endHour:14},
   {label:'2:00 - 4:00 م',hour:14,startHour:14,endHour:16},{label:'4:00 - 6:00 م',hour:16,startHour:16,endHour:18},{label:'6:00 - 8:00 م',hour:18,startHour:18,endHour:20},
   {label:'8:00 - 10:00 م',hour:20,startHour:20,endHour:22},{label:'10:00 - 12:00 م',hour:22,startHour:22,endHour:24}
 ];
@@ -190,7 +205,7 @@ const I18N = {
     bookingsWord:'الحجوزات', fullHistory:'عرض السجل الكامل', hideOld:'إخفاء القديمة', clearFilter:'مسح الفلتر',
     manageFields:'إدارة الملاعب', addFieldBtn:'إضافة ملعب',
     allBookings:'كل الحجوزات', hintAllReq:'كل الطلبات', confirmedLbl:'مؤكدة', hintInRevenue:'تدخل في الإيراد', pendingConfirm:'بانتظار التأكيد', hintNeedFollow:'تحتاج متابعة',
-    revenueSummary:'ملخّص الإيراد', commission10:'عمولة 10%', siteRevenue:'إيراد الموقع', platformProfit:'ربح المنصة', ownerNet:'صافي المالك',
+    revenueSummary:'ملخّص الإيراد', siteRevenue:'إيراد الموقع', platformProfit:'ربح المنصة', ownerNet:'صافي المالك',
     perfTitle:'مؤشّرات الأداء', confirmRate:'نسبة التأكيد', topField:'الملعب الأكثر حجزاً', topSource:'أفضل مصدر للحجوزات',
     econTitle:'الإحصائيات الاقتصادية', smartDecisions:'قرارات ذكية', occupancy:'معدّل الإشغال', hintBookedAvail:'المحجوز ÷ المتاح', lostRevenue:'إيراد ضائع', hintEmptyPrice:'الأوقات الفارغة × السعر', cancelRateLbl:'إلغاء / رفض', hintLessBetter:'كلما قلّت كان أفضل', bestTime:'الوقت الأكثر طلباً', hintForPricing:'مفيد للتسعير', siteShare:'حجوزات الموقع', hintDirectVsExt:'مباشر مقابل خارجي', returnRate:'معدّل العودة', hintSameNumber:'الرقم نفسه أكثر من مرة',
     pendingReply:'بانتظار ردّك', restToday:'بقية حجوزات اليوم', noBookingsToday:'لا حجوزات اليوم', noBookingsTodaySub:'لا حجوزات أو طلبات اليوم — استمتع بيومك، أو أضف حجزاً خارجياً عند الحاجة.', noBookingsDay:'لا حجوزات في هذا اليوم',
@@ -317,7 +332,7 @@ const I18N = {
     scarce1:'ما بقي إلا وقت واحد في هذا اليوم!', scarce2:'ما بقي إلا وقتان في هذا اليوم!',
     // ---- (٣) حذف الحساب ----
     dangerZone:'منطقة الخطر', delAccount:'حذف الحساب', delAccTitle:'حذف حسابك نهائياً؟',
-    delAccMsg:'سيُغلق حسابك ولن تستطيع الدخول به مرة أخرى بهذا الرقم. حجوزاتك القائمة تبقى عند إدارة الملعب كسجل لديها — ألغِ ما لا تريده قبل المتابعة. لا يمكن التراجع عن هذه الخطوة من التطبيق.',
+    delAccMsg:'بيتسكّر حسابك وما بتقدر تدخل فيه بهالرقم مرّة ثانية. وحجوزاتك القائمة بتضلّ سجلًّا عند الملعب — ألغِ اللي ما بدّك ياه قبل ما تكمّل. ما في تراجع من التطبيق.',
     delAccConfirm:'نعم، احذف حسابي', delAccOk:'تم حذف حسابك. نأسف لذهابك!',
     delAccFail:'تعذّر حذف الحساب', delAccErr:'حدث خطأ أثناء حذف الحساب',
     // ---- (٤) انقطاع الاتصال ----
@@ -370,6 +385,13 @@ const I18N = {
     // القاعدة تُقال **في جملة التأكيد نفسها** لا في حاشية: من يقرأ حاشيةً بعد
     // أن ضغط «تأكيد» لم يعد أمامه قرار. و{h} من CONFIG.CANCEL_WINDOW_H وحده.
     cancelWindowHint:'بتقدر تلغي لحدّ {h} قبل بدء الموعد، وحجزك لسا داخل المهلة.',
+    /* رموز حرّاس القاعدة (24 و25) — الجملة هنا لا في الصفّ */
+    priceFromAria:'أقل سعر بالدينار', priceToAria:'أعلى سعر بالدينار',
+    verOld:'في نسخة أحدث من التطبيق — نزّلها عشان كل الميزات تشتغل.', verCta:'نزّل', verClose:'إخفاء',
+    errDatePast:'ما بنفع تحجز بتاريخ راح.', errFieldPlace:'هذا الملعب مش تابع لهذا المكان.',
+    errHourSlot:'هذا الوقت مش من أوقات هذا الملعب.', errSlotClosed:'الملعب مسكّر هذا الوقت — اختار وقت ثاني.',
+    errRvDup:'سبق وقيّمت هذا المكان اليوم.', errRvRate:'تقييمات كثيرة من هذا الرقم اليوم.',
+    errRvPhone:'التقييم بدّه رقم هاتف.', errRvNoBooking:'ما بيقيّم المكان إلا اللي لعب فيه.',
     cancelTooLateTitle:'ما عاد ينفع تلغي من التطبيق',
     cancelTooLateSub:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك ولا وقت لبيعها لغيرك. إذا صار طارئ، احكِ مع الملعب مباشرة.',
     cancelTooLateNoPhone:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك. ما عنّا رقم هذا الملعب في التطبيق — لاقيه على صفحة الملعب أو على المكان نفسه.',
@@ -388,7 +410,7 @@ const I18N = {
     noShowBtn:'لم يحضر', noShowUndoBtn:'تراجع عن «لم يحضر»',
     noShowBadge:'لم يحضر',
     noShowAskTitle:'تسجيل عدم الحضور',
-    noShowAskMsg:'رح نسجّل إنّ صاحب هذا الحجز ما حضر. الحجز بيضلّ مؤكّداً وبيضلّ محسوباً عليك عمولةً، والتطبيق ما بيحصّل ولا بيخصم من حدا — التحصيل بينك وبين اللاعب حسب سياسة ملعبك. وتقدر تتراجع بأي وقت.',
+    noShowAskMsg:'رح نسجّل إنّ صاحب الحجز ما حضر. الحجز بيضلّ مؤكّداً ومحسوباً عليك، والتطبيق ما بيحصّل ولا بيخصم — التحصيل بينك وبين اللاعب. وتقدر تتراجع بأي وقت.',
     noShowUndoAskTitle:'تراجع عن «لم يحضر»',
     noShowUndoAskMsg:'رح نشيل علامة «لم يحضر» عن هذا الحجز، وبيرجع يُقرأ حضوراً عادياً في تقاريرك.',
     noShowOk:'تم التسجيل', noShowUndone:'تم التراجع',
@@ -468,15 +490,15 @@ const I18N = {
     gmLiveShare:'حصّة الواحد تقديرياً {v} — تتدفع في الملعب لإدارته.',
     gmShareTag:'تقديري',
     gmBadgeLive:'مباراة مفتوحة', gmBadgeWaiting:'مفتوحة — بعد التأكيد',
-    gmCardLive:'منشورة، وباقي مقاعد لسا ما انحجزت: {n}',
-    gmCardWaiting:'ما انعرض ولا مقعد بعد. المقاعد بتنشر لحظة ما يأكّد الملعب حجزك — الحجز طلب لحدّ ما يردّوا.',
+    gmCardLive:'منشورة · نشرتَ {n} مقعد. افتح «إدارة المباراة» تشوف مين انضمّ.',
+    gmCardWaiting:'ما انعرض ولا مقعد. المقاعد بتنشر لحظة ما يأكّد الملعب.',
     gmManage:'إدارة المباراة',
     matchManageTitle:'مباراتك المفتوحة', matchPlayers:'اللي انضمّوا',
     matchCloseSeats:'العدد اكتمل — سكّر المقاعد', matchMakePrivate:'رجّعها مباراة خاصّة',
     gmSeatsState:'باقي {noun} · انضمّ {joined}',
     gmNoPlayersYet:'ما انضمّ حدا بعد.',
     gmRemove:'أخرِجه', gmRemoveTitle:'إخراج لاعب',
-    gmRemoveMsg:'رح نشيل {n} من المباراة وبيوصله إشعار، وبيرجع مقعده متاح لغيره.',
+    gmRemoveMsg:'رح نشيل {n} وبيوصله إشعار، وبيرجع مقعده متاح.',
     gmRemoved:'تم إخراجه', gmSaved:'تم الحفظ',
     gmSeatsClosed:'سكّرنا المقاعد. المباراة ما عادت تظهر لغيرك.',
     gmNowPrivate:'رجعت مباراة خاصّة.',
@@ -484,24 +506,25 @@ const I18N = {
     gmJoinBtn:'انضمّ', gmYouIn:'إنت داخل هالمباراة', gmYouParticipant:'مشارك',
     grpJoined:'مباريات انضممت لها',
     gmLeaveBtn:'انسحب', gmLeaveTitle:'تنسحب من المباراة؟',
-    gmLeaveMsg:'بيرجع مقعدك متاح لغيرك وبيوصل المضيف إشعار. إذا المباراة قريبة، انسحابك بيصعّب عليهم يلاقوا بديل.',
+    gmLeaveMsg:'بيرجع مقعدك متاح وبيوصل المضيف إشعار. وإذا المباراة قريبة، صعب يلاقوا بديل.',
     gmLeft:'انسحبت من المباراة', gmJoined:'انضممت! نشوفك بالملعب.',
     gmNoneTitle:'ما في مباريات مفتوحة هلّق',
-    gmNoneSub:'لمّا يحجز حدا ملعب وينقصه لاعبين، بتلاقي مباراته هون. وإنت كمان بتقدر تفتح وحدة وقت ما تحجز.',
+    gmNoneSub:'لمّا يحجز حدا وينقصه لاعبين بتلاقي مباراته هون. وإنت كمان بتقدر تفتح وحدة وقت ما تحجز.',
     gmNoneCta:'تصفّح الملاعب',
     gmLoadFail:'تعذّر جلب المباريات',
     joinTitle:'تنضمّ لهذه المباراة؟', joinConfirm:'انضمّ',
-    joinTermShare:'حصّتك التقديرية {v}.',
-    joinTermPay:'بتدفع حصّتك في الملعب لإدارته. التطبيق ما بيقبض ولا بيحوّل ولا بيضمن — الحساب بينكم.',
-    joinTermLate:'إذا انسحبت قبل المباراة بشوي، بيضلّ مقعدك فاضي وبيتأذّى باقي الشباب. انسحب بدري إذا ما بتقدر.',
-    joinTermNames:'المضيف بيشوف اسمك الأوّل بس، وإنت بتشوف اسمه الأوّل بس. ما في أرقام ولا محادثة داخل التطبيق.',
-    gmOwnerNote:'مسؤوليتك ما تغيّرت: حجز واحد، وصاحب حجز واحد، وهو اللي بيدفع. ترتيب اللاعبين بينهم.',
+    joinTermShare:'حصّتك التقديرية {v} — تدفعها في الملعب.',
+    joinTermPay:'التطبيق ما بيقبض ولا بيحوّل ولا بيضمن. الحساب بينكم.',
+    joinTermLate:'ما بتقدر تيجي؟ انسحب بدري — مقعدك بيضلّ فاضي عليهم.',
+    joinTermNames:'أسماء أولى بس. ما في أرقام ولا محادثة داخل التطبيق.',
+    gmOwnerUpTo:'حتى {n} من اللاعبين', gmOwnerNote:'مسؤوليتك ما تغيّرت: حجز واحد وصاحب حجز واحد، وهو اللي بيدفع. وترتيب اللاعبين بينهم.',
     gmNotReady:'المباريات المفتوحة غير مُفعّلة على الخادم بعد — شغّل الترحيل 22.',
     gmErrGeneric:'صار خطأ، حاول كمان مرة',
     gmErrAuth:'سجّل دخولك أول', gmErrMissing:'ما لقينا هالمباراة',
     gmErrNotOpen:'هالمباراة ما عادت مفتوحة', gmErrPast:'موعد المباراة راح',
     gmErrHost:'إنت صاحب هالحجز', gmErrFull:'المقاعد اكتملت — سبقك غيرك',
     gmErrForbidden:'هالمباراة مش تبعك', gmErrCounts:'الأعداد ناقصة',
+    gmErrInactive:'حسابك موقوف — تواصل معنا', gmErrClash:'عندك مباراة ثانية بنفس الوقت',
     gmErrBelow:'ما بتقدر تنزّل العدد تحت اللي انضمّوا. انضمّ {n}، وأقلّ عدد مسموح {min}.',
     gmErrHasPlayers:'ما بتقدر ترجّعها خاصّة وفي {n} انضمّوا. أخرِجهم أوّلاً أو خلّيها مفتوحة.',
     // ---- إشعارات المباريات (ترحيل 22) ----
@@ -628,7 +651,7 @@ const I18N = {
     bookingsWord:'Bookings', fullHistory:'Show full history', hideOld:'Hide old bookings', clearFilter:'Clear filter',
     manageFields:'Manage fields', addFieldBtn:'Add field',
     allBookings:'All bookings', hintAllReq:'All requests', confirmedLbl:'Confirmed', hintInRevenue:'Counted in revenue', pendingConfirm:'Awaiting confirmation', hintNeedFollow:'Need follow-up',
-    revenueSummary:'Revenue summary', commission10:'10% commission', siteRevenue:'Site revenue', platformProfit:'Platform profit', ownerNet:'Owner net',
+    revenueSummary:'Revenue summary', siteRevenue:'Site revenue', platformProfit:'Platform profit', ownerNet:'Owner net',
     perfTitle:'Performance', confirmRate:'Confirmation rate', topField:'Most booked field', topSource:'Top booking source',
     econTitle:'Economic stats', smartDecisions:'Smart decisions', occupancy:'Occupancy', hintBookedAvail:'Booked ÷ available', lostRevenue:'Lost revenue', hintEmptyPrice:'Empty slots × price', cancelRateLbl:'Cancel / reject', hintLessBetter:'The lower the better', bestTime:'Peak time', hintForPricing:'Useful for pricing', siteShare:'Site bookings', hintDirectVsExt:'Direct vs external', returnRate:'Return rate', hintSameNumber:'Same number more than once',
     pendingReply:'Awaiting your reply', restToday:'Rest of today’s bookings', noBookingsToday:'No bookings today', noBookingsTodaySub:'No bookings or requests for today. Enjoy your day or add an external booking.', noBookingsDay:'No bookings on this day',
@@ -753,7 +776,7 @@ const I18N = {
     scarce1:'Only one slot left on this day!', scarce2:'Only two slots left on this day!',
     // ---- (3) Delete account ----
     dangerZone:'Danger zone', delAccount:'Delete account', delAccTitle:'Delete your account?',
-    delAccMsg:'Your account will be closed and you won’t be able to log in again with this number. Existing bookings stay on record with the venue — cancel any you don’t want before continuing. This can’t be undone from the app.',
+    delAccMsg:'Your account closes and you can’t sign back in with this number. Existing bookings stay on the venue’s records — cancel what you don’t want first. This can’t be undone from the app.',
     delAccConfirm:'Yes, delete my account', delAccOk:'Your account was deleted. Sorry to see you go!',
     delAccFail:'Couldn’t delete the account', delAccErr:'An error occurred while deleting the account',
     // ---- (4) Offline ----
@@ -801,6 +824,13 @@ const I18N = {
     payCardsTitle:'My cards', payNoCards:'No saved card — every booking is paid in cash at the venue today.',
     // ---- (11a) Player cancellation window ----
     cancelWindowHint:'You can cancel up to {h} before kick-off. This booking is still inside that window.',
+    /* DB guard codes (24, 25) - the sentence lives here, not in the row */
+    priceFromAria:'Minimum price in JOD', priceToAria:'Maximum price in JOD',
+    verOld:'A newer version of the app is available — update to get every feature.', verCta:'Update', verClose:'Dismiss',
+    errDatePast:'You can’t book a date that has already passed.', errFieldPlace:'That field doesn’t belong to this venue.',
+    errHourSlot:'This time isn’t one of this field’s slots.', errSlotClosed:'The venue has closed this time — pick another.',
+    errRvDup:'You’ve already reviewed this venue today.', errRvRate:'Too many reviews from this number today.',
+    errRvPhone:'A review needs a phone number.', errRvNoBooking:'Only someone who has played here can review it.',
     cancelTooLateTitle:'Too late to cancel from the app',
     cancelTooLateSub:'Less than {h} to your slot, so it is held for you and there is no time to resell it. If something came up, call the venue directly.',
     cancelTooLateNoPhone:'Less than {h} to your slot, so it is held for you. We do not have this venue’s number in the app — find it on the venue page or at the venue itself.',
@@ -818,7 +848,7 @@ const I18N = {
     noShowBtn:'No-show', noShowUndoBtn:'Undo no-show',
     noShowBadge:'No-show',
     noShowAskTitle:'Record a no-show',
-    noShowAskMsg:'We will record that this booking’s holder did not turn up. The booking stays confirmed and still carries commission, and the app does not charge or deduct from anyone — collection is between you and the player under your venue’s policy. You can undo this at any time.',
+    noShowAskMsg:'We’ll record that the holder didn’t turn up. The booking stays confirmed and still counts, and the app charges and deducts nothing — collection is between you and the player. You can undo this any time.',
     noShowUndoAskTitle:'Undo no-show',
     noShowUndoAskMsg:'We will remove the no-show mark from this booking, and it will read as a normal attendance in your reports again.',
     noShowOk:'Recorded', noShowUndone:'Undone',
@@ -897,15 +927,15 @@ const I18N = {
     gmLiveShare:'Estimated share per person {v} — paid at the venue, to its operator.',
     gmShareTag:'estimate',
     gmBadgeLive:'Open match', gmBadgeWaiting:'Open — once confirmed',
-    gmCardLive:'Published, seats still free: {n}',
-    gmCardWaiting:'No seat has been shown yet. Seats go live the moment the venue confirms — until then a booking is only a request.',
+    gmCardLive:'Published · {n} seats offered. Open “Manage the match” to see who joined.',
+    gmCardWaiting:'No seat shown yet. Seats go live the moment the venue confirms.',
     gmManage:'Manage the match',
     matchManageTitle:'Your open match', matchPlayers:'Who joined',
     matchCloseSeats:'We’re full — close the seats', matchMakePrivate:'Make it private again',
     gmSeatsState:'{noun} left · {joined} joined',
     gmNoPlayersYet:'Nobody has joined yet.',
     gmRemove:'Remove', gmRemoveTitle:'Remove a player',
-    gmRemoveMsg:'We will remove {n} from the match and notify them, and the seat becomes available again.',
+    gmRemoveMsg:'We’ll remove {n}, notify them, and free their seat.',
     gmRemoved:'Removed', gmSaved:'Saved',
     gmSeatsClosed:'Seats closed. The match no longer appears to anyone else.',
     gmNowPrivate:'It is a private match again.',
@@ -913,24 +943,25 @@ const I18N = {
     gmJoinBtn:'Join', gmYouIn:'You’re in this match', gmYouParticipant:'Participant',
     grpJoined:'Matches you joined',
     gmLeaveBtn:'Leave', gmLeaveTitle:'Leave the match?',
-    gmLeaveMsg:'Your seat becomes available again and the host is notified. If the match is close, leaving now makes it hard for them to find a replacement.',
+    gmLeaveMsg:'Your seat frees up and the host is notified. If the match is close, a replacement is hard to find.',
     gmLeft:'You left the match', gmJoined:'You’re in. See you at the pitch.',
     gmNoneTitle:'No open matches right now',
-    gmNoneSub:'When someone books a pitch and is short of players, their match shows up here. You can open one yourself when you book.',
+    gmNoneSub:'When someone books and is short of players, their match shows up here. You can open one when you book.',
     gmNoneCta:'Browse venues',
     gmLoadFail:'Couldn’t load the matches',
     joinTitle:'Join this match?', joinConfirm:'Join',
-    joinTermShare:'Your estimated share is {v}.',
-    joinTermPay:'You pay your share at the venue, to its operator. The app does not collect, transfer or guarantee anything — the settlement is between you.',
-    joinTermLate:'If you pull out shortly before the match, your seat stays empty and the others are left short. Leave early if you can’t make it.',
-    joinTermNames:'The host sees your first name only, and you see theirs. No phone numbers, and no chat inside the app.',
-    gmOwnerNote:'Nothing changes for you: one booking, one booking holder, and they are the payer. The players sort themselves out.',
+    joinTermShare:'Your estimated share is {v} — paid at the venue.',
+    joinTermPay:'The app does not collect, transfer or guarantee. The settlement is between you.',
+    joinTermLate:'Can’t make it? Leave early — your seat just stays empty for them.',
+    joinTermNames:'First names only. No phone numbers, and no chat inside the app.',
+    gmOwnerUpTo:'up to {n} players', gmOwnerNote:'Nothing changes for you: one booking, one holder, and they pay. The players sort themselves out.',
     gmNotReady:'Open matches aren’t enabled on the server yet — run migration 22.',
     gmErrGeneric:'Something went wrong, please try again',
     gmErrAuth:'Please log in first', gmErrMissing:'We couldn’t find that match',
     gmErrNotOpen:'That match is no longer open', gmErrPast:'That match has already started',
     gmErrHost:'This is your own booking', gmErrFull:'The seats filled up — someone got there first',
     gmErrForbidden:'That match isn’t yours', gmErrCounts:'The numbers are missing',
+    gmErrInactive:'Your account is suspended — contact us', gmErrClash:'You are already in another match at that time',
     gmErrBelow:'You can’t drop the total below the number who joined. {n} joined, so the minimum is {min}.',
     gmErrHasPlayers:'You can’t make it private with {n} already joined. Remove them first, or keep it open.',
     // ---- Open-match notifications (migration 22) ----
@@ -994,7 +1025,56 @@ const API_MESSAGE_MAP = {
   'تم تعديل موعد حجزك':'Your booking time was changed.',
   'ما بتقدر تحذف هذا الحساب':'You can’t delete this account.',
   'تم حذف حسابك':'Your account was deleted.',
+  /* ⚠️ الاثنتان والعشرون التالية كانت **تصل مستخدم الإنجليزية بالعربية**.
+     و`check-i18n-parity.js` كان يمرّ ٩٣٩/٩٣٩ وهو محقّ: هذه النصوص لا تمرّ
+     بـ`I18N` أصلًا، فالحارس أعمى عن الصنف كلّه. واختبارٌ يمرّ دائمًا أخطر من
+     غياب اختبار — يشتري ثقةً بلا تغطية. الحارس صار يقارن هذه الخريطة بكل
+     `message:'…'` في الملفّ (‏`tools/check-api-messages.js`). */
+  'الرقم أو كلمة السر غلط، حاول مرة ثانية':'Wrong number or password — please try again.',
+  'الرقم عنده حساب، ادخل من هون':'This number already has an account — sign in instead.',
+  'انتهت جلستك، ادخل من جديد':'Your session expired — please sign in again.',
+  'سجّل دخولك أول':'Please sign in first.',
+  'أهلاً، تفضل':'Welcome back.',
+  'تمام، حسابك جاهز':'All set — your account is ready.',
+  'تم حفظ الحجز':'Booking saved.',
+  'تم حفظ التعديلات':'Your changes were saved.',
+  'تم التحديث':'Updated.',
+  'تم تغيير كلمة السر':'Your password was changed.',
+  'شكراً، تقييمك وصل':'Thanks — your review was received.',
+  'تمت إضافة الملعب':'The field was added.',
+  'كلمة السر الحالية غلط':'Your current password is incorrect.',
+  'كلمة السر لازم 6 حروف أو أرقام على الأقل':'The password must be at least 6 characters.',
+  'كمّل البيانات كلها عشان نكمل':'Please fill in every field to continue.',
+  'ما حطيت اسمك':'Please enter your name.',
+  'في شي ناقص بالتقييم':'Something’s missing in the review.',
+  'ما بتقدر تعدّل حالة الحجز':'You can’t change this booking’s status.',
+  'ما لقينا المكان تبعك':'We couldn’t find your venue.',
+  'هذا الملعب مش تابع لحسابك':'This field doesn’t belong to your account.',
+  'تعذّر جلب البيانات':'Couldn’t load the data.',
+  'صار خطأ، حاول كمان مرة':'Something went wrong — please try again.',
 };
+/* رموز حرّاس الترحيلين 24 و25: القاعدة ترفع **اسمًا آليًّا** لا جملة، تمامًا
+   كـ`cancel_window_closed` في 15 وكأنواع الإشعارات في 14 — فالجملة تُكتب هنا
+   بلغة المستخدم **الحالية**، ولا نصَّ عربيًّا يُخزَّن ثمّ يُترجَم.
+   ولذلك مفاتيح `I18N` لا `API_MESSAGE_MAP`: هذه الأخيرة تترجم عربيًّا إلى
+   إنجليزي، وهذه الرموز ليست عربية أصلًا. وبكونها في `I18N` يغطّيها
+   `check-i18n-parity.js` القائم بلا سطر جديد فيه.
+   والقائمة **مغلقة**: ما ليس فيها يقع على الرسالة العامّة بدل نصٍّ مخترَع. */
+const DB_ERROR_KEY = {
+  booking_date_past:  'errDatePast',
+  field_not_in_place: 'errFieldPlace',
+  hour_not_in_slots:  'errHourSlot',
+  slot_closed:        'errSlotClosed',
+  rv_duplicate:       'errRvDup',
+  rv_rate_phone:      'errRvRate',
+  rv_phone_required:  'errRvPhone',
+  rv_no_booking:      'errRvNoBooking',
+};
+function dbErrorMessage(raw){
+  const s = String(raw||'');
+  const code = Object.keys(DB_ERROR_KEY).find(c => s.includes(c));
+  return code ? t(DB_ERROR_KEY[code]) : '';
+}
 const apiMsg = (msg) => (State.lang==='en' && msg && API_MESSAGE_MAP[msg]) ? API_MESSAGE_MAP[msg] : msg;
 
 /* أيقونات SVG ثابتة موثوقة (تُحقن كـ innerHTML بأمان لأنها ليست بيانات مستخدم) */
@@ -1161,13 +1241,25 @@ const shortDate = (s) => { const d = new Date(s+"T12:00:00"); return `${d.getDat
 const formatCurrency = (v) => { const n = (typeof v==='number'&&!Number.isNaN(v)) ? v : parsePrice(v); const a = Math.round(n*100)/100; return (State.lang==='en') ? `${a} JOD` : `${a} د.أ`; };
 const formatMoney = formatCurrency;   // توافق مع الاستدعاءات الحالية
 const calcPercent = (part, total) => total ? Math.round((part/total)*100) : 0;
-function normalizePhone(p){ p = String(p||'').trim().replace(/\s+/g,''); if(p.startsWith('+'))p=p.slice(1); if(p.startsWith('00962'))p='962'+p.slice(5); if(p.startsWith('07'))p='962'+p.slice(1); return p; }
+/* توحيد الرقم الأردني إلى صيغة واحدة: `9627XXXXXXXX`.
+   ⚠️ والفرع الأخير (`7…` بلا صفر) هو الذي كان ناقصًا، وثمنه **حسابان لشخص
+   واحد**: من يكتب `790123456` — وهي صيغة شائعة جدًّا — كان يمرّ بلا لمسة،
+   فيُشتقّ له بريدٌ داخلي مستقلّ تمامًا عن `962790123456@…`. حسابان، وحجوزات
+   منقسمة، و«العميل = رقم هاتف» في تقارير `/admin` تعدّه شخصين.
+   والترتيب مقصود: `07…` تُفحَص قبله، وإلّا لَما وصلها شيء أصلًا. */
+function normalizePhone(p){ p = String(p||'').trim().replace(/\s+/g,''); if(p.startsWith('+'))p=p.slice(1); if(p.startsWith('00962'))p='962'+p.slice(5); if(p.startsWith('07'))p='962'+p.slice(1); if(/^7[789]\d{7}$/.test(p))p='962'+p; return p; }
 function normalizeText(v){ return String(v||'').trim().toLowerCase().replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ـ/g,'').replace(/\s+/g,''); }
 /* تطبيع حجم الملعب للمقارنة: 6×6 و 6x6 و "6 X 6" كلها قيمة واحدة */
 const normSize = (v) => String(v||'').trim().toLowerCase().replace(/[×X]/g,'x').replace(/\s+/g,'');
 /* صور الملعب: خلية image_url في شيت Fields تقبل عدة روابط مفصولة بفواصل أو أسطر
    (الرابط الأول = الصورة الرئيسية). تُقبل روابط http(s) فقط. */
-function fieldImages(f){ return [...new Set(String((f&&f.image_url)||'').split(/[,\n|]+/).map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s)))]; }
+function fieldImages(f){ return [...new Set(String((f&&f.image_url)||'').split(/[,\n|]+/).map(s=>s.trim()).filter(s=>isHttpUrl(s)))]; }
+/* الشرط الوحيد لأي رابط يصل الـDOM من القاعدة. و`href` ليس أهون من `src`:
+   نحن داخل WebView كابستور ومعه جسرٌ أصلي، فـ`javascript:` في `map_link`
+   يُنفَّذ في سياق التطبيق نفسه. والفحص **بالمخطَّط لا بالبحث عن كلمة**:
+   `\tjava\nscript:` و`JaVaScRiPt:` و`%6a%61...` كلّها تمرّ من أي قائمة سوداء،
+   ولا تمرّ من قائمة بيضاء تقول «إمّا http أو https وإلّا فلا». */
+function isHttpUrl(u){ return /^https?:\/\//i.test(String(u||'').trim()); }
 const getSource = () => new URLSearchParams(location.search).get('source') || 'direct';
 
 /* ===================== FAVORITES (محلي فقط — localStorage، بلا باكند) ===================== */
@@ -1192,11 +1284,28 @@ function ratingText(place){
   return `${rating} (${reviews})`;
 }
 function normalizeSlotsKeyword(kw){ kw=String(kw||'').trim().toLowerCase();
-  if(kw==='full')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م|14=2:00 - 4:00 م|16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
-  if(kw==='morning')return "8=8:00 - 10:00 ص|10=10:00 - 12:00 م|12=12:00 - 2:00 م";
+  if(kw==='full')return "8=8:00 - 10:00 ص|10=10:00 ص - 12:00 م|12=12:00 - 2:00 م|14=2:00 - 4:00 م|16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
+  if(kw==='morning')return "8=8:00 - 10:00 ص|10=10:00 ص - 12:00 م|12=12:00 - 2:00 م";
   if(kw==='evening')return "16=4:00 - 6:00 م|18=6:00 - 8:00 م|20=8:00 - 10:00 م|22=10:00 - 12:00 م";
   return kw; }
-function slotsToKeyword(s){ s=String(s||'').toLowerCase(); if(s==='full'||s.includes('22=10:00'))return 'full'; if(s==='morning'||s.includes('12=12:00'))return 'morning'; if(s==='evening'||s.includes('16=4:00'))return 'evening'; return 'full'; }
+/* 🔴 كانت تقرأ الملعب المسائي «كامل اليوم» — والعطل يكتب لا يعرض فقط.
+   الشرط القديم `s.includes('22=10:00')` يصدق على المسائي كذلك (فيه الساعة 22)،
+   وهو مفحوصٌ **أوّلًا** ⇒ كل ملعب مسائي يُقرأ `full`. وأثره في موضعين:
+   نافذة «تعديل ملعب» تُظهر «Full — كل اليوم»، و**زرّ إظهار/إخفاء الملعب**
+   (‏`ownerUpdateField`) يعيد إرسال `slots: slotsToKeyword(f.slots)` ⇒ ضغطةٌ
+   واحدة تمنح الملعبَ المسائيَّ خمسَ خاناتٍ صباحية لم يعرضها صاحبه قطّ.
+   والآن الحسم **بمجموعة الساعات** لا بمطابقة نصّية: المجموعة هي التي تعرّف
+   الكلمة، والنصّ مجرّد تمثيل لها. (كشفه `tools/test-pure.mjs`، لا القراءة.) */
+function slotsToKeyword(s){
+  s=String(s||'').trim().toLowerCase();
+  if(s==='full'||s==='morning'||s==='evening') return s;
+  const hours=new Set(parseSlots(s).map(x=>Number(x.hour)));
+  const has=(...hs)=>hs.every(h=>hours.has(h));
+  const lacks=(...hs)=>hs.every(h=>!hours.has(h));
+  if(has(8,10,12) && lacks(16,18,20,22)) return 'morning';
+  if(has(16,18,20,22) && lacks(8,10,12)) return 'evening';
+  return 'full';
+}
 function parseSlots(text){ const clean=normalizeSlotsKeyword(text); if(!clean||!clean.includes('='))return DEFAULT_SLOTS;
   const arr=clean.split('|').map(s=>{const[h,...l]=s.split('=');return{hour:Number(h),label:l.join('=').trim()};}).filter(s=>!Number.isNaN(s.hour)&&s.label);
   return arr.length?arr:DEFAULT_SLOTS; }
@@ -1241,7 +1350,8 @@ const isNoShow = (b) => !!(b && b.no_show);
 function countNoun(n, one, two, few, many){
   if(n===1) return one;
   if(n===2) return two;
-  if(n>=3 && n<=10) return n+' '+few;
+  // الصفر يأخذ الجمع لا المفرد المنصوب: «0 ملاعب» لا «0 ملعبًا».
+  if(n===0 || (n>=3 && n<=10)) return n+' '+few;
   return n+' '+many;
 }
 /* «٦ ساعات» بالعربية و«6 hours» بالإنجليزية — يُستعمل حيثما ذُكرت المهلة،
@@ -1363,13 +1473,12 @@ const SB = {
 };
 
 /* توحيد الرقم — نفس منطق normalizePhone في الباكند القديم حرفيًّا */
-function sbPhone(p){
-  p = String(p||'').trim().replace(/\s+/g,'');
-  if (p.startsWith('+')) p = p.slice(1);
-  if (p.startsWith('00962')) p = '962' + p.slice(5);
-  if (p.startsWith('07')) p = '962' + p.slice(1);
-  return p;
-}
+/* ⚠️ كانت نسخةً ثانية من `normalizePhone` بنفس الأسطر الأربعة — ونسختان من
+   قاعدةٍ واحدة تنحرفان: هذه هي التي يُشتقّ منها **بريد الدخول** ويُكتب بها
+   `customer_phone`، أي أنها تعريف الهويّة نفسه. فحين أُضيف فرعُ «رقمٌ يبدأ بـ7
+   بلا صفر» إلى تلك وحدها، كان الرقم يُوحَّد في العرض ولا يُوحَّد في الحساب.
+   مصدرٌ واحد الآن، والاسمان يبقيان لأن موضعَي الاستعمال مختلفان. */
+const sbPhone = (p) => normalizePhone(p);
 const sbMail = (phone) => sbPhone(phone) + SB.MAIL;
 
 /* ── طلب REST/Auth مع نفس المهلة والإلغاء المستعملين سابقًا ── */
@@ -1616,7 +1725,14 @@ async function sbCreateBooking(d, session){
   }
   // 23505 = خرق القيد الفريد ⇒ الخانة حُجزت بين العرض والحفظ. هذا هو الضمان الذي
   // لم يكن موجودًا مع الشيت: التزامن يُحسم في القاعدة لا في منطق التطبيق.
-  if (!r.ok) return { success:false, message: (r.raw||'').includes('23505') ? 'هذا الوقت راح، اختار وقت ثاني' : 'صار ضغط على النظام، حاول بعد ثانية' };
+  /* حرّاس الترحيل 24 يردّون رمزًا له اسم — والرمز يُقرأ قبل الرسالة العامّة،
+     وإلّا قرأ اللاعبُ «صار ضغط على النظام» وهو خطأٌ في طلبه لا في الخادم.
+     ونفس مبدأ 15: نعرض ما رُدَّ به فعلًا، لا ما نظنّه. */
+  if (!r.ok){
+    const guard = dbErrorMessage(r.raw);
+    if (guard) return { success:false, message: guard };
+    return { success:false, message: (r.raw||'').includes('23505') ? 'هذا الوقت راح، اختار وقت ثاني' : 'صار ضغط على النظام، حاول بعد ثانية' };
+  }
   /* السعر الذي **كُتب فعلًا**. بعد ترحيل 18 قد يختلف عمّا أرسلناه: المُشغِّل
      يفرض `resolve_field_price` على إدراج اللاعب، والصفّ المُعاد يحمل النتيجة.
      نُعيده كي تقارنه الواجهة وتقول الفرق بدل أن يكتشفه اللاعب عند الملعب. */
@@ -1794,6 +1910,33 @@ async function sbDelPriceRule(id, session){
    يفتح المستخدمُ تبويبَ المباريات ويفشل الطلب — أي يعرض عليه المنتجُ بابًا
    ثمّ يسحبه. مقيس. الآن: سؤالٌ واحد رخيص (`limit=0`) عند أوّل تحميل بجلسة،
    وما لا يُعرف لا يُعرَض. */
+/* ── أدنى إصدار مقبول (ترحيل 27) ──────────────────────────────────────────
+   التوزيع بـAPK مباشر بلا متجر ⇒ **لا آلية تحديث إطلاقًا**، بينما المخطّط
+   يتحرّك في كل ترحيل. ونسخةٌ قديمة تُظهر — في أحسن الأحوال — «الميزة غير
+   مُفعّلة»، وفي أسوئها بياناتٍ ناقصةً تبدو سليمة (قائمة حجوزات تُجلَب بلا
+   `cancel_kind` فلا يرى صاحبها أنّ طلبه انقضت مهلته).
+   ⚠️ والقراءة **بلا توكن**: `br_read using (true)` ⇒ حتى الضيف الذي لم يسجّل
+   دخوله بعدُ يعرف أنّ نسخته تخلّفت. وسؤالٌ واحد لكل جلسة، ويُبتلع فشلُه
+   صامتًا — بوّابةٌ تكسر الإقلاع حين يتعذّر سؤالها أسوأ ممّا تحرسه. */
+let VER_CHECKED = false;
+async function checkAppVersion(){
+  if (VER_CHECKED) return; VER_CHECKED = true;
+  try{
+    const r = await sbRest('/booking_rules?select=key,num_value&key=in.(min_app_version,block_app_version)');
+    if (!r.ok || !Array.isArray(r.data)) return;
+    const at = (k) => Number((r.data.find(x => x.key === k) || {}).num_value || 0);
+    const min = at('min_app_version');
+    if (!(CONFIG.APP_BUILD < min)) return;
+    const bar = $('#verBar'); if (!bar) return;
+    if (sessionStorage.getItem('mustadaira:verDismissed') === String(min)) return;
+    bar.hidden = false;
+    const x = $('#verX');
+    // إسناد الخاصّية لا `addEventListener`: العنصر ثابت في HTML، والإضافة
+    // تُكدّس مستمعًا في كل نداء. مزلق مسجَّل.
+    if (x) x.onclick = () => { bar.hidden = true; try{ sessionStorage.setItem('mustadaira:verDismissed', String(min)); }catch(_){} };
+  }catch(_){ /* لا شيء: النسخة تعمل، وغياب الخبر ليس عطلًا */ }
+}
+
 let GAMES_OK = null;
 async function sbProbeGames(session){
   if (GAMES_OK !== null || !session) return GAMES_OK;
@@ -1826,7 +1969,9 @@ async function sbGamePlayers(bookingId, session){
 /* ترجمة موحّدة لردود الدوالّ الأربع: رمزٌ آلي ⇒ جملةٌ بلغة المستخدم. */
 const GAME_MSG = { auth:'gmErrAuth', missing:'gmErrMissing', not_open:'gmErrNotOpen',
                    past:'gmErrPast', host:'gmErrHost', full:'gmErrFull',
-                   forbidden:'gmErrForbidden', bad_counts:'gmErrCounts' };
+                   forbidden:'gmErrForbidden', bad_counts:'gmErrCounts',
+                   // ثغرتان أُغلقتا في القاعدة (22): حساب موقوف · مقعدان في ساعة واحدة
+                   inactive:'gmErrInactive', clash:'gmErrClash' };
 async function sbGameRpc(fn, body, session){
   if (!session) return { success:false, message:t('gmErrAuth') };
   const r = await sbFetch('/rest/v1/rpc/'+fn, { method:'POST', token: session.at, body });
@@ -2194,7 +2339,10 @@ const API = {
           author_name: data.user_name || '', phone: sbPhone(data.phone||''),
           rating: Math.round(Number(data.rating||0)), comment: data.comment || ''
         }});
-        if (!r.ok) return { success:false, message:'في شي ناقص بالتقييم' };
+        /* حرّاس الترحيل 25 (تكرار · حدّ معدّل · رقم ناقص · استحقاق) يردّون
+           رمزًا له اسم. و«في شي ناقص بالتقييم» على تقييمٍ مكتملٍ رُفض للتكرار
+           جملةٌ كاذبة تجعل صاحبها يعيد الكتابة بلا فائدة. */
+        if (!r.ok) return { success:false, message: dbErrorMessage(r.raw) || 'في شي ناقص بالتقييم' };
         return { success:true, message:'شكراً، تقييمك وصل' };
       }
 
@@ -2421,6 +2569,7 @@ async function loadData(opts={}){
   /* شريط الرياضات يُعاد رسمه مع كل جلبة لأن حالة كل رياضة («متاح»/«قريباً»)
      مشتقّة من البيانات نفسها: ملعب بادل يُسجَّل في اللوحة الآن ⇒ تُفتَح بادل
      عند أوّل تحديث، بلا نشر نسخة جديدة من التطبيق. */
+  checkAppVersion();   // بلا await: خبرٌ لا يؤخّر رسم الصفحة
   try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); updateModeSeg(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
@@ -2509,7 +2658,14 @@ function emptyState({icon='🗂️', iconHtml=null, title, sub, actionLabel, act
 
 /* ===================== VALIDATION (أخطاء Inline أسفل الحقل) ===================== */
 const digits = (s) => String(s||'').replace(/\D/g,'');
-const validPhone = (p) => digits(p).length >= 9;          // متساهل: يقبل صيغ الأردن المختلفة
+/* الرقم الأردني بعد التوحيد: `962` ثمّ `7` ثمّ `7/8/9` ثمّ ثمانية أرقام.
+   ⚠️ وكان `digits(p).length >= 9` — «تسعة أرقام فأكثر». وتساهلٌ كهذا لا يفتح
+   بابًا للأخطاء فحسب، بل **يصنع حسابين لشخص واحد**: صيغةٌ لا يعرفها
+   `normalizePhone` تمرّ التحقّق وتُكتب كما هي، فتصير هويّةً ثانية للرقم نفسه.
+   فالتحقّق والتوحيد وجهان لقاعدة واحدة، ولا يجوز أن يقبل الأوّل ما يجهله
+   الثاني. والفحص على **الناتج الموحَّد** لا على المدخَل الخام. */
+const JO_PHONE_RE = /^9627[789]\d{7}$/;
+const validPhone = (p) => JO_PHONE_RE.test(normalizePhone(p));
 function setFieldError(id, msg){
   const el=$('#'+id); if(!el) return;
   el.classList.add('input-error'); el.setAttribute('aria-invalid','true');
@@ -3186,7 +3342,12 @@ async function openDetail(placeId, opts={}){
   // الغلاف + المعرض: صور الملعب المحدَّد (تتبدّل مع تبديل الملعب داخل المكان)
   renderDetailHero();
 
-  const map=$('#mapLink'); map.href = place.map_link || '#';
+  /* رابط الخريطة يمرّ بنفس شرط الصور (‏`isHttpUrl`) — وهو التزامٌ مكتوب في
+     `CLAUDE.md` كان مطبَّقًا على `image_url` وحدها. والرابط المرفوض يُخفي
+     الزرَّ بدل أن يبقى معطوبًا يقود إلى `#`. */
+  const map=$('#mapLink'); const mapOk = isHttpUrl(place.map_link);
+  map.href = mapOk ? place.map_link : '#';
+  map.hidden = !mapOk;
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
   const locTxt=$('#dLocationText'); if(locTxt){ clear(locTxt); locTxt.append(ico('pin','svg-sm'), ' '+placeLocation(place)); }
 
@@ -3976,6 +4137,13 @@ function openBookingReview(){
   const pick=$('#matchPick');
   if(pick){
     pick.hidden = (GAMES_OK !== true);
+    /* وإن كنّا لا نعرف بعد (`null`) فاسأل الآن وأظهره إن وُجد. الاتجاه
+       **مخفيّ ⇒ ظاهر** وحده: خيارٌ يظهر بعد جزء من الثانية إضافةٌ، أمّا العكس
+       فبابٌ يُعرَض ثمّ يُسحَب — وهو الممنوع. ولا يُنتظَر هنا: النافذة تُفتح
+       فورًا، والسؤال رخيص (`limit=0`) ويقع مرّةً واحدة في الجلسة. */
+    if(GAMES_OK === null && Session.player()){
+      updateModeSeg().then(()=>{ if(GAMES_OK === true) pick.hidden = false; }).catch(()=>{});
+    }
     setVisPick('private');
     const sug = suggestedPlayers(field);
     $('#gmNeeded').value = sug || '';
@@ -4151,10 +4319,15 @@ function playerBookingCard(b){
 /* رقم الملعب — من `State.allPlaces` لا من الحجز: `bookings_full` تحمل هاتف
    **العميل** لا هاتف المكان. وإن لم نجده (مكان أُخفي مثلًا) قلنا ذلك ولم
    نعرض زرًّا لا يتّصل بشيء. */
+/* ⚠️ ولا يُفحَص بـ`validPhone`: تلك تصف **رقم خلوي أردني** لأنها تحرس هويّة
+   الحساب، ورقمُ الملعب قد يكون أرضيًّا (‏06…) أو موحَّدًا (‏0800…). فحصُه
+   بقاعدة الخلوي كان سيُخفي زرَّ الاتصال عن كل ملعب يعطي رقمه الأرضي — وهو
+   المخرج الوحيد المعروض بعد انغلاق مهلة الإلغاء. السؤال هنا «هل يُطلَب؟»
+   لا «هل هو حساب؟»، والجواب: أرقامٌ تكفي لمكالمة. */
 function venuePhone(b){
   const p = (State.allPlaces||[]).find(x => String(x.place_id)===String(b.place_id));
   const raw = String((p && p.phone) || '').trim();
-  return validPhone(raw) ? raw : '';
+  return digits(raw).length >= 7 ? raw : '';
 }
 /* اللوح الصادق بعد إغلاق المهلة: لا زرَّ يَعِد بما سيرفضه الخادم، وبدلَه
    السببُ ومخرَجٌ حقيقي (اتّصال · واتساب). */
@@ -4739,12 +4912,18 @@ function ownerBookingCard(b){
   /* (٤.٥) المالك يعرف شيئًا واحدًا جديدًا: هذا الحجز مباراة مفتوحة وكم عددها.
      ولا يُدير مقاعد ولا يرى منضمّين — ومسؤوليّته **لم تتغيّر**: حجزٌ واحد،
      صاحبُ حجزٍ واحد، دافعٌ واحد. والسطر يقول ذلك صراحةً كي لا يظنّ أنه صار
-     مطالَبًا بتحصيل عشر حصص عند البوّابة. */
-  if (b.visibility === 'open' && normStatus(b)==='confirmed'){
-    const total=Number(b.needed||0);
+     مطالَبًا بتحصيل عشر حصص عند البوّابة.
+     🔴 **وتُعرَض على المعلّقة كذلك، لا على المؤكّدة وحدها.** كانت مشروطة بـ
+     `confirmed` ⇒ المالك يضغط «قبول» وهو **لا يعرف** أن الطلب مباراة مفتوحة
+     يأتيها حتى `needed` لاعبًا؛ فيكتشف العدد بعد أن يصير التزامًا. والقرار
+     الذي تُغيّره المعلومة هو قرار القبول نفسه، فمكانها قبله لا بعده. */
+  if (b.visibility === 'open'){
+    const total=Number(b.needed||0), live = normStatus(b)==='confirmed';
     card.append(h('div',{class:'own-open'},
-      h('span',{class:'own-open-badge'}, t('gmBadgeLive'), ' · ',
-        h('bdi',{dir:'ltr'}, `${Math.max(total-Number(b.brought||0),0)}+${Number(b.brought||0)}/${total}`)),
+      h('span',{class:'own-open-badge'+(live?'':' pending')}, t(live?'gmBadgeLive':'gmBadgeWaiting'), ' · ',
+        // العدد الذي يهمّ المالك واحد: **كم إنسانًا يدخل ملعبه** — لا تفصيل
+        // المقاعد (منشور/مُحضَر) وهو شأن المضيف. و«حتى» لأن المقاعد قد لا تمتلئ.
+        t('gmOwnerUpTo', { n: total })),
       h('span',{class:'own-open-note'}, t('gmOwnerNote'))));
   }
   if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('expiredReason')));
@@ -6107,7 +6286,9 @@ const PullRefresh = (()=>{
   const box=()=>$('#ptr');
   function paint(state){
     const el=box(); if(!el) return;
-    el.style.transform = `translate3d(-50%,${pull}px,0)`;
+    // محور Y وحده: التمركز الأفقي صار بـ`margin-inline:auto` في CSS — و`-50%` هنا
+    // كانت تُزيح المؤشّر يسارًا بعرضه في RTL (transform فيزيائي لا يدرك الاتجاه).
+    el.style.transform = `translate3d(0,${pull}px,0)`;
     el.style.opacity = String(Math.min(1, pull/44));
     el.classList.toggle('ready', pull>=TRIG && state!=='loading');
     el.classList.toggle('loading', state==='loading');
@@ -6116,7 +6297,7 @@ const PullRefresh = (()=>{
   }
   function reset(){
     pull=0; tracking=false; locked=false;
-    const el=box(); if(el){ el.classList.add('snap'); el.classList.remove('ready','loading'); el.style.transform='translate3d(-50%,0,0)'; el.style.opacity='0';
+    const el=box(); if(el){ el.classList.add('snap'); el.classList.remove('ready','loading'); el.style.transform='translate3d(0,0,0)'; el.style.opacity='0';
       setTimeout(()=>el.classList.remove('snap'), 260); }
     detach();
   }
@@ -6246,6 +6427,13 @@ async function playerLogin(btn){
       updatePlayerGreeting();
       Notifs.load(); Tracker.refresh();      // الجرس ولوح المتابعة يخصّان هذا الحساب لا سابقه
       if(!State.places.length){ placesSkeleton(); await loadData(); }
+      /* 🔴 والمبدّل يُسأل عنه هنا صراحةً، لا داخل `loadData` وحدها.
+         `sbProbeGames` لا يسأل إلّا بوجود توكن، و`updateModeSeg` لا تُنادى إلّا
+         من `loadData` — والسطر أعلاه **يتخطّاها** إن كانت الأماكن محمَّلة. ومسار
+         «تصفّح بدون حساب ⇒ اختر وقتًا ⇒ سجّل دخولك» هو المسار الذي يعرضه
+         التطبيق نفسه: الأماكن تُحمَّل وأنت ضيف، فيبقى `GAMES_OK = null` **بقيّة
+         الجلسة** ⇒ لا مبدّل «مباريات» ولا خيار «مباراة مفتوحة» إطلاقًا. مقيس. */
+      await updateModeSeg();
       if(await resumePendingBooking()) return;          // استئناف حجز الضيف إن وُجد
       showPage('home');
     }catch(_){ toast(t('connLag'),'error'); }
@@ -6268,6 +6456,7 @@ async function playerRegister(btn){
       Session.setPlayer(res.player_token, !!$('#regRemember')?.checked); State.player=res.player; State.guest=false;
       updatePlayerGreeting();
       if(!State.places.length){ placesSkeleton(); await loadData(); }
+      await updateModeSeg();          // نفس سبب `playerLogin` أعلاه بالحرف
       /* ⚠️ الحجز أوّلًا، والتأكيد بعده.
          الضيف الذي جاء من نافذة «خطوة أخيرة ويكتمل حجزك» في منتصف حجز، ووضع
          شاشةً بينه وبين الحجز يخسر الحجز نفسه — وهو ما جاء لأجله. شارةُ

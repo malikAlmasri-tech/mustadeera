@@ -35,7 +35,7 @@ navCta = Book now
 heroBadge = Sports venue booking
 heroTitleA = Your court is ready.
 heroTitleHi = Without a single call.
-heroSub = Browse venues near you, see the hours that are actually free, and send your booking request in under a minute. Football pitches are open for booking now, and the other sports are on the way.
+heroSub = Browse the venues near you, see the hours that are actually free, and send your request in under a minute. Football pitches are open now, and the other sports are on the way.
 heroCtaPrimary = Download the app
 heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
@@ -65,7 +65,7 @@ trust3 = Ratings come from players who actually booked
 # not the decision between them.
 sportsEyebrow = The sports
 sportsTitle = A platform for every sports venue - it started with football.
-sportsLead = AL-Mustadira is not a football app. It was built to book sports venues generally, and all five sports have been in the app since day one. What is open for booking right now is football pitches, because those are the venues actually registered with us; everything else carries an explicit "Soon" badge - we never list a venue you cannot book.
+sportsLead = AL-Mustadira is not a football app. All five sports have been in it since day one, and football pitches are what is open for booking right now because those are the venues actually registered with us. Everything else carries an explicit "Soon" badge - we never list a venue you cannot book.
 sportFootball = Football
 sportPadel = Padel
 sportBasket = Basketball
@@ -158,7 +158,7 @@ ownersS2V = Open or close an hour, and set the price of each pitch yourself.
 ownersS3K = Revenue and occupancy, worked out
 ownersS3V = Daily reports and your busiest hours, with no pen and paper.
 ownersS4K = The money stays between you and the player
-ownersS4V = No online payment passing through us, and no cut taken out of your price.
+ownersS4V = The player pays you at the venue. No online payment passes through us, and we never touch your listed price.
 
 # ---------- Closing call ----------
 # An honest kicker: the reference design read "kickoff in 28 seconds", a
@@ -247,19 +247,19 @@ dlIosCta = Tell us you want it
 # =========================================================
 aboutEyebrow = About us
 aboutTitle = AL-Mustadira started with a call nobody answered.
-aboutP1 = Booking a pitch usually goes like this: you ask a friend for a number, you call and nobody picks up, you call again and someone says "come at eight", and when you arrive the pitch is taken. Nobody is at fault - the problem is that the free hours live in a paper notebook or in a busy person's memory.
+aboutP1 = Booking a pitch usually goes like this: you ask a friend for a number, you call and nobody picks up, you call again and someone says "come at eight", and when you arrive the pitch is taken. Nobody is at fault - the free hours simply live in a paper notebook or in a busy person's memory.
 aboutP2 = AL-Mustadira moves that notebook somewhere everyone can see at the same time: the player sees what is genuinely free, and the owner sees every request on one screen.
 aboutWhatTitle = What the platform actually does
 aboutWhat1 = **For players:** browse pitches and their free hours, send a booking request, and follow it through to confirmation.
 aboutWhat2 = **For owners:** a dashboard that collects requests and confirms or declines them with one tap, plus revenue and occupancy reports.
 aboutSportsTitle = One sport today, built for five
 aboutSportsBody = The problem we solve is not specific to football: a padel court and a basketball court get booked through the same unanswered phone call. So the app is built around five sports - football, padel, basketball, tennis and volleyball - and the sport switcher has been in it since day one.
-aboutSportsBody2 = What is open for booking right now is football alone, because those are the venues actually registered with us. The other four carry a "Soon" badge instead of invented listings, and we open them one at a time as their venues come in.
+aboutSportsBody2 = Football alone is open for booking right now, because those are the venues actually registered with us. The other four carry a "Soon" badge instead of invented listings, and we open them one at a time as their venues come in.
 aboutNotTitle = And what it doesn't do
 aboutNot1 = It takes no online payment and stores no cards - there is no payment in the platform at all.
 aboutNot2 = It does not guarantee a booking on the pitch's behalf: confirmation is always the owner's decision, and what you send is a **request**, not a confirmed booking.
 aboutHonestTitle = One rule we hold to
-aboutHonestBody = We show no invented numbers. No ratings written by us, no "thousands of bookings", and no "instant booking" while confirmation genuinely needs the owner. A pitch nobody has rated yet shows no stars - that is deliberate.
+aboutHonestBody = We show no invented numbers: no ratings written by us, no "thousands of bookings", and no "instant booking" while confirmation genuinely needs the owner. A pitch nobody has rated yet shows no stars - that is deliberate.
 
 # =========================================================
 #  For pitch owners  /owners
@@ -268,7 +268,7 @@ ownPageEyebrow = For pitch owners
 ownPageTitle = Your pitch where people look, and your ledger on one screen.
 ownPageLead = Registering is free, and open to football, padel, basketball, tennis and volleyball venues. You control your hours and prices, and you confirm or decline every request yourself.
 ownSportsTitle = My venue isn't for football - do you take it?
-ownSportsBody = Yes. AL-Mustadira is built around five sports, and the app's sport switcher shows all of them. Football is what's open for booking today because those are the venues registered with us; the rest carry a "Soon" badge. We open your sport for booking once its venues are in - and registering today is what brings that closer.
+ownSportsBody = Yes. AL-Mustadira is built around five sports and the app's switcher shows all of them. Football is open for booking today because those are the venues registered with us; the rest carry a "Soon" badge. We open your sport once its venues are in - and registering today is what brings that closer.
 ownProblemTitle = What changes for you
 ownP1Title = The calls stop
 ownP1Desc = Instead of ten scattered calls while you're working, requests arrive in writing in one place, with the time, the pitch and who asked.
@@ -283,7 +283,7 @@ ownHow1 = Get in touch with your venue details: name, sport, area, number of pit
 ownHow2 = We create your account and add your pitch with its photos and amenities.
 ownHow3 = You sign in to your dashboard and start receiving requests - and change your hours and prices whenever you like.
 ownCostTitle = What does it cost?
-ownCostBody = Registering and running your dashboard are free. The platform takes a commission only on bookings that come through it, and nothing on the direct bookings you enter yourself.
+ownCostBody = Registering your venue and running the dashboard are free. Subscription details are agreed with you before activation.
 ownPageCta = Register your pitch
 
 # =========================================================
@@ -305,7 +305,7 @@ privShareTitle = Who we share it with
 privShare1 = **The pitch owner you sent a request to** sees your name, phone number and request details. That is the core of the service, and sending the request is your agreement to it.
 privShare2 = **We do not sell your data and do not share it with advertisers.** There are no ads in the platform and no tracking tools on this site.
 privAiTitle = Artificial intelligence
-privAiBody = The owner dashboard has an analysis feature that uses Google Gemini. What gets sent is **aggregated numbers about the venue** (booking counts, revenue, occupancy, pitch names, weekdays and hours) and **review text without the reviewer's name**. No player names and no phone numbers are ever sent.
+privAiBody = The owner dashboard has an analysis feature that uses Google Gemini. What gets sent is **aggregated numbers about the venue** (bookings, revenue, occupancy, pitch names, weekdays and hours) and **review text without the reviewer's name**. No player names and no phone numbers are ever sent.
 privPayTitle = Payment
 privPayBody = We collect no payment data because there is no online payment in the platform. We never ask for a card and never store a card number.
 privWhereTitle = Where it is stored
@@ -339,7 +339,7 @@ termsOwnTitle = Pitch owners
 termsOwn1 = You agree that the details shown (prices, hours, amenities, photos) are accurate and kept up to date.
 termsOwn2 = You agree to honour a booking you confirmed, and to use the player's details for that booking only.
 termsLiabTitle = Limits of liability
-termsLiabBody = We do what we can to keep the service accurate and available, but we do not guarantee it will be free of interruption or error, and we are not party to a dispute between you and a pitch. Our liability is limited to what the law allows.
+termsLiabBody = We do what we can to keep the service accurate and available, we do not guarantee it will be free of interruption or error, and we are not party to a dispute between you and a pitch. Our liability is limited to what the law allows.
 termsChangeTitle = Changes to these terms
 termsChangeBody = We may update these terms, and the last-updated date sits at the top of the page. Continuing to use the service after an update means you accept it.
 termsLawTitle = Governing law
@@ -359,7 +359,7 @@ ctMailTitle = Email
 ctMailDesc = For anything that needs a written record: account deletion, a copy of your data, or a formal report.
 ctMailCta = Send an email
 ctSoonTitle = Contact channels go live shortly
-ctSoonBody = We haven't published a number or an address yet, and we won't put up one that doesn't actually reach us. In the meantime, booking and its requests work as usual inside the platform.
+ctSoonBody = We have not published a number or an address yet, and we will not put up one that does not actually reach us. Until then, booking and its requests work as usual inside the platform.
 ctTopicsTitle = What we can help with
 ctTopic1 = **A booking problem:** a request that never arrived, a late confirmation, or a cancellation you didn't understand.
 ctTopic2 = **Registering a venue:** send the name, sport, area, number of pitches, hours and prices, and we'll take it from there.
@@ -380,7 +380,7 @@ plLead = Every venue with its area, surface, number of pitches and hourly price.
 # This line describes the database, not the ambition: the directory is built
 # from registered rows, and today every one of them is football. If a venue for
 # another sport is registered it will appear here and this line needs updating.
-plSportsNote = The directory currently lists football pitches - the one sport open for booking right now. Padel, basketball, tennis and volleyball appear in the app with a "Soon" badge until their venues are registered.
+plSportsNote = The directory lists football pitches today - the one sport open for booking. Padel, basketball, tennis and volleyball appear in the app with a "Soon" badge until their venues are registered.
 plPitchOne = 1 pitch
 plPitchTwo = 2 pitches
 plPitchesFew = pitches
@@ -446,13 +446,13 @@ faqA3 = No. There is no online payment anywhere in the platform and we never ask
 faqQ4 = Does it work on iPhone?
 faqA4 = Not yet. The app is Android-only today, and booking happens there and nowhere else. The download page says so plainly rather than wasting your time.
 faqQ5 = Why does Android warn me during install?
-faqA5 = Because the app is downloaded here rather than from the Play Store, and Android shows that warning for every app installed from outside it. The download page walks through the steps, quotes the warning exactly as it appears on your device, and publishes the file's checksum so you can verify it yourself.
+faqA5 = Because the app is downloaded here rather than from the Play Store, and Android shows that warning for every app installed from outside it. The download page walks through the steps, quotes the warning exactly, and publishes the file's checksum so you can verify it yourself.
 faqQ6 = I own a pitch - how do I register it?
-faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free, and open to any of the five sports - not football alone.
+faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free and open to all five sports, not football alone.
 # Rendered FIRST in the FAQ list on purpose: it is the question that defines
 # what the product even is.
 faqQ7 = Is the app only for football?
-faqA7 = No. AL-Mustadira is a platform for booking sports venues, and it carries five sports: football, padel, basketball, tennis and volleyball. What is open for booking today is football, because those are the venues registered with us so far; the rest appear in the app with a "Soon" badge. We open them one at a time as their venues are registered, and we never list a venue you cannot book.
+faqA7 = No. AL-Mustadira is for booking sports venues, and it carries five sports: football, padel, basketball, tennis and volleyball. Football is what is open for booking today because those are the venues registered with us; the rest carry a "Soon" badge - we never list a venue you cannot book.
 
 # ---------- Directory filter ----------
 plSearchPh = Search by venue or area
@@ -498,8 +498,8 @@ joinNotReady = Applications aren't enabled on the server yet. Please contact us 
 
 # ---------- (2.3) Venue application data ----------
 privJoinTitle = Venue applications
-privJoinBody = If you fill in the "Register your venue" form on the owners page, we store what you wrote: your name, your phone number, the venue's name, its city and area, its sport and number of courts, and your note if you left one. We use this to contact you about that application only. The row is readable by platform administrators alone - it never appears on the site, in the app, or to other venue owners, and it is the database itself that enforces this, not the page. We do not auto-delete rejected applications: we keep them with their reason so there is an answer if you ask later, and we delete one on request.
+privJoinBody = If you fill in the "Register your venue" form we store what you wrote: your name and number, the venue's name, city, area, sport and number of courts, and your note if you left one. We use it to contact you about that application only. The row is readable by platform administrators alone - enforced by the database itself, not by the page. A rejected application keeps its reason so there is an answer if you ask later, and we delete it on request.
 
 # ---------- (3.3) Usage measurement ----------
 privUsageTitle = Usage measurement
-privUsageBody = We record five events so we can see where we fall short: a search that returned nothing (with the search term), opening a venue page, reaching the review step, sending a request, and tapping "tell me if it frees up". None of them carries your name, your number, your location, or any text you type other than the search term itself. The event is linked to your account when you are signed in - to tell one visit from ten, nothing more - and only platform administrators can read these rows; they are never shown to venue owners or to any other user. If you tap "tell me if it frees up" we store the slot you want so we can notify you when it opens, and nobody but you can see what you asked for.
+privUsageBody = We record five events so we can see where we fall short: a search that returned nothing (with the search term), opening a venue page, reaching the review step, sending a request, and tapping "tell me if it frees up". None carries your name, your number, your location, or any text you type other than the search term. The event is linked to your account when you are signed in - to tell one visit from ten, nothing more - and only platform administrators can read these rows: not venue owners, not other users. If you ask to be told about a slot we store it so we can notify you when it opens, and nobody but you can see it.
