@@ -177,18 +177,19 @@ const I18N = {
     altOtherField:'في {field} اليوم نفسه الساعة {time}',
     altGo:'انقلني إليه', altNone:'لا وقت متاح في هذا المكان خلال الأسبوع القادم.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
-    reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'الموعد', stepConfirm:'التأكيد',
+    reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'اليوم', stepTime:'الوقت', stepConfirm:'التأكيد',
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
     rvSize:'حجم الملعب', rvTotal:'الإجمالي', rvReadyNote:'جاهز للإرسال — سيُرسَل طلب الحجز عند التأكيد.',
     twoHours:'ساعتان', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
     bkNote:'بعد إرسال الطلب يصل إلى إدارة الملعب — يتأكد الحجز بعد موافقتهم، ويمكنك متابعة حالته من «حجوزاتي».', confirmBooking:'تأكيد الحجز', changeTime:'تغيير الموعد',
     authTitle:'خطوة أخيرة ويكتمل حجزك', authDesc:'سجّل دخولك أو أنشئ حساباً — اختيارك (الملعب واليوم والوقت) محفوظ وسنكمل من النقطة نفسها.',
     authBackEdit:'عودة لتعديل الموعد',
-    navHome:'الرئيسية', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
+    navHome:'الرئيسية', navFav:'المفضّلة', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
     accountTitle:'حسابي', accountSub:'بيانات حساب اللاعب', saveEdit:'حفظ التعديل', logout:'تسجيل الخروج', rememberMe:'تذكّرني على هذا الجهاز',
     bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك في مكان واحد',
     grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
+    reportsEntrySub:'الإيراد والرسوم البيانية وتوصيات التسعير', backToToday:'رجوع إلى اليوم',
     chooseFirst:'اختر الملعب أولاً.', chooseDayMsg:'اختر اليوم المناسب.', chooseTimeMsg:'اختر وقتاً متاحاً للمتابعة.',
     bookingConflict:'سبقك إليه فريق آخر قبل لحظات! اختر وقتاً آخر — ولا تتردد هذه المرة.',
     bookingSent:'وصل طلبك! الحجز الآن بانتظار تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'غداً',
@@ -212,8 +213,10 @@ const I18N = {
     actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
     actApprove:'قبول الطلب', actDecline:'رفض',
     fieldActive:'مُفعّل', fieldInactive:'موقوف', fieldEnabled:'تم تفعيل الملعب للاعبين', fieldDisabled:'تم إيقاف الملعب — لن يظهر للاعبين',
-    dtabBook:'احجز', dtabAmenities:'المرافق', dtabReviews:'التقييمات', dtabLocation:'الموقع', ariaDetailTabs:'أقسام الملعب',
+    dtabBook:'احجز', dtabAbout:'عن الملعب', dtabAmenities:'المرافق', dtabReviews:'التقييمات', dtabLocation:'الموقع', ariaDetailTabs:'أقسام الملعب',
     noReviewsYet:'لا تقييمات بعد — كن أول من يقيّم', ratingsCount:'{n} تقييم',
+    replySpeed:'عادةً يردّ خلال {t}',
+    chartAria:'الأعلى {lbl} بـ{top}، والمتوسّط {avg}',
     pwTitle:'تغيير كلمة السر', pwSub:'لازم تكتب كلمة السر الحالية — هيك ما حدا يقدر يغيّرها لو وصل لهاتفك.',
     pwCur:'كلمة السر الحالية', pwNew:'كلمة السر الجديدة', pwNew2:'أعِد كلمة السر الجديدة', pwSave:'تغيير كلمة السر',
     pwNeedCur:'اكتب كلمة السر الحالية أول', pwTooShort:'كلمة السر الجديدة لازم 6 خانات على الأقل',
@@ -623,18 +626,19 @@ const I18N = {
     altOtherField:'On {field}, same day at {time}',
     altGo:'Take me there', altNone:'No time is free at this venue in the next week.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
-    reviewTitle:'Review booking', stepField:'Field', stepDate:'Time', stepConfirm:'Confirm',
+    reviewTitle:'Review booking', stepField:'Field', stepDate:'Day', stepTime:'Time', stepConfirm:'Confirm',
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status',
     rvSize:'Field size', rvTotal:'Total', rvReadyNote:'Ready to submit — your booking request will be sent when you confirm.',
     twoHours:'2 hours', statusGuest:'Guest', statusPlayer:'Registered player',
     bkNote:'Once sent, your request goes to the field management — it’s confirmed after their approval, and you can track it under “My bookings”.', confirmBooking:'Confirm booking', changeTime:'Change time',
     authTitle:'One last step to finish booking', authDesc:'Log in or create an account — your selection (field, day and time) is saved and we’ll continue from the same point.',
     authBackEdit:'Back to edit time',
-    navHome:'Home', navBookings:'Bookings', navAccount:'Account', navOwner:'Dashboard',
+    navHome:'Home', navFav:'Favorites', navBookings:'Bookings', navAccount:'Account', navOwner:'Dashboard',
     accountTitle:'My account', accountSub:'Player account details', saveEdit:'Save changes', logout:'Log out', rememberMe:'Remember me on this device',
     bookingsTitle:'My bookings', bookingsSub:'All your bookings in one place',
     grpUpcoming:'Upcoming bookings', grpPending:'Awaiting confirmation', grpPast:'Past bookings', grpCancelled:'Cancelled / Rejected',
     otabToday:'Today', otabBookings:'Bookings', otabCalendar:'Calendar', otabFields:'Fields', otabReports:'Reports',
+    reportsEntrySub:'Revenue, charts and pricing tips', backToToday:'Back to Today',
     chooseFirst:'Choose the field first.', chooseDayMsg:'Choose a suitable day.', chooseTimeMsg:'Choose an available time to continue.',
     bookingConflict:'Another team beat you to it moments ago! Pick another time — and don’t hesitate twice.',
     bookingSent:'Your request was sent! It awaits the field’s confirmation.', langSwitch:'العربية', today:'Today', tomorrow:'Tomorrow',
@@ -658,8 +662,10 @@ const I18N = {
     actConfirm:'Confirm', actReject:'Reject', actCancel:'Cancel', actWhatsapp:'WhatsApp', edit:'Edit',
     actApprove:'Approve', actDecline:'Decline',
     fieldActive:'Active', fieldInactive:'Off', fieldEnabled:'Field is now visible to players', fieldDisabled:'Field turned off — hidden from players',
-    dtabBook:'Book', dtabAmenities:'Facilities', dtabReviews:'Reviews', dtabLocation:'Location', ariaDetailTabs:'Venue sections',
+    dtabBook:'Book', dtabAbout:'About', dtabAmenities:'Facilities', dtabReviews:'Reviews', dtabLocation:'Location', ariaDetailTabs:'Venue sections',
     noReviewsYet:'No reviews yet — be the first to rate', ratingsCount:'{n} reviews',
+    replySpeed:'Usually replies within {t}',
+    chartAria:'Highest {lbl} at {top}, average {avg}',
     pwTitle:'Change password', pwSub:'Your current password is required — so nobody can change it just by picking up your phone.',
     pwCur:'Current password', pwNew:'New password', pwNew2:'Repeat new password', pwSave:'Change password',
     pwNeedCur:'Enter your current password first', pwTooShort:'New password must be at least 6 characters',
@@ -1277,6 +1283,15 @@ function safeRating(v){ const n = Number(v); return (Number.isNaN(n)||n<0||n>5) 
 function safeReviews(v){ const n = Number(v); return (Number.isNaN(n)||n<0||n>1e5) ? 0 : Math.round(n); }
 // مكان بلا تقييم حقيقي واحد لا تُرسم له شارة نجمة أصلًا — «★ 0 (0)» تُقرأ كتقييم سيّئ لا كغياب تقييم.
 function hasRating(place){ return safeReviews(place?.reviews) > 0; }
+/* المتوسّط وحده بلا عدد بين قوسين — حيث يُكتب العدد معدودًا صحيحًا بجانبه */
+function ratingAvgText(place){
+  const r = Number(String(place?.rating??0).replace(',','.'));
+  return (Number.isFinite(r)&&r>0&&r<=5) ? String(Math.round(r*10)/10).replace('.0','') : '0';
+}
+/* «١٢ تقييمًا» لا «12 تقييم» — رقمٌ حيّ يسبق اسمًا ⇒ يمرّ بقاعدة المعدود */
+const nReviews = (n) => (State.lang==='en')
+  ? (n===1 ? '1 review' : `${n} reviews`)
+  : countNoun(n, 'تقييم واحد', 'تقييمان', 'تقييمات', 'تقييمًا');
 function ratingText(place){
   const r = Number(String(place?.rating??0).replace(',','.')); const c = Number(String(place?.reviews??0).replace(',','.'));
   const rating = (Number.isFinite(r)&&r>0&&r<=5) ? String(Math.round(r*10)/10).replace('.0','') : '0';
@@ -1359,6 +1374,30 @@ function countNoun(n, one, two, few, many){
 const nHours = (n) => (State.lang==='en')
   ? (n===1 ? '1 hour' : `${n} hours`)
   : countNoun(n, 'ساعة واحدة', 'ساعتين', 'ساعات', 'ساعة');
+/* مدّة الردّ المعتادة نصًّا: «١٥ دقيقة» · «ساعتان» · «١٫٥ ساعة».
+   ⚠️ **اللغة وسيطٌ لا `State`**: دالّة نقيّة تُختبَر معزولةً في
+      `tools/test-pure.mjs` — ونسخةٌ ثانية في ملفّ اختبار كانت ستنحرف.
+   ⚠️ والحدّ الأدنى دقيقة واحدة لا صفر: الوسيط مُقرَّب في القاعدة إلى أقرب
+      دقيقة، والجملة «يردّ خلال دقيقة» صادقة عند كل قيمة دون الدقيقة —
+      بينما «خلال 0 دقيقة» جملةٌ لا معنى لها.
+   ⚠️ وما ليس رقمًا موجبًا يعود **نصًّا فارغًا** فلا يُعرَض سطر أصلًا (م5). */
+function replySpeedText(minutes, lang){
+  // ⚠️ `Number(null)` صفرٌ صالح — والغياب لا يجوز أن يُقرأ «يردّ خلال دقيقة»
+  if(minutes === null || minutes === undefined || minutes === '') return '';
+  const m = Number(minutes);
+  if(!Number.isFinite(m) || m < 0) return '';
+  const en = lang === 'en';
+  if(m < 60){
+    const n = Math.max(1, Math.round(m));
+    return en ? (n===1 ? '1 minute' : `${n} minutes`)
+              : countNoun(n, 'دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة');
+  }
+  const hrs = Math.round(m/6)/10;                    // منزلة عشرية واحدة
+  if(Number.isInteger(hrs)) return en ? (hrs===1 ? '1 hour' : `${hrs} hours`)
+                                      : countNoun(hrs, 'ساعة واحدة', 'ساعتان', 'ساعات', 'ساعة');
+  // كسرٌ عشري: العربية تُفرد المعدود بعده («١٫٥ ساعة») ولا تُجمعه
+  return en ? `${hrs} hours` : `${hrs} ساعة`;
+}
 /* «مقعد» معدودٌ حيّ يسبق اسمًا ⇒ يمرّ بنفس القاعدة. والصفر له صيغته:
    «٠ مقاعد» عربيّةٌ صحيحة، و«لا مقاعد» أوضح. */
 const nSeats = (n) => (State.lang==='en')
@@ -1587,18 +1626,49 @@ async function sbGetClosures(key){
   return r.data || [];
 }
 
+/* سرعة الردّ (ترحيل 28) — «عادةً يردّ خلال ن دقيقة».
+   ⚠️ **علَمٌ ثلاثيّ الحالات** بنفس نمط `GAMES_OK` بالحرف: `null` لا نعرف
+      (⇒ لا يُعرَض) · `true` موجود · `false` غائب. والافتراض المتفائل هنا
+      يعني سطرًا يظهر ثمّ يختفي، وهو أسوأ من غيابه.
+   ⚠️ وغيابُ الترحيل **ليس عطلًا يراه اللاعب**: تحسينٌ اختياري لا ميزة ناقصة
+      ⇒ لا رسالة ولا لوح ولا شرطة — لا شيء إطلاقًا.
+   ⚠️ ولا جلبة جديدة عند الإقلاع: يدخل نفس دفعة `place_stats`. */
+let REPLY_OK = null;
+/* 🔴 **بلا `key`** — و«المفتاح» هنا ليس مفتاح API بل **رمز إلغاء**:
+   `fetchWithTimeout` يُجهض الطلبَ السابق المسجَّل تحت نفس الرمز. فتمريره إلى
+   طلبين داخل `Promise.all` واحدة يجعل الدفعة **تُلغي نفسها**: هذا الطلب يُجهض
+   `/places` فتفشل الجلبة كلّها وتُقرأ الرئيسية «لا ملاعب». ولهذا كانت
+   `sbGetClosures()` تُنادى بلا وسيط رغم أن توقيعها يقبله. */
+async function sbGetReplySpeed(){
+  if (REPLY_OK === false) return [];
+  const r = await sbRest('/place_reply_speed?select=place_id,median_minutes,n');
+  if (!r.ok){
+    if (r.status === 404 || String(r.raw||'').includes('PGRST205')) REPLY_OK = false;
+    return [];
+  }
+  REPLY_OK = true;
+  return r.data || [];
+}
 async function sbGetInitialData(key){
-  const [pl, fl, st, bk, cl] = await Promise.all([
+  const [pl, fl, st, bk, cl, rs] = await Promise.all([
     sbRest('/places?select=*&active=is.true&order=name', { key }),
     sbRest('/fields?select=*&active=is.true'),
     sbRest('/place_stats?select=*'),
     sbRest('/booked_slots?select=*'),
     sbGetClosures(),
+    sbGetReplySpeed(),
   ]);
   if (!pl.ok || !fl.ok) throw new Error('supabase places failed');
+  /* الوسيط يُخزَّن على المكان نفسه: `null` معناه محدَّد — «لا يُقاس بعد»
+     (العرض نفسه يحجب ما دون سبعة ردود)، والواجهة لا تعرض شيئًا حينها. */
+  const reply = {}; (rs||[]).forEach(x => { const m=Number(x.median_minutes);
+    if(Number.isFinite(m) && m>=0) reply[String(x.place_id)] = m; });
   const stats = {}; (st.data||[]).forEach(s => stats[String(s.place_id)] = s);
   const byPlace = {}; (fl.data||[]).forEach(f => (byPlace[String(f.place_id)] ||= []).push(sbField(f)));
-  const places = (pl.data||[]).map(p => { const o = sbPlace(p, stats[String(p.id)]); o.fields = byPlace[String(p.id)] || []; return o; })
+  const places = (pl.data||[]).map(p => { const o = sbPlace(p, stats[String(p.id)]);
+                                          o.fields = byPlace[String(p.id)] || [];
+                                          const m = reply[String(p.id)]; if(m!=null) o.reply_median = m;
+                                          return o; })
                               .filter(p => p.fields.length > 0);       // نفس سلوك الباكند القديم
   const bookings = (bk.data||[]).map(b => ({ field_id:String(b.field_id), date:String(b.booking_date||'').split('T')[0], hour:Number(b.hour), status:'confirmed' }));
   return { places, bookings, closures: cl };
@@ -2790,11 +2860,18 @@ function renderRegionTabs(){
   const regions = getRegions();
   if (State.filter!=='all' && !regions.some(r=>normalizeText(r)===normalizeText(State.filter))) State.filter='all';
   clear(el);
-  el.append(h('button',{class:'ftab'+(State.filter==='all'&&!State.favOnly?' active-tab':''), onclick:()=>{ State.favOnly=false; setFilter('all'); }}, t('all')));
-  // تبويب المفضّلة (محلي) — مستقل عن فلتر المنطقة
-  el.append(h('button',{class:'ftab ftab-fav'+(State.favOnly?' active-tab':''), 'aria-pressed':State.favOnly?'true':'false',
-    onclick:()=>{ State.favOnly=!State.favOnly; renderRegionTabs(); renderPlaces(); }}, ico('heart','svg-sm'), ' '+t('favTab')));
-  regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)&&!State.favOnly?' active-tab':''), onclick:()=>{ State.favOnly=false; setFilter(r); }}, r)));
+  /* ⚠️ شريحة القلب حُذفت من هنا: صارت «المفضّلة» زرًّا في الشريط السفلي.
+     بابان لميزةٍ واحدة انحرافٌ مؤجَّل — أحدهما يُنسى عند أوّل تعديل. وشريط
+     المناطق صار **تصفيةَ منطقةٍ وحدها**، تعمل داخل المفضّلة كما تعمل خارجها. */
+  el.append(h('button',{class:'ftab'+(State.filter==='all'?' active-tab':''), onclick:()=>setFilter('all')}, t('all')));
+  regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)?' active-tab':''), onclick:()=>setFilter(r)}, r)));
+}
+/* عنوان قسم الرئيسية يتبع الحالة: مباريات ⇐ مفضّلة ⇐ الملاعب المتاحة.
+   ثلاث حالات ومصدرٌ واحد — وإلّا بقي «الملاعب المتاحة» فوق قائمة مفضّلة. */
+function updateSecTitle(){
+  const ttl=$('#secTitleTxt'); if(!ttl) return;
+  const k = State.mode==='games' ? 'modeGamesTitle' : State.favOnly ? 'favTab' : 'availableFields';
+  ttl.textContent=t(k); ttl.setAttribute('data-i18n',k);
 }
 function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
 
@@ -3066,7 +3143,8 @@ function updateFilterBar(){
 function filterChipList(){
   const fx=State.fx, out=[];
   const add=(label, remove)=> out.push({label, remove});
-  if(State.favOnly)        add(t('favTab'),                                ()=>{ State.favOnly=false; });
+  /* ⚠️ لا شريحة لـ«المفضّلة»: صارت مسارًا في الشريط السفلي، وشريحةٌ تزيله
+     تترك الحبّة عليه وتحتها كلّ الملاعب. الشرائح لما يُصفّى **داخل** القائمة. */
   if(State.filter!=='all') add(t('fchipRegion',{v:State.filter}),          ()=>{ State.filter='all'; });
   if(fx.minPrice!=null)    add(t('fchipPriceMin',{v:formatCurrency(fx.minPrice)}), ()=>{ fx.minPrice=null; });
   if(fx.maxPrice!=null)    add(t('fchipPriceMax',{v:formatCurrency(fx.maxPrice)}), ()=>{ fx.maxPrice=null; });
@@ -3092,9 +3170,22 @@ function renderFilterChips(){
   });
   if(list.length>1){
     const clr=h('button',{class:'fchip fchip-clear', type:'button'}, t('clearAll'));
-    clr.addEventListener('click', ()=>{ resetAllFilters(); State.favOnly=false; buzz(8); updateSearchClear(); after(); });
+    clr.addEventListener('click', ()=>{ resetAllFilters(); buzz(8); updateSearchClear(); after(); });
     bar.append(clr);
   }
+}
+/* سطر «عادةً يردّ خلال ن» — موضعان اثنان لا أكثر: بطاقة الملعب في القائمة،
+   ونافذة المراجعة فوق زرّ التأكيد (هناك تحديدًا يُتّخذ القرار).
+   ⚠️ ومكانٌ لا يعود له صفّ في العرض **لا يعرض سطرًا**: لا «غير متوفّر» ولا
+      شرطة ولا صفر. ما لا نقيسه لا نقول عنه شيئًا (م5).
+   ⚠️ والقيمة داخل `<bdi>`: مدّةٌ بأرقام أوروبية داخل جملة عربية. */
+function replySpeedLine(p, cls){
+  if(REPLY_OK !== true) return '';
+  const txt = replySpeedText(p?.reply_median, State.lang);
+  if(!txt) return '';
+  const parts = String(t('replySpeed')).split('{t}');
+  return h('div',{class:cls}, ico('clock','svg-sm'), ' ',
+    parts[0]||'', h('bdi',{}, txt), parts[1]||'');
 }
 function placeCard(p, eager){
   const av = placeAvailability(p);
@@ -3140,6 +3231,7 @@ function placeCard(p, eager){
       h('div',{class:'place-name'}, p.place_name),
       hasRating(p) ? h('span',{class:'place-rating'}, h('span',{class:'sr-star'},'★'), ' '+ratingText(p)) : ''),
     h('div',{class:'place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(p)),
+    replySpeedLine(p, 'place-reply'),
     amenitiesRow(p.amenities, 2),
     h('div',{class:'place-sub'},
       h('span',{class:'place-strip-fields'}, oneField?t('oneField'):t('fieldsCount',{n:p.fields.length}))));
@@ -3199,8 +3291,10 @@ function renderPlaces(opts){
   clear(el);
   if (!list.length){
     if (State.favOnly){
+      // ⚠️ الزرّ ينقل إلى **المسار** لا يصفّر العلَم وحده: تصفيرٌ صامت يترك
+      //    الحبّة على «المفضّلة» وتحتها كلّ الملاعب.
       el.append(emptyState({ icon:'🤍', title:t('noFavsTitle'), sub:t('noFavsSub'),
-        actionLabel:t('browseFields'), action:()=>{ State.favOnly=false; renderRegionTabs(); renderPlaces(); } }));
+        actionLabel:t('browseFields'), action:()=>showPage('home') }));
       return;
     }
     const hasAny = q || State.filter!=='all' || activeFilterCount()>0;
@@ -3352,6 +3446,7 @@ async function openDetail(placeId, opts={}){
   const locTxt=$('#dLocationText'); if(locTxt){ clear(locTxt); locTxt.append(ico('pin','svg-sm'), ' '+placeLocation(place)); }
 
   setDetailTab('book');                                   // ابدأ دائماً على تبويب الحجز
+  renderDetailRating(place); renderDetailAmenRow(place);
   renderAmenitiesFull(place); renderSubFields(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderRatingDist(place); renderDetailSticky();
   showPage('detail');
   Track.push(EV.PLACE_VIEW, { place_id:String(place.place_id), sport:State.sport });
@@ -3381,11 +3476,38 @@ async function refreshDetailAvailability(placeId){
     }
   }
 }
-/* تبديل تبويبات صفحة التفاصيل (احجز/المرافق/التقييمات/الموقع) */
+/* تبديل تبويبَي صفحة التفاصيل (احجز / عن الملعب) */
 function setDetailTab(name){
   State.detailTab=name;
   $$('#detailTabs .dtab-btn').forEach(b=>{ const on=b.dataset.dtab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
   $$('#page-detail .dtab-panel').forEach(p=>{ const on=p.dataset.dtabPanel===name; p.hidden=!on; p.classList.toggle('active', on); });
+}
+/* سطر التقييم بجانب الاسم — يفتح «عن الملعب» عند قسم التقييمات.
+   ⚠️ `hidden` لا نصّ فارغ: مكانٌ بلا تقييم يعرض **لا شيء**، و«★ 0 (0)» ادّعاءٌ
+   بأنه قُيِّم فحصل على صفر (م5، ونفس شرط `hasRating` على البطاقة). */
+function renderDetailRating(p){
+  const el=$('#dRating'); if(!el) return;
+  if(!hasRating(p)){ el.hidden=true; clear(el); return; }
+  el.hidden=false; clear(el);
+  const n=safeReviews(p.reviews), avg=ratingAvgText(p);
+  el.append(h('span',{class:'sr-star','aria-hidden':'true'},'★'), ' '+avg,
+            h('span',{class:'detail-rating-n'}, ' · '+nReviews(n)));
+  el.setAttribute('aria-label', t('dtabReviews')+': '+avg+' — '+nReviews(n));
+}
+/* صفّ المرافق المضغوط تحت الشارات: ثلاثة وشريحة «+n» تفتح «عن الملعب».
+   الصفّ كلّه زرّ واحد — «فيه حمّامات؟» سؤالٌ يُسأل قبل الضغط لا بعده. */
+function renderDetailAmenRow(p){
+  const wrap=$('#dAmenRow'); if(!wrap) return; clear(wrap);
+  const row=amenitiesRow(p.amenities, 3); if(!row) return;
+  const btn=h('button',{type:'button', class:'amen-row-btn', 'aria-label':t('dtabAbout')}, row);
+  btn.addEventListener('click', ()=>openAboutTab());
+  wrap.append(btn);
+}
+/* فتح «عن الملعب» — و`focusReviews` ينزل إلى قسم التقييمات مباشرةً */
+function openAboutTab(focusReviews){
+  setDetailTab('about');
+  const sec = focusReviews ? $('#dReviewsSec') : null;
+  if(sec) requestAnimationFrame(()=>sec.scrollIntoView({block:'start', behavior:'smooth'}));
 }
 /* توزيع تقييمات حقيقي بأشرطة (من place.reviews_dist إن نُشر الباكند)؛ وإلا ملخّص المتوسط؛ و«لا تقييمات» عند 0 */
 function renderRatingDist(place){
@@ -3798,11 +3920,11 @@ function setMode(m){
   State.mode = (m==='games') ? 'games' : 'venues';
   $$('#modeSeg .mode-btn').forEach(b=>{ const on=b.dataset.mode===State.mode;
     b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
-  const pl=$('#placesList'), gl=$('#gamesList'), cnt=$('#placesCount'), ttl=$('#secTitleTxt');
+  const pl=$('#placesList'), gl=$('#gamesList'), cnt=$('#placesCount');
   const games = State.mode==='games';
   if(pl) pl.hidden=games; if(gl) gl.hidden=!games;
   if(cnt) cnt.hidden = games || !cnt.textContent;
-  if(ttl){ const k = games?'modeGamesTitle':'availableFields'; ttl.textContent=t(k); ttl.setAttribute('data-i18n',k); }
+  updateSecTitle();
   // الشريط اللاصق (فلاتر · مناطق · رياضة) يخصّ تصفّح الملاعب وحده
   const st=$('#homeSticky'); if(st) st.hidden=games;
   if(games) renderGames();
@@ -4188,6 +4310,10 @@ function renderReview(){
     el.append(h('div',{class:'rc-note'},
       t('priceRuleNote',{ base: formatCurrency(field.price) })));
   }
+  /* سرعة الردّ **فوق زرّ التأكيد** لا داخل الإيصال: هذه اللحظة بالضبط هي
+     التي يسأل فيها من يهمّ بالضغط عمّا ينتظره — والحجز طلبٌ لا حجزًا فوريًّا. */
+  const rsWrap=$('#bkReplySpeed');
+  if(rsWrap){ clear(rsWrap); const rs=replySpeedLine(place,'rc-reply'); if(rs) rsWrap.append(rs); }
   updateBookingStep();
 }
 
@@ -4600,10 +4726,15 @@ function renderOwnerDashboard(){
   showOwnerTab(State.ownerTab || 'today');
 }
 /* ===================== OWNER TABS ===================== */
+/* ⚠️ **دالّة واحدة تظلّ مصدر الحقيقة.** الأزرار انتقلت من شريطٍ أعلى الصفحة
+   إلى الشريط السفلي، ولم يُكرَّر منطق التبديل: هي التي تُحدّث حالة الأزرار
+   والحبّة معًا. و«التقارير» ليست فيها زرّ — تُفتَح من بطاقة في «اليوم» —
+   فالحبّة تُخفى حينها بدل أن تجلس على تبويب ليس هو المعروض. */
 function showOwnerTab(name){
   State.ownerTab=name;
-  $$('#ownerTabs .otab').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
+  $$('#nav-owner .nitem').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
   $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
+  NavPill.schedule();
   const fab=$('#ownerAddFab'); if(fab) fab.hidden = (name!=='fields');   // FAB إضافة ملعب — تبويب الملاعب فقط
   if(name==='calendar') renderOwnerCalendar();
   if(name==='today') renderOwnerToday();
@@ -4760,13 +4891,25 @@ function createBarChart(data, opts){
     if(opts.showVal && v>0) s+='<text class="bar-v" x="'+cx.toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle">'+Math.round(v)+'</text>';
     s+='<text class="bar-x" x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+sanTxt(d.label)+'</text>';
   });
-  return h('div',{class:'chart-svg', html:'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-hidden="true">'+s+'</svg>'});
+  /* ⚠️ `role="img"` مع `aria-hidden="true"` **تناقض** وكانتا معًا هنا: الثانية
+     تحذف العنصر من شجرة الوصول تمامًا فلا يبقى للأولى أثر. والاسم يُبنى من
+     نفس المصفوفة المرسومة — «رسم بياني» اسمٌ عامّ يَعِد بمحتوى ولا يعطيه. */
+  return h('div',{class:'chart-svg', html:'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+
+    sanTxt(opts.label ? opts.label+' — '+chartSummary(data) : chartSummary(data))+'">'+s+'</svg>'});
+}
+/* ملخّصٌ منطوق من الأرقام: الأعلى بتسميته، ثمّ المتوسّط. */
+function chartSummary(data){
+  const vals=data.map(d=>Number(d.value)||0);
+  if(!vals.length) return '';
+  let top=0, ti=0; vals.forEach((v,i)=>{ if(v>top){ top=v; ti=i; } });
+  const avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  return t('chartAria',{ top:String(top), lbl:String(data[ti].label||''), avg:String(avg) });
 }
 function createDonut(pct, label){
   pct=Math.max(0,Math.min(100,Math.round(Number(pct)||0)));
   const r=42, c=2*Math.PI*r, off=c*(1-pct/100);
   return h('div',{class:'chart-donut-svg', html:
-    '<svg viewBox="0 0 110 110" width="104" height="104" role="img" aria-hidden="true">'+
+    '<svg viewBox="0 0 110 110" width="104" height="104" role="img" aria-label="'+sanTxt((label?label+' ':'')+pct+'%')+'">'+
     '<circle class="donut-bg" cx="55" cy="55" r="'+r+'"/>'+
     '<circle class="donut-fg" cx="55" cy="55" r="'+r+'" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 55 55)"/>'+
     '<text class="donut-num" x="55" y="53" text-anchor="middle">'+pct+'%</text>'+
@@ -4780,7 +4923,7 @@ function renderOwnerCharts(bookings){
   // 1) الإيراد اليومي (المؤكّد فقط)
   const revData=days.map(ds=>({ label: wd.format(new Date(ds+'T12:00:00')),
     value: bookings.filter(b=>String(b.date||'').split('T')[0]===ds && normStatus(b)==='confirmed').reduce((s,b)=>s+(Number(b.price)||0),0) }));
-  const rc=$('#ownerRevChart'); if(rc){ clear(rc); rc.append( revData.some(d=>d.value>0) ? createBarChart(revData,{showVal:false}) : h('div',{class:'chart-empty'}, t('noData')) ); }
+  const rc=$('#ownerRevChart'); if(rc){ clear(rc); rc.append( revData.some(d=>d.value>0) ? createBarChart(revData,{showVal:false, label:t('chartRevenue')}) : h('div',{class:'chart-empty'}, t('noData')) ); }
   // 2) إشغال الأسبوع (نفس منطق renderOwnerEcon)
   const dset=new Set(days);
   const confW=bookings.filter(b=>dset.has(String(b.date||'').split('T')[0]) && normStatus(b)==='confirmed');
@@ -4789,7 +4932,7 @@ function renderOwnerCharts(bookings){
   // 3) التوزيع حسب الساعة (المؤكّد)
   const byHour={}; bookings.filter(b=>normStatus(b)==='confirmed').forEach(b=>{ const hr=Number(b.hour); if(!Number.isNaN(hr)) byHour[hr]=(byHour[hr]||0)+1; });
   const hrs=Object.keys(byHour).map(Number).sort((a,b)=>a-b);
-  const hc=$('#ownerHoursChart'); if(hc){ clear(hc); hc.append( hrs.length ? createBarChart(hrs.map(hr=>({label:hr+':00', value:byHour[hr]})),{showVal:true}) : h('div',{class:'chart-empty'}, t('noData')) ); }
+  const hc=$('#ownerHoursChart'); if(hc){ clear(hc); hc.append( hrs.length ? createBarChart(hrs.map(hr=>({label:hr+':00', value:byHour[hr]})),{showVal:true, label:t('chartHours')}) : h('div',{class:'chart-empty'}, t('noData')) ); }
 }
 function renderOwnerStats(bookings){
   const confirmed=bookings.filter(b=>normStatus(b)==='confirmed');
@@ -6080,7 +6223,7 @@ try{
 }catch(_){}
 
 /* ===================== ROUTER ===================== */
-const NAV_OF = { home:'player', bookings:'player', account:'player', owner:'owner' };
+const NAV_OF = { home:'player', favorites:'player', bookings:'player', account:'player', owner:'owner' };
 /* مكدّس تنقّل داخلي: «رجوع» حقيقي داخل التطبيق دون مغادرة الموقع وبلا window.history */
 const NavStack = [];
 const activePageName = () => { const p=$('.page.active'); return p ? p.id.replace('page-','') : null; };
@@ -6096,6 +6239,14 @@ function navigateBack(fallback){
 }
 function showPage(name, opts){
   opts=opts||{};
+  /* «المفضّلة» ليست صفحةً بل **حالةً** على الرئيسية: مسارٌ واحد يعرض `home`
+     مع `favOnly=true`، و`home` يفرضها `false`. مصدر الحالة واحد ⇒ لا نسخة
+     ثانية من `renderPlaces` ولا شريحة ثانية تنحرف عنه.
+     و`navKey` ينفصل عن `name` هنا وحده: الأوّل يضيء زرّ الشريط، والثاني
+     يختار `#page-*`. */
+  let navKey = name;
+  if(name==='favorites'){ State.favOnly=true;  name='home'; }
+  else if(name==='home'){ State.favOnly=false; }
   const cur=activePageName();
   if(cur) State.pageScroll[cur]=pageScrollGet();     // حفظ موضع الصفحة المغادَرة
   // دفع الصفحة الحالية للمكدّس — إلا عند الرجوع، والتحويل الداخلي، وإعادة عرض الصفحة نفسها (لا تكرار)
@@ -6118,10 +6269,10 @@ function showPage(name, opts){
   const nav=NAV_OF[name];
   $('#nav-player').classList.toggle('show', nav==='player');
   $('#nav-owner').classList.toggle('show', nav==='owner');
-  $$('#nav-player .nitem').forEach(n=>{ const on=n.dataset.nav===name; n.classList.toggle('active', on); n.setAttribute('aria-current', on?'page':'false'); });
+  $$('#nav-player .nitem').forEach(n=>{ const on=n.dataset.nav===navKey; n.classList.toggle('active', on); n.setAttribute('aria-current', on?'page':'false'); });
   NavPill.schedule();
   // خطافات الصفحات — التحويلات الداخلية {redirect:true} كي لا تدخل المكدّس فتصنع حلقة
-  if (name==='home') renderPlaces();
+  if (name==='home'){ updateSecTitle(); renderPlaces(); }
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast(t('loginToSeeBookings'),'warn'); return showPage('playerLogin',{redirect:true}); } loadPlayerBookings(); }
   if (name==='account'){ if(!Session.player()){ return showPage('playerLogin',{redirect:true}); }
     const nm=State.player?.name||'', ph=State.player?.phone||'';
@@ -6138,7 +6289,12 @@ function showPage(name, opts){
   manageAutoRefresh();
   HeroPh.sync();   // يوقف دوران النائب خارج صفحة الهبوط ويستأنفه عند العودة إليها
   // الرئيسية تستعيد موضعها دائمًا؛ الرجوع يستعيد موضع الصفحة السابقة؛ التقدّم يبدأ من الأعلى
-  const y = name==='home' ? (State.pageScroll.home||0) : (opts.back ? (State.pageScroll[name]||0) : 0);
+  // ⚠️ إلّا التبديل بين «الرئيسية» و«المفضّلة»: الصفحة واحدة والقائمة تحتها
+  // تتغيّر طولًا، فاستعادةُ موضعٍ من قائمةٍ أطول تُنزل المستخدم تحت آخر بطاقة.
+  const keyChanged = State.navKey!==navKey; State.navKey=navKey;
+  const y = (name==='home' && !keyChanged) ? (State.pageScroll.home||0)
+          : name==='home' ? 0
+          : (opts.back ? (State.pageScroll[name]||0) : 0);
   requestAnimationFrame(()=>pageScrollSet(y));
   // إشعار طبقة native (شريط الحالة يتلوّن حسب الصفحة) — خامل تمامًا على المتصفح
   try{ document.dispatchEvent(new CustomEvent('app:page',{detail:name})); }catch(_){}
@@ -7152,6 +7308,7 @@ const Actions = {
   clearSearch:()=>{ const s=$('#searchInput'); if(s){ s.value=''; updateSearchClear(); renderPlaces(); s.focus(); } },
   setView:(btn)=>setViewMode(btn.dataset.view||'grid'),
   setDetailTab:(btn)=>setDetailTab(btn.dataset.dtab||'book'),
+  openAboutReviews:()=>openAboutTab(true),
   toggleSportDD:()=>toggleSportDD(),
   openNotifs:()=>Notifs.open(), notifsMarkAll:()=>Notifs.markAll(),
   openTracker:()=>{ if(Session.player()) showPage('bookings'); },
@@ -7301,10 +7458,10 @@ document.addEventListener('keydown', (e)=>{
 // تقييم النجوم عبر الكيبورد/الراديو (Radio Group)
 document.addEventListener('change', (e)=>{ const sr=e.target.closest('.star-input'); if(sr) setRating(Number(sr.value)); });
 // أسهم لوحة المفاتيح في تبويبات المالك (←/→/Home/End) — يحترم اتجاه الصفحة
-$('#ownerTabs')?.addEventListener('keydown', (e)=>{
+$('#nav-owner')?.addEventListener('keydown', (e)=>{
   if(!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key)) return;
   e.preventDefault();
-  const tabs=$$('#ownerTabs .otab'); const cur=tabs.findIndex(t=>t.dataset.otab===State.ownerTab); if(cur<0) return;
+  const tabs=$$('#nav-owner .nitem'); const cur=tabs.findIndex(t=>t.dataset.otab===State.ownerTab); if(cur<0) return;
   const rtl=document.documentElement.dir==='rtl';
   let i=cur;
   if(e.key==='Home') i=0; else if(e.key==='End') i=tabs.length-1;

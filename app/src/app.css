@@ -779,7 +779,9 @@ body.dark .fs-mint{opacity:.5}
    ⚠️ وتبقى `opacity:0` حتى أوّل قياس: قبله عرضها صفر وموضعها الزاوية، فلو
    ظهرت لرُئيت نقطةً تقفز من الحافّة. */
 .nav-pill{position:absolute;left:0;top:0;z-index:0;pointer-events:none;opacity:0;
-  width:var(--pill-w,0px);height:var(--pill-h,0px);border-radius:999px;
+  /* 18px لا 999px: الزرّ صار مكدَّسًا (أيقونة فوق نصّ) فارتفاعه يقارب عرضه،
+     و999px عليه تُخرج بيضةً لا حبّة. نفس نصف قطر `.nitem`. */
+  width:var(--pill-w,0px);height:var(--pill-h,0px);border-radius:18px;
   background:var(--primary-soft);
   /* حلقة شعرة داخلية بدل حافّة بيضاء: الحافّة البيضاء تختفي تمامًا على الثيم
      النهاري (‏--primary-soft هناك 10% Teal على أبيض) فتبدو الحبّة بلا حدّ. */
@@ -791,13 +793,22 @@ body.dark .fs-mint{opacity:.5}
 /* أوّل وضع (وبعد قلب اللغة/تغيّر المقاس): تُنقل بلا انتقال — الانزلاق من
    موضع قديم لم يعد له معنى يُقرأ خللًا لا حركة. */
 .bnav.pill-jump .nav-pill{transition:opacity 200ms var(--ease-out)}
-.nitem{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;
-  font-size:11.5px;font-weight:800;color:var(--muted);
-  /* الحشوة تتبع عرض الشاشة: النصّ صار ظاهرًا دائمًا في الأزرار الثلاثة،
-     فحشوة ثابتة 14px تُخرج الصفّ عن 320px. والحبّة تُقاس لا تُحسَب ⇒ تتبعها. */
-  min-height:var(--tap);padding:8px clamp(9px,3.2vw,14px);border-radius:999px;position:relative;z-index:1;flex:0 1 auto;
+/* ⚠️ **عمودي لا أفقي — والسبب عدد الأزرار لا الذوق.** كان الصفّ أفقيًّا
+   (أيقونة ثمّ نصّ) وهو يتّسع لثلاثة، فلمّا صارا أربعة (مفضّلة للّاعب، وأربعة
+   تبويبات للمالك) خرج الصفّ عن 375px: أربعُ حشواتٍ جانبية مضاعفة + أربع
+   فجوات 7px + أربعة نصوص في سطرٍ واحد. بالتكديس يصير عرض الزرّ **أعرضَ
+   عنصرَيه** لا مجموعَهما، والنصّ يبقى ظاهرًا دائمًا كما كان (وهو شرط قياس
+   الحبّة: الصفّ ثابت العرض في أيّ لحظة). */
+.nitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:10.5px;font-weight:800;color:var(--muted);
+  /* الحشوة تتبع عرض الشاشة: النصّ ظاهر دائمًا، فحشوة ثابتة تُخرج الصفّ عن
+     320px. والحبّة تُقاس لا تُحسَب ⇒ تتبعها. */
+  min-height:var(--tap);padding:6px clamp(6px,2.4vw,14px);border-radius:18px;position:relative;z-index:1;flex:1 1 0;min-width:0;
   background:transparent;
   transition:color 260ms var(--ease-out)}
+/* الشارة تجلس داخل حدّ الشريط لا فوقه: `top:-5px` الافتراضية كانت تخرج من
+   أعلى الشريط السفلي فتُقصّ عند حافّة الشاشة. */
+.nitem .tab-badge{top:2px;inset-inline-end:clamp(2px,4vw,18px)}
 .nitem span{white-space:nowrap}
 .nitem.active{color:var(--emerald-2)}
 /* الأيقونة لا تحمل خلفيتها الخاصّة — الحبّة هي الخلفية */
@@ -886,6 +897,12 @@ body.dark .fs-mint{opacity:.5}
 .place-loc{font-size:11px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:3px;font-weight:600}
 /* أُزيل blur(6px): التقييم يجلس فوق أسفل التدرّج الداكن (.86) أصلاً، فرُفعت العتامة .3→.5 لتعويض الوزن */
 .place-rating{font-size:11px;color:#fff;font-weight:800;background:rgba(0,0,0,.5);border-radius:999px;padding:4px 9px;border:1px solid rgba(255,255,255,.14)}
+/* «عادةً يردّ خلال ن» — رقمٌ **مقيس** لا وعد (ترحيل 28).
+   ⚠️ `--muted` لا `--soft`: جملةٌ تحمل معلومةً تدخل في القرار. */
+.place-reply,.rc-reply{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--muted);line-height:1.5}
+.place-reply{padding:6px 16px 0}
+.rc-reply{justify-content:center;margin:2px 0 10px}
+.place-reply svg,.rc-reply svg{flex-shrink:0;color:var(--emerald-2)}
 .amenities-row{display:flex;gap:7px;flex-wrap:wrap;padding:14px 16px 0}
 .amenity-chip{background:var(--primary-soft);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:10px;font-weight:800;color:var(--emerald);display:inline-flex;align-items:center;gap:4px;min-height:30px}
 .place-strip{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:12px}
@@ -935,8 +952,23 @@ body.dark .fs-mint{opacity:.5}
 .detail-city{font-size:13px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;font-weight:500}
 .price-tag{display:inline-block;padding:8px 13px;background:var(--primary-soft);border:1.5px solid var(--line);border-radius:12px;box-shadow:none;font-weight:800;color:var(--emerald);font-size:18px;font-variant-numeric:tabular-nums}
 .price-unit{font-size:10px;color:var(--soft);margin-top:5px;text-align:end}
+/* سطر التقييم بجانب الاسم — زرٌّ يفتح «عن الملعب» عند قسم التقييمات.
+   ⚠️ لونه `--ink-2` لا `--soft`: رقمٌ يحمل معلومة لا زخرفة. */
+.detail-rating{display:inline-flex;align-items:center;gap:2px;margin-top:5px;padding:3px 0;
+  background:transparent;font-size:13px;font-weight:800;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.detail-rating[hidden]{display:none}
+.detail-rating .sr-star{color:var(--warning-ink)}
+.detail-rating-n{font-weight:600;color:var(--muted)}
 .detail-badges{display:flex;gap:8px;margin-bottom:var(--s-5);flex-wrap:wrap}
-.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--s-5)}
+/* صفّ المرافق المضغوط: الصفّ كلّه زرّ واحد يفتح «عن الملعب» */
+.amen-row-btn{display:block;width:100%;background:transparent;padding:0;margin-bottom:var(--s-4);text-align:start}
+.amen-row-btn .amenities-row{padding:0}
+.amen-row-btn:active{transform:scale(.99)}
+/* ⚠️ فليكس لا شبكة عمودين: أحد الزرّين يختفي كثيرًا (لا هاتف أو لا رابط
+   خريطة صالح)، وفي الشبكة يبقى الباقي بنصف العرض وبجواره فراغٌ يُقرأ عطلًا. */
+.detail-actions{display:flex;gap:10px;margin-bottom:var(--s-5)}
+.detail-actions .action-link{flex:1 1 0;min-width:0}
+.detail-actions-top{margin-bottom:var(--s-4)}
 .action-link{display:flex;align-items:center;justify-content:center;gap:6px;min-height:var(--tap);padding:11px 13px;border-radius:14px;font-size:12.5px;font-weight:800;box-shadow:var(--shadow-xs);transition:transform var(--t-fast)}
 /* ⚠️ `[hidden]` قاعدةُ متصفّحٍ بنوعية (0,0,1)، و`.action-link{display:flex}`
    أعلى منها ⇒ `el.hidden = true` يُكتب في الـDOM ولا يُطبَّق. مزلق مسجَّل،
@@ -962,6 +994,16 @@ body.dark .fs-mint{opacity:.5}
 /* ---------- PROGRESSIVE DISCLOSURE (الأوقات) ---------- */
 .times-section{opacity:1;transition:opacity var(--t-base)}
 .disclosure-hint{display:flex;align-items:center;gap:8px;padding:16px;border-radius:var(--r-md);background:var(--surface-soft);border:1px dashed var(--line-2);color:var(--muted);font-size:12.5px;font-weight:600}
+/* ── بطاقة قابلة للطيّ («تغيير كلمة السر») ──
+   ⚠️ العلامة الافتراضية لـ`<summary>` مثلّثٌ يشير **يمينًا** ولا ينقلب مع RTL
+      في كل محرّك، فتُقرأ في العربية «مغلق» وهي تعني «افتح». البديل سهمٌ
+      عموديّ لا اتّجاه له: ينزل عند الفتح ويعلو عند الإغلاق في اللغتين. */
+.acc-fold>summary{cursor:pointer;list-style:none;margin-bottom:0;min-height:var(--tap);align-items:center}
+.acc-fold>summary::-webkit-details-marker{display:none}
+.acc-fold[open]>summary{margin-bottom:var(--s-4)}
+.acc-fold-arw{margin-inline-start:auto;display:grid;place-items:center;color:var(--muted);transition:transform var(--t-fast) var(--ease-out)}
+.acc-fold-arw svg{width:18px;height:18px}
+.acc-fold[open] .acc-fold-arw{transform:rotate(180deg)}
 
 /* ---------- MODAL (transform/opacity + swipe) ---------- */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);opacity:0;transition:opacity var(--t-base)}
@@ -1060,7 +1102,9 @@ body.modal-open{overflow:hidden}
    ملاحظة: أُسقط border-radius (كان 4px) — ضبطه هنا كان يشوّه شكل العنصر نفسه عند التركيز
    (يحوّل الأزرار الحبّية 999px إلى شبه مربّعة)، و`inherit` كان سيسحب نصف قطر الأب لا العنصر.
    الـoutline في المتصفّحات الحديثة يتبع border-radius الخاص بالعنصر تلقائياً — وهو المطلوب. */
-:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+/* ⚠️ و`summary` في القائمة: هو عنصرٌ قابل للتركيز بلا `tabindex` ولا وسمٍ من
+   الستّة أعلاه ⇒ كان يُركَّز عليه بـTab بلا حلقةٍ واحدة تُرى. */
+:where(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 /* هالة خفيفة حول الحدّ — الحدّ وحده يقول «هنا التركيز»، والهالة تجعله يُرى
    على خلفية مزدحمة (صورة ملعب مثلًا) بلا زيادة سُمكه.
    ⚠️ **بلا :where() هنا عمدًا.** `:where()` نوعيّتها **صفر**، فالقاعدة كلّها
@@ -1070,7 +1114,7 @@ body.modal-open{overflow:hidden}
    بالوسم الصريح تصير (0,1,1) فتعلو على الصنف المفرد.
    ⚠️ وbox-shadow لا filter: الثانية تنشئ سياق تركيب يقصّ الأبناء الثابتين. */
 button:focus-visible,a:focus-visible,input:focus-visible,
-select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+select:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
   box-shadow:0 0 0 6px var(--ring-glow)}
 /* الحقول تُلغي الحدّ وتكتفي بالهالة: .finput لها حدّ خاصّ يتلوّن عند التركيز
    أصلًا، فحدّ ثانٍ فوقه كان يعطي إطارين متراكبين. */
@@ -1233,21 +1277,34 @@ body.dark .scarce-dot,body.dark .scarce-dot::after{background:#f59e0b}
 #page-detail{padding-bottom:96px}
 
 /* ---------- OWNER TABS + CALENDAR + CONFIRM (المرحلة 4) ---------- */
-.owner-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:80;background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);padding:11px var(--s-5);border-bottom:1px solid var(--line)}
-.owner-tabs::-webkit-scrollbar{display:none}
-.otab{flex:0 0 auto;background:transparent;border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 16px;min-height:40px;font-size:12.5px;font-weight:800;white-space:nowrap;transition:all var(--t-fast) var(--ease-out)}
-.otab:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}
-.otab.active{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}
+/* ⚠️ `.owner-tabs`/`.otab` حُذفتا مع الشريط الأفقي أعلى الصفحة: التبويبات صارت
+   أزرارًا في `#nav-owner` (‏`.nitem`)، فالشريط السفلي ينقل فعلًا بدل أن يقول
+   «أنت هنا» وهو المكان الوحيد الممكن. وسقط معه Sidebar الكمبيوتر: الشريط
+   السفلي يظهر على الكمبيوتر كما يظهر شريط اللاعب أصلًا — أداة تنقّل واحدة
+   لا اثنتان تتفرّعان بالعرض. */
 .owner-tab{animation:fadeUp var(--t-base) var(--ease-out) both}
 
-/* لوحة المالك على الكمبيوتر: Sidebar عمودي + منطقة محتوى */
+/* مدخل «التقارير» في نهاية تبويب «اليوم» — بطاقة بسهم لا خانة في الشريط:
+   التبويبات الأربعة أسئلةٌ يوميّة، والتقارير أثرٌ شهري. */
+.own-entry{display:flex;width:100%;align-items:center;gap:12px;text-align:start;
+  margin-top:14px;padding:14px 16px;min-height:var(--tap);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-xl);
+  box-shadow:var(--shadow-card);transition:border-color var(--t-fast),transform var(--t-fast) var(--ease-spring)}
+.own-entry:hover{border-color:rgba(15,75,83,.4)}
+.own-entry:active{transform:scale(.985)}
+.own-entry-ic{flex-shrink:0;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--primary-soft);color:var(--emerald-2)}
+.own-entry-ic svg{width:21px;height:21px}
+.own-entry-txt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 auto}
+.own-entry-ttl{font-size:14px;font-weight:900;color:var(--ink)}
+.own-entry-sub{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.5}
+.own-entry-arw{flex-shrink:0;color:var(--muted)}
+.own-entry-arw svg{width:18px;height:18px}
+/* السهم فيزيائي: يشير إلى «إلى الأمام» فينقلب مع اتجاه الصفحة */
+html[dir="rtl"] .own-entry-arw{transform:scaleX(-1)}
+
+/* لوحة المالك على الكمبيوتر: عمود واحد بعرض محدود — والتنقّل في الشريط السفلي */
 @media(min-width:1024px){
-  #page-owner.active{display:grid;grid-template-columns:248px minmax(0,1fr);grid-template-areas:"head head" "side main";column-gap:var(--s-6);align-items:start;max-width:1100px;margin:0 auto;padding-bottom:var(--s-8)}
-  #page-owner>.app-header{grid-area:head}
-  #page-owner>.owner-tabs{grid-area:side;position:sticky;top:20px;flex-direction:column;align-items:stretch;gap:6px;overflow:visible;margin-top:20px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-card);backdrop-filter:none}
-  #page-owner>.owner-tabs .otab{width:100%;justify-content:flex-start;text-align:start;border-radius:14px;min-height:48px;padding:12px 16px;font-size:13.5px}
-  #page-owner>.pad{grid-area:main;padding-top:20px}
-  #nav-owner{display:none!important}
+  #page-owner.active{max-width:1100px;margin:0 auto}
 }
 
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -1603,10 +1660,10 @@ body.dark .subfield-card.active{background:var(--primary-soft);border-color:var(
 /* إلغاء تأخير النقر المزدوج وتكبير اللمس المزدوج على كل العناصر التفاعلية */
 button,a,select,summary,.star,.nitem,.tbtn,.day-btn{touch-action:manipulation}
 /* منع تحديد نص الأزرار عند الضغط المطوّل/النقر السريع */
-button,.sbtn,.cbtn,.tbtn,.day-btn,.ftab,.otab,.fx-chip,.nitem,.star{-webkit-user-select:none;user-select:none}
+button,.sbtn,.cbtn,.tbtn,.day-btn,.ftab,.fx-chip,.nitem,.star{-webkit-user-select:none;user-select:none}
 /* منع سحب التمرير من التسرب خلف النوافذ والشرائط الأفقية */
 .modal,.success-overlay{overscroll-behavior:contain}
-.region-tabs,.days-row,.detail-thumbs,.owner-tabs{overscroll-behavior-x:contain}
+.region-tabs,.days-row,.detail-thumbs{overscroll-behavior-x:contain}
 /* التقاط ناعم لعناصر الشرائط الأفقية أثناء التمرير */
 .region-tabs,.days-row,.detail-thumbs{scroll-snap-type:x proximity;scroll-padding-inline:var(--s-5)}
 .region-tabs>*,.days-row>*,.detail-thumbs>*{scroll-snap-align:start}
@@ -1881,7 +1938,7 @@ html[lang="en"] .tbtn{font-size:11.5px}
 html[lang="en"] .day-btn{font-size:11.5px}
 html[lang="en"] .nitem{font-size:10.5px}
 html[lang="en"] .lp-stat-lbl{font-size:12px}
-html[lang="en"] :is(.search-btn,.place-book-btn,.ftab,.otab,.filter-btn){font-size:13px}
+html[lang="en"] :is(.search-btn,.place-book-btn,.ftab,.filter-btn){font-size:13px}
 html[lang="en"] .sec-title .link{font-size:12.5px}
 html[lang="en"] .place-strip-info{font-size:12px}
 html[lang="en"] .stat-label{font-size:11.5px}
@@ -2177,7 +2234,6 @@ body.dark .game-card{background:var(--surface)}
 .own-open-note{font-size:11px;color:var(--muted);line-height:1.65}
 
 /* ---------- شارة الطلبات الجديدة على تبويب «الحجوزات» ---------- */
-.otab{position:relative}
 .tab-badge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;display:grid;place-items:center;
   background:var(--danger);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:0 4px;
   box-shadow:0 0 0 2px var(--cream)}
@@ -2343,6 +2399,7 @@ a.home-brand{text-decoration:none;color:inherit}
 .place-body .place-rating{color:var(--ink-2);background:var(--primary-soft);border:1px solid var(--line);flex-shrink:0}
 .place-body .place-loc{color:var(--muted)}
 .place-body .amenities-row{padding:0}
+.place-body .place-reply{padding:0;margin-top:2px}
 .place-sub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;min-width:0}
 html[lang="en"] .place-sub{font-size:12px}
 /* صف السعر + زر الحجز */
@@ -2556,7 +2613,9 @@ html,body{height:auto;min-height:100%}
 .owner-wa-link{display:inline-flex}
 
 /* --- FAB إضافة ملعب (تبويب الملاعب فقط) --- */
-.owner-fab{position:fixed;inset-inline-end:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 20px;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:14px;font-weight:900;box-shadow:var(--shadow-lg),var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring)}
+/* ⚠️ فوق الشريط السفلي لا تحته: `bottom:18px` كانت تضع الزرّ العائم **خلف**
+   شريط المالك (‏z-index:100 عليه) فيُقصّ نصفه. */
+.owner-fab{position:fixed;inset-inline-end:18px;bottom:calc(var(--bnav-h) + 14px + env(safe-area-inset-bottom));z-index:60;display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 20px;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:14px;font-weight:900;box-shadow:var(--shadow-lg),var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring)}
 .owner-fab svg{width:20px;height:20px}
 .owner-fab:hover{transform:translateY(-2px)}
 .owner-fab:active{transform:scale(.95)}
@@ -2741,11 +2800,11 @@ body.dark .bnav{box-shadow:0 -0.5px 0 var(--line),0 -6px 20px -12px rgba(0,0,0,.
    بعد أن صارت التوكنات أسطحًا صلبة، الضبابية بلا أثر بصري لكنها تُنشئ طبقة دمج GPU
    لكل عنصر ⇒ تقطيع تمرير على أندرويد المتوسط. تُزال، وتُبقى فقط على الطبقات الشفّافة
    فوق المحتوى (overlay المودال/النجاح + زر رجوع التفاصيل فوق الصورة). */
-.card,.detail-section,.modal,.scard,.bnav,.detail-sticky,.browse-sticky,.owner-tabs,.toast,.finput,.lp-nav,
+.card,.detail-section,.modal,.scard,.bnav,.detail-sticky,.browse-sticky,.toast,.finput,.lp-nav,
 .app-header.home .icon-btn,.app-header.compact .ghost-btn{
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 /* أسطح كانت تعتمد على الضبابية ⇒ تصبح صلبة صريحة */
-.browse-sticky,.owner-tabs,.fchips-bar{background:var(--surface)!important;border-bottom:1px solid var(--line)!important}
+.browse-sticky,.fchips-bar{background:var(--surface)!important;border-bottom:1px solid var(--line)!important}
 .fchips-bar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .detail-sticky{background:var(--surface)!important;border-top:1px solid var(--line)!important;
   box-shadow:0 -0.5px 0 var(--line),0 -8px 24px -16px rgba(16,24,32,.14)!important}
@@ -3154,7 +3213,7 @@ body.dark .place-card{box-shadow:0 1px 3px rgba(0,0,0,.5),0 8px 20px -12px rgba(
 /* — الحقول: أوضح حدًّا وأقصر قطرًا (نموذج عالمي) — */
 .finput,input,select,textarea{border-radius:10px}
 /* — الشرائح تبقى حبوبًا (فلاتر عالمية) لكن أنحف حدًّا — */
-.ftab,.fx-chip,.otab{border-width:1px}
+.ftab,.fx-chip{border-width:1px}
 /* — الشارات: مستطيلة قليلًا (نمط Booking) — */
 .badge,.avail-badge,.place-cat-badge,.age-chip,.field-off-badge{border-radius:6px}
 .place-cat-badge{border-radius:8px}

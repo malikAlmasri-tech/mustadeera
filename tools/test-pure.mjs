@@ -94,7 +94,7 @@ function extract(name) {
 
 const NAMES = ['normalizePhone', 'JO_PHONE_RE', 'validPhone', 'digits', 'isHttpUrl',
                'normalizeSlotsKeyword', 'parseSlots', 'DEFAULT_SLOTS', 'enSlotLabel',
-               'normSize', 'countNoun', 'slotsToKeyword'];
+               'normSize', 'countNoun', 'slotsToKeyword', 'replySpeedText'];
 const bundle = NAMES.map(extract).join('\n');
 const api = new Function(`${bundle}\nreturn {${NAMES.join(',')}};`)();
 
@@ -208,6 +208,45 @@ describe('countNoun', () => {
   eq(String(c(10, ...forms)).includes('ملاعب'), true, 'ten');
   eq(String(c(11, ...forms)).includes('ملعبًا'), true, 'eleven takes the accusative singular');
   eq(String(c(0, ...forms)).includes('ملاعب'), true, 'zero');
+});
+
+/* ── "usually replies within N" ──────────────────────────────────────────────
+ * This string is the only place the product tells a player how long the wait
+ * is. A wrong unit here is not a typo: it is the difference between "they
+ * answer in a quarter of an hour" and "they answer tomorrow", on the screen
+ * where the player decides whether to send the request at all. */
+describe('replySpeedText', () => {
+  const r = api.replySpeedText;
+  /* The minutes/hours boundary, from both sides. 59 must not round up into
+     hours, and 60 must not stay as "60 minutes". */
+  eq(r(59, 'en'),  '59 minutes', '59 stays in minutes');
+  eq(r(60, 'en'),  '1 hour',     '60 becomes exactly one hour');
+  eq(r(61, 'en'),  '1 hour',     '61 rounds to one hour, not 1.0166');
+  eq(r(90, 'en'),  '1.5 hours',  'one decimal place where it earns its keep');
+  eq(r(120, 'en'), '2 hours',    'two hours is an integer again');
+  /* A median of 0 means "under a minute", and "within 0 minutes" is not a
+     sentence. One minute is the floor and it stays true. */
+  eq(r(0, 'en'), '1 minute', 'zero floors to one minute');
+  eq(r(1, 'en'), '1 minute', 'one');
+  /* Anything that is not a positive number returns the empty string, and the
+     caller renders no line at all — m5: we say nothing about what we do not
+     measure. */
+  eq(r(null, 'en'),      '', 'null');
+  eq(r(undefined, 'en'), '', 'undefined');
+  eq(r('soon', 'en'),    '', 'not a number');
+  eq(r(NaN, 'en'),       '', 'NaN');
+  eq(r(-5, 'en'),        '', 'negative');
+  /* Arabic counted nouns: the number changes the noun, and 1 and 2 drop the
+     numeral entirely. */
+  eq(r(1, 'ar'),   'دقيقة واحدة', 'one minute in Arabic drops the numeral');
+  eq(r(2, 'ar'),   'دقيقتان',     'two minutes is a dual');
+  eq(r(15, 'ar'),  '15 دقيقة',    'eleven and up take the accusative singular');
+  eq(r(5, 'ar'),   '5 دقائق',     'three to ten take the plural');
+  eq(r(60, 'ar'),  'ساعة واحدة',  'one hour');
+  eq(r(120, 'ar'), 'ساعتان',      'two hours is a dual');
+  eq(r(240, 'ar'), '4 ساعات',     'four hours takes the plural');
+  /* A decimal keeps the noun singular in Arabic — "1.5 ساعات" is wrong. */
+  eq(r(90, 'ar'),  '1.5 ساعة',    'a fraction singularises the noun');
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

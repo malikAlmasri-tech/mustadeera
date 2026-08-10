@@ -393,6 +393,10 @@
       <div class="detail-head">
         <div>
           <div class="detail-name" id="dName"></div>
+          <!-- سطر التقييم بجانب الاسم: «كم تقييمه؟» سؤالٌ يُسأل **قبل** اختيار
+               الساعة لا بعده، وكان خلف تبويب لا يزوره أحد وهو في منتصف الاختيار.
+               ومكانٌ بلا تقييم لا يعرض شيئًا (م5) — لا «0 (0)». -->
+          <button type="button" class="detail-rating" id="dRating" data-action="openAboutReviews" hidden></button>
           <div class="detail-city" id="dCity"></div>
         </div>
         <div>
@@ -401,13 +405,24 @@
         </div>
       </div>
       <div class="detail-badges" id="dBadges"></div>
+      <!-- الاتصال والخريطة ظاهران دائمًا: كانا داخل تبويب «الموقع» — تبويبٌ كامل
+           لسطرين وزرّين، لا يُفتَح إلّا بعد أن يكون القرار قد اتُّخذ. -->
+      <div class="detail-actions detail-actions-top">
+        <a class="action-link action-call" id="callBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
+        </a>
+        <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
+        </a>
+      </div>
+      <!-- صفّ المرافق المضغوط: أهمّ ثلاثة وشريحة «+n» تفتح «عن الملعب» -->
+      <div id="dAmenRow"></div>
 
-      <!-- تبويبات التفاصيل (مرجع Court Detail): احجز · المرافق · التقييمات · الموقع -->
+      <!-- تبويبان لا أربعة: «احجز» يحمل المسار، و«عن الملعب» يجمع ما كان
+           مبعثرًا على ثلاثة تبويبات لا يزورها أحد (المرافق · التقييمات · الموقع). -->
       <div class="detail-tabs" id="detailTabs" role="tablist" data-i18n-aria="ariaDetailTabs" aria-label="أقسام الملعب">
         <button type="button" class="dtab-btn active" role="tab" data-action="setDetailTab" data-dtab="book" aria-selected="true" data-i18n="dtabBook">احجز</button>
-        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="amenities" aria-selected="false" data-i18n="dtabAmenities">المرافق</button>
-        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="reviews" aria-selected="false" data-i18n="dtabReviews">التقييمات</button>
-        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="location" aria-selected="false" data-i18n="dtabLocation">الموقع</button>
+        <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="about" aria-selected="false" data-i18n="dtabAbout">عن الملعب</button>
       </div>
 
       <!-- ===== تبويب: احجز ===== -->
@@ -444,31 +459,21 @@
         <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
       </div>
 
-      <!-- ===== تبويب: المرافق ===== -->
-      <div class="dtab-panel" data-dtab-panel="amenities" role="tabpanel" hidden>
+      <!-- ===== تبويب: عن الملعب (المرافق + التقييمات + الموقع) ===== -->
+      <div class="dtab-panel" data-dtab-panel="about" role="tabpanel" hidden>
         <section class="detail-section" data-i18n-aria="servicesTitle" aria-label="الخدمات والمرافق">
           <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title" data-i18n="servicesTitle">الخدمات والمرافق</h2></div>
           <div id="detailAmenities"></div>
         </section>
-      </div>
-
-      <!-- ===== تبويب: التقييمات ===== -->
-      <div class="dtab-panel" data-dtab-panel="reviews" role="tabpanel" hidden>
-        <div id="ratingDist"></div>
-        <button class="sbtn" data-action="openReview" data-i18n="rateThisPlace" style="margin-top:14px">قيّم هذا المكان</button>
-      </div>
-
-      <!-- ===== تبويب: الموقع ===== -->
-      <div class="dtab-panel" data-dtab-panel="location" role="tabpanel" hidden>
-        <div class="detail-loc-text" id="dLocationText"></div>
-        <div class="detail-actions">
-          <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
-          </a>
-          <a class="action-link action-call" id="callBtn">
-            <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
-          </a>
-        </div>
+        <section class="detail-section" id="dReviewsSec" data-i18n-aria="dtabReviews" aria-label="التقييمات">
+          <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 16.8 6.7 19.7l1.1-6.1L3.4 9.4l6-.8L12 3Z"/></svg></span><h2 class="dsec-title" data-i18n="dtabReviews">التقييمات</h2></div>
+          <div id="ratingDist"></div>
+          <button class="sbtn" data-action="openReview" data-i18n="rateThisPlace" style="margin-top:14px">قيّم هذا المكان</button>
+        </section>
+        <section class="detail-section" data-i18n-aria="dtabLocation" aria-label="الموقع">
+          <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h2 class="dsec-title" data-i18n="dtabLocation">الموقع</h2></div>
+          <div class="detail-loc-text" id="dLocationText"></div>
+        </section>
       </div>
     </div>
   </section>
@@ -519,8 +524,11 @@
         <input class="finput readonly-field" id="accPhone" type="tel" disabled style="margin-bottom:16px">
         <button class="sbtn" data-action="saveAccount" data-i18n="saveEdit">حفظ التعديل</button>
       </div>
-      <div class="card mb-card">
-        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg></span><span data-i18n="pwTitle">تغيير كلمة السر</span></div>
+      <!-- ⚠️ **مطويّة لا موسَّعة.** ثلاثة حقول وثلاثة أزرار عين وشرحٌ من سطرين
+           لفعلٍ يقع مرّة في السنة — كانت تدفع البطاقات التي تليها تحت الطيّة.
+           و`<details>` هي البدائيّة نفسها المستعملة في «إحصائيات الملعب». -->
+      <details class="card mb-card acc-fold">
+        <summary class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg></span><span data-i18n="pwTitle">تغيير كلمة السر</span><span class="acc-fold-arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <p class="t-sub" style="line-height:1.75;margin-bottom:14px" data-i18n="pwSub">لازم تكتب كلمة السر الحالية — هيك ما حدا يقدر يغيّرها لو وصل لهاتفك.</p>
         <label class="form-label" for="pwCur" data-i18n="pwCur">كلمة السر الحالية</label>
         <div class="input-wrap" style="margin-bottom:13px">
@@ -547,7 +555,7 @@
           </button>
         </div>
         <button class="sbtn" data-action="changePassword" data-i18n="pwSave">تغيير كلمة السر</button>
-      </div>
+      </details>
       <!-- ============ بطاقاتي ============
            بطاقةٌ تقول الحقيقة بدل أن تكون قائمةً فارغة تُوهم بأن الحفظ ممكن:
            لا بطاقة محفوظة لأن الدفع كلّه نقدي اليوم. وحين تُوصَل بوّابة الدفع
@@ -610,13 +618,6 @@
         </div>
       </div>
     </header>
-    <nav class="owner-tabs" id="ownerTabs" role="tablist" data-i18n-aria="ariaOwnerTabs" aria-label="أقسام لوحة المالك">
-      <button class="otab active" id="otab-today" data-otab="today" role="tab" aria-selected="true" aria-controls="ownerTab-today" data-i18n="otabToday">اليوم</button>
-      <button class="otab" id="otab-bookings" data-otab="bookings" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-bookings" data-i18n="otabBookings">الحجوزات</button>
-      <button class="otab" id="otab-calendar" data-otab="calendar" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-calendar" data-i18n="otabCalendar">التقويم</button>
-      <button class="otab" id="otab-fields" data-otab="fields" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-fields" data-i18n="otabFields">الملاعب</button>
-      <button class="otab" id="otab-reports" data-otab="reports" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-reports" data-i18n="otabReports">التقارير</button>
-    </nav>
     <div class="pad">
 
       <!-- ===== تبويب: اليوم ===== -->
@@ -636,6 +637,13 @@
         </div>
         <div class="sec-title" style="padding:0 0 12px"><span data-i18n="todayRequests">طلبات وحجوزات اليوم</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث</span></div>
         <div id="ownerToday"></div>
+        <!-- مدخل التقارير: التبويبات الأربعة أسئلةٌ يوميّة، والتقارير أثرٌ شهري
+             ⇒ لا تستحقّ خانةً في الشريط، وتستحقّ نقرةً واحدة من «اليوم». -->
+        <button type="button" class="own-entry" data-otab="reports">
+          <span class="own-entry-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg></span>
+          <span class="own-entry-txt"><span class="own-entry-ttl" data-i18n="otabReports">التقارير</span><span class="own-entry-sub" data-i18n="reportsEntrySub">الإيراد والرسوم البيانية وتوصيات التسعير</span></span>
+          <span class="own-entry-arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
       </div>
 
       <!-- ===== تبويب: الحجوزات ===== -->
@@ -680,7 +688,13 @@
       </div>
 
       <!-- ===== تبويب: التقارير ===== -->
-      <div class="owner-tab" id="ownerTab-reports" role="tabpanel" aria-labelledby="otab-reports" tabindex="0" hidden>
+      <!-- ⚠️ `region` لا `tabpanel`: التقارير خرجت من الشريط ⇒ لا تبويب يسمّيها.
+           وبلا زرّ رجوع تصير الصفحة مصيدةً (شريط المالك لا يحمل خانتها). -->
+      <div class="owner-tab" id="ownerTab-reports" role="region" data-i18n-aria="otabReports" aria-label="التقارير" tabindex="0" hidden>
+        <div class="sec-title" style="padding:0 0 12px">
+          <span data-i18n="otabReports">التقارير</span>
+          <button type="button" class="link" data-otab="today" data-i18n="backToToday">رجوع إلى اليوم</button>
+        </div>
         <div class="stat-grid">
           <div class="stat-card"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></span><div class="stat-value" id="oTotal">0</div><div class="stat-label" data-i18n="allBookings">كل الحجوزات</div><div class="stat-hint" data-i18n="hintAllReq">جميع الطلبات</div></div>
           <div class="stat-card c-green"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><div class="stat-value" id="oConfirmed">0</div><div class="stat-label" data-i18n="confirmedLbl">مؤكدة</div><div class="stat-hint" data-i18n="hintInRevenue">تدخل بالإيراد</div></div>
@@ -777,10 +791,16 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="bkTitle" data-i18n="reviewTitle">مراجعة الحجز</div>
       <!-- مؤشّر الخطوات: 1 و2 مكتملتان، 3 (التأكيد) نشطة -->
+      <!-- ⚠️ **مقياسٌ واحد يمتدّ عبر الشاشتين.** كان في صفحة الملعب ثلاث خطوات
+           (ملعب · يوم · وقت) وفي هذه النافذة ثلاثٌ أخرى (ملعب · موعد · تأكيد)،
+           فمن أنهى «الخطوة ٣» فتحت له نافذةٌ تقول إنه في «الخطوة ٣»، ورقم ٢
+           يعني «اليوم» هناك و«اليوم+الوقت» هنا. الآن أربعٌ لا ثلاث، وتسمياتها
+           هي تسميات عناوين الصفحة نفسها. -->
       <ol class="bk-steps" id="bkSteps" data-i18n-aria="ariaBookingSteps" aria-label="خطوات الحجز">
         <li class="bk-step done" data-step="1"><span class="bk-step-dot">1</span><span class="bk-step-lbl" data-i18n="stepField">الملعب</span></li>
-        <li class="bk-step done" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl" data-i18n="stepDate">الموعد</span></li>
-        <li class="bk-step active" data-step="3" aria-current="step"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepConfirm">التأكيد</span></li>
+        <li class="bk-step done" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl" data-i18n="stepDate">اليوم</span></li>
+        <li class="bk-step done" data-step="3"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepTime">الوقت</span></li>
+        <li class="bk-step active" data-step="4" aria-current="step"><span class="bk-step-dot">4</span><span class="bk-step-lbl" data-i18n="stepConfirm">التأكيد</span></li>
       </ol>
       <div id="bkReview" class="bk-review"></div>
       <!-- ============ وسيلة الدفع ============
@@ -790,8 +810,7 @@
               بوّابة الدفع وحدها، فلا يمرّ علينا ولا يُخزَّن (ترحيل 12). -->
       <!-- ============ نوع المباراة (٤.٢) ============
            بنفس لغة اختيار الدفع (`pay-pick`) عمدًا: قرارٌ آخر على شاشة يعرفها
-           اللاعب، لا خطوةٌ جديدة في المسار. والمؤشّر يبقى «الملعب · الموعد ·
-           التأكيد» ثلاثَ خطوات كما هو.
+           اللاعب، لا خطوةٌ جديدة في المسار — فالمؤشّر يبقى أربع خطوات كما هو.
            ويُخفى كلّه ما لم يكن ترحيل 22 مُشغَّلًا. -->
       <div class="pay-pick" id="matchPick" role="radiogroup" data-i18n-aria="gmPickTitle" aria-label="نوع المباراة" hidden>
         <div class="pay-pick-title" data-i18n="gmPickTitle">نوع المباراة</div>
@@ -831,6 +850,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <span data-i18n="bkNote">بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
       </div>
+      <!-- «عادةً يردّ خلال ن» — يُملأ من app.js، ويبقى فارغًا تمامًا لمكانٍ
+           لا يُقاس بعد (‏العرض نفسه يحجب ما دون سبعة ردود). -->
+      <div id="bkReplySpeed"></div>
       <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">تأكيد الحجز</button>
       <button class="cbtn" data-action="changeTime" data-i18n="changeTime">تغيير الموعد</button>
     </div>
@@ -1224,6 +1246,11 @@
     <button type="button" class="nitem active" data-nav="home">
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div><span data-i18n="navHome">الرئيسية</span>
     </button>
+    <!-- «المفضّلة» مسارٌ لا شريحة: القلب على كل بطاقة كان مدخله الوحيد شريحةً
+         داخل شريط المناطق المنزلق أفقيًّا، فمن ضغط قلبًا لا يجد أين تذهب. -->
+    <button type="button" class="nitem" data-nav="favorites">
+      <div class="nicon"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div><span data-i18n="navFav">المفضّلة</span>
+    </button>
     <button type="button" class="nitem" data-nav="bookings">
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div><span data-i18n="navBookings">حجوزاتي</span>
     </button>
@@ -1231,10 +1258,21 @@
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div><span data-i18n="navAccount">حسابي</span>
     </button>
   </nav>
-  <nav class="bnav" id="nav-owner">
+  <!-- شريط المالك = تنقّله الحقيقي. كان زرًّا واحدًا يقول «أنت هنا» وهو المكان
+       الوحيد الممكن، بينما التبويبات الخمس تنزلق أفقيًّا أعلى الصفحة. -->
+  <nav class="bnav" id="nav-owner" role="tablist" data-i18n-aria="ariaOwnerTabs" aria-label="أقسام لوحة المالك">
     <span class="nav-pill" aria-hidden="true"></span>
-    <button type="button" class="nitem active" data-nav="owner">
-      <div class="nicon"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg></div><span data-i18n="navOwner">لوحتي</span>
+    <button type="button" class="nitem active" id="otab-today" data-otab="today" role="tab" aria-selected="true" aria-controls="ownerTab-today">
+      <div class="nicon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.9 4.9l1.4 1.4"/><path d="M17.7 17.7l1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.9 19.1l1.4-1.4"/><path d="M17.7 6.3l1.4-1.4"/></svg></div><span data-i18n="otabToday">اليوم</span>
+    </button>
+    <button type="button" class="nitem" id="otab-bookings" data-otab="bookings" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-bookings">
+      <div class="nicon"><svg viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3.5 6h.01"/><path d="M3.5 12h.01"/><path d="M3.5 18h.01"/></svg></div><span data-i18n="otabBookings">الحجوزات</span>
+    </button>
+    <button type="button" class="nitem" id="otab-calendar" data-otab="calendar" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-calendar">
+      <div class="nicon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/></svg></div><span data-i18n="otabCalendar">التقويم</span>
+    </button>
+    <button type="button" class="nitem" id="otab-fields" data-otab="fields" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-fields">
+      <div class="nicon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M12 5v14"/><circle cx="12" cy="12" r="2.5"/></svg></div><span data-i18n="otabFields">الملاعب</span>
     </button>
   </nav>
 

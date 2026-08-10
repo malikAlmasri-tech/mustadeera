@@ -372,11 +372,27 @@
 
     var input = $('.pl-search input', box);
     var chips = $$('.pl-chip', box);
+    var sorts = $$('.pl-sortb', box);
+    var minI = $('#pl-min', box);
+    var maxI = $('#pl-max', box);
     var count = $('.pl-count');
     var empty = $('.pl-empty');
     var cards = $$('.pl-card', grid);
     var area = '';
     var term = '';
+    var sort = 'default';
+    /* الترتيب الأصلي (الأبجدي كما بناه المولّد) محفوظ مرّةً واحدة: الترتيب
+       **مستقرّ** فعند تساوي السعر تبقى البطاقتان كما كانتا، وإلّا قفزتا بلا
+       سبب مرئي في كل ضغطة. */
+    cards.forEach(function (c, i) { c.__i = i; });
+
+    function numAttr(c, name) {
+      var v = c.getAttribute(name);
+      // الغياب ليس صفرًا: مكانٌ بلا تقييم ليس «صفر نجوم» (م5)
+      if (v === null || v === '') return null;
+      var n = parseFloat(v);
+      return isNaN(n) ? null : n;
+    }
 
     function norm(s) {
       return (s || '')
@@ -392,13 +408,41 @@
 
     function apply() {
       var shown = 0;
+      // مرور واحد للشروط الأربعة: منطقة · بحث · مدى سعر · ثمّ الترتيب
+      var lo = minI && minI.value !== '' ? parseFloat(minI.value) : null;
+      var hi = maxI && maxI.value !== '' ? parseFloat(maxI.value) : null;
+      if (lo !== null && isNaN(lo)) lo = null;
+      if (hi !== null && isNaN(hi)) hi = null;
       cards.forEach(function (c) {
+        var price = numAttr(c, 'data-price');
         var okArea = !area || c.getAttribute('data-area') === area;
         var okTerm = !term || norm(c.getAttribute('data-q')).indexOf(term) !== -1;
-        var ok = okArea && okTerm;
+        var okLo = lo === null || price === null || price >= lo;
+        var okHi = hi === null || price === null || price <= hi;
+        var ok = okArea && okTerm && okLo && okHi;
         if (ok) shown++;
         c.classList.toggle('is-out', !ok);
       });
+      /* إعادة ترتيب عقد الـDOM لا نسخها: البطاقات هي نفسها، وحالة `is-out`
+         عليها لا تُمَسّ. و`appendChild` على عقدة موجودة نقلٌ لا تكرار. */
+      if (sort !== 'default') {
+        var order = cards.slice().sort(function (a, b) {
+          var d;
+          if (sort === 'price-asc') {
+            var pa = numAttr(a, 'data-price'), pb = numAttr(b, 'data-price');
+            d = (pa === null ? Infinity : pa) - (pb === null ? Infinity : pb);
+          } else {
+            // بلا تقييم ⇒ آخر القائمة، لا صفر يسبق النجمة الواحدة
+            var ra = numAttr(a, 'data-rating'), rb = numAttr(b, 'data-rating');
+            d = (rb === null ? -Infinity : rb) - (ra === null ? -Infinity : ra);
+          }
+          return d || (a.__i - b.__i);   // مستقرّ: التساوي يبقي الأبجدي
+        });
+        order.forEach(function (c) { grid.appendChild(c); });
+      } else {
+        cards.slice().sort(function (a, b) { return a.__i - b.__i; })
+             .forEach(function (c) { grid.appendChild(c); });
+      }
       // الإخفاء من التخطيط يأتي بعد انتهاء الانكماش كي تُرى الحركة
       setTimeout(function () {
         cards.forEach(function (c) { c.classList.toggle('is-gone', c.classList.contains('is-out')); });
@@ -421,6 +465,17 @@
         apply();
       });
     });
+    sorts.forEach(function (b) {
+      on(b, 'click', function () {
+        sort = b.getAttribute('data-sort') || 'default';
+        sorts.forEach(function (o) {
+          o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
+        });
+        apply();
+      });
+    });
+    on(minI, 'input', apply);
+    on(maxI, 'input', apply);
 
     apply();
   })();

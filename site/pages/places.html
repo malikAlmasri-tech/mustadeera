@@ -18,6 +18,21 @@
         <input type="search" id="pl-q" autocomplete="off" placeholder="{{t.plSearchPh}}" aria-label="{{t.plSearchPh}}">
       </div>
       {{placesChips}}
+      <!-- ترتيب ومدى سعر: أدوات التطبيق نفسها على البيانات نفسها — كانت
+           موجودة هناك وغائبة هنا، والأرقام مطبوعة في الصفحة أصلًا.
+           والأدوات **خاملة لا مخفيّة** بلا JS: من لا يعمل عنده السكربت يرى
+           القائمة كاملة كما يراها اليوم، وهو نفس سلوك حقل البحث القائم. -->
+      <div class="pl-sort" role="group" aria-label="{{t.plSortLabel}}">
+        <button class="pl-sortb" type="button" data-sort="default" aria-pressed="true">{{t.plSortDefault}}</button>
+        <button class="pl-sortb" type="button" data-sort="price-asc" aria-pressed="false">{{t.plSortPrice}}</button>
+        <button class="pl-sortb" type="button" data-sort="rating-desc" aria-pressed="false">{{t.plSortRating}}</button>
+      </div>
+      <div class="pl-range">
+        <label class="pl-range-l" for="pl-min">{{t.plPriceMin}}</label>
+        <input class="pl-range-i" id="pl-min" type="number" inputmode="numeric" min="0" step="5" placeholder="{{t.plAny}}">
+        <label class="pl-range-l" for="pl-max">{{t.plPriceMax}}</label>
+        <input class="pl-range-i" id="pl-max" type="number" inputmode="numeric" min="0" step="5" placeholder="{{t.plAny}}">
+      </div>
     </div>
 
     <p class="pl-count" data-tpl="{{t.plCountTpl}}" aria-live="polite">{{plCountInit}}</p>

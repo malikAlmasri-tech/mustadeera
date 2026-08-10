@@ -490,28 +490,15 @@ html[lang="ar"] .hero h1{line-height:1.24}
    «بلا مكالمة واحدة.» ١٧ محرفًا وحروفها أضيق فتسع. الورقة تفرّق بين اللغتين
    في --fs-body منذ البداية، وهذا امتداد للقاعدة نفسها. */
 html[lang="en"] .hero h1{font-size:clamp(30px,5.2vw,46px)}
-.hero h1 .hl-a,.hero h1 .hi,.hero h1 .hl-out{display:block}
+.hero h1 .hl-a,.hero h1 .hi{display:block}
 .hero h1 .hi{color:var(--lime)}
 
-/* السطر المحيطي.
-   ⚠️ داخل @supports وحده: القاعدة تُلوّن النصّ بشفافية شبه كاملة وتعتمد على
-   الحدّ ليُقرأ. متصفّح لا يعرف -webkit-text-stroke كان سيطبّق اللون وحده
-   ⇒ **سطر معدوم** لا سطر باهت. وبدونها يبقى أبيض عاديًّا — وهذا أسوأ ما
-   يمكن أن يحدث.
-   الحدّ .84 لا .55 كما في المرجع. مقيس بالبكسل لا مقدَّر: تُرسَم الصفحة
-   والسطر مخفيّ (visibility:hidden)، ثمّ يؤخَذ **أسطع ٢٪** من بكسلات
-   الخلفية داخل صندوقه — لا المتوسّط، فالتباين ينكسر عند ألمع بقعة.
-   ⚠️ والقياس **بالسطر ظاهرًا كذب**: بكسلات تنعيم حواف الحدّ نفسها تُعدّ
-   خلفيةً ساطعة، فأعطت 2.18:1 وهْمًا. بالسطر مخفيًّا: أسطع ٢٪ لمعانها
-   0.0666، والحدّ مركَّبًا فوقها = **6.2:1** (والمتوسّط 9.9:1).
-   والتعبئة .12 ليست زينة: الحرف المفرَّغ تمامًا يفقد ثقله البصري عند
-   أحجام الجوّال، وهذه التعبئة الخفيفة تعيده بلا أن تُلغي طابع الحدّ. */
-@supports (-webkit-text-stroke:1px #000){
-  .hero h1 .hl-out{color:rgba(255,255,255,.12);-webkit-text-stroke:2px rgba(234,243,241,.84)}
-  /* العربية متّصلة وعيونها ضيّقة: حدّ 2px يسدّ عين «ع» و«ه» عند 31px.
-     1.3px يحفظ الشكل ويبقي التباين نفسه (الحدّ لون واحد لا سُمك واحد). */
-  html[lang="ar"] .hero h1 .hl-out{-webkit-text-stroke-width:1.5px}
-}
+/* ⚠️ ما كان هنا: السطر الثالث بمعالجة محيطية (`-webkit-text-stroke` مع
+   `color:transparent` داخل `@supports`). أُزيلت في دفعة 2026-08-10: من
+   الدرجات الثلاث كانت هي الأضعف — تُقرأ «باهتة» لا «مؤكَّدة» — وأعلاهنّ
+   كلفةً في الحرص، إذ يلزمها `@supports` كي لا يصير النصّ **معدومًا** عند
+   من لا يدعم الخاصية. والسطر نفسه باقٍ ويحمل الآن `.hl-a` كالأوّل، فصار
+   العنوان درجتين: أبيض ممتلئ ⇒ Lime. */
 .hero .lead{color:rgba(234,243,241,.78);font-size:clamp(16.5px,2vw,20px);margin-inline:auto}
 @media (min-width:920px){.hero .lead{margin-inline:0}}
 .hero .eyebrow{background:rgba(140,198,62,.14);color:var(--lime)}
@@ -721,49 +708,14 @@ html.dark .stat-n{color:var(--lime)}
   }
 }
 
-/* ---- اللوحتان الطائرتان ----
-   ⚠️ محتواهما حقيقة بنيوية لا حدث حيّ (م5) — انظر تعليق الوسم.
-   موضعهما بالخصائص المنطقية فينعكسان مع الاتجاه؛ أمّا الميلة فـtransform
-   فيزيائي ⇒ مضروبة في --dirx كي تميل اللوحة نحو الجهاز في الاتجاهين.
-   ولا تحملان أي انجذاب للمؤشّر: كل عنصر يلاحق المؤشّر يضع نفسه تحته. */
-.hflag{position:absolute;z-index:4;display:flex;align-items:center;gap:9px;
-  padding:10px 14px;border-radius:15px;
-  box-shadow:0 18px 40px -14px rgba(0,0,0,.55);
-  font-size:12.5px;line-height:1.35;white-space:nowrap}
-.hflag b{display:block;font-family:var(--f-head);font-weight:800;font-size:15px;letter-spacing:-.01em}
-html[lang="ar"] .hflag b{font-family:var(--f-body);letter-spacing:0}
-
-/* الأولى: زجاج داكن بنقطة Lime — نفس لغة شرائح .trust في الهيرو */
-.hflag-a{inset-block-start:6%;inset-inline-start:clamp(-30px,-9%,-8px);
-  background:rgba(8,38,44,.90);border:1px solid rgba(140,198,62,.36);color:#EAF3F1;
-  backdrop-filter:blur(7px);transform:rotate(calc(var(--dirx) * -2.5deg))}
-.hflag-a .hflag-tx{color:rgba(234,243,241,.62)}
-.hflag-a b{color:var(--lime)}
-.hflag-dot{inline-size:8px;block-size:8px;border-radius:50%;background:var(--lime);flex:none}
-
-/* الثانية: بطاقة عاجية مصمتة — النقيض اللوني للأولى فلا تُقرآن توأمًا */
-.hflag-b{inset-block-end:14%;inset-inline-end:clamp(-26px,-8%,-6px);
-  flex-direction:column;align-items:flex-start;gap:2px;
-  background:#F2F1EC;color:#08262C;transform:rotate(calc(var(--dirx) * 3deg))}
-.hflag-b span{font-size:11.5px;color:rgba(8,38,44,.62)}
-
-/* تحت 560px الجهاز يضيق حتى تلتصق اللوحتان بحوافّه فتُقصّان بـ
-   .hero{overflow:hidden}. الإخفاء أصدق من عرضٍ مبتور — ونصّهما موجود
-   كاملًا في .hero-note فوقهما، فلا معلومة تضيع. */
-@media (max-width:559px){.hflag{display:none}}
-
-@media (prefers-reduced-motion:no-preference){
-  .hflag-a{animation:flag-bob 6s ease-in-out infinite}
-  .hflag-b{animation:flag-bob2 7.4s ease-in-out infinite}
-  @keyframes flag-bob{
-    0%,100%{transform:translate3d(0,0,0) rotate(calc(var(--dirx) * -2.5deg))}
-    50%{transform:translate3d(0,-9px,0) rotate(calc(var(--dirx) * -2.5deg))}
-  }
-  @keyframes flag-bob2{
-    0%,100%{transform:translate3d(0,0,0) rotate(calc(var(--dirx) * 3deg))}
-    50%{transform:translate3d(0,-11px,0) rotate(calc(var(--dirx) * 3deg))}
-  }
-}
+/* ⚠️ ما كان هنا: لوحان طائران (`.hflag-a` · `.hflag-b`) حول الجهاز، وحركة
+   `flag-bob`/`flag-bob2`. أُزيلا في دفعة 2026-08-10: نصّهما كان **تكرارًا
+   حرفيًّا** لما تقوله `.hero-note` فوقهما، وهو ما اعترف به `aria-hidden`
+   عليهما في الوسم نفسه. وفوق الطيّة عشرة أهداف بصرية، فأرخصُ ما يسقط منها
+   ما يُعيد قولَ شيءٍ مقول.
+   ولم تُمَسّ `.hero-glow` ولا `.hero-blob` ولا `.hero-photo`: أدوار زخرفية
+   مختلفة، ودورتاها غير متزامنتين عمدًا (13ث/19ث)، وتختفيان عند
+   `prefers-reduced-motion`. */
 
 /* =============================================================
    9 · شبكة Bento
@@ -1252,6 +1204,17 @@ html[lang="ar"] .dl-soon-h{font-family:var(--f-body)}
 .dl-soon-b{color:var(--muted);font-size:15.5px;margin-bottom:20px;max-width:52ch}
 .dl-soon-n{margin-top:12px;font-size:13.5px;color:var(--muted)}
 
+/* شريط لقطات التطبيق — يُولَّد من الملفّات الموجودة فعلًا، فقد يكون فيه
+   لقطةٌ واحدة أو ستّ. ولذلك انزلاقٌ أفقي لا شبكةٌ بعدد ثابت: شبكةٌ من ثلاثة
+   أعمدة على لقطتين تترك عمودًا فارغًا يُقرأ صورةً لم تُحمَّل.
+   ⚠️ والانزلاق داخل حاويته وحدها — الجسم لا ينزلق أفقيًّا أبدًا. */
+.dl-shots{display:flex;gap:14px;margin-top:clamp(22px,3vw,30px);
+  overflow-x:auto;overscroll-behavior-x:contain;padding-block-end:10px;
+  scroll-snap-type:x mandatory;scrollbar-width:thin}
+.dl-shot{flex:0 0 auto;margin:0;scroll-snap-align:center}
+.dl-shot img{display:block;inline-size:min(230px,62vw);block-size:auto;
+  border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface-2);
+  box-shadow:0 10px 30px -18px rgba(0,0,0,.5)}
 .dl-specs{list-style:none;display:grid;gap:10px;margin-top:26px;max-width:640px}
 .dl-specs li{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
   padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm)}
@@ -1367,6 +1330,26 @@ html.dark .pl-search input:focus{border-color:var(--lime)}
 @media (hover:hover){.pl-chip:hover{border-color:var(--line-2);transform:translateY(-2px)}}
 .pl-chip:active{transform:scale(.94)}
 .pl-chip[aria-pressed="true"]{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-ink)}
+/* الترتيب: نفس لغة شرائح المنطقة عمدًا — قرارٌ آخر على الصفّ نفسه، لا أداة
+   بشكل ثالث. و`role="group"` لا `radiogroup`: الأزرار ليست حقلَ نموذج. */
+.pl-sort{display:flex;flex-wrap:wrap;gap:8px}
+.pl-sortb{padding:9px 16px;border-radius:var(--r-full);cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:700;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--line);
+  transition:transform var(--t) var(--spring),background-color var(--t-fast),
+             color var(--t-fast),border-color var(--t-fast)}
+@media (hover:hover){.pl-sortb:hover{border-color:var(--line-2);transform:translateY(-2px)}}
+.pl-sortb:active{transform:scale(.94)}
+.pl-sortb[aria-pressed="true"]{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-ink)}
+/* مدى السعر: حقلان صغيران — الرقم بحجم يُقرأ، والتسمية مربوطة بـ`for` */
+.pl-range{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pl-range-l{font-size:13.5px;font-weight:700;color:var(--muted)}
+.pl-range-i{inline-size:88px;min-height:44px;padding-inline:12px;
+  font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)}
+.pl-range-i::placeholder{color:var(--muted);font-weight:500}
+.pl-range-i:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+html.dark .pl-range-i:focus{border-color:var(--lime)}
 .pl-count{color:var(--muted);font-size:14.5px;margin-top:14px;
   transition:opacity var(--t) var(--ease)}
 .pl-empty{display:none;margin-top:26px;padding:clamp(24px,4vw,38px);text-align:center;

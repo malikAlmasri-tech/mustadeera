@@ -15,11 +15,12 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">{{t.heroBadge}}</span>
-      <!-- ثلاثة أسطر بثلاث درجات صوت: أبيض ممتلئ ⇒ Lime ⇒ محيطي.
-           ⚠️ السطر المحيطي داخل @supports في الورقة: `color:transparent`
-           بلا `-webkit-text-stroke` = **نصّ غير مرئي**، لا نصّ باهت. فمن
-           لا يدعم الخاصية يراه أبيض عاديًّا لا يراه معدومًا. -->
-      <h1><span class="hl-a">{{t.heroTitleA}}</span> <span class="hi">{{t.heroTitleHi}}</span> <span class="hl-out">{{t.heroTitleOut}}</span></h1>
+      <!-- درجتان لا ثلاث: أبيض ممتلئ ⇒ Lime.
+           ⚠️ المعالجة المحيطية (`-webkit-text-stroke` + `color:transparent`)
+           حُذفت: هي الأضعف من الثلاث بصريًّا — تُقرأ «باهتة» لا «مؤكَّدة» —
+           وأعلاهنّ كلفةً في الحرص (بلا دعم الخاصية يصير النصّ معدومًا لا
+           باهتًا). **والنصّ باقٍ كما هو**؛ الساقط هو المعالجة وحدها. -->
+      <h1><span class="hl-a">{{t.heroTitleA}}</span> <span class="hi">{{t.heroTitleHi}}</span> <span class="hl-a">{{t.heroTitleOut}}</span></h1>
       <p class="lead">{{t.heroSub}}</p>
 
       <div class="hero-cta">
@@ -56,19 +57,11 @@
           <span class="hp-home" aria-hidden="true"></span>
         </span></span>
 
-      <!-- لوحتان طائرتان حول الجهاز.
-           ⚠️ محتواهما **حقيقة بنيوية** لا حدث حيّ: المرجع كان يقول
-           «9:00 م — فضي الآن»، وهذا خبرٌ لا يملكه موقع ثابت مبنيّ مسبقًا (م5).
-           ⚠️ aria-hidden عمدًا: نصّهما تكرارٌ حرفي لما تقوله .hero-note فوقهما
-           («مجّاني · أندرويد · بلا بطاقة ولا دفع إلكتروني») ⇒ قارئ الشاشة
-           يسمعه مرّة واحدة، والعين تراه مرّتين لأن العين تقرأ اللوح لا السطر. -->
-      <span class="hflag hflag-a" aria-hidden="true">
-        <span class="hflag-dot"></span>
-        <span class="hflag-tx"><b>{{t.heroFlagFreeK}}</b>{{t.heroFlagFreeV}}</span>
-      </span>
-      <span class="hflag hflag-b" aria-hidden="true">
-        <b>{{t.heroFlagCardK}}</b><span>{{t.heroFlagCardV}}</span>
-      </span>
+      <!-- ⚠️ اللوحان الطائران حُذفا: نصّهما كان **تكرارًا حرفيًّا** لما تقوله
+           `.hero-note` فوقهما، وهو ما اعترف به `aria-hidden` عليهما في الوسم
+           نفسه. وفوق الطيّة عشرة أهداف بصرية؛ أرخصُ ما يسقط منها ما يُعيد
+           قولَ شيءٍ مقولٍ أصلًا. و`.hero-note` تبقى — هي النسخة التي يقرأها
+           الجميع، مبصرين وقارئي شاشة معًا. -->
     </figure>
   </div>
 

@@ -333,6 +333,49 @@ function Render-Stars($p, $T) {
     $r + '<span class="pl-rate-n">(' + $p.reviews + ')</span></span>'
 }
 
+# ---- app screenshots on /download ----
+# Installing an APK from outside the store is the highest trust barrier in the
+# product. The page explains the Android warning well and states the checksum,
+# but a visitor never SEES what they are about to install - trust is built by
+# looking, not by reassurance.
+#
+# This builds the MECHANISM only. No image is invented and no alt text is
+# written for a picture nobody has seen (m5): the alt line says what the file
+# IS - a screenshot of the app - and claims nothing about its contents.
+#
+# The whole <section>, heading included, lives inside the generated variable,
+# so an EMPTY FOLDER MEANS NO SECTION - never a heading over a blank strip.
+# Drop files in site/static/assets/shots/ named shot-<n>-<lang>.png and they
+# appear at the next build, in numeric order, with no edit here.
+$script:ShotCount = 0
+function Render-Shots($T, [string]$langCode, [string]$base) {
+    $dir = Join-Path $SiteDir 'static\assets\shots'
+    if (-not (Test-Path $dir)) { return '' }
+    $files = @(Get-ChildItem -Path $dir -File -Filter "shot-*-$langCode.png" |
+               Sort-Object { [int](($_.BaseName -split '-')[1]) })
+    if ($files.Count -eq 0) { return '' }
+    $script:ShotCount = $files.Count
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<section class="sec sec-alt"><div class="wrap">')
+    [void]$sb.Append('<div class="rv"><span class="eyebrow">' + (HtmlEnc (Tx $T 'dlShotsEyebrow')) + '</span>')
+    [void]$sb.Append('<h2 class="h2">' + (HtmlEnc (Tx $T 'dlShotsTitle')) + '</h2>')
+    [void]$sb.Append('<p class="lead">' + (HtmlEnc (Tx $T 'dlShotsLead')) + '</p></div>')
+    [void]$sb.Append('<div class="dl-shots">')
+    $i = 0
+    foreach ($f in $files) {
+        $i++
+        $n = ($f.BaseName -split '-')[1]
+        # width/height declared so the page does not jump while they load, and
+        # everything below the first one is lazy.
+        $alt = (Tx $T 'dlShotAlt').Replace('{n}', [string]$n)
+        [void]$sb.Append('<figure class="dl-shot"><img src="' + $base + '/assets/shots/' + $f.Name +
+            '" alt="' + (HtmlEnc $alt) + '" width="390" height="844" decoding="async"' +
+            $(if ($i -gt 1) { ' loading="lazy"' } else { '' }) + '></figure>')
+    }
+    [void]$sb.Append('</div></div></section>')
+    $sb.ToString()
+}
+
 function Render-PlacesList($model, $T, [string]$base) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append('<div class="pl-grid">')
@@ -344,8 +387,15 @@ function Render-PlacesList($model, $T, [string]$base) {
         # The axis is the REGION, not the city: measured on today's data, all
         # six venues share one city and sit in six different regions, so city
         # chips would have been a filter that filters nothing.
+        # data-price is the same number the card prints ("from N"), so sorting
+        # and the range filter agree with what the visitor reads. data-rating is
+        # written ONLY when the venue has been rated: a zero here would sort an
+        # unrated venue below a one-star one, which is a claim the data does not
+        # make. Absent means absent - the sort drops it to the end instead.
         $q = ($p.name + ' ' + $p.city + ' ' + $p.region + ' ' + $p.type)
-        [void]$sb.Append('<article class="pl-card" data-area="' + (HtmlEnc $p.region) + '" data-q="' + (HtmlEnc $q) + '">')
+        $attrs = ' data-area="' + (HtmlEnc $p.region) + '" data-q="' + (HtmlEnc $q) + '" data-price="' + ([int]$p.priceMin) + '"'
+        if ($p.hasRating) { $attrs += ' data-rating="' + ('{0:0.#}' -f $p.rating) + '"' }
+        [void]$sb.Append('<article class="pl-card"' + $attrs + '>')
         [void]$sb.Append('<a class="pl-link" href="' + $href + '">')
         [void]$sb.Append('<h2 class="pl-name">' + (HtmlEnc $p.name) + '</h2></a>')
         [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
@@ -554,6 +604,7 @@ foreach ($lang in $Langs) {
         $vars['placesCount'] = [string]$PlaceModel.Count
         $vars['placesChips'] = $(if ($PlaceModel.Count -gt 0) { Render-PlaceChips $PlaceModel $T } else { '' })
         $vars['statsBand']   = Render-Stats $PlaceModel $T
+        $vars['appShots']    = Render-Shots $T $lang.code $lang.base
         # The counter's starting text is rendered with the real total, so the
         # line reads correctly before - and without - any script.
         $vars['plCountInit'] = (Tx $T 'plCountTpl').Replace('{n}', [string]$PlaceModel.Count)
@@ -782,6 +833,10 @@ Write-Host ("  [build]  {0} ({1:N1} KB) + {2} ({3:N1} KB) - cached once for the 
 # leaves room for a section or two before the page needs a second look.
 Write-Host ("  [home]   {0:N0} chars of markup  (budget 28,000)" -f $homeChars) -ForegroundColor $(if ($homeChars -gt 28000) { 'Red' } else { 'Green' })
 Write-Host ("  [origin] {0}" -f $SiteOrigin) -ForegroundColor DarkGray
+# One line so the owner learns what is missing without reading any code. Zero
+# is not a failure - it means the download page simply has no screenshot strip.
+Write-Host ("  [shots]  {0} on /download - add more as site\static\assets\shots\shot-<n>-<lang>.png (390x844)" -f $script:ShotCount) `
+           -ForegroundColor $(if ($script:ShotCount -gt 0) { 'Green' } else { 'DarkYellow' })
 if ($script:Missing.Count -gt 0) {
     $uniq = $script:Missing | Sort-Object -Unique
     Write-Warning ("unresolved placeholders ({0}): {1}" -f $uniq.Count, ($uniq -join ', '))

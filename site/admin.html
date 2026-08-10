@@ -101,6 +101,34 @@ tbody td{border-bottom:1px solid var(--line)}
 tbody tr:nth-child(even) td{background:var(--surface-2)}
 td{font-variant-numeric:tabular-nums}
 tbody tr:last-child td{border-bottom:0}
+/* ── العمود الأوّل لاصق أثناء الانزلاق الأفقي ──
+   جدول «الملاعب» اثنا عشر عمودًا، و«العملاء» و«التشغيل» سبعة، وكلّها تُقرأ
+   بالانزلاق. وبلا تثبيتٍ **يختفي الاسم عند أوّل تمريرة فتصير الأرقام بلا
+   هويّة** — والوصول اليومي من مفضّلة المتصفّح، أي من الهاتف غالبًا.
+   ⚠️ **الفاصل بالظلّ لا بالحدّ**: `border-collapse:collapse` يوحّد الحدود على
+      مستوى الجدول، فلا تُرسَم حدود الخليّة اللاصقة وهي مرفوعة فوق ما تحتها.
+   ⚠️ **والفاصل فيزيائي مقصود**: اللوحة `dir="rtl"` دائمًا (‏`<html dir="rtl">`)
+      فالعمود الأوّل على اليمين وفاصلُه على يساره. لا `inset-inline` هنا لأن
+      `box-shadow` فيزيائي أصلًا ولا مقابل منطقيّ له.
+   ⚠️ **وخلفيةٌ معتمة لازمة**: الخليّة الشفّافة تُظهر ما ينزلق تحتها. ولذلك
+      تُعاد هنا كل خلفيّةٍ يعطيها التظليل المتناوب وصفُّ المجاميع. */
+.ad-scroll th:first-child,
+.ad-scroll td:first-child{position:sticky;inset-inline-start:0;z-index:2;
+  background:var(--surface);box-shadow:-1px 0 0 var(--line)}
+.ad-scroll tbody tr:nth-child(even) td:first-child{background:var(--surface-2)}
+.ad-scroll tfoot td:first-child{background:var(--bg-2)}
+/* رأس العمود الأوّل يعلو الرأس اللاصق **وخلايا الجسم اللاصقة** معًا:
+   هو وحده الذي يتقاطع مع الاثنين. */
+.ad-scroll thead th:first-child{z-index:3}
+/* ── أولويّة الأعمدة تحت 700px ──
+   جدول الملاعب اثنا عشر عمودًا، وأربعةٌ منها لا تحمل قرارًا على الهاتف
+   (المدينة — والأماكن كلّها في مدينة واحدة اليوم · خانات/يوم · الحصّة —
+   ولها رسمٌ فوق الجدول · التقييم). تُخفى ولا تُحذَف من الـDOM: العرض
+   الأوسع يعيدها بلا إعادة رسم، ولا تُفقَد من نسخ/لصق الجدول. */
+@media (max-width:700px){
+  .ad-c2{display:none}
+  table{min-width:0}
+}
 /* الأرقام والنسب إلى النهاية، والنصّ إلى البداية — عمود أرقام محاذٍ للنهاية
    يُقارَن بالنظر وحده. */
 .n{text-align:end}
@@ -568,10 +596,10 @@ html.dark .res .no{color:#FF8A90}
       <strong>الملاعب</strong> عدد الملاعب النشِطة داخل المكان، و<strong>الخانات/يوم</strong> طاقته اليومية.</p>
     <div class="ad-scroll">
       <table id="places"><thead><tr>
-        <th>المكان</th><th>المدينة</th><th class="n">ملاعب</th><th class="n">خانات/يوم</th>
+        <th>المكان</th><th class="ad-c2">المدينة</th><th class="n ad-c2">ملاعب</th><th class="n ad-c2">خانات/يوم</th>
         <th class="n">الحجوزات</th><th class="n">مؤكّدة</th>
-        <th class="n">غير مؤكّدة</th><th class="n">المبيعات</th><th class="n">دخلك</th><th class="n">الحصّة</th>
-        <th class="n">التقييم</th><th>الحالة</th>
+        <th class="n">غير مؤكّدة</th><th class="n">المبيعات</th><th class="n">دخلك</th><th class="n ad-c2">الحصّة</th>
+        <th class="n ad-c2">التقييم</th><th>الحالة</th>
       </tr></thead><tbody></tbody><tfoot></tfoot></table>
     </div>
   </section>
@@ -929,6 +957,7 @@ var nBooking = function(n){ return countNoun(n, 'حجز واحد', 'حجزان',
 var nDay     = function(n){ return countNoun(n, 'يوم واحد', 'يومان', 'أيام', 'يومًا'); };
 var nPlace   = function(n){ return countNoun(n, 'مكان واحد', 'مكانان', 'أماكن', 'مكانًا'); };
 var nCust    = function(n){ return countNoun(n, 'عميل واحد', 'عميلان', 'عملاء', 'عميلًا'); };
+var nDinar   = function(n){ return countNoun(n, 'دينار واحد', 'ديناران', 'دنانير', 'دينارًا'); };
 
 /* التاريخ المحلّي لا UTC. `toISOString().slice(0,10)` يعطي يوم الأمس في
    الأردن بين منتصف الليل والثالثة فجرًا (‏UTC+3) — نفس الفخّ الذي أصابته
@@ -996,8 +1025,14 @@ function tabBadge(id, label, count, warn){
    إلّا أن الأرقام هنا لاتينية والقراءة زمنية من القديم إلى الجديد، وهو
    اتجاه واحد في اللغتين، فلا قلب.
    ⚠️ كل نصّ يمرّ بـesc: أسماء الأماكن تأتي من القاعدة. */
-function svgEl(w, h, inner){
-  return '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-hidden="true">' + inner + '</svg>';
+/* ⚠️ **`role="img"` مع `aria-hidden="true"` تناقض**، وكانتا معًا هنا: الثانية
+   تحذف العنصر من شجرة الوصول تمامًا فلا يبقى للأولى أثر — أي أن الرسم كان
+   يقول عن نفسه «أنا صورة» ثمّ يختفي. والاسم هنا **مولَّد من نفس المصفوفة
+   المرسومة**: «رسم بياني» اسمٌ عامّ أسوأ من لا اسم، لأنه يَعِد بمحتوى ثمّ
+   لا يعطيه. */
+function svgEl(w, h, inner, label){
+  return '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' +
+         esc(label || '') + '">' + inner + '</svg>';
 }
 function niceMax(v){
   if (v <= 0) return 1;
@@ -1056,7 +1091,21 @@ function drawRevenue(rows, forecast){
     s += '<text class="axis-t" x="' + (PL+step*i+step/2).toFixed(1) + '" y="' + (H-8) +
          '" text-anchor="middle">' + esc(String(rows[i].booking_date).slice(5)) + '</text>';
   });
-  return svgEl(W, H, s);
+  /* الاسم من الأرقام نفسها: المدى · الأعلى بتاريخه · المتوسّط. وخطّ التوقّع
+     يُسمّى **توقّعًا** صراحةً، وإلّا سمع قارئ الشاشة رقمًا لم يقع. */
+  var vals = rows.map(function(r){ return +r.revenue||0; });
+  var top = 0, ti = 0;
+  vals.forEach(function(v, i){ if (v > top){ top = v; ti = i; } });
+  var avg = Math.round(vals.reduce(function(a,b){ return a+b; }, 0) / (n||1));
+  /* ⚠️ لا صفة بعد معدودٍ متغيّر: «توقّع لـيومان قادمة» عربية مكسورة، و`countNoun`
+     يصلح المعدود ولا يصلح ما بعده (مزلق مسجَّل). الصياغة تُخرج العدد من موقع
+     الوصف إلى جملة مستقلّة. */
+  var label = 'الإيراد اليومي المؤكّد، ' + nDay(n) + ' من ' +
+    esc(String(rows[0].booking_date)) + ' إلى ' + esc(String(rows[n-1].booking_date)) +
+    '. الأعلى ' + esc(String(rows[ti].booking_date)) + ' بـ' + nDinar(top) +
+    '، والمتوسّط ' + nDinar(avg) + '.' +
+    (fn ? ' ومعه خطّ متقطّع هو توقّع لا قياس، مداه ' + nDay(fn) + '.' : '');
+  return svgEl(W, H, s, label);
 }
 
 /* أعمدة أفقية بسيطة: الاسم · الشريط · القيمة. تُستعمَل لأيام الأسبوع
@@ -1726,27 +1775,27 @@ function renderPlacesTab(){
     var open = Math.max(0, (+p.bookings||0) - (+p.confirmed||0));
     var sh   = totalRev > 0 ? Math.round((+p.revenue||0) / totalRev * 100) : 0;
     var k = String(p.id);
-    return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.city) + '</td>' +
-           '<td class="n">' + (cnt[k] || 0) + '</td><td class="n">' + (cap[k] || 0) + '</td>' +
+    return '<tr><td>' + esc(p.name) + '</td><td class="ad-c2">' + esc(p.city) + '</td>' +
+           '<td class="n ad-c2">' + (cnt[k] || 0) + '</td><td class="n ad-c2">' + (cap[k] || 0) + '</td>' +
            '<td class="n num">' + p.bookings + '</td><td class="n pos">' + p.confirmed + '</td>' +
            '<td class="n ' + (open ? 'wait' : '') + '">' + open + '</td>' +
            '<td class="n num">' + money(p.revenue) + '</td>' +
            '<td class="n num">' + money((+p.revenue||0) * RATE) + '</td>' +
-           '<td class="n"><span class="share"><span class="share-b">' +
+           '<td class="n ad-c2"><span class="share"><span class="share-b">' +
              '<span class="share-f" style="inline-size:' + sh + '%"></span></span>' +
              '<span class="share-t">' + sh + '%</span></span></td>' +
-           '<td class="n">' + rate + '</td>' +
+           '<td class="n ad-c2">' + rate + '</td>' +
            '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
   }).join('');
   var sumOf = function(k){ return rows.reduce(function(a,p){ return a + (+p[k]||0); }, 0); };
   var capAll = Object.keys(cap).reduce(function(a,k){ return a + cap[k]; }, 0);
   var cntAll = Object.keys(cnt).reduce(function(a,k){ return a + cnt[k]; }, 0);
-  tf.innerHTML = '<tr><td>مجموع ' + nPlace(rows.length) + '</td><td></td>' +
-    '<td class="n">' + cntAll + '</td><td class="n">' + capAll + '</td>' +
+  tf.innerHTML = '<tr><td>مجموع ' + nPlace(rows.length) + '</td><td class="ad-c2"></td>' +
+    '<td class="n ad-c2">' + cntAll + '</td><td class="n ad-c2">' + capAll + '</td>' +
     '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
     '<td class="n">' + Math.max(0, sumOf('bookings') - sumOf('confirmed')) + '</td>' +
     '<td class="n">' + money(totalRev) + '</td><td class="n">' + money(totalRev * RATE) + '</td>' +
-    '<td class="n">100%</td><td></td><td></td></tr>';
+    '<td class="n ad-c2">100%</td><td class="ad-c2"></td><td></td></tr>';
 }
 
 /* ── ④ العملاء ───────────────────────────────────────────────────────────── */

@@ -47,10 +47,6 @@ heroTitleOut = Nothing left to ask.
 # Two cards floating around the device. Both are STRUCTURAL facts, not live
 # events: the reference design said "9:00 PM - just opened up", which is news
 # a static site does not have (m5).
-heroFlagFreeK = Free
-heroFlagFreeV = for players
-heroFlagCardK = No card
-heroFlagCardV = pay at the venue
 
 # ---------- Proof strip (every line is verifiable) ----------
 trust1 = Booked hours never show up for you
@@ -214,6 +210,15 @@ dlSpecPerm = Permissions
 dlSpecPermVal = One only: internet
 dlSpecPrice = Price
 dlSpecPriceVal = Free
+
+# ---------- app screenshots on the download page ----------
+# The alt line says what the file IS (a screenshot of the app) and describes
+# nothing about its contents: no description is written for a picture nobody
+# has seen (m5). Whoever adds a screenshot knows what is in it - replace this.
+dlShotsEyebrow = Inside the app
+dlShotsTitle = This is what you will open
+dlShotsLead = Screenshots from the app itself, not illustrations.
+dlShotAlt = Screenshot {n} of the app
 
 # Install steps - warn before the wall, not after
 dlStepsEyebrow = Installing
@@ -458,6 +463,13 @@ faqA7 = No. AL-Mustadira is for booking sports venues, and it carries five sport
 plSearchPh = Search by venue or area
 plCountTpl = Results: {n}
 plEmpty = No venue matches your search. Try a shorter name, or clear the city filter.
+plSortLabel = Sort results
+plSortDefault = A to Z
+plSortPrice = Cheapest first
+plSortRating = Top rated
+plPriceMin = Min price
+plPriceMax = Max price
+plAny = Any
 
 # ---------- Photography ----------
 # NOTE: alt text describes what the photograph shows, not what we
