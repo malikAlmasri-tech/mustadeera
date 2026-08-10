@@ -348,7 +348,24 @@ function Render-Stars($p, $T) {
 # Drop files in site/static/assets/shots/ named shot-<n>-<lang>.png and they
 # appear at the next build, in numeric order, with no edit here.
 $script:ShotCount = 0
-function Render-Shots($T, [string]$langCode, [string]$base) {
+# PNG dimensions straight out of the IHDR chunk: bytes 16..23, big-endian.
+# The point of declaring width/height is to stop the page jumping while the
+# image loads - and a declared size that does not match the file reserves the
+# WRONG box, which jumps just as badly. So it is read, never assumed.
+function Get-PngSize([string]$path) {
+    try {
+        $b = [IO.File]::ReadAllBytes($path)
+        if ($b.Length -lt 24) { return $null }
+        # [int] casts are load-bearing: -shl on a [byte] does NOT widen it, so
+        # ($b[18] -shl 8) evaluates to 0 and a 412px image reads back as 156.
+        # Measured - the first real screenshot is what caught it.
+        $w = ([int]$b[16] -shl 24) -bor ([int]$b[17] -shl 16) -bor ([int]$b[18] -shl 8) -bor [int]$b[19]
+        $h = ([int]$b[20] -shl 24) -bor ([int]$b[21] -shl 16) -bor ([int]$b[22] -shl 8) -bor [int]$b[23]
+        if ($w -le 0 -or $h -le 0) { return $null }
+        return @{ w = $w; h = $h }
+    } catch { return $null }
+}
+function Render-Shots($T, [string]$langCode) {
     $dir = Join-Path $SiteDir 'static\assets\shots'
     if (-not (Test-Path $dir)) { return '' }
     $files = @(Get-ChildItem -Path $dir -File -Filter "shot-*-$langCode.png" |
@@ -365,11 +382,16 @@ function Render-Shots($T, [string]$langCode, [string]$base) {
     foreach ($f in $files) {
         $i++
         $n = ($f.BaseName -split '-')[1]
-        # width/height declared so the page does not jump while they load, and
-        # everything below the first one is lazy.
+        # Real pixel size, so the reserved box matches the file. Everything
+        # below the first one is lazy.
+        $sz = Get-PngSize $f.FullName
+        $dim = $(if ($sz) { ' width="' + $sz.w + '" height="' + $sz.h + '"' } else { '' })
         $alt = (Tx $T 'dlShotAlt').Replace('{n}', [string]$n)
-        [void]$sb.Append('<figure class="dl-shot"><img src="' + $base + '/assets/shots/' + $f.Name +
-            '" alt="' + (HtmlEnc $alt) + '" width="390" height="844" decoding="async"' +
+        # /assets is copied ONCE to the site root, not per language: prefixing
+        # $base gave the English page /en/assets/shots/... and a silent 404.
+        # Same reason the hero uses a root-absolute /assets/app-mockup-*.png.
+        [void]$sb.Append('<figure class="dl-shot"><img src="/assets/shots/' + $f.Name +
+            '" alt="' + (HtmlEnc $alt) + '"' + $dim + ' decoding="async"' +
             $(if ($i -gt 1) { ' loading="lazy"' } else { '' }) + '></figure>')
     }
     [void]$sb.Append('</div></div></section>')
@@ -604,7 +626,7 @@ foreach ($lang in $Langs) {
         $vars['placesCount'] = [string]$PlaceModel.Count
         $vars['placesChips'] = $(if ($PlaceModel.Count -gt 0) { Render-PlaceChips $PlaceModel $T } else { '' })
         $vars['statsBand']   = Render-Stats $PlaceModel $T
-        $vars['appShots']    = Render-Shots $T $lang.code $lang.base
+        $vars['appShots']    = Render-Shots $T $lang.code
         # The counter's starting text is rendered with the real total, so the
         # line reads correctly before - and without - any script.
         $vars['plCountInit'] = (Tx $T 'plCountTpl').Replace('{n}', [string]$PlaceModel.Count)
@@ -835,7 +857,7 @@ Write-Host ("  [home]   {0:N0} chars of markup  (budget 28,000)" -f $homeChars) 
 Write-Host ("  [origin] {0}" -f $SiteOrigin) -ForegroundColor DarkGray
 # One line so the owner learns what is missing without reading any code. Zero
 # is not a failure - it means the download page simply has no screenshot strip.
-Write-Host ("  [shots]  {0} on /download - add more as site\static\assets\shots\shot-<n>-<lang>.png (390x844)" -f $script:ShotCount) `
+Write-Host ("  [shots]  {0} per language on /download - add more as site\static\assets\shots\shot-<n>-<lang>.png  (lang = ar|en; any size, it is read from the file)" -f $script:ShotCount) `
            -ForegroundColor $(if ($script:ShotCount -gt 0) { 'Green' } else { 'DarkYellow' })
 if ($script:Missing.Count -gt 0) {
     $uniq = $script:Missing | Sort-Object -Unique
