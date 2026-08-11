@@ -1,5 +1,8 @@
 {
   "appId": "com.almustadira.app",
   "appName": "AL-Mustadira",
-  "webDir": "app/www"
+  "webDir": "app/www",
+  "android": {
+    "backgroundColor": "#0F4B53"
+  }
 }

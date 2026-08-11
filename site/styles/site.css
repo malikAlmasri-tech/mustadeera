@@ -415,8 +415,11 @@ html.mnav-open .mnav-cta{opacity:1;transform:none;transition-delay:360ms}
    بديل يوصف، ولا تدخل شجرة إمكانية الوصول. تُرسم فوق التدرّج (نفس
    z-index، وتليه في الوسم) وتُقنَّع نزولًا فتذوب في اللوح بدل أن تُقطَع.
    الشفافية مقيسة لا مذوّقة: النصّ فوقها يبقى ≥ 4.5:1 — مفحوص حيًّا. */
+/* ⚠️ ملاعب **متعدّدة الرياضات** لا ملعب كرة قدم: عنوان الهيرو يقول
+   «حجز الملاعب الرياضية» وكانت الصورة تحته كرة قدم وحدها ⇒ وعدٌ تكذّبه صورته.
+   ولا تدّعي أنّ هذه ملاعبنا (م5): زخرفية بـ`aria-hidden` وبشفافية .34. */
 .hero-photo{position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-image:url('/assets/photos/pitch-night-1000.jpg');
+  background-image:url('/assets/photos/multisport-courts-1100.jpg');
   background-size:cover;background-position:50% 45%;
   opacity:.34;
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 52%,transparent 88%);
@@ -1079,7 +1082,7 @@ html.dark .sport-live .sport-court>svg{opacity:.62}
 
 /* الصورة الثانية تحت لوح الختام — زخرفية، فخلفية CSS بلا نصّ بديل */
 .cta-photo{position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-image:url('/assets/photos/players-kick-1100.jpg');
+  background-image:url('/assets/photos/multisport-courts-1100.jpg');
   background-size:cover;background-position:50% 38%;opacity:.20;
   -webkit-mask-image:linear-gradient(to top,#000 0%,transparent 78%);
           mask-image:linear-gradient(to top,#000 0%,transparent 78%)}
@@ -1466,3 +1469,25 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
      يطلب تصميمًا آخر. الميلة تبقى، والطفو وحده يذهب. */
   .hero-shot{animation:none!important;transform:var(--tilt)!important}
 }
+
+
+/* صورة حقيقية خلف مخطّط كل رياضة — **إضافة لا استبدال**.
+   المخطّط يبقى فوقها (هو ما يقول **أبعاد** الملعب ويربط القسم
+   بالتطبيق)، والصورة تعطي الرياضة **وجهًا** بدل رسمٍ مجرّد.
+   ⚠️ وم5 محفوظة: الشارة تحت كل بلاطة (`sport-st`) تقول «متاح للحجز»
+   أو «قريبًا» في نفس البلاطة ⇒ لا صورة تدّعي إتاحةً ينفيها السطر تحتها،
+   ولا واحدة تُقدّم على أنّها ملعبٌ عندنا — وهذا نفس منطق قرار ٧.
+   والشفافية منخفضة عمدًا فيبقى المخطّط هو المقروء لا الصورة. */
+.sport-court{position:relative;isolation:isolate}
+.sport-court::before{
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-size:cover;background-position:50% 50%;opacity:.22;
+  -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.45) 70%,transparent 100%);
+          mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.45) 70%,transparent 100%);
+}
+.sc-football::before{background-image:url('/assets/photos/players-kick-720.jpg')}
+.sc-padel::before  {background-image:url('/assets/photos/padel-court-720.jpg')}
+.sc-basket::before {background-image:url('/assets/photos/basket-court-720.jpg')}
+.sc-tennis::before {background-image:url('/assets/photos/tennis-court-720.jpg')}
+.sc-volley::before {background-image:url('/assets/photos/volley-court-720.jpg')}
+@media (prefers-reduced-motion:reduce){ .sport-court::before{opacity:.18} }

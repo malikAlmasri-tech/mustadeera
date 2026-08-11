@@ -104,7 +104,12 @@ let totalBytes = 0;
 const head = [];
 head.push('# المستديرة — المشروع كاملًا في ملفّ واحد');
 head.push('');
-head.push(`> مولَّد آليًّا بـ\`tools/bundle-project.mjs\` بتاريخ ${new Date().toISOString().slice(0, 10)}.`);
+// ⚠️ بتوقيت عمّان لا UTC: `toISOString()` يعطي UTC، وعمّان **تسبقه ثلاث ساعات** ⇒
+// بين منتصف الليل والثالثة فجرًا يطبع البندلُ **تاريخ أمس** على عملٍ جرى اليوم.
+// (مقيس 2026-08-11 الساعة 00:48 — خرج «2026-08-10».) وهي نفس زلّة `current_date`
+// المسجَّلة في CLAUDE.md، معكوسةَ الاتجاه.
+const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Amman' });
+head.push(`> مولَّد آليًّا بـ\`tools/bundle-project.mjs\` بتاريخ ${today}.`);
 head.push('> المستودع: `malikAlmasri-tech/mustadeera` — الفرع `main`.');
 head.push('');
 head.push('**كيف تقرأ هذا الملفّ:** بعد هذا الرأس يأتي شرحٌ موجز للمشروع، ثمّ فهرس بكلّ ملفّ،');

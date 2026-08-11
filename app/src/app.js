@@ -178,7 +178,7 @@ const I18N = {
     altGo:'انقلني إليه', altNone:'لا وقت متاح في هذا المكان خلال الأسبوع القادم.',
     locationBtn:'الموقع', callBtn:'اتصال', rateThisPlace:'قيّم هذا المكان', continueBooking:'متابعة الحجز', perTwoHours:'/ ساعتين', operatingHours:'الدوام:',
     reviewTitle:'مراجعة الحجز', stepField:'الملعب', stepDate:'اليوم', stepTime:'الوقت', stepConfirm:'التأكيد',
-    rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة',
+    rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة', rvHost:'المضيف',
     rvSize:'حجم الملعب', rvTotal:'الإجمالي', rvReadyNote:'جاهز للإرسال — سيُرسَل طلب الحجز عند التأكيد.',
     twoHours:'ساعتان', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
     bkNote:'بعد إرسال الطلب يصل إلى إدارة الملعب — يتأكد الحجز بعد موافقتهم، ويمكنك متابعة حالته من «حجوزاتي».', confirmBooking:'تأكيد الحجز', changeTime:'تغيير الموعد',
@@ -241,6 +241,19 @@ const I18N = {
     onbCreateAccount:'إنشاء حساب جديد', onbOwnerEnter:'دخول لوحة المالك',
     onbOwnerNote:'أدِر ملاعبك وحجوزاتك وأسعارك من مكان واحد.', onbTerms:'بالمتابعة أنت توافق على الشروط وسياسة الخصوصية.',
     onbEyebrow:'حجز الملاعب الرياضية', introTag:'احجز ملعبك',
+    /* شاشات الترحيب — أوّل تشغيل فقط. لا رقم ولا وعد: الشريحة الثانية تقول
+       «الحجز طلب» **قبل** أوّل حجز لا بعد خيبته، وهي سبب وجود الشاشات أصلًا. */
+    onbS1T:'احجز بلا مكالمات',
+    onbS1B:'تصفّح الملاعب، شوف الأوقات الفاضية والسعر، وابعث طلبك.',
+    onbS2T:'طلبك ينتظر ردّ الملعب',
+    onbS2B:'الحجز طلب، ما بينحجز إلا لمّا الملعب يأكّده. بنعلمك أوّل ما يردّ.',
+    onbS3T:'ناقصك لاعبين؟',
+    onbS3B:'انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.',
+    onbSkip:'تخطٍّ', onbNext:'التالي', onbStart:'يلا نبلّش',
+    onbDotsAria:'شاشات الترحيب', onbDotAria:'الشاشة {i} من {n}',
+    onbReplay:'شاشات الترحيب', onbReplayBtn:'أعِد العرض', onbReplayDone:'رح تظهر عند الفتح الجاي.',
+    repGroupOverview:'نظرة عامّة', repGroupPerf:'الأداء', repGroupInsights:'الاتجاه والتحليل',
+    repRangeAria:'نطاق التقارير', repRangeAll:'الكل', repRange30:'آخر ٣٠ يوم', repRange90:'آخر ٩٠ يوم',
     successDone:'تمام!', successOkBtn:'تمام',
     noBookingsYet:'لا حجوزات لديك بعد', noBookingsYetSub:'ملعبك الأول بانتظارك، والشباك تنتظر أهدافك — ابدأ التصفّح!',
     loginToSee:'سجّل دخولك أولاً', loginToSeeSub:'يلزم تسجيل الدخول لعرض حجوزاتك ومتابعتها.', connProblem:'مشكلة في الاتصال', connProblemSub:'تعذّر جلب الحجوزات. تأكد من اتصالك بالإنترنت وحاول مجدداً.',
@@ -284,7 +297,6 @@ const I18N = {
     placeStatsTitle:'إحصائيات الملعب',
     skipLink:'تخطَّ إلى المحتوى الرئيسي', offSiteBadge:'من خارج الموقع', welcomeGuest:'أهلاً بك',
     brandName:'المستديرة',
-    firstVisitWelcome:'أهلاً بك في المستديرة! 👋 اختر الملعب واليوم والوقت، وأرسل طلبك في ثوانٍ — بلا مكالمة واحدة.',
     addToCalendar:'أضِف إلى التقويم',
     favTab:'المفضّلة', favAdd:'أضِف إلى المفضّلة', favRemove:'أزل من المفضّلة',
     noFavsTitle:'لا ملاعب في المفضّلة بعد', noFavsSub:'لم يفز ملعبٌ بقلبك حتى الآن؟ اضغط رمز القلب على أي ملعب وسيحجز مكانه هنا.',
@@ -492,6 +504,10 @@ const I18N = {
     // ⚠️ «تقديرية» و«لإدارة الملعب» كلمتان لا تُحذفان: التطبيق لا يقبض ولا يضمن
     gmLiveShare:'حصّة الواحد تقديرياً {v} — تتدفع في الملعب لإدارته.',
     gmShareTag:'تقديري',
+    /* شرط الرقم يُقال معه لا تحته: الحصّة = السعر ÷ العدد المطلوب، وهي صحيحة
+       **فقط إذا امتلأت المقاعد**. ومن انضمّ إليه ثلاثة من ثمانية يدفع الباقي،
+       وهو يقرّر على أساس الرقم الصغير. سطران لا فقرة تحذير. */
+    gmShareCond:'الحصّة محسوبة إذا اكتمل العدد. ما ينقص بتدفعه إنت.',
     gmBadgeLive:'مباراة مفتوحة', gmBadgeWaiting:'مفتوحة — بعد التأكيد',
     gmCardLive:'منشورة · نشرتَ {n} مقعد. افتح «إدارة المباراة» تشوف مين انضمّ.',
     gmCardWaiting:'ما انعرض ولا مقعد. المقاعد بتنشر لحظة ما يأكّد الملعب.',
@@ -627,7 +643,7 @@ const I18N = {
     altGo:'Take me there', altNone:'No time is free at this venue in the next week.',
     locationBtn:'Location', callBtn:'Call', rateThisPlace:'Rate this place', continueBooking:'Continue booking', perTwoHours:'/ 2 hours', operatingHours:'Hours:',
     reviewTitle:'Review booking', stepField:'Field', stepDate:'Day', stepTime:'Time', stepConfirm:'Confirm',
-    rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status',
+    rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status', rvHost:'Host',
     rvSize:'Field size', rvTotal:'Total', rvReadyNote:'Ready to submit — your booking request will be sent when you confirm.',
     twoHours:'2 hours', statusGuest:'Guest', statusPlayer:'Registered player',
     bkNote:'Once sent, your request goes to the field management — it’s confirmed after their approval, and you can track it under “My bookings”.', confirmBooking:'Confirm booking', changeTime:'Change time',
@@ -690,6 +706,17 @@ const I18N = {
     onbCreateAccount:'Create new account', onbOwnerEnter:'Owner dashboard login',
     onbOwnerNote:'Manage your venues, bookings and prices in one place.', onbTerms:'By continuing you agree to the Terms and Privacy Policy.',
     onbEyebrow:'Sports venue booking', introTag:'Book your venue',
+    onbS1T:'Book without a phone call',
+    onbS1B:'Browse venues, see free times and prices, and send your request.',
+    onbS2T:'Your request waits for the venue',
+    onbS2B:'A booking is a request. It is not confirmed until the venue confirms it. We will tell you the moment they reply.',
+    onbS3T:'Short on players?',
+    onbS3B:'Publish your spare seats once the venue confirms, and players here can join.',
+    onbSkip:'Skip', onbNext:'Next', onbStart:'Get started',
+    onbDotsAria:'Welcome screens', onbDotAria:'Screen {i} of {n}',
+    onbReplay:'Welcome screens', onbReplayBtn:'Show again', onbReplayDone:'They will show on next open.',
+    repGroupOverview:'Overview', repGroupPerf:'Performance', repGroupInsights:'Insights',
+    repRangeAria:'Report range', repRangeAll:'All', repRange30:'Last 30 days', repRange90:'Last 90 days',
     successDone:'Done!', successOkBtn:'OK',
     noBookingsYet:'No bookings yet', noBookingsYetSub:'Your first field is waiting — and so is the net. Start browsing!',
     loginToSee:'Log in', loginToSeeSub:'You need to log in to see and track your bookings.', connProblem:'Connection problem', connProblemSub:'Couldn’t fetch the bookings. Check your network and try again.',
@@ -733,7 +760,6 @@ const I18N = {
     placeStatsTitle:'Field stats',
     skipLink:'Skip to main content', offSiteBadge:'Off-site', welcomeGuest:'Welcome',
     brandName:'Al-Mostadeera',
-    firstVisitWelcome:'Welcome to Al-Mostadeera! 👋 Pick your field, day and time, and send your request in seconds — not a single phone call.',
     addToCalendar:'Add to calendar',
     favTab:'Favorites', favAdd:'Add to favorites', favRemove:'Remove from favorites',
     noFavsTitle:'No favorite fields yet', noFavsSub:'No field has won your heart yet? Tap the heart icon on any field and it will save its spot here.',
@@ -932,6 +958,7 @@ const I18N = {
     gmLiveSeats:'You’ll publish {noun}.',
     gmLiveShare:'Estimated share per person {v} — paid at the venue, to its operator.',
     gmShareTag:'estimate',
+    gmShareCond:'The share assumes the match fills up. Whatever is missing is on you.',
     gmBadgeLive:'Open match', gmBadgeWaiting:'Open — once confirmed',
     gmCardLive:'Published · {n} seats offered. Open “Manage the match” to see who joined.',
     gmCardWaiting:'No seat shown yet. Seats go live the moment the venue confirms.',
@@ -2499,6 +2526,7 @@ const State = {
   pendingBooking: null,   // حجز الضيف المحفوظ ريثما يسجّل دخوله ثم يُستأنف
   pageScroll: {},         // موضع التمرير لكل صفحة (الرئيسية تستعيده دائمًا، والرجوع يستعيد صفحته)
   ownerTab: 'today',      // تبويب لوحة المالك النشط
+  reportRange: 'all',     // نطاق التقارير: all · d30 · d90 (مرشِّح مُدخَل لا تعديل حساب)
   calMonth: null,         // شهر التقويم المعروض (Date لأول الشهر)
   lang: (()=>{ try{ return localStorage.getItem('mustadaira_language')||'ar'; }catch(_){ return 'ar'; } })(),
 };
@@ -2640,11 +2668,11 @@ async function loadData(opts={}){
      مشتقّة من البيانات نفسها: ملعب بادل يُسجَّل في اللوحة الآن ⇒ تُفتَح بادل
      عند أوّل تحديث، بلا نشر نسخة جديدة من التطبيق. */
   checkAppVersion();   // بلا await: خبرٌ لا يؤخّر رسم الصفحة
-  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); updateModeSeg(); return true; }
+  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateTrust(); updateModeSeg(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
     const cached = cacheRead();
-    if (cached && cached.length){ State.allPlaces = normalizePlaces(cached); State.dataLoaded = true; applySportScope(); buildBookedSlots([]); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
+    if (cached && cached.length){ State.allPlaces = normalizePlaces(cached); State.dataLoaded = true; applySportScope(); buildBookedSlots([]); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
     return false;
   }
 }
@@ -2956,24 +2984,6 @@ function updateSportSections(){
   ['#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
 }
 
-/* قسم «المناطق المتوفّرة» بصفحة الهبوط — مبني من بيانات الملاعب الحقيقية */
-function renderLandingRegions(){
-  const el=$('#lpRegions'); const sec=$('#lp-regions'); if(!el) return;
-  const regions=getRegions();
-  if(!regions.length){ if(sec) sec.hidden=true; return; }
-  if(sec) sec.hidden=false;
-  clear(el);
-  regions.forEach(r=>{
-    const count=State.places.filter(p=>normalizeText(p.region)===normalizeText(r)).length;
-    const card=h('button',{class:'lp-region', type:'button', 'aria-label':r},
-      h('span',{class:'lp-region-ic'}, ico('pin','svg-sm')),
-      h('span',{class:'lp-region-name'}, r),
-      h('span',{class:'lp-region-count'}, `${count} ${count===1?t('regionsOne'):t('regionsMany')}`));
-    card.addEventListener('click', ()=>{ State.filter=r; browse(); });
-    el.append(card);
-  });
-}
-
 /* تحليل مركزي للمرافق (يُستخدم في البطاقة والتفاصيل والفلاتر).
    الصيغة: "water|parking|vests:10" — القيمة بعد ':' تمثّل عدداً/تفصيلاً اختيارياً. */
 function parseAmenities(text){
@@ -2992,6 +3002,24 @@ function amenitiesRow(text, max){
   const row=h('div',{class:'amenities-row'});
   shown.forEach(a=> row.append(h('span',{class:'amenity-chip'}, ico(a.icon,'svg-sm'), ' '+amenityLabel(a))));
   if(max && items.length>max) row.append(h('span',{class:'amenity-chip amenity-more'}, `+${items.length-max}`));
+  return row;
+}
+/* مرافق بطاقة الملعب: **أيقونات لا شرائح**. الشريحة صفٌّ بارتفاع 30px لنصّ 10px،
+   أي صفٌّ كامل لمعلومة ثانوية في أضيق مساحة في التطبيق.
+   ⚠️ والأيقونة وحدها لا تُقرأ بالسمع: كلٌّ منها `role="img"` **مع** `aria-label`
+   يحمل اسم المرفق كاملًا — ولا `aria-hidden` عليها إطلاقًا (السمتان معًا على
+   العنصر نفسه تعنيان لا شيء: الثانية تحذفه من شجرة الوصول فلا يبقى للأولى أثر).
+   و`title` كي يصل الاسم بالمؤشّر أيضًا لا بقارئ الشاشة وحده. */
+function amenityIcons(text, max){
+  const items=parseAmenities(text);
+  if(!items.length) return null;
+  const shown = max ? items.slice(0,max) : items;
+  const row=h('div',{class:'amen-icons'});
+  shown.forEach(a=>{
+    const lbl=amenityLabel(a);
+    row.append(h('span',{class:'amen-ic-only', role:'img', 'aria-label':lbl, title:lbl}, ico(a.icon,'svg-sm')));
+  });
+  if(max && items.length>max) row.append(h('span',{class:'amen-ic-more'}, `+${items.length-max}`));
   return row;
 }
 /* تحويل قيمة الخدمة إلى نص واضح حسب اللغة (لا إنجليزية داخل العربية) */
@@ -3225,27 +3253,44 @@ function placeCard(p, eager){
     (fewToday ? h('span',{class:'avail-badge avail-few'}, t('dayLeft',{n:fewToday})) : ''),
     favB));
 
-  /* جسم البطاقة تحت الصورة: الاسم والتقييم ثم الموقع ثم أهم مرفقين ثم النوع وعدد الملاعب */
+  /* جسم البطاقة: ثلاث كتل لا أربعة صفوف بوزن واحد.
+     ① الاسم وحده على عرض كامل — التقييم خرج من صفّه، فصار الاسم يستعمل العرض
+        كلّه ويكتفي بسطر واحد غالبًا بدل سطرين.
+     ② سطر ميتا واحد يجمع **ثلاث معلومات ضعيفة**: التقييم · الموقع · عدد الملاعب،
+        بحجم واحد ووزن واحد ومفصولةً بنقاط. ثلاثة صفوف مستقلّة كانت تمنح كلًّا
+        منها وزن عنوان وهي لا تحمله.
+     ③ المرافق أيقونات لا شرائح (الشريحة صفٌّ كامل بارتفاع 30px لنصّ 10px).
+     ⚠️ ومكانٌ بلا تقييم **لا يعرض شيئًا** ولا فاصلًا — لا «0 (0)» ولا نقطة
+        يتيمة (م5، وهي قاعدة `hasRating` نفسها). */
+  const meta = h('div',{class:'pcard-meta'});
+  const metaBits = [];
+  if(hasRating(p)) metaBits.push(h('span',{class:'pm-rating'}, h('span',{class:'sr-star'},'★'), ' '+ratingText(p)));
+  metaBits.push(h('span',{class:'pm-loc'}, placeLocation(p)));
+  metaBits.push(h('span',{class:'pm-fields'}, oneField?t('oneField'):t('fieldsCount',{n:p.fields.length})));
+  metaBits.forEach((bit,i)=>{
+    if(i) meta.append(h('span',{class:'pm-sep','aria-hidden':'true'},'·'));
+    meta.append(bit);
+  });
   const body = h('div',{class:'place-body'},
-    h('div',{class:'place-body-head'},
-      h('div',{class:'place-name'}, p.place_name),
-      hasRating(p) ? h('span',{class:'place-rating'}, h('span',{class:'sr-star'},'★'), ' '+ratingText(p)) : ''),
-    h('div',{class:'place-loc'}, ico('pin','svg-sm'), ' '+placeLocation(p)),
+    h('div',{class:'place-name'}, p.place_name),
+    meta,
     replySpeedLine(p, 'place-reply'),
-    amenitiesRow(p.amenities, 2),
-    h('div',{class:'place-sub'},
-      h('span',{class:'place-strip-fields'}, oneField?t('oneField'):t('fieldsCount',{n:p.fields.length}))));
+    amenityIcons(p.amenities, 3));
 
   /* صف الإجراء السفلي: السعر مع سياقه + زر الحجز في السطر نفسه */
   const bookBtn = h('button',{class:'place-book-btn', type:'button'}, t('bookCta'));
   bookBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(p.place_id); });
   // عند تعدّد الأسعار: أظهر المدى الحقيقي «40–60» (أدقّ من «يبدأ من 40» ويطابق واقع المكان)
   const priceLabel = range ? `${mn}–${mx}` : String(mn);
+  /* ⚠️ سطران لا ثلاثة: تسمية المدى («حسب الملعب») حُذفت لأن **الشرطة نفسها تقولها** —
+     «40–60» لا تُقرأ سعرًا واحدًا. سطرٌ ثالث لتكرار ما يقوله الشكل.
+     ⚠️ و`<bdi dir="ltr">` حول المدى وحده (لا العملة): «40–60» شرطةٌ محايدة بين
+     رقمين أوروبيّين ⇒ تنقلب في السطر العربي فتُعرَض «60–40» — أعلى سعر ثمّ أدناه. */
   const action = h('div',{class:'place-action-row'},
     h('div',{class:'place-price'},
-      range && h('span',{class:'place-price-from'}, t('priceRange')),
       h('span',{class:'place-price-main'},
-        h('span',{class:'place-price-val'}, priceLabel),
+        range ? h('bdi',{class:'place-price-val', dir:'ltr'}, priceLabel)
+              : h('span',{class:'place-price-val'}, priceLabel),
         h('span',{class:'place-price-cur'}, unit)),
       h('span',{class:'place-price-ctx'}, t('perTwoHours'))),
     bookBtn);
@@ -3257,7 +3302,10 @@ function placeCard(p, eager){
 function setPlacesCount(n){ const el=$('#placesCount'); if(!el) return; if(n>0){ el.textContent=String(n); el.hidden=false; } else { el.hidden=true; } }
 /* `quiet` ⇒ بلا حركة دخول. تُمرَّر من الكتابة في البحث وحدها: `renderPlaces`
    تُستدعى بعد كل ضغطة زرّ (مؤجَّلة)، فسُلَّم الظهور كان يُعاد توزيعه من الصفر
-   مع كل حرف — القائمة تُوزَّع كورق اللعب مرارًا بينما المستخدم يكتب. */
+   مع كل حرف — القائمة تُوزَّع كورق اللعب مرارًا بينما المستخدم يكتب.
+   ⚠️ ويُنفَّذ بـ`--enter-t:0ms` لا بـ`animation:none`: الظهور صار انتقالًا من
+   `@starting-style` (الحالة الافتراضية **مرئية**) فلا وجود لحالة «حركةٌ ملغاة
+   تترك البطاقة غير مرئية» — وهو العطل الذي كان الردّ الصريح للشفافية يعالجه. */
 function renderPlaces(opts){
   const quiet = !!(opts && opts.quiet);
   const el = $('#placesList'); if(!el) return;
@@ -3311,13 +3359,14 @@ function renderPlaces(opts){
   list.forEach((p,i) => {
     const card = placeCard(p, i===0);   // أول بطاقة eager (LCP)
     if(quiet){
-      // ⚠️ `.place-card` تبدأ `opacity:0` وتعتمد على `fadeUp ... forwards` لتظهر.
-      // إلغاء الحركة وحده يترك البطاقة **غير مرئية** ⇒ لا بدّ من ردّ الشفافية معها.
-      card.style.animation = 'none'; card.style.opacity = '1';
+      /* ⚠️ تصفير **المدّة** لا التأخير: بتأخير صفر تظلّ البطاقات تتلاشى معًا
+         340ms مع كل حرف، وهو ما بُني `quiet` لمنعه. والبطاقة مرئية افتراضًا
+         الآن (الإخفاء يعيش في `@starting-style` وحده) فلا شفافية تُردّ بعدها. */
+      card.style.setProperty('--enter-t', '0ms');
     }else{
       // سُلَّم بسقف: بلا `Math.min` تنتظر البطاقةُ العشرون ثانيةً كاملة قبل ظهورها،
       // والدليل ينمو من القاعدة فالسقف ليس ترفًا. ثمانِ درجات = 0.35s كحدّ أقصى.
-      card.style.animationDelay = `${Math.min(i, 7) * 0.05}s`;
+      card.style.setProperty('--enter-d', `${Math.min(i, 7) * 50}ms`);
     }
     el.append(card);
   });
@@ -3831,19 +3880,144 @@ function suggestedPlayers(field){
   const n = Number(m[1]) + Number(m[2]);
   return (n >= 2 && n <= 40) ? n : null;
 }
-/* حالة نموذج «مفتوحة» داخل نافذة المراجعة */
+/* حالة نموذج «مفتوحة» داخل نافذة المراجعة.
+   ⚠️ والكتابة مؤجَّلة 500ms: العنصر `aria-live` (انظر `app.html`)، وهو مربوط
+   بـ`oninput` ⇒ بلا تأجيل ينطق قارئُ الشاشة **كل رقم وسيط** («٧ مقاعد» ثمّ
+   «٧٢ مقعدًا» وأنت تكتب ٧٢)، وهو ضجيجٌ يُفقد المنطقة قيمتها. والمهلة تُلغى
+   وتُعاد مع كل ضربة فلا يُنطق إلّا ما استقرّ. */
+let gmLiveTimer = null;
 function renderGmLive(){
   const box=$('#gmFields'), out=$('#gmLive'); if(!box || box.hidden) return;
-  const need=Number($('#gmNeeded').value), got=Number($('#gmBrought').value);
-  const f=State.detail.field, d=State.detail.date, hr=State.detail.hour;
-  if(!(need>=2) || !(got>=1) || got>need){ out.textContent=t('gmLiveBad'); return; }
-  const seats=need-got;
-  clear(out);
-  out.append(document.createTextNode(t('gmLiveSeats',{ n:seats, noun:nSeats(seats) })+' '));
-  // الحصّة **موسومة** بأنها تقدير ومن يقبضها — لا رقم عارٍ
-  out.append(h('span',{class:'gm-share'},
-    t('gmLiveShare',{ v:formatCurrency(gameShare(slotPrice(f,d,hr), need)) })));
+  clearTimeout(gmLiveTimer);
+  gmLiveTimer = setTimeout(()=>{
+    if(!out.isConnected || box.hidden) return;
+    const need=Number($('#gmNeeded').value), got=Number($('#gmBrought').value);
+    const f=State.detail.field, d=State.detail.date, hr=State.detail.hour;
+    if(!(need>=2) || !(got>=1) || got>need){ out.textContent=t('gmLiveBad'); return; }
+    const seats=need-got;
+    clear(out);
+    out.append(document.createTextNode(t('gmLiveSeats',{ n:seats, noun:nSeats(seats) })+' '));
+    // الحصّة **موسومة** بأنها تقدير ومن يقبضها — لا رقم عارٍ
+    out.append(h('span',{class:'gm-share'},
+      t('gmLiveShare',{ v:formatCurrency(gameShare(slotPrice(f,d,hr), need)) })));
+    /* والشرط بعده مباشرةً: الرقم يفترض اكتمال العدد، والناقص على المضيف.
+       داخل نفس `aria-live` فيُنطق مع الحصّة لا منفصلًا عنها. */
+    out.append(h('span',{class:'gm-share-cond'}, ' '+t('gmShareCond')));
+  }, 500);
 }
+/* ═══════════════ شاشات الترحيب — أوّل تشغيل فقط ═══════════════════════════
+   لا تحلّ محلّ `#page-welcome`: هذه تقول **ما الذي يفعله التطبيق**، وتلك تسأل
+   **من أنت وماذا تريد الآن**. فلا زرّ دخول ولا تسجيل هنا، ولا إجبار على الإكمال.
+   ⚠️ والمفتاح **رقم إصدار** لا `true/false`: تغييرٌ جوهري لاحق يرفعه فتُعرَض
+   ثانيةً؛ والقيمة المنطقية تحبسك في «عُرضت مرّة وانتهى».
+   ⚠️ وفشل القراءة = **تخطٍّ** لا تكرار: تخزينٌ معطَّل يعني أن الشاشات ستُعرَض
+   عند كل إقلاع إلى الأبد، وهو أسوأ من ألّا تُعرَض أصلًا.
+   ══════════════════════════════════════════════════════════════════════════ */
+const OBS_KEY = 'mustadaira:onb', OBS_VER = '1';
+const Obs = {
+  i:0, n:0, slides:[], open:false,
+  shouldShow(){
+    try{ return localStorage.getItem(OBS_KEY) !== OBS_VER; }
+    catch(_){ return false; }          // الفشل الآمن هو التخطّي
+  },
+  seen(){ try{ localStorage.setItem(OBS_KEY, OBS_VER); }catch(_){} },
+  start(){
+    const el=$('#obs'); if(!el) return false;
+    /* ⚠️ الشريحة الثالثة تُحذف من الـDOM إن لم يكن العلَم `true` **حرفيًّا**:
+       `null` (لم نسأل بعد — وهي الحالة عند أوّل إقلاع لأن لا جلسة) تُعامَل
+       معاملة `false`. ميزةٌ خلف علَمٍ مُطفأ لا تُعلَن. */
+    if (GAMES_OK !== true) el.querySelectorAll('[data-needs-games]').forEach(s=>s.remove());
+    this.slides = [...el.querySelectorAll('.obs-slide')];
+    this.n = this.slides.length;
+    if(!this.n) return false;
+    const dots=$('#obsDots'); clear(dots);
+    this.slides.forEach((_,k)=>{
+      const d=h('button',{class:'obs-dot', type:'button', role:'tab',
+        'aria-label':t('onbDotAria',{ i:k+1, n:this.n }), 'aria-selected': k===0?'true':'false'});
+      d.addEventListener('click',()=>Obs.go(k));
+      dots.append(d);
+    });
+    el.hidden=false; this.open=true;
+    document.body.classList.add('obs-on');
+    this.go(0, true);
+    return true;
+  },
+  go(k, first){
+    if(k<0 || k>=this.n) return;
+    this.i=k;
+    $('#obs').style.setProperty('--obs-i', String(k));
+    this.slides.forEach((s,j)=>{
+      const on = j===k;
+      s.setAttribute('aria-hidden', on?'false':'true');
+      /* غير النشطة خارج ترتيب التنقّل: `inert` حيث تُدعَم، و`tabindex="-1"`
+         على عناصرها التفاعلية بديلًا — وإلّا وصلها Tab وهي غير مرئية. */
+      if('inert' in s) s.inert = !on;
+      else s.querySelectorAll('button,a,input,[tabindex]').forEach(x=>x.tabIndex = on?0:-1);
+    });
+    $$('#obsDots .obs-dot').forEach((d,j)=>d.setAttribute('aria-selected', j===k?'true':'false'));
+    const last = k===this.n-1;
+    setText('obsGo', t(last ? 'onbStart' : 'onbNext'));
+    const ttl = this.slides[k].querySelector('.obs-t');
+    if(ttl && !first) ttl.focus();
+    /* منطقة إعلان **واحدة** لكل الشرائح — لا واحدة لكل شريحة */
+    setText('obsLive', (ttl?ttl.textContent+' — ':'') + t('onbDotAria',{ i:k+1, n:this.n }));
+  },
+  next(){ if(this.i < this.n-1) this.go(this.i+1); else this.finish(); },
+  back(){ if(this.i > 0){ this.go(this.i-1); return true; } this.finish(); return true; },
+  finish(){
+    const el=$('#obs'); if(!el) return;
+    this.seen(); this.open=false;
+    el.hidden=true; document.body.classList.remove('obs-on');
+    showPage('welcome');
+    $('#app')?.focus();
+  }
+};
+
+/* ═══════════ مجموعات الاختيار: tabindex متنقّل + تنقّل بالأسهم ═══════════
+   الترميز كان صحيحًا أصلًا (‏`role` + `aria-checked`/`aria-selected`) لكنّ
+   السلوك لم يكن سلوك مجموعة: كلّ زرّ محطّةُ Tab مستقلّة، ولا أسهم. والمجموعة
+   الواحدة محطّةٌ واحدة — من دخلها بـTab يخرج منها بـTab، ويتنقّل داخلها بالأسهم.
+   تشمل: `#matchPick` · `.pay-pick` · `#detailTabs` · `#modeSeg` · `.onb-seg`.
+   ══════════════════════════════════════════════════════════════════════ */
+function initRovingGroups(root){
+  (root||document).querySelectorAll('[role="radiogroup"],[role="tablist"]').forEach(g=>{
+    if(g.__roving) return; g.__roving = true;
+    /* أبناء هذه المجموعة وحدها — لا أبناء مجموعةٍ متداخلة */
+    const items = () => [...g.querySelectorAll('[role="radio"],[role="tab"]')]
+      .filter(el => el.closest('[role="radiogroup"],[role="tablist"]') === g);
+    const sync = () => { const list = items();
+      const on = list.find(el => el.getAttribute('aria-checked')==='true'
+                              || el.getAttribute('aria-selected')==='true') || list[0];
+      list.forEach(el => { el.tabIndex = (el===on ? 0 : -1); }); };
+    sync();
+    /* المراقب لا مناداةٌ من كل مبدِّل: الاختيار يتغيّر من خمسة مسارات مختلفة
+       (نقر · سهم · برمجيًّا · استئناف حجز · تبديل لغة)، ومزامنةٌ تُنادى في
+       بعضها تنحرف صامتةً في الباقي. والسمة نفسها هي مصدر الحقيقة. */
+    new MutationObserver(sync).observe(g, { subtree:true, attributes:true,
+      attributeFilter:['aria-checked','aria-selected'] });
+    g.addEventListener('keydown', e=>{
+      const list = items(); const i = list.indexOf(document.activeElement);
+      if(i < 0 || !list.length) return;
+      /* ⚠️ السهم فيزيائي كما `transform`: في RTL يمينُ الشاشة هو **السابق**
+         لا التالي. قراءة `dir` شرطٌ لا تحسين — وبعكسها يمشي التنقّل مقلوبًا
+         في لغةٍ واحدة فقط، وهو بالضبط الخلل الذي لا يظهر إلّا في اتجاه. */
+      const rtl = document.documentElement.dir === 'rtl';
+      let n = null;
+      if(e.key==='ArrowDown' || e.key===(rtl?'ArrowLeft':'ArrowRight')) n = (i+1)%list.length;
+      else if(e.key==='ArrowUp' || e.key===(rtl?'ArrowRight':'ArrowLeft')) n = (i-1+list.length)%list.length;
+      else if(e.key==='Home') n = 0;
+      else if(e.key==='End') n = list.length-1;
+      else return;
+      e.preventDefault();
+      const el = list[n]; el.focus();
+      /* نمط WAI-ARIA: التحرّك يختار. وهو صحيح هنا لأن كل تبويب يبدّل لوحًا
+         موجودًا بلا جلب شبكة ⇒ لا كلفة على المرور. ⚠️ و`aria-disabled` تُستثنى
+         من الاختيار لا من التركيز: «فيزا — قريباً» تُسمَع وتُشرَح ولا تُختار. */
+      if(el.getAttribute('aria-disabled') !== 'true') el.click();
+    });
+  });
+}
+
 function setVisPick(vis){
   State.gmVis = vis;
   $$('#matchPick .pay-opt').forEach(o=>{ const on=o.dataset.vis===vis;
@@ -3940,7 +4114,44 @@ function openJoinSheet(g){
     h('div',{class:'jn-line'}, t('gmHostIs',{ n: g.host_name || t('gmHostUnknown') })));
   const sh=$('#jnShare'); clear(sh);
   sh.append(document.createTextNode(t('joinTermShare',{ v: formatCurrency(gameShare(g.price, Number(g.players_needed||0))) })));
+  /* نفس الشرط الذي يراه المضيف — المنضمّ يقرّر على الرقم نفسه فيلزمه القيد نفسه */
+  sh.append(h('span',{class:'gm-share-cond'}, ' '+t('gmShareCond')));
   Modal.open('modal-join');
+}
+/* بطاقة نجاح الانضمام — بمكوّن `success` القائم لا بمودال جديد.
+   كان المسار ينتهي بـ`toast` يختفي بعد ثوانٍ، بينما المضيف يخرج بإيصالٍ كامل:
+   والمنضمّ التزم بمكانٍ ويومٍ ووقتٍ ومبلغٍ ومضيف. ولا رقم حجز له (الحجز حجزُ
+   المضيف) فلا يُخترَع سطرٌ فارغ مكانه.
+   ⚠️ و«أضِف إلى التقويم» تُعيد استعمال `downloadBookingIcs` نفسها بغلافٍ يوفّر
+   ما تقرأه فقط — لا نسخة ثانية من مولّد ICS تنحرف عن الأولى. */
+function showJoinSuccess(g){
+  resetSuccessCard();
+  const icon=$('#successIcon'); if(icon){ void icon.offsetWidth; icon.classList.add('is-check'); icon.innerHTML=ICON.check; }
+  setText('successTitle', t('gmJoined'));
+  setText('successText', `${g.place_name||''} · ${g.field_name||''}`);
+  const date = String(g.booking_date||'').split('T')[0];
+  const hour = Number(g.hour);
+  const slot = { hour, startHour:hour, endHour:hour+2, label:g.time_label||'' };
+  const total = Number(g.players_needed||0);
+  const sum=$('#successSummary'); sum.hidden=false; clear(sum);
+  const cell=(lbl,val,icn)=> h('div',{class:'ss-cell'}, h('div',{class:'ss-cell-lbl'}, ico(icn,'svg-sm'), ' '+lbl), h('div',{class:'ss-cell-val'}, val));
+  sum.append(h('div',{class:'ss-grid'},
+    cell(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`, 'cal'),
+    cell(t('rvTime'), slotDisplay(slot), 'clock'),
+    cell(t('rvHost'), h('bdi',{}, g.host_name||t('gmHostUnknown')), 'person'),
+    /* الحصّة **موسومة تقديرًا** هنا كما في كل موضع آخر — رقمٌ عارٍ يُقرأ سعرًا مقطوعًا */
+    cell(t('rvPrice'), h('span',{}, h('bdi',{dir:'ltr'}, formatCurrency(gameShare(g.price, total))),
+      ' ', h('small',{class:'gc-est'}, t('gmShareTag'))), 'money')));
+  const act=$('#successActions'); clear(act);
+  const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
+  const goC=h('button',{class:'cbtn'}, ico('cal','svg-sm'), ' '+t('addToCalendar'));
+  goC.addEventListener('click',()=>downloadBookingIcs({
+    place:{ place_name:g.place_name, city:g.city, region:g.region },
+    field:{ field_id:g.field_id||g.id||'', field_name:g.field_name },
+    date, hour }));
+  const goH=h('button',{class:'cbtn'}, t('navHome')); goH.addEventListener('click',()=>{ Modal.close('success'); showPage('home'); });
+  act.append(goB, goC, goH);
+  Modal.open('success');
 }
 async function confirmJoin(btn){
   const g=State.joinGame; if(!g) return;
@@ -3948,7 +4159,7 @@ async function confirmJoin(btn){
     const r = await API.post({ action:'joinGame', player_token:Session.player(), booking_id:g.id });
     if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('gmErrGeneric'),'error'); await renderGames(); return; }
     Modal.close('modal-join', true);
-    toast(t('gmJoined'),'success');
+    showJoinSuccess(g);
     await renderGames();
   });
 }
@@ -4355,6 +4566,16 @@ function downloadBookingIcs({ place, field, date, hour }){
 /* شاشة نجاح الحجز: علامة متحركة + ملخّص + حالة + رقم الحجز + إجراءات */
 function showBookingSuccess(info, bookingId){
   const { place, field, date, hour } = info;
+  /* 🔴 السعر **لا يُقرأ من `field.price` هنا**: ذاك سعر الدليل («من كم يبدأ»)،
+     والإيصال يقول ما كُتب على هذا الحجز بالذات. الأولوية: ما ردّه الخادم
+     (‏`t_booking_price` في ترحيل 18 هو الحكم) ⇒ ثمّ `slotPrice` المحسوب محلّيًّا.
+     ⚠️ والعطل كان **كامنًا** لأن 18 غير مُشغَّل فالقيمتان متطابقتان اليوم؛ وأوّل
+     قاعدة تسعير بالساعة تجعل الإيصال يقول رقمًا لم يُحجَز به — ويبدو عطلَ خادم.
+     ⚠️ والحارس صريح قبل التحويل: `Number(null)` صفرٌ صالح، و`Number.isFinite(0)`
+     صحيحة ⇒ غيابُ القيمة كان سيخرج «0 د.أ» واثقًا (نفس درس `replySpeedText`). */
+  const raw = info.price;
+  const price = (raw == null || raw === '' || !Number.isFinite(Number(raw)))
+    ? slotPrice(field, date, hour) : Number(raw);
   resetSuccessCard();                                       // بطاقة مركزية صغيرة (لا شاشة كاملة)
   // reflow يفصل إزالة is-check (في resetSuccessCard) عن إعادتها ⇒ أنيميشن النجاح يعيد التشغيل لكل حجز
   const icon=$('#successIcon'); if(icon){ void icon.offsetWidth; icon.classList.add('is-check'); icon.innerHTML=ICON.check; }
@@ -4369,7 +4590,19 @@ function showBookingSuccess(info, bookingId){
     cell(t('rvDay'), `${dayLabel(date)} ${shortDate(date)}`, 'cal'),
     cell(t('rvTime'), slot?slotDisplay(slot):'', 'clock'),
     cell(t('rvDuration'), t('twoHours'), 'clock'),
-    cell(t('rvPrice'), formatCurrency(field.price), 'money')));
+    cell(t('rvPrice'), formatCurrency(price), 'money')));
+  /* 🔴 المباراة المفتوحة: الإيصال كان **صامتًا** عنها تمامًا — نفس الشاشة لمن اختار
+     «خاصّة» ولمن نشر ثمانية مقاعد، فيخرج المضيف ظانًّا أن مقاعده معروضة الآن.
+     والحقيقة قيدٌ في العرض نفسه (‏`22_open_games.sql`): **لا مقعد قبل تأكيد الملعب**.
+     ولا نصّ جديد هنا: نفس شارة بطاقة «حجوزاتي» ونفس جملتها ونفس الصنف — معنًى واحد
+     لا يُصاغ مرّتين. والحالة عند الإيصال `pending` دائمًا (الطلب أُرسل للتوّ). */
+  if(info.visibility === 'open'){
+    const seats = Math.max(0, Number(info.needed||0) - Number(info.brought||0));
+    sum.append(h('div',{class:'bk-open'},
+      h('span',{class:'bk-open-badge'}, t('gmBadgeWaiting')),
+      h('span',{class:'bk-open-txt'},
+        t('gmLiveSeats',{ n:seats, noun:nSeats(seats) })+' '+t('gmCardWaiting'))));
+  }
   if(bookingId) sum.append(h('div',{class:'ss-ref'}, h('span',{class:'ss-ref-lbl'}, t('bookingNo')), h('span',{class:'ss-ref-val'}, '#'+bookingId)));
   const act=$('#successActions'); clear(act);
   const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
@@ -4705,13 +4938,33 @@ async function loadOwnerDashboard(){
 }
 /* يشغّل خطوة رسم معزولة: خطؤها يُسجَّل ولا يُسقط بقية اللوحة */
 function safeRender(label, fn){ try{ fn(); }catch(err){ console.error('owner render ['+label+'] failed:', err); } }
+
+/* ═══════════ نطاق التقارير ═══════════════════════════════════════════════
+   يقصّ **المدخَل** لا الحساب. والنافذة على `booking_date` أي على **تاريخ
+   اللعب** — وهو ما تقيسه بقيّة اللوحة أصلًا (‏`oToday` = «حسب تاريخ اللعب»)،
+   فخلطُ نافذةٍ على تاريخ الطلب بأخرى على تاريخ اللعب يعطي رقمين لا يجتمعان.
+   ⚠️ **ولا مقارنة فترات**: الجدول الشهري يمتنع عن حساب النموّ للشهر الجارٍ
+   عمدًا (مقارنة شهر ناقص بشهر كامل بلا معنى)، والقاعدة نفسها تنطبق على أي
+   نافذة جزئية هنا. رقمٌ تقريبي أسوأ من غياب المقارنة. */
+const REPORT_RANGES = { all:null, d30:30, d90:90 };
+function reportScoped(bookings){
+  const days = REPORT_RANGES[State.reportRange || 'all'];
+  if(!days) return bookings;
+  const from = dateAfter(-(days - 1));
+  return bookings.filter(b => String(b.date||'') >= from);
+}
 function renderOwnerDashboard(){
   const d=State.ownerData; if(!d) return;
   setText('ownerPlaceTitle', d.place ? d.place.place_name : t('unknownPlace'));
   const bookings = d.bookings || [];
-  safeRender('stats', ()=>renderOwnerStats(bookings));
-  safeRender('econ', ()=>renderOwnerEcon(bookings));
-  safeRender('charts', ()=>renderOwnerCharts(bookings));
+  /* ⚠️ نطاق التقارير **مرشِّح مُدخَل لا تعديل حساب**: الدوالّ الثلاث تأخذ
+     مصفوفةً وتحسب منها، فتقليص المصفوفة يغيّر ما تشمله الأرقام ولا يمسّ سطرًا
+     واحدًا من رياضياتها (العمولة · الصافي · الإشغال كما هي بالحرف).
+     و«الكل» هو الافتراضي فلا يتغيّر شيء لمن لا يلمس المُبدِّل. */
+  const scoped = reportScoped(bookings);
+  safeRender('stats', ()=>renderOwnerStats(scoped));
+  safeRender('econ', ()=>renderOwnerEcon(scoped));
+  safeRender('charts', ()=>renderOwnerCharts(scoped));
   safeRender('fieldFilter', ()=>{
     const sel=$('#ownerFieldFilter'); const old=sel.value||'all';
     clear(sel); sel.append(h('option',{value:'all'},t('allFields')));
@@ -6255,7 +6508,19 @@ function showPage(name, opts){
     if(NavStack.length>30) NavStack.shift();
   }
   const ds=$('#detailSticky'); if(ds && name!=='detail') ds.hidden=true;   // إخفاء الملخّص اللاصق خارج التفاصيل
+  /* الصفحة المغادِرة تبقى مرسومة طوال الانتقال وتنزاح **أقلّ** من الداخلة
+     (‏14% مقابل 100%) — والفارق بين السرعتين هو ما يُقرأ عمقًا: الطبقة الخلفية
+     تتحرّك أبطأ. وقبل هذا كانت تُقصّ بـ`display:none` فورًا، فيتحرّك طرفٌ واحد. */
+  const leaving = (cur && cur!==name) ? $('#page-'+cur) : null;
+  const lmode = leaving ? (opts.back ? 'lv-back'
+    : (NAV_OF[cur] && NAV_OF[name] && NAV_OF[cur]===NAV_OF[name] ? 'lv-fade' : 'lv-fwd')) : null;
   $$('.page').forEach(p=>{ p.classList.remove('active','pg-fwd','pg-back','pg-fade','pg-drag','pg-settle'); p.style.transform=''; });
+  if(leaving){
+    leaving.classList.add('pg-leave', lmode);
+    /* ⚠️ 360ms (‏> 320) **ولا يُلغى عند تنقّل متتالٍ**: التنظيف المكرّر غير ضارّ،
+       بينما إلغاء المؤقّت يترك صفحةً عالقة مرسومةً فوق المحتوى. */
+    setTimeout(()=>leaving.classList.remove('pg-leave','lv-fwd','lv-back','lv-fade'), 360);
+  }
   const page=$('#page-'+name); if(page) page.classList.add('active');
   /* اتجاه الانتقال (تطبيق): «رجوع» ينزلق من الحافة الابتدائية، و«تقدّم» من النهائية،
      أما التنقّل بين تبويبات الشريط السفلي فتلاشٍ قصير (كالتطبيقات الأصلية — لا انزلاق بين التبويبات). */
@@ -6304,7 +6569,14 @@ function showPage(name, opts){
    يتيح لطبقة native.js تشغيل «الرجوع» الداخلي دون كسر تغليف الوحدة (IIFE). */
 try{
   if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()){
-    window.__native = { back: navigateBack, page: activePageName };
+    /* ⚠️ شاشات الترحيب تعترض الرجوع **قبل** المكدّس: داخلها يرجع شريحةً واحدة،
+       وعلى الأولى ينتقل إلى `welcome` **ولا يُغلق التطبيق**. وهي ليست صفحةً في
+       `NavStack` فلا يعرفها `navigateBack`، ولذلك يُعلَّق الاعتراض على الجسر
+       القائم لا على معالِج ثانٍ يتنازع معه. */
+    window.__native = {
+      back: (fb)=>{ if(Obs.open){ Obs.back(); return; } navigateBack(fb); },
+      page: ()=> Obs.open ? 'obs' : activePageName()
+    };
   }
 }catch(_){}
 
@@ -6324,9 +6596,35 @@ function buzz(ms){
    ══════════════════════════════════════════════════════════════════════ */
 (function intro(){
   const el=document.getElementById('intro'); if(!el) return;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const total = reduce ? 500 : 1800;          // = آخر تأخير + مدّة introOut في CSS (1240+520)
-  setTimeout(()=>{ el.classList.add('gone'); el.remove(); }, total);
+  let done=false;
+  const kill = () => {
+    if(done) return; done=true;
+    el.remove();
+    /* ⚠️ شريط الحالة كان Teal ما دام اللوح موجودًا (native.js يفحص #intro).
+       ومراقب الشريط يرصد **صنف body** لا حذف عنصر ⇒ لا شيء يوقظه بعد الإزالة،
+       فيبقى Teal فوق رأسٍ أبيض. حدث الصفحة هو الموقظ القائم فنُطلقه. */
+    try{ document.dispatchEvent(new CustomEvent('app:page',{detail:activePageName()})); }catch(_){}
+  };
+  /* الإزالة تتبع الأنيميشن نفسه لا ساعةً موازية له. الساعتان لا تبدآن معًا:
+     ساعة CSS تبدأ عند أوّل رسم لعقدة `.intro` (وسمُها في أعلى <body> وورقتها في
+     <head>)، وساعة `setTimeout` لا تبدأ إلّا بعد تحليل الحزمة كلّها وتنفيذ كلّ
+     ما قبلها من IIFE. الفارق على WebView بارد مئات المللي‑ثانية، وكان اللوح
+     يبقى فيها فوق الواجهة. `animationend` يقيس الساعة الصحيحة بلا رقم مكتوب. */
+  el.addEventListener('animationend', e=>{
+    if(e.target===el && e.animationName==='introOut') kill();
+  });
+  /* شبكة أمان لا مؤقّت رئيسي: الحدث قد لا يصل إن أُلغيت الحركة أو كانت الصفحة
+     مخفيّة. ⚠️ ومدّتها **تُقرأ من CSS** لا تُكتب رقمًا ثانيًا: التوقيت يحكمه
+     `--intro-k` وقاعدةُ تقليل الحركة معًا، ورقمٌ مكتوب هنا يخالفهما صامتًا —
+     وهو ما كان يقع فعلًا (الفرع القديم كان 500ms لتقليل الحركة بينما الحركة
+     الفعلية 1240+520، لأن لاحقتَي §27 تعلوان على مختصر قاعدة التقليل).
+     والهامش سخيّ عمدًا: `pointer-events:none` يجعل التأخّر بلا كلفة، والتبكير
+     يقطع الحركة في منتصفها. */
+  const ms = v => { const s=String(v||'').split(',')[0].trim(), n=parseFloat(s);
+                    return isFinite(n) ? (/ms$/.test(s) ? n : n*1000) : 0; };
+  const cs = getComputedStyle(el);
+  const base = ms(cs.animationDuration) + ms(cs.animationDelay);
+  setTimeout(kill, (base > 0 ? base : 1800) + 1200);
 })();
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -6951,7 +7249,12 @@ async function confirmBooking(btn){
       }
       Track.push(EV.BOOKING_SUBMITTED, { place_id:String(place.place_id), hour:Number(hour) });
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
-      Modal.close('modal-booking'); showBookingSuccess({place,field,date,hour}, res.booking_id);
+      /* السعر يُمرَّر صراحةً: الخادم أوّلًا (وهو صاحب الحقيقة) ثمّ المعروض.
+         ومعه حالة النشر، وإلّا بقي الإيصال يعِد ضمنًا بما لم يقع. */
+      Modal.close('modal-booking');
+      showBookingSuccess({ place, field, date, hour,
+        price: (res.price != null ? Number(res.price) : shown),
+        visibility: vis, needed: need, brought: got }, res.booking_id);
       if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
       Tracker.refresh();          // اللوح يظهر على الرئيسية فور إرسال الطلب لا بعد دورة
       /* لحظة طلب الإذن: الطلب أُرسل للتوّ وينتظر ردًّا، فالسؤال «أنُعلمك حين
@@ -7067,13 +7370,35 @@ const THEME_BG = { light:'#F4F5F6', dark:'#0A0E11' };   // = --bg-primary في �
    بدء الثاني **يُلغي** الأوّل فورًا (`vt.skipTransition` ضمنيًّا) فيُقرأ الإلغاء وميضًا.
    قفل واحد لكليهما ⇒ الضغطة الثانية أثناء انتقال جارٍ تُبدَّل فورًا بلا حركة، لا تُبتلع. */
 let vtBusy = false;
+/* ⚠️ انتقال الثيم صار مشروطًا بـ`html.theming` (‏app.css) ⇒ يلزم رفع الصنف حول
+   لحظة التبديل. وإجبار الـreflow بين الرفع والتبديل **ليس زينة**: بلا قراءةٍ
+   تُجبر التخطيط يضمّ المتصفّح العمليتين في إطارٍ واحد فلا تُوجَد حالة «قبل»
+   ولا ينتقل شيء أصلًا.
+   ⚠️ والإزالة بـ`setTimeout` وحده لا `transitionend`: الأخير يُطلَق مرّةً **لكل
+   خاصّية لكل عنصر** (ستّ خاصّيات × مئات العقد)، وإزالة الصنف عند أوّلها تقع
+   قبل انتهاء الباقي ⇒ نصف الشاشة ينتقل ونصفها يقفز. */
+const THEME_MS = 450;
+let themingTimer = null;
+function withThemeTransition(commit){
+  const root = document.documentElement;
+  root.classList.add('theming');
+  void root.offsetHeight;
+  commit();
+  clearTimeout(themingTimer);
+  themingTimer = setTimeout(()=>root.classList.remove('theming'), THEME_MS + 60);
+}
 function toggleTheme(btn, e){
   const next = document.body.classList.contains('dark') ? 'light' : 'dark';
   const commit = ()=>{ Session.setTheme(next); applyTheme(next); };
   let reduce=false; try{ reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
   const r = (btn && btn.getBoundingClientRect) ? btn.getBoundingClientRect() : null;
-  // حارس: تقليل حركة · بلا زرّ صالح · بلا WAAPI · نقرة أثناء كشف جارٍ ⇒ تبديل فوري
-  if(reduce || vtBusy || !r || !r.width || typeof Element.prototype.animate !== 'function'){ commit(); return; }
+  /* تقليل الحركة ⇒ تبديل **فوري بلا انتقال**. وهذا تحسّنٌ جانبي مقصود: القاعدة
+     غير المشروطة كانت تُبقي تلاشي 450ms حتى لمن طلب تقليل الحركة. */
+  if(reduce){ commit(); return; }
+  // بلا زرّ صالح · بلا WAAPI · نقرة أثناء كشف جارٍ ⇒ بلا كشف دائري، والانتقال اللوني يبقى
+  if(vtBusy || !r || !r.width || typeof Element.prototype.animate !== 'function'){
+    withThemeTransition(commit); return;
+  }
   const cx = r.left + r.width/2, cy = r.top + r.height/2;
 
   // ① الكشف الحقيقي للمحتوى
@@ -7085,7 +7410,7 @@ function toggleTheme(btn, e){
       // مركز التفتّح = موضع الزرّ (نسبةً لا بكسلًا كي يصمد مع أي مقاس شاشة)
       root.style.setProperty('--vt-ox', (cx/innerWidth*100).toFixed(2)+'%');
       root.style.setProperty('--vt-oy', (cy/innerHeight*100).toFixed(2)+'%');
-      root.classList.add('vt-theme');
+      root.classList.add('vt-theme','theming');   // الانتقال اللوني مشروط بالصنف الثاني
       vt = document.startViewTransition(()=>{
         // تُلتقط لقطة «بعد» هنا: نوقف انتقالات اللون لحظتَها كي تُلتقط بألوانها
         // النهائية لا في منتصف تحوّل (الإيقاف محصور بقائمة الوسوم).
@@ -7102,7 +7427,7 @@ function toggleTheme(btn, e){
       /* `theme-swap` تُرفع في المسار العادي داخل الاستدعاء أعلاه؛ ورفعها هنا
          أيضًا شبكة أمان: لو أخفق الاستدعاء بعد إضافتها لبقيت الواجهة بلا
          انتقالات للأبد. */
-      const done = ()=>{ root.classList.remove('vt-theme','theme-swap'); vtBusy = false; };
+      const done = ()=>{ root.classList.remove('vt-theme','theme-swap','theming'); vtBusy = false; };
       vt.ready.then(()=>{
         // تفتّح ناعم: اللقطة الجديدة تظهر وهي تستقرّ من تكبير طفيف عند الإصبع.
         // `opacity`+`transform` فقط ⇒ الحركة كلّها على الـGPU، صفر رسم في كل فريم.
@@ -7121,6 +7446,10 @@ function toggleTheme(btn, e){
   }
   // ② الاحتياطي: قرص مصمت
   vtBusy = true;
+  document.documentElement.classList.add('theming');
+  void document.documentElement.offsetHeight;
+  clearTimeout(themingTimer);
+  themingTimer = setTimeout(()=>document.documentElement.classList.remove('theming'), THEME_MS + 60);
   const x = r.left + r.width/2, y = r.top + r.height/2;
   const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   const wrap = document.createElement('div'); wrap.className = 'theme-reveal';
@@ -7184,7 +7513,7 @@ function setLanguage(lang){
   $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); renderLandingRegions(); updateFilterBar(); updateTrust();
+    renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateFilterBar(); updateTrust();
     HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     updatePlayerGreeting();
@@ -7313,6 +7642,15 @@ const Actions = {
   openNotifs:()=>Notifs.open(), notifsMarkAll:()=>Notifs.markAll(),
   openTracker:()=>{ if(Session.player()) showPage('bookings'); },
   navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
+  obsSkip:()=>Obs.finish(), obsNext:()=>Obs.next(),
+  repRange:(btn)=>{ State.reportRange = btn.dataset.range || 'all';
+    $$('.rep-range-btn').forEach(b=>{ const on = b.dataset.range === State.reportRange;
+      b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on?'true':'false'); });
+    renderOwnerDashboard(); },
+  /* إعادة العرض للاختبار: بدونها لا تُختبَر الميزة إلّا بمسح تخزين التطبيق
+     في كل مرّة — وذلك يمحو الجلسة والمفضّلة ويُفسد اختبار المسارات الأخرى. */
+  obsReplay:(btn)=>{ try{ localStorage.removeItem(OBS_KEY); }catch(_){}
+    toast(t('onbReplayDone'),'success'); btn.disabled=true; },
   /* مبدّل لاعب/مالك: المؤشّر ينزلق بـ--seg-i (CSS)، واللوحان يتبادلان بصنف .off لا بـhidden
      (hidden يصفّر ارتفاع الغلاف ⇒ قفزة). الارتفاع يبقى = أطول لوح دائمًا. */
   onbRole:(btn)=>{ const role=btn.dataset.role||'player';
@@ -7516,27 +7854,6 @@ $$('.modal-overlay').forEach(enableSwipe);
 
 /* ===================== INIT ===================== */
 /* ===================== LANDING SCROLL REVEAL ===================== */
-/* كشفٌ تدريجي للأقسام السفلية في صفحة الهبوط — مراقبٌ واحد، لمرّة واحدة لكل عنصر.
-   لا يراقب .lp-hero/.lp-stats (هما ضمن كشف الـhero الابتدائي فوق الطيّة). */
-function initLandingReveal(){
-  const root = $('#page-welcome'); if(!root) return;
-  // أسناد التتابع لأبناء المجموعات (لا نراقب الحاوية + الأبناء معًا)
-  const groups = ['.lp-features','.lp-steps','.lp-regions','.lp-reviews'];
-  groups.forEach(g=>{ const grp=root.querySelector(g); if(!grp) return;
-    Array.from(grp.children).forEach((child,i)=>{ child.style.setProperty('--reveal-delay', Math.min(i*80,400)+'ms'); });
-  });
-  const sel = '.lp-sec-head,.lp-feature,.lp-step,.lp-region,.lp-review,.lp-owners-card,.lp-callout-inner,.lp-footer';
-  const els = $$(sel, root);
-  if(!els.length) return;
-  els.forEach(el=>el.classList.add('scroll-reveal'));
-  document.documentElement.classList.add('reveal-ready');   // الآن فقط نسمح بالإخفاء قبل الكشف
-  if(!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('visible')); return; }
-  const obs = new IntersectionObserver((entries, observer)=>{
-    entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
-  }, { threshold:0.10, rootMargin:'0px 0px -8% 0px' });
-  els.forEach(el=>obs.observe(el));
-}
-
 /* منع تكرار زرّ «متابعة الحجز»: يُخفى الشريط اللاصق كلما ظهر الزر الداخلي على الشاشة
    (يعمل على الشاشات العريضة حيث يظهر الزرّان؛ على الجوال الزر الداخلي display:none فيبقى اللاصق). */
 function initStickyDedup(){
@@ -7598,9 +7915,9 @@ async function init(){
   Dirty.init();              // مراقبة الإدخال في نوافذ النماذج (تحذير التعديلات غير المحفوظة)
   Offline.init();            // طبقة انقطاع الاتصال + استئناف عند العودة
   PullRefresh.init();        // السحب للتحديث على الرئيسية/الحجوزات/لوحة المالك
-  initLandingReveal();       // تجهيز كشف أقسام الهبوط (الـDOM الثابت متاح الآن)
   initStickyDedup();         // منع تكرار زرّ متابعة الحجز (اللاصق × الداخلي)
   initAuthForms();           // شروط كلمة السرّ الحيّة + خانات كود التحقّق
+  initRovingGroups();        // مجموعات الاختيار: tabindex متنقّل + تنقّل بالأسهم
   loadData().then(updateTrust);
   Notifs.load();             // الجرس يعرف عدده قبل أن ينظر إليه المستخدم
   if (Session.owner()){
@@ -7618,13 +7935,11 @@ async function init(){
     }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
   }
   showPage('welcome');
-  // رسالة ترحيبية لأول زيارة فقط (لا تظهر بعدها)
-  try{
-    if(!localStorage.getItem('mustadaira:welcomed')){
-      localStorage.setItem('mustadaira:welcomed','1');
-      setTimeout(()=>toast(t('firstVisitWelcome'),'success',6500), 1100);
-    }
-  }catch(_){}
+  /* 🔴 حُذف توست «أوّل زيارة» ومفتاحُه معه:
+     نصّه يقول تقريبًا ما تقوله الشريحة الأولى، وعرضُ الاثنين تكرارٌ في أوّل
+     تسع ثوانٍ من عمر التطبيق — والشرائح تقولها بمهلةٍ يقرؤها المستخدم بدل
+     توستٍ يمرّ. مسارٌ واحد للحقيقة الواحدة. */
+  if (Obs.shouldShow()) Obs.start();
 }
 init();
 

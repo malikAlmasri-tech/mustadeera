@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- أوّل لون في تدرّج .intro بالضبط (app.css §18: 157deg,#12565F,#0F4B53,#07272C).
+         التطابق حرفيّ لا تقريبيّ: نافذة الإقلاع تُسلّم إلى لوح الافتتاح داخل
+         الـWebView، وأي درجة قريبة تُقرأ ومضةً عند التسليم. -->
+    <color name="splashBackground">#0F4B53</color>
 </resources>

@@ -27,8 +27,9 @@
 <link rel="icon" href="/assets/logo-fav.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/logo-mark.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- الخطوط مستضافة ذاتيًّا تحت /assets/fonts/ (يولّدها tools/fetch-fonts.mjs
+     للوجهين معًا). حُذف الـpreconnect لأنه صار يفتح اتّصالًا لنطاق لا يُطلَب
+     منه شيء — وهو تكلفة صافية على المسار الحرج لا توفير. -->
 <link rel="stylesheet" href="{{fontHref}}">
 
 <!-- ورقة الأنماط ملفّ خارجي مبصوم بمحتواه، لا نصًّا مضمَّنًا في كل صفحة:

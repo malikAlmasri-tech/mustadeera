@@ -54,6 +54,21 @@ foreach ($pair in @(@{n='app.js'; t=$aj; m='</script'}, @{n='app.css'; t=$ac; m=
     }
 }
 
+# The guard above watches what gets INJECTED; this one watches what it is injected
+# INTO. .NET's String.Replace swaps EVERY occurrence, so a second "</body>" anywhere
+# in app.html - including inside an HTML comment - injects the whole native layer
+# twice. The CSS duplicate is harmless; native.js running twice is not: it registers
+# the Android back-button listener, the status-bar MutationObserver and the
+# notification listener a second time, so one back gesture navigates twice.
+# Measured 2026-08-10: a comment that quoted the literal tag did exactly this, and
+# the build reported success (+19,398 native instead of +9,699).
+$bodyCloses = ([regex]::Matches($ah, [regex]::Escape('</body>'))).Count
+if ($bodyCloses -ne 1) {
+    throw ("BUILD ABORTED: app.html contains {0} occurrences of '</body>' (expected exactly 1). " -f $bodyCloses) +
+          "String.Replace is global, so the native layer would be injected once per occurrence " +
+          "and native.js would run more than once. Do not write the literal tag in comments."
+}
+
 $appWeb = $ah.Replace('<link rel="stylesheet" href="app.css">', "<style>`r`n$ac`r`n</style>").Replace('<script src="app.js"></script>', "<script>`r`n$aj`r`n</script>")
 
 # The native layer (haptics, back button, status bar, safe areas) is injected

@@ -86,7 +86,12 @@
   function syncStatusBar(){
     if(!StatusBar) return;
     var dark = document.body.classList.contains('dark');
-    var onboarding = !!document.querySelector('#page-welcome.active');
+    /* ⚠️ لوح الافتتاح (#intro) يغطّي الشاشة بنفس Teal الذي يغطّيها به هيرو الترحيب،
+       فهو نفس الحالة البصرية لا حالة ثانية. وبدون هذا الشرط يبدأ **المستخدم
+       المسجَّل** على `home` (رأس أبيض) بينما اللوح Teal ⇒ شريط حالة أبيض فوق لوح
+       Teal طوال الافتتاح. والصفحة النشطة لا تصف ما يراه المستخدم ما دام فوقها لوح. */
+    var onboarding = !!document.getElementById('intro') ||
+                     !!document.querySelector('#page-welcome.active');
     var lightIcons = dark || onboarding;                  // خلفية داكنة ⇒ أيقونات فاتحة
     var bg = onboarding ? '#0F4B53' : (dark ? '#0A0E11' : '#FFFFFF');
     try{

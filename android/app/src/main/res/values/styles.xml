@@ -13,10 +13,21 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- خلفية النافذة تُرسَم قبل أن يرسم الـWebView أوّل فريم. القيمة الافتراضية
+             بيضاء ⇒ وميض أبيض بين انصراف نافذة الإقلاع وظهور لوح .intro. وهو وميض
+             لا يظهر في أي معاينة على المتصفّح لأنه خارج الـWebView أصلًا. -->
+        <item name="android:windowBackground">@color/splashBackground</item>
     </style>
 
 
+    <!-- ⚠️ كان `@drawable/splash`، وهو **شعار Capacitor الأزرق على أبيض** كما يأتي في
+         القالب: كلّ إقلاع بارد يعرض علامة طرفٍ ثالث قبل علامة التطبيق، ومعها الأبيض
+         الذي يصطدم بلوح الافتتاح Teal. لوحٌ مسطّح بلون .intro يجعل التسليم غير مرئي،
+         والهوية يحملها الافتتاح داخل الـWebView حيث هي مكتوبة أصلًا. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:background">@color/splashBackground</item>
+        <item name="android:windowBackground">@color/splashBackground</item>
+        <!-- سمة androidx (‏core-splashscreen في app/build.gradle) ⇒ تعمل قبل أندرويد ١٢ وبعده -->
+        <item name="windowSplashScreenBackground">@color/splashBackground</item>
     </style>
 </resources>

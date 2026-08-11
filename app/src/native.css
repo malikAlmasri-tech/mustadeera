@@ -30,11 +30,14 @@ body.native{ overscroll-behavior-y: contain; }
    ============================================================ */
 
 /* عناصر تفاعلية: انتقال سريع خاطف (120ms) لتغذية لمس لحظية */
+/* ⚠️ `.place-card` **خرجت من هذه المجموعة عمدًا**: هذا الملفّ يُحقن بعد app.css
+   فيفوز عند تساوي التخصيص، وقائمة الانتقال هذه لا تذكر `translate` ⇒ كانت
+   تُلغي حركةَ دخول البطاقة المعرَّفة في app.css §24 إلغاءً تامًّا وصامتًا.
+   انتقال البطاقة (دخولًا وضغطًا) صار في §24 وحده — مصدر واحد لا اثنان. */
 body.native .tbtn,
 body.native .day-btn,
 body.native .sport-tab,
 body.native .ftab,
-body.native .place-card,
 body.native .nitem,
 body.native .dtab-btn{
   transition: transform .12s cubic-bezier(.2,0,0,1), box-shadow .12s ease, opacity .12s ease;
@@ -52,11 +55,13 @@ body.native .dtab-btn:active{
 /* التبويب السفلي: انضغاط الأيقونة عند اللمس */
 body.native .nitem:active{ transform: scale(.92); opacity: .7; }
 
-/* بطاقات الملاعب: انضغاط لطيف (مساحة أكبر ⇒ نسبة أقل) */
-body.native .place-card:active{
-  transform: scale(.975);
-  box-shadow: 0 2px 8px -3px rgba(16,24,32,.14);
-}
+/* بطاقات الملاعب: انضغاط لطيف (مساحة أكبر ⇒ نسبة أقل) — **انتقل إلى app.css §24**.
+   ⚠️ وكانت هذه القاعدة معطوبةً من وجهين قبل النقل:
+   ① `transform` هي نفس المحور الذي تُثبّته `animation:fadeUp … forwards` ⇒ الضغطة
+      تُلغى فور انتهاء حركة الدخول (وهو العطل الذي عالجته §24 بفصل المحاور).
+   ② `box-shadow` هنا بلا `!important` بينما `.place-card{box-shadow:…!important}`
+      في app.css تفرضه ⇒ ظلّ الضغط **لم يُطبَّق قطّ**.
+   ولو بقيت لتضاعف الانضغاط: ‏.975 هنا × .985 هناك = .96. */
 
 /* احترام تفضيل تقليل الحركة — إلغاء كل تحويلات اللمس */
 @media (prefers-reduced-motion: reduce){
@@ -65,6 +70,6 @@ body.native .place-card:active{
   body.native .sport-tab:active,
   body.native .ftab:active,
   body.native .dtab-btn:active,
-  body.native .nitem:active,
-  body.native .place-card:active{ transform: none; opacity: 1; }
+  body.native .nitem:active{ transform: none; opacity: 1; }
+  /* `.place-card` كتمُها في app.css §24 مع بقيّة محاورها */
 }

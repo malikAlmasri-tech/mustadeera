@@ -17,7 +17,10 @@ param(
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 
-$css = "C:\Users\malik\OneDrive\Desktop\koora\app\native\app.css"
+# Path fixed 2026-08-11: the repo moved app/native/ -> app/src/ on 2026-07-29
+# and this line still pointed at the old folder, so the script threw on every run.
+# Resolved from the script's own location, so a future move cannot stale it again.
+$css = Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) "app\src\app.css"
 if(-not (Test-Path $Src)){ throw "لم أجد الصورة المصدر: $Src" }
 
 # ===== تصغير + ضغط =====
