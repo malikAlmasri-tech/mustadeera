@@ -108,7 +108,7 @@ const I18N = {
     viewModeAria:'طريقة العرض', viewGrid:'عرض شبكي', viewList:'عرض قائمة',
     viewTimes:'عرض الأوقات', chooseField:'اختر الملعب', oneField:'ملعب واحد', fieldsCount:'{n} ملاعب',
     bookCta:'احجز الآن',
-    fieldPhotos:'صور الملعب', lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
+    fieldExtrasTitle:'المواصفات والصور', fieldPhotos:'صور الملعب',  lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
     sportsAria:'اختر الرياضة', sportFootball:'كرة القدم', sportPadel:'بادل', sportBasket:'كرة السلة', sportTennis:'تنس', sportVolley:'كرة الطائرة', soonBadge:'قريباً',
     comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} تُحمّي في غرفة الملابس — وستنزل أرض الملعب قريباً.', backToFootball:'عرض ملاعب كرة القدم',
     sportsHint:'المستديرة تحجز الملاعب الرياضية كلّها. ما تراه مفتوحاً هنا هو ما سُجّلت ملاعبه فعلاً — وما عليه «قريباً» ينتظر ملعبه الأول.',
@@ -591,7 +591,7 @@ const I18N = {
     viewModeAria:'View mode', viewGrid:'Grid view', viewList:'List view',
     viewTimes:'View times', chooseField:'Choose field', oneField:'One field', fieldsCount:'{n} fields',
     bookCta:'Book now',
-    fieldPhotos:'Field photos', lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
+    fieldExtrasTitle:'Specs and photos', fieldPhotos:'Field photos',  lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
     sportsAria:'Choose a sport', sportFootball:'Football', sportPadel:'Padel', sportBasket:'Basketball', sportTennis:'Tennis', sportVolley:'Volleyball', soonBadge:'Soon',
     comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are warming up in the locker room — hitting the pitch soon.', backToFootball:'Show football fields',
     sportsHint:'AL-Mustadira books sports venues of every kind. What you see open here is what actually has venues registered — anything marked “Soon” is waiting for its first one.',
@@ -3614,15 +3614,27 @@ function renderFieldSpecs(field){
   const wrap=$('#fieldSpecs'), el=$('#specChips'); if(!el) return; clear(el);
   const chips = field ? fieldSpecChips(field) : [];
   if(wrap) wrap.hidden = !chips.length;
+  syncFieldExtras();
   chips.forEach(c => el.append(h('span',{class:'spec-chip','title':c.label},
     h('span',{class:'spec-chip-l'}, c.label),
     h('span',{class:'spec-chip-v'}, c.text))));
 }
 /* مصغّرات صور الملعب المحدَّد — تظهر أسفل اختيار الملعب؛ الضغط يفتح المعرض المكبّر */
+/* الطيّة تتبع محتواها: ملعبٌ بلا مواصفة ولا صورة **لا عنوان له أصلًا**،
+   فعنوانٌ يُفتح على فراغ أسوأ من غيابه (نفس قاعدة اللوحين قبل دمجهما).
+   تُنادى بعد كلٍّ من الراسمَين لأن أيّهما قد يسبق الآخر. */
+function syncFieldExtras(){
+  const d=$('#fieldExtras'), sp=$('#fieldSpecs'), ph=$('#fieldPhotos');
+  if(!d) return;
+  const any = (sp && !sp.hidden) || (ph && !ph.hidden);
+  d.hidden = !any;
+  if(!any) d.open = false;
+}
 function renderDetailThumbs(imgs){
   const wrap=$('#fieldPhotos'); const el=$('#detailThumbs'); if(!el) return; clear(el);
   const list=imgs||[];
   if(wrap) wrap.hidden=!list.length;
+  syncFieldExtras();
   if(!list.length) return;
   list.forEach((src,i)=>{
     const th=h('button',{class:'thumb', type:'button', 'aria-label':t('lbOpen',{i:i+1})}, h('img',{src, alt:'', loading:'lazy', decoding:'async'}));
@@ -4099,6 +4111,9 @@ function setMode(m){
   State.mode = (m==='games') ? 'games' : 'venues';
   $$('#modeSeg .mode-btn').forEach(b=>{ const on=b.dataset.mode===State.mode;
     b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
+  /* موضع الحبّة المنزلقة — نفس متغيّر مبدّل «لاعب/صاحب ملعب» بالحرف.
+     والحبّة تُقاس من CSS لا من JS: الأزرار متساوية بـ`flex:1` فالنصف معلوم. */
+  const seg=$('#modeSeg'); if(seg) seg.style.setProperty('--seg-i', State.mode==='games'?'1':'0');
   const pl=$('#placesList'), gl=$('#gamesList'), cnt=$('#placesCount');
   const games = State.mode==='games';
   if(pl) pl.hidden=games; if(gl) gl.hidden=!games;

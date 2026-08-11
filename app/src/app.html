@@ -379,7 +379,7 @@
            وهو مبدّل **نطاق محتوى** لا تفضيل عرض، فمكانه مع الفلاتر والمناطق
            لا مع العنوان. ويُخفى الصفّ كلّه ما لم يكن ترحيل 22 مُشغَّلًا
            ⇒ **صفر ارتفاع لمن لا يراه**، وهي الحالة اليوم. -->
-      <div class="mode-row" id="modeRow" hidden><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات"><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
+      <div class="mode-row" id="modeRow" hidden><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات"><span class="mode-thumb" aria-hidden="true"></span><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
     <div class="browse-sticky" id="browseSticky">
       <!-- زرّ الفلاتر **خارج** مسار الانزلاق: حين كان داخله (لاصقًا) كانت المناطق
            تنزلق تحته وتختفي «الكل» خلفه حتى في وضع السكون. الآن الصفّ محصور
@@ -490,18 +490,29 @@
         <section class="detail-section" data-i18n-aria="chooseFieldH" aria-label="اختيار الملعب">
           <div class="dsec-head"><span class="dsec-num">1</span><h2 class="dsec-title" data-i18n="chooseFieldH">اختر الملعب</h2></div>
           <div class="subfields" id="subFields"></div>
-          <!-- مواصفات الملعب المحدَّد — تختلف باختلاف الرياضة (FIELD_SPECS في app.js).
-               مخفيّ ما لم تكن هناك مواصفة **معروفة ومترجَمة** واحدة على الأقل:
-               عنوانٌ فوق فراغ يقرأه المستخدم «نقص بيانات» لا «لا مواصفات». -->
-          <div class="field-specs" id="fieldSpecs" hidden>
-            <div class="field-photos-title" data-i18n="specsTitle">مواصفات الملعب</div>
-            <div class="spec-chips" id="specChips"></div>
-          </div>
-          <!-- صور الملعب المحدَّد — مصغّرات تفتح المعرض المكبّر -->
-          <div class="field-photos" id="fieldPhotos" hidden>
-            <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
-            <div class="detail-thumbs" id="detailThumbs"></div>
-          </div>
+          <!-- ⚠️ المواصفات والصور **خلف طيّة** (تغيّر 2026-08-11).
+               كانتا لوحين مفتوحين بين «اختر الملعب» و«اختر اليوم» ⇒ من قرّر
+               ملعبه أصلًا يمرّ عليهما في كل حجز. وهما **محتوى يسند القرار**
+               لا محتوًى يُنجز المعاملة: مكانهما اختياري، والمسار المعاملاتي
+               (ملعب ⇐ يوم ⇐ وقت) يبقى متّصلًا بلا انقطاع.
+               ونفس مكوّن `.disclosure` المستعمل للإحصائيات أسفل الصفحة —
+               نمطٌ واحد لنفس المعنى لا نمطان.
+               ⚠️ والطيّة نفسها تُخفى إن لم يكن للملعب مواصفةٌ ولا صورة:
+               `renderFieldExtras` في app.js — عنوانٌ يفتح على فراغ أسوأ من غيابه. -->
+          <details class="disclosure dsec-extra" id="fieldExtras" hidden>
+            <summary>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              <span data-i18n="fieldExtrasTitle">المواصفات والصور</span>
+            </summary>
+            <div class="field-specs" id="fieldSpecs" hidden>
+              <div class="field-photos-title" data-i18n="specsTitle">مواصفات الملعب</div>
+              <div class="spec-chips" id="specChips"></div>
+            </div>
+            <div class="field-photos" id="fieldPhotos" hidden>
+              <div class="field-photos-title" data-i18n="fieldPhotos">صور الملعب</div>
+              <div class="detail-thumbs" id="detailThumbs"></div>
+            </div>
+          </details>
         </section>
         <section class="detail-section" data-i18n-aria="ariaChooseDate" aria-label="اختيار الموعد">
           <div class="dsec-head"><span class="dsec-num">2</span><h2 class="dsec-title" data-i18n="chooseDay">اختر اليوم</h2></div>
