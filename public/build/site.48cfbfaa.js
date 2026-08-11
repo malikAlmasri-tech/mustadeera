@@ -498,6 +498,68 @@
      الزرّ إطلاقًا، فالحالة التي تسمح بالعطل لم تعد قائمة.
      =========================================================== */
 
+  /* ===========================================================
+     13 · التنزيل: زرّ يقرأ الجهاز · جسر الحاسوب ⇐ الهاتف · شريط لاصق
+     -----------------------------------------------------------
+     ⚠️ **الاتجاه واحد: يُصحَّح ما يخصّ الجهاز، ولا يُخفى شيء افتراضيًّا.**
+        الوسم يخرج من البناء في حالة أندرويد (تنزيل مباشر)، وهي الأغلبية،
+        فمن لم يصله هذا الملفّ حصل على السلوك الصحيح لا على شاشة ناقصة.
+     ⚠️ ولا شيء من هذا يُبنى قبل وجود إصدار: البناء يحذف الشريط والجسر
+        كليًّا حين يكون site/release.txt فارغًا (م5).
+     =========================================================== */
+  (function download() {
+    var ua = navigator.userAgent || '';
+    // iPadOS 13+ يقول «Macintosh» ⇒ اللمس هو ما يفرّقه عن حاسوب حقيقي
+    var isIOS = /iPad|iPhone|iPod/.test(ua) ||
+                (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/.test(ua);
+    var isDesktop = !isIOS && !isAndroid;
+
+    // ① آيفون: الزرّ يشير إلى صفحة البدائل ويقول ذلك. قرار ١ يمنع الحجز من
+    //    المتصفّح، فزرُّ تنزيلٍ لا يعمل على هذا الجهاز وعدٌ كاذب.
+    var cta = $('[data-cta-dl]');
+    if (cta && isIOS) {
+      var href = cta.getAttribute('data-ios-href');
+      var label = cta.getAttribute('data-ios-label');
+      if (href) { cta.setAttribute('href', href); cta.removeAttribute('download'); }
+      var lbl = cta.querySelector('[data-cta-dl-label]');
+      if (lbl && label) lbl.textContent = label;
+    }
+
+    // ② الحاسوب: الملفّ لا يُثبَّت هنا. الرابط الثابت يُكشَف كي يُفتَح من الهاتف.
+    var bridge = $('#apkBridge');
+    if (bridge && isDesktop) bridge.hidden = false;
+
+    // ③ شريط لاصق للجوّال — بعد تجاوز الهيرو وحده: قبله الزرّ الأساسي على
+    //    الشاشة، وشريطٌ يكرّره فوقه ضجيج.
+    var bar = $('#dlbar');
+    if (bar && !isDesktop) {
+      var hero = $('.hero');
+      bar.hidden = false;
+      var show = function (on) { bar.classList.toggle('on', on); };
+      if ('IntersectionObserver' in window && hero) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) { show(!e.isIntersecting); });
+        }, { rootMargin: '0px 0px -60% 0px' }).observe(hero);
+      } else {
+        show(true);   // بلا مراقب: يظهر دائمًا بدل ألّا يظهر أبدًا
+      }
+    }
+
+    // ④ خطوات التثبيت — تُفتَح **بعد** بدء التنزيل لأن تحذير Play Protect
+    //    يظهر عند التثبيت لا عند الضغط. ولا تُعرقل التنزيل: الرابط يعمل كما هو.
+    var steps = $('#dlsteps');
+    if (steps) {
+      var open = function () { steps.hidden = false; };
+      var close = function () { steps.hidden = true; };
+      var go = $('[data-dlbar-go]');
+      on(go, 'click', function () { setTimeout(open, 700); });
+      on($('[data-dlsteps-close]'), 'click', close);
+      on(steps, 'click', function (e) { if (e.target === steps) close(); });
+      on(document, 'keydown', function (e) { if (e.key === 'Escape' && !steps.hidden) close(); });
+    }
+  })();
+
   /* لا service worker — المشروع له وجهان فقط: هذا الموقع، والتطبيق.
      وإن كان مسجَّلًا من زيارة سابقة فلا بدّ من إلغائه، وإلّا بقي يخدم
      نسخة قديمة من الصفحات إلى الأبد على أجهزة من زاروا قبل اليوم. */

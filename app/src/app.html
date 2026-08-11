@@ -43,50 +43,77 @@
   </div>
 </div>
 
-<!-- ============ شاشات الترحيب — أوّل تشغيل فقط ============
-     ⚠️ **لا تحلّ محلّ `#page-welcome` ولا تكرّرها**: هذه تشرح *ما الذي يفعله
-     التطبيق*، وتلك تسأل *من أنت وماذا تريد الآن*. فلا زرّ دخول ولا تسجيل هنا.
-     المسار: intro ⇒ هذه ⇒ #page-welcome ⇒ التطبيق.
-     ومخفيّة افتراضيًّا: يرفعها `app.js` إن غاب المفتاح، **وفشلُ القراءة تخطٍّ**
-     لا تكرار — الحالة الآمنة ألّا تُعرَض. -->
-<div class="obs" id="obs" hidden>
-  <button type="button" class="obs-skip" data-action="obsSkip" data-i18n="onbSkip">تخطٍّ</button>
-  <div class="obs-track" id="obsTrack">
-    <section class="obs-slide" data-slide="1" aria-labelledby="obsT1">
-      <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><path d="M15 30h18v40H15M145 30h-18v40h18"/></svg></div>
-      <h2 class="obs-t" id="obsT1" tabindex="-1" data-i18n="onbS1T">احجز بلا مكالمات</h2>
-      <p class="obs-b" data-i18n="onbS1B">تصفّح الملاعب، شوف الأوقات الفاضية والسعر، وابعث طلبك.</p>
-    </section>
-    <section class="obs-slide" data-slide="2" aria-labelledby="obsT2">
-      <div class="obs-art obs-art-ic" aria-hidden="true">
-        <span class="obs-ic obs-ic-wait"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-        <span class="obs-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        <span class="obs-ic obs-ic-ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
-      </div>
-      <h2 class="obs-t" id="obsT2" tabindex="-1" data-i18n="onbS2T">طلبك ينتظر ردّ الملعب</h2>
-      <p class="obs-b" data-i18n="onbS2B">الحجز طلب، ما بينحجز إلا لمّا الملعب يأكّده. بنعلمك أوّل ما يردّ.</p>
-    </section>
-    <!-- ⚠️ الشريحة الثالثة **تُحذف من الـDOM** إن لم يكن `GAMES_OK === true`
-         (نفس العلَم الذي يحكم `#matchPick` حرفيًّا) — ميزةٌ خلف علَمٍ مُطفأ
-         لا تُعلَن، والعلَم يبدأ `null` فما لا نعرفه لا يُعرَض. -->
-    <section class="obs-slide" data-slide="3" data-needs-games="1" aria-labelledby="obsT3">
-      <div class="obs-art obs-art-two" aria-hidden="true">
-        <svg class="court-svg" viewBox="0 0 160 100"><rect x="10" y="15" width="140" height="70" rx="1"/><path d="M80 15v70M31.4 15v70M128.6 15v70M31.4 50h97.2"/></svg>
-        <svg class="court-svg" viewBox="0 0 160 100"><rect x="10" y="12.5" width="140" height="75" rx="1"/><path d="M80 12.5v75"/><circle cx="80" cy="50" r="9"/><path d="M10 37.75h29v24.5H10M150 37.75h-29v24.5h29"/></svg>
-      </div>
-      <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">ناقصك لاعبين؟</h2>
-      <p class="obs-b" data-i18n="onbS3B">انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.</p>
-    </section>
-  </div>
-  <div class="obs-foot">
-    <div class="obs-dots" id="obsDots" role="tablist" data-i18n-aria="onbDotsAria" aria-label="شاشات الترحيب"></div>
-    <button type="button" class="sbtn obs-go" id="obsGo" data-action="obsNext" data-i18n="onbNext">التالي</button>
-  </div>
-  <!-- منطقة إعلان **واحدة** للشرائح كلّها لا واحدة لكل شريحة -->
-  <p class="sr-only" id="obsLive" aria-live="polite" aria-atomic="true"></p>
-</div>
 
 <div id="app" tabindex="-1">
+
+  <!-- ============ شاشات الترحيب — أوّل تشغيل فقط ============
+       ⚠️ **لا تحلّ محلّ `#page-welcome` ولا تكرّرها**: هذه تشرح *ما الذي يفعله
+       التطبيق*، وتلك تسأل *من أنت وماذا تريد الآن*. فلا زرّ دخول ولا تسجيل هنا.
+       المسار: intro ⇒ هذه ⇒ #page-welcome ⇒ التطبيق.
+
+       ⚠️ **صفحةٌ حقيقية لا طبقة.** كانت `div#obs` خارج `#app` بمنطق تنقّل موازٍ
+       (‏`Obs.open` يعترض زرّ الرجوع بجسرٍ خاصّ)، فلا تدخل الـhistory ولا ترث
+       انتقالات الصفحات ولا إيماءة الرجوع الأصلية. الآن `#page-onboarding`
+       داخل `showPage` كبقيّة الصفحات، و«الرجوع» يرجع شريحةً قبل أن يغادر.
+
+       ⚠️ **ثلاث شرائح غير مشروطة ورابعة مشروطة.** كانت الثالثة تُحذف إن لم يكن
+       `GAMES_OK === true` — وهو `null` عند أوّل إقلاع (لا جلسة ⇒ لا سؤال) ⇒
+       المستخدم الجديد، وهو **الوحيد** الذي يرى هذه الشاشات، لا يرى إلّا اثنتين
+       دائمًا. الحارس صحيح (ميزةٌ خلف علَمٍ مُطفأ لا تُعلَن)، والعطل في التوزيع. -->
+  <section class="page obs-page" id="page-onboarding">
+    <div class="obs" id="obs">
+      <div class="obs-top">
+        <!-- سهم رجوع **مرئي**: `Obs.back()` كانت تعمل بلا زرّ يدلّ عليها، فمن لا
+             يعرف إيماءة الرجوع لا يستطيع مراجعة شريحة قرأها بسرعة. -->
+        <button type="button" class="obs-back" id="obsBack" data-action="obsBack" data-i18n-aria="backWord" aria-label="رجوع" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="obs-skip" data-action="obsSkip" data-i18n="onbSkip">تخطٍّ</button>
+      </div>
+      <div class="obs-track" id="obsTrack">
+        <!-- ⚠️ **لغة رسم واحدة في الشرائح الأربع**: مخطّط ملعب بخطّ رفيع، نفس
+             اللوح (‏160×100) ونفس السماكة ونفس حركة الدخول. كانت شريحةٌ مخطّطًا
+             وأخرى أيقونات بأسهم وثالثة مخطّطين متجاورين — ثلاث لغات بصريّة في
+             ثلاث شاشات متتالية. وما يزيد على الملعب (ساعة · شرائح وقت · مقاعد)
+             مرسومٌ **بنفس القلم** داخل نفس اللوح لا برمزٍ من عائلة أخرى. -->
+        <section class="obs-slide" data-slide="1" aria-labelledby="obsT1">
+          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><circle cx="80" cy="50" r="1.6" fill="currentColor" stroke="none"/><path d="M15 25h20v50H15M15 38.5h7v23h-7M145 25h-20v50h20M145 38.5h-7v23h7"/></svg></div>
+          <h2 class="obs-t" id="obsT1" tabindex="-1" data-i18n="onbS1T">احجز بلا مكالمات</h2>
+          <p class="obs-b" data-i18n="onbS1B">تصفّح الملاعب، شوف الأوقات الفاضية والسعر، وابعث طلبك.</p>
+        </section>
+        <section class="obs-slide" data-slide="2" aria-labelledby="obsT2">
+          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M15 25h20v50H15M145 25h-20v50h20"/><circle cx="80" cy="50" r="21"/><path d="M80 36v14l9 7"/></svg></div>
+          <h2 class="obs-t" id="obsT2" tabindex="-1" data-i18n="onbS2T">طلبك ينتظر ردّ الملعب</h2>
+          <p class="obs-b" data-i18n="onbS2B">الحجز طلب، ما بينحجز إلا لمّا الملعب يأكّده. بنعلمك أوّل ما يردّ.</p>
+        </section>
+        <!-- الشفافية هي القيمة الفعلية للمنتج وكانت غائبة عن المسار كلّه:
+             ثلاث شرائح وقت تحت الملعب، الأوسط مشطوب = محجوز. رسمٌ لا رقم. -->
+        <section class="obs-slide" data-slide="3" aria-labelledby="obsT3">
+          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="6" width="130" height="58" rx="1"/><path d="M80 6v58"/><circle cx="80" cy="35" r="10"/><path d="M15 20h16v30H15M145 20h-16v30h16"/><rect x="16" y="78" width="38" height="16" rx="5"/><rect x="61" y="78" width="38" height="16" rx="5"/><path d="M66 86h28"/><rect x="106" y="78" width="38" height="16" rx="5"/></svg></div>
+          <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">السعر والوقت الفاضي قدّامك</h2>
+          <p class="obs-b" data-i18n="onbS3B">قبل ما تحجز بتشوف أي ساعة فاضية وكم سعرها — بلا ما تسأل حدا.</p>
+        </section>
+        <!-- ⚠️ هذه وحدها **تُحذف من الـDOM** إن لم يكن `GAMES_OK === true`
+             (نفس العلَم الذي يحكم `#matchPick` حرفيًّا) — ميزةٌ خلف علَمٍ مُطفأ
+             لا تُعلَن، والعلَم يبدأ `null` فما لا نعرفه لا يُعرَض. وحذفها الآن
+             ينقص الرابعة لا الثالثة ⇒ المسار يبقى ثلاث شرائح مضمونة. -->
+        <section class="obs-slide" data-slide="4" data-needs-games="1" aria-labelledby="obsT4">
+          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><circle cx="45" cy="28" r="6.5" fill="currentColor" stroke="none"/><circle cx="45" cy="72" r="6.5" fill="currentColor" stroke="none"/><circle cx="115" cy="28" r="6.5" fill="currentColor" stroke="none"/><circle cx="115" cy="72" r="6.5"/><path d="M111.5 72h7M115 68.5v7"/></svg></div>
+          <h2 class="obs-t" id="obsT4" tabindex="-1" data-i18n="onbS4T">ناقصك لاعبين؟</h2>
+          <p class="obs-b" data-i18n="onbS4B">انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.</p>
+        </section>
+      </div>
+      <div class="obs-foot">
+        <!-- شريط تقدّم بدل النقاط: أربع نقاط 8px هدفُ لمسٍ لا أحد يقصده، ومع
+             شريحةٍ مشروطة يتغيّر عددها فتقرأ الشبكة عددًا مختلفًا كل تشغيل.
+             والشريط يقول «أين أنت من الطريق» بلا هدف لمس أصلًا. -->
+        <div class="obs-prog" id="obsProg" role="progressbar" aria-valuemin="1" aria-valuenow="1" aria-valuemax="3" data-i18n-aria="onbDotsAria" aria-label="شاشات الترحيب"><span class="obs-prog-fill" id="obsProgFill"></span></div>
+        <button type="button" class="sbtn obs-go" id="obsGo" data-action="obsNext" data-i18n="onbNext">التالي</button>
+      </div>
+      <!-- منطقة إعلان **واحدة** للشرائح كلّها لا واحدة لكل شريحة -->
+      <p class="sr-only" id="obsLive" aria-live="polite" aria-atomic="true"></p>
+    </div>
+  </section>
 
   <!-- ============ WELCOME / LANDING ============ -->
   <section class="page active" id="page-welcome">
@@ -519,6 +546,17 @@
           <div class="days-row" id="detailDays" style="margin-bottom:18px"></div>
           <div class="dsec-head"><span class="dsec-num">3</span><h2 class="dsec-title" data-i18n="chooseTime">اختر الوقت</h2></div>
           <div class="times-grid" id="detailTimes"></div>
+          <!-- ============ مدخل مبكّر للمباراة المفتوحة (ب-٥) ============
+               ⚠️ الخيار كان **داخل نافذة المراجعة وحدها**: من ناقصه لاعبون لا
+               يعرف أن التطبيق يفعل ذلك أصلًا حتى يكاد يُنهي حجزًا خاصًّا. وهذا
+               ليس مسارًا ثانيًا — نفس النافذة ونفس الحقول، والفرق أنّ «مفتوحة»
+               تكون مختارةً سلفًا. ويُخفى ما لم يُختَر وقت (لا مباراة بلا خانة)
+               وما لم يثبت ترحيل 22 (ميزةٌ خلف علَمٍ مُطفأ لا تُعلَن). -->
+          <button type="button" class="open-entry" id="detailOpenEntry" data-action="openBookingAsGame" hidden>
+            <span class="oe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M15 19c0-2.2 1.4-3.7 3.4-3.7 1.2 0 2.1.5 2.6 1.2"/></svg></span>
+            <span class="oe-txt"><b data-i18n="oeTitle">ناقصك لاعبين؟</b><small data-i18n="oeSub">انشر مقاعدك مع نفس الحجز — بتتعرض بعد ما يأكّد الملعب.</small></span>
+            <span class="oe-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+          </button>
         </section>
         <details class="disclosure">
           <summary>
@@ -688,7 +726,14 @@
           <div class="title-row">
             <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg> <span data-i18n="ownerTitle">لوحة المالك</span>
           </div>
-          <div class="muted-white" id="ownerPlaceTitle">…</div>
+          <!-- ⚠️ **زرٌّ عند التعدّد ونصٌّ عند الواحد.** مالكٌ له مكان واحد — وهي
+               الحالة الغالبة — لا يرى مبدّلًا لخيار واحد؛ ومن له مكانان كان يرى
+               أوّلهما فقط ولا يعرف بوجود الثاني أصلًا. والصنف `is-switch` هو ما
+               يظهر السهم، ويُضاف من `app.js` بعد أن تصل القائمة. -->
+          <button type="button" class="muted-white own-place" id="ownerPlaceTitle" data-action="ownerPlaceMenu" aria-haspopup="listbox" aria-expanded="false">
+            <span id="ownerPlaceName">…</span>
+            <svg class="own-place-caret" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
         </div>
         <!-- 🔴 الرأس كان **أربعة أزرار** بجانب عنوانٍ من سطرين على 360px، وثلاثة
              منها إعداداتٌ تُلمَس مرّةً في الشهر (اللغة · الثيم · الخروج) بينما
@@ -738,6 +783,17 @@
           <button class="sbtn" data-action="openManual" data-i18n="addManual">إضافة حجز خارجي</button>
         </div>
         <div class="sec-title" style="padding:0 0 12px"><span data-i18n="todayRequests">طلبات وحجوزات اليوم</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث</span></div>
+        <!-- ⚠️ **مبدّل شكل لا مبدّل نطاق**: البطاقات تجيب «مين مستنّي ردّي؟»
+             والمخطّط يجيب «شو وضع اليوم كلّه؟» — سؤالان مختلفان على نفس البيانات.
+             والبطاقات هي الافتراضي لأن الأوّل هو سؤال كل زيارة. -->
+        <div class="ov-seg" id="ownerViewSeg" role="tablist" data-i18n-aria="tlViewAria" aria-label="شكل عرض اليوم" style="margin-bottom:12px">
+          <button type="button" class="ov-btn is-on" role="tab" aria-selected="true" data-ov="cards" data-action="ownerView" data-i18n="tlCards">بطاقات</button>
+          <button type="button" class="ov-btn" role="tab" aria-selected="false" data-ov="timeline" data-action="ownerView" data-i18n="tlTimeline">مخطّط</button>
+        </div>
+        <div id="ownerTimelineWrap" hidden>
+          <div id="ownerTimeline"></div>
+          <div id="tlCard" style="margin-top:14px" hidden></div>
+        </div>
         <div id="ownerToday"></div>
       </div>
 
@@ -760,6 +816,10 @@
           <button class="cbtn" data-action="clearFilters" data-i18n="clearFilter">مسح الفلتر</button>
         </div>
         <div class="sec-title" style="padding:0 0 12px"><span data-i18n="bookingsWord">الحجوزات</span><span class="link" data-action="refreshOwner" data-i18n="refresh">تحديث</span></div>
+        <!-- ⚠️ **نفس مكوّن شرائح اللاعب** (‏`.fchip`) لا نسخة ثانية من المنطق:
+             أربعة فلاتر كانت تُطبَّق بلا شارة عدد ولا مسحٍ ظاهر، فيبقى المالك
+             ينظر إلى قائمة مقصوصة ولا يرى **لماذا**. تُبنى في `app.js`. -->
+        <div class="obf-chips" id="obfChips" hidden></div>
         <button class="cbtn" data-action="toggleOwnerHistory" id="ownerHistoryToggle" style="margin:0 0 12px" data-i18n="fullHistory">عرض السجل الكامل</button>
         <div id="ownerBookings"></div>
       </div>
@@ -797,6 +857,11 @@
           <button type="button" class="rep-range-btn" role="radio" aria-checked="false" data-action="repRange" data-range="d30" data-i18n="repRange30">آخر ٣٠ يوم</button>
           <button type="button" class="rep-range-btn" role="radio" aria-checked="false" data-action="repRange" data-range="d90" data-i18n="repRange90">آخر ٩٠ يوم</button>
         </div>
+        <!-- ⚠️ **تجزئة بين الأماكن — لمالكِ أكثر من مكان وحده** (ج-٥). بقيّة
+             اللوحة تصف **المكان المختار** بالكامل (الجلبة نفسها مقصورة عليه)،
+             وهذا اللوح وحده يقارن. ويُخفى تمامًا لمالكِ مكان واحد: مقارنةٌ
+             بطرفٍ واحد ليست مقارنة. -->
+        <div id="repByPlace" hidden></div>
         <!-- ① نظرة عامّة — ما يُفهَم في أقلّ من عشر ثوانٍ -->
         <div class="rep-group" data-i18n="repGroupOverview">نظرة عامّة</div>
         <div class="stat-grid">
@@ -897,17 +962,23 @@
   <div class="modal-overlay" id="modal-booking" role="dialog" aria-modal="true" aria-labelledby="bkTitle" aria-describedby="bkReview">
     <div class="modal" data-modal="booking" data-safe-close="true">
       <div class="modal-grip"><div class="modal-handle"></div></div>
-      <div class="modal-title" id="bkTitle" data-i18n="reviewTitle">مراجعة الحجز</div>
+      <div class="modal-title" id="bkTitle" data-i18n="reviewTitle">مراجعة الطلب</div>
       <!-- مؤشّر الخطوات: 1 و2 مكتملتان، 3 (التأكيد) نشطة -->
       <!-- ⚠️ **مقياسٌ واحد يمتدّ عبر الشاشتين.** كان في صفحة الملعب ثلاث خطوات
            (ملعب · يوم · وقت) وفي هذه النافذة ثلاثٌ أخرى (ملعب · موعد · تأكيد)،
            فمن أنهى «الخطوة ٣» فتحت له نافذةٌ تقول إنه في «الخطوة ٣»، ورقم ٢
            يعني «اليوم» هناك و«اليوم+الوقت» هنا. الآن أربعٌ لا ثلاث، وتسمياتها
            هي تسميات عناوين الصفحة نفسها. -->
+      <!-- ⚠️ **الخطوات الثلاث الأولى أزرارٌ تعمل، لا زينة.** كان `updateBookingStep`
+           يرسم الحالة نفسها في كل مرّة (‏1-2-3 مكتملة و4 نشِطة) فيبدو المؤشّر
+           تفاعليًّا وهو صورة: من رأى «الملعب» مكتوبًا ضغط عليه ولم يحدث شيء.
+           الآن الضغط يُغلق النافذة ويعيده إلى القسم نفسه في الصفحة
+           (‏`scrollToDetailSection` القائمة) — والرابعة تبقى `<span>` لأنها
+           **هذه** الشاشة، فزرٌّ يعيدك إلى مكانك ادّعاءُ فعلٍ لا يقع. -->
       <ol class="bk-steps" id="bkSteps" data-i18n-aria="ariaBookingSteps" aria-label="خطوات الحجز">
-        <li class="bk-step done" data-step="1"><span class="bk-step-dot">1</span><span class="bk-step-lbl" data-i18n="stepField">الملعب</span></li>
-        <li class="bk-step done" data-step="2"><span class="bk-step-dot">2</span><span class="bk-step-lbl" data-i18n="stepDate">اليوم</span></li>
-        <li class="bk-step done" data-step="3"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepTime">الوقت</span></li>
+        <li class="bk-step done" data-step="1"><button type="button" class="bk-step-btn" data-action="bkGoStep" data-goto="field"><span class="bk-step-dot">1</span><span class="bk-step-lbl" data-i18n="stepField">الملعب</span></button></li>
+        <li class="bk-step done" data-step="2"><button type="button" class="bk-step-btn" data-action="bkGoStep" data-goto="date"><span class="bk-step-dot">2</span><span class="bk-step-lbl" data-i18n="stepDate">اليوم</span></button></li>
+        <li class="bk-step done" data-step="3"><button type="button" class="bk-step-btn" data-action="bkGoStep" data-goto="time"><span class="bk-step-dot">3</span><span class="bk-step-lbl" data-i18n="stepTime">الوقت</span></button></li>
         <li class="bk-step active" data-step="4" aria-current="step"><span class="bk-step-dot">4</span><span class="bk-step-lbl" data-i18n="stepConfirm">التأكيد</span></li>
       </ol>
       <div id="bkReview" class="bk-review"></div>
@@ -933,10 +1004,22 @@
           <span class="pay-dot" aria-hidden="true"></span>
         </button>
         <div class="gm-open-fields" id="gmFields" hidden>
+          <!-- ⚠️ **الشرط قبل الحقول لا بعدها.** «لا مقعد يُنشَر قبل أن يؤكّد الملعب»
+               قيدٌ في العرض نفسه (‏`22_open_games.sql`)، وكان المضيف لا يقرؤه إلّا
+               في شاشة النجاح — أي **بعد** أن التزم. ونفس المفتاحين المستعملين في
+               «حجوزاتي» وفي الإيصال: معنًى واحد لا يُصاغ ثلاث مرّات. -->
+          <p class="gm-precond"><span class="bk-open-badge" data-i18n="gmBadgeWaiting">لسا ما انعرضت</span><span data-i18n="gmCardWaiting">ما انعرض ولا مقعد بعد.</span></p>
           <div class="grid-2">
-            <div><label class="form-label" for="gmNeeded" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="gmNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
-            <div><label class="form-label" for="gmBrought" data-i18n="gmBrought">معك كم</label><input class="finput" id="gmBrought" type="number" inputmode="numeric" min="1" max="40" value="1"></div>
+            <!-- عدّادان لا حقلا رقم: لوحة المفاتيح الرقمية تغطّي نصف الشاشة لتغيير
+                 رقم من خانتين، والحدّان `min/max` هما نفسهما حدّا الحقل. -->
+            <div class="stepper-f"><label class="form-label" for="gmNeeded" data-i18n="gmNeeded">العدد المطلوب</label>
+              <div class="stepper"><button type="button" class="stepper-b" data-action="stepNum" data-target="gmNeeded" data-d="-1" data-i18n-aria="stepMinus" aria-label="أنقص">−</button><input class="finput stepper-i" id="gmNeeded" type="number" inputmode="numeric" min="2" max="40"><button type="button" class="stepper-b" data-action="stepNum" data-target="gmNeeded" data-d="1" data-i18n-aria="stepPlus" aria-label="زد">+</button></div></div>
+            <div class="stepper-f"><label class="form-label" for="gmBrought" data-i18n="gmBrought">كم لاعب معك الآن (بما فيك)</label>
+              <div class="stepper"><button type="button" class="stepper-b" data-action="stepNum" data-target="gmBrought" data-d="-1" data-i18n-aria="stepMinus" aria-label="أنقص">−</button><input class="finput stepper-i" id="gmBrought" type="number" inputmode="numeric" min="1" max="40" value="1"><button type="button" class="stepper-b" data-action="stepNum" data-target="gmBrought" data-d="1" data-i18n-aria="stepPlus" aria-label="زد">+</button></div></div>
           </div>
+          <!-- شريط الاكتمال: المُحضَر ÷ المطلوب. **زخرفي** (`aria-hidden`) —
+               الرقم المكتوب في `#gmLive` هو ما يُنطق، فلا يُقال الشيء مرّتين. -->
+          <div class="seat-bar" id="gmBar" aria-hidden="true"><span class="seat-bar-fill"></span></div>
           <!-- المخرَج الوحيد الذي يقول للمضيف كم مقعدًا ينشر وبكم — ويُعاد بناؤه
                عند كل `oninput`، فقارئ الشاشة كان لا يسمع منه شيئًا. و`polite`
                لا `assertive`: هذا وصفُ حالةٍ لا إنذار. و`atomic` لأن الجملة
@@ -946,19 +1029,24 @@
         </div>
       </div>
 
-      <div class="pay-pick" role="radiogroup" data-i18n-aria="payTitle" aria-label="وسيلة الدفع">
-        <div class="pay-pick-title" data-i18n="payTitle">وسيلة الدفع</div>
-        <button type="button" class="pay-opt is-on" role="radio" aria-checked="true" data-pay="cash" data-action="payPick">
-          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
-          <span class="pay-txt"><b data-i18n="payCash">نقداً في الملعب</b><small data-i18n="payCashSub">تدفع لإدارة الملعب لمّا توصل.</small></span>
-          <span class="pay-dot" aria-hidden="true"></span>
-        </button>
-        <button type="button" class="pay-opt is-soon" role="radio" aria-checked="false" aria-disabled="true" data-pay="card" data-action="payPick">
-          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M6 14.5h3.5"/></svg></span>
-          <span class="pay-txt"><b data-i18n="payCard">بطاقة فيزا أو ماستركارد</b><small data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل.</small></span>
-          <span class="pay-soon" data-i18n="payCardSoon">قريباً</span>
-        </button>
+      <!-- ============ وسيلة الدفع — سطرٌ لا مجموعة اختيار ============
+           ⚠️ **الاختيار الوحيد ليس اختيارًا.** «فيزا — قريباً» كانت تأخذ ارتفاع
+           زرٍّ كامل في أضيق شاشة لتقول «لا»، ومجموعةُ راديو بخيارٍ واحد قابل
+           للاختيار تُوهم بقرارٍ غير موجود. صارت **حقيقةً مثبَّتة** وبجانبها رابط
+           يشرح غياب البطاقة.
+           ⚠️ **ولم يُحذَف التفسير بل نُقل** (م5): من يسأل «طيب كيف بدفع بالبطاقة؟»
+           يجد الجواب كاملًا خلف نقرة — بما فيه أن رقم البطاقة لا يمرّ علينا. -->
+      <div class="pay-line">
+        <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+        <span class="pay-line-txt"><b data-i18n="payCash">نقداً في الملعب</b><small data-i18n="payCashSub">تدفع لإدارة الملعب لمّا توصل.</small></span>
       </div>
+      <!-- ⚠️ طيّة في مكانها لا نافذةً ثانية: `Modal.open` ينادي `closeAll` ⇒ فتحُ
+           نافذةٍ تشرح **يُخفي النافذة التي تشرحها** (مزلقٌ مسجَّل). والطيّة نفس
+           مكوّن `.disclosure` المستعمل في الإيصال وفي صفحة الملعب. -->
+      <details class="disclosure pay-why">
+        <summary><span data-i18n="payWhyLink">ليش ما في بطاقة؟</span></summary>
+        <p class="pay-why-b"><span data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.</span> <span data-i18n="payCardWhy">ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا: التطبيق ما بيشوف الرقم ولا بيخزّنه.</span></p>
+      </details>
       <div class="bk-note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <span data-i18n="bkNote">بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
@@ -966,7 +1054,7 @@
       <!-- «عادةً يردّ خلال ن» — يُملأ من app.js، ويبقى فارغًا تمامًا لمكانٍ
            لا يُقاس بعد (‏العرض نفسه يحجب ما دون سبعة ردود). -->
       <div id="bkReplySpeed"></div>
-      <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">تأكيد الحجز</button>
+      <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">أرسل الطلب</button>
       <button class="cbtn" data-action="changeTime" data-i18n="changeTime">تغيير الموعد</button>
     </div>
   </div>
@@ -1137,6 +1225,13 @@
         <li data-i18n="joinTermPay">بتدفع حصّتك <strong>في الملعب لإدارته</strong>. التطبيق ما بيقبض ولا بيحوّل ولا بيضمن — الحساب بينكم.</li>
         <li data-i18n="joinTermLate">إذا انسحبت قبل المباراة بشوي، بتضلّ مقعدك فاضي وبيتأذّى باقي الشباب. انسحب بدري إذا ما بتقدر.</li>
         <li data-i18n="joinTermNames">المضيف بيشوف اسمك الأوّل بس، وإنت بتشوف اسمه الأوّل بس. ما في أرقام ولا محادثة داخل التطبيق.</li>
+        <!-- ⚠️ **سطران يجيبان عمّا يُقرَّر عليه فعلًا** وكانا غائبين: ماذا لو
+             انتهت المباراة قبل أن تبدأ، ومتى أستطيع الانسحاب. وكلاهما مكتوب من
+             سلوك القاعدة لا من التمنّي: `fn_notify_game_off` تُشعر كلّ من انضمّ
+             عند إلغاء المضيف أو رفض الملعب أو انقضاء المهلة، و`leave_open_game`
+             **بلا مهلة إطلاقًا** — فلا تُخترَع مهلةٌ لا يفرضها شيء. -->
+        <li data-i18n="joinTermOff">إذا المضيف ألغى أو الملعب رفض الطلب، المباراة بتنتهي قبل ما تبلّش وبيوصلك إشعار. وما بتكون دفعت إشي — الدفع كلّه في الملعب.</li>
+        <li data-i18n="joinTermLeave">بتقدر تنسحب بأي وقت من «حجوزاتي»، ومقعدك بيرجع للناس فوراً وبيوصل المضيف إشعار.</li>
       </ul>
       <button class="sbtn" data-action="confirmJoin" data-i18n="joinConfirm">انضمّ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
@@ -1154,11 +1249,23 @@
       <div id="mtPlayers" class="mt-players"></div>
       <div class="grid-2" style="margin:14px 0 4px">
         <div><label class="form-label" for="mtNeeded" data-i18n="gmNeeded">العدد المطلوب</label><input class="finput" id="mtNeeded" type="number" inputmode="numeric" min="2" max="40"></div>
-        <div><label class="form-label" for="mtBrought" data-i18n="gmBrought">معك كم</label><input class="finput" id="mtBrought" type="number" inputmode="numeric" min="1" max="40"></div>
+        <div><label class="form-label" for="mtBrought" data-i18n="gmBrought">كم لاعب معك الآن (بما فيك)</label><input class="finput" id="mtBrought" type="number" inputmode="numeric" min="1" max="40"></div>
       </div>
       <button class="cbtn" data-action="saveMatch" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeMatchSeats" data-i18n="matchCloseSeats">العدد اكتمل — سكّر المقاعد</button>
       <button class="cbtn" data-action="makeMatchPrivate" data-i18n="matchMakePrivate">رجّعها مباراة خاصّة</button>
+      <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- ============ OWNER: PLACE SWITCHER (أ-٢ · ج-١) ============
+       لا تُفتَح إطلاقًا لمالكٍ له مكان واحد — الزرّ نفسه يبقى نصًّا حينها. -->
+  <div class="modal-overlay" id="modal-ownerplace" role="dialog" aria-modal="true" aria-labelledby="opTitle">
+    <div class="modal" data-modal="ownerplace">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="opTitle" data-i18n="ownPlacesTitle">أماكنك</div>
+      <div class="modal-sub" data-i18n="ownPlacesSub">اللوحة كلها — الحجوزات والتقويم والتقارير — بتتغيّر على المكان اللي بتختاره.</div>
+      <div id="opList" class="op-list" role="listbox"></div>
       <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
     </div>
   </div>
@@ -1347,6 +1454,8 @@
     <div class="dsticky-info">
       <div class="dsticky-line" id="dstickyLine"></div>
       <div class="dsticky-meta"><span class="dsticky-price" id="dstickyPrice"></span><span class="dsticky-unit" data-i18n="perTwoHours">/ ساعتان</span></div>
+      <!-- الضيف وحده يراه: يقول ما ينتظره **قبل** أن يضغط لا بعده -->
+      <div class="dsticky-guest" id="dstickyGuest" data-i18n="guestNeedAcct" hidden>بتحتاج حساب لإرسال الطلب</div>
     </div>
     <button class="dsticky-btn" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
   </div>

@@ -1,0 +1,39 @@
+<!-- شريط تنزيل لاصق — الجوّال وحده، وبعد تجاوز الهيرو وحده.
+     ⚠️ **لا يُبنى إطلاقًا في حالة «لا إصدار بعد»**: البناء يستبدل
+     `{{include:dlbar}}` بفراغ حينها، فلا زرّ معطَّل ولا وعد بما لا يقع (م5).
+     ⚠️ ويبدأ **مخفيًّا بالـCSS لا بالـJS**: زائرٌ بلا JS لا يرى شريطًا عالقًا
+     فوق المحتوى، والسكربت هو من يرفعه بعد أن يمرّ الهيرو. -->
+<div class="dlbar" id="dlbar" hidden>
+  <div class="dlbar-in">
+    <span class="dlbar-txt">
+      <b>{{t.dlBarTitle}}</b>
+      <small>{{t.dlBarSub}}</small>
+    </span>
+    <a class="btn btn-pri dlbar-btn" href="{{ctaDl}}"{{ctaDlAttr}} data-dlbar-go>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
+      {{t.dlBarBtn}}
+    </a>
+  </div>
+</div>
+
+<!-- لوح خطوات التثبيت — يُفتَح بعد بدء التنزيل، لأن تحذير Play Protect يظهر
+     هناك بالضبط. وهو `<dialog>`؟ لا: الشرح يجب أن يُقرأ بلا JS كذلك، فهو قسم
+     عادي يُظهره السكربت، ورابطٌ إليه في الشريط لمن أراده قبل التنزيل. -->
+<div class="dlsteps" id="dlsteps" hidden>
+  <div class="dlsteps-card" role="group" aria-labelledby="dlstepsT">
+    <button type="button" class="dlsteps-x" data-dlsteps-close aria-label="{{t.dlStepsClose}}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <p class="dlsteps-t" id="dlstepsT">{{t.dlStepsTitle}}</p>
+    <ol class="dlsteps-list">
+      <li><b>1</b><span>{{t.dlStep1}}</span></li>
+      <li><b>2</b><span>{{t.dlStep2}}</span></li>
+      <li><b>3</b><span>{{t.dlStep3}}</span></li>
+    </ol>
+    <!-- لقطة تحذير Play Protect الحقيقية. **تُقرأ من القرص ولا تُخترَع**:
+         `site/static/assets/shots/playprotect-<lang>.png`. إن لم يوجد الملفّ
+         حذف البناءُ الشكلَ كلّه — عنوانٌ فوق فراغ أسوأ من غيابه (م5). -->
+    {{ppShot}}
+    <p class="dlsteps-n">{{t.dlStepsNote}}</p>
+  </div>
+</div>

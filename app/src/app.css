@@ -1975,27 +1975,37 @@ body.dark .tbtn.taken.current .t-tag{ color:var(--copper-primary) }
    `transform` وحده. **بلا مكتبة ولا حزمة**، وبلا `left/right`.
    ⚠️ والارتفاع `100dvh` مع `100vh` احتياطيًّا — نفس نمط `.onb` القائم بالحرف.
    ══════════════════════════════════════════════════════════════════════════ */
+/* ⚠️ **صفحةٌ لا طبقة الآن.** `.page` الافتراضية تحجز حشوةً سفليّة بارتفاع الشريط
+   السفلي و`min-height:100vh` — وهذه الصفحة بلا شريط أصلًا، فالحشوة تدفع اللوح
+   خارج الشاشة. ولذلك `position:absolute` داخلها لا `fixed`: الأخيرة تُقاس من
+   إطار العرض، وأثناء انتقال الصفحة (‏`transform` على `.page`) تصير الصفحةُ
+   كتلتَها الحاوية **مؤقّتًا** ⇒ ارتفاعٌ مختلف أثناء الحركة ثمّ قفزةٌ عند
+   انتهائها. والمطلقة تُقاس من الصفحة في الحالتين فلا تقفز. */
+.obs-page{ padding-bottom:0; min-height:100vh; min-height:100dvh; overflow:clip }
 .obs{
-  position:fixed; inset:0; z-index:9000;
-  min-height:100vh; min-height:100dvh;
+  position:absolute; inset:0;
   display:flex; flex-direction:column;
   background:var(--bg-primary);
   padding-block-start:calc(env(safe-area-inset-top,0px) + 8px);
   padding-block-end:calc(env(safe-area-inset-bottom,0px) + 14px);
-  overflow:hidden;
+  /* 🔴 **`clip` لا `hidden`.** الأخيرة تصنع حاوية تمرير، والمسار يُزاح في RTL
+     إزاحةً **موجبة** (‏`--nav-dir = -1`) فيفيض إلى اليمين ⇒ يرسو التمرير على
+     الحافّة اليمنى ويُزيح اللوح كلّه بعرض شاشة: زرّ «تخطٍّ» وشريط التقدّم
+     والزرّ الأساسي تخرج جميعًا. و`clip` تقصّ بلا تمرير فلا يوجد ما يرسو.
+     ⚠️ ولا يظهر العطل إلّا **بالعربية ومن الشريحة الثانية فصاعدًا** — أي أنّ من
+     فحص الشريحة الأولى أو فحص الإنجليزية مرّره. (مقيس في المعاينة.) */
+  overflow:clip;
 }
 .obs[hidden]{ display:none }   /* صنفٌ يضع `display` يعلو على [hidden] (0,0,1) */
 
 /* «تخطٍّ» ظاهر من الشريحة الأولى — لا يظهر في الأخيرة وحدها.
    الهدف 44px بالحشوة نفسها فلا يحتاج طبقة شبح. */
 .obs-skip{
-  position:absolute; z-index:2;
-  inset-block-start:calc(env(safe-area-inset-top,0px) + 6px);
-  inset-inline-end:8px;
   min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
   padding-inline:14px; border-radius:12px;
   font-size:13px; font-weight:800; color:var(--muted);
   background:transparent; transition:color var(--t-fast),background var(--t-fast);
+  margin-inline-start:auto;
 }
 .obs-skip:hover{ color:var(--ink); background:var(--surface-muted) }
 
@@ -2022,19 +2032,11 @@ body.dark .tbtn.taken.current .t-tag{ color:var(--copper-primary) }
   inline-size:100%; height:auto; fill:none;
   stroke:var(--copper-primary); stroke-width:1.6; opacity:.95;
 }
-.obs-art-two{ display:flex; gap:12px; align-items:center }
-.obs-art-two .court-svg{ inline-size:calc(50% - 6px) }
-.obs-art-ic{ display:flex; align-items:center; justify-content:center; gap:14px }
-.obs-ic{ inline-size:64px; block-size:64px; border-radius:20px; display:grid; place-items:center;
-  border:1.5px solid var(--line-2); background:var(--surface) }
-.obs-ic svg{ inline-size:30px; block-size:30px; fill:none; stroke-width:2;
-  stroke-linecap:round; stroke-linejoin:round }
-.obs-ic-wait svg{ stroke:var(--warning-ink) }
-.obs-ic-ok svg{ stroke:var(--ok-ink) }
-.obs-arrow svg{ inline-size:26px; block-size:26px; fill:none; stroke:var(--muted); stroke-width:2;
-  stroke-linecap:round; stroke-linejoin:round }
-/* السهم فيزيائي ⇒ يُقلب بالاتجاه لا يُترك كما هو */
-html[dir="rtl"] .obs-arrow svg{ transform:scaleX(-1) }
+/* حركة دخول الرسم — **واحدة لكل الشرائح**: الرسوم صارت من عائلة واحدة، فحركتها
+   واحدة كذلك. والمحور `translate`/`opacity` وحدهما (مركّبان على الـGPU). */
+.obs-slide[aria-hidden="false"] .obs-art{ animation:obsArtIn 420ms var(--ease-out) both }
+@keyframes obsArtIn{ from{ opacity:0; transform:translate3d(0,10px,0) scale(.97) } to{ opacity:1; transform:none } }
+@media (prefers-reduced-motion:reduce){ .obs-slide .obs-art{ animation:none } }
 
 .obs-t{ margin:0; font-family:'Montserrat','Changa',sans-serif; font-size:24px;
   font-weight:var(--fw-black); letter-spacing:var(--tr-tighter); color:var(--ink); line-height:1.3 }
@@ -2044,14 +2046,29 @@ html[dir="rtl"] .obs-arrow svg{ transform:scaleX(-1) }
 
 .obs-foot{ flex:none; display:flex; flex-direction:column; align-items:center; gap:16px;
   padding-inline:26px; padding-block-start:10px }
-.obs-dots{ display:flex; gap:6px }
-/* أزرار حقيقية لا `<span>`: النقطة 8px والهدف 44px بطبقة شبح — نفس آليّة §28 */
-.obs-dot{ position:relative; inline-size:8px; block-size:8px; border-radius:999px;
-  background:var(--line-2); padding:0; transition:background var(--t-fast),inline-size var(--t-fast) }
-.obs-dot::after{ content:''; position:absolute; inset-inline:50%; inset-block:50%;
-  margin:calc(var(--tap-min) / -2) }
-.obs-dot[aria-selected="true"]{ inline-size:22px; background:var(--copper-primary) }
+/* شريط تقدّم بدل النقاط: النقاط كانت أربعة أهدافِ لمسٍ 8px لا يقصدها أحد،
+   وعددها يتغيّر بتغيّر علَم المباريات فتُقرأ الشبكة عددًا مختلفًا كل تشغيل.
+   والشريط زخرفةٌ تتبع `aria-valuenow` — الرقم المنطوق هو المصدر. */
+.obs-prog{ inline-size:min(100%,340px); block-size:4px; border-radius:999px;
+  background:var(--line-2); overflow:hidden }
+.obs-prog-fill{ display:block; block-size:100%; inline-size:33%; border-radius:999px;
+  background:var(--copper-primary); transition:inline-size 340ms var(--ease-out) }
+@media (prefers-reduced-motion:reduce){ .obs-prog-fill{ transition:none } }
 .obs-go{ inline-size:100%; max-inline-size:340px }
+
+/* صفّ الرأس: سهم رجوع مرئي + «تخطٍّ». كانا سابقًا زرًّا واحدًا مطلقًا؛ والصفّ
+   يجعل الهدفين 44px بلا تراكب، ويحجز ارتفاعه فلا يقفز المحتوى حين يظهر السهم. */
+.obs-top{ flex:none; display:flex; align-items:center; justify-content:space-between;
+  min-block-size:var(--tap-min); padding-inline:8px }
+.obs-back{ min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
+  border-radius:12px; display:grid; place-items:center; background:transparent;
+  color:var(--muted); transition:color var(--t-fast),background var(--t-fast) }
+.obs-back:hover{ color:var(--ink); background:var(--surface-muted) }
+.obs-back[hidden]{ display:none }
+.obs-back svg{ inline-size:24px; block-size:24px; fill:none; stroke:currentColor;
+  stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+/* السهم فيزيائي: المرسوم يشير يسارًا (صحيح في LTR)، وفي RTL «الرجوع» يمينًا */
+html[dir="rtl"] .obs-back svg{ transform:scaleX(-1) }
 
 /* ملزَم: تبديل فوري بلا انزلاق */
 @media (prefers-reduced-motion:reduce){
@@ -2253,3 +2270,166 @@ html[dir="rtl"] .obs-arrow svg{ transform:scaleX(-1) }
    **44.2px** بفجوة 5px مريحة. لا تزاحم ولا بكسل ناقص. */
 .vf-cells{ margin-inline:-6px; gap:5px }
 .vf-cell{ flex:1 1 0; min-inline-size:0 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── 31) لوحة المالك: مبدّل الأماكن · المخطّط الزمني · شرائح الفلاتر ──
+   ثلاث إضافات في مكان واحد لأنها مسارٌ واحد: أيّ مكان أنظر إليه ⇒ ماذا فيه
+   اليوم ⇒ وما الذي أرشّحه من حجوزاته.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① مبدّل الأماكن — زرٌّ يبدو نصًّا حتى يوجد ما يُبدَّل إليه.
+   `is-switch` وحدها تُظهر السهم وتفتح مساحة اللمس؛ وبدونها الزرّ نصٌّ معطَّل
+   بالضبط كما كان `<div>` قبله. */
+.own-place{ display:inline-flex; align-items:center; gap:4px; background:transparent;
+  padding:0; text-align:start; font:inherit; color:inherit }
+.own-place:disabled{ cursor:default; opacity:1 }
+.own-place-caret{ inline-size:0; block-size:14px; opacity:0; transition:inline-size var(--t-fast),opacity var(--t-fast) }
+.own-place.is-switch{ min-block-size:var(--tap-min); padding-inline-end:2px }
+.own-place.is-switch .own-place-caret{ inline-size:14px; opacity:.8 }
+.own-place.is-switch:hover{ text-decoration:underline; text-underline-offset:3px }
+.op-list{ display:flex; flex-direction:column; gap:8px; margin-block:10px 14px }
+.op-item{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+  min-block-size:var(--tap-min); padding:12px 14px; border-radius:14px;
+  border:1.5px solid var(--line-2); background:var(--surface);
+  font-size:14px; font-weight:700; color:var(--ink); text-align:start;
+  transition:border-color var(--t-fast),background var(--t-fast) }
+.op-item:hover{ border-color:var(--copper-primary) }
+.op-item.is-on{ border-color:var(--copper-primary); background:var(--surface-muted) }
+.op-name{ min-inline-size:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+
+/* ② المخطّط الزمني: صفٌّ لكل ملعب وعمودٌ لكل ساعة.
+   ⚠️ **شبكة CSS لا `<table>`**: هذه ليست بيانات جدولية تُقرأ صفًّا صفًّا بل
+   خريطةُ إشغال، وقارئ الشاشة يقرأ نصّ كل خليّة (وفيه الملعب والساعة والحالة).
+   والعمود الأوّل **مثبَّت** لأن الانزلاق الأفقي بلا تثبيت يترك أرقامًا بلا هويّة
+   (نفس درس جداول `/admin` على الهاتف). */
+.tl-wrap{ overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  border:1.5px solid var(--line-2); border-radius:16px; background:var(--surface) }
+.tl-grid{ display:grid; min-inline-size:max-content }
+.tl-cell,.tl-head,.tl-name{ padding:7px 6px; font-size:11px; font-weight:700; text-align:center;
+  border-block-end:1px solid var(--line-1) }
+.tl-head{ position:sticky; inset-block-start:0; z-index:2; background:var(--surface);
+  color:var(--muted); font-variant-numeric:tabular-nums }
+.tl-name{ position:sticky; inset-inline-start:0; z-index:3; background:var(--surface);
+  color:var(--ink); text-align:start; min-inline-size:96px; max-inline-size:132px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  box-shadow:1px 0 0 var(--line-2) }
+html[dir="rtl"] .tl-name{ box-shadow:-1px 0 0 var(--line-2) }
+.tl-head.tl-name{ z-index:4 }
+.tl-slot{ min-inline-size:58px; min-block-size:var(--tap-min); border-radius:10px;
+  border:1.5px solid transparent; margin:2px; padding:4px 2px; line-height:1.25;
+  font-size:10.5px; font-weight:800; background:transparent; color:var(--muted) }
+/* ⚠️ الحالة **بلون ونمط معًا** لا باللون وحده: حدٌّ متّصل/متقطّع ونقشٌ مائل
+   للمغلق، فمن لا يميّز اللونين يقرأ الفرق. والألوان هي ألوان `statusLabel`
+   نفسها — لوحةٌ ثانية لنفس المعنى انحرافٌ مؤجَّل. */
+.tl-free{ border-style:dashed; border-color:var(--line-2); color:var(--muted) }
+.tl-free:hover{ border-color:var(--copper-primary); color:var(--ink) }
+.tl-pending{ border-color:var(--warning-ink); color:var(--warning-ink); background:var(--warning-soft) }
+.tl-confirmed{ border-color:var(--mint-electric); color:var(--mint-electric); background:var(--mint-soft) }
+.tl-closed{ border-color:var(--line-2); color:var(--muted); cursor:default;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line-1) 5px 6px) }
+.tl-past{ opacity:1; border-style:dotted; border-color:var(--line-1); color:var(--soft) }
+.tl-legend{ display:flex; flex-wrap:wrap; gap:10px; margin-block-start:10px;
+  font-size:11px; font-weight:700; color:var(--muted) }
+.tl-legend span{ display:inline-flex; align-items:center; gap:5px }
+.tl-key{ inline-size:14px; block-size:14px; border-radius:5px; border:1.5px solid var(--line-2) }
+
+/* ③ مبدّل شكل تبويب «اليوم» — نفس لغة `#modeSeg`: سطح محايد وحبّة تنزلق. */
+.ov-seg{ display:inline-flex; gap:2px; padding:3px; border-radius:14px;
+  background:var(--surface-muted); border:1.5px solid var(--line-2) }
+.ov-btn{ min-block-size:38px; padding-inline:14px; border-radius:11px;
+  font-size:12.5px; font-weight:800; color:var(--muted); background:transparent;
+  transition:color var(--t-fast),background var(--t-fast) }
+.ov-btn[aria-selected="true"]{ color:var(--ink); background:var(--surface) }
+
+/* ④ شرائح الفلاتر المفعّلة في تبويب الحجوزات — **نفس مكوّن جهة اللاعب**
+   (‏`.fchip`) لا نسخة ثانية. الغلاف وحده جديد لأن موضعه مختلف. */
+.obf-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-block:0 12px }
+.obf-chips[hidden]{ display:none }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── 32) مسار الحجز: خطوات تعمل · إيصال مقلَّم · عدّادات · شريط اكتمال ──
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① الخطوات الثلاث الأولى صارت أزرارًا. الزرّ يرث تخطيط `<li>` السابق تمامًا
+   (عمود: نقطة ثمّ تسمية) فلا يتغيّر شكل المؤشّر — يتغيّر أنّه يعمل. */
+.bk-step-btn{ display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:transparent; padding:2px 4px; border-radius:10px; color:inherit; font:inherit;
+  min-block-size:var(--tap-min); justify-content:center;
+  transition:background var(--t-fast) }
+.bk-step-btn:hover{ background:var(--surface-muted) }
+.bk-step-btn:active{ transform:scale(.96) }
+
+/* ② الإيصال: طيّة «بياناتك» — نفس مكوّن `.disclosure`، وبفاصل علوي كي لا
+   تُقرأ امتدادًا لصفّ الإجمالي. */
+.rc-info{ margin-block-start:10px }
+.rc-info .rc-grid{ margin-block-start:10px }
+
+/* ③ الدفع سطرٌ لا مجموعة اختيار */
+.pay-line{ display:flex; align-items:center; gap:11px; padding:12px 13px;
+  border:1.5px solid var(--line-2); border-radius:15px; background:var(--surface);
+  margin-block-start:14px }
+.pay-line-txt{ display:flex; flex-direction:column; gap:2px; min-inline-size:0 }
+.pay-line-txt b{ font-size:13.5px; font-weight:800; color:var(--ink) }
+.pay-line-txt small{ font-size:11.5px; font-weight:600; color:var(--muted) }
+.pay-why{ margin-block-start:6px }
+.pay-why > summary{ font-size:12.5px }
+.pay-why-b{ margin:8px 0 0; font-size:12.5px; font-weight:600; color:var(--muted); line-height:1.75 }
+
+/* ④ عدّاد ± بدل حقل رقم: لوحة المفاتيح الرقمية تغطّي نصف الشاشة لتغيير رقم من
+   خانتين. والحقل يبقى قابلًا للكتابة لمن يريد رقمًا بعيدًا. */
+.stepper-f{ min-inline-size:0 }
+.stepper{ display:flex; align-items:stretch; gap:0;
+  border:1.5px solid var(--line-2); border-radius:14px; overflow:hidden; background:var(--surface) }
+.stepper-b{ inline-size:var(--tap-min); min-block-size:var(--tap-min); flex:none;
+  font-size:19px; font-weight:800; line-height:1; color:var(--ink);
+  background:var(--surface-muted); transition:background var(--t-fast) }
+.stepper-b:hover{ background:var(--line-1) }
+.stepper-b:active{ transform:scale(.94) }
+.stepper-i.finput{ flex:1 1 0; min-inline-size:0; text-align:center;
+  border:0; border-radius:0; background:transparent; margin:0;
+  font-variant-numeric:tabular-nums; font-weight:800 }
+.stepper-i.finput:focus{ box-shadow:none }
+/* أسهم المتصفّح داخل عدّاد بأسهم خاصّة = زوجان من الأزرار على نفس الرقم */
+.stepper-i::-webkit-outer-spin-button,.stepper-i::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
+.stepper-i[type=number]{ -moz-appearance:textfield; appearance:textfield }
+
+/* ⑤ شريط الاكتمال — مكوّن واحد في ثلاثة مواضع (مراجعة · بطاقة · انضمام) */
+.seat-bar{ block-size:5px; border-radius:999px; background:var(--line-1);
+  overflow:hidden; margin-block-start:9px }
+.seat-bar-fill{ display:block; block-size:100%; inline-size:0; border-radius:999px;
+  background:var(--copper-primary); transition:inline-size 260ms var(--ease-out) }
+@media (prefers-reduced-motion:reduce){ .seat-bar-fill{ transition:none } }
+
+/* ⑥ الشرط المنشور قبل الحقول لا بعدها */
+.gm-precond{ display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin:0 0 11px;
+  font-size:12px; font-weight:650; color:var(--muted); line-height:1.6 }
+
+/* ⑦ مدخل «مباراة مفتوحة» المبكّر في صفحة الملعب */
+.open-entry{ display:flex; align-items:center; gap:11px; inline-size:100%;
+  margin-block-start:13px; padding:12px 13px; text-align:start;
+  border:1.5px dashed var(--line-2); border-radius:16px; background:var(--surface);
+  transition:border-color var(--t-fast),background var(--t-fast) }
+.open-entry[hidden]{ display:none }
+.open-entry:hover{ border-color:var(--copper-primary); background:var(--surface-muted) }
+.open-entry:active{ transform:scale(.99) }
+.oe-ic{ flex:none; inline-size:34px; block-size:34px; border-radius:11px; display:grid; place-items:center;
+  background:var(--surface-muted); color:var(--copper-primary) }
+.oe-ic svg{ inline-size:20px; block-size:20px }
+.oe-txt{ display:flex; flex-direction:column; gap:2px; min-inline-size:0; flex:1 }
+.oe-txt b{ font-size:13.5px; font-weight:800; color:var(--ink) }
+.oe-txt small{ font-size:11.5px; font-weight:600; color:var(--muted); line-height:1.55 }
+.oe-go{ flex:none; color:var(--muted) }
+.oe-go svg{ inline-size:16px; block-size:16px }
+/* السهم فيزيائي ⇒ يُقلب بالاتجاه */
+html[dir="rtl"] .oe-go svg{ transform:scaleX(-1) }
+
+/* ⑧ الضيف يعرف قبل آخر خطوة */
+.dsticky-guest{ font-size:11px; font-weight:700; color:var(--warning-ink); margin-block-start:2px }
+.dsticky-guest[hidden]{ display:none }
+
+/* ⑨ المقاعد المتبقّية في شيت الانضمام */
+.jn-seats{ font-weight:800; color:var(--ink) }
+/* تجزئة التقارير بين الأماكن — الرقم في نهاية الصفّ لا تحت الاسم */
+.bp-nums{ display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex:none }
+.bp-nums b{ font-size:14px; font-weight:900; color:var(--ink); font-variant-numeric:tabular-nums }
+.bp-nums small{ font-size:10.5px; font-weight:700; color:var(--muted) }

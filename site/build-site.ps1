@@ -142,6 +142,47 @@ foreach ($l in $Langs) { $Strings[$l.code] = Read-Strings (Join-Path $SiteDir "s
 $Rel = Read-Strings (Join-Path $SiteDir 'release.txt')
 $RelLive = ($Rel.ContainsKey('url') -and $Rel['url'] -ne '')
 
+# ---- self-hosted APK -------------------------------------------------------
+# The APK is served from this origin, not linked off to GitHub, so the download
+# is one hop and the headers are ours (Content-Type + Content-Disposition +
+# immutable, all set in vercel.json).
+#
+# It is NEVER committed: the repository is public and 7 MB per release grows it
+# with no way back, so *.apk is in .gitignore and the build fetches the file
+# from the release URL once, caching it in site/static/downloads/ (which the
+# static passthrough then copies into public/).
+#
+# Two names are written on purpose and they are not interchangeable:
+#   downloads/mustadaira-<version>.apk  the version IS the name, so it can be
+#                                       cached forever (immutable).
+#   app.apk                             the stable link you paste in WhatsApp.
+#                                       Same bytes, must never be cached hard.
+#
+# A failed fetch is not a failed build: the button falls back to the release URL
+# exactly as it did before, and the line printed at the end says which happened.
+$ApkHref  = ''
+$ApkState = 'none'
+if ($RelLive) {
+    $apkVer = $(if ($Rel.ContainsKey('version') -and $Rel['version'] -ne '') { $Rel['version'] } else { 'latest' })
+    $apkName = 'mustadaira-' + ($apkVer -replace '[^0-9A-Za-z._-]', '') + '.apk'
+    $apkDir  = Join-Path $SiteDir 'static\downloads'
+    $apkFile = Join-Path $apkDir $apkName
+    if (-not (Test-Path $apkDir)) { New-Item -ItemType Directory -Path $apkDir -Force | Out-Null }
+    if (Test-Path $apkFile) {
+        $ApkState = 'cached'
+    } else {
+        try {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest -Uri $Rel['url'] -OutFile $apkFile -UseBasicParsing -TimeoutSec 120
+            $ApkState = 'fetched'
+        } catch {
+            if (Test-Path $apkFile) { Remove-Item $apkFile -Force }
+            $ApkState = 'failed'
+        }
+    }
+    if (Test-Path $apkFile) { $ApkHref = '/downloads/' + $apkName }
+}
+
 # Contact channels, same idea: empty file means the page says so rather than
 # printing a made-up number. See site/contact.txt.
 $Contact   = Read-Strings (Join-Path $SiteDir 'contact.txt')
@@ -186,6 +227,15 @@ try {
         Write-Warning 'database unreachable and no cached snapshot - /places will be skipped'
     }
 }
+
+# ---- is the open-matches feature actually in the database? ----
+# Exactly the rule the app applies with GAMES_OK: a feature behind a flag that
+# is off is not announced. The app asks `open_games?select=id&limit=0` once per
+# session; the site asks the same question once per build. If migration 22 has
+# not run, PostgREST answers 404/PGRST205 and the home page tile is not built -
+# so the site can never promise something the app does not offer (decision 7).
+$GamesLive = $false
+try { [void](Get-Sb '/open_games?select=id&limit=0'); $GamesLive = $true } catch { $GamesLive = $false }
 
 # ---- which sports have at least one live field ----
 # Same rule the app applies, against the same rows: a sport is open when a live
@@ -446,6 +496,42 @@ function Render-Areas($model) {
     @($model | ForEach-Object { $_.region } | Where-Object { $_ -ne '' } | Sort-Object -Unique)
 }
 
+# The home page's "venues you can book right now" strip. It is the same rows
+# the directory renders, cut to the first few and pointed at /places/ for the
+# rest - the strongest content on the site was buried under nine cards of prose.
+#
+# It is NOT a second card component: the markup is the directory's card with the
+# filter attributes dropped (nothing filters here), so one CSS rule serves both
+# and a change to the card cannot drift between the two pages.
+#
+# An empty database renders nothing at all - no heading over a void (rule m5).
+function Render-HomeVenues($model, $T, [string]$base, [int]$take) {
+    if ($model.Count -eq 0) { return '' }
+    $subset = @($model | Select-Object -First $take)
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('<div class="pl-grid pl-grid-home">')
+    foreach ($p in $subset) {
+        $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
+        [void]$sb.Append('<article class="pl-card">')
+        [void]$sb.Append('<a class="pl-link" href="' + $href + '">')
+        [void]$sb.Append('<h3 class="pl-name">' + (HtmlEnc $p.name) + '</h3></a>')
+        [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
+        [void]$sb.Append('<p class="pl-tags"><span class="pl-tag">' + (HtmlEnc $p.type) + '</span>')
+        [void]$sb.Append('<span class="pl-tag">' + (Pitches $p.fields.Count $T) + '</span></p>')
+        [void]$sb.Append('<p class="pl-foot"><span class="pl-price">' + (Tx $T 'plPriceFrom') + ' ' + (Fmt-Price $p.priceMin) + ' ' + (Tx $T 'plCurrency') + '</span>')
+        [void]$sb.Append((Render-Stars $p $T) + '</p>')
+        [void]$sb.Append('</article>')
+    }
+    [void]$sb.Append('</div>')
+    # "See all N" only when there is more to see - a link that leads to the same
+    # list the reader is already looking at is noise.
+    if ($model.Count -gt $subset.Count) {
+        [void]$sb.Append('<p class="pl-more"><a class="btn btn-ghost" href="' + $base + '/places/">' +
+                         (Tx $T 'homeVenuesAll') + '</a></p>')
+    }
+    $sb.ToString()
+}
+
 function Render-PlaceChips($model, $T) {
     $areas = Render-Areas $model
     if ($areas.Count -lt 2 -or $areas.Count -gt 12) { return '' }
@@ -600,8 +686,12 @@ foreach ($lang in $Langs) {
         # Going straight to the APK skips the page carrying the SHA-256 and the
         # sideload instructions, so ctaDlNote puts a link to them under the
         # button - present only when the button itself bypasses that page.
+        # $ApkHref is this origin's own copy when the build managed to place one;
+        # the release URL is the fallback, and both states behave identically for
+        # the reader. `download` works same-origin and is ignored cross-origin -
+        # GitHub sends Content-Disposition: attachment, and so does vercel.json.
         if ($RelLive) {
-            $vars['ctaDl']     = $Rel['url']
+            $vars['ctaDl']     = $(if ($ApkHref -ne '') { $ApkHref } else { $Rel['url'] })
             $vars['ctaDlAttr'] = ' download rel="noopener"'
             $vars['ctaDlNote'] = ' <a class="in-link" href="' + $lang.base + '/download/">' +
                                  (Tx $T 'heroInstallGuide') + '</a>'
@@ -633,6 +723,39 @@ foreach ($lang in $Langs) {
         $vars['placesCount'] = [string]$PlaceModel.Count
         $vars['placesChips'] = $(if ($PlaceModel.Count -gt 0) { Render-PlaceChips $PlaceModel $T } else { '' })
         $vars['statsBand']   = Render-Stats $PlaceModel $T
+        # The directory, raised onto the home page - six cards of live rows beat
+        # nine cards of prose about them.
+        $vars['homeVenues']  = Render-HomeVenues $PlaceModel $T $lang.base 6
+        # The real Play Protect warning, read from disk. No file -> no figure at
+        # all; a caption describing a screenshot nobody supplied is exactly the
+        # invented content rule m5 forbids.
+        $ppFile = Join-Path $SiteDir ('static\assets\shots\playprotect-' + $lang.code + '.png')
+        $vars['ppShot'] = $(if (Test-Path $ppFile) {
+            '<figure class="dlsteps-shot"><img src="/assets/shots/playprotect-' + $lang.code +
+            '.png" alt="' + (HtmlEnc (Tx $T 'dlStepsShotAlt')) + '" loading="lazy" decoding="async"></figure>'
+        } else { '' })
+        # The desktop -> phone bridge. The link is /app.apk, which is a real file
+        # written next to the versioned copy, so it never changes with a release
+        # and can be typed or forwarded once.
+        # Nothing is rendered before a release exists: a stable link is only
+        # honest when there is a file behind it (rule m5).
+        if ($RelLive) {
+            $short = ($SiteOrigin -replace '^https?://', '') + '/app.apk'
+            $vars['apkBridge'] =
+                '<div class="apk-bridge" id="apkBridge" hidden>' +
+                '<p class="apk-bridge-t">' + (Tx $T 'apkBridgeTitle') + '</p>' +
+                '<p class="apk-bridge-u"><bdi dir="ltr">' + (HtmlEnc $short) + '</bdi></p>' +
+                '<p class="apk-bridge-n">' + (Tx $T 'apkBridgeNote') + '</p></div>'
+        } else { $vars['apkBridge'] = '' }
+
+        # The open-matches tile - built only when the view answers (see $GamesLive).
+        $vars['gamesTile'] = $(if ($GamesLive) {
+            '<article class="bt bt-c rv">' +
+            '<span class="bt-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<circle pathLength="1" cx="9" cy="8" r="3.2"/><path pathLength="1" d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>' +
+            '<circle pathLength="1" cx="17.5" cy="9.5" r="2.4"/><path pathLength="1" d="M15 19c0-2.2 1.4-3.7 3.4-3.7 1.2 0 2.1.5 2.6 1.2"/></svg></span>' +
+            '<h3>' + (Tx $T 'featGamesTitle') + '</h3><p>' + (Tx $T 'featGamesDesc') + '</p></article>'
+        } else { '' })
         $vars['appShots']    = Render-Shots $T $lang.code
         # The counter's starting text is rendered with the real total, so the
         # line reads correctly before - and without - any script.
@@ -695,6 +818,14 @@ foreach ($lang in $Langs) {
             # to read the same in an RTL line as in an LTR one.
             $vars['priceSpan'] = $(if ($pLo -eq $pHi) { (Fmt-Price $pLo) } else { (Fmt-Price $pLo) + [char]0x2013 + (Fmt-Price $pHi) })
         }
+        # The price table became one line. Not built at all when the range is
+        # empty - a "prices" line with nothing in it says less than no line.
+        $vars['priceLine'] = $(if ($vars['priceSpan'] -ne '') {
+            '<p class="price-line rv">' + (Tx $T 'homePriceLead') +
+            ' <b><bdi dir="ltr">' + $vars['priceSpan'] + '</bdi> ' + (Tx $T 'plCurrency') + '</b>' +
+            ' &mdash; ' + (Tx $T 'homePriceZero') +
+            ' <a class="in-link" href="' + $lang.base + '/places/">' + (Tx $T 'homePriceAll') + '</a></p>'
+        } else { '' })
 
         $body = Read-Text $bodyFile
         $body = $body.Replace('{{include:contact}}', $(if ($ContactLive) { '{{include:contact-live}}' } else { '{{include:contact-soon}}' }))
@@ -702,6 +833,11 @@ foreach ($lang in $Langs) {
         # Partial includes run BEFORE expansion so the included markup's own
         # {{t.key}} placeholders are resolved in the same pass.
         $body = $body.Replace('{{include:release}}', $(if ($RelLive) { '{{include:dl-available}}' } else { '{{include:dl-unavailable}}' }))
+        # The sticky mobile download bar exists ONLY when there is something to
+        # download: no disabled button and no promise (rule m5). Resolved here
+        # rather than through a $vars entry because variables expand AFTER the
+        # include pass - an include name produced by a variable never resolves.
+        $body = $body.Replace('{{include:dlbar}}', $(if ($RelLive) { '{{include:dl-bar}}' } else { '' }))
         $body = [regex]::Replace($body, '\{\{include:([a-z0-9-]+)\}\}', {
             $f = Join-Path $SiteDir ("partials\" + $args[0].Groups[1].Value + '.html')
             if (Test-Path $f) { [IO.File]::ReadAllText($f) } else { '' }
@@ -831,6 +967,16 @@ if (Test-Path $staticDir) {
     }
 }
 
+# ---- the stable share link ----
+# /app.apk is the URL you paste once and never change. It is a real file, not a
+# redirect: a redirect entry in vercel.json would have to name the version, and
+# that name changes with every release - two sources for one fact.
+# Same bytes as the versioned copy; only the caching differs (see vercel.json).
+if ($ApkHref -ne '') {
+    $apkSrc = Join-Path $Out ($ApkHref.TrimStart('/'))
+    if (Test-Path $apkSrc) { Copy-Item $apkSrc (Join-Path $Out 'app.apk') -Force }
+}
+
 $assetsOut = Join-Path $Out 'assets'
 if (-not (Test-Path $assetsOut)) { New-Item -ItemType Directory -Path $assetsOut -Force | Out-Null }
 # The logos used to sit in app\ even though only the site consumes them, which
@@ -866,6 +1012,14 @@ Write-Host ("  [origin] {0}" -f $SiteOrigin) -ForegroundColor DarkGray
 # is not a failure - it means the download page simply has no screenshot strip.
 Write-Host ("  [shots]  {0} per language on /download - add more as site\static\assets\shots\shot-<n>-<lang>.png  (lang = ar|en; any size, it is read from the file)" -f $script:ShotCount) `
            -ForegroundColor $(if ($script:ShotCount -gt 0) { 'Green' } else { 'DarkYellow' })
+# One line so the owner knows whether the site serves the APK itself or still
+# points at GitHub, without reading any code.
+switch ($ApkState) {
+    'none'   { Write-Host '  [apk]    no release yet - fill site\release.txt (url) and the site will host the file itself' -ForegroundColor DarkGray }
+    'cached' { Write-Host ("  [apk]    self-hosted from cache -> {0}  (+ /app.apk)" -f $ApkHref) -ForegroundColor Green }
+    'fetched'{ Write-Host ("  [apk]    downloaded once -> {0}  (+ /app.apk)" -f $ApkHref) -ForegroundColor Green }
+    'failed' { Write-Warning 'could not download the APK - the button still points at the release URL. Re-run when the network is back.' }
+}
 if ($script:Missing.Count -gt 0) {
     $uniq = $script:Missing | Sort-Object -Unique
     Write-Warning ("unresolved placeholders ({0}): {1}" -f $uniq.Count, ($uniq -join ', '))

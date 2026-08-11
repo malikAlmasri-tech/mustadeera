@@ -1491,3 +1491,84 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
 .sc-tennis::before {background-image:url('/assets/photos/tennis-court-720.jpg')}
 .sc-volley::before {background-image:url('/assets/photos/volley-court-720.jpg')}
 @media (prefers-reduced-motion:reduce){ .sport-court::before{opacity:.18} }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   الرئيسة بعد التقليم (هـ-٤) + جسر الهاتف + شريط التنزيل اللاصق (هـ-٢/هـ-٣)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① «كيف يعمل» بلا فقرات: العنوان وحده، فتصير الخطوات ثلاثة أسطر تُمسَح
+   بالعين في ثانية بدل ثلاث فقرات تُقرَأ في عشرين. */
+.steps-lean .step{padding-block:18px}
+.steps-lean .step h3{margin:0}
+
+/* ② شبكة الملاعب على الرئيسة — **نفس بطاقة `/places`** بلا سمات التصفية
+   (لا شيء يُصفّى هنا). قاعدة واحدة تخدم الصفحتين فلا تنحرف إحداهما. */
+.pl-grid-home{margin-block-start:26px}
+.pl-more{margin-block-start:22px;text-align:center}
+
+/* ③ بينتو بخمس بلاطات: ثلاث كبرى بفقرة، وصغيرتان بعنوان وحده.
+   الصغيرة بلا فقرة ⇒ بلا ارتفاع تُملأ به، فتصفّ نفسها في صفٍّ واحد. */
+.bento-5 .bt-s{display:flex;align-items:center;gap:12px;padding-block:18px}
+.bento-5 .bt-s h3{margin:0;font-size:15px}
+.bento-5 .bt-s .bt-ic{margin:0;flex:none}
+
+/* ④ سطر السعر بدل الجدول */
+.price-line{margin-block-start:26px;text-align:center;font-size:15px;line-height:1.9;color:var(--muted)}
+.price-line b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ⑤ رابط بقيّة الأسئلة */
+.faq-more{margin-block-start:20px;text-align:center;font-size:14px}
+
+/* ⑥ جسر الحاسوب ⇐ الهاتف — يُرفَع بالسكربت على الحاسوب وحده.
+   ⚠️ ويبدأ `hidden` من الوسم لا بالسكربت: زائرٌ على الجوّال بلا JS لا يرى
+      لوحًا يكرّر الزرّ فوقه. */
+.apk-bridge{margin-block-start:18px;padding:14px 16px;border-radius:14px;
+  border:1.5px dashed rgba(255,255,255,.28);background:rgba(255,255,255,.06);max-width:420px}
+.apk-bridge[hidden]{display:none}
+.apk-bridge-t{margin:0;font-size:13px;font-weight:700;color:rgba(255,255,255,.82)}
+.apk-bridge-u{margin:6px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:16px;font-weight:700;color:#fff;letter-spacing:.01em;word-break:break-all}
+.apk-bridge-n{margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.6)}
+
+/* ⑦ شريط التنزيل اللاصق — الجوّال وحده، وبعد تجاوز الهيرو وحده.
+   ⚠️ ولا يُبنى أصلًا في حالة «لا إصدار بعد» (البناء يحذف الجزء كلّه)، فلا
+      حاجة إلى حالة معطَّلة هنا. */
+.dlbar{position:fixed;inset-inline:0;inset-block-end:0;z-index:60;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));
+  background:var(--surface);border-top:1px solid var(--line);
+  box-shadow:0 -8px 24px rgba(0,0,0,.10);
+  transform:translate3d(0,110%,0);transition:transform .24s var(--ease-out,cubic-bezier(.22,1,.36,1))}
+.dlbar[hidden]{display:none}
+.dlbar.on{transform:none}
+.dlbar-in{display:flex;align-items:center;gap:12px;max-width:640px;margin-inline:auto}
+.dlbar-txt{display:flex;flex-direction:column;gap:1px;min-inline-size:0;flex:1}
+.dlbar-txt b{font-size:14px;font-weight:800;color:var(--ink)}
+.dlbar-txt small{font-size:11.5px;color:var(--muted)}
+.dlbar-btn{flex:none;min-block-size:44px}
+/* فوق 900px التنقّل كامل وزرّ الهيرو ظاهر ⇒ الشريط تكرار */
+@media (min-width:900px){.dlbar{display:none}}
+@media (prefers-reduced-motion:reduce){.dlbar{transition:none}}
+
+/* ⑧ خطوات التثبيت — تُفتَح بعد بدء التنزيل، لأن تحذير Play Protect يظهر هناك */
+.dlsteps{position:fixed;inset:0;z-index:70;display:grid;place-items:end center;
+  padding:16px;background:rgba(0,0,0,.5)}
+.dlsteps[hidden]{display:none}
+.dlsteps-card{position:relative;inline-size:100%;max-inline-size:520px;
+  padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));
+  border-radius:20px 20px 0 0;background:var(--surface);
+  max-block-size:86vh;overflow-y:auto}
+@media (min-width:640px){.dlsteps{place-items:center}.dlsteps-card{border-radius:20px}}
+.dlsteps-x{position:absolute;inset-block-start:10px;inset-inline-end:10px;
+  inline-size:44px;block-size:44px;display:grid;place-items:center;border-radius:12px;
+  background:transparent;border:0;color:var(--muted);cursor:pointer}
+.dlsteps-t{margin:0 44px 14px 0;font-size:17px;font-weight:800;color:var(--ink)}
+.dlsteps-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.dlsteps-list li{display:flex;gap:12px;align-items:flex-start}
+.dlsteps-list b{flex:none;inline-size:26px;block-size:26px;border-radius:999px;
+  display:grid;place-items:center;background:var(--brand-soft,rgba(15,75,83,.10));
+  color:var(--brand,#0F4B53);font-size:13px;font-weight:800}
+.dlsteps-list span{font-size:14px;line-height:1.8;color:var(--ink)}
+.dlsteps-shot{margin:16px 0 0}
+.dlsteps-shot img{inline-size:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.dlsteps-n{margin:14px 0 0;font-size:12.5px;color:var(--muted);line-height:1.75}

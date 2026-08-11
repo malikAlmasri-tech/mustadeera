@@ -95,11 +95,11 @@ mockCaption = Choosing a day and a time in the Mustadeera app
 
 # ---------- Features (bento) ----------
 featuresEyebrow = Why AL-Mustadira
-featuresTitle = Everything a booking needs, and nothing it doesn't.
-featBookTitle = A clear booking request
-featBookDesc = You pick the day and hour, the pitch confirms. You see where your request stands at every step: awaiting confirmation, confirmed, or declined with a reason.
-featTimesTitle = Real availability
-featTimesDesc = Booked hours disappear from the grid. You won't find out the pitch is taken after you get there.
+featuresTitle = Three questions come before a booking - the app answers them.
+featBookTitle = Your request arrives and gets an answer
+featBookDesc = Awaiting confirmation, confirmed, or declined with a reason.
+featTimesTitle = See what is free and what it costs
+featTimesDesc = Booked hours vanish from the grid, and every hour shows its price.
 featRatingsTitle = Real ratings only
 featRatingsDesc = We don't write ratings ourselves. A pitch nobody has rated yet shows no stars at all - which is more honest than a pretty number.
 featPriceTitle = Price before you ask
@@ -515,3 +515,39 @@ privJoinBody = If you fill in the "Register your venue" form we store what you w
 # ---------- (3.3) Usage measurement ----------
 privUsageTitle = Usage measurement
 privUsageBody = We record five events so we can see where we fall short: a search that returned nothing (with the search term), opening a venue page, reaching the review step, sending a request, and tapping "tell me if it frees up". None carries your name, your number, your location, or any text you type other than the search term. The event is linked to your account when you are signed in - to tell one visit from ten, nothing more - and only platform administrators can read these rows: not venue owners, not other users. If you ask to be told about a slot we store it so we can notify you when it opens, and nobody but you can see it.
+
+# ---------- venues available now (home) ----------
+homeVenuesTitle = Venues you can book right now
+homeVenuesLead = Real registered venues with their prices and areas. Tap any one for details.
+homeVenuesAll = See all venues
+
+# ---------- price line (replaces the price table) ----------
+homePriceLead = Hourly price in the directory
+homePriceZero = and no extra fees on you.
+homePriceAll = Prices per venue
+
+# ---------- open matches tile ----------
+featGamesTitle = Short on players? Publish your seats
+featGamesDesc = Once the venue confirms, players in the app can join your match.
+
+# ---------- FAQ ----------
+faqMore = The rest of the questions are on the About page
+
+# ---------- device-aware download button ----------
+heroCtaIos = The app is Android only - see the options
+
+# ---------- desktop to phone bridge ----------
+apkBridgeTitle = On a computer? Open this link on your phone
+apkBridgeNote = Same file, and a link that never changes between releases.
+
+# ---------- sticky download bar (mobile) ----------
+dlBarTitle = Get the Android app
+dlBarSub = Free - no card
+dlBarBtn = Download
+dlStepsTitle = Install in three steps
+dlStep1 = Open the file from the download notification or the Downloads folder.
+dlStep2 = Android asks you to allow installs from this source - tap Settings and turn it on.
+dlStep3 = If Play Protect warns you, tap "Install anyway" - the app is not on the store yet.
+dlStepsNote = The file fingerprint is published on the download page - compare it if you want to be sure.
+dlStepsClose = Close
+dlStepsShotAlt = Screenshot of the Google Play Protect warning when installing an app from outside the store

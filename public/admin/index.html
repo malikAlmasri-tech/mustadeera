@@ -10,9 +10,9 @@
 
 <link rel="stylesheet" href="/assets/fonts/fonts-ar.css">
 
-<link rel="stylesheet" href="/build/site.fcc1cf9b.css">
+<link rel="stylesheet" href="/build/site.ef8d19d9.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
-<script src="/build/site.14d2fac3.js" defer></script>
+<script src="/build/site.48cfbfaa.js" defer></script>
 <style>
 /* ===== ما يخصّ اللوحة وحدها ===== */
 .ad-wrap{max-width:1240px;margin-inline:auto;padding:clamp(16px,3vw,28px)}
@@ -129,11 +129,16 @@ tbody tr:last-child td{border-bottom:0}
 .n{text-align:end}
 th.n{text-align:end}
 .num{font-weight:700}
+/* ⚠️ **حالة واحدة ⇒ لون واحد على الوجهين.** `pos` و`neg` كانتا تطابقان توكنَي
+   التطبيق (`--ok-ink` · `--danger-ink`)، أمّا **المعلّق** فكان `#8C5F16` هنا
+   و`--warning-ink` (‏`#7A5210`) هناك — درجتان لحالة واحدة، فيقرأ المالك نفس
+   الحجز بلونين حسب الشاشة التي فتحها. القيم الآن قيم `statusLabel` نفسها.
+   ⚠️ والدرجتان الليليّتان كذلك: `#E8B84B` هنا مقابل `#F0C070` هناك. */
 .pos{color:var(--ok-ink,#0B7A43);font-weight:700}
-.neg{color:#B02718;font-weight:700}
-.wait{color:#8C5F16;font-weight:700}
+.neg{color:var(--danger-ink,#B02718);font-weight:700}
+.wait{color:var(--warning-ink,#7A5210);font-weight:700}
 html.dark .neg{color:#FF8A90}
-html.dark .wait{color:#E8B84B}
+html.dark .wait{color:#F0C070}
 /* صفّ المجاميع — مثبَّت أسفل الجدول وبثقل يفصله عن الصفوف */
 tfoot td{background:var(--bg-2);font-weight:800;border-top:2px solid var(--line-2)}
 /* شريط حصّة المكان من الإيراد: نسبة تُقرأ بالنظر قبل أن تُقرأ بالرقم */
@@ -327,6 +332,78 @@ html.dark .ad-chip.ok{color:var(--lime)}
 html.dark .ad-chip.warn{color:#F0C070}
 .ad-chip.bad{border-color:rgba(176,39,24,.45);color:#B02718}
 html.dark .ad-chip.bad{color:#FF8A90}
+/* ⚠️ **الرقم قابل للنقر**: شريحةٌ تقول «٣ بانتظار ردّ» ثمّ تترك القارئ يبحث
+   عن الثلاثة بنفسه أسوأ من ألّا تقول شيئًا. كل شريحة تقفز إلى قسمها **والفلتر
+   مطبَّق**، فما يراه بعد النقرة هو بالضبط ما أُخبر به.
+   والشريحة التي لا تقود إلى مكان تبقى `<span>` — زرٌّ لا يفعل شيئًا أسوأ من نصّ. */
+button.ad-chip{cursor:pointer;background:var(--surface);
+  transition:border-color var(--t-fast),transform var(--t) var(--spring)}
+@media (hover:hover){button.ad-chip:hover{border-color:var(--line-2);transform:translateY(-1px)}}
+button.ad-chip:active{transform:scale(.97)}
+
+/* زرّ «إدارة الأماكن» في الرأس — إجراء لا قسم */
+.ad-add{padding:9px 15px;font-size:14px;font-weight:700;border:1px solid var(--line);
+  background:var(--surface);border-radius:var(--r-sm);cursor:pointer;color:var(--ink);
+  transition:border-color var(--t-fast),transform var(--t) var(--spring)}
+@media (hover:hover){.ad-add:hover{border-color:var(--line-2);transform:translateY(-1px)}}
+.ad-add:active{transform:scale(.96)}
+.ad-add[aria-current="true"]{border-color:var(--teal);color:var(--teal)}
+html.dark .ad-add[aria-current="true"]{border-color:var(--lime);color:var(--lime)}
+
+/* ⚠️ شرائح تصفية بدل القوائم المنسدلة في جدولي «العملاء» و«الأماكن»: القائمة
+   تُخفي خياراتها حتى تُفتَح، فلا يعرف القارئ **بم** يستطيع أن يصفّي ولا **بم**
+   يصفّي الآن. والشريحة تقول الاثنين بلا نقرة. */
+.ad-fchips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.ad-fchip{font-size:13px;font-weight:700;padding:7px 13px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;
+  min-height:36px;transition:border-color var(--t-fast),color var(--t-fast),background var(--t-fast)}
+@media (hover:hover){.ad-fchip:hover{border-color:var(--line-2);color:var(--ink)}}
+.ad-fchip[aria-pressed="true"]{border-color:var(--teal);color:var(--teal);background:var(--surface-2)}
+html.dark .ad-fchip[aria-pressed="true"]{border-color:var(--lime);color:var(--lime)}
+
+/* خطّ اتجاه صغير بجانب رقم الملخّص. **لا يُرسَم على أقلّ من سبع نقاط**: خطٌّ من
+   ثلاث نقاط ادّعاءُ اتجاه لا قياسُه — نفس قاعدة «لا توقّع قبل ٧ أيام». */
+.kpi-spark{display:block;margin-top:8px;width:100%;height:26px;overflow:visible}
+.kpi-spark path{fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html.dark .kpi-spark path{stroke:var(--lime)}
+
+/* زرّ نسخ الهاتف: الرقم يبقى مقروءًا، والنسخ يوفّر تحديدًا يدويًّا في جدول
+   ينزلق أفقيًّا. وهدف اللمس 36px لأنه داخل صفّ جدول. */
+.ad-copy{margin-inline-start:6px;padding:3px 8px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--line);border-radius:999px;background:var(--surface);
+  color:var(--muted);cursor:pointer;min-height:28px}
+@media (hover:hover){.ad-copy:hover{border-color:var(--line-2);color:var(--ink)}}
+
+/* ⚠️ قفل الخمول: اللوحة تعرض **أرقام هواتف عملاء** على جهاز يُترك مفتوحًا على
+   مكتب. الجلسة نفسها لا تُلمَس (لا خروج ولا إبطال توكن) — يُغطّى **المعروض**
+   وحده، فالعودة نقرة لا تسجيل دخول. */
+.ad-lock{position:fixed;inset:0;z-index:200;display:grid;place-items:center;
+  background:var(--bg);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ad-lock[hidden]{display:none}
+.ad-lock-c{text-align:center;padding:28px;max-width:340px}
+.ad-lock-c h2{font-size:19px;margin:0 0 8px}
+.ad-lock-c p{font-size:14px;color:var(--muted);margin:0 0 18px;line-height:1.8}
+
+/* خطوات «إضافة مكان» — مؤشّر قراءة لا مقياس تقدّم محفوظ */
+.ad-steps{display:flex;gap:10px;list-style:none;margin:0 0 16px;padding:0;flex-wrap:wrap}
+.ad-steps li{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted)}
+.ad-steps b{inline-size:24px;block-size:24px;border-radius:999px;display:grid;place-items:center;
+  border:1px solid var(--line);font-size:12px}
+.ad-steps li.on{color:var(--ink)}
+.ad-steps li.on b{border-color:var(--teal);color:var(--teal)}
+html.dark .ad-steps li.on b{border-color:var(--lime);color:var(--lime)}
+.ad-steps li.done b{background:var(--surface-2)}
+.ad-step[hidden]{display:none}
+
+/* شرحٌ مطويّ: السطر الأوّل ظاهر و(i) تكشف الباقي. لا حرف يُحذَف. */
+.cap-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden}
+.cap-i{margin:2px 0 8px;inline-size:24px;block-size:24px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  font-size:12px;font-weight:800;font-style:italic;cursor:pointer;line-height:1}
+@media (hover:hover){.cap-i:hover{border-color:var(--line-2);color:var(--ink)}}
+.cap-i[aria-expanded="true"]{border-color:var(--teal);color:var(--teal)}
+html.dark .cap-i[aria-expanded="true"]{border-color:var(--lime);color:var(--lime)}
+
 .ad-mig{margin-top:8px;font-size:13.5px}
 .ad-mig summary{cursor:pointer;color:var(--muted);font-weight:700}
 .ad-mig ul{margin:8px 0 0;padding-inline-start:20px;color:var(--ink-2);line-height:1.9}
@@ -443,6 +520,14 @@ html.dark .res .no{color:#FF8A90}
   </form>
 </section>
 
+<div class="ad-lock" id="adLock" hidden>
+  <div class="ad-lock-c">
+    <h2>اللوحة مقفولة</h2>
+    <p>خفيت الشاشة بعد خمول، وفيها أرقام هواتف عملاء. جلستك ما زالت مفتوحة.</p>
+    <button class="btn btn-pri" type="button" id="adUnlock">أكمل</button>
+  </div>
+</div>
+
 <main id="panel" class="ad-wrap hide">
   <div class="ad-bar">
     <h1>لوحة الإدارة</h1>
@@ -450,18 +535,18 @@ html.dark .res .no{color:#FF8A90}
     <button class="tool thm" type="button" data-theme-toggle aria-label="تبديل الوضع الليلي">
       <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="thm-p" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </button>
+    <button class="ad-add" id="goAdd" type="button">➕ إدارة الأماكن</button>
     <button class="ad-out" id="out">خروج</button>
   </div>
 
   <div class="ad-strip" id="adStrip" role="status" aria-live="polite"></div>
 
   <div class="tabs" role="tablist" aria-label="أقسام اللوحة">
+    <button class="tab" role="tab" id="tab-ops"   aria-controls="p-ops"   aria-selected="true">التشغيل</button>
     <button class="tab" role="tab" id="tab-over"  aria-controls="p-over"  aria-selected="false">الملخّص</button>
     <button class="tab" role="tab" id="tab-money" aria-controls="p-money" aria-selected="false">المال</button>
     <button class="tab" role="tab" id="tab-place" aria-controls="p-place" aria-selected="false">الملاعب</button>
     <button class="tab" role="tab" id="tab-cust"  aria-controls="p-cust"  aria-selected="false">العملاء</button>
-    <button class="tab" role="tab" id="tab-ops"   aria-controls="p-ops"   aria-selected="true">التشغيل</button>
-    <button class="tab" role="tab" id="tab-add"   aria-controls="p-add"   aria-selected="false">➕ إدارة الأماكن</button>
     <button class="tab" role="tab" id="tab-log"   aria-controls="p-log"   aria-selected="false">السجلّ</button>
   </div>
 
@@ -506,6 +591,7 @@ html.dark .res .no{color:#FF8A90}
           فالشهر <strong>الجارٍ</strong> ناقص لأنه لم ينتهِ، والشهر <strong>القادم</strong>
           ليس فيه إلّا ما حُجز مقدَّمًا — ولا نموّ يُحسَب لأيٍّ منهما.</p>
         <div class="ad-scroll">
+        <p class="cap"><button class="ad-copy" type="button" data-csv="months" data-csv-name="mustadaira-months">تنزيل CSV</button></p>
           <table id="months"><thead><tr>
             <th>الشهر</th><th class="n">حجوزات</th><th class="n">مؤكّدة</th>
             <th class="n">حجم المبيعات</th><th class="n">دخلك</th><th class="n">النموّ</th>
@@ -546,6 +632,7 @@ html.dark .res .no{color:#FF8A90}
         <strong>حجم المبيعات</strong> و<strong>دخلك</strong> من المؤكّد فقط —
         الحجز المعلّق لا يُحتسب حتى يُؤكَّد.</p>
       <div class="ad-scroll">
+        <p class="cap"><button class="ad-copy" type="button" data-csv="daily" data-csv-name="mustadaira-days">تنزيل CSV</button></p>
         <table id="daily"><thead><tr>
           <th>التاريخ</th><th class="n">الحجوزات</th><th class="n">مؤكّدة</th><th class="n">معلّقة</th>
           <th class="n">ملغاة/مرفوضة</th><th class="n">حجم المبيعات</th><th class="n">دخلك</th>
@@ -657,6 +744,12 @@ html.dark .res .no{color:#FF8A90}
         <strong>⚠️ الحجز المعلّق يحجز خانته</strong> — قيد القاعدة يمنع حجزًا آخر على
         نفس الملعب والتاريخ والساعة ما دام معلّقًا، فالمعلّق الذي لا يُردّ عليه
         لا يضيع وحده بل يمنع غيره.</p>
+      
+      <div class="ad-fchips" id="opsChips" role="group" aria-label="تصفية قائمة العمل">
+        <button class="ad-fchip" type="button" data-opsf="all" aria-pressed="true">الكل</button>
+        <button class="ad-fchip" type="button" data-opsf="overdue" aria-pressed="false">فات وقتها</button>
+        <button class="ad-fchip" type="button" data-opsf="stale" aria-pressed="false">بلا ردّ &gt; 24 ساعة</button>
+      </div>
       <div class="ad-scroll">
         <table id="pend"><thead><tr>
           <th>عمر الطلب</th><th>موعد اللعب</th><th>المكان</th><th>العميل</th>
@@ -734,7 +827,14 @@ html.dark .res .no{color:#FF8A90}
       فيصير إدخالها <em>قرارًا</em> لا زلّة لوحة مفاتيح.</p>
     <p class="frm-n" id="mig13Note" hidden></p>
     <div id="addRes"></div>
+    
+    <ol class="ad-steps" id="addSteps" aria-label="خطوات إضافة مكان">
+      <li class="on" data-s="1"><b>1</b><span>المكان</span></li>
+      <li data-s="2"><b>2</b><span>الملاعب</span></li>
+      <li data-s="3"><b>3</b><span>ربط المالك</span></li>
+    </ol>
     <form id="addForm" novalidate>
+      <div class="ad-step" data-step="1">
       <div class="frm">
         <label class="ad-f"><span>اسم المكان *</span>
           <input id="f_name" required autocomplete="off" placeholder="ملاعب ..."></label>
@@ -789,6 +889,12 @@ html.dark .res .no{color:#FF8A90}
           <select id="a_parking" class="amen-sel"></select></label>
       </div>
 
+      <div class="frm-actions">
+        <button class="btn btn-pri" type="button" data-step-go="2">التالي — الملاعب</button>
+      </div>
+      </div>
+
+      <div class="ad-step" data-step="2" hidden>
       <h3 class="frm-h">الملاعب داخل المكان *</h3>
       <p class="frm-n">⚠️ <strong>مكان بلا ملعب واحد لا يظهر في التطبيق إطلاقًا</strong> —
         التطبيق يُسقط الأماكن الفارغة عمدًا، فلا يرى اللاعب مكانًا لا يستطيع حجز شيء فيه.
@@ -810,7 +916,13 @@ html.dark .res .no{color:#FF8A90}
         لا تُخمَّن ولا يُخترَع لها نصّ.</p>
       <div id="fieldRows"></div>
       <button type="button" class="btn btn-sec" id="addRow">+ أضف ملعبًا آخر</button>
+      <div class="frm-actions">
+        <button class="btn btn-sec" type="button" data-step-go="1">رجوع</button>
+        <button class="btn btn-pri" type="button" data-step-go="3">التالي — ربط المالك</button>
+      </div>
+      </div>
 
+      <div class="ad-step" data-step="3" hidden>
       <h3 class="frm-h">ربط مالك (اختياري)</h3>
       <p class="frm-n">لا يوجد «حساب لاعب» و«حساب مالك» منفصلان — <strong>الحساب واحد</strong>،
         و<code>role</code> هو ما يفرّق. فليسجّل صاحب الملعب في التطبيق تسجيلًا عاديًّا
@@ -828,8 +940,10 @@ html.dark .res .no{color:#FF8A90}
         وهو تغيير صلاحية، فأزل العلامة إن لم ترده.</p>
 
       <div class="frm-actions">
+        <button class="btn btn-sec" type="button" data-step-go="2">رجوع</button>
         <button class="btn btn-pri" type="submit" id="addGo">أنشئ المكان</button>
         <button class="btn btn-sec" type="button" id="addReset">تفريغ النموذج</button>
+      </div>
       </div>
     </form>
   </section>
@@ -850,7 +964,7 @@ html.dark .res .no{color:#FF8A90}
   </div>
 
   <p class="note" id="dataNote"></p>
-  <p class="note">بناء 2026-08-11</p>
+  <p class="note">بناء 2026-08-12</p>
 </main>
 
 <script>
@@ -963,18 +1077,28 @@ function whenFull(d){ return FULL_DT ? FULL_DT.format(d) : d.toLocaleString('ar-
    أزرار حقيقية بأدوار ARIA، والتنقّل بالأسهم كما يتوقّع قارئ الشاشة.
    لا شيء يُحمَّل عند التبديل: كل البيانات محمَّلة أصلًا، والتبويب يُظهر
    ويُخفي فقط ⇒ التبديل فوري بلا طلب شبكة. */
-var TABS = ['over','money','place','cust','ops','add','log'];
+/* ⚠️ `TABS` ترتيب **العرض** لا قائمة الأقسام: الأسهم تمشي به، فلا بدّ أن
+   يطابق ترتيب الأزرار في الوسم حرفًا بحرف وإلّا قفز السهم فوق تبويب.
+   و`add` ليس فيه لأنه لم يعد زرًّا في الشريط — لكنّ لوحه `#p-add` باقٍ
+   ويُفتَح من زرّ الرأس، ولذلك يُخفى ويُظهر في `showTab` مع البقيّة. */
+var TABS = ['ops','over','money','place','cust','log'];
+var PANELS = TABS.concat(['add']);
 function showTab(name){
-  TABS.forEach(function(n){
+  PANELS.forEach(function(n){
     var t = $('#tab-' + n), p = $('#p-' + n);
-    if (!t || !p) return;
+    if (p) p.hidden = (n !== name);
+    if (!t) return;
     var on = (n === name);
     t.setAttribute('aria-selected', on ? 'true' : 'false');
     t.tabIndex = on ? 0 : -1;
-    p.hidden = !on;
   });
+  /* «إدارة الأماكن» ليست تبويبًا، فحين تُفتَح لا يبقى تبويبٌ مضاءً — وإضاءة
+     واحدٍ منها حينئذٍ تقول «أنت هنا» عن مكان لست فيه. */
+  var add = $('#goAdd'); if (add) add.setAttribute('aria-current', name === 'add' ? 'true' : 'false');
   try { location.hash = name; } catch(e){}
 }
+// زرّ الرأس يفتح لوح «إدارة الأماكن» — إجراءٌ لا قسم
+(function(){ var b = $('#goAdd'); if (b) b.addEventListener('click', function(){ showTab('add'); }); })();
 TABS.forEach(function(n, i){
   var t = $('#tab-' + n); if (!t) return;
   t.addEventListener('click', function(){ showTab(n); });
@@ -990,6 +1114,155 @@ TABS.forEach(function(n, i){
 function tabBadge(id, label, count, warn){
   var t = $('#tab-' + id); if (!t) return;
   t.innerHTML = label + (count ? ' <span class="cnt' + (warn ? ' warn' : '') + '">' + count + '</span>' : '');
+}
+
+/* ═══ نموذج «إضافة مكان» — ثلاث خطوات، وحفظٌ واحد ══════════════════════════
+   ⚠️ الانتقال إلى التالية يفحص المطلوب في الحالية: خطوةٌ تُترَك ناقصة تُكتشَف
+      بعد ملء الباقي كلّه، وهو نفس العطل الذي جاء التقسيمُ ليعالجه.
+   ⚠️ ولا يُغيَّر شيء في `submit`: التحقّق الكامل والتراجع كما هما، فالخطوات
+      طبقةُ عرضٍ فوق منطقٍ لم يُمَسّ. */
+function addStep(n){
+  n = String(n);
+  Array.prototype.forEach.call(document.querySelectorAll('#addForm .ad-step'), function(d){
+    d.hidden = (d.getAttribute('data-step') !== n);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#addSteps li'), function(li){
+    li.classList.toggle('on', li.getAttribute('data-s') === n);
+    li.classList.toggle('done', +li.getAttribute('data-s') < +n);
+  });
+  var box = document.getElementById('addSteps');
+  if (box) box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-step-go]');
+  if (!b) return;
+  var to = b.getAttribute('data-step-go');
+  // التقدّم وحده يُفحَص؛ الرجوع لا يُمنَع أبدًا
+  if (to === '2') {
+    var nm = document.getElementById('f_name');
+    if (nm && !nm.value.trim()) { nm.focus(); addResult('err', '<h3>الاسم مطلوب</h3>اكتب اسم المكان قبل الانتقال إلى الملاعب.'); return; }
+  }
+  addStep(to);
+});
+
+/* ═══ طيّ الشروح الطويلة ═════════════════════════════════════════════════
+   ⚠️ **نقلٌ لا حذف.** كل `.cap` تفسّر رقمًا فوقها، ومن يشكّ في الرقم يحتاجها
+      كاملةً — لكنّ من يقرأ اللوحة كل يوم يعرفها ولا يريد ثلاثة أسطر تحت كل
+      بطاقة. فالسطر الأوّل يبقى، والباقي خلف (i)، ولا حرف يُحذَف.
+   ⚠️ ولا يُطوى إلّا ما **يفيض فعلًا**: قياسٌ لكل عنصر (`scrollHeight`) لا
+      تقديرٌ بعدد المحارف — الطول يتغيّر بعرض الشاشة وحجم الخطّ. */
+function foldCaps(){
+  Array.prototype.forEach.call(document.querySelectorAll('.cap:not([data-fold])'), function(c){
+    c.setAttribute('data-fold', '1');
+    c.classList.add('cap-clamp');
+    if (c.scrollHeight <= c.clientHeight + 1) { c.classList.remove('cap-clamp'); return; }
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cap-i';
+    b.setAttribute('aria-expanded', 'false');
+    b.setAttribute('aria-label', 'اعرض الشرح كاملًا');
+    b.textContent = 'i';
+    b.addEventListener('click', function(){
+      var open = c.classList.toggle('cap-open');
+      c.classList.toggle('cap-clamp', !open);
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-label', open ? 'أخفِ الشرح' : 'اعرض الشرح كاملًا');
+    });
+    c.parentNode.insertBefore(b, c.nextSibling);
+  });
+}
+
+/* ═══ قفل الخمول ═══════════════════════════════════════════════════════════
+   عشر دقائق بلا لمسة ⇒ غطاء. والمؤقّت يبدأ **بعد الدخول** لا عند تحميل الصفحة:
+   شاشة الدخول لا تحمل بيانات أحد.
+   ⚠️ ولا يمسّ الجلسة إطلاقًا: تسجيل خروجٍ تلقائي على لوحة يفتحها المالك عشرين
+      مرّة في اليوم يعلّم صاحبه أن يُبقيها مفتوحة بلا قفل — وهو عكس المقصود. */
+var LOCK_MS = 10 * 60 * 1000, lockT = null, lockArmed = false;
+function armLock(){
+  lockArmed = true;
+  ['pointerdown','keydown','wheel','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, kickLock, { passive:true });
+  });
+  kickLock();
+}
+function kickLock(){
+  if (!lockArmed) return;
+  var el = document.getElementById('adLock');
+  if (el && !el.hidden) return;            // مقفولة: الحركة لا تفتحها، الزرّ يفتحها
+  clearTimeout(lockT);
+  lockT = setTimeout(function(){
+    var l = document.getElementById('adLock');
+    if (l) { l.hidden = false; var b = document.getElementById('adUnlock'); if (b) b.focus(); }
+  }, LOCK_MS);
+}
+(function(){
+  var b = document.getElementById('adUnlock');
+  if (b) b.addEventListener('click', function(){
+    var l = document.getElementById('adLock'); if (l) l.hidden = true;
+    kickLock();
+  });
+})();
+
+/* ═══ تصدير CSV — بلا مكتبة، بنفس أسلوب `downloadBookingIcs` في التطبيق ═══
+   ⚠️ **يُقرأ من الجدول المرسوم لا من البيانات الخام**: ما يُصدَّر هو ما يراه
+      المستخدم بالضبط (نفس الفلاتر ونفس الصفوف ونفس التقريب)، فلا يفتح ملفًّا
+      يقول رقمًا غير الذي على شاشته.
+   ⚠️ و**BOM لازم**: إكسل على ويندوز يقرأ CSV بترميز النظام ما لم يجد BOM ⇒
+      كل اسم عربي يخرج مشوَّهًا. والفاصل فاصلة عادية.
+   ⚠️ والتهريب بمضاعفة علامة الاقتباس (RFC 4180) لا بحذفها. */
+function tableCsv(id){
+  var t = document.getElementById(id); if (!t) return '';
+  var out = [];
+  Array.prototype.forEach.call(t.querySelectorAll('tr'), function(tr){
+    var cells = Array.prototype.map.call(tr.querySelectorAll('th,td'), function(c){
+      // نصّ الخليّة كما يُقرأ: الشارات («جارٍ» · «قادم») جزء من المعنى فتبقى
+      var v = (c.textContent || '').replace(/\s+/g, ' ').trim();
+      return (v.indexOf(',') >= 0 || v.indexOf('"') >= 0) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    });
+    if (cells.length) out.push(cells.join(','));
+  });
+  return out.join(String.fromCharCode(13, 10));
+}
+function downloadCsv(id, name){
+  var csv = tableCsv(id); if (!csv) return;
+  var blob = new Blob(['﻿' + csv], { type:'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name + '-' + ymd(new Date()) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-csv]');
+  if (b) { downloadCsv(b.getAttribute('data-csv'), b.getAttribute('data-csv-name') || 'export'); return; }
+  // نسخ رقم الهاتف — الرقم يبقى مقروءًا، والزرّ يوفّر تحديدًا يدويًّا في جدول
+  // ينزلق أفقيًّا. وفشل النسخ يُقال ولا يُبتلع.
+  var c = e.target.closest && e.target.closest('[data-copy]');
+  if (c) {
+    var v = c.getAttribute('data-copy');
+    var done = function(ok){ c.textContent = ok ? 'تم النسخ' : 'ما زبطت'; setTimeout(function(){ c.textContent = 'نسخ'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(v).then(function(){ done(true); }, function(){ done(false); });
+    } else { done(false); }
+  }
+});
+
+/* ═══ خطّ اتجاه صغير بجانب رقم الملخّص ═══════════════════════════════════
+   المبدأ منقول من `createSparkline` في التطبيق لا الكود: هناك يُرسم في canvas
+   داخل بطاقة، وهنا SVG نصّي داخل خليّة KPI. ونسخُ الكود بين وجهين لا يقرأ
+   أحدهما من الآخر هو بالضبط ما جعل `FIELD_SPECS` تنحرف حتى لزمها حارس.
+   ⚠️ **ولا يُرسَم على أقلّ من سبع نقاط**: خطٌّ من ثلاث نقاط ادّعاءُ اتجاه لا
+      قياسُه — نفس قاعدة «لا توقّع قبل ٧ أيام فيها حجز فعلي».
+   ⚠️ وزخرفي (`aria-hidden`): الرقم فوقه وجملةُ المقارنة تحته هما ما يُنطق. */
+function sparkSvg(vals){
+  if (!vals || vals.length < 7) return '';
+  var w = 100, h = 26, mx = Math.max.apply(null, vals), mn = Math.min.apply(null, vals);
+  var rng = (mx - mn) || 1;
+  var d = vals.map(function(v, i){
+    var x = (i / (vals.length - 1)) * w;
+    var y = h - ((v - mn) / rng) * h;
+    return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }).join(' ');
+  return '<svg class="kpi-spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true"><path d="' + d + '"/></svg>';
 }
 
 /* ── أدوات الرسم ────────────────────────────────────────────────────────────
@@ -1147,6 +1420,8 @@ function start(){
   $('#login').classList.add('hide');
   $('#panel').classList.remove('hide');
   $('#who').textContent = (S.name || '') + ' · ' + (S.phone || '');
+  foldCaps();                  // بعد ظهور اللوحة: القياس يحتاج تخطيطًا حقيقيًّا
+  armLock();                   // بعد الدخول لا قبله: شاشة الدخول لا تحمل بيانات أحد
   RT.dead = false;
   /* التبويب المفتوح يُستعاد من العنوان: تحديث الصفحة لا يعيدك إلى البداية.
      ⚠️ **والافتراضي صار «التشغيل» لا «الملخّص»** (٣.٤): الملخّص أثرٌ شهري
@@ -1154,7 +1429,7 @@ function start(){
         ردّي؟» — وجوابه قائمةُ العمل. والروابط العميقة القديمة تعمل كما هي:
         الشرط على الهاش لم يتغيّر، الافتراضي وحده هو الذي تغيّر. */
   var h = (location.hash || '').replace('#','');
-  showTab(TABS.indexOf(h) !== -1 ? h : 'ops');
+  showTab(PANELS.indexOf(h) !== -1 ? h : 'ops');
   // صحّة الترحيلات تُقاس **قبل** أوّل رسم كي لا يومض الشريط «محدَّثة» ثمّ يتراجع
   probeMigrations().then(function(){ return loadAll(); });
   loadFeed().then(function(){ rtPaint(); schedulePoll(); rtConnect(); });
@@ -1321,6 +1596,8 @@ function renderAll(){
     prev: between(D.bookings, dshift(-59), dshift(-30)),
     cap:  capacity()
   };
+  // نافذة الحساب محفوظة كي تستطيع الشرائح إعادة رسم قسمها وحده بلا إعادة جلب
+  window.__W = W;
   renderKpis(W);
   renderBrief(W);
   renderDaily();
@@ -1361,10 +1638,27 @@ function renderKpis(W){
   var occ = W.cap.perDay ? held / (W.cap.perDay * 30) * 100 : null;
   var run = c.com / 30 * 30.44;   // معدّل شهري من متوسّط يومي — الشهر 30.44 يومًا وسطيًّا
 
+  /* اتجاه الدخل اليومي — أربعة عشر يومًا من الصفوف نفسها التي تبني الجداول.
+     ⚠️ الأيام تُبذَر **كلّها بصفر** أوّلًا: يومٌ بلا حجز لا يصنع مفتاحًا في
+        جدول العدّ فيسقط من الخطّ، فيبدو المنحنى أقصر وأملس ممّا هو — نفس درس
+        «الصفر لا يُرشَّح» في «اليوم الأضعف». */
+  var spark = (function(){
+    var days = [], byDay = {};
+    for (var i = 13; i >= 0; i--) {
+      var dt = new Date(); dt.setDate(dt.getDate() - i);
+      var key = ymd(dt); days.push(key); byDay[key] = 0;
+    }
+    D.daily.forEach(function(d){
+      var key = String(d.booking_date).slice(0,10);
+      if (key in byDay) byDay[key] += (+d.revenue || 0) * RATE;
+    });
+    return sparkSvg(days.map(function(key){ return byDay[key]; }));
+  })();
+
   var k = [];
   k.push('<div class="kpi lead"><span class="k">دخلك — آخر 30 يومًا</span>' +
     '<span class="v">' + esc(money(c.com)) + '</span>' +
-    '<span class="s">' + trendEl(c.com, p.com, 'عن الثلاثين السابقة') + '</span></div>');
+    '<span class="s">' + trendEl(c.com, p.com, 'عن الثلاثين السابقة') + '</span>' + spark + '</div>');
 
   function card(label, value, sub, hot){
     k.push('<div class="kpi' + (hot ? ' hot' : '') + '"><span class="k">' + label + '</span>' +
@@ -1849,6 +2143,37 @@ function renderCustomers(){
 }
 
 /* ── ⑤ التشغيل ───────────────────────────────────────────────────────────── */
+/* مرشِّح قائمة العمل — حالةٌ واحدة يقرأها `renderOps` وتكتبها الشرائح وأرقام
+   الشريط معًا. ولا تُخزَّن: تصفيةٌ تُختار لهذه الجلسة لا تفضيلٌ يُحفَظ. */
+var OPS_F = 'all';
+function setOpsFilter(v){
+  OPS_F = v || 'all';
+  var box = document.getElementById('opsChips');
+  if (box) Array.prototype.forEach.call(box.querySelectorAll('[data-opsf]'), function(b){
+    b.setAttribute('aria-pressed', b.getAttribute('data-opsf') === OPS_F ? 'true' : 'false');
+  });
+  if (window.__W) renderOps(window.__W);
+}
+document.addEventListener('click', function(e){
+  var c = e.target.closest && e.target.closest('#opsChips [data-opsf]');
+  if (c) { setOpsFilter(c.getAttribute('data-opsf')); return; }
+  /* رقمٌ في الشريط ⇒ القسم + المرشِّح + التمرير إلى الجدول. من أُخبر برقم
+     يجب أن يجد صفوفه، لا أن يبحث عنها في سبع شاشات. */
+  var j = e.target.closest && e.target.closest('[data-jump]');
+  if (!j) return;
+  var to = j.getAttribute('data-jump');
+  var f  = j.getAttribute('data-opsf');
+  showTab(to);
+  if (f === 'apps') {
+    var pa = document.getElementById('paList');
+    if (pa) pa.scrollIntoView({ behavior:'smooth', block:'start' });
+    return;
+  }
+  setOpsFilter(f === 'pending' ? 'all' : f);
+  var t = document.getElementById('pend');
+  if (t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+});
+
 function renderOps(W){
   var today = W.today;
   var pending = D.bookings.filter(function(b){ return b.status === 'pending'; });
@@ -1873,8 +2198,14 @@ function renderOps(W){
   tabBadge('ops', 'التشغيل', future.length, stale.length > 0);
 
   // قائمة العمل — الأقدم طلبًا أوّلًا
+  /* ⚠️ **«فات وقتها» تشمل الماضي كلّه لا القادم وحده**: `future` هي القادمة،
+     والطلب الذي فات موعده ليس فيها أصلًا — فلو رشّحنا منها لخرجت صفرًا دائمًا
+     بينما الشريط يقول «٣». الأساس يتبدّل بالمرشِّح لا يُقصّ بعده. */
   var tb = $('#pend tbody');
-  var work = future.slice().sort(function(a,b){ return new Date(a.created_at) - new Date(b.created_at); });
+  var base = OPS_F === 'overdue' ? past
+           : OPS_F === 'stale'   ? stale
+           : future;
+  var work = base.slice().sort(function(a,b){ return new Date(a.created_at) - new Date(b.created_at); });
   tb.innerHTML = work.length ? work.map(function(b){
     var cr = new Date(b.created_at);
     var old = Date.now() - cr.getTime() > 864e5;
@@ -1885,10 +2216,13 @@ function renderOps(W){
       '<td>' + when + '</td>' +
       '<td>' + esc(placeName[String(b.place_id)] || '—') + '</td>' +
       '<td>' + esc(b.customer_name || '—') + '</td>' +
-      '<td dir="ltr">' + esc(b.customer_phone || '—') + '</td>' +
+      '<td dir="ltr">' + esc(b.customer_phone || '—') +
+        (b.customer_phone ? '<button class="ad-copy" type="button" data-copy="' + esc(b.customer_phone) + '">نسخ</button>' : '') + '</td>' +
       '<td class="n num">' + money(b.price) + '</td>' +
       '<td>' + (String(b.source||'') === 'owner_manual' ? 'يدوي من المالك' : 'التطبيق') + '</td></tr>';
-  }).join('') : '<tr><td colspan="7" class="muted-row">لا حجز معلّق قادم — كل شيء مردود عليه</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="muted-row">' +
+      (OPS_F === 'all' ? 'لا حجز معلّق قادم — كل شيء مردود عليه' : 'لا شيء تحت هذا المرشِّح') +
+      '</td></tr>';
 
   // ساعات الذروة: التسمية من خانات الملاعب نفسها لا من تنسيق مخترَع
   var lbl = {};
@@ -2301,11 +2635,16 @@ function renderStrip(W){
   var apps = HAS_APPS ? D.apps.filter(function(a){ return a.status === 'new'; }).length : 0;
 
   var missing = MIG.filter(function(m){ return m.kind !== 'soft' && MIG_STATE[m.n] === false; });
+  /* ⚠️ **الرقم يقود إلى مصدره.** شريحةٌ تقول «٣ فات وقتها» ثمّ تترك القارئ
+     يبحث عن الثلاثة بنفسه أسوأ من ألّا تقول شيئًا: النقر يفتح «التشغيل»
+     ويطبّق الفلتر، فما يراه بعدها هو بالضبط ما أُخبر به.
+     وشريحة «قاعدة البيانات محدَّثة» تبقى `<span>` — لا مكان تقود إليه، وزرٌّ
+     لا يفعل شيئًا أسوأ من نصّ. */
   var chips = [
-    '<span class="ad-chip' + (pend.length ? ' warn' : '') + '"><b>' + pend.length + '</b> بانتظار ردّ</span>',
-    '<span class="ad-chip' + (overdue.length ? ' bad' : '') + '"><b>' + overdue.length + '</b> فات وقتها</span>'
+    '<button type="button" class="ad-chip' + (pend.length ? ' warn' : '') + '" data-jump="ops" data-opsf="pending"><b>' + pend.length + '</b> بانتظار ردّ</button>',
+    '<button type="button" class="ad-chip' + (overdue.length ? ' bad' : '') + '" data-jump="ops" data-opsf="overdue"><b>' + overdue.length + '</b> فات وقتها</button>'
   ];
-  if (HAS_APPS) chips.push('<span class="ad-chip' + (apps ? ' warn' : '') + '"><b>' + apps + '</b> طلب انضمام</span>');
+  if (HAS_APPS) chips.push('<button type="button" class="ad-chip' + (apps ? ' warn' : '') + '" data-jump="ops" data-opsf="apps"><b>' + apps + '</b> طلب انضمام</button>');
   chips.push(missing.length
     ? '<span class="ad-chip bad" id="migChip"><b>' + missing.length + '</b> ترحيل ناقص</span>'
     : '<span class="ad-chip ok">قاعدة البيانات محدَّثة</span>');
