@@ -189,7 +189,7 @@ const I18N = {
     bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك في مكان واحد',
     grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
-    reportsEntrySub:'الإيراد والرسوم البيانية وتوصيات التسعير', backToToday:'رجوع إلى اليوم',
+    reportsEntrySub:'الأرباح · الإشغال · الرسوم البيانية · المساعد الذكيّ', backToToday:'رجوع إلى اليوم',
     chooseFirst:'اختر الملعب أولاً.', chooseDayMsg:'اختر اليوم المناسب.', chooseTimeMsg:'اختر وقتاً متاحاً للمتابعة.',
     bookingConflict:'سبقك إليه فريق آخر قبل لحظات! اختر وقتاً آخر — ولا تتردد هذه المرة.',
     bookingSent:'وصل طلبك! الحجز الآن بانتظار تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'غداً',
@@ -251,6 +251,7 @@ const I18N = {
     onbS3B:'انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.',
     onbSkip:'تخطٍّ', onbNext:'التالي', onbStart:'يلا نبلّش',
     onbDotsAria:'شاشات الترحيب', onbDotAria:'الشاشة {i} من {n}',
+    moreAria:'خيارات أخرى',
     onbReplay:'شاشات الترحيب', onbReplayBtn:'أعِد العرض', onbReplayDone:'رح تظهر عند الفتح الجاي.',
     repGroupOverview:'نظرة عامّة', repGroupPerf:'الأداء', repGroupInsights:'الاتجاه والتحليل',
     repRangeAria:'نطاق التقارير', repRangeAll:'الكل', repRange30:'آخر ٣٠ يوم', repRange90:'آخر ٩٠ يوم',
@@ -654,7 +655,7 @@ const I18N = {
     bookingsTitle:'My bookings', bookingsSub:'All your bookings in one place',
     grpUpcoming:'Upcoming bookings', grpPending:'Awaiting confirmation', grpPast:'Past bookings', grpCancelled:'Cancelled / Rejected',
     otabToday:'Today', otabBookings:'Bookings', otabCalendar:'Calendar', otabFields:'Fields', otabReports:'Reports',
-    reportsEntrySub:'Revenue, charts and pricing tips', backToToday:'Back to Today',
+    reportsEntrySub:'Profit · occupancy · charts · AI advisor', backToToday:'Back to Today',
     chooseFirst:'Choose the field first.', chooseDayMsg:'Choose a suitable day.', chooseTimeMsg:'Choose an available time to continue.',
     bookingConflict:'Another team beat you to it moments ago! Pick another time — and don’t hesitate twice.',
     bookingSent:'Your request was sent! It awaits the field’s confirmation.', langSwitch:'العربية', today:'Today', tomorrow:'Tomorrow',
@@ -714,6 +715,7 @@ const I18N = {
     onbS3B:'Publish your spare seats once the venue confirms, and players here can join.',
     onbSkip:'Skip', onbNext:'Next', onbStart:'Get started',
     onbDotsAria:'Welcome screens', onbDotAria:'Screen {i} of {n}',
+    moreAria:'More options',
     onbReplay:'Welcome screens', onbReplayBtn:'Show again', onbReplayDone:'They will show on next open.',
     repGroupOverview:'Overview', repGroupPerf:'Performance', repGroupInsights:'Insights',
     repRangeAria:'Report range', repRangeAll:'All', repRange30:'Last 30 days', repRange90:'Last 90 days',
@@ -4082,13 +4084,16 @@ async function renderGames(){
 /* يُنادى بعد كل جلبة. يسأل القاعدة مرّةً واحدة (‏`GAMES_OK` يبقى بعدها)، ثمّ
    يُظهر المبدّل أو يُبقيه مخفيًّا. والضيف لا يراه أصلًا: الانضمام يتطلّب حسابًا. */
 async function updateModeSeg(){
-  const seg=$('#modeSeg'); if(!seg) return;
+  const seg=$('#modeSeg'), row=$('#modeRow'); if(!seg) return;
   const tok=Session.player();
   if(tok && GAMES_OK === null){
     try{ await sbProbeGames(await sbSession(tok, false)); }catch(_){}
   }
-  seg.hidden = (GAMES_OK !== true) || !tok;
-  if(seg.hidden && State.mode==='games') setMode('venues');
+  /* ⚠️ الإخفاء على **الصفّ** لا على المبدّل وحده: صار صفًّا مستقلًّا في الغلاف
+     اللاصق، وإخفاء ابنه يترك حشوةَ الصفّ فيبقى شريطٌ فارغ بارتفاعٍ بلا محتوى. */
+  const off = (GAMES_OK !== true) || !tok;
+  seg.hidden = off; if(row) row.hidden = off;
+  if(off && State.mode==='games') setMode('venues');
 }
 function setMode(m){
   State.mode = (m==='games') ? 'games' : 'venues';
@@ -6056,20 +6061,26 @@ const Tracker = {
          الذي قال تصميمُها نفسُه إنه ليس السؤال.
          والترتيب في الـDOM يتبع الترتيب البصري لا يخالفه: قارئ الشاشة يقرأ ما
          يراه المبصر بالترتيب نفسه. */
-      h('div',{class:'trk-when'},
-        h('span',{}, dayLabel(b.date) + ' ' + shortDate(String(b.date).split('T')[0])),
-        h('span',{class:'trk-sep','aria-hidden':'true'}, '·'),
-        // مدى وقتٍ داخل جملة عربية ينقلب بلا عزل صريح فيسبق الانتهاءُ الابتداء
-        h('bdi',{dir:'ltr'}, slotDisplay(slot))),
+      /* ⚠️ **صفٌّ واحد للموعد والعدّاد** بدل صفَّين وفاصلٍ أفقي (تغيّر 2026-08-11
+         بطلب المالك: البطاقة كانت ستّة صفوف على أزحم شاشة). والعدّاد إجابةُ
+         نفس السؤال الذي يجيبه الموعد — «متى؟» — فوضعُهما في سطرين متباعدين
+         يجعل العين تقفز بينهما. وتسمية «يبدأ بعد» سقطت: الحبّة نفسها تقولها. */
+      h('div',{class:'trk-line'},
+        h('div',{class:'trk-when'},
+          h('span',{}, dayLabel(b.date) + ' ' + shortDate(String(b.date).split('T')[0])),
+          h('span',{class:'trk-sep','aria-hidden':'true'}, '·'),
+          // مدى وقتٍ داخل جملة عربية ينقلب بلا عزل صريح فيسبق الانتهاءُ الابتداء
+          h('bdi',{dir:'ltr'}, slotDisplay(slot))),
+        h('span',{class:'trk-count', id:'trkCount'},
+          left <= -60000 ? t('trkNow') : this.countdown(left))),
       h('div',{class:'trk-where'},
         h('bdi',{}, b.place_name || ''),
         b.field_name ? h('span',{class:'trk-sep','aria-hidden':'true'}, '·') : null,
         b.field_name ? h('bdi',{}, b.field_name) : null),
-      h('div',{class:'trk-foot'},
-        h('span',{class:'trk-left'},
-          h('span',{class:'trk-left-l'}, t('trkStarts')),
-          h('span',{class:'trk-left-v', id:'trkCount'}, left <= -60000 ? t('trkNow') : this.countdown(left))),
-        h('span',{class:'trk-hint'}, pending ? t('trkPendingHint') : t('trkConfirmedHint'))));
+      /* التلميح للمعلّق وحده: «طلبك ينتظر ردّ الملعب» يشرح حالةَ انتظار لا يفهمها
+         المستخدم بلا كلمات؛ أمّا المؤكّد فشارة «مؤكّد» والعدّاد يقولان كل شيء،
+         وسطرٌ ثالث تحتهما تكرارٌ يزيد ارتفاع البطاقة بلا معلومة. */
+      pending ? h('div',{class:'trk-hint'}, t('trkPendingHint')) : null);
     card.addEventListener('click', ()=>showPage('bookings'));
     wrap.append(card);
 
@@ -7643,6 +7654,29 @@ const Actions = {
   openTracker:()=>{ if(Session.player()) showPage('bookings'); },
   navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
   obsSkip:()=>Obs.finish(), obsNext:()=>Obs.next(),
+  /* قائمة فائض رأس المالك. والإغلاق يُعلَّق مرّةً واحدة على المستند لا في
+     كل فتحة — الإضافة في كل فتحة تكدّس مستمعًا (مزلق مسجّل في `initAuthForms`). */
+  toggleOwnMore:(btn)=>{
+    const m=$('#ownMoreMenu'); if(!m) return;
+    const open = m.hidden;
+    m.hidden = !open; btn.setAttribute('aria-expanded', open?'true':'false');
+    if(open && !document.__ownMoreBound){
+      document.__ownMoreBound = true;
+      document.addEventListener('click', (e)=>{
+        const mm=$('#ownMoreMenu'), bb=$('#ownMoreBtn');
+        if(!mm || mm.hidden) return;
+        /* النقر على **زرّ الفتح** يتركه للمبدّل نفسه؛ والنقر على **بند** يُغلق
+           القائمة: قائمةٌ تبقى مفتوحة بعد تنفيذ بندها تُقرأ «لم يحدث شيء». */
+        if(e.target.closest('#ownMoreBtn')) return;
+        mm.hidden = true; if(bb) bb.setAttribute('aria-expanded','false');
+      });
+      document.addEventListener('keydown', (e)=>{
+        if(e.key!=='Escape') return;
+        const mm=$('#ownMoreMenu'), bb=$('#ownMoreBtn');
+        if(mm && !mm.hidden){ mm.hidden=true; if(bb){ bb.setAttribute('aria-expanded','false'); bb.focus(); } }
+      });
+    }
+  },
   repRange:(btn)=>{ State.reportRange = btn.dataset.range || 'all';
     $$('.rep-range-btn').forEach(b=>{ const on = b.dataset.range === State.reportRange;
       b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on?'true':'false'); });
