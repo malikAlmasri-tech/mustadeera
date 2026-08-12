@@ -61,7 +61,7 @@ trust3 = Ratings come from players who actually booked
 # not the decision between them.
 sportsEyebrow = The sports
 sportsTitle = A platform for every sports venue - it started with football.
-sportsLead = AL-Mustadira is not a football app. All five sports have been in it since day one, and football pitches are what is open for booking right now because those are the venues actually registered with us. Everything else carries an explicit "Soon" badge - we never list a venue you cannot book.
+sportsLead = Five sports in the app. Football is what is open for booking today - the rest carry a clear “soon” badge.
 sportFootball = Football
 sportPadel = Padel
 sportBasket = Basketball
@@ -136,7 +136,7 @@ howStep3Desc = It reaches the pitch straight away and their decision comes back 
 # ---------- Pitch owners ----------
 ownersEyebrow = For pitch owners
 ownersTitle = A fuller pitch, and a ledger that keeps itself.
-ownersDesc = A dashboard that gathers booking requests in one place, confirms or declines with one tap, and works out your revenue and occupancy without pen and paper - for football pitches today, and for the other sports the moment their venues are registered.
+ownersDesc = Your requests in one place, confirm or decline in a tap, revenue and occupancy counted for you.
 ownersB1 = Every request on one screen - no more scattered calls
 ownersB2 = Revenue, occupancy and busiest-hours reports
 ownersB3 = You control your hours, prices and amenities yourself
@@ -230,7 +230,7 @@ dlStep2Title = Allow the install once
 dlStep2Desc = Android blocks the first attempt. Tap "Settings" inside that message and allow the browser you downloaded with. You do this once and never again.
 dlStep2Quote = "For your security, your phone isn't allowed to install unknown apps from this source"
 dlStep3Title = Get past the Play Protect scan
-dlStep3Desc = You may see a message saying Google couldn't scan the app. Tap "Install anyway". Every app distributed outside the store shows this, and it does not mean a scan found something.
+dlStep3Desc = Android may say it could not scan the app - tap “Install anyway”. It says this for every app from outside the store.
 dlStep3Quote = "App not scanned" · "Install anyway"
 
 # Explaining the warning and the permissions
@@ -252,28 +252,28 @@ dlIosCta = Tell us you want it
 # =========================================================
 aboutEyebrow = About us
 aboutTitle = AL-Mustadira started with a call nobody answered.
-aboutP1 = Booking a pitch usually goes like this: you ask a friend for a number, you call and nobody picks up, you call again and someone says "come at eight", and when you arrive the pitch is taken. Nobody is at fault - the free hours simply live in a paper notebook or in a busy person's memory.
+aboutP1 = Booking a pitch usually means a call nobody answers, then a pitch already taken when you arrive. The fault is that free times live in a paper notebook.
 aboutP2 = AL-Mustadira moves that notebook somewhere everyone can see at the same time: the player sees what is genuinely free, and the owner sees every request on one screen.
 aboutWhatTitle = What the platform actually does
 aboutWhat1 = **For players:** browse pitches and their free hours, send a booking request, and follow it through to confirmation.
 aboutWhat2 = **For owners:** a dashboard that collects requests and confirms or declines them with one tap, plus revenue and occupancy reports.
 aboutSportsTitle = One sport today, built for five
-aboutSportsBody = The problem we solve is not specific to football: a padel court and a basketball court get booked through the same unanswered phone call. So the app is built around five sports - football, padel, basketball, tennis and volleyball - and the sport switcher has been in it since day one.
-aboutSportsBody2 = Football alone is open for booking right now, because those are the venues actually registered with us. The other four carry a "Soon" badge instead of invented listings, and we open them one at a time as their venues come in.
+aboutSportsBody = The problem is not specific to football: padel and basketball are booked with the same unanswered call. The app has had five sports from day one.
+aboutSportsBody2 = Football alone is open today because those are the pitches registered with us. We open the rest one at a time as their pitches are registered.
 aboutNotTitle = And what it doesn't do
 aboutNot1 = It takes no online payment and stores no cards - there is no payment in the platform at all.
 aboutNot2 = It does not guarantee a booking on the pitch's behalf: confirmation is always the owner's decision, and what you send is a **request**, not a confirmed booking.
 aboutHonestTitle = One rule we hold to
-aboutHonestBody = We show no invented numbers: no ratings written by us, no "thousands of bookings", and no "instant booking" while confirmation genuinely needs the owner. A pitch nobody has rated yet shows no stars - that is deliberate.
+aboutHonestBody = No invented numbers: no reviews we write ourselves, and no “instant booking” while the venue is the one who confirms. An unrated venue shows no stars.
 
 # =========================================================
 #  For pitch owners  /owners
 # =========================================================
 ownPageEyebrow = For pitch owners
 ownPageTitle = Your pitch where people look, and your ledger on one screen.
-ownPageLead = Registering is free, and open to football, padel, basketball, tennis and volleyball venues. You control your hours and prices, and you confirm or decline every request yourself.
+ownPageLead = Registering is free. You control your hours and prices, and you confirm or decline every request.
 ownSportsTitle = My venue isn't for football - do you take it?
-ownSportsBody = Yes. AL-Mustadira is built around five sports and the app's switcher shows all of them. Football is open for booking today because those are the venues registered with us; the rest carry a "Soon" badge. We open your sport once its venues are in - and registering today is what brings that closer.
+ownSportsBody = Yes. The app shows five sports; football is open today because those are the pitches registered with us. Your registration is what opens yours.
 ownProblemTitle = What changes for you
 ownP1Title = The calls stop
 ownP1Desc = Instead of ten scattered calls while you're working, requests arrive in writing in one place, with the time, the pitch and who asked.
@@ -381,7 +381,7 @@ waMsgOwner = Hello, I'd like to register my pitch on AL-Mustadira. Pitch name:
 # =========================================================
 plEyebrow = Venue directory
 plTitle = Venues available to book
-plLead = Every venue with its area, surface, number of pitches and hourly price. Open any venue for the detail, and book from the app.
+plLead = The venues registered with us today. Tap any one for details and prices.
 # This line describes the database, not the ambition: the directory is built
 # from registered rows, and today every one of them is football. If a venue for
 # another sport is registered it will appear here and this line needs updating.
@@ -413,11 +413,11 @@ amParking = Parking
 
 # ---------- Page titles & descriptions (search + sharing) ----------
 metaPlacesTitle = Sports venue directory - AL-Mustadira
-metaPlacesDesc = Venues available to book: area, surface type, number of pitches and the hourly price for each. Football pitches are open now; padel, basketball, tennis and volleyball are coming.
+metaPlacesDesc = Sports venues you can book in Jordan. Football is open now, the other sports are coming.
 metaHomeTitle = AL-Mustadira - book a sports venue without the calls
 # Never bring back "plus a browser version": the SPA was pulled and booking
 # happens in the app alone (settled decision 1).
-metaHomeDesc = Sports venue booking in Jordan: football is open for booking now, with padel, basketball, tennis and volleyball coming. See the hours that are actually free and send your request in under a minute, from a free Android app.
+metaHomeDesc = Sports venue booking in Jordan: see what is free and what it costs, and send your request from a free Android app. Football is open now.
 metaDownloadTitle = Download the AL-Mustadira app for Android
 metaDownloadDesc = Download and install AL-Mustadira on Android in three steps, with a plain explanation of the outside-the-store install warning.
 metaOwnersTitle = Register your venue on AL-Mustadira - for owners
@@ -445,19 +445,19 @@ faqTitle = What players ask before their first booking
 faqQ1 = Is the app free to use?
 faqA1 = Yes. Downloading and using the app are free, and we take no booking fee from you. You pay the hourly price to the pitch owner, at the pitch.
 faqQ2 = Is my booking confirmed instantly?
-faqA2 = No. You send a **booking request** and the pitch owner confirms it. You can follow the request's status in the app until it is settled - and a booked hour is never shown to you as available.
+faqA2 = No. You send a **booking request** and the venue confirms it, and you see its status until it is settled. You will never see a taken slot offered as free.
 faqQ3 = Do I need a bank card?
 faqA3 = No. There is no online payment anywhere in the platform and we never ask for card details. Payment happens between you and the pitch.
 faqQ4 = Does it work on iPhone?
 faqA4 = Not yet. The app is Android-only today, and booking happens there and nowhere else. The download page says so plainly rather than wasting your time.
 faqQ5 = Why does Android warn me during install?
-faqA5 = Because the app is downloaded here rather than from the Play Store, and Android shows that warning for every app installed from outside it. The download page walks through the steps, quotes the warning exactly, and publishes the file's checksum so you can verify it yourself.
+faqA5 = Because the app is downloaded here, not from the Play Store, and Android warns about every app from outside it. The download page has the steps and the file fingerprint.
 faqQ6 = I own a pitch - how do I register it?
-faqA6 = Through the **For pitch owners** page: get in touch and we add your venue, its hours and its prices. Requests then reach you in a dashboard where one tap confirms them. Registering is free and open to all five sports, not football alone.
+faqA6 = From the **For venue owners** page: fill in the form and we will call you. Registering is free and open to all five sports.
 # Rendered FIRST in the FAQ list on purpose: it is the question that defines
 # what the product even is.
 faqQ7 = Is the app only for football?
-faqA7 = No. AL-Mustadira is for booking sports venues, and it carries five sports: football, padel, basketball, tennis and volleyball. Football is what is open for booking today because those are the venues registered with us; the rest carry a "Soon" badge - we never list a venue you cannot book.
+faqA7 = No. Five sports are in the app, and football is what is open for booking today because those are the pitches registered with us. We never show a pitch you cannot book.
 
 # ---------- Directory filter ----------
 plSearchPh = Search by venue or area
@@ -483,7 +483,7 @@ photoKickAlt = A player striking the ball on a floodlit pitch at night
 # sentence says what actually happens - a human reads it and calls back.
 joinEyebrow = Joining
 joinTitle = Register your venue here
-joinLead = Fill this in and we will review it. Sending it does not publish your venue: we check the details and call you first.
+joinLead = Fill in your details and we will call you. Your venue is not published the moment you send.
 joinNoJs = It looks like the script did not run for you, which is fine - contact us directly and we will register the venue ourselves:
 joinNoJsCta = Contact us to register your venue
 joinName = Your name
@@ -518,7 +518,7 @@ privUsageBody = We record five events so we can see where we fall short: a searc
 
 # ---------- venues available now (home) ----------
 homeVenuesTitle = Venues you can book right now
-homeVenuesLead = Real registered venues with their prices and areas. Tap any one for details.
+homeVenuesLead = The venues registered with us. Tap any one for details.
 homeVenuesAll = See all venues
 
 # ---------- price line (replaces the price table) ----------
@@ -551,3 +551,8 @@ dlStep3 = If Play Protect warns you, tap "Install anyway" - the app is not on th
 dlStepsNote = The file fingerprint is published on the download page - compare it if you want to be sure.
 dlStepsClose = Close
 dlStepsShotAlt = Screenshot of the Google Play Protect warning when installing an app from outside the store
+
+# who the pitch is for (migration 29) - printed only when the row says so
+plGender_men = Men
+plGender_women = Women
+plGender_mixed = Mixed

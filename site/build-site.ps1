@@ -456,44 +456,29 @@ function Render-Shots($T, [string]$langCode) {
 }
 
 function Render-PlacesList($model, $T, [string]$base) {
+    # A list of NAMES. Nothing else.
+    #
+    # This page is not where booking happens (owner decision 1), so its whole
+    # job is: find your pitch, open it. Everything that used to be printed on a
+    # card here - area, city, surface, pitch count, price, stars - is printed in
+    # full on the venue's own page, one tap away. None of it was deleted; it was
+    # never in two places to begin with after this change, which is the point:
+    # a card that repeats the detail page is a second copy that drifts.
+    #
+    # No search box, no chips, no sort, no price range either. Seven venues do
+    # not need six controls, and a filter that filters nothing is the exact
+    # thing rule m5 rejects.
     $sb = New-Object System.Text.StringBuilder
-    [void]$sb.Append('<div class="pl-grid">')
+    [void]$sb.Append('<ul class="pl-names">')
     foreach ($p in $model) {
         $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
-        # data-area drives the filter chips; data-q is the haystack the search
-        # box matches against. Both are plain attributes so the filter needs no
-        # second copy of the data and the page still works with JS switched off.
-        # The axis is the REGION, not the city: measured on today's data, all
-        # six venues share one city and sit in six different regions, so city
-        # chips would have been a filter that filters nothing.
-        # data-price is the same number the card prints ("from N"), so sorting
-        # and the range filter agree with what the visitor reads. data-rating is
-        # written ONLY when the venue has been rated: a zero here would sort an
-        # unrated venue below a one-star one, which is a claim the data does not
-        # make. Absent means absent - the sort drops it to the end instead.
-        $q = ($p.name + ' ' + $p.city + ' ' + $p.region + ' ' + $p.type)
-        $attrs = ' data-area="' + (HtmlEnc $p.region) + '" data-q="' + (HtmlEnc $q) + '" data-price="' + ([int]$p.priceMin) + '"'
-        if ($p.hasRating) { $attrs += ' data-rating="' + ('{0:0.#}' -f $p.rating) + '"' }
-        [void]$sb.Append('<article class="pl-card"' + $attrs + '>')
-        [void]$sb.Append('<a class="pl-link" href="' + $href + '">')
-        [void]$sb.Append('<h2 class="pl-name">' + (HtmlEnc $p.name) + '</h2></a>')
-        [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
-        [void]$sb.Append('<p class="pl-tags"><span class="pl-tag">' + (HtmlEnc $p.type) + '</span>')
-        [void]$sb.Append('<span class="pl-tag">' + (Pitches $p.fields.Count $T) + '</span></p>')
-        [void]$sb.Append('<p class="pl-foot"><span class="pl-price">' + (Tx $T 'plPriceFrom') + ' ' + (Fmt-Price $p.priceMin) + ' ' + (Tx $T 'plCurrency') + '</span>')
-        [void]$sb.Append((Render-Stars $p $T) + '</p>')
-        [void]$sb.Append('</article>')
+        [void]$sb.Append('<li><a class="pl-name-link" href="' + $href + '">')
+        [void]$sb.Append('<span class="pl-name-t">' + (HtmlEnc $p.name) + '</span>')
+        [void]$sb.Append('<svg class="pl-name-arw" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>')
+        [void]$sb.Append('</a></li>')
     }
-    [void]$sb.Append('</div>')
+    [void]$sb.Append('</ul>')
     $sb.ToString()
-}
-
-# Region chips for the directory filter. They come from the data, so a new
-# region in the database becomes a new chip at the next build with no edit here.
-# Rendered only when they would actually narrow anything: one region filters
-# nothing, and past a dozen the chip row is worse than the search box.
-function Render-Areas($model) {
-    @($model | ForEach-Object { $_.region } | Where-Object { $_ -ne '' } | Sort-Object -Unique)
 }
 
 # The home page's "venues you can book right now" strip. It is the same rows
@@ -509,27 +494,30 @@ function Render-HomeVenues($model, $T, [string]$base, [int]$take) {
     if ($model.Count -eq 0) { return '' }
     $subset = @($model | Select-Object -First $take)
     $sb = New-Object System.Text.StringBuilder
-    [void]$sb.Append('<div class="pl-grid pl-grid-home">')
+    # Same name list the directory renders - one component, not two that drift.
+    [void]$sb.Append('<ul class="pl-names pl-names-home">')
     foreach ($p in $subset) {
         $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
-        [void]$sb.Append('<article class="pl-card">')
-        [void]$sb.Append('<a class="pl-link" href="' + $href + '">')
-        [void]$sb.Append('<h3 class="pl-name">' + (HtmlEnc $p.name) + '</h3></a>')
-        [void]$sb.Append('<p class="pl-meta">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
-        [void]$sb.Append('<p class="pl-tags"><span class="pl-tag">' + (HtmlEnc $p.type) + '</span>')
-        [void]$sb.Append('<span class="pl-tag">' + (Pitches $p.fields.Count $T) + '</span></p>')
-        [void]$sb.Append('<p class="pl-foot"><span class="pl-price">' + (Tx $T 'plPriceFrom') + ' ' + (Fmt-Price $p.priceMin) + ' ' + (Tx $T 'plCurrency') + '</span>')
-        [void]$sb.Append((Render-Stars $p $T) + '</p>')
-        [void]$sb.Append('</article>')
+        [void]$sb.Append('<li><a class="pl-name-link" href="' + $href + '">')
+        [void]$sb.Append('<span class="pl-name-t">' + (HtmlEnc $p.name) + '</span>')
+        [void]$sb.Append('<svg class="pl-name-arw" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>')
+        [void]$sb.Append('</a></li>')
     }
-    [void]$sb.Append('</div>')
-    # "See all N" only when there is more to see - a link that leads to the same
-    # list the reader is already looking at is noise.
+    [void]$sb.Append('</ul>')
+    # "See all N" only when there is more to see.
     if ($model.Count -gt $subset.Count) {
         [void]$sb.Append('<p class="pl-more"><a class="btn btn-ghost" href="' + $base + '/places/">' +
                          (Tx $T 'homeVenuesAll') + '</a></p>')
     }
     $sb.ToString()
+}
+
+# Region chips for the directory filter. They come from the data, so a new
+# region in the database becomes a new chip at the next build with no edit here.
+# NOTE: Render-Stats also calls this to count areas, so it stays even now that
+# the directory itself renders no chips.
+function Render-Areas($model) {
+    @($model | ForEach-Object { $_.region } | Where-Object { $_ -ne '' } | Sort-Object -Unique)
 }
 
 function Render-PlaceChips($model, $T) {
@@ -607,6 +595,13 @@ function Render-PlaceBody($p, $T, [string]$base) {
     foreach ($f in $p.fields) {
         [void]$sb.Append('<li><span class="fn">' + (HtmlEnc $f.name) + '</span>')
         if ($f.size) { [void]$sb.Append('<span class="fs">' + (HtmlEnc $f.size) + '</span>') }
+        # Who the pitch is for (migration 29). Printed ONLY when the row says so:
+        # an unset pitch carries no badge, because writing "mixed" over a policy
+        # nobody stated sends a woman to a men's pitch on a promise no one made.
+        $g = [string]$f.gender
+        if ($g -eq 'men' -or $g -eq 'women' -or $g -eq 'mixed') {
+            [void]$sb.Append('<span class="fg fg-' + $g + '">' + (Tx $T ('plGender_' + $g)) + '</span>')
+        }
         [void]$sb.Append('<span class="fp">' + (Fmt-Price $f.price) + ' ' + (Tx $T 'plCurrency') + '</span></li>')
     }
     [void]$sb.Append('</ul>')

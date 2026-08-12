@@ -1572,3 +1572,27 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
 .dlsteps-shot{margin:16px 0 0}
 .dlsteps-shot img{inline-size:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
 .dlsteps-n{margin:14px 0 0;font-size:12.5px;color:var(--muted);line-height:1.75}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   دليل الملاعب: أسماء لا بطاقات (بلاغ المالك 2026-08-12)
+   ستّ أدوات وستّ حقائق على سبعة ملاعب. الصفحة ليست مكان الحجز (قرار ١)،
+   ومهمّتها أن يجد الزائر اسم ملعبه ويفتحه — والتفاصيل كلّها في صفحته.
+   ══════════════════════════════════════════════════════════════════════════ */
+.pl-names{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pl-name-link{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:56px;padding:14px 18px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--surface);color:var(--ink);text-decoration:none;font-weight:700;font-size:16px;
+  transition:border-color var(--t-fast),transform var(--t) var(--spring)}
+@media (hover:hover){.pl-name-link:hover{border-color:var(--line-2);transform:translateY(-1px)}}
+.pl-name-link:active{transform:scale(.995)}
+.pl-name-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl-name-arw{flex:none;color:var(--muted)}
+/* السهم فيزيائي ⇒ يُقلب بالاتجاه */
+html[dir="rtl"] .pl-name-arw{transform:scaleX(-1)}
+/* شارة «لمن الملعب» على صفحة المكان — الكلمة تحمل المعنى واللون تشديد */
+.fg{display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;
+  font-size:11.5px;font-weight:800;border:1px solid var(--line);color:var(--muted)}
+.fg-mixed{color:var(--teal);border-color:var(--teal)}
+.fg-women{color:#7A5210;border-color:rgba(154,106,30,.45)}
+html.dark .fg-mixed{color:var(--lime);border-color:var(--lime)}
+html.dark .fg-women{color:#F0C070;border-color:rgba(240,192,112,.45)}

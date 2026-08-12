@@ -1998,89 +1998,88 @@ body.dark .tbtn.taken.current .t-tag{ color:var(--copper-primary) }
 }
 .obs[hidden]{ display:none }   /* صنفٌ يضع `display` يعلو على [hidden] (0,0,1) */
 
-/* «تخطٍّ» ظاهر من الشريحة الأولى — لا يظهر في الأخيرة وحدها.
-   الهدف 44px بالحشوة نفسها فلا يحتاج طبقة شبح. */
+/* «تخطٍّ» **فوق الصورة**: حبّة معتمة بنصّ أبيض.
+   ⚠️ نصٌّ فوق صورةٍ لا يُقاس تباينه بالتقدير — الحبّة تجعل الخلفية معلومةً
+      مهما كانت الصورة: عند أسوأ حالة (صورة بيضاء تمامًا) تركيب `rgba(9,14,17,.72)`
+      يعطي سطوعًا ~78/255 ⇒ الأبيض فوقه **8.3:1**. */
 .obs-skip{
-  min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
-  padding-inline:14px; border-radius:12px;
-  font-size:13px; font-weight:800; color:var(--muted);
-  background:transparent; transition:color var(--t-fast),background var(--t-fast);
-  margin-inline-start:auto;
+  position:absolute; z-index:3;
+  inset-block-start:calc(env(safe-area-inset-top,0px) + 10px);
+  inset-inline-end:12px;
+  min-block-size:var(--tap-min); padding-inline:16px; border-radius:999px;
+  font-size:13px; font-weight:800; color:#fff;
+  background:rgba(9,14,17,.72);
+  transition:background var(--t-fast);
 }
-.obs-skip:hover{ color:var(--ink); background:var(--surface-muted) }
+.obs-skip:hover{ background:rgba(9,14,17,.86) }
 
-/* المسار: شريط أفقي عرضه = عدد الشرائح × 100%، يُزاح بـ`transform` وحده
-   (لا `left/right` ولا إعادة تخطيط).
+/* المسار: شريطٌ أفقي عرضه = عدد الشرائح × 100%، يُزاح بـ`transform` وحده.
    ⚠️ والإزاحة تُضرَب في **`--nav-dir`** لأن `transform` فيزيائي: في RTL يصفّ
-   الفلكس الشرائح من اليمين فالتقدّم إزاحةٌ موجبة لا سالبة. وبلا ذلك ينزلق
-   المسار في الاتجاه المعاكس **بالعربية وحدها**.
-   ⚠️ و`--nav-dir` لا `--dirx`: الأوّل هو توكن الاتجاه القائم في **التطبيق**
-   (‏`html[dir="rtl"]{--nav-dir:-1}`)، والثاني اسم الموقع لنفس المعنى —
-   واستيراد اسمٍ من الوجه الآخر يصنع توكنين لحقيقة واحدة. */
+   الفلكس الشرائح من اليمين فالتقدّم إزاحةٌ موجبة لا سالبة. */
 .obs-track{
   flex:1; display:flex; min-height:0;
   transform:translate3d(calc(var(--nav-dir,1) * var(--obs-i,0) * -100%),0,0);
   transition:transform 340ms var(--ease-out);
 }
+/* صورة فوق ولوحٌ تحت — الصورة تأخذ ما يفيض والبطاقة تأخذ ما تحتاج */
 .obs-slide{
   flex:0 0 100%; min-inline-size:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:14px; padding-inline:26px; text-align:center;
+  display:grid; grid-template-rows:1fr auto; min-block-size:0;
 }
-.obs-art{ inline-size:min(78%,300px); max-block-size:34vh; display:grid; place-items:center }
-.obs-art .court-svg{
-  inline-size:100%; height:auto; fill:none;
-  stroke:var(--copper-primary); stroke-width:1.6; opacity:.95;
+.obs-shot{
+  display:block; min-block-size:0;
+  background-size:cover; background-position:50% 40%; background-repeat:no-repeat;
+  background-color:var(--surface-muted);
 }
-/* حركة دخول الرسم — **واحدة لكل الشرائح**: الرسوم صارت من عائلة واحدة، فحركتها
-   واحدة كذلك. والمحور `translate`/`opacity` وحدهما (مركّبان على الـGPU). */
-.obs-slide[aria-hidden="false"] .obs-art{ animation:obsArtIn 420ms var(--ease-out) both }
-@keyframes obsArtIn{ from{ opacity:0; transform:translate3d(0,10px,0) scale(.97) } to{ opacity:1; transform:none } }
-@media (prefers-reduced-motion:reduce){ .obs-slide .obs-art{ animation:none } }
-
+/* حوافّ علوية دائرية تعلو الصورة — نفس لون خلفية اللوح كي يتّصل بالذيل تحته
+   بلا خطّ فاصل، فيُقرأ اللوحُ والذيلُ سطحًا واحدًا. */
+.obs-card{
+  position:relative; z-index:2; margin-block-start:-26px;
+  border-radius:26px 26px 0 0; background:var(--bg-primary);
+  padding:26px 26px 6px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
 .obs-t{ margin:0; font-family:'Montserrat','Changa',sans-serif; font-size:24px;
   font-weight:var(--fw-black); letter-spacing:var(--tr-tighter); color:var(--ink); line-height:1.3 }
 .obs-t:focus-visible{ outline:2.5px solid var(--emerald-2); outline-offset:6px; border-radius:10px }
 .obs-b{ margin:0; max-inline-size:34ch; font-size:15px; font-weight:600;
   color:var(--muted); line-height:1.75 }
 
-.obs-foot{ flex:none; display:flex; flex-direction:column; align-items:center; gap:16px;
-  padding-inline:26px; padding-block-start:10px }
-/* شريط تقدّم بدل النقاط: النقاط كانت أربعة أهدافِ لمسٍ 8px لا يقصدها أحد،
-   وعددها يتغيّر بتغيّر علَم المباريات فتُقرأ الشبكة عددًا مختلفًا كل تشغيل.
-   والشريط زخرفةٌ تتبع `aria-valuenow` — الرقم المنطوق هو المصدر. */
-.obs-prog{ inline-size:min(100%,340px); block-size:4px; border-radius:999px;
-  background:var(--line-2); overflow:hidden }
-.obs-prog-fill{ display:block; block-size:100%; inline-size:33%; border-radius:999px;
-  background:var(--copper-primary); transition:inline-size 340ms var(--ease-out) }
-@media (prefers-reduced-motion:reduce){ .obs-prog-fill{ transition:none } }
-.obs-go{ inline-size:100%; max-inline-size:340px }
+/* الذيل: رجوع · نقاط · التالي — على نفس سطح اللوح فيبدو امتدادًا له */
+.obs-foot{ flex:none; display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:6px 20px calc(env(safe-area-inset-bottom,0px) + 6px);
+  background:var(--bg-primary) }
+/* الطرفان بحصّتين متساويتين (`flex:1`) والنقاط `flex:none` بينهما ⇒ النقاط في
+   منتصف الشاشة بالضبط مهما اختلف عرض «رجوع» عن عرض «التالي». */
+.obs-back{ flex:1; text-align:start; min-block-size:var(--tap-min); padding-inline:14px; border-radius:12px;
+  font-size:14px; font-weight:800; color:var(--muted); background:transparent }
+.obs-back:hover{ color:var(--ink) }
+/* يحجز مكانه فلا تقفز النقاط — وبصنف لا بسمة `hidden` (انظر app.js) */
+.obs-back.is-off{ visibility:hidden }
+.obs-dots{ flex:none; display:flex; gap:7px; align-items:center }
+.obs-dot{ inline-size:8px; block-size:8px; border-radius:999px; background:var(--line-2);
+  transition:inline-size var(--t-fast),background var(--t-fast) }
+.obs-dot.on{ inline-size:22px; background:var(--copper-primary) }
+/* ⚠️ **لا `--copper-primary` نصًّا هنا**: Lime على سطح فاتح يقيس 2.05:1 — مزلقٌ
+   مسجَّل. و`--auth-lime-ink` هو التوكن المبنيّ لهذه الحالة بالضبط (درجتان أغمق
+   نهارًا، ويعود لون الهوية ليلًا). */
+.obs-go{ flex:1; text-align:end; min-block-size:var(--tap-min); padding-inline:16px; border-radius:14px;
+  font-size:15px; font-weight:900; color:var(--auth-lime-ink); background:transparent;
+  transition:background var(--t-fast),color var(--t-fast) }
+/* الشريحة الأخيرة إجراءٌ لا تنقّل ⇒ زرٌّ ممتلئ.
+   🔴 **ولا يُصبَغ هنا إطلاقًا**: `--g-btn` تساوي Lime في الثيم الليلي، والأبيض
+   عليه يقيس **2.05:1** — نفس المزلق المسجَّل حرفيًّا. الحلّ أن يأخذ الزرّ صنف
+   `.sbtn` نفسه (يضيفه `app.js` مع `is-last`)، فهو الذي يعرف أن يقلب النصّ إلى
+   حبرٍ داكن ليلًا وإلى أبيض على التيل نهارًا. وهنا **الشكل وحده**. */
+.obs-go.is-last{ flex:none; inline-size:auto; padding-inline:22px; font-size:15px }
+@media (prefers-reduced-motion:reduce){ .obs-dot{ transition:none } }
 
-/* صفّ الرأس: سهم رجوع مرئي + «تخطٍّ». كانا سابقًا زرًّا واحدًا مطلقًا؛ والصفّ
-   يجعل الهدفين 44px بلا تراكب، ويحجز ارتفاعه فلا يقفز المحتوى حين يظهر السهم. */
-.obs-top{ flex:none; display:flex; align-items:center; justify-content:space-between;
-  min-block-size:var(--tap-min); padding-inline:8px }
-.obs-back{ min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
-  border-radius:12px; display:grid; place-items:center; background:transparent;
-  color:var(--muted); transition:color var(--t-fast),background var(--t-fast) }
-.obs-back:hover{ color:var(--ink); background:var(--surface-muted) }
-.obs-back[hidden]{ display:none }
-.obs-back svg{ inline-size:24px; block-size:24px; fill:none; stroke:currentColor;
-  stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
-/* السهم فيزيائي: المرسوم يشير يسارًا (صحيح في LTR)، وفي RTL «الرجوع» يمينًا */
-html[dir="rtl"] .obs-back svg{ transform:scaleX(-1) }
-
-/* ملزَم: تبديل فوري بلا انزلاق */
-@media (prefers-reduced-motion:reduce){
-  .obs-track{ transition:none }
-}
-/* شاشة قصيرة (‏360×640): الرسم ينكمش أوّلًا — الزرّ والنقاط لا يُقصّان أبدًا */
+/* شاشة قصيرة (‏360×640): **الصورة** تنكمش أوّلًا — النصّ والذيل لا يُقصّان.
+   الصورة زخرفة، والبطاقة هي ما يُقرأ؛ فالضغط يقع على ما لا يحمل معلومة. */
 @media (max-height:680px){
-  .obs-art{ max-block-size:24vh }
   .obs-t{ font-size:21px }
   .obs-b{ font-size:14px }
-  .obs-slide{ gap:10px }
-  .obs-foot{ gap:12px }
+  .obs-card{ padding:22px 22px 4px; gap:9px }
 }
 
 /* ── التقارير: ثلاث مجموعات + نطاق (الدفعة ٩-ب) ──
@@ -2433,3 +2432,28 @@ html[dir="rtl"] .oe-go svg{ transform:scaleX(-1) }
 .bp-nums{ display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex:none }
 .bp-nums b{ font-size:14px; font-weight:900; color:var(--ink); font-variant-numeric:tabular-nums }
 .bp-nums small{ font-size:10.5px; font-weight:700; color:var(--muted) }
+/* شريط اليوم فوق المخطّط: المخطّط يخدم التخطيط لا متابعة الساعة الجارية وحدها */
+.tl-bar{ display:flex; align-items:center; gap:8px; margin-block-end:10px }
+.tl-nav{ inline-size:var(--tap-min); block-size:var(--tap-min); flex:none; border-radius:12px;
+  display:grid; place-items:center; background:var(--surface); border:1.5px solid var(--line-2);
+  color:var(--ink) }
+.tl-nav:active{ transform:scale(.94) }
+.tl-nav-ic svg{ inline-size:18px; block-size:18px }
+/* السهمان فيزيائيان ⇒ يُقلبان معًا بالاتجاه، وإلّا مشى «التالي» إلى الوراء بالعربية */
+html[dir="rtl"] .tl-nav-ic svg{ transform:scaleX(-1) }
+.tl-day{ flex:1; text-align:center; display:flex; flex-direction:column; gap:1px; min-inline-size:0 }
+.tl-day b{ font-size:14px; font-weight:900; color:var(--ink) }
+.tl-day span{ font-size:11.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums }
+.tl-today{ flex:none; min-block-size:var(--tap-min); padding-inline:12px; border-radius:12px;
+  font-size:12px; font-weight:800; color:var(--copper-primary);
+  background:var(--surface); border:1.5px solid var(--line-2) }
+/* شارة «لمن الملعب» (ترحيل 29) — تُعرَض عند التصريح وحده.
+   ⚠️ الحالة محمولة على **الكلمة** لا اللون: الشارة تكتب «رجال/سيدات/مشترك»،
+   واللون تشديدٌ فوقها. ولا لون «أنثوي/ذكوري» نمطي — درجتان محايدتان من
+   التوكنات القائمة، والثالثة (مشترك) بلون الهوية. */
+.gd-badge{ display:inline-flex; align-items:center; margin-inline-start:7px;
+  padding:1px 7px; border-radius:999px; font-size:10.5px; font-weight:800; line-height:1.7;
+  border:1px solid var(--line-2); color:var(--muted); background:var(--surface-muted) }
+.gd-mixed{ color:var(--copper-primary); border-color:var(--copper-primary) }
+.gd-women{ color:var(--warning-ink); border-color:var(--warning-ink) }
+.gd-men{ color:var(--muted) }

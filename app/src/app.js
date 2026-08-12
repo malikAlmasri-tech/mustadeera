@@ -77,12 +77,12 @@ const I18N = {
     /* النائب المتحرّك: بادئة ثابتة تُثبّت العين + كلمات متبدّلة (مصفوفة — t() تمرّرها كما هي) */
     heroSearchPrefix:'ابحث عن',
     heroSearchWords:['ملعب قريب','منطقة','وقت متاح','ملعب خماسي','ملعب سباعي'],
-    heroSub:'تصفّح ملاعب منطقتك، قارن الأسعار والأوقات المتاحة، وأرسل طلب حجزك في ثوانٍ — ثم تابع تأكيده خطوة بخطوة من حسابك.',
+    heroSub:'شوف الفاضي والسعر، وابعث طلبك، وتابع الردّ من حسابك.',
     ownerLink:'تملك ملعباً؟ لوحة تحكّمك جاهزة من هنا', statPlaces:'ملعب متاح لك', statEasy:'سهل', statEasyLbl:'حجز بلا اتصالات ولا عناء',
     statAnytime:'تصفّح في أي وقت', statFree:'مجاني', statFreeLbl:'بلا رسوم تصفّح',
     featuresEyebrow:'المميزات', featuresTitlePre:'لماذا', featuresTitleBrand:'المستديرة؟',
     featuresSub:'كل ما تحتاجه لحجز ملعبك بسهولة — وكل ما يحتاجه المالك لإدارة ملاعبه باحتراف.',
-    feat1Title:'من التصفّح إلى الطلب في دقيقة', feat1Text:'اطّلع على الأوقات المتاحة، اختر اليوم والوقت، وأرسل طلب الحجز — خطوات واضحة ومعدودة بلا مكالمة واحدة.',
+    feat1Title:'من التصفّح إلى الطلب في دقيقة', feat1Text:'شوف الفاضي، اختر يومك ووقتك، وابعث طلبك.',
     feat2Title:'اعرف الملعب قبل الذهاب', feat2Text:'الموقع والسعر والمرافق ونوع الأرضية وتقييمات اللاعبين — كل المعلومات أمامك قبل أن تقرر.',
     feat3Title:'متابعة واضحة للحجز', feat3Text:'من حسابك تتابع حالة الحجز وردّ إدارة الملعب، وتتواصل معهم عند توفر وسيلة التواصل.',
     howEyebrow:'كيف يعمل', howTitlePre:'3 خطوات وتكون', howTitleHi:'جاهزاً للعب',
@@ -91,7 +91,7 @@ const I18N = {
     step1Title:'تصفّح واختر', step1Text:'افتح قائمة الملاعب وقارن حسب المنطقة والسعر والتقييم — ثم اختر ملعبك.',
     step2Title:'حدّد الموعد', step2Text:'اختر اليوم والوقت المتاح الذي يناسبك من جدول الأوقات.',
     step3Title:'أرسل وتابع', step3Text:'أرسل طلب الحجز وتابع تأكيده مع إدارة الملعب — واستعدّ للمباراة!',
-    calloutTitle:'جاهز لحجز ملعبك القادم؟', calloutSub:'صار حجز الملعب أسهل من تسجيل هدف في مرمى خالٍ. ابدأ بلا حساب، أو سجّل دخولك لتتابع حجوزاتك أولاً بأول.',
+    calloutTitle:'جاهز لحجز ملعبك القادم؟', calloutSub:'ابدأ بلا حساب، أو سجّل دخولك لتتابع حجوزاتك.',
     startFree:'ابدأ مجاناً', haveField:'أملك ملعباً', footerLogin:'تسجيل الدخول', footerOwner:'دخول المالك',
     footerCopy:'© 2026 المستديرة — جميع الحقوق محفوظة.',
     loginTitle:'دخول اللاعب', loginSubtitle:'سجّل دخولك لعرض حجوزاتك ومتابعتها', phone:'رقم الهاتف', password:'كلمة السر',
@@ -111,7 +111,7 @@ const I18N = {
     fieldExtrasTitle:'المواصفات والصور', fieldPhotos:'صور الملعب',  lbOpen:'تكبير الصورة {i}', lbPrev:'الصورة السابقة', lbNext:'الصورة التالية', lbClose:'إغلاق',
     sportsAria:'اختر الرياضة', sportFootball:'كرة القدم', sportPadel:'بادل', sportBasket:'كرة السلة', sportTennis:'تنس', sportVolley:'كرة الطائرة', soonBadge:'قريباً',
     comingSoonTitle:'قريباً!', comingSoonSub:'ملاعب {sport} تُحمّي في غرفة الملابس — وستنزل أرض الملعب قريباً.', backToFootball:'عرض ملاعب كرة القدم',
-    sportsHint:'المستديرة تحجز الملاعب الرياضية كلّها. ما تراه مفتوحاً هنا هو ما سُجّلت ملاعبه فعلاً — وما عليه «قريباً» ينتظر ملعبه الأول.',
+    sportsHint:'المفتوح هو ما سُجّلت ملاعبه فعلاً، و«قريباً» ينتظر ملعبه الأوّل.',
     backToSport:'اعرض ملاعب {sport}',
     /* ── مواصفات الملعب (تختلف باختلاف الرياضة) ──
        كل مفتاح هنا يقابل مفتاحاً في `FIELD_SPECS`، وكل قيمة تقابل خياراً فيه.
@@ -144,7 +144,7 @@ const I18N = {
     notifsEmptySub:'هنا يصلك ردّ الملعب على طلبك، وتصل صاحبَ الملعب طلباتُ الحجز الجديدة.',
     notifsMarkAll:'علّم الكل كمقروء', notifsNew:'جديد',
     notifsOff:'الإشعارات غير مُفعّلة على الخادم بعد',
-    notifsOffSub:'الجدول غير موجود في القاعدة (ترحيل ١٤ لم يُشغَّل). الحجز والتأكيد يعملان كما هما — والإشعارات وحدها هي المعطّلة.',
+    notifsOffSub:'ترحيل ١٤ لم يُشغَّل. كل شيء يعمل عدا الإشعارات.',
     notifsPermTitle:'تفعيل الإشعارات', notifsPermAsk:'نُعلمك فور ردّ الملعب على طلبك.',
     ntfNewTitle:'طلب حجز جديد', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'تأكّد حجزك', ntfConfirmedBody:'{place} — {field} · {day} {time}',
@@ -181,7 +181,7 @@ const I18N = {
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة', rvHost:'المضيف',
     rvSize:'حجم الملعب', rvTotal:'الإجمالي', rvWhen:'اليوم والوقت', rvField:'الملعب', rvYourInfo:'بياناتك', rvReadyNote:'جاهز للإرسال — سيُرسَل طلب الحجز عند التأكيد.',
     twoHours:'ساعتان', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
-    bkNote:'بعد إرسال الطلب يصل إلى إدارة الملعب — يتأكد الحجز بعد موافقتهم، ويمكنك متابعة حالته من «حجوزاتي».', confirmBooking:'أرسل الطلب', changeTime:'تغيير الموعد',
+    bkNote:'الطلب يصل إدارة الملعب، ويتأكّد بعد موافقتهم. تابعه من «حجوزاتي».', confirmBooking:'أرسل الطلب', changeTime:'تغيير الموعد',
     authTitle:'خطوة أخيرة ويكتمل حجزك', authDesc:'سجّل دخولك أو أنشئ حساباً — اختيارك (الملعب واليوم والوقت) محفوظ وسنكمل من النقطة نفسها.',
     authBackEdit:'عودة لتعديل الموعد',
     navHome:'الرئيسية', navFav:'المفضّلة', navBookings:'حجوزاتي', navAccount:'حسابي', navOwner:'لوحتي',
@@ -226,11 +226,13 @@ const I18N = {
     cancelReasonTitle:'سبب إلغاء الحجز', rejectReasonTitle:'سبب رفض الحجز', reasonHint:'اكتب السبب الذي سيظهر للاعب، وسيُجهَّز في رسالة واتساب (إلزامي).', confirmWord:'تأكيد',
     last7:'آخر 7 أيام', unknownPlace:'مكان غير معروف', loadingWord:'لحظة من فضلك…', loadingFields:'نجلب تفاصيل الملاعب…',
     tlCards:'بطاقات', tlTimeline:'مخطّط', tlViewAria:'شكل عرض اليوم', tlField:'الملعب',
+    genderLbl:'لمن الملعب', gender_men:'رجال', gender_women:'سيدات', gender_mixed:'مشترك',
     tlFree:'فاضي', tlClosed:'مغلق', tlPast:'راح',
+    tlPrevDay:'اليوم السابق', tlNextDay:'اليوم التالي', tlBackToday:'رجّعني لليوم',
     tlNoHours:'ما في أوقات معرّفة', tlNoHoursSub:'حدّد أوقات ملاعبك من تبويب «الملاعب» عشان يظهر المخطّط.',
     bpConfirmed:'{n} مؤكّدة من {all}',
     repByPlace:'كل مكان لحاله', repByPlaceSub:'المكان المعروض بالأعلى بس هو اللي بتشوف تفاصيله؛ هاي مقارنة سريعة بين أماكنك.',
-    ownPlacesTitle:'أماكنك', ownPlacesSub:'اللوحة كلها — الحجوزات والتقويم والتقارير — بتتغيّر على المكان اللي بتختاره.',
+    ownPlacesTitle:'أماكنك', ownPlacesSub:'اللوحة كلها بتتغيّر على المكان اللي بتختاره.',
     ownPlacesAria:'المكان المعروض — عندك {n}، اضغط للتبديل',
     vName:'يرجى كتابة اسمك', vPhone:'رقم الهاتف غير صحيح', vPhoneEmpty:'اكتب رقم هاتف صحيحاً', vPass:'اكتب كلمة السر', vNameAcc:'اكتب الاسم',
     loginNeed:'أدخل رقمك وكلمة السر', loginFailRetry:'تعذّر تسجيل الدخول، حاول مرة أخرى', loginBadData:'تأكد من الرقم وكلمة السر ثم حاول مجدداً', regFailRetry:'تعذّر إنشاء الحساب، حاول مرة أخرى', regFail:'تعذّر إنشاء الحساب', connLag:'تأخر الاتصال قليلاً، حاول مرة أخرى',
@@ -243,7 +245,7 @@ const I18N = {
     bookingFailRetry:'تعذّر إتمام الحجز، حاول مرة أخرى', bookingConnLag:'تأخر الاتصال قليلاً، حاول مرة أخرى.',
     welcomeHi:'أهلاً', welcomeYou:'بك',
     greetMorning:'صباح الخير', greetAfternoon:'مساء الخير', greetEvening:'مساء الخير',
-    onbTitle:'احجز ملعبك بلا مكالمات', onbSub:'خمس رياضات في تطبيق واحد: تصفّح الملاعب، قارن الأسعار والأوقات، واحجز في ثوانٍ. ملاعب كرة القدم مفتوحة الآن، وبقيّة الرياضات قريباً.',
+    onbTitle:'احجز ملعبك بلا مكالمات', onbSub:'خمس رياضات في تطبيق واحد. ملاعب كرة القدم مفتوحة الآن، وبقيّتها قريباً.',
     onbAsPlayer:'لاعب', onbAsOwner:'صاحب ملعب', onbBrowse:'تصفّح الملاعب', onbHaveAccount:'لديّ حساب',
     onbCreateAccount:'إنشاء حساب جديد', onbOwnerEnter:'دخول لوحة المالك',
     onbOwnerNote:'أدِر ملاعبك وحجوزاتك وأسعارك من مكان واحد.', onbTerms:'بالمتابعة أنت توافق على الشروط وسياسة الخصوصية.',
@@ -251,13 +253,13 @@ const I18N = {
     /* شاشات الترحيب — أوّل تشغيل فقط. لا رقم ولا وعد: الشريحة الثانية تقول
        «الحجز طلب» **قبل** أوّل حجز لا بعد خيبته، وهي سبب وجود الشاشات أصلًا. */
     onbS1T:'احجز بلا مكالمات',
-    onbS1B:'تصفّح الملاعب، شوف الأوقات الفاضية والسعر، وابعث طلبك.',
+    onbS1B:'شوف الفاضي والسعر، وابعث طلبك.',
     onbS2T:'طلبك ينتظر ردّ الملعب',
-    onbS2B:'الحجز طلب، ما بينحجز إلا لمّا الملعب يأكّده. بنعلمك أوّل ما يردّ.',
+    onbS2B:'الحجز طلب — بيتأكّد لمّا الملعب يوافق، وبنعلمك أوّل ما يردّ.',
     onbS3T:'السعر والوقت الفاضي قدّامك',
-    onbS3B:'قبل ما تحجز بتشوف أي ساعة فاضية وكم سعرها — بلا ما تسأل حدا.',
+    onbS3B:'كل ساعة وسعرها قدّامك قبل ما تحجز.',
     onbS4T:'ناقصك لاعبين؟',
-    onbS4B:'انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.',
+    onbS4B:'انشر مقاعدك بعد تأكيد الملعب، واللي بالتطبيق بينضمّ.',
     onbSkip:'تخطٍّ', onbNext:'التالي', onbStart:'يلا نبلّش',
     onbDotsAria:'شاشات الترحيب', onbDotAria:'الشاشة {i} من {n}',
     moreAria:'خيارات أخرى',
@@ -317,9 +319,9 @@ const I18N = {
     aiReviewTitle:'ملخّص التقييمات', aiReviewSub:'قراءة ذكية لتقييمات اللاعبين: ما الذي يعجبهم وما الذي يشتكون منه.',
     aiRegenerate:'تحديث التحليل', aiWeatherTitle:'تنبيه الطقس والتسعير',
     aiFail:'تعذّر توليد التحليل حالياً — جرّب «تحديث التحليل» بعد قليل.',
-    aiNotConfigured:'الذكاء الاصطناعي غير مفعّل بعد: الدالّة منشورة لكن بلا مفتاح نموذج. اضبط GEMINI_API_KEY في أسرار Supabase (‏supabase secrets set).',
-    aiNotDeployed:'الذكاء الاصطناعي غير منشور بعد. انشر دالّة الحافّة مرّة واحدة (‏supabase functions deploy ai) ثم اضبط GEMINI_API_KEY في أسرارها.',
-    aiNeedHistory:'لا يكفي التاريخ بعد لتحليل يُعتمد عليه — عندك {n} من الأيام فيها حجوزات، والحدّ سبعة. توصيةٌ من أيام معدودة تصف صدفةً لا نمطاً.',
+    aiNotConfigured:'ينقصه المفتاح: اضبط GEMINI_API_KEY في أسرار Supabase.',
+    aiNotDeployed:'غير منشور بعد: supabase functions deploy ai ثمّ اضبط المفتاح.',
+    aiNeedHistory:'عندك {n} من الأيام فيها حجوزات، والحدّ سبعة — أقلّ من ذلك صدفة لا نمط.',
     aiNoPlace:'حسابك غير مربوط بمكان بعد — لا أرقام تُحلَّل.',
     aiComputedLbl:'تحليل محسوب من أرقامك (بلا ذكاء اصطناعي)',
     /* جُمل التحليل المحسوب — كلٌّ منها من رقم مقيس، ولا واحدة منها تُنشَر
@@ -331,7 +333,7 @@ const I18N = {
     ciRetT:'العملاء العائدون', ciRetA:'{p}٪ من عملائك حجزوا أكثر من مرّة ({n} من {u}). العائد أرخص من الجديد بمراحل.',
     ciFreeT:'الأسبوع القادم', ciFreeA:'{n} من الخانات ما زالت فارغة في الأيام السبعة القادمة — وهي وحدها ما يمكن بيعه الآن.',
     wxT_danger:'أمطار متوقعة في الأيام القادمة', wxT_warn:'تقلبات جوية قادمة', wxT_info:'الأجواء مناسبة للعب',
-    wxA_danger:'احتمال مطر مرتفع — أرسل تذكيرات تأكيد مبكرة لأصحاب الحجوزات، ووفّر خيار تغيير الموعد بدل الإلغاء.',
+    wxA_danger:'احتمال مطر مرتفع — ذكّر أصحاب الحجوزات، واعرض تغيير الموعد بدل الإلغاء.',
     wxA_warn:'احتمال مطر أو حرارة مرتفعة — تابع الطلبات المعلّقة مبكراً وأبقِ اللاعبين على اطلاع.',
     wxA_info:'الأجواء ممتازة خلال ٣ أيام — خصم بسيط على الخانات الفارغة قد يملؤها.',
     aiNoInsights:'لا توصيات بعد — كلما زادت الحجوزات صارت التوصيات أدق.',
@@ -357,7 +359,7 @@ const I18N = {
     scarce1:'ما بقي إلا وقت واحد في هذا اليوم!', scarce2:'ما بقي إلا وقتان في هذا اليوم!',
     // ---- (٣) حذف الحساب ----
     dangerZone:'منطقة الخطر', delAccount:'حذف الحساب', delAccTitle:'حذف حسابك نهائياً؟',
-    delAccMsg:'بيتسكّر حسابك وما بتقدر تدخل فيه بهالرقم مرّة ثانية. وحجوزاتك القائمة بتضلّ سجلًّا عند الملعب — ألغِ اللي ما بدّك ياه قبل ما تكمّل. ما في تراجع من التطبيق.',
+    delAccMsg:'بيتسكّر حسابك ومرّة ثانية ما بتقدر تدخل فيه. ألغِ حجوزاتك القائمة قبل ما تكمّل — ما في تراجع.',
     delAccConfirm:'نعم، احذف حسابي', delAccOk:'تم حذف حسابك. نأسف لذهابك!',
     delAccFail:'تعذّر حذف الحساب', delAccErr:'حدث خطأ أثناء حذف الحساب',
     // ---- (٤) انقطاع الاتصال ----
@@ -392,7 +394,7 @@ const I18N = {
     vfWhy:'إدارة الملعب تتصل بك على هذا الرقم لتأكيد حجزك. رقمٌ بخانة غلط = حجز ما حدا يقدر يأكّده.',
     // الحالة الصادقة: لا مزوّد رسائل بعد ⇒ لا كود يصل، ولا نتظاهر بإرساله
     vfNoProviderTitle:'إرسال الأكواد غير مُفعّل بعد',
-    vfNoProvider:'ما فينا نرسل لك كود الآن — خدمة الرسائل لسا ما اتوصّلت. حسابك شغّال وتقدر تحجز عادي، وبنأكّد رقمك أول ما تصير الخدمة جاهزة.',
+    vfNoProvider:'خدمة الرسائل لسا ما اتوصّلت. حسابك شغّال وبتقدر تحجز عادي.',
     vfNotReady:'تأكيد الرقم غير مُفعّل على الخادم بعد. حسابك شغّال وتقدر تحجز عادي.',
     vfAlready:'رقمك مؤكَّد من قبل',
     vfContinue:'أكمل', vfTooSoon:'استنّى شوي قبل ما تطلب كود جديد',
@@ -404,7 +406,7 @@ const I18N = {
     payCash:'نقداً في الملعب', payCashSub:'تدفع لإدارة الملعب لمّا توصل.',
     payCard:'بطاقة فيزا أو ماستركارد', payCardSoon:'قريباً',
     payCardSub:'الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.',
-    payCardWhy:'ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا: التطبيق ما بيشوف الرقم ولا بيخزّنه.',
+    payCardWhy:'ولمّا يشتغل، الرقم بينكتب عند بوّابة الدفع — التطبيق ما بيشوفه ولا بيخزّنه.',
     payCardsTitle:'بطاقاتي', payNoCards:'ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.',
     // ---- (١١أ) مهلة إلغاء اللاعب ----
     // القاعدة تُقال **في جملة التأكيد نفسها** لا في حاشية: من يقرأ حاشيةً بعد
@@ -418,8 +420,8 @@ const I18N = {
     errRvDup:'سبق وقيّمت هذا المكان اليوم.', errRvRate:'تقييمات كثيرة من هذا الرقم اليوم.',
     errRvPhone:'التقييم بدّه رقم هاتف.', errRvNoBooking:'ما بيقيّم المكان إلا اللي لعب فيه.',
     cancelTooLateTitle:'ما عاد ينفع تلغي من التطبيق',
-    cancelTooLateSub:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك ولا وقت لبيعها لغيرك. إذا صار طارئ، احكِ مع الملعب مباشرة.',
-    cancelTooLateNoPhone:'باقي أقلّ من {h} على موعدك، والخانة صارت محجوزة لك. ما عنّا رقم هذا الملعب في التطبيق — لاقيه على صفحة الملعب أو على المكان نفسه.',
+    cancelTooLateSub:'باقي أقلّ من {h} على موعدك. إذا صار طارئ، احكِ مع الملعب مباشرة.',
+    cancelTooLateNoPhone:'باقي أقلّ من {h} على موعدك. ما عنّا رقم هذا الملعب — لاقيه على صفحته.',
     cancelWindowServer:'ما عاد ينفع تلغي هذا الحجز: باقي أقلّ من {h} على موعده. احكِ مع الملعب مباشرة.',
     callVenue:'اتصل بالملعب', waVenue:'واتساب الملعب',
     // ---- (١١ب) انقضاء مهلة ردّ المالك ----
@@ -430,12 +432,12 @@ const I18N = {
     deadlineOver:'فاتت مهلة الردّ',
     otSoonestFirst:'الأقرب لانقضاء مهلته أوّلاً',
     expirySweepNote:'الطلب اللي بتفوت مهلته بينلغي عند أوّل فتح للوحة — مش لحظة بلحظة — وبترجع خانته متاحة.',
-    expirySweepOff:'الانقضاء التلقائي غير مُفعّل على الخادم بعد (ترحيل 15). المهلة معروضة عشان تشوفها، بس الطلب بيضلّ معلّقاً حتى تردّ عليه بإيدك.',
+    expirySweepOff:'الانقضاء التلقائي غير مُفعّل (ترحيل 15) — الطلب بيضلّ معلّقاً حتى تردّ عليه.',
     // ---- (١١ج) لم يحضر ----
     noShowBtn:'لم يحضر', noShowUndoBtn:'تراجع عن «لم يحضر»',
     noShowBadge:'لم يحضر',
     noShowAskTitle:'تسجيل عدم الحضور',
-    noShowAskMsg:'رح نسجّل إنّ صاحب الحجز ما حضر. الحجز بيضلّ مؤكّداً ومحسوباً عليك، والتطبيق ما بيحصّل ولا بيخصم — التحصيل بينك وبين اللاعب. وتقدر تتراجع بأي وقت.',
+    noShowAskMsg:'بنسجّل إنّه ما حضر. الحجز بيضلّ مؤكّداً، والتحصيل بينك وبين اللاعب. وبتقدر تتراجع.',
     noShowUndoAskTitle:'تراجع عن «لم يحضر»',
     noShowUndoAskMsg:'رح نشيل علامة «لم يحضر» عن هذا الحجز، وبيرجع يُقرأ حضوراً عادياً في تقاريرك.',
     noShowOk:'تم التسجيل', noShowUndone:'تم التراجع',
@@ -464,7 +466,7 @@ const I18N = {
     closeStateHours:'مغلق {from} – {to}',
     closeOk:'تم الإغلاق', closeReopened:'رجع اليوم مفتوحاً',
     closeConflictTitle:'ما بنفع تسكّر — في حجوزات مؤكّدة',
-    closeConflictSub:'هذول اتفقتوا عليهم، وإخفاؤهم بيخلّي اللاعب يوصل الملعب ويلاقيه مسكّراً. ألغِهم أوّلاً — وبينوصلهم إشعار — بعدين سكّر اليوم.',
+    closeConflictSub:'ألغِهم أوّلاً (بيوصلهم إشعار) بعدين سكّر اليوم.',
     closePendingWarn:'وفي طلبات معلّقة على هذا اليوم — ردّ عليها.',
     closeForbidden:'هذا الملعب مش تابع لحسابك.',
     closePast:'ما بتقدر تسكّر يوماً راح.',
@@ -492,7 +494,7 @@ const I18N = {
     // ---- (١٣) بدائل خانة محجوزة ----
     altAskTitle:'هذا الوقت محجوز',
     altAskSub:'كنت تدوّر على {day} الساعة {time}. هاي أقرب البدائل الموجودة فعلاً:',
-    altSheetNone:'ما لقينا بديلاً قريباً لهذا الوقت — لا على ملعب ثاني ولا بيوم قريب. جرّب وقتاً ثانياً أو مكاناً ثانياً.',
+    altSheetNone:'ما في بديل قريب لهذا الوقت. جرّب وقتاً أو مكاناً ثانياً.',
     altKindField:'نفس الوقت — على {f}',
     altKindHour:'نفس اليوم — أقرب وقت فاضي',
     altKindDay:'نفس الوقت — يوم {d}',
@@ -508,7 +510,7 @@ const I18N = {
     gmPickTitle:'نوع المباراة',
     gmPrivate:'مباراة خاصّة', gmPrivateSub:'شبابك معك، وما حدا بيشوف الحجز.',
     gmOpen:'مباراة مفتوحة', gmOpenSub:'ناقصك لاعبين؟ انشر مقاعدك للي بالتطبيق.',
-    oeTitle:'ناقصك لاعبين؟', oeSub:'انشر مقاعدك مع نفس الحجز — بتتعرض بعد ما يأكّد الملعب.',
+    oeTitle:'ناقصك لاعبين؟', oeSub:'مقاعدك بتتعرض بعد ما يأكّد الملعب.',
     guestNeedAcct:'بتحتاج حساب لإرسال الطلب',
     gmNeeded:'العدد المطلوب', gmBrought:'كم لاعب معك الآن (بما فيك)',
     gmLiveBad:'اكتب عدداً صحيحاً: المطلوب اثنان فأكثر، واللي معك ما بيزيد عنه.',
@@ -548,8 +550,8 @@ const I18N = {
     joinTermPay:'التطبيق ما بيقبض ولا بيحوّل ولا بيضمن. الحساب بينكم.',
     joinTermLate:'ما بتقدر تيجي؟ انسحب بدري — مقعدك بيضلّ فاضي عليهم.',
     joinTermNames:'أسماء أولى بس. ما في أرقام ولا محادثة داخل التطبيق.',
-    joinTermOff:'إذا المضيف ألغى أو الملعب رفض الطلب، المباراة بتنتهي قبل ما تبلّش وبيوصلك إشعار. وما بتكون دفعت إشي.',
-    joinTermLeave:'بتقدر تنسحب بأي وقت من «حجوزاتي»، ومقعدك بيرجع للناس فوراً وبيوصل المضيف إشعار.',
+    joinTermOff:'إذا ألغى المضيف أو رفض الملعب، بتنتهي قبل ما تبلّش وبيوصلك إشعار — وما دفعت إشي.',
+    joinTermLeave:'بتقدر تنسحب بأي وقت من «حجوزاتي» — ومقعدك بيرجع فوراً.',
     gmOwnerUpTo:'حتى {n} من اللاعبين', gmOwnerNote:'مسؤوليتك ما تغيّرت: حجز واحد وصاحب حجز واحد، وهو اللي بيدفع. وترتيب اللاعبين بينهم.',
     gmNotReady:'المباريات المفتوحة غير مُفعّلة على الخادم بعد — شغّل الترحيل 22.',
     gmErrGeneric:'صار خطأ، حاول كمان مرة',
@@ -573,12 +575,12 @@ const I18N = {
     heroSearchPh:'Search for a field or area…', heroSearchBtn:'Search',
     heroSearchPrefix:'Search for',
     heroSearchWords:['a nearby field','an area','an available time','a 5-a-side field','a 7-a-side field'],
-    heroSub:'Browse fields near you, compare prices and open times, and send your booking request in seconds — then track its confirmation step by step from your account.',
+    heroSub:'See what is free and what it costs, send your request, and follow the reply.',
     ownerLink:'Own a field? Your dashboard is ready here', statPlaces:'Available fields', statEasy:'Easy', statEasyLbl:'No phone calls',
     statAnytime:'Browse anytime', statFree:'Free', statFreeLbl:'No browsing fees',
     featuresEyebrow:'Features', featuresTitlePre:'Why', featuresTitleBrand:'Al-Mostadeera?',
     featuresSub:'Everything you need to book easily — and everything an owner needs to manage fields professionally.',
-    feat1Title:'From browsing to booking in a minute', feat1Text:'See available times, pick the day and time, and send your request — a few clear steps, zero phone calls.',
+    feat1Title:'From browsing to booking in a minute', feat1Text:'See what is free, pick your day and time, send your request.',
     feat2Title:'Know the field before you go', feat2Text:'Location, price, amenities, surface type and player ratings — clear info before you choose.',
     feat3Title:'Clear booking follow-up', feat3Text:'From your account, track the booking status and the field’s confirmation, and contact them when a channel is available.',
     howEyebrow:'How it works', howTitlePre:'3 steps and you are', howTitleHi:'ready to play',
@@ -587,7 +589,7 @@ const I18N = {
     step1Title:'Browse & choose', step1Text:'Open the fields list and compare by area, price and rating — then pick your field.',
     step2Title:'Pick the time', step2Text:'Choose the day and available time that suits you from the times table.',
     step3Title:'Send & follow up', step3Text:'Send the booking request and follow up its confirmation with the field — ready to play!',
-    calloutTitle:'Ready to book your next field?', calloutSub:'Booking a field is now easier than scoring into an open net. Start without an account, or log in to keep track of your bookings.',
+    calloutTitle:'Ready to book your next field?', calloutSub:'Start without an account, or sign in to follow your bookings.',
     startFree:'Start free', haveField:'I own a field', footerLogin:'Log in', footerOwner:'Owner login',
     footerCopy:'© 2026 Al-Mostadeera — All rights reserved.',
     loginTitle:'Player login', loginSubtitle:'Log in to see and track your bookings', phone:'Phone number', password:'Password',
@@ -607,7 +609,7 @@ const I18N = {
     fieldExtrasTitle:'Specs and photos', fieldPhotos:'Field photos',  lbOpen:'Enlarge photo {i}', lbPrev:'Previous photo', lbNext:'Next photo', lbClose:'Close',
     sportsAria:'Choose a sport', sportFootball:'Football', sportPadel:'Padel', sportBasket:'Basketball', sportTennis:'Tennis', sportVolley:'Volleyball', soonBadge:'Soon',
     comingSoonTitle:'Coming soon!', comingSoonSub:'{sport} venues are warming up in the locker room — hitting the pitch soon.', backToFootball:'Show football fields',
-    sportsHint:'AL-Mustadira books sports venues of every kind. What you see open here is what actually has venues registered — anything marked “Soon” is waiting for its first one.',
+    sportsHint:'What is open is what has registered pitches; “soon” is waiting for its first one.',
     backToSport:'Show {sport} venues',
     specsTitle:'Field specs',
     specL_enclosure:'Setting', spec_enclosure_outdoor:'Outdoor', spec_enclosure_indoor:'Indoor hall', spec_enclosure_covered:'Covered',
@@ -632,7 +634,7 @@ const I18N = {
     notifsEmptySub:'The venue’s reply to your request lands here — and new booking requests land with the venue owner.',
     notifsMarkAll:'Mark all as read', notifsNew:'New',
     notifsOff:'Notifications are not enabled on the server yet',
-    notifsOffSub:'The table does not exist in the database (migration 14 has not been run). Booking and confirmation work exactly as before — only notifications are off.',
+    notifsOffSub:'Migration 14 has not run. Everything works except notifications.',
     notifsPermTitle:'Turn on notifications', notifsPermAsk:'We’ll tell you the moment the venue replies to your request.',
     ntfNewTitle:'New booking request', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'Your booking is confirmed', ntfConfirmedBody:'{place} — {field} · {day} {time}',
@@ -660,7 +662,7 @@ const I18N = {
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status', rvHost:'Host',
     rvSize:'Field size', rvTotal:'Total', rvWhen:'Day & time', rvField:'Field', rvYourInfo:'Your details', rvReadyNote:'Ready to submit — your booking request will be sent when you confirm.',
     twoHours:'2 hours', statusGuest:'Guest', statusPlayer:'Registered player',
-    bkNote:'Once sent, your request goes to the field management — it’s confirmed after their approval, and you can track it under “My bookings”.', confirmBooking:'Send request', changeTime:'Change time',
+    bkNote:'Your request reaches the venue and is confirmed once they approve. Follow it under “My bookings”.', confirmBooking:'Send request', changeTime:'Change time',
     authTitle:'One last step to finish booking', authDesc:'Log in or create an account — your selection (field, day and time) is saved and we’ll continue from the same point.',
     authBackEdit:'Back to edit time',
     navHome:'Home', navFav:'Favorites', navBookings:'Bookings', navAccount:'Account', navOwner:'Dashboard',
@@ -705,11 +707,13 @@ const I18N = {
     cancelReasonTitle:'Cancellation reason', rejectReasonTitle:'Rejection reason', reasonHint:'Write the reason shown to the player (prepared as a WhatsApp message, required).', confirmWord:'Confirm',
     last7:'Last 7 days', unknownPlace:'Unknown place', loadingWord:'Loading...', loadingFields:'Loading field details...',
     tlCards:'Cards', tlTimeline:'Timeline', tlViewAria:'Today view mode', tlField:'Field',
+    genderLbl:'Who it is for', gender_men:'Men', gender_women:'Women', gender_mixed:'Mixed',
     tlFree:'Free', tlClosed:'Closed', tlPast:'Past',
+    tlPrevDay:'Previous day', tlNextDay:'Next day', tlBackToday:'Back to today',
     tlNoHours:'No hours defined', tlNoHoursSub:'Set your field hours from the “Fields” tab and the timeline will appear.',
     bpConfirmed:'{n} confirmed of {all}',
     repByPlace:'Venue by venue', repByPlaceSub:'The venue picked above is the one you see in detail; this is a quick comparison across yours.',
-    ownPlacesTitle:'Your venues', ownPlacesSub:'The whole dashboard — bookings, calendar and reports — follows the venue you pick.',
+    ownPlacesTitle:'Your venues', ownPlacesSub:'The whole dashboard follows the venue you pick.',
     ownPlacesAria:'Shown venue — you have {n}, tap to switch',
     vName:'Enter your name', vPhone:'Invalid phone number', vPhoneEmpty:'Enter a valid phone number', vPass:'Enter your password', vNameAcc:'Enter the name',
     loginNeed:'Enter your phone and password', loginFailRetry:'Login failed, please try again', loginBadData:'Incorrect login details', regFailRetry:'Couldn’t create the account', regFail:'Couldn’t create the account', connLag:'The connection lagged, please try again',
@@ -722,19 +726,19 @@ const I18N = {
     bookingFailRetry:'Booking failed, please try again', bookingConnLag:'The connection to the sheet lagged, please try again.',
     welcomeHi:'Hi', welcomeYou:'there',
     greetMorning:'Good morning', greetAfternoon:'Good afternoon', greetEvening:'Good evening',
-    onbTitle:'Book your venue, no calls', onbSub:'Five sports in one app: browse venues, compare prices and times, and book in seconds. Football pitches are open now, the rest are coming.',
+    onbTitle:'Book your venue, no calls', onbSub:'Five sports in one app. Football pitches are open now, the rest are coming.',
     onbAsPlayer:'Player', onbAsOwner:'Venue owner', onbBrowse:'Browse venues', onbHaveAccount:'I have an account',
     onbCreateAccount:'Create new account', onbOwnerEnter:'Owner dashboard login',
     onbOwnerNote:'Manage your venues, bookings and prices in one place.', onbTerms:'By continuing you agree to the Terms and Privacy Policy.',
     onbEyebrow:'Sports venue booking', introTag:'Book your venue',
     onbS1T:'Book without a phone call',
-    onbS1B:'Browse venues, see free times and prices, and send your request.',
+    onbS1B:'See what is free and what it costs, then send your request.',
     onbS2T:'Your request waits for the venue',
-    onbS2B:'A booking is a request. It is not confirmed until the venue confirms it. We will tell you the moment they reply.',
+    onbS2B:'A booking is a request - confirmed when the venue approves, and we tell you the moment they reply.',
     onbS3T:'Prices and free times up front',
-    onbS3B:'Before you book you see which hours are free and what each one costs — without asking anyone.',
+    onbS3B:'Every hour and its price, in front of you before you book.',
     onbS4T:'Short on players?',
-    onbS4B:'Publish your spare seats once the venue confirms, and players here can join.',
+    onbS4B:'Publish your seats once the venue confirms, and players here join.',
     onbSkip:'Skip', onbNext:'Next', onbStart:'Get started',
     onbDotsAria:'Welcome screens', onbDotAria:'Screen {i} of {n}',
     moreAria:'More options',
@@ -794,9 +798,9 @@ const I18N = {
     aiReviewTitle:'AI Review Summary', aiReviewSub:'A smart read of player reviews: what they love and what they complain about.',
     aiRegenerate:'Refresh analysis', aiWeatherTitle:'Weather & Pricing Alert',
     aiFail:'Couldn’t generate the analysis right now — try “Refresh analysis” in a bit.',
-    aiNotConfigured:'AI isn’t enabled yet: the function is deployed but has no model key. Set GEMINI_API_KEY in your Supabase secrets (supabase secrets set).',
-    aiNotDeployed:'AI isn’t deployed yet. Deploy the edge function once (supabase functions deploy ai), then set GEMINI_API_KEY in its secrets.',
-    aiNeedHistory:'Not enough history yet for analysis worth trusting — you have {n} days with bookings, and the threshold is seven. Advice drawn from a handful of days describes a coincidence, not a pattern.',
+    aiNotConfigured:'Missing key: set GEMINI_API_KEY in your Supabase secrets.',
+    aiNotDeployed:'Not deployed yet: supabase functions deploy ai, then set the key.',
+    aiNeedHistory:'You have {n} days with bookings; seven is the floor - less than that is chance, not a pattern.',
     aiNoPlace:'Your account isn’t linked to a venue yet — there are no numbers to analyse.',
     aiComputedLbl:'Computed from your own numbers (no AI)',
     ciOccT:'Occupancy', ciOccA:'You are at {occ}% of capacity over the last 30 days. Each percentage point is worth about {jod} JOD a month at your current average price.',
@@ -806,7 +810,7 @@ const I18N = {
     ciRetT:'Returning customers', ciRetA:'{p}% of your customers booked more than once ({n} of {u}). A returning one costs far less than a new one.',
     ciFreeT:'The week ahead', ciFreeA:'{n} slots are still free across the next seven days — and they are the only thing you can sell right now.',
     wxT_danger:'Rain expected in the coming days', wxT_warn:'Changing weather ahead', wxT_info:'Good playing weather',
-    wxA_danger:'High chance of rain — send confirmation reminders early and offer rescheduling instead of cancelling.',
+    wxA_danger:'High chance of rain - remind those with bookings and offer a reschedule instead of a cancellation.',
     wxA_warn:'Possible rain or high heat — follow up on pending requests early and keep players informed.',
     wxA_info:'Excellent weather for the next 3 days — a small discount on empty slots could fill them.',
     aiNoInsights:'No recommendations yet — the more bookings, the sharper the advice.',
@@ -832,7 +836,7 @@ const I18N = {
     scarce1:'Only one slot left on this day!', scarce2:'Only two slots left on this day!',
     // ---- (3) Delete account ----
     dangerZone:'Danger zone', delAccount:'Delete account', delAccTitle:'Delete your account?',
-    delAccMsg:'Your account closes and you can’t sign back in with this number. Existing bookings stay on the venue’s records — cancel what you don’t want first. This can’t be undone from the app.',
+    delAccMsg:'Your account closes and this number cannot sign in again. Cancel any bookings you do not want first - there is no undo.',
     delAccConfirm:'Yes, delete my account', delAccOk:'Your account was deleted. Sorry to see you go!',
     delAccFail:'Couldn’t delete the account', delAccErr:'An error occurred while deleting the account',
     // ---- (4) Offline ----
@@ -865,7 +869,7 @@ const I18N = {
     vfWhyTitle:'Why confirm?',
     vfWhy:'The venue calls this number to confirm your booking. One wrong digit means a booking nobody can confirm.',
     vfNoProviderTitle:'Code sending isn’t switched on yet',
-    vfNoProvider:'We can’t text you a code right now — the messaging service isn’t connected yet. Your account works and you can book as normal; we’ll confirm your number once the service is ready.',
+    vfNoProvider:'The SMS service is not connected yet. Your account works and you can book normally.',
     vfNotReady:'Number confirmation isn’t enabled on the server yet. Your account works and you can book as normal.',
     vfAlready:'Your number is already confirmed',
     vfContinue:'Continue', vfTooSoon:'Please wait a moment before asking for a new code',
@@ -876,7 +880,7 @@ const I18N = {
     payCash:'Cash at the venue', payCashSub:'You pay the venue when you arrive.',
     payCard:'Visa or Mastercard', payCardSoon:'Soon',
     payCardSub:'Card payment isn’t live yet — it opens as soon as the payment gateway is ready.',
-    payCardWhy:'And when it does, your card number is typed at the payment gateway, not here: the app never sees it and never stores it.',
+    payCardWhy:'When it does, the number is typed at the payment gateway - the app never sees or stores it.',
     payCardsTitle:'My cards', payNoCards:'No saved card — every booking is paid in cash at the venue today.',
     // ---- (11a) Player cancellation window ----
     cancelWindowHint:'You can cancel up to {h} before kick-off. This booking is still inside that window.',
@@ -888,8 +892,8 @@ const I18N = {
     errRvDup:'You’ve already reviewed this venue today.', errRvRate:'Too many reviews from this number today.',
     errRvPhone:'A review needs a phone number.', errRvNoBooking:'Only someone who has played here can review it.',
     cancelTooLateTitle:'Too late to cancel from the app',
-    cancelTooLateSub:'Less than {h} to your slot, so it is held for you and there is no time to resell it. If something came up, call the venue directly.',
-    cancelTooLateNoPhone:'Less than {h} to your slot, so it is held for you. We do not have this venue’s number in the app — find it on the venue page or at the venue itself.',
+    cancelTooLateSub:'Less than {h} to your slot. If something urgent came up, call the venue directly.',
+    cancelTooLateNoPhone:'Less than {h} to your slot. We do not have this venue\'s number - find it on its page.',
     cancelWindowServer:'This booking can no longer be cancelled: less than {h} to its slot. Please call the venue directly.',
     callVenue:'Call the venue', waVenue:'WhatsApp the venue',
     // ---- (11b) Owner reply deadline ----
@@ -899,12 +903,12 @@ const I18N = {
     deadlineOver:'Reply deadline passed',
     otSoonestFirst:'Closest to expiring first',
     expirySweepNote:'A request past its deadline is cancelled when the dashboard is next opened — not minute by minute — and its slot opens up again.',
-    expirySweepOff:'Auto-expiry isn’t enabled on the server yet (migration 15). The deadline is shown so you can see it, but the request stays pending until you answer it yourself.',
+    expirySweepOff:'Auto-expiry is not enabled (migration 15) - requests stay pending until you answer.',
     // ---- (11c) No-show ----
     noShowBtn:'No-show', noShowUndoBtn:'Undo no-show',
     noShowBadge:'No-show',
     noShowAskTitle:'Record a no-show',
-    noShowAskMsg:'We’ll record that the holder didn’t turn up. The booking stays confirmed and still counts, and the app charges and deducts nothing — collection is between you and the player. You can undo this any time.',
+    noShowAskMsg:'We will record that they did not show. The booking stays confirmed, and collecting is between you and the player. You can undo this.',
     noShowUndoAskTitle:'Undo no-show',
     noShowUndoAskMsg:'We will remove the no-show mark from this booking, and it will read as a normal attendance in your reports again.',
     noShowOk:'Recorded', noShowUndone:'Undone',
@@ -933,7 +937,7 @@ const I18N = {
     closeStateHours:'Closed {from} – {to}',
     closeOk:'Closed', closeReopened:'The day is open again',
     closeConflictTitle:'Can’t close — there are confirmed bookings',
-    closeConflictSub:'These were agreed with the players; hiding them means someone arrives to a locked gate. Cancel them first — they get a notification — then close the day.',
+    closeConflictSub:'Cancel them first (they get a notification), then close the day.',
     closePendingWarn:'And there are pending requests on this day — answer them.',
     closeForbidden:'This field does not belong to your venue.',
     closePast:'You cannot close a day that has passed.',
@@ -961,7 +965,7 @@ const I18N = {
     // ---- (13) Alternatives for a booked slot ----
     altAskTitle:'That time is booked',
     altAskSub:'You were after {day} at {time}. Here are the closest alternatives that actually exist:',
-    altSheetNone:'We could not find a close alternative for that time — not on another pitch, not on a nearby day. Try another time or another venue.',
+    altSheetNone:'No close alternative for this time. Try another time or another venue.',
     altKindField:'Same time — on {f}',
     altKindHour:'Same day — nearest free time',
     altKindDay:'Same time — {d}',
@@ -977,7 +981,7 @@ const I18N = {
     gmPickTitle:'Match type',
     gmPrivate:'Private match', gmPrivateSub:'Your own crew. Nobody sees the booking.',
     gmOpen:'Open match', gmOpenSub:'Short of players? Publish your spare seats.',
-    oeTitle:'Short on players?', oeSub:'Publish seats with this same booking — they appear once the venue confirms.',
+    oeTitle:'Short on players?', oeSub:'Your seats appear once the venue confirms.',
     guestNeedAcct:'You will need an account to send the request',
     gmNeeded:'Players needed', gmBrought:'How many are with you now (including you)',
     gmLiveBad:'Enter valid numbers: at least two needed, and no more than that with you.',
@@ -1013,8 +1017,8 @@ const I18N = {
     joinTermPay:'The app does not collect, transfer or guarantee. The settlement is between you.',
     joinTermLate:'Can’t make it? Leave early — your seat just stays empty for them.',
     joinTermNames:'First names only. No phone numbers, and no chat inside the app.',
-    joinTermOff:'If the host cancels or the venue rejects the request, the match ends before it starts and you get a notification. You will not have paid anything.',
-    joinTermLeave:'You can withdraw at any time from “My bookings”. Your seat goes back to others straight away and the host is notified.',
+    joinTermOff:'If the host cancels or the venue declines, it ends before it starts and you are notified - and you paid nothing.',
+    joinTermLeave:'You can withdraw any time from “My bookings” - your seat returns immediately.',
     gmOwnerUpTo:'up to {n} players', gmOwnerNote:'Nothing changes for you: one booking, one holder, and they pay. The players sort themselves out.',
     gmNotReady:'Open matches aren’t enabled on the server yet — run migration 22.',
     gmErrGeneric:'Something went wrong, please try again',
@@ -2591,7 +2595,8 @@ const State = {
      محفوظٌ كي لا يعود المالك إلى مكانه الأوّل بعد كل إعادة فتح، والخادم يفحصه
      ضدّ `place_ids` فقيمةٌ قديمة لمكانٍ لم يعد له تعود إلى المختار بلا خطأ. */
   ownerPlaceId: (()=>{ try{ return localStorage.getItem('mustadaira:ownerPlace')||''; }catch(_){ return ''; } })(),
-  ownerView: 'cards',     // شكل تبويب «اليوم»: بطاقات · مخطّط زمني
+  ownerView: 'cards',
+  tlDate: null,           // اليوم المعروض في مخطّط المالك (‏null = اليوم)     // شكل تبويب «اليوم»: بطاقات · مخطّط زمني
   reportRange: 'all',     // نطاق التقارير: all · d30 · d90 (مرشِّح مُدخَل لا تعديل حساب)
   calMonth: null,         // شهر التقويم المعروض (Date لأول الشهر)
   lang: (()=>{ try{ return localStorage.getItem('mustadaira_language')||'ar'; }catch(_){ return 'ar'; } })(),
@@ -3220,7 +3225,7 @@ function sortPlaces(list){
 function activeFilterCount(){
   const fx=State.fx; let n=0;
   if(fx.minPrice!=null) n++; if(fx.maxPrice!=null) n++;
-  n+=fx.sizes.length+fx.types.length+fx.amenities.length;
+  n+=fx.sizes.length+fx.types.length+fx.amenities.length+fx.genders.length;
   if(fx.minRating>0) n++; if(fx.availableToday) n++;
   if(State.sort!=='default') n++;
   return n;
@@ -3270,6 +3275,7 @@ function filterChipList(){
   if(fx.minRating>0)       add(t('fchipRating',{v:fx.minRating}),          ()=>{ fx.minRating=0; });
   if(fx.availableToday)    add(t('availableToday'),                        ()=>{ fx.availableToday=false; });
   fx.amenities.slice().forEach(k => add(amenityLabel(AMENITY[k]) || k, ()=>toggleArr(fx.amenities, k)));
+  fx.genders.slice().forEach(g => add(genderLabel(g), ()=>toggleArr(fx.genders, g)));
   return out;
 }
 function renderFilterChips(){
@@ -3475,7 +3481,7 @@ function openFilters(){
 function updateFxApplyCount(){
   const fx=State.fxDraft; if(!fx) return;
   let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++;
-  n+=fx.sizes.length+fx.types.length+fx.amenities.length;
+  n+=fx.sizes.length+fx.types.length+fx.amenities.length+fx.genders.length;
   if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
   setText('fxApplyCount', n? `${t('apply')} (${n})` : t('apply'));
 }
@@ -3518,6 +3524,16 @@ function renderFiltersSheet(){
   // متاح اليوم — نفس العطل تمامًا: كان يُعاد ضبطه من المسودّة عند كل إعادة بناء
   $('#fxToday').checked = !!fx.availableToday;
   $('#fxToday').onchange = syncDraftInputs;
+  /* لمن الملعب — **القسم كلّه يُخفى** ما لم يصرّح ملعبٌ واحد على الأقلّ
+     (‏`genderDeclared`): خانةُ تصفيةٍ لا تصفّي شيئًا زينةٌ تُوهم بقدرة غير
+     موجودة، وهي نفس الحجّة التي حذفت دبّوس الموقع في الدفعة ١٤. */
+  const gw=$('#fxGenderWrap'), gb=$('#fxGenders');
+  const gOn = genderDeclared();
+  if(gw) gw.hidden = !gOn;
+  if(gb){ clear(gb);
+    if(gOn) GENDERS.forEach(g=>{ const c=fxChip(genderLabel(g), fx.genders.includes(g));
+      c.addEventListener('click',()=>{ toggleArr(fx.genders,g); renderFiltersSheet(); }); gb.append(c); });
+  }
   // المرافق
   const am=$('#fxAmenities'); clear(am); const ams=distinctAmenities();
   ams.length ? ams.forEach(k=>{ const m=AMENITY[k]; const c=fxChip(m&&m.labelKey?t(m.labelKey):k, fx.amenities.includes(k)); c.addEventListener('click',()=>{ toggleArr(fx.amenities,k); renderFiltersSheet(); }); am.append(c); })
@@ -3786,7 +3802,10 @@ function renderSubFields(){
          : h('span',{class:'subfield-thumb ph', html:ICON.ball, 'aria-hidden':'true'}),
       h('div',{class:'subfield-main'},
         h('div',{class:'subfield-name'}, f.field_name),
-        h('div',{class:'subfield-size'}, ico('resize','svg-sm'), ' '+f.size)),
+        h('div',{class:'subfield-size'}, ico('resize','svg-sm'), ' '+f.size,
+          /* لمن الملعب — **عند التصريح وحده**. وملعبٌ لم يقل عنه أحد شيئًا
+             لا يحمل شارة: «مشترك» المفترضة تُرسل لاعبةً إلى ملعبٍ للرجال. */
+          fieldGender(f) ? h('span',{class:'gd-badge gd-'+fieldGender(f)}, genderLabel(fieldGender(f))) : null)),
       h('div',{class:'subfield-price'}, formatCurrency(f.price)));
     card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); renderDetailSticky(); });
     el.append(card);
@@ -4099,13 +4118,30 @@ const Obs = {
       if('inert' in s) s.inert = !on;
       else s.querySelectorAll('button,a,input,[tabindex]').forEach(x=>x.tabIndex = on?0:-1);
     });
-    /* شريط التقدّم: `aria-valuenow` هو الرقم المنطوق، والعرض زخرفة تتبعه. */
-    const pr=$('#obsProg');
-    if(pr){ pr.setAttribute('aria-valuemax', String(this.n)); pr.setAttribute('aria-valuenow', String(k+1)); }
-    const fill=$('#obsProgFill');
-    if(fill) fill.style.inlineSize = ((k+1)/this.n*100)+'%';
-    const bk=$('#obsBack'); if(bk) bk.hidden = (k===0);
+    /* النقاط زخرفة (`aria-hidden` في الوسم) — العدد المنطوق في `#obsLive`.
+       وتُبنى مرّةً ثمّ تُحدَّث حالتها: إعادة بنائها في كل تنقّل تُلغي انتقال
+       العرض فتقفز الحبّة النشِطة بدل أن تتمدّد. */
+    const dots=$('#obsDots');
+    if(dots){
+      if(dots.childElementCount !== this.n){ clear(dots);
+        for(let j=0;j<this.n;j++) dots.append(h('span',{class:'obs-dot'})); }
+      [...dots.children].forEach((d,j)=>d.classList.toggle('on', j===k));
+    }
+    /* 🔴 **لا `hidden` هنا**: في الورقة `[hidden]{display:none!important}` عامّة،
+       فأي محاولة لإبقاء العنصر في التدفّق بـ`visibility` تخسر أمام `!important`
+       ⇒ الزرّ يفقد حصّته من الصفّ فتنزاح النقاط عن المنتصف في الشريحة الأولى
+       وحدها (مقيس: مركزها 329 مقابل 188). الصنف يحتفظ بالصندوق ويُخفي المحتوى،
+       ومعه `aria-hidden` و`tabindex` كي لا يصله Tab ولا قارئ الشاشة. */
+    const bk=$('#obsBack');
+    if(bk){ const off = (k===0);
+      bk.classList.toggle('is-off', off);
+      bk.setAttribute('aria-hidden', off?'true':'false');
+      bk.tabIndex = off ? -1 : 0; }
     const last = k===this.n-1;
+    const go=$('#obsGo');
+    /* `sbtn` معه: هو من يحمل قاعدة «أبيض على التيل نهارًا وحبرٌ داكن على
+       الـLime ليلًا». صبغُه هنا كان سيعطي أبيض على Lime = 2.05:1. */
+    if(go){ go.classList.toggle('is-last', last); go.classList.toggle('sbtn', last); }
     setText('obsGo', t(last ? 'onbStart' : 'onbNext'));
     const ttl = this.slides[k].querySelector('.obs-t');
     if(ttl && !first) ttl.focus();
@@ -4696,7 +4732,9 @@ function renderReview(){
     h('div',{class:'rc-grid'},
       cell(t('rvWhen'), dayLabel(date)+' '+shortDate(date)+' · '+(slot?slotDisplay(slot):''), 'cal'),
       cell(t('rvDuration'), t('twoHours'), 'clock'),
-      cell(t('rvField'), field.field_name, 'pin')),
+      cell(t('rvField'), fieldGender(field)
+             ? h('span',{}, field.field_name, h('span',{class:'gd-badge gd-'+fieldGender(field)}, genderLabel(fieldGender(field))))
+             : field.field_name, 'pin')),
     h('div',{class:'rc-total'},
       h('span',{class:'rc-total-lbl'}, t('rvTotal')),
       h('span',{class:'rc-total-val'}, formatCurrency(slotPrice(field, date, hour)))),
@@ -5285,10 +5323,34 @@ function ownerDayCellState(b, date, hour){
   if(s==='cancelled'||s==='rejected') return null;
   return s;
 }
+function tlDate(){ return State.tlDate || today(); }
+function shiftTlDate(d){
+  const cur = new Date(tlDate()+'T12:00:00');
+  cur.setDate(cur.getDate()+d);
+  State.tlDate = cur.toISOString().slice(0,10);
+  renderOwnerTimeline();
+}
 function renderOwnerTimeline(){
   const el=$('#ownerTimeline'); if(!el) return; clear(el);
   const fields=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
-  const td=today();
+  const td=tlDate(), now=today();
+  /* شريط اليوم: المخطّط يخدم التخطيط لا متابعة الساعة الجارية وحدها، فالمالك
+     يسأل «شو وضع الخميس؟» بقدر ما يسأل «شو وضع اليوم؟». والسهم فيزيائي
+     فيُقلب بالاتّجاه في الورقة لا هنا. */
+  const bar=h('div',{class:'tl-bar'},
+    (()=>{ const b=h('button',{class:'tl-nav', type:'button', 'aria-label':t('tlPrevDay')},
+             h('span',{class:'tl-nav-ic', html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>'}));
+           b.addEventListener('click',()=>shiftTlDate(-1)); return b; })(),
+    h('div',{class:'tl-day'},
+      h('b',{}, td===now ? t('today') : dayLabel(td)),
+      h('span',{}, shortDate(td))),
+    (()=>{ const b=h('button',{class:'tl-nav', type:'button', 'aria-label':t('tlNextDay')},
+             h('span',{class:'tl-nav-ic', html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>'}));
+           b.addEventListener('click',()=>shiftTlDate(1)); return b; })(),
+    (()=>{ if(td===now) return null;
+           const b=h('button',{class:'tl-today', type:'button'}, t('tlBackToday'));
+           b.addEventListener('click',()=>{ State.tlDate=now; renderOwnerTimeline(); }); return b; })());
+  el.append(bar);
   if(!fields.length){ el.append(emptyState({icon:'🥅', title:t('noFieldsTitle'), sub:t('noFieldsSub')})); return; }
   // كل ساعات اليوم عبر الملاعب كلّها، مرتّبة — عمودٌ لكل ساعة يظهر في أيٍّ منها
   const hours=[...new Set(fields.flatMap(f=>fieldSlots(f).map(s=>s.hour)))].sort((a,b)=>a-b);
@@ -5299,7 +5361,10 @@ function renderOwnerTimeline(){
     const st=normStatus(b); if(st==='cancelled'||st==='rejected') return;
     byKey[String(b.field_id)+'@'+Number(b.hour)] = b;
   });
-  const nowH = new Date().getHours();
+  /* «راح» تُقاس بساعة **اليوم المعروض** لا بالساعة الحالية مطلقًا: يومٌ قادم
+     لا شيء فيه راح، ويومٌ ماضٍ كلّه راح. وبلا هذا الفرق كان الغد يُرسَم نصفه
+     رماديًّا لأن الساعة عندنا الآن الثامنة. */
+  const past = (hr) => td < now ? true : td > now ? false : (hr + 2) <= new Date().getHours();
   const wrap=h('div',{class:'tl-wrap'});
   const grid=h('div',{class:'tl-grid', style:{ gridTemplateColumns:`auto repeat(${hours.length}, minmax(58px,1fr))` }});
   grid.append(h('div',{class:'tl-head tl-name'}, t('tlField')));
@@ -5313,12 +5378,11 @@ function renderOwnerTimeline(){
       const cl = slotClosure(f.field_id, td, hr);
       const b  = byKey[String(f.field_id)+'@'+hr];
       const st = ownerDayCellState(b, td, hr);
-      const past = (hr + 2) <= nowH;
       let cls='tl-slot ', label='', dis=false;
       if(cl){ cls+='tl-closed'; label=t('tlClosed'); dis=true; }
       else if(st==='confirmed'){ cls+='tl-confirmed'; label=t('statusConfirmed'); }
       else if(st==='pending'){ cls+='tl-pending'; label=t('statusPending'); }
-      else if(past){ cls+='tl-past'; label=t('tlPast'); dis=true; }
+      else if(past(hr)){ cls+='tl-past'; label=t('tlPast'); dis=true; }
       else { cls+='tl-free'; label=t('tlFree'); }
       /* الاسم المنطوق يحمل **الملعب والساعة والحالة** معًا: الخليّة وحدها في
          شبكة لا تُقرأ صفًّا وعمودًا كالجدول، فالسياق يُكتب فيها. */

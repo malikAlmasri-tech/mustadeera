@@ -3,8 +3,13 @@
     <span class="eyebrow">{{t.ownPageEyebrow}}</span>
     <h1 class="h1-page">{{t.ownPageTitle}}</h1>
     <p class="lead">{{t.ownPageLead}}</p>
+    <!-- ⚠️ **طريقٌ واحد لا اثنان** (بلاغ المالك 2026-08-12). كان في الصفحة
+         زرّان يذهبان إلى `/contact` ونموذجٌ ثالث في الأسفل: ثلاثة أبواب لفعلٍ
+         واحد ⇒ طلبٌ يصل بثلاث صيغ مختلفة، وواحدٌ منها (واتساب) لا يُسجَّل في
+         جدول ولا يظهر في صندوق `/admin` فيضيع بلا أثر. الزرّان صارا يقودان
+         إلى **النموذج نفسه** أسفل الصفحة. -->
     <div class="hero-cta cta-start">
-      <a class="btn btn-pri btn-lg" href="{{base}}/contact/">{{t.ownPageCta}}</a>
+      <a class="btn btn-pri btn-lg" href="#join">{{t.ownPageCta}}</a>
     </div>
   </div>
 </section>
@@ -48,7 +53,7 @@
     <div class="own-card">
       <h2>{{t.ownCostTitle}}</h2>
       <p>{{t.ownCostBody}}</p>
-      <a class="btn btn-pri" href="{{base}}/contact/">{{t.ownPageCta}}</a>
+      <a class="btn btn-pri" href="#join">{{t.ownPageCta}}</a>
     </div>
   </div>
 </section>
@@ -65,8 +70,10 @@
       <h2 class="h2">{{t.joinTitle}}</h2>
       <p class="lead">{{t.joinLead}}</p>
 
+      <!-- ⚠️ `/contact` بقي **لمن لا يعمل عنده السكربت وحده**: النموذج يرسل
+           بـfetch، فبلا JS لا سبيل. وهذا ليس بابًا ثانيًا معروضًا على أحد —
+           `<noscript>` لا يُرسَم إطلاقًا لمن يعمل عنده السكربت. -->
       <noscript class="join-fallback"><p>{{t.joinNoJs}} <a href="{{base}}/contact/">{{t.ownPageCta}}</a></p></noscript>
-      <p class="join-fallback js-hide"><a class="btn btn-sec" href="{{base}}/contact/">{{t.joinNoJsCta}}</a></p>
 
       <form class="join-form js-only" id="joinForm" novalidate>
         <div class="join-grid">

@@ -62,53 +62,57 @@
        دائمًا. الحارس صحيح (ميزةٌ خلف علَمٍ مُطفأ لا تُعلَن)، والعطل في التوزيع. -->
   <section class="page obs-page" id="page-onboarding">
     <div class="obs" id="obs">
-      <div class="obs-top">
-        <!-- سهم رجوع **مرئي**: `Obs.back()` كانت تعمل بلا زرّ يدلّ عليها، فمن لا
-             يعرف إيماءة الرجوع لا يستطيع مراجعة شريحة قرأها بسرعة. -->
-        <button type="button" class="obs-back" id="obsBack" data-action="obsBack" data-i18n-aria="backWord" aria-label="رجوع" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
-        </button>
-        <button type="button" class="obs-skip" data-action="obsSkip" data-i18n="onbSkip">تخطٍّ</button>
-      </div>
       <div class="obs-track" id="obsTrack">
-        <!-- ⚠️ **لغة رسم واحدة في الشرائح الأربع**: مخطّط ملعب بخطّ رفيع، نفس
-             اللوح (‏160×100) ونفس السماكة ونفس حركة الدخول. كانت شريحةٌ مخطّطًا
-             وأخرى أيقونات بأسهم وثالثة مخطّطين متجاورين — ثلاث لغات بصريّة في
-             ثلاث شاشات متتالية. وما يزيد على الملعب (ساعة · شرائح وقت · مقاعد)
-             مرسومٌ **بنفس القلم** داخل نفس اللوح لا برمزٍ من عائلة أخرى. -->
+        <!-- ⚠️ **صورة فوق وبطاقة تحت** (مرجع بصري من المالك 2026-08-12): الشريحة
+             صورةٌ ملء العرض تشغل أعلى الشاشة، وتحتها لوحٌ بحوافّ علوية دائرية
+             يحمل عنوانًا وسطرين. والصور **موجودة في المستودع أصلًا**
+             (‏`app/assets/onb/` — نفس مصدر صورة شاشة الترحيب)، تُقرأ من
+             `assets/` بجوار `index.html` ولا تُحقَن base64: أربع صور مضمَّنة
+             كانت ستضيف ~مليون محرف إلى ورقةٍ تُحلَّل عند كل إقلاع.
+             ⚠️ ولا صورة تدّعي إتاحة رياضة: النصّ لا يَعِد بها، والحالة الوحيدة
+             التي تُقرأ وعدًا (قسم الرياضات) بقيت بشاراتها على الموقع. -->
         <section class="obs-slide" data-slide="1" aria-labelledby="obsT1">
-          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><circle cx="80" cy="50" r="1.6" fill="currentColor" stroke="none"/><path d="M15 25h20v50H15M15 38.5h7v23h-7M145 25h-20v50h20M145 38.5h-7v23h7"/></svg></div>
-          <h2 class="obs-t" id="obsT1" tabindex="-1" data-i18n="onbS1T">احجز بلا مكالمات</h2>
-          <p class="obs-b" data-i18n="onbS1B">تصفّح الملاعب، شوف الأوقات الفاضية والسعر، وابعث طلبك.</p>
+          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/players-3148452.jpg')"></span>
+          <div class="obs-card">
+            <h2 class="obs-t" id="obsT1" tabindex="-1" data-i18n="onbS1T">احجز بلا مكالمات</h2>
+            <p class="obs-b" data-i18n="onbS1B">شوف الفاضي والسعر، وابعث طلبك.</p>
+          </div>
         </section>
         <section class="obs-slide" data-slide="2" aria-labelledby="obsT2">
-          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M15 25h20v50H15M145 25h-20v50h20"/><circle cx="80" cy="50" r="21"/><path d="M80 36v14l9 7"/></svg></div>
-          <h2 class="obs-t" id="obsT2" tabindex="-1" data-i18n="onbS2T">طلبك ينتظر ردّ الملعب</h2>
-          <p class="obs-b" data-i18n="onbS2B">الحجز طلب، ما بينحجز إلا لمّا الملعب يأكّده. بنعلمك أوّل ما يردّ.</p>
+          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/night-pitch-16826134.jpg')"></span>
+          <div class="obs-card">
+            <h2 class="obs-t" id="obsT2" tabindex="-1" data-i18n="onbS2T">طلبك ينتظر ردّ الملعب</h2>
+            <p class="obs-b" data-i18n="onbS2B">الحجز طلب — بيتأكّد لمّا الملعب يوافق، وبنعلمك أوّل ما يردّ.</p>
+          </div>
         </section>
-        <!-- الشفافية هي القيمة الفعلية للمنتج وكانت غائبة عن المسار كلّه:
-             ثلاث شرائح وقت تحت الملعب، الأوسط مشطوب = محجوز. رسمٌ لا رقم. -->
         <section class="obs-slide" data-slide="3" aria-labelledby="obsT3">
-          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="6" width="130" height="58" rx="1"/><path d="M80 6v58"/><circle cx="80" cy="35" r="10"/><path d="M15 20h16v30H15M145 20h-16v30h16"/><rect x="16" y="78" width="38" height="16" rx="5"/><rect x="61" y="78" width="38" height="16" rx="5"/><path d="M66 86h28"/><rect x="106" y="78" width="38" height="16" rx="5"/></svg></div>
-          <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">السعر والوقت الفاضي قدّامك</h2>
-          <p class="obs-b" data-i18n="onbS3B">قبل ما تحجز بتشوف أي ساعة فاضية وكم سعرها — بلا ما تسأل حدا.</p>
+          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/multisport-courts.jpg')"></span>
+          <div class="obs-card">
+            <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">السعر والوقت الفاضي قدّامك</h2>
+            <p class="obs-b" data-i18n="onbS3B">كل ساعة وسعرها قدّامك قبل ما تحجز.</p>
+          </div>
         </section>
         <!-- ⚠️ هذه وحدها **تُحذف من الـDOM** إن لم يكن `GAMES_OK === true`
              (نفس العلَم الذي يحكم `#matchPick` حرفيًّا) — ميزةٌ خلف علَمٍ مُطفأ
-             لا تُعلَن، والعلَم يبدأ `null` فما لا نعرفه لا يُعرَض. وحذفها الآن
-             ينقص الرابعة لا الثالثة ⇒ المسار يبقى ثلاث شرائح مضمونة. -->
+             لا تُعلَن، والعلَم يبدأ `null` فما لا نعرفه لا يُعرَض. وحذفها ينقص
+             الرابعة لا الثالثة ⇒ المسار يبقى ثلاث شرائح مضمونة. -->
         <section class="obs-slide" data-slide="4" data-needs-games="1" aria-labelledby="obsT4">
-          <div class="obs-art" aria-hidden="true"><svg class="court-svg" viewBox="0 0 160 100"><rect x="15" y="8" width="130" height="84" rx="1"/><path d="M80 8v84"/><circle cx="80" cy="50" r="13"/><circle cx="45" cy="28" r="6.5" fill="currentColor" stroke="none"/><circle cx="45" cy="72" r="6.5" fill="currentColor" stroke="none"/><circle cx="115" cy="28" r="6.5" fill="currentColor" stroke="none"/><circle cx="115" cy="72" r="6.5"/><path d="M111.5 72h7M115 68.5v7"/></svg></div>
-          <h2 class="obs-t" id="obsT4" tabindex="-1" data-i18n="onbS4T">ناقصك لاعبين؟</h2>
-          <p class="obs-b" data-i18n="onbS4B">انشر مقاعد مباراتك بعد ما يأكّد الملعب، واللي بالتطبيق بينضمّ.</p>
+          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/players-16588259.jpg')"></span>
+          <div class="obs-card">
+            <h2 class="obs-t" id="obsT4" tabindex="-1" data-i18n="onbS4T">ناقصك لاعبين؟</h2>
+            <p class="obs-b" data-i18n="onbS4B">انشر مقاعدك بعد تأكيد الملعب، واللي بالتطبيق بينضمّ.</p>
+          </div>
         </section>
       </div>
+      <!-- ⚠️ «تخطٍّ» فوق الصورة: حبّة معتمة بنصّ أبيض — النصّ فوق صورةٍ لا
+           يُقاس تباينه بالتقدير، والحبّة تجعل الخلفية معلومةً مهما كانت الصورة. -->
+      <button type="button" class="obs-skip" data-action="obsSkip" data-i18n="onbSkip">تخطٍّ</button>
       <div class="obs-foot">
-        <!-- شريط تقدّم بدل النقاط: أربع نقاط 8px هدفُ لمسٍ لا أحد يقصده، ومع
-             شريحةٍ مشروطة يتغيّر عددها فتقرأ الشبكة عددًا مختلفًا كل تشغيل.
-             والشريط يقول «أين أنت من الطريق» بلا هدف لمس أصلًا. -->
-        <div class="obs-prog" id="obsProg" role="progressbar" aria-valuemin="1" aria-valuenow="1" aria-valuemax="3" data-i18n-aria="onbDotsAria" aria-label="شاشات الترحيب"><span class="obs-prog-fill" id="obsProgFill"></span></div>
-        <button type="button" class="sbtn obs-go" id="obsGo" data-action="obsNext" data-i18n="onbNext">التالي</button>
+        <button type="button" class="obs-back is-off" id="obsBack" data-action="obsBack" data-i18n="backWord" aria-hidden="true" tabindex="-1">رجوع</button>
+        <!-- نقاطٌ **غير تفاعلية**: مؤشّر موضعٍ لا هدف لمس (كانت أزرارًا 8px
+             لا يقصدها أحد). والعدد المنطوق في `#obsLive` وحده. -->
+        <div class="obs-dots" id="obsDots" aria-hidden="true"></div>
+        <button type="button" class="obs-go" id="obsGo" data-action="obsNext" data-i18n="onbNext">التالي</button>
       </div>
       <!-- منطقة إعلان **واحدة** للشرائح كلّها لا واحدة لكل شريحة -->
       <p class="sr-only" id="obsLive" aria-live="polite" aria-atomic="true"></p>
@@ -134,7 +138,7 @@
         <div class="onb-hero-body">
           <span class="onb-eyebrow" data-i18n="onbEyebrow">حجز الملاعب الرياضية</span>
           <h1 class="onb-title" data-i18n="onbTitle">احجز ملعبك بلا مكالمات</h1>
-          <p class="onb-sub" data-i18n="onbSub">خمس رياضات في تطبيق واحد: تصفّح الملاعب، قارن الأسعار والأوقات، واحجز في ثوانٍ. ملاعب كرة القدم مفتوحة الآن، وبقيّة الرياضات قريباً.</p>
+          <p class="onb-sub" data-i18n="onbSub">خمس رياضات في تطبيق واحد. ملاعب كرة القدم مفتوحة الآن، وبقيّتها قريباً.</p>
           <!-- الأيقونات الخمس = الرياضات الخمس في SPORTS بالضبط. كانت أربعًا
                (بلا الطائرة) فكان الشريط يعِد بأقلّ ممّا في التطبيق. زخرفية
                (aria-hidden) — النصّ المجاور هو ما يقول الرسالة لقارئ الشاشة. -->
@@ -399,14 +403,13 @@
     <!-- غلاف لاصق واحد يضمّ شريط التصفّح + شرائح الفلاتر المفعّلة.
          سبب الغلاف: عنصران كلاهما `top:0` كانا سيتراكبان؛ وبالغلاف يلتصق الاثنان معًا
          بترتيبهما الطبيعي بلا قياس ارتفاع في JS. -->
+    <!-- ⚠️ مبدّل «ملاعب / مباريات» **خارج الغلاف اللاصق** (بلاغ المالك 2026-08-12):
+         هو قرارٌ يُتَّخذ مرّةً عند دخول الصفحة، لا أداةٌ تُلمَس أثناء التصفّح —
+         والالتصاق يأكل شريطًا من الشاشة طوال التمرير مقابل زرّين يُضغطان مرّةً.
+         واللاصق يبقى للفلاتر والمناطق والرياضة، وهي ما يُلمَس فعلًا وأنت تنزل.
+         ويُخفى الصفّ كلّه ما لم يكن ترحيل 22 مُشغَّلًا ⇒ صفر ارتفاع لمن لا يراه. -->
+    <div class="mode-row" id="modeRow" hidden><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات"><span class="mode-thumb" aria-hidden="true"></span><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
     <div class="home-sticky" id="homeSticky">
-      <!-- ⚠️ مبدّل «ملاعب / مباريات» **صار صفًّا مستقلًّا أعلى الغلاف اللاصق**
-           (تغيّر 2026-08-11 بطلب المالك: صفّ العنوان كان يحمل أربع أدوات —
-           عنوانًا وعدّادًا ومبدّل وضعٍ ومبدّل عرض — فازدحم عند 360px).
-           وهو مبدّل **نطاق محتوى** لا تفضيل عرض، فمكانه مع الفلاتر والمناطق
-           لا مع العنوان. ويُخفى الصفّ كلّه ما لم يكن ترحيل 22 مُشغَّلًا
-           ⇒ **صفر ارتفاع لمن لا يراه**، وهي الحالة اليوم. -->
-      <div class="mode-row" id="modeRow" hidden><span class="mode-seg" id="modeSeg" role="tablist" data-i18n-aria="modeAria" aria-label="ملاعب أو مباريات"><span class="mode-thumb" aria-hidden="true"></span><button type="button" class="mode-btn active" role="tab" data-action="setMode" data-mode="venues" aria-selected="true" data-i18n="modeVenues">ملاعب</button><button type="button" class="mode-btn" role="tab" data-action="setMode" data-mode="games" aria-selected="false" data-i18n="modeGames">مباريات</button></span></div>
     <div class="browse-sticky" id="browseSticky">
       <!-- زرّ الفلاتر **خارج** مسار الانزلاق: حين كان داخله (لاصقًا) كانت المناطق
            تنزلق تحته وتختفي «الكل» خلفه حتى في وضع السكون. الآن الصفّ محصور
@@ -554,7 +557,7 @@
                وما لم يثبت ترحيل 22 (ميزةٌ خلف علَمٍ مُطفأ لا تُعلَن). -->
           <button type="button" class="open-entry" id="detailOpenEntry" data-action="openBookingAsGame" hidden>
             <span class="oe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M15 19c0-2.2 1.4-3.7 3.4-3.7 1.2 0 2.1.5 2.6 1.2"/></svg></span>
-            <span class="oe-txt"><b data-i18n="oeTitle">ناقصك لاعبين؟</b><small data-i18n="oeSub">انشر مقاعدك مع نفس الحجز — بتتعرض بعد ما يأكّد الملعب.</small></span>
+            <span class="oe-txt"><b data-i18n="oeTitle">ناقصك لاعبين؟</b><small data-i18n="oeSub">مقاعدك بتتعرض بعد ما يأكّد الملعب.</small></span>
             <span class="oe-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
           </button>
         </section>
@@ -675,7 +678,7 @@
           <span class="pay-empty-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M4 3.5 20.5 20"/></svg></span>
           <p data-i18n="payNoCards">ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.</p>
         </div>
-        <p class="t-sub pay-why" data-i18n="payCardWhy">ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا.</p>
+        <p class="t-sub pay-why" data-i18n="payCardWhy">ولمّا يشتغل، الرقم بينكتب عند بوّابة الدفع — التطبيق ما بيشوفه ولا بيخزّنه.</p>
       </div>
       <div class="card settings-card mb-card">
         <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span data-i18n="prefsTitle">التفضيلات</span></div>
@@ -1045,11 +1048,11 @@
            مكوّن `.disclosure` المستعمل في الإيصال وفي صفحة الملعب. -->
       <details class="disclosure pay-why">
         <summary><span data-i18n="payWhyLink">ليش ما في بطاقة؟</span></summary>
-        <p class="pay-why-b"><span data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.</span> <span data-i18n="payCardWhy">ولمّا يشتغل، رقم بطاقتك بينكتب عند بوّابة الدفع مش عندنا: التطبيق ما بيشوف الرقم ولا بيخزّنه.</span></p>
+        <p class="pay-why-b"><span data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.</span> <span data-i18n="payCardWhy">ولمّا يشتغل، الرقم بينكتب عند بوّابة الدفع — التطبيق ما بيشوفه ولا بيخزّنه.</span></p>
       </details>
       <div class="bk-note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
-        <span data-i18n="bkNote">بعد الإرسال يصبح طلبك بانتظار تأكيد إدارة الملعب.</span>
+        <span data-i18n="bkNote">الطلب يصل إدارة الملعب، ويتأكّد بعد موافقتهم. تابعه من «حجوزاتي».</span>
       </div>
       <!-- «عادةً يردّ خلال ن» — يُملأ من app.js، ويبقى فارغًا تمامًا لمكانٍ
            لا يُقاس بعد (‏العرض نفسه يحجب ما دون سبعة ردود). -->
@@ -1083,7 +1086,7 @@
         <!-- هنا وحده يرى المستخدمُ الرياضاتِ الخمس مجتمعة، فهنا تُقال القاعدة:
              المنصّة لكل الملاعب الرياضية، والمفتوح اليوم كرة القدم. بدون هذا
              السطر تُقرأ شارات «قريباً» عطلًا في التطبيق لا خطّة معلنة. -->
-        <p class="fx-hint" data-i18n="sportsHint">المستديرة تحجز الملاعب الرياضية كلّها. المفتوح للحجز الآن كرة القدم — وباقي الرياضات تُفتح فور تسجيل ملاعبها.</p>
+        <p class="fx-hint" data-i18n="sportsHint">المفتوح هو ما سُجّلت ملاعبه فعلاً، و«قريباً» ينتظر ملعبه الأوّل.</p>
       </fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sortLabel">الترتيب</legend><div class="fx-chips" id="fxSort"></div></fieldset>
       <!-- مبدّل العرض جاء من عنوان القسم (٣.١): من يريد ضبط شكل القائمة يفتح
@@ -1105,6 +1108,8 @@
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="type">النوع</legend><div class="fx-chips" id="fxTypes"></div></fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="rating">التقييم</legend><div class="fx-chips" id="fxRating"></div></fieldset>
       <div class="fx-group"><label class="checkbox-row"><input type="checkbox" id="fxToday"> <span data-i18n="availableToday">متاح اليوم فقط</span></label></div>
+      <!-- ⚠️ يُخفى القسم كلّه ما لم يصرّح ملعبٌ واحد (ترحيل 29 · `genderDeclared`) -->
+      <fieldset class="fx-group" id="fxGenderWrap" hidden><legend class="fx-label" data-i18n="genderLbl">لمن الملعب</legend><div class="fx-chips" id="fxGenders"></div></fieldset>
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="amenities">المرافق</legend><div class="fx-chips" id="fxAmenities"></div></fieldset>
       <div class="fx-actions">
         <button class="sbtn" data-action="applyFilters"><span id="fxApplyCount" data-i18n="apply">تطبيق</span></button>
@@ -1230,8 +1235,8 @@
              سلوك القاعدة لا من التمنّي: `fn_notify_game_off` تُشعر كلّ من انضمّ
              عند إلغاء المضيف أو رفض الملعب أو انقضاء المهلة، و`leave_open_game`
              **بلا مهلة إطلاقًا** — فلا تُخترَع مهلةٌ لا يفرضها شيء. -->
-        <li data-i18n="joinTermOff">إذا المضيف ألغى أو الملعب رفض الطلب، المباراة بتنتهي قبل ما تبلّش وبيوصلك إشعار. وما بتكون دفعت إشي — الدفع كلّه في الملعب.</li>
-        <li data-i18n="joinTermLeave">بتقدر تنسحب بأي وقت من «حجوزاتي»، ومقعدك بيرجع للناس فوراً وبيوصل المضيف إشعار.</li>
+        <li data-i18n="joinTermOff">إذا ألغى المضيف أو رفض الملعب، بتنتهي قبل ما تبلّش وبيوصلك إشعار — وما دفعت إشي.</li>
+        <li data-i18n="joinTermLeave">بتقدر تنسحب بأي وقت من «حجوزاتي» — ومقعدك بيرجع فوراً.</li>
       </ul>
       <button class="sbtn" data-action="confirmJoin" data-i18n="joinConfirm">انضمّ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
@@ -1264,7 +1269,7 @@
     <div class="modal" data-modal="ownerplace">
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="opTitle" data-i18n="ownPlacesTitle">أماكنك</div>
-      <div class="modal-sub" data-i18n="ownPlacesSub">اللوحة كلها — الحجوزات والتقويم والتقارير — بتتغيّر على المكان اللي بتختاره.</div>
+      <div class="modal-sub" data-i18n="ownPlacesSub">اللوحة كلها بتتغيّر على المكان اللي بتختاره.</div>
       <div id="opList" class="op-list" role="listbox"></div>
       <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
     </div>

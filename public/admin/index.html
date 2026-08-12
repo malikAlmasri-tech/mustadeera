@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="/assets/fonts/fonts-ar.css">
 
-<link rel="stylesheet" href="/build/site.ef8d19d9.css">
+<link rel="stylesheet" href="/build/site.5a9cd250.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 <script src="/build/site.48cfbfaa.js" defer></script>
 <style>
@@ -610,10 +610,7 @@ html.dark .res .no{color:#FF8A90}
     <div class="chart-grid two">
       <div class="card">
         <h3>أين يتسرّب المال؟</h3>
-        <p class="cap">أرقامٌ مختلفة تمامًا، ويُخلط بينها كثيرًا:
-          ما <strong>ضاع فعلًا</strong> — ومنه ما <strong>انقضت مهلته</strong> بلا ردّ، وهو
-          صمتٌ لا قرار · ما <strong>ما زال معلّقًا</strong> · ومن <strong>لم يحضروا</strong>
-          وهي خانةٌ انباعت وما انلعبت · و<strong>الطاقة الفارغة</strong> وهي سقفٌ نظري لا هدف.</p>
+        <p class="cap">أربعة أرقام يُخلط بينها: ما <strong>ضاع</strong> · ما زال <strong>معلّقًا</strong> · من <strong>لم يحضروا</strong> · و<strong>الطاقة الفارغة</strong> وهي سقفٌ نظري لا هدف.</p>
         <div class="mini" id="leak"></div>
       </div>
 
@@ -707,12 +704,7 @@ html.dark .res .no{color:#FF8A90}
 
     <section class="ad-sec">
       <h2>إدارة الحسابات</h2>
-      <p class="ad-sub">هذا بحثٌ في <strong>حسابات التطبيق</strong> (profiles)، وهو غير جدول
-        العملاء أعلاه: هناك من يحجز برقمه بلا حساب مسجَّل.
-        <strong>الحساب واحد لا حسابان</strong> — و<code>role</code> هو ما يفرّق اللاعب عن
-        صاحب الملعب. من سجّل في التطبيق يُنشَأ <code>player</code>، ورفعُه إلى
-        <code>owner</code> هو ما يفتح له «دخول المالك». وحسابات <code>admin</code> لا
-        يُغيَّر دورها من هنا.</p>
+      <p class="ad-sub">بحثٌ في <strong>حسابات التطبيق</strong>، وهو غير جدول العملاء أعلاه. والحساب واحد و<code>role</code> هو الفارق: رفعُه إلى <code>owner</code> يفتح «دخول المالك». وحسابات <code>admin</code> لا تُغيَّر من هنا.</p>
       <div class="usr-row">
         <label class="ad-f"><span>ابحث برقم الهاتف</span>
           <input id="usrQ" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
@@ -731,19 +723,14 @@ html.dark .res .no{color:#FF8A90}
 
     <section class="ad-sec" id="demandSec">
       <h2>الطلب الذي لم يُلبَّ</h2>
-      <p class="ad-sub">ثلاثة أسئلة لا تجيب عنها <code>bookings</code> لأنها لا تسجّل
-        إلّا من نجح: <strong>أين بحث الناس ولم يجدوا؟</strong> ·
-        <strong>أين نظروا ولم يحجزوا؟</strong> · <strong>أيّ ساعة أرادوها وكانت محجوزة؟</strong>
-        وكلّها لا تُقاس بأثر رجعي — إمّا تُسجَّل حين تقع أو لا توجد أبدًا.</p>
+      <p class="ad-sub">ثلاثة أسئلة لا يجيب عنها جدول الحجوزات: أين بحثوا ولم يجدوا؟ · أين نظروا ولم يحجزوا؟ · أيّ ساعة أرادوها وكانت محجوزة؟ ولا تُقاس بأثر رجعي.</p>
       <div id="demandBody"></div>
     </section>
 
     <section class="ad-sec">
       <h2>قائمة العمل — حجوزات معلّقة</h2>
-      <p class="ad-sub">الأقدم أوّلًا، لأن الأقدم هو الأقرب إلى الضياع.
-        <strong>⚠️ الحجز المعلّق يحجز خانته</strong> — قيد القاعدة يمنع حجزًا آخر على
-        نفس الملعب والتاريخ والساعة ما دام معلّقًا، فالمعلّق الذي لا يُردّ عليه
-        لا يضيع وحده بل يمنع غيره.</p>
+      <p class="ad-sub">الأقدم أوّلًا. <strong>⚠️ المعلّق يحجز خانته</strong> فيمنع غيره عليها —
+        فالذي لا يُردّ عليه لا يضيع وحده.</p>
       
       <div class="ad-fchips" id="opsChips" role="group" aria-label="تصفية قائمة العمل">
         <button class="ad-fchip" type="button" data-opsf="all" aria-pressed="true">الكل</button>
@@ -793,11 +780,7 @@ html.dark .res .no{color:#FF8A90}
   
   <section class="ad-sec" id="paSec">
     <h2>طلبات انضمام وصلتك <span class="badge" id="paCount" hidden></span></h2>
-    <p class="ad-sub">تُملأ من نموذج «سجّل ملعبك» في صفحة أصحاب الملاعب.
-      <strong>الصفوف تحمل أرقام هواتف حقيقية</strong> ولا يقرؤها إلّا الأدمن —
-      لا سياسة قراءة على الجدول لغيره، والمفتاح العام لا يرى منه صفًّا واحدًا.
-      <strong>القبول</strong> يملأ نموذج «إضافة مكان» أدناه بما وصل كي تراجعه قبل الحفظ؛
-      و<strong>الرفض</strong> يُبقي الصفّ مع سببه — لا يمحوه — فيبقى جواب إن سأل صاحبه.</p>
+    <p class="ad-sub">من نموذج «سجّل ملعبك». <strong>القبول</strong> يملأ «إضافة مكان» أدناه كي تراجعه قبل الحفظ، و<strong>الرفض</strong> يُبقي الصفّ مع سببه.</p>
     <div id="paMsg"></div>
     <div id="paList"></div>
   </section>
@@ -815,16 +798,10 @@ html.dark .res .no{color:#FF8A90}
 
   <section class="ad-sec">
     <h2>إضافة مكان جديد</h2>
-    <p class="ad-sub">يُكتب المكان في القاعدة مباشرةً، ويظهر في <strong>التطبيق فور حفظه</strong>
-      (التطبيق يقرأ من القاعدة حيًّا). أمّا <strong>صفحات الموقع</strong> فتُولَّد وقت البناء ⇒
-      لن تظهر فيه حتى إعادة البناء والنشر. وكل ما تفعله هنا يُكتب في سجلّ التدقيق تلقائيًّا.</p>
-    <p class="ad-sub">📋 <strong>الحقول التي يصفّي بها التطبيق قوائمُ مغلقة لا كتابة حرّة</strong>
-      (المدينة · المنطقة · نوع الأرضية · الحجم · المرافق). السبب مقيس لا احتياطي:
-      التطبيق يبني شرائح التصفية من <strong>القيم المميّزة كما هي في القاعدة</strong>،
-      فحرفٌ واحد مختلف يصنع شريحتين. في القاعدة الآن <code>8x8</code> بـ«إكس» لاتينية
-      بينما البقيّة <code>×</code> — شريحتان لحجم واحد. ولكل قائمة خيار
-      <strong>«أخرى…»</strong> يفتح حقلًا حرًّا حين تحتاج قيمة جديدة فعلًا،
-      فيصير إدخالها <em>قرارًا</em> لا زلّة لوحة مفاتيح.</p>
+    <p class="ad-sub">يظهر في <strong>التطبيق فور حفظه</strong>، وعلى <strong>الموقع بعد إعادة البناء</strong>
+      (صفحاته مولَّدة وقت البناء). وكل ما تفعله هنا يدخل سجلّ التدقيق.</p>
+    <p class="ad-sub">📋 المدينة والمنطقة والأرضية والحجم والمرافق <strong>قوائم مغلقة</strong>:
+      حرفٌ واحد مختلف يصنع شريحة تصفية ثانية في التطبيق. و«أخرى…» لقيمة جديدة فعلًا.</p>
     <p class="frm-n" id="mig13Note" hidden></p>
     <div id="addRes"></div>
     
@@ -870,12 +847,7 @@ html.dark .res .no{color:#FF8A90}
       </div>
 
       <h3 class="frm-h">المرافق</h3>
-      <p class="frm-n">القيم الأربع هي <strong>كل ما يعرف التطبيق ترجمته</strong>:
-        <code>Free</code> ⇒ «مجاناً» · <code>Paid</code> ⇒ «برسوم» · <code>Available</code> ⇒ «متوفرة» ·
-        والفارغ لا تُعرض له أيقونة أصلًا. لذلك صارت قائمةً لا حقلًا حرًّا:
-        نصٌّ خارج هذه الأربع (‏«بأجرة» · «حتى 20 سيارة») <strong>يُعرَض كما كُتب حرفيًّا</strong>
-        وبالعربية وحدها — فيقرؤه مستخدم الإنجليزية عربيًّا، ويختلف مكانان عن بعضهما
-        في وصف الخدمة نفسها.</p>
+      <p class="frm-n">أربع قيم هي <strong>كل</strong> ما يترجمه التطبيق: مجاناً · برسوم · متوفرة · وفارغ. وما عداها يصل مستخدم الإنجليزية بالعربية.</p>
       <div class="frm">
         <label class="ad-f"><span>مياه</span>
           <select id="a_water" class="amen-sel"></select></label>
@@ -896,24 +868,8 @@ html.dark .res .no{color:#FF8A90}
 
       <div class="ad-step" data-step="2" hidden>
       <h3 class="frm-h">الملاعب داخل المكان *</h3>
-      <p class="frm-n">⚠️ <strong>مكان بلا ملعب واحد لا يظهر في التطبيق إطلاقًا</strong> —
-        التطبيق يُسقط الأماكن الفارغة عمدًا، فلا يرى اللاعب مكانًا لا يستطيع حجز شيء فيه.
-        ولذلك الملعب الأوّل إلزامي هنا. السعر بالساعة، والأوقات هي الخانات التي
-        سيراها اللاعب قابلة للحجز.</p>
-      <p class="frm-n">🏟️ <strong>الرياضة تُسجَّل على الملعب لا على المكان</strong>، فمجمّعٌ
-        واحد يضمّ ملعب كرة قدم وملعبَي بادل يُسجَّل مكانًا واحدًا كما هو في الواقع —
-        بلا تمزيقه إلى مكانين بنفس العنوان ونفس الهاتف. والتطبيق يعرض لكل رياضة
-        ملاعبَها وحدها.
-        <br>⚡ <strong>وهذا هو ما يفتح الرياضة للحجز.</strong> شارة «قريبًا» في التطبيق
-        ليست قيمة مكتوبة في الكود بل <strong>مشتقّة من وجود ملعب نشط</strong> —
-        فأوّل ملعب بادل تسجّله هنا يُنزل الشارة عن البادل ويفتحها للحجز عند أوّل تحديث،
-        بلا نشر نسخة جديدة من التطبيق.
-        <br>📐 و<strong>الأبعاد أرقام لا كلمات</strong> في كل رياضة (بادل <code>20×10</code>·
-        سلة <code>28×15</code>): التطبيق يعرض هذا الحقل <strong>حرفيًّا</strong> ويبني منه
-        شرائح تصفية، و«زوجي» كانت ستُقرأ عربيةً في الواجهة الإنجليزية. أمّا المعنى
-        (زوجي/فردي · كامل/نصف) فمحلّه <strong>المواصفات</strong> داخل الصفّ، ولها ترجمة
-        في اللغتين. وكل مواصفة تُترك «غير مسجَّلة» <strong>لا تُعرَض للاعب أصلًا</strong> —
-        لا تُخمَّن ولا يُخترَع لها نصّ.</p>
+      <p class="frm-n">⚠️ <strong>مكان بلا ملعب لا يظهر في التطبيق</strong>، فالملعب الأوّل إلزامي. السعر بالساعة، والأوقات هي ما يراه اللاعب قابلًا للحجز.</p>
+      <p class="frm-n">⚡ <strong>أوّل ملعب تسجّله برياضةٍ يفتحها للحجز</strong> — شارة «قريبًا» مشتقّة من وجود ملعب نشط لا مكتوبة في الكود. والأبعاد <strong>أرقام لا كلمات</strong>، والمعنى محلّه «المواصفات». وما يُترَك فارغًا لا يُعرَض.</p>
       <div id="fieldRows"></div>
       <button type="button" class="btn btn-sec" id="addRow">+ أضف ملعبًا آخر</button>
       <div class="frm-actions">
@@ -924,20 +880,15 @@ html.dark .res .no{color:#FF8A90}
 
       <div class="ad-step" data-step="3" hidden>
       <h3 class="frm-h">ربط مالك (اختياري)</h3>
-      <p class="frm-n">لا يوجد «حساب لاعب» و«حساب مالك» منفصلان — <strong>الحساب واحد</strong>،
-        و<code>role</code> هو ما يفرّق. فليسجّل صاحب الملعب في التطبيق تسجيلًا عاديًّا
-        (يُنشَأ <code>player</code>)، ثمّ اكتب رقمه هنا. إنشاء الحساب لا يجري من هذه الصفحة
-        (يحتاج <code>service_role</code> — نفس سبب امتناع إعادة تعيين كلمة السرّ).</p>
+      <p class="frm-n">ليسجّل صاحب الملعب في التطبيق أوّلًا، ثمّ اكتب رقمه هنا.
+        إنشاء الحساب لا يجري من هذه الصفحة.</p>
       <div class="frm">
         <label class="ad-f"><span>رقم هاتف المالك</span>
           <input id="f_owner" type="tel" inputmode="tel" dir="ltr" placeholder="07XXXXXXXX"></label>
         <label class="ad-f chk"><input id="f_promote" type="checkbox" checked>
           <span>ارفع دوره إلى <code>owner</code></span></label>
       </div>
-      <p class="frm-n">⚠️ <strong>الربط وحده لا يكفي لدخول لوحة المالك.</strong> «دخول المالك»
-        في التطبيق يرفض كل حساب دوره <code>player</code> مهما كان مربوطًا بمكان، فيقرأ
-        صاحبه رسالة «الرقم أو كلمة السر غلط» ولا يفهم السبب. لذلك يُرفع الدور مع الربط —
-        وهو تغيير صلاحية، فأزل العلامة إن لم ترده.</p>
+      <p class="frm-n">⚠️ <strong>الربط وحده لا يكفي:</strong> حسابٌ دوره <code>player</code> يُردّ بـ«الرقم أو كلمة السر غلط». لذلك يُرفع الدور معه — وهو تغيير صلاحية.</p>
 
       <div class="frm-actions">
         <button class="btn btn-sec" type="button" data-step-go="2">رجوع</button>
@@ -2442,6 +2393,15 @@ function fieldRowHtml(i, price, sport){
         '<select class="fr-sport">' + SPORT_OPTS + '</select></label>' +
       '<label class="ad-f"><span>اسم الملعب</span>' +
         '<input class="fr-name" value="ملعب ' + i + '" autocomplete="off"></label>' +
+      /* لمن الملعب (ترحيل 29). الافتراضي **«لم يُحدَّد»** لا «مشترك»: كتابة
+         «مشترك» على ما لم يقرّره أحد ترسل لاعبةً إلى ملعبٍ للرجال. */
+      '<label class="ad-f"><span>لمن الملعب</span>' +
+        '<select class="fr-gender">' +
+          '<option value="">لم يُحدَّد</option>' +
+          '<option value="men">رجال</option>' +
+          '<option value="women">سيدات</option>' +
+          '<option value="mixed">مشترك</option>' +
+        '</select></label>' +
       '<label class="ad-f"><span>الأبعاد (م)</span>' +
         '<select class="fr-size oth-sel">' + sizeOptsFor(sport) + '</select>' +
         '<input class="oth" hidden autocomplete="off" placeholder="أرقام لا كلمات — بعلامة × لا حرف x"></label>' +
@@ -2977,8 +2937,11 @@ $('#addForm').addEventListener('submit', function(e){
       ' لا يبدأ بـ<code>http</code> ⇒ التطبيق يُسقطه صامتًا. أوّلها: <code>' +
       esc(bad[0].slice(0,60)) + '</code>');
 
+    // '' = لم يُحدَّد ⇒ لا يُكتب العمود أصلًا (الغياب غياب — ترحيل 29)
+    var gender = r.querySelector('.fr-gender').value || '';
+
     rows.push({ name:fname, size:size, price:price, slots:slots,
-                sport:sport, attrs:attrs, image_url:imgs.join(',') });
+                sport:sport, gender:gender, attrs:attrs, image_url:imgs.join(',') });
   });
   if (!rows.length) errs.push('لا بدّ من ملعب واحد على الأقلّ.');
 
@@ -3027,8 +2990,13 @@ $('#addForm').addEventListener('submit', function(e){
     placeId = r.data[0].id;
     done.push('أُنشئ المكان <b>' + esc(name) + '</b> في ' + esc(city) + ' — ' + esc(region) + '.');
     var full = rows.map(function(f){
-      return { place_id:placeId, name:f.name, size:f.size, price:f.price, slots:f.slots,
-               active:true, image_url:f.image_url, sport:f.sport, attrs:f.attrs };
+      var o = { place_id:placeId, name:f.name, size:f.size, price:f.price, slots:f.slots,
+                active:true, image_url:f.image_url, sport:f.sport, attrs:f.attrs };
+      /* ⚠️ يُكتب المفتاح **فقط عند التصريح**: إرساله `null` قبل ترحيل 29 يردّ
+         `PGRST204` فيُسقط إنشاء الملاعب كلّه، وإرساله `null` بعده يساوي غيابه.
+         فالحذف عند الغياب يجعل النموذج يعمل على القاعدتين بلا فرع. */
+      if (f.gender) o.gender = f.gender;
+      return o;
     });
     return api('/rest/v1/fields', { method:'POST', prefer:'return=representation', body:full })
       .then(function(r){

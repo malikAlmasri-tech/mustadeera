@@ -1,47 +1,16 @@
 <section class="sec">
   <div class="wrap">
-    <span class="eyebrow">{{t.plEyebrow}}</span>
     <h1 class="h1-page">{{t.plTitle}}</h1>
     <p class="lead">{{t.plLead}}</p>
 
-    <!-- الدليل يُبنى من الصفوف المسجَّلة، وكلّها كرة قدم اليوم. القول بذلك هنا
-         يمنع القارئ من استنتاج أن المنصّة لكرة القدم وحدها — وهو استنتاج
-         سيقع حتمًا وقد صار الوعد أوسع في بقيّة الصفحات. -->
-    <p class="pl-note">{{t.plSportsNote}}</p>
-
-    <!-- التصفية تعمل على البطاقات الموجودة في الصفحة نفسها: لا استعلام ولا
-         شبكة، وتعمل بلا اتّصال. من لا يعمل عنده السكربت يرى القائمة كاملة
-         كما كانت — الأدوات تحسين لا شرط عرض. -->
-    <div class="pl-tools">
-      <div class="pl-search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-        <input type="search" id="pl-q" autocomplete="off" placeholder="{{t.plSearchPh}}" aria-label="{{t.plSearchPh}}">
-      </div>
-      {{placesChips}}
-      <!-- ترتيب ومدى سعر: أدوات التطبيق نفسها على البيانات نفسها — كانت
-           موجودة هناك وغائبة هنا، والأرقام مطبوعة في الصفحة أصلًا.
-           والأدوات **خاملة لا مخفيّة** بلا JS: من لا يعمل عنده السكربت يرى
-           القائمة كاملة كما يراها اليوم، وهو نفس سلوك حقل البحث القائم. -->
-      <div class="pl-sort" role="group" aria-label="{{t.plSortLabel}}">
-        <button class="pl-sortb" type="button" data-sort="default" aria-pressed="true">{{t.plSortDefault}}</button>
-        <button class="pl-sortb" type="button" data-sort="price-asc" aria-pressed="false">{{t.plSortPrice}}</button>
-        <button class="pl-sortb" type="button" data-sort="rating-desc" aria-pressed="false">{{t.plSortRating}}</button>
-      </div>
-      <div class="pl-range">
-        <label class="pl-range-l" for="pl-min">{{t.plPriceMin}}</label>
-        <input class="pl-range-i" id="pl-min" type="number" inputmode="numeric" min="0" step="5" placeholder="{{t.plAny}}">
-        <label class="pl-range-l" for="pl-max">{{t.plPriceMax}}</label>
-        <input class="pl-range-i" id="pl-max" type="number" inputmode="numeric" min="0" step="5" placeholder="{{t.plAny}}">
-      </div>
-    </div>
-
-    <p class="pl-count" data-tpl="{{t.plCountTpl}}" aria-live="polite">{{plCountInit}}</p>
-
-    <!-- القائمة مولَّدة وقت البناء من قاعدة البيانات — لا استعلام وقت الزيارة.
-         ما تراه هنا هو ما في القاعدة لحظة آخر نشر. -->
+    <!-- ⚠️ **أسماء لا بطاقات، وبلا أدوات** (بلاغ المالك 2026-08-12).
+         كان هنا بحثٌ وشرائح مناطق وترتيبٌ ومدى سعر فوق بطاقاتٍ تحمل المنطقة
+         والمدينة والنوع وعدد الملاعب والسعر والنجوم — ستّ أدوات وستّ حقائق
+         على **سبعة** ملاعب. والصفحة ليست مكان الحجز أصلًا (قرار ١): مهمّتها
+         أن يجد الزائر اسم ملعبه ويفتحه، والتفاصيل كلّها في صفحته.
+         ⚠️ ولا حذف لحقيقة: كل ما سقط من هنا **مطبوع كاملًا** في
+         `/places/<اسم>/` — المنطقة والنوع والأسعار والملاعب والتقييم. -->
     {{placesList}}
-
-    <p class="pl-empty">{{t.plEmpty}}</p>
 
     <p class="pl-updated">{{t.plUpdated}} {{buildStamp}} &middot; {{t.plLiveNote}}</p>
   </div>
