@@ -44,3 +44,11 @@ Thumbs.db
 # **مرّةً** إلى `site/static/downloads/` وقت البناء فيصير الموقع يخدمه بنفسه.
 *.apk
 site/static/downloads/
+
+# ── مخلَّفات Supabase CLI وفحوص المفاتيح المؤقّتة ──
+# ‏`.temp/` تكتبه الـCLI عند الربط (‏`linked-project.json`) — حالةُ أداةٍ محلّية
+# لا جزءٌ من المشروع. و`models.*` مخرَجُ فحصِ «أيّ نماذج يقبلها مفتاحي؟» الذي
+# يُشغَّل عند تشخيص دالّة الـAI؛ لا يحمل المفتاح لكنّه ضجيجٌ لا يُلتزَم.
+supabase/.temp/
+models.json
+models.txt

@@ -45,7 +45,21 @@ supabase secrets set GEMINI_API_KEY=AIza...
 
 مفتاح Gemini من [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — وفيه
 حصّة مجانية تكفي لوحةً يفتحها بضعة مُلّاك. و`OPENAI_API_KEY` مقبول بديلًا،
-و`AI_MODEL` يتجاوز النموذج الافتراضي (`gemini-2.0-flash`).
+و`AI_MODEL` يتجاوز النموذج الافتراضي (`gemini-flash-latest`).
+
+> ⚠️ **اسمُ النموذج يموت بطريقتين، لا بواحدة — مقيسٌ حيًّا 2026-08-13.**
+> ① `gemini-2.0-flash` (كان الافتراضي الأوّل) **أُوقف تمامًا**: `404 no longer
+> available`. ② التثبيتُ البديل `gemini-2.5-flash` **موجودٌ فعلًا** (يظهر في
+> `ListModels` لهذا المفتاح نفسه) و**محجوبٌ عن الحسابات الجديدة تحديدًا**:
+> `404 no longer available to new users`. الوجود في القائمة لا يعني الإذن
+> بالاستدعاء. والحلّ الذي وضعته جوجل لهذا القيد بالذات **اسمٌ من نوعٍ آخر**:
+> لاحقة `-latest` (‏`gemini-flash-latest`) تُشير دائمًا إلى أحدث لقطة مسموحة
+> لحسابك، فتنجو من القيدين معًا. **والعلاج بلا إعادة نشر في الحالتين:**
+> `supabase secrets set AI_MODEL=<الاسم الجديد>`.
+> ولمعرفة ما **يصله مفتاحك فعلًا** لا ما هو موجود في الكتالوج العام:
+> ```powershell
+> $key = "..."; Invoke-RestMethod "https://generativelanguage.googleapis.com/v1beta/models?key=$key" | Select-Object -ExpandProperty models | Select-Object name
+> ```
 
 **تحقّق بعدها:** افتح لوحة المالك ← تبويب «التقارير». المتوقّع توصياتٌ **تذكر أرقامك
 وأسماء ملاعبك وأيامك** — لا جملًا عامّة. وسطرُ «آخر تحديث» أسفلها.

@@ -74,8 +74,35 @@ const json = (body: unknown, status = 200) =>
     headers: { ...CORS, "Content-Type": "application/json" },
   });
 
+/* A pinned model name is a dated asset, not a constant — measured twice on
+ * 2026-08-13. First `gemini-2.0-flash` answered
+ *   404 "This model ... is no longer available. Please update your code"
+ * (a hard retirement). The obvious fix, pinning to the current flagship
+ * `gemini-2.5-flash`, hit a DIFFERENT 404 with near-identical wording:
+ *   404 "This model models/gemini-2.5-flash is no longer available to new
+ *        users. Please update your code to use a newer model"
+ * — not retired, but gated: `ListModels` on this exact key still returns it,
+ * so the snapshot exists, yet `generateContent` on it 404s for this key's
+ * account tier. Google's own fix for that gate is the SAME shape of name for
+ * a different reason: an alias, not a dated snapshot.
+ *
+ * So the pinned-default plan (see the old version of this comment, still
+ * worth knowing was tried and failed) is inverted: default to the alias
+ * `gemini-flash-latest`, which exists specifically to keep working across
+ * both failure modes above — retirement and the new-account gate — because
+ * it always resolves to whatever flash snapshot is currently unrestricted.
+ * The tradeoff accepted: output could drift slightly when Google repoints
+ * the alias, unlike a pinned snapshot. For a JSON-only owner-dashboard blurb
+ * this is worth it; a component with real regression risk from prompt drift
+ * would want a pin plus a monitored `AI_MODEL` override instead.
+ *
+ * `AI_MODEL` still overrides both this default AND the reasoning above
+ * without a redeploy — one `supabase secrets set` away.
+ * Confirm what a key can actually call (existence ≠ access — see above):
+ *   curl "https://generativelanguage.googleapis.com/v1beta/models?key=$KEY"
+ */
 function aiConfig() {
-  if (GEMINI) return { provider: "gemini" as const, key: GEMINI, model: MODEL || "gemini-2.0-flash" };
+  if (GEMINI) return { provider: "gemini" as const, key: GEMINI, model: MODEL || "gemini-flash-latest" };
   if (OPENAI) return { provider: "openai" as const, key: OPENAI, model: MODEL || "gpt-4o-mini" };
   return null;
 }
@@ -156,7 +183,20 @@ async function callModel(sys: string, usr: string): Promise<{ out: any | null; e
         body: JSON.stringify({
           system_instruction: { parts: [{ text: sys }] },
           contents: [{ role: "user", parts: [{ text: usr }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 1024, response_mime_type: "application/json" },
+          /* 8192, not 1024 — measured 2026-08-13. At 1024 the reviews panel
+           * succeeded and insights failed with `unparseable`, and the split is
+           * the giveaway: reviews asks for one ~50-word summary, insights for
+           * 3-5 objects of up to 46 words EACH. In Arabic that is far more
+           * tokens per word than the English the limit was eyeballed against,
+           * so the reply is cut mid-object; `parseModelJson` then finds an
+           * inner `}` from a finished element, feeds JSON.parse a truncated
+           * body and gets null. Nothing reports "too long" — a length ceiling
+           * fails as a syntax error two layers away from its cause.
+           * And the ceiling is now shared with THINKING tokens: the alias
+           * resolves to a reasoning-capable flash model whose internal tokens
+           * are billed against this same budget, so a small number can be
+           * spent entirely before one output character is emitted. */
+          generationConfig: { temperature: 0.4, maxOutputTokens: 8192, response_mime_type: "application/json" },
         }),
       };
     } else {
@@ -175,11 +215,25 @@ async function callModel(sys: string, usr: string): Promise<{ out: any | null; e
     const res = await withDeadline((signal) => fetch(url, { ...init, signal }), AI_DEADLINE_MS);
     if (!res.ok) return { out: null, err: `http_${res.status}: ${(await res.text()).slice(0, 160)}` };
     const body = await res.json();
+    /* JOIN the parts, don't take [0]. A reasoning model can return a thought
+     * part before the answer part, and `parts[0].text` would then hand the
+     * parser prose instead of the JSON that sits in a later part. */
     const text = cfg.provider === "gemini"
-      ? body?.candidates?.[0]?.content?.parts?.[0]?.text
+      ? (body?.candidates?.[0]?.content?.parts ?? []).map((p: any) => p?.text ?? "").join("")
       : body?.choices?.[0]?.message?.content;
     const out = parseModelJson(text);
-    return { out, err: out ? "" : "unparseable" };
+    /* A bare "unparseable" cost a full round trip with the owner to diagnose:
+     * it says the parse failed and nothing about WHY, while the two answers
+     * that matter — was it cut short, or was it refused — are sitting in the
+     * response we already hold. `finishReason` separates MAX_TOKENS from
+     * SAFETY from STOP-with-junk, and the head of the text shows whether we
+     * got prose, an empty string, or truncated JSON. Same lesson as the app's
+     * generic failure line: an error that does not name its cause moves the
+     * work from reading a message to reproducing a bug. */
+    if (out) return { out, err: "" };
+    const fin = body?.candidates?.[0]?.finishReason ?? body?.promptFeedback?.blockReason ?? "none";
+    const t = String(text ?? "");
+    return { out: null, err: `unparseable finish=${fin} len=${t.length} head=${t.slice(0, 90)}` };
   } catch (e) {
     return { out: null, err: String((e as Error)?.message || e).slice(0, 160) };
   }
