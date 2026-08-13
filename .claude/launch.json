@@ -8,6 +8,12 @@
       "port": 8012
     },
     {
+      "name": "koora-app-b",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8013", "--directory", "app/src"],
+      "port": 8013
+    },
+    {
       "name": "koora-site",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8020", "--directory", "public"],

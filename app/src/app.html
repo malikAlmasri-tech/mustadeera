@@ -801,7 +801,7 @@
       </div>
 
       <!-- ===== تبويب: الحجوزات ===== -->
-      <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" aria-labelledby="otab-bookings" tabindex="0" hidden>
+      <div class="owner-tab" id="ownerTab-bookings" role="tabpanel" aria-labelledby="otab-bookings" tabindex="0" hidden><div class="ov-seg bk-seg" id="ownerBkSegList" role="tablist" data-i18n-aria="bkViewAria" aria-label="شكل عرض الحجوزات" style="margin-bottom:12px"><button type="button" class="ov-btn is-on" role="tab" aria-selected="true" data-bkv="list" data-action="ownerBkView" data-i18n="bkViewList">قائمة</button><button type="button" class="ov-btn" role="tab" aria-selected="false" data-bkv="calendar" data-action="ownerBkView" data-i18n="otabCalendar">التقويم</button></div>
         <div class="card mb-card">
           <div class="section-title"><span data-i18n="filterBookings">فلترة الحجوزات</span></div>
           <input class="finput" id="ownerSearch" type="search" placeholder="بحث بالاسم أو رقم الهاتف..." data-i18n-ph="searchNamePhone" data-i18n-aria="ariaSearchBookings" aria-label="بحث في الحجوزات" style="margin-bottom:11px">
@@ -828,7 +828,7 @@
       </div>
 
       <!-- ===== تبويب: التقويم ===== -->
-      <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" aria-labelledby="otab-calendar" tabindex="0" hidden>
+      <div class="owner-tab" id="ownerTab-calendar" role="tabpanel" aria-labelledby="otab-bookings" tabindex="0" hidden><div class="ov-seg bk-seg" id="ownerBkSegCal" role="tablist" data-i18n-aria="bkViewAria" aria-label="شكل عرض الحجوزات" style="margin-bottom:12px"><button type="button" class="ov-btn is-on" role="tab" aria-selected="true" data-bkv="list" data-action="ownerBkView" data-i18n="bkViewList">قائمة</button><button type="button" class="ov-btn" role="tab" aria-selected="false" data-bkv="calendar" data-action="ownerBkView" data-i18n="otabCalendar">التقويم</button></div>
         <div class="cal-head">
           <button class="cal-nav" data-action="calPrev" data-i18n-aria="calPrevAria" aria-label="الشهر السابق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
           <div class="cal-title" id="calTitle">—</div>
@@ -848,7 +848,7 @@
       <!-- ===== تبويب: التقارير ===== -->
       <!-- ⚠️ `region` لا `tabpanel`: التقارير خرجت من الشريط ⇒ لا تبويب يسمّيها.
            وبلا زرّ رجوع تصير الصفحة مصيدةً (شريط المالك لا يحمل خانتها). -->
-      <div class="owner-tab" id="ownerTab-reports" role="region" data-i18n-aria="otabReports" aria-label="التقارير" tabindex="0" hidden>
+      <div class="owner-tab" id="ownerTab-reports" role="tabpanel" aria-labelledby="otab-reports" tabindex="0" hidden>
         <div class="sec-title" style="padding:0 0 12px">
           <span data-i18n="otabReports">التقارير</span>
           <button type="button" class="link" data-otab="today" data-i18n="backToToday">رجوع إلى اليوم</button>
@@ -1495,9 +1495,7 @@
     <button type="button" class="nitem" id="otab-bookings" data-otab="bookings" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-bookings">
       <div class="nicon"><svg viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3.5 6h.01"/><path d="M3.5 12h.01"/><path d="M3.5 18h.01"/></svg></div><span data-i18n="otabBookings">الحجوزات</span>
     </button>
-    <button type="button" class="nitem" id="otab-calendar" data-otab="calendar" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-calendar">
-      <div class="nicon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/></svg></div><span data-i18n="otabCalendar">التقويم</span>
-    </button>
+    <button type="button" class="nitem" id="otab-reports" data-otab="reports" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-reports"><div class="nicon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15v3"/><path d="M12 10v8"/><path d="M17 6v12"/></svg></div><span data-i18n="otabReports">التقارير</span></button>
     <button type="button" class="nitem" id="otab-fields" data-otab="fields" role="tab" aria-selected="false" tabindex="-1" aria-controls="ownerTab-fields">
       <div class="nicon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M12 5v14"/><circle cx="12" cy="12" r="2.5"/></svg></div><span data-i18n="otabFields">الملاعب</span>
     </button>

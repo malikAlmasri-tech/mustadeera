@@ -143,8 +143,8 @@ const I18N = {
     notifsTitle:'الإشعارات', notifsAria:'الإشعارات', notifsEmpty:'لا إشعارات بعد',
     notifsEmptySub:'هنا يصلك ردّ الملعب على طلبك، وتصل صاحبَ الملعب طلباتُ الحجز الجديدة.',
     notifsMarkAll:'علّم الكل كمقروء', notifsNew:'جديد',
-    notifsOff:'الإشعارات غير مُفعّلة على الخادم بعد',
-    notifsOffSub:'ترحيل ١٤ لم يُشغَّل. كل شيء يعمل عدا الإشعارات.',
+    notifsOff:'تابع طلبك من «حجوزاتي»',
+    notifsOffSub:'الإشعارات لسّه ما اشتغلت عنّا. حالة كل طلب وردّ الملعب بتلاقيها محدّثة في «حجوزاتي».',
     notifsPermTitle:'تفعيل الإشعارات', notifsPermAsk:'نُعلمك فور ردّ الملعب على طلبك.',
     ntfNewTitle:'طلب حجز جديد', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'تأكّد حجزك', ntfConfirmedBody:'{place} — {field} · {day} {time}',
@@ -189,11 +189,12 @@ const I18N = {
     bookingsTitle:'حجوزاتي', bookingsSub:'كل حجوزاتك في مكان واحد',
     grpUpcoming:'الحجوزات القادمة', grpPending:'بانتظار التأكيد', grpPast:'الحجوزات السابقة', grpCancelled:'ملغاة / مرفوضة',
     otabToday:'اليوم', otabBookings:'الحجوزات', otabCalendar:'التقويم', otabFields:'الملاعب', otabReports:'التقارير',
+    bkViewList:'قائمة', bkViewAria:'شكل عرض الحجوزات',
     reportsEntrySub:'الأرباح · الإشغال · الرسوم البيانية · المساعد الذكيّ', backToToday:'رجوع إلى اليوم',
     chooseFirst:'اختر الملعب أولاً.', chooseDayMsg:'اختر اليوم المناسب.', chooseTimeMsg:'اختر وقتاً متاحاً للمتابعة.',
     bookingConflict:'سبقك إليه فريق آخر قبل لحظات! اختر وقتاً آخر — ولا تتردد هذه المرة.',
     bookingSent:'وصل طلبك! الحجز الآن بانتظار تأكيد إدارة الملعب.', langSwitch:'EN', today:'اليوم', tomorrow:'غداً',
-    noResultsTitle:'لا توجد نتائج مطابقة', noResultsSub:'حتى أفضل المهاجمين تفوتهم تسديدة — غيّر المنطقة أو السعر، أو امسح الفلاتر وحاول مجدداً.', noResultsSubPlain:'لا توجد ملاعب متاحة حالياً.', clearFiltersBtn:'مسح كل الفلاتر',
+    noResultsTitle:'لا توجد نتائج مطابقة', noResultsSub:'حتى أفضل المهاجمين تفوتهم تسديدة — غيّر المنطقة أو السعر، أو امسح الفلاتر وحاول مجدداً.', noResultsSubPlain:'ما في ملاعب معروضة هلّق. اسحب الشاشة لتحديثها، أو جرّب رياضة ثانية.', clearFiltersBtn:'مسح كل الفلاتر',
     regionLbl:'المنطقة', filtersTitle:'الفلاتر والترتيب', filtersSub:'ضيّق نتائجك: المنطقة، السعر، الحجم، نوع الأرضية، أو التقييم.', addManual:'إضافة حجز خارجي', externalBooking:'حجز خارجي',
     apiTimeout:'استغرق الاتصال وقتاً أطول من المعتاد. حاول مرة أخرى.', apiError:'حدث خطأ في الاتصال، حاول مرة أخرى.', apiCached:'نعرض بيانات محفوظة مؤقتاً — قد تحتاج الأوقات إلى تحديث.', timesUpdateFail:'تعذّر تحديث الأوقات حالياً.',
     statusConfirmed:'مؤكد', statusPending:'قيد المعالجة', statusCancelled:'ملغى', statusRejected:'مرفوض', statusInProgress:'المباراة جارية الآن',
@@ -250,14 +251,19 @@ const I18N = {
     onbCreateAccount:'إنشاء حساب جديد', onbOwnerEnter:'دخول لوحة المالك',
     onbOwnerNote:'أدِر ملاعبك وحجوزاتك وأسعارك من مكان واحد.', onbTerms:'بالمتابعة أنت توافق على الشروط وسياسة الخصوصية.',
     onbEyebrow:'حجز الملاعب الرياضية', introTag:'احجز ملعبك',
-    /* شاشات الترحيب — أوّل تشغيل فقط. لا رقم ولا وعد: الشريحة الثانية تقول
-       «الحجز طلب» **قبل** أوّل حجز لا بعد خيبته، وهي سبب وجود الشاشات أصلًا. */
-    onbS1T:'احجز بلا مكالمات',
-    onbS1B:'شوف الفاضي والسعر، وابعث طلبك.',
-    onbS2T:'طلبك ينتظر ردّ الملعب',
-    onbS2B:'الحجز طلب — بيتأكّد لمّا الملعب يوافق، وبنعلمك أوّل ما يردّ.',
-    onbS3T:'السعر والوقت الفاضي قدّامك',
-    onbS3B:'كل ساعة وسعرها قدّامك قبل ما تحجز.',
+    /* شاشات الترحيب — أوّل تشغيل فقط. لا رقم ولا وعد.
+       ⚠️ **الترتيب قصّة لا قائمة حقائق.** كان: فائدة ⇒ قيد ⇒ فائدة، فيقع
+          «الحجز طلب ينتظر» في منتصف القمع مطبًّا بين بشارتين — وكانت الأولى
+          والثالثة تقولان الشيء نفسه («شوف الفاضي والسعر») مرّتين. الآن ثلاث
+          خطوات متتابعة: **تصفَّح ⇒ ابعث ⇒ يوصلك الردّ**. ولا حقيقة سقطت:
+          «الحجز طلب يوافق عليه الملعب» ما زالت مكتوبةً بالحرف — لكنّها صارت
+          **خاتمة المسار** لا عقبةً في وسطه: الردّ يصلك، لا أنت تنتظره. */
+    onbS1T:'شوف الفاضي والسعر قبل ما تحجز',
+    onbS1B:'كل ساعة وسعرها قدّامك — بلا مكالمة ولا سؤال.',
+    onbS2T:'ابعث طلبك بضغطة',
+    onbS2B:'اختر يومك ووقتك وابعث — وخلص، ما في انتظار على الخطّ.',
+    onbS3T:'الملعب يوافق، وبنعلمك',
+    onbS3B:'أوّل ما يردّوا بيوصلك خبر، وحالة طلبك دايماً في «حجوزاتي».',
     onbS4T:'ناقصك لاعبين؟',
     onbS4B:'انشر مقاعدك بعد تأكيد الملعب، واللي بالتطبيق بينضمّ.',
     onbSkip:'تخطٍّ', onbNext:'التالي', onbStart:'يلا نبلّش',
@@ -319,8 +325,8 @@ const I18N = {
     aiReviewTitle:'ملخّص التقييمات', aiReviewSub:'قراءة ذكية لتقييمات اللاعبين: ما الذي يعجبهم وما الذي يشتكون منه.',
     aiRegenerate:'تحديث التحليل', aiWeatherTitle:'تنبيه الطقس والتسعير',
     aiFail:'تعذّر توليد التحليل حالياً — جرّب «تحديث التحليل» بعد قليل.',
-    aiNotConfigured:'ينقصه المفتاح: اضبط GEMINI_API_KEY في أسرار Supabase.',
-    aiNotDeployed:'غير منشور بعد: supabase functions deploy ai ثمّ اضبط المفتاح.',
+    aiNotConfigured:'المساعد الذكي لسّه ما اشتغل — والتوصيات تحت محسوبة من أرقامك أنت.',
+    aiNotDeployed:'المساعد الذكي لسّه ما اشتغل — والتوصيات تحت محسوبة من أرقامك أنت.',
     aiNeedHistory:'عندك {n} من الأيام فيها حجوزات، والحدّ سبعة — أقلّ من ذلك صدفة لا نمط.',
     aiNoPlace:'حسابك غير مربوط بمكان بعد — لا أرقام تُحلَّل.',
     aiComputedLbl:'تحليل محسوب من أرقامك (بلا ذكاء اصطناعي)',
@@ -354,7 +360,7 @@ const I18N = {
     rsSave:'حفظ الموعد الجديد', rsPickTime:'اختر وقتاً جديداً أولاً',
     rsOk:'تم تعديل موعد حجزك', rsFail:'تعذّر تعديل الموعد', rsErr:'حدث خطأ أثناء تعديل الموعد',
     rsNoField:'تعذّر جلب أوقات هذا الملعب — لا يمكن تعديل الموعد الآن.',
-    rsNotReady:'تعديل الموعد غير مُفعّل على الخادم بعد — تواصل مع إدارة الملعب لتغيير موعدك.',
+    rsNotReady:'تغيير الموعد من التطبيق لسّه ما اشتغل. كلّم إدارة الملعب وبيعدّلوه إلك.',
     // ---- (٢) ندرة الأوقات — تظهر فقط حين يبقى وقت أو وقتان فعلاً ----
     scarce1:'ما بقي إلا وقت واحد في هذا اليوم!', scarce2:'ما بقي إلا وقتان في هذا اليوم!',
     // ---- (٣) حذف الحساب ----
@@ -395,7 +401,7 @@ const I18N = {
     // الحالة الصادقة: لا مزوّد رسائل بعد ⇒ لا كود يصل، ولا نتظاهر بإرساله
     vfNoProviderTitle:'إرسال الأكواد غير مُفعّل بعد',
     vfNoProvider:'خدمة الرسائل لسا ما اتوصّلت. حسابك شغّال وبتقدر تحجز عادي.',
-    vfNotReady:'تأكيد الرقم غير مُفعّل على الخادم بعد. حسابك شغّال وتقدر تحجز عادي.',
+    vfNotReady:'تأكيد الرقم لسّه ما اشتغل — وما بيوقّفك: حسابك شغّال وتقدر تحجز عادي.',
     vfAlready:'رقمك مؤكَّد من قبل',
     vfContinue:'أكمل', vfTooSoon:'استنّى شوي قبل ما تطلب كود جديد',
     // شارة الحالة في «حسابي»
@@ -432,7 +438,7 @@ const I18N = {
     deadlineOver:'فاتت مهلة الردّ',
     otSoonestFirst:'الأقرب لانقضاء مهلته أوّلاً',
     expirySweepNote:'الطلب اللي بتفوت مهلته بينلغي عند أوّل فتح للوحة — مش لحظة بلحظة — وبترجع خانته متاحة.',
-    expirySweepOff:'الانقضاء التلقائي غير مُفعّل (ترحيل 15) — الطلب بيضلّ معلّقاً حتى تردّ عليه.',
+    expirySweepOff:'ما في انتهاء تلقائي للطلبات — بتضلّ معلّقة لحدّ ما تردّ. وردّك السريع بيفضّي الخانة لغيره.',
     // ---- (١١ج) لم يحضر ----
     noShowBtn:'لم يحضر', noShowUndoBtn:'تراجع عن «لم يحضر»',
     noShowBadge:'لم يحضر',
@@ -443,7 +449,7 @@ const I18N = {
     noShowOk:'تم التسجيل', noShowUndone:'تم التراجع',
     noShowTooEarly:'ما فينا نسجّل «لم يحضر» قبل ما ينتهي وقت الخانة.',
     noShowForbidden:'هذا الحجز مش تبع ملعبك.',
-    noShowNotReady:'تسجيل عدم الحضور غير مُفعّل على الخادم بعد — شغّل الترحيل 16.',
+    noShowNotReady:'تسجيل «ما حضر» لسّه ما اشتغل عنّا. الحجز بيضلّ مؤكّداً، والتحصيل بينك وبين اللاعب.',
     noShowFail:'تعذّر الحفظ، جرّب كمان مرة',
     econNoShow:'لم يحضروا', econNoShowSub:'خانة انباعت وما انلعبت — لا هي ضائعة ولا هي إيراد عادي',
     // ---- (١٢أ) إغلاق يوم — ما يراه اللاعب ----
@@ -470,7 +476,7 @@ const I18N = {
     closePendingWarn:'وفي طلبات معلّقة على هذا اليوم — ردّ عليها.',
     closeForbidden:'هذا الملعب مش تابع لحسابك.',
     closePast:'ما بتقدر تسكّر يوماً راح.',
-    closeNotReady:'إغلاق الأيام غير مُفعّل على الخادم بعد — شغّل الترحيل 17.',
+    closeNotReady:'إغلاق الأيام لسّه ما اشتغل عنّا. لأي ظرف طارئ، تواصل مع أصحاب الحجوزات مباشرة.',
     closeFail:'تعذّر الحفظ، جرّب كمان مرة',
     closeNeedHours:'اختار ساعة البداية والنهاية.',
     // ---- (١٢ب) التسعير ----
@@ -486,7 +492,7 @@ const I18N = {
     ruleNeedPrice:'اكتب سعراً.', ruleNeedHours:'اختار ساعة البداية والنهاية، أو خلّيهما فاضيتين للكل.',
     ruleAdded:'تمت إضافة القاعدة', ruleDeleted:'تم حذف القاعدة',
     ruleFail:'تعذّر الحفظ، جرّب كمان مرة',
-    pricingNotReady:'التسعير بالساعة غير مُفعّل على الخادم بعد — شغّل الترحيل 18. السعر الأساسي شغّال عادي.',
+    pricingNotReady:'التسعير بالساعة لسّه ما اشتغل عنّا — وسعر ملعبك الأساسي شغّال على كل الساعات عادي.',
     priceGridTitle:'النتيجة — سبعة أيام',
     priceGridSub:'هذا ما سيراه اللاعب فعلاً. الفارغ = السعر الأساسي للملعب.',
     priceGridBase:'الأساسي {v}',
@@ -503,7 +509,7 @@ const I18N = {
     watchDone:'رح ننبّهك',
     watchOk:'سجّلنا طلبك. إذا انلغى هذا الحجز بنبعثلك إشعار.',
     watchFail:'تعذّر التسجيل، جرّب كمان مرة',
-    watchNotReady:'التنبيه غير مُفعّل على الخادم بعد.',
+    watchNotReady:'التنبيه لسّه ما اشتغل عنّا. تابع أوقات هذا الملعب من صفحته — بتتحدّث أوّل بأوّل.',
     // ---- (١٤) المباريات المفتوحة ----
     modeAria:'ملاعب أو مباريات', modeVenues:'ملاعب', modeGames:'مباريات',
     modeGamesTitle:'مباريات ناقصها لاعبين',
@@ -553,7 +559,7 @@ const I18N = {
     joinTermOff:'إذا ألغى المضيف أو رفض الملعب، بتنتهي قبل ما تبلّش وبيوصلك إشعار — وما دفعت إشي.',
     joinTermLeave:'بتقدر تنسحب بأي وقت من «حجوزاتي» — ومقعدك بيرجع فوراً.',
     gmOwnerUpTo:'حتى {n} من اللاعبين', gmOwnerNote:'مسؤوليتك ما تغيّرت: حجز واحد وصاحب حجز واحد، وهو اللي بيدفع. وترتيب اللاعبين بينهم.',
-    gmNotReady:'المباريات المفتوحة غير مُفعّلة على الخادم بعد — شغّل الترحيل 22.',
+    gmNotReady:'المباريات المفتوحة لسّه ما فتحت عنّا. احجز ملعبك عادي، ولمّا تفتح رح تلاقيها هون.',
     gmErrGeneric:'صار خطأ، حاول كمان مرة',
     gmErrAuth:'سجّل دخولك أول', gmErrMissing:'ما لقينا هالمباراة',
     gmErrNotOpen:'هالمباراة ما عادت مفتوحة', gmErrPast:'موعد المباراة راح',
@@ -633,8 +639,8 @@ const I18N = {
     notifsTitle:'Notifications', notifsAria:'Notifications', notifsEmpty:'No notifications yet',
     notifsEmptySub:'The venue’s reply to your request lands here — and new booking requests land with the venue owner.',
     notifsMarkAll:'Mark all as read', notifsNew:'New',
-    notifsOff:'Notifications are not enabled on the server yet',
-    notifsOffSub:'Migration 14 has not run. Everything works except notifications.',
+    notifsOff:'Follow your request under “My bookings”',
+    notifsOffSub:'Notifications are not running yet. Every request and every venue reply stays up to date under “My bookings”.',
     notifsPermTitle:'Turn on notifications', notifsPermAsk:'We’ll tell you the moment the venue replies to your request.',
     ntfNewTitle:'New booking request', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'Your booking is confirmed', ntfConfirmedBody:'{place} — {field} · {day} {time}',
@@ -670,11 +676,12 @@ const I18N = {
     bookingsTitle:'My bookings', bookingsSub:'All your bookings in one place',
     grpUpcoming:'Upcoming bookings', grpPending:'Awaiting confirmation', grpPast:'Past bookings', grpCancelled:'Cancelled / Rejected',
     otabToday:'Today', otabBookings:'Bookings', otabCalendar:'Calendar', otabFields:'Fields', otabReports:'Reports',
+    bkViewList:'List', bkViewAria:'Bookings view',
     reportsEntrySub:'Profit · occupancy · charts · AI advisor', backToToday:'Back to Today',
     chooseFirst:'Choose the field first.', chooseDayMsg:'Choose a suitable day.', chooseTimeMsg:'Choose an available time to continue.',
     bookingConflict:'Another team beat you to it moments ago! Pick another time — and don’t hesitate twice.',
     bookingSent:'Your request was sent! It awaits the field’s confirmation.', langSwitch:'العربية', today:'Today', tomorrow:'Tomorrow',
-    noResultsTitle:'No matching fields', noResultsSub:'Even the best strikers miss a shot — change the area or price, or clear the filters and try again.', noResultsSubPlain:'No fields available right now.', clearFiltersBtn:'Clear all filters',
+    noResultsTitle:'No matching fields', noResultsSub:'Even the best strikers miss a shot — change the area or price, or clear the filters and try again.', noResultsSubPlain:'Nothing on show right now. Pull to refresh, or try another sport.', clearFiltersBtn:'Clear all filters',
     regionLbl:'Region', filtersTitle:'Filters & sorting', filtersSub:'Narrow your results: region, price, size, surface type, or rating.', addManual:'Add external booking', externalBooking:'External booking',
     apiTimeout:'The connection took longer than expected. Please try again.', apiError:'A connection error occurred, please try again.', apiCached:'Showing temporarily cached data; times may need refreshing.', timesUpdateFail:'Couldn’t update the times right now.',
     statusConfirmed:'Confirmed', statusPending:'Processing', statusCancelled:'Cancelled', statusRejected:'Rejected', statusInProgress:'Playing now',
@@ -731,12 +738,12 @@ const I18N = {
     onbCreateAccount:'Create new account', onbOwnerEnter:'Owner dashboard login',
     onbOwnerNote:'Manage your venues, bookings and prices in one place.', onbTerms:'By continuing you agree to the Terms and Privacy Policy.',
     onbEyebrow:'Sports venue booking', introTag:'Book your venue',
-    onbS1T:'Book without a phone call',
-    onbS1B:'See what is free and what it costs, then send your request.',
-    onbS2T:'Your request waits for the venue',
-    onbS2B:'A booking is a request - confirmed when the venue approves, and we tell you the moment they reply.',
-    onbS3T:'Prices and free times up front',
-    onbS3B:'Every hour and its price, in front of you before you book.',
+    onbS1T:'See what is free, and what it costs',
+    onbS1B:'Every hour and its price, up front - no call, no asking around.',
+    onbS2T:'Send your request in one tap',
+    onbS2B:'Pick your day and time and send. No waiting on the line.',
+    onbS3T:'The venue approves, and we tell you',
+    onbS3B:'You hear the moment they reply, and your request is always under “My bookings”.',
     onbS4T:'Short on players?',
     onbS4B:'Publish your seats once the venue confirms, and players here join.',
     onbSkip:'Skip', onbNext:'Next', onbStart:'Get started',
@@ -798,8 +805,8 @@ const I18N = {
     aiReviewTitle:'AI Review Summary', aiReviewSub:'A smart read of player reviews: what they love and what they complain about.',
     aiRegenerate:'Refresh analysis', aiWeatherTitle:'Weather & Pricing Alert',
     aiFail:'Couldn’t generate the analysis right now — try “Refresh analysis” in a bit.',
-    aiNotConfigured:'Missing key: set GEMINI_API_KEY in your Supabase secrets.',
-    aiNotDeployed:'Not deployed yet: supabase functions deploy ai, then set the key.',
+    aiNotConfigured:'The smart assistant is not live yet - the tips below are computed from your own numbers.',
+    aiNotDeployed:'The smart assistant is not live yet - the tips below are computed from your own numbers.',
     aiNeedHistory:'You have {n} days with bookings; seven is the floor - less than that is chance, not a pattern.',
     aiNoPlace:'Your account isn’t linked to a venue yet — there are no numbers to analyse.',
     aiComputedLbl:'Computed from your own numbers (no AI)',
@@ -831,7 +838,7 @@ const I18N = {
     rsSave:'Save new time', rsPickTime:'Pick a new time first',
     rsOk:'Your booking time was changed', rsFail:'Couldn’t change the time', rsErr:'An error occurred while changing the time',
     rsNoField:'Couldn’t load this field’s schedule — rescheduling isn’t possible right now.',
-    rsNotReady:'Rescheduling isn’t enabled on the server yet — contact the venue to move your booking.',
+    rsNotReady:'Rescheduling from the app is not live yet. Call the venue and they will move it for you.',
     // ---- (2) Slot scarcity — shown only when 1 or 2 slots are genuinely free ----
     scarce1:'Only one slot left on this day!', scarce2:'Only two slots left on this day!',
     // ---- (3) Delete account ----
@@ -870,7 +877,7 @@ const I18N = {
     vfWhy:'The venue calls this number to confirm your booking. One wrong digit means a booking nobody can confirm.',
     vfNoProviderTitle:'Code sending isn’t switched on yet',
     vfNoProvider:'The SMS service is not connected yet. Your account works and you can book normally.',
-    vfNotReady:'Number confirmation isn’t enabled on the server yet. Your account works and you can book as normal.',
+    vfNotReady:'Number confirmation is not live yet - and it does not hold you up: your account works and you can book as normal.',
     vfAlready:'Your number is already confirmed',
     vfContinue:'Continue', vfTooSoon:'Please wait a moment before asking for a new code',
     accPhoneVerified:'Number confirmed', accPhoneUnverified:'Number not confirmed', accVerifyNow:'Confirm now',
@@ -903,7 +910,7 @@ const I18N = {
     deadlineOver:'Reply deadline passed',
     otSoonestFirst:'Closest to expiring first',
     expirySweepNote:'A request past its deadline is cancelled when the dashboard is next opened — not minute by minute — and its slot opens up again.',
-    expirySweepOff:'Auto-expiry is not enabled (migration 15) - requests stay pending until you answer.',
+    expirySweepOff:'There is no automatic expiry - requests stay pending until you answer. A quick reply frees the slot for someone else.',
     // ---- (11c) No-show ----
     noShowBtn:'No-show', noShowUndoBtn:'Undo no-show',
     noShowBadge:'No-show',
@@ -914,7 +921,7 @@ const I18N = {
     noShowOk:'Recorded', noShowUndone:'Undone',
     noShowTooEarly:'A no-show cannot be recorded before the slot has ended.',
     noShowForbidden:'This booking does not belong to your venue.',
-    noShowNotReady:'No-show recording isn’t enabled on the server yet — run migration 16.',
+    noShowNotReady:'No-show recording is not live yet. The booking stays confirmed, and collecting is between you and the player.',
     noShowFail:'Couldn’t save, please try again',
     econNoShow:'No-shows', econNoShowSub:'Sold but not played — neither lost nor plain revenue',
     // ---- (12a) Closing a day — what the player sees ----
@@ -941,7 +948,7 @@ const I18N = {
     closePendingWarn:'And there are pending requests on this day — answer them.',
     closeForbidden:'This field does not belong to your venue.',
     closePast:'You cannot close a day that has passed.',
-    closeNotReady:'Closing days isn’t enabled on the server yet — run migration 17.',
+    closeNotReady:'Closing days is not live yet. For anything urgent, contact the players who booked directly.',
     closeFail:'Couldn’t save, please try again',
     closeNeedHours:'Pick a start hour and an end hour.',
     // ---- (12b) Pricing ----
@@ -957,7 +964,7 @@ const I18N = {
     ruleNeedPrice:'Enter a price.', ruleNeedHours:'Pick a start and an end hour, or leave both empty for all hours.',
     ruleAdded:'Rule added', ruleDeleted:'Rule deleted',
     ruleFail:'Couldn’t save, please try again',
-    pricingNotReady:'Hourly pricing isn’t enabled on the server yet — run migration 18. The base price works as usual.',
+    pricingNotReady:'Hourly pricing is not live yet - your base price applies to every hour as usual.',
     priceGridTitle:'The result — seven days',
     priceGridSub:'This is what the player will actually see. Blank = the field’s base price.',
     priceGridBase:'Base {v}',
@@ -974,7 +981,7 @@ const I18N = {
     watchDone:'We’ll tell you',
     watchOk:'Noted. If this booking is cancelled we will send you a notification.',
     watchFail:'Couldn’t save, please try again',
-    watchNotReady:'Slot alerts aren’t enabled on the server yet.',
+    watchNotReady:'Slot alerts are not live yet. Keep an eye on this venue’s page - times refresh as they change.',
     // ---- (14) Open matches ----
     modeAria:'Venues or matches', modeVenues:'Venues', modeGames:'Matches',
     modeGamesTitle:'Matches short of players',
@@ -1020,7 +1027,7 @@ const I18N = {
     joinTermOff:'If the host cancels or the venue declines, it ends before it starts and you are notified - and you paid nothing.',
     joinTermLeave:'You can withdraw any time from “My bookings” - your seat returns immediately.',
     gmOwnerUpTo:'up to {n} players', gmOwnerNote:'Nothing changes for you: one booking, one holder, and they pay. The players sort themselves out.',
-    gmNotReady:'Open matches aren’t enabled on the server yet — run migration 22.',
+    gmNotReady:'Open matches are not live yet. Book your venue as usual - when they open, you will find them here.',
     gmErrGeneric:'Something went wrong, please try again',
     gmErrAuth:'Please log in first', gmErrMissing:'We couldn’t find that match',
     gmErrNotOpen:'That match is no longer open', gmErrPast:'That match has already started',
@@ -1231,6 +1238,23 @@ const FIELD_SPECS_COMMON = [
 ];
 const specsFor = (sport) => [...(FIELD_SPECS[sport] || FIELD_SPECS.football), ...FIELD_SPECS_COMMON];
 const fieldSport = (f) => SPORT_KEYS.includes(f && f.sport) ? f.sport : 'football';
+
+/* ── لمن الملعب (ترحيل 29) ──
+   مفردات **مغلقة**، ونسختها قيدٌ في القاعدة (`fields_gender_chk`) — قيمةٌ رابعة
+   تعني تعديل الاثنين معًا. وهذه الأربعة هي كل ما تعرفه الواجهة عن الجنس.
+
+   🔴 **والغياب غيابٌ لا «مشترك».** عمودٌ `null` — أو ترحيلٌ لم يُشغَّل فالعمود
+      `undefined` أصلًا — يُقرأ `''`: لا شارة تُعرَض، ولا يدخل الملعبُ نتيجةَ
+      تصفيةٍ بجنسٍ بعينه. افتراضُ «مشترك» على صفٍّ لم يقل عنه أحدٌ شيئًا يُرسل
+      لاعبةً إلى ملعبٍ للرجال على وعدٍ لم يقطعه أحد (م5).
+
+   ⚠️ و`genderDeclared` تُبنى من `State.places` لا `allPlaces` — نفس أساس
+      `distinctSizes`/`distinctTypes` بالضبط: الورقة تصفّي **المعروض** بعد قصّ
+      الرياضة، فمرشِّحٌ مبنيٌّ على ملاعبٍ مقصوصة يعرض خيارًا لا يطابق شيئًا. */
+const GENDERS = ['men','women','mixed'];
+const fieldGender = (f) => GENDERS.includes(f && f.gender) ? f.gender : '';
+const genderLabel = (g) => t('gender_' + g);
+const genderDeclared = () => State.places.some(p => (p.fields||[]).some(f => fieldGender(f)));
 
 /* الشرائح المعروضة لملعب واحد: قيمة معروفة + ترجمة موجودة + ليست المخفيّة.
    تُعيد [{key,label,text}] — والواجهة لا تعرف بمفتاح لم يمرّ من هنا. */
@@ -1635,6 +1659,9 @@ const sbField = (f) => ({
   field_id: String(f.id), place_id: String(f.place_id), field_name: f.name, size: f.size,
   price: Number(f.price||0), slots: sbSlotsToText(f.slots), active: !!f.active, image_url: f.image_url || '',
   sport: fieldSport(f),
+  /* ترحيل 29. قبله لا وجود للعمود ⇒ `undefined` ⇒ `fieldGender` تقرؤها `''`
+     ⇒ لا شارة ولا مرشِّح — أي سلوك اليوم بالحرف، بلا فرعٍ ولا رسالة. */
+  gender: f.gender || '',
   attrs: (f.attrs && typeof f.attrs === 'object' && !Array.isArray(f.attrs)) ? f.attrs : {}
 });
 const sbPlace = (p, stat) => ({
@@ -2576,7 +2603,7 @@ const State = {
   player: null, owner: null, ownerData: null, guest: false,
   filter: 'all',                                              // المنطقة (تبويبات)
   // فلاتر متقدّمة (ورقة الفلاتر) + الترتيب — تعتمد فقط على البيانات الموجودة
-  fx: { minPrice:null, maxPrice:null, sizes:[], types:[], minRating:0, availableToday:false, amenities:[] },
+  fx: { minPrice:null, maxPrice:null, sizes:[], types:[], minRating:0, availableToday:false, amenities:[], genders:[] },
   fxDraft: null,                                              // مسودّة أثناء فتح الورقة (تُلتزم عند "تطبيق")
   sort: 'default', sortDraft: 'default',
   showAllPlayer: false, showAllOwner: false,
@@ -2596,6 +2623,10 @@ const State = {
      ضدّ `place_ids` فقيمةٌ قديمة لمكانٍ لم يعد له تعود إلى المختار بلا خطأ. */
   ownerPlaceId: (()=>{ try{ return localStorage.getItem('mustadaira:ownerPlace')||''; }catch(_){ return ''; } })(),
   ownerView: 'cards',
+  /* شكل عرض الحجوزات: قائمة أو تقويم. **والتقويم ليس قسمًا بل شكلَ عرضٍ لنفس
+     الصفوف**، فلا يستحقّ خانةً في شريطٍ من أربع خانات على شاشة 375px — بينما
+     «التقارير» (وهي جواب سؤال «هل يربحني هذا؟») كانت بلا خانة إطلاقًا. */
+  ownerBkView: 'list',
   tlDate: null,           // اليوم المعروض في مخطّط المالك (‏null = اليوم)     // شكل تبويب «اليوم»: بطاقات · مخطّط زمني
   reportRange: 'all',     // نطاق التقارير: all · d30 · d90 (مرشِّح مُدخَل لا تعديل حساب)
   calMonth: null,         // شهر التقويم المعروض (Date لأول الشهر)
@@ -3208,6 +3239,10 @@ function passesFilters(p){
   if(fx.minRating>0 && safeRating(p.rating)<fx.minRating) return false;
   if(fx.availableToday && placeAvailability(p).state!=='today') return false;
   if(fx.amenities.length){ const have=new Set(amenityKeys(p)); if(!fx.amenities.every(a=>have.has(a))) return false; }
+  /* لمن الملعب — «أيٌّ من المختار» لا «كلّها»: مكانٌ فيه ملعب سيدات وآخر مشترك
+     يطابق الاثنين. وملعبٌ لم يصرّح **لا يطابق شيئًا**: عدم التصريح ليس «مشترك»،
+     فإدخالُه في النتيجة يَعِد بما لم يقله صاحبه. */
+  if(fx.genders.length && !(p.fields||[]).some(f=>fx.genders.includes(fieldGender(f)))) return false;
   return true;
 }
 function sortPlaces(list){
@@ -3231,7 +3266,7 @@ function activeFilterCount(){
   return n;
 }
 function resetAllFilters(){
-  State.fx={ minPrice:null,maxPrice:null,sizes:[],types:[],minRating:0,availableToday:false,amenities:[] };
+  State.fx={ minPrice:null,maxPrice:null,sizes:[],types:[],minRating:0,availableToday:false,amenities:[],genders:[] };
   State.sort='default'; State.filter='all';
   const s=$('#searchInput'); if(s) s.value='';
 }
@@ -3552,7 +3587,7 @@ function applyFilters(){
   renderRegionTabs(); renderPlaces();
 }
 function clearFiltersSheet(){
-  State.fxDraft={ minPrice:null,maxPrice:null,sizes:[],types:[],minRating:0,availableToday:false,amenities:[] };
+  State.fxDraft={ minPrice:null,maxPrice:null,sizes:[],types:[],minRating:0,availableToday:false,amenities:[],genders:[] };
   State.sortDraft='default'; $('#fxRegion').value='all';
   renderFiltersSheet();
 }
@@ -5254,10 +5289,13 @@ function renderOwnerDashboard(){
 function showOwnerTab(name){
   State.ownerTab=name;
   $$('#nav-owner .nitem').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
-  $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+name); });
+  /* اللوح المعروض قد يخالف اسم التبويب: «الحجوزات» تعرض التقويم حين يكون هو
+     الشكل المختار، والحبّة تبقى على زرّ الحجوزات لأنّ المستخدم فيها فعلًا. */
+  const panel = (name==='bookings' && State.ownerBkView==='calendar') ? 'calendar' : name;
+  $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+panel); });
   NavPill.schedule();
   const fab=$('#ownerAddFab'); if(fab) fab.hidden = (name!=='fields');   // FAB إضافة ملعب — تبويب الملاعب فقط
-  if(name==='calendar') renderOwnerCalendar();
+  if(panel==='calendar') renderOwnerCalendar();
   /* المخطّط يُعاد رسمه مع البطاقات: كلاهما يقرأ نفس الجلبة، وإعادة رسم واحدٍ
      دون الآخر تترك شكلًا يتقدّم على الثاني بجلبة كاملة. */
   if(name==='today'){ renderOwnerToday(); if(State.ownerView==='timeline') renderOwnerTimeline(); }
@@ -5445,6 +5483,16 @@ function openOwnerBookingFromTimeline(b){
   clear(box); box.hidden=false;
   box.append(ownerBookingCard(b));
   box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+/* التقويم شكلُ عرضٍ للحجوزات لا قسمًا — ولهذا يعيش المبدّل في الاثنين ويُزامَن
+   من `State` وحدها (مصدرٌ واحد، فلا ينحرف نسختاه). */
+function setOwnerBkView(v){
+  State.ownerBkView = (v==='calendar') ? 'calendar' : 'list';
+  /* نسختان في اللوحين، وتُزامَنان بالصنف لا بالمُعرّف: مُعرّفٌ مكرّر وسمٌ غير
+     صالح، ويُربك `aria-labelledby` وgetElementById معًا. */
+  $$('.bk-seg .ov-btn').forEach(b=>{ const on=b.dataset.bkv===State.ownerBkView;
+    b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on?'true':'false'); });
+  showOwnerTab('bookings');
 }
 function setOwnerView(v){
   State.ownerView = (v==='timeline') ? 'timeline' : 'cards';
@@ -8121,6 +8169,7 @@ const Actions = {
   obsSkip:()=>Obs.finish(), obsNext:()=>Obs.next(), obsBack:()=>Obs.back(),
   ownerPlaceMenu:()=>openOwnerPlaceMenu(),
   ownerView:(btn)=>setOwnerView(btn.dataset.ov||'cards'),
+  ownerBkView:(btn)=>setOwnerBkView(btn.dataset.bkv||'list'),
   /* رجوعٌ إلى خطوةٍ في صفحة الملعب. `force` لأن لا شيء يُفقَد: الاختيار كلّه في
      `State.detail` والنافذة لقطةٌ منه — فسؤال «تعديلات لم تُحفظ» هنا كذبة. */
   bkGoStep:(btn)=>{
