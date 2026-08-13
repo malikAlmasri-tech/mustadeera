@@ -123,6 +123,38 @@ tbody tr:last-child td{border-bottom:0}
 @media (max-width:700px){
   .ad-c2{display:none}
   table{min-width:0}
+  /* ═══ بطاقات بدل جدولٍ يُقرأ بالانزلاق ═══
+     الوصول اليومي إلى اللوحة من مفضّلة المتصفّح، أي من الهاتف غالبًا — وجدول
+     «الملاعب» اثنا عشر عمودًا يخرج 631px داخل حاوية 310px (مقيس عند 375px)
+     ⇒ 321px انزلاقًا أفقيًّا: الاسم يختفي عند أوّل تمريرة فتصير الأرقام بلا
+     هويّة. وتثبيت العمود الأوّل (الدفعة ١٩) عالج العرَض لا العلّة.
+     ⚠️ **والتسمية تُشتقّ من `<thead>` وقت الرسم** (stampLabels) لا تُكتب في كل
+        خليّة: عمودٌ يُضاف أو يُعاد ترتيبه يبقى موسومًا صحيحًا بلا لمسة — وهو
+        نفس مبدأ «اشتقّ ولا تُكرّر» الذي فرضته حرّاس المرآة في هذا المشروع. */
+  .ad-scroll{overflow-x:visible;overscroll-behavior-x:auto}
+  .ad-scroll table,.ad-scroll tbody,.ad-scroll tfoot,.ad-scroll tr,.ad-scroll td{display:block;width:auto}
+  .ad-scroll thead{display:none}
+  .ad-scroll tr{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:10px 12px;margin-bottom:10px}
+  .ad-scroll tbody tr:nth-child(even){background:var(--surface)}
+  .ad-scroll td{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    border:0;padding:3px 0;text-align:start;white-space:normal}
+  .ad-scroll td::before{content:attr(data-label);color:var(--muted);font-weight:700;
+    flex:0 0 auto;font-size:12px}
+  /* 🔴 `.ad-scroll td{display:flex}` نوعيّتها (0,1,1) وتغلب `.ad-c2{display:none}`
+     (0,1,0) ⇒ الأعمدة الأربعة التي أخفتها الدفعة ١٩ **تعود** في وضع البطاقات،
+     فترتفع البطاقة من ثمانية أسطر إلى اثني عشر. والحكم نفسه ما زال صحيحًا:
+     هذه أعمدةٌ لا تحمل قرارًا على الهاتف. (مقيس: 435px ⇐ بعدها.) */
+  .ad-scroll td.ad-c2{display:none}
+  /* العمود الأوّل عنوانُ البطاقة: يفقد التثبيت ولا يحمل تسمية — الاسم يقول نفسه */
+  .ad-scroll td:first-child{position:static;box-shadow:none;background:transparent;
+    font-weight:800;font-size:14px;border-bottom:1px solid var(--line);
+    padding-bottom:8px;margin-bottom:6px;display:block}
+  .ad-scroll td:first-child::before{content:none}
+  .ad-scroll tfoot td:first-child{background:transparent}
+  /* صفّ «لا بيانات» يمتدّ على الأعمدة كلّها ⇒ لا تسمية له ولا حدّ */
+  .ad-scroll td[colspan]{display:block;text-align:center;border-bottom:0;margin:0;font-weight:600}
+  .ad-scroll td[colspan]::before{content:none}
 }
 /* الأرقام والنسب إلى النهاية، والنصّ إلى البداية — عمود أرقام محاذٍ للنهاية
    يُقارَن بالنظر وحده. */
@@ -1935,6 +1967,33 @@ function renderRevChart(rows){
 }
 
 /* ── ③ الملاعب ───────────────────────────────────────────────────────────── */
+/* ═══ بطاقات الهاتف: من أين تأتي التسمية؟ ═══
+   من <thead> نفسه وقت الرسم. والبديل المرفوض أن تُكتب data-label داخل كل قالب
+   <td> — عشرات المواضع في خمسة جداول، **وأوّل عمودٍ يُضاف أو يُزاح يجعل
+   التسميات تكذب بصمت**، وهو بالضبط الانحراف الذي بُنيت له حرّاس المرآة.
+   ⚠️ ولا يُنادى بيدٍ بعد كل innerHTML: نداءٌ واحد منسيّ = بطاقةٌ بلا تسميات.
+      المراقب يرى **كل** تغيّر في أي جدول داخل اللوحة. وفوق 700px لا تُعرَض
+      التسميات أصلًا، فكلفتها سمةٌ نصّية لا أكثر. */
+function stampLabels(tbl){
+  if (!tbl) return;
+  var th = tbl.querySelectorAll('thead th'); if (!th.length) return;
+  var cells = tbl.querySelectorAll('tbody td, tfoot td');
+  [].forEach.call(cells, function(td){
+    if (td.colSpan > 1) return;                       // صفّ ممتدّ: لا عمود يقابله
+    var h = th[td.cellIndex];
+    if (h) td.setAttribute('data-label', (h.textContent || '').trim());
+  });
+}
+(function watchTables(){
+  var host = document.getElementById('panel'); if (!host || !window.MutationObserver) return;
+  new MutationObserver(function(muts){
+    var done = [];
+    muts.forEach(function(m){
+      var n = m.target, tbl = n && n.closest ? n.closest('table') : null;
+      if (tbl && done.indexOf(tbl) < 0){ done.push(tbl); stampLabels(tbl); }
+    });
+  }).observe(host, { childList:true, subtree:true });
+})();
 function renderPlacesTab(){
   var rows = D.adminPlaces, tb = $('#places tbody'), tf = $('#places tfoot');
   if (!rows.length){
