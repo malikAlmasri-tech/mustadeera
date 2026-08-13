@@ -581,10 +581,10 @@
           <div id="ratingDist"></div>
           <button class="sbtn" data-action="openReview" data-i18n="rateThisPlace" style="margin-top:14px">قيّم هذا المكان</button>
         </section>
-        <section class="detail-section" data-i18n-aria="dtabLocation" aria-label="الموقع">
-          <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h2 class="dsec-title" data-i18n="dtabLocation">الموقع</h2></div>
-          <div class="detail-loc-text" id="dLocationText"></div>
-        </section>
+        <!-- ⚠️ **قسم «الموقع» حُذف** (بلاغ المالك 2026-08-13): كان يطبع
+             `placeLocation(place)` — وهي **نفس** الجملة المكتوبة تحت اسم المكان
+             في رأس الصفحة (‏`#dCity`)، وفوقها زرّ «الخريطة» الذي يفتح الموقع
+             فعلًا. ثلاثةُ مواضع لحقيقةٍ واحدة، اثنان منها لا يفعلان شيئًا. -->
       </div>
     </div>
   </section>
@@ -635,6 +635,30 @@
         <input class="finput readonly-field" id="accPhone" type="tel" disabled style="margin-bottom:16px">
         <button class="sbtn" data-action="saveAccount" data-i18n="saveEdit">حفظ التعديل</button>
       </div>
+      <!-- ⚠️ **الترتيب بالتكرار لا بالتصنيف** (بطلب المالك 2026-08-13). كان:
+           بيانات ⇐ كلمة السر ⇐ بطاقاتي ⇐ تفضيلات ⇐ جلسة، فيقع ما يُلمَس كل يوم
+           (الثيم واللغة) رابعًا تحت طيّةٍ وبطاقةٍ لا يُفعَل فيهما شيء. الآن:
+           بيانات ⇐ **تفضيلات** ⇐ كلمة السر (طيّة) ⇐ بطاقاتي (طيّة) ⇐ جلسة.
+           و«بطاقاتي» صارت طيّةً لا بطاقةً مفتوحة: هي **إفصاحٌ** يقول لماذا لا
+           توجد بطاقة محفوظة — لا إجراءَ فيها، فلا تستحقّ ارتفاعًا دائمًا. ولم
+           تُحذَف كلمةٌ منها (م5)، إنّما صارت خلف نقرة كجارتها. -->
+      <div class="card settings-card mb-card">
+        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span data-i18n="prefsTitle">التفضيلات</span></div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
+            <span data-i18n="darkModeLbl">الوضع الليلي</span>
+          </div>
+          <button class="settings-toggle" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg></span>
+            <span data-i18n="languageLbl">اللغة</span>
+          </div>
+          <button class="settings-toggle" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
+        </div>
+      </div>
       <!-- ⚠️ **مطويّة لا موسَّعة.** ثلاثة حقول وثلاثة أزرار عين وشرحٌ من سطرين
            لفعلٍ يقع مرّة في السنة — كانت تدفع البطاقات التي تليها تحت الطيّة.
            و`<details>` هي البدائيّة نفسها المستعملة في «إحصائيات الملعب». -->
@@ -671,40 +695,15 @@
            بطاقةٌ تقول الحقيقة بدل أن تكون قائمةً فارغة تُوهم بأن الحفظ ممكن:
            لا بطاقة محفوظة لأن الدفع كلّه نقدي اليوم. وحين تُوصَل بوّابة الدفع
            تصير هذه البطاقةُ مكانَ البطاقات المحفوظة (آخر أربعة أرقام لا أكثر). -->
-      <div class="card mb-card">
-        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M6 14.5h3.5"/></svg></span><span data-i18n="payCardsTitle">بطاقاتي</span></div>
+      <details class="card mb-card acc-fold">
+        <summary class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M6 14.5h3.5"/></svg></span><span data-i18n="payCardsTitle">بطاقاتي</span><span class="acc-fold-arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="pay-empty">
           <span class="pay-empty-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 9.5h19"/><path d="M4 3.5 20.5 20"/></svg></span>
           <p data-i18n="payNoCards">ما في بطاقة محفوظة — الدفع كلّه نقداً في الملعب اليوم.</p>
         </div>
         <p class="t-sub pay-why" data-i18n="payCardWhy">ولمّا يشتغل، الرقم بينكتب عند بوّابة الدفع — التطبيق ما بيشوفه ولا بيخزّنه.</p>
-      </div>
-      <div class="card settings-card mb-card">
-        <div class="section-title with-ic"><span class="sec-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span><span data-i18n="prefsTitle">التفضيلات</span></div>
-        <div class="settings-row">
-          <div class="settings-info">
-            <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
-            <span data-i18n="darkModeLbl">الوضع الليلي</span>
-          </div>
-          <button class="settings-toggle" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-info">
-            <span class="settings-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg></span>
-            <span data-i18n="languageLbl">اللغة</span>
-          </div>
-          <button class="settings-toggle" data-action="toggleLang" aria-label="Language / اللغة">EN</button>
-        </div>
-        <!-- إعادة عرض شاشات الترحيب: ليست ترفًا — بدونها لا تُختبَر الميزة إلّا
-             بمسح تخزين التطبيق، وذلك يمحو الجلسة والمفضّلة معها. -->
-        <div class="settings-row">
-          <div class="settings-info">
-            <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span>
-            <span data-i18n="onbReplay">شاشات الترحيب</span>
-          </div>
-          <button class="settings-toggle" data-action="obsReplay" data-i18n="onbReplayBtn">أعِد العرض</button>
-        </div>
-      </div>
+      </details>
+
       <!-- الجلسة: الخروج والحذف معًا في بطاقة واحدة — كلاهما «إنهاء»، وكانا
            يطفوان خارج أي بطاقة فيبدوان زرّين تائهين أسفل الصفحة.
            ومنطقة الخطر تبقى مفصولة **داخلها**: إجراء لا رجعة فيه، وآخر ما في
@@ -748,8 +747,12 @@
           <div class="own-more">
             <button class="ghost-btn own-more-btn" id="ownMoreBtn" type="button" data-action="toggleOwnMore" aria-haspopup="menu" aria-expanded="false" data-i18n-aria="moreAria" aria-label="خيارات أخرى"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
             <div class="own-more-menu" id="ownMoreMenu" role="menu" hidden>
-              <button type="button" class="own-more-item" role="menuitem" data-action="toggleLang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg><span data-i18n="languageLbl">اللغة</span></button>
-              <button type="button" class="own-more-item" role="menuitem" data-action="toggleTheme"><svg class="thm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span data-i18n="darkModeLbl">الوضع الليلي</span></button>
+              <!-- ⚠️ عمودُ القيمة ليس زينة: بدونه لا يقول السطرُ **ماذا سيصير** بعد
+                   الضغط. ويُملأ من `app.js` عند كل فتح (اللغة والثيم يتغيّران من
+                   خمسة مسارات، فمرآةٌ مكتوبة في الوسم تنحرف عن الحالة). -->
+              <button type="button" class="own-more-item" role="menuitem" data-action="langPick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg><span data-i18n="languageLbl">اللغة</span><span class="own-more-val" id="ownMoreLangVal">عربي</span></button>
+              <button type="button" class="own-more-item" role="menuitem" data-action="themePick"><svg class="thm-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><span data-i18n="darkModeLbl">الوضع الليلي</span><span class="own-more-val" id="ownMoreThemeVal">—</span></button>
+              <div class="own-more-sep" role="separator"></div>
               <button type="button" class="own-more-item is-danger" role="menuitem" data-action="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span data-i18n="logout">خروج</span></button>
             </div>
           </div>
@@ -1038,9 +1041,16 @@
            يشرح غياب البطاقة.
            ⚠️ **ولم يُحذَف التفسير بل نُقل** (م5): من يسأل «طيب كيف بدفع بالبطاقة؟»
            يجد الجواب كاملًا خلف نقرة — بما فيه أن رقم البطاقة لا يمرّ علينا. -->
-      <div class="pay-line">
-        <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
-        <span class="pay-line-txt"><b data-i18n="payCash">نقداً في الملعب</b><small data-i18n="payCashSub">تدفع لإدارة الملعب لمّا توصل.</small></span>
+      <!-- ⚠️ **عنوانٌ فوقه** (بلاغ المالك 2026-08-13): كان السطر يطفو بين «نوع
+           المباراة» وحاشية الطلب بلا تسمية، فيُقرأ ملاحظةً عابرة لا **حقلًا**
+           من حقول المراجعة. وهو نفس مكوّن `.pay-pick-title` المستعمل فوقه
+           حرفيًّا — عنوانان بشكلٍ واحد لأنهما من نوعٍ واحد. -->
+      <div class="pay-line-wrap">
+        <div class="pay-pick-title" data-i18n="payTitle">طريقة الدفع</div>
+        <div class="pay-line">
+          <span class="pay-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg></span>
+          <span class="pay-line-txt"><b data-i18n="payCash">نقداً في الملعب</b><small data-i18n="payCashSub">تدفع لإدارة الملعب لمّا توصل.</small></span>
+        </div>
       </div>
       <!-- ⚠️ طيّة في مكانها لا نافذةً ثانية: `Modal.open` ينادي `closeAll` ⇒ فتحُ
            نافذةٍ تشرح **يُخفي النافذة التي تشرحها** (مزلقٌ مسجَّل). والطيّة نفس

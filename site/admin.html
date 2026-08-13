@@ -299,8 +299,17 @@ html.dark .chart .dot{stroke:var(--lime)}
 .legend i{inline-size:11px;block-size:11px;border-radius:3px;flex:none}
 
 /* قمع التأكيد */
-.funnel{display:grid;gap:9px;margin-top:4px}
-.fn-row{display:grid;grid-template-columns:minmax(84px,auto) 1fr auto;gap:10px;align-items:center;font-size:13.5px}
+/* 🔴 **شبكةٌ واحدة للأعمدة كلّها، لا شبكةٌ لكل صفّ.** كان كلّ `.fn-row` شبكةً
+   مستقلّة بعمودٍ أوّل `minmax(84px,auto)` ⇒ يتّسع بمقدار **تسميته هو**، فتخرج
+   المسارات بأطوالٍ مختلفة في الرسم الواحد. مقيس في «ساعات الذروة»: التسميات
+   84 · 88.3 · **103.8** فالمسارات 365.4 · 361.1 · **345.6** — فارقُ ٢٠px بين
+   صفٍّ وآخر. والأثر ليس شكليًّا فقط: الشريط الممتلئ ١٠٠٪ في مسارٍ أقصر يبدو
+   **أقلَّ** من شريطٍ أقلّ في مسارٍ أطول، أي أن المقارنة البصرية نفسها تكذب.
+   والعلاج أن يصير `.funnel` هو الشبكة و`.fn-row` `display:contents` ⇒ الأعمدة
+   الثلاثة مشتركةٌ بين كل الصفوف بالتعريف. (بلاغ المالك 2026-08-13.) */
+.funnel{display:grid;grid-template-columns:minmax(84px,max-content) 1fr minmax(74px,max-content);
+  gap:9px 10px;align-items:center;margin-top:4px;font-size:13.5px}
+.fn-row{display:contents}
 .fn-bar{block-size:22px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);
   overflow:hidden}
 .fn-fill{display:block;block-size:100%;border-radius:5px}
@@ -920,8 +929,6 @@ html.dark .res .no{color:#FF8A90}
           <input class="oth" hidden autocomplete="off" placeholder="اكتب نوع المكان"></label>
         <label class="ad-f"><span>رابط الخريطة</span>
           <input id="f_map" type="url" dir="ltr" placeholder="https://maps.app.goo.gl/..."></label>
-        <label class="ad-f"><span>لون البطاقة في التطبيق</span>
-          <input id="f_color" type="color" value="#15803d"></label>
         <label class="ad-f chk"><input id="f_active" type="checkbox" checked>
           <span>نشط — يظهر للاعبين فورًا</span></label>
       </div>
@@ -2587,9 +2594,21 @@ $('#fieldRows').addEventListener('click', function(e){
       والدوالّ تُنادى بوسائط فارغة ويُقرأ رمز الردّ لا نتيجته: `PGRST202`
       تعني «غير موجودة»، وأيّ خطأ آخر يعني «موجودة ورفضت الوسائط» — وهو
       إثباتُ وجود. */
+/* 🔴 **فحصُ دالّةٍ بجسمٍ فارغ يقول «ناقصة» عن دالّةٍ موجودة.** PostgREST يحسم
+   الدالّة **باسمها وأسماء وسائطها معًا**، فنداءٌ بـ`{}` على دالّةٍ لها وسائط
+   إلزامية يردّ `PGRST202` — وهو نفسُ ردّ «غير موجودة» حرفًا بحرف. وكانت اللوحة
+   تعلن «١ ترحيل ناقص · تعديل موعد الحجز» بينما الدالّة **موجودة**: مقيس حيًّا
+   بالمفتاح العام (2026-08-13) — النداء بأسماء وسائطها الحقيقية يردّ `42501
+   permission denied`، وهو **دليل وجود** لا غياب. ونفس الزلّة أخفت حالة 18.
+   والعلاج أن يحمل كلُّ فحصِ دالّةٍ **وسائطها**، بقيمٍ لا تطابق شيئًا (‏uuid
+   أصفار) فلا يقع أثرٌ: `player_reschedule_booking` تبدأ بالبحث عن الحجز
+   وتخرج بـ«ما لقينا الحجز» قبل أن تلمس صفًّا.
+   ⚠️ والقاعدة المسجَّلة في `CLAUDE.md` كانت تقول هذا عن GET؛ وهي تنطبق على
+   POST كذلك — العمى في **الوسائط** لا في الفعل. */
 var MIG = [
   { n:'08', label:'بثّ سجلّ التدقيق',        kind:'soft', probe:null },
-  { n:'09', label:'تعديل موعد الحجز',        kind:'rpc',  name:'player_reschedule_booking' },
+  { n:'09', label:'تعديل موعد الحجز',        kind:'rpc',  name:'player_reschedule_booking',
+    args:{ p_booking:'00000000-0000-0000-0000-000000000000', p_date:'2100-01-01', p_hour:12 } },
   { n:'10', label:'ربط مالك بمكان',          kind:'soft', probe:null },
   { n:'11', label:'تأكيد رقم الهاتف',        kind:'rpc',  name:'request_phone_code' },
   { n:'12', label:'وسيلة الدفع',             kind:'col',  table:'bookings', col:'payment_method' },
@@ -2600,10 +2619,23 @@ var MIG = [
   { n:'15', label:'مهلة الإلغاء والانقضاء',  kind:'tbl',  table:'booking_rules' },
   { n:'16', label:'لم يحضر',                 kind:'col',  table:'bookings', col:'no_show' },
   { n:'17', label:'إغلاق الأيام',            kind:'tbl',  table:'field_closures' },
-  { n:'18', label:'التسعير بالساعة',         kind:'tbl',  table:'field_price_rules' },
+  /* ⚠️ **الدالّة لا الجدول.** كان الفحص على `field_price_rules`، والجدول وحده
+     لا يُسعّر شيئًا: الحسم كلّه في `resolve_field_price` وعليها يقوم مُشغِّل
+     سعر الإدراج. جدولٌ بلا دالّته = ترحيلٌ نصفُه، ولوحةٌ تقول «تمام». */
+  { n:'18', label:'التسعير بالساعة',         kind:'rpc',  name:'resolve_field_price',
+    args:{ p_field:'00000000-0000-0000-0000-000000000000', p_date:'2100-01-01', p_hour:12 } },
   { n:'19', label:'طلبات الانضمام',          kind:'tbl',  table:'place_applications' },
   { n:'20', label:'نبّهني إذا فضيت',          kind:'tbl',  table:'slot_watch' },
-  { n:'21', label:'قياس الطلب',              kind:'tbl',  table:'events' }
+  { n:'21', label:'قياس الطلب',              kind:'tbl',  table:'events' },
+  { n:'22', label:'المباريات المفتوحة',      kind:'tbl',  table:'open_games' },
+  { n:'28', label:'سرعة ردّ الملعب',          kind:'tbl',  table:'place_reply_speed' },
+  { n:'29', label:'لمن الملعب',              kind:'col',  table:'fields', col:'gender' },
+  /* ⚠️ **العرض لا الجدول.** الأعمدة موجودة في `bookings` منذ 15/16/22، والعرض
+     `bookings_full` مُعرَّف بـ`select b.*` — و`*` تُفكّ **عند إنشاء العرض**
+     فتتجمّد قائمتُه. والتطبيق يقرأ من العرض ⇒ لا «لم يحضر» ولا شارة مباراة
+     مفتوحة ولا تمييز «انقضت المهلة»، **وبلا عطلٍ ظاهر** لأن الجلب يتراجع
+     ثلاث جولات. يُصلحه [`30_bookings_full_refresh.sql`](migration/). */
+  { n:'30', label:'أعمدة العرض bookings_full', kind:'col', table:'bookings_full', col:'no_show' }
 ];
 var MIG_STATE = {};
 
@@ -2612,7 +2644,7 @@ function probeMigrations(){
     var q;
     if (m.kind === 'tbl') q = api('/rest/v1/' + m.table + '?select=*&limit=0');
     else if (m.kind === 'col') q = api('/rest/v1/' + m.table + '?select=' + m.col + '&limit=0');
-    else q = api('/rest/v1/rpc/' + m.name, { method:'POST', body:{} });
+    else q = api('/rest/v1/rpc/' + m.name, { method:'POST', body: m.args || {} });
     return q.then(function(r){
       // للدوالّ: أي ردّ غير 404/PGRST202 دليلُ وجود — حتى الرفض.
       MIG_STATE[m.n] = (m.kind === 'rpc')
@@ -3075,7 +3107,13 @@ $('#addForm').addEventListener('submit', function(e){
   var body = {
     name: name, city: city, region: region,
     type: pick($('#f_type')) || 'عشب صناعي',
-    color: val('#f_color') || '#15803d',
+    /* 🔴 **حقل «لون البطاقة» حُذف — لأنه لا يلوّن شيئًا** (سؤال المالك 2026-08-13:
+       «شو بأثّر بالزبط؟»). العمود `places.color` موجود في المخطّط ويصل التطبيق
+       فعلًا (‏`color: p.color` في `sbGetInitialData`) ثمّ **لا يقرؤه أحد**: صفر
+       استعمال في `app.css` وصفر في الرسم — بقيّةُ تصميمٍ قديم كانت البطاقة فيه
+       تُصبَغ بلون مكانها. فكان النموذج يطلب قرارًا لا أثر له، وهو بالضبط ما
+       ترفضه م5. والعمود يبقى في القاعدة (‏`not null default '#15803d'`) فلا
+       يحتاج الإدراجُ ذكرَه، ولا ترحيلَ لهذا. */
     phone: normPhone(val('#f_phone')),
     map_link: val('#f_map'),
     amenity_water: amen('#a_water'), amenity_vests: amen('#a_vests'),

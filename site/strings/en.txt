@@ -397,6 +397,7 @@ plCurrency = JOD
 plSurface = Surface
 plFieldsTitle = Pitches and prices
 plAmenities = Amenities
+plInApp = Prices, open times and facilities all live in the app, updated as they change.
 plBookCta = Book in the app
 plMapCta = Open in Maps
 plBackToList = Back to the directory

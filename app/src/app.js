@@ -214,7 +214,7 @@ const I18N = {
     actConfirm:'أكّد', actReject:'رفض', actCancel:'إلغاء', actWhatsapp:'واتساب', edit:'تعديل',
     actApprove:'قبول الطلب', actDecline:'رفض',
     fieldActive:'مُفعّل', fieldInactive:'موقوف', fieldEnabled:'تم تفعيل الملعب للاعبين', fieldDisabled:'تم إيقاف الملعب — لن يظهر للاعبين',
-    dtabBook:'احجز', dtabAbout:'عن الملعب', dtabAmenities:'المرافق', dtabReviews:'التقييمات', dtabLocation:'الموقع', ariaDetailTabs:'أقسام الملعب',
+    dtabBook:'احجز', dtabAbout:'عن الملعب', dtabAmenities:'المرافق', dtabReviews:'التقييمات', ariaDetailTabs:'أقسام الملعب',
     noReviewsYet:'لا تقييمات بعد — كن أول من يقيّم', ratingsCount:'{n} تقييم',
     replySpeed:'عادةً يردّ خلال {t}',
     chartAria:'الأعلى {lbl} بـ{top}، والمتوسّط {avg}',
@@ -268,8 +268,7 @@ const I18N = {
     onbS4B:'انشر مقاعدك بعد تأكيد الملعب، واللي بالتطبيق بينضمّ.',
     onbSkip:'تخطٍّ', onbNext:'التالي', onbStart:'يلا نبلّش',
     onbDotsAria:'شاشات الترحيب', onbDotAria:'الشاشة {i} من {n}',
-    moreAria:'خيارات أخرى',
-    onbReplay:'شاشات الترحيب', onbReplayBtn:'شوف الشاشات',
+    moreAria:'خيارات أخرى', themeDarkVal:'ليلي', themeLightVal:'نهاري',
     repGroupOverview:'نظرة عامّة', repGroupPerf:'الأداء', repGroupInsights:'الاتجاه والتحليل',
     repRangeAria:'نطاق التقارير', repRangeAll:'الكل', repRange30:'آخر ٣٠ يوم', repRange90:'آخر ٩٠ يوم',
     successDone:'تمام!', successOkBtn:'تمام',
@@ -283,7 +282,7 @@ const I18N = {
     stAvailable:'متاح', stSelected:'مختار', stTaken:'محجوز', bookedTag:'محجوز',
     showPass:'إظهار كلمة السر', hidePass:'إخفاء كلمة السر', clearSearchAria:'مسح البحث',
     tmMorning:'صباحاً', tmNoon:'ظهراً', tmEvening:'مساءً',
-    bookingSuccessTitle:'رائع! وصل طلب حجزك', statusPendingVenue:'بانتظار تأكيد الملعب', bookingNo:'رقم الحجز', nextStepNote:'سنعلمك فور تأكيد إدارة الملعب لحجزك.',
+    bookingSuccessTitle:'رائع! وصل طلب حجزك', statusPendingVenue:'بانتظار تأكيد الملعب', nextStepNote:'سنعلمك فور تأكيد إدارة الملعب لحجزك.',
     editProfile:'تعديل البيانات', prefsTitle:'التفضيلات', darkModeLbl:'الوضع الليلي', languageLbl:'اللغة',
     regionsEyebrow:'المناطق', regionsTitle:'المناطق المتوفّرة', regionsSub:'اختر منطقتك وابدأ التصفّح مباشرة.', regionsOne:'ملعب', regionsMany:'ملعب',
     reviewsEyebrow:'آراء', reviewsTitle:'ماذا يقول مستخدمونا',
@@ -407,7 +406,7 @@ const I18N = {
     // شارة الحالة في «حسابي»
     accPhoneVerified:'رقم مؤكَّد', accPhoneUnverified:'رقم غير مؤكَّد', accVerifyNow:'أكّده الآن',
     // ---- (١٠) وسيلة الدفع ----
-    payTitle:'وسيلة الدفع', payMethodLbl:'الدفع', payWhyLink:'ليش ما في بطاقة؟',
+    payTitle:'طريقة الدفع', payMethodLbl:'الدفع', payWhyLink:'ليش ما في بطاقة؟',
     stepMinus:'أنقص', stepPlus:'زد',
     payCash:'نقداً في الملعب', payCashSub:'تدفع لإدارة الملعب لمّا توصل.',
     payCard:'بطاقة فيزا أو ماستركارد', payCardSoon:'قريباً',
@@ -701,7 +700,7 @@ const I18N = {
     actConfirm:'Confirm', actReject:'Reject', actCancel:'Cancel', actWhatsapp:'WhatsApp', edit:'Edit',
     actApprove:'Approve', actDecline:'Decline',
     fieldActive:'Active', fieldInactive:'Off', fieldEnabled:'Field is now visible to players', fieldDisabled:'Field turned off — hidden from players',
-    dtabBook:'Book', dtabAbout:'About', dtabAmenities:'Facilities', dtabReviews:'Reviews', dtabLocation:'Location', ariaDetailTabs:'Venue sections',
+    dtabBook:'Book', dtabAbout:'About', dtabAmenities:'Facilities', dtabReviews:'Reviews', ariaDetailTabs:'Venue sections',
     noReviewsYet:'No reviews yet — be the first to rate', ratingsCount:'{n} reviews',
     replySpeed:'Usually replies within {t}',
     chartAria:'Highest {lbl} at {top}, average {avg}',
@@ -748,8 +747,7 @@ const I18N = {
     onbS4B:'Publish your seats once the venue confirms, and players here join.',
     onbSkip:'Skip', onbNext:'Next', onbStart:'Get started',
     onbDotsAria:'Welcome screens', onbDotAria:'Screen {i} of {n}',
-    moreAria:'More options',
-    onbReplay:'Welcome screens', onbReplayBtn:'View screens',
+    moreAria:'More options', themeDarkVal:'Dark', themeLightVal:'Light',
     repGroupOverview:'Overview', repGroupPerf:'Performance', repGroupInsights:'Insights',
     repRangeAria:'Report range', repRangeAll:'All', repRange30:'Last 30 days', repRange90:'Last 90 days',
     successDone:'Done!', successOkBtn:'OK',
@@ -763,7 +761,7 @@ const I18N = {
     stAvailable:'Available', stSelected:'Selected', stTaken:'Booked', bookedTag:'Booked',
     showPass:'Show password', hidePass:'Hide password', clearSearchAria:'Clear search',
     tmMorning:'Morning', tmNoon:'Noon', tmEvening:'Evening',
-    bookingSuccessTitle:'Booking request sent', statusPendingVenue:'Awaiting venue confirmation', bookingNo:'Booking no.', nextStepNote:'We’ll notify you as soon as the venue confirms.',
+    bookingSuccessTitle:'Booking request sent', statusPendingVenue:'Awaiting venue confirmation', nextStepNote:'We’ll notify you as soon as the venue confirms.',
     editProfile:'Edit details', prefsTitle:'Preferences', darkModeLbl:'Dark mode', languageLbl:'Language',
     regionsEyebrow:'Regions', regionsTitle:'Available regions', regionsSub:'Pick your area and start browsing right away.', regionsOne:'field', regionsMany:'fields',
     reviewsEyebrow:'Reviews', reviewsTitle:'What users say',
@@ -1666,7 +1664,9 @@ const sbField = (f) => ({
 });
 const sbPlace = (p, stat) => ({
   place_id: String(p.id), place_name: p.name, city: p.city, region: p.region, type: p.type,
-  color: p.color, phone: p.phone, active: !!p.active, map_link: p.map_link || '',
+  // ‏`color` كان يُنقَل هنا ولا يقرؤه أحد (صفر استعمال في الرسم أو الورقة) —
+  // بقيّةُ تصميمٍ قديم. وحقلُه في `/admin` حُذف معه: قرارٌ بلا أثر ليس قرارًا.
+  phone: p.phone, active: !!p.active, map_link: p.map_link || '',
   amenities: sbAmenities(p),
   // التقييمات الحقيقية فقط — `rating_seed`/`reviews_seed` (أرقام مكتوبة يدويًّا في الشيت القديم)
   // أُسقطا عمدًا: مكان بلا تقييم حقيقي لا يُعرض له تقييم إطلاقًا (لا صفر ولا رقم مُختلق).
@@ -3632,7 +3632,6 @@ async function openDetail(placeId, opts={}){
   map.href = mapOk ? place.map_link : '#';
   map.hidden = !mapOk;
   const call=$('#callBtn'); if (place.phone){ call.href='tel:+'+normalizePhone(place.phone); call.style.display=''; } else call.style.display='none';
-  const locTxt=$('#dLocationText'); if(locTxt){ clear(locTxt); locTxt.append(ico('pin','svg-sm'), ' '+placeLocation(place)); }
 
   setDetailTab('book');                                   // ابدأ دائماً على تبويب الحجز
   renderDetailRating(place); renderDetailAmenRow(place);
@@ -4863,7 +4862,11 @@ function showBookingSuccess(info, bookingId){
       h('span',{class:'bk-open-txt'},
         t('gmLiveSeats',{ n:seats, noun:nSeats(seats) })+' '+t('gmCardWaiting'))));
   }
-  if(bookingId) sum.append(h('div',{class:'ss-ref'}, h('span',{class:'ss-ref-lbl'}, t('bookingNo')), h('span',{class:'ss-ref-val'}, '#'+bookingId)));
+  /* ⚠️ **«رقم الحجز» حُذف** (بلاغ المالك 2026-08-13: «غريب للمستخدم وشو بستفيد
+     منه»). والمعرّفات صارت `uuid` يوم انتقلت القاعدة إلى Postgres ⇒ ما كان
+     يُطبَع سطرٌ من ستّةٍ وثلاثين محرفًا لا يحفظه أحد ولا يُطلَب في أي مسار:
+     الملعب يعرف صاحبه بالاسم والهاتف والموعد، و`/admin` تبحث بالهاتف لا بالمعرّف.
+     رقمٌ لا يُستعمَل في أي محادثة ليس مرجعًا، إنّما ضجيجٌ في إيصال. */
   const act=$('#successActions'); clear(act);
   const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
   const goC=h('button',{class:'cbtn'}, ico('cal','svg-sm'), ' '+t('addToCalendar')); goC.addEventListener('click',()=>downloadBookingIcs(info));
@@ -5519,7 +5522,9 @@ function renderOwnerCalendar(){
   const startDay=new Date(y,mo,1).getDay();
   const daysInMonth=new Date(y,mo+1,0).getDate();
   const byDate=ownerBookingsByDate(); const td=today();
-  for(let i=0;i<startDay;i++) grid.append(h('div',{class:'cal-cell empty'}));
+  /* ⚠️ `cal-blank` لا `empty`: الثاني حالةُ فراغٍ عامّة في الورقة بحشوة
+     `56px 28px` ⇒ ينتفخ عمودُ الخانة الفارغة ويسرق عرض جيرانه. انظر app.css. */
+  for(let i=0;i<startDay;i++) grid.append(h('div',{class:'cal-cell cal-blank'}));
   for(let d=1; d<=daysInMonth; d++){
     const ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const cnt=(byDate[ds]||[]).filter(b=>!['cancelled','rejected'].includes(normStatus(b))).length;
@@ -5638,12 +5643,26 @@ function createDonut(pct, label){
     (label?'<text class="donut-lbl" x="55" y="69" text-anchor="middle">'+sanTxt(label)+'</text>':'')+
     '</svg>'});
 }
+/* 🔴 **`weekday:'short'` بالعربية = الاسم كاملًا** — لا اختصار فيه: يردّ Intl
+   «الخميس» و«الأربعاء» كما هما، بينما الإنجليزية تردّ «Thu». والخانة في
+   `createBarChart` عرضها 38 وحدة، فقاست «الخميس» **45.5** عند 12px ⇒ تتداخل
+   التسميات فعلًا (ومعها «الأربعاء» 40.4 و«الجمعة» 38.8 — ثلاثٌ من سبع).
+   والعلاج شقّان: خطٌّ أصغر في الورقة (‏10px)، **واختصارٌ صريح للعربية** بحذف
+   أداة التعريف — «خميس» تقيس 30.6 داخل 38. ومصفوفة مكتوبة لا قصُّ نصّ: لا
+   لغةَ ثالثةَ هنا، وقصُّ محرفين من مخرَج Intl يكسر عند أوّل لهجة تختلف. */
+const AR_DOW_TIGHT = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+function chartDayLabel(ds){
+  const d = new Date(ds+'T12:00:00');
+  if(State.lang==='en'){
+    try{ return new Intl.DateTimeFormat('en-GB',{weekday:'short'}).format(d); }catch(_){}
+  }
+  return AR_DOW_TIGHT[d.getDay()] || '';
+}
 function renderOwnerCharts(bookings){
   const fields=State.ownerData?.fields||[];
-  const wd=new Intl.DateTimeFormat(State.lang==='en'?'en-GB':'ar',{weekday:'short'});
   const days=[...Array(7)].map((_,i)=>dateAfter(i-6));
   // 1) الإيراد اليومي (المؤكّد فقط)
-  const revData=days.map(ds=>({ label: wd.format(new Date(ds+'T12:00:00')),
+  const revData=days.map(ds=>({ label: chartDayLabel(ds),
     value: bookings.filter(b=>String(b.date||'').split('T')[0]===ds && normStatus(b)==='confirmed').reduce((s,b)=>s+(Number(b.price)||0),0) }));
   const rc=$('#ownerRevChart'); if(rc){ clear(rc); rc.append( revData.some(d=>d.value>0) ? createBarChart(revData,{showVal:false, label:t('chartRevenue')}) : h('div',{class:'chart-empty'}, t('noData')) ); }
   // 2) إشغال الأسبوع (نفس منطق renderOwnerEcon)
@@ -5809,7 +5828,19 @@ function ownerBookingCard(b){
     card.append(h('div',{class:'owner-actions-sec'}, waBtn()));
   } else {
     const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
-    actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'), mk('owner-reject',t('actReject'),'rejected'), mk('owner-cancel',t('actCancel'),'cancelled'), waBtn());
+    /* 🔴 **الأزرار تتبع الحالة** (بلاغ المالك 2026-08-13). كانت الحالات الثلاث
+       غير المعلّقة تعرض الأربعة نفسها، فيقرأ المالك «أكّد + واتساب» على حجزٍ
+       **أكّده هو بنفسه** — زرٌّ يعرض فعلًا وقع سلفًا، وضغطُه يعيد كتابة الحالة
+       نفسها فلا يحدث شيء ظاهر. والقاعدة: لا يُعرَض إلّا ما يُغيّر شيئًا.
+       • **مؤكّد** ⇒ الإلغاء وحده (ومعه «لم يحضر» بعد انتهاء الخانة).
+       • **ملغى/مرفوض** ⇒ «أكّد» وحده، فهو المخرج الوحيد من رفضٍ بالخطأ.
+       والواتساب يبقى في الحالتين: التواصل ليس تغييرًا في الحالة. */
+    if(normStatus(b)==='confirmed'){
+      actions.append(mk('owner-cancel',t('actCancel'),'cancelled'));
+    } else {
+      actions.append(mk('owner-confirm',t('actConfirmWa'),'confirmed'));
+    }
+    actions.append(waBtn());
     /* «لم يحضر» على المؤكّد **بعد انتهاء خانته** وحده. الشرطان نفسهما في
        `fn_booking_no_show_guard` — الواجهة لا تعرض ما سيرفضه الخادم، والخادم
        لا يثق بما تعرضه الواجهة. والزرّ يظهر في الحالتين (تعليم ورجوع) لأن
@@ -7039,7 +7070,11 @@ function showPage(name, opts){
   const leaving = (cur && cur!==name) ? $('#page-'+cur) : null;
   const lmode = leaving ? (opts.back ? 'lv-back'
     : (NAV_OF[cur] && NAV_OF[name] && NAV_OF[cur]===NAV_OF[name] ? 'lv-fade' : 'lv-fwd')) : null;
-  $$('.page').forEach(p=>{ p.classList.remove('active','pg-fwd','pg-back','pg-fade','pg-drag','pg-settle'); p.style.transform=''; });
+  /* ⚠️ **وأصنافُ المغادرة تُمسح هنا كذلك.** كانت تُزال بمؤقّت 360ms وحده، فتنقّلٌ
+     ثالثٌ خلال المهلة يجد الصفحةَ الأولى ما زالت `pg-leave` — أي `absolute`
+     فوق المحتوى بمظهرٍ مجمَّد (‏`both`). والمسح هنا يسبق إعادة الإسناد بسطرين
+     فلا يضرّ، والمؤقّت الباقي يزيل أصنافًا مزالة أصلًا. */
+  $$('.page').forEach(p=>{ p.classList.remove('active','pg-fwd','pg-back','pg-fade','pg-drag','pg-settle','pg-leave','lv-fwd','lv-back','lv-fade'); p.style.transform=''; });
   if(leaving){
     leaving.classList.add('pg-leave', lmode);
     /* ⚠️ 360ms (‏> 320) **ولا يُلغى عند تنقّل متتالٍ**: التنظيف المكرّر غير ضارّ،
@@ -7047,14 +7082,6 @@ function showPage(name, opts){
     setTimeout(()=>leaving.classList.remove('pg-leave','lv-fwd','lv-back','lv-fade'), 360);
   }
   const page=$('#page-'+name); if(page) page.classList.add('active');
-  /* اتجاه الانتقال (تطبيق): «رجوع» ينزلق من الحافة الابتدائية، و«تقدّم» من النهائية،
-     أما التنقّل بين تبويبات الشريط السفلي فتلاشٍ قصير (كالتطبيقات الأصلية — لا انزلاق بين التبويبات). */
-  if(page && cur && cur!==name){
-    const tabToTab = !!NAV_OF[cur] && !!NAV_OF[name] && NAV_OF[cur]===NAV_OF[name];
-    const mode = opts.back ? 'pg-back' : tabToTab ? 'pg-fade' : 'pg-fwd';
-    void page.offsetWidth;                 // إعادة تشغيل مضمونة للأنيميشن بعد إزالة الأصناف
-    page.classList.add(mode);
-  }
   // أشرطة التنقّل
   const nav=NAV_OF[name];
   $('#nav-player').classList.toggle('show', nav==='player');
@@ -7077,6 +7104,23 @@ function showPage(name, opts){
   if (name==='verifyPhone'){ if(!Session.player()){ return showPage('playerLogin',{redirect:true}); } Verify.enter(); }
   if (name==='playerRegister') renderPwFeedback();
   if (name==='owner'){ if(!Session.owner()){ return showPage('ownerLogin',{redirect:true}); } if(State.ownerData) renderOwnerDashboard(); }
+  /* 🔴 **الحركة تبدأ بعد أن تُبنى الصفحة، لا قبلها** (بلاغ المالك 2026-08-13:
+     «الانتقال مرّات بطيء وبعلق»). كان صنفُ الاتجاه يُضاف **قبل** خطّافات
+     الصفحات، ثمّ تجري `renderPlaces()` / `renderOwnerDashboard()` — وهي تبني
+     عشرات العقد — بينما الانتقال جارٍ: كلّ تعديلٍ على الـDOM يُبطل تخطيط
+     الطبقة المتحرّكة فتُعاد رسمتُها في كل فريم. والعطل **متقطّع** لأنه يتبع
+     كِبَر الصفحة الداخلة: التبويبات الخفيفة سلسة والرئيسية ولوحة المالك تتلعثم.
+     والنقل إلى هنا بلا وميض: كلّ ما فوق يجري في **مهمّة واحدة** لا يرسم
+     المتصفّح بينها شيئًا، والصنف يُضاف قبل أن يعود المحرّك.
+     ⚠️ وموضعه بعد الخطّافات مقصود لسببٍ ثانٍ: كلٌّ منها قد يُحوّل إلى صفحة
+     أخرى (`return showPage(...)`)، فبالترتيب القديم كنّا نُشغّل انتقالًا
+     لصفحةٍ هُجرت في السطر التالي. */
+  if(page && cur && cur!==name){
+    const tabToTab = !!NAV_OF[cur] && !!NAV_OF[name] && NAV_OF[cur]===NAV_OF[name];
+    const mode = opts.back ? 'pg-back' : tabToTab ? 'pg-fade' : 'pg-fwd';
+    void page.offsetWidth;                 // إعادة تشغيل مضمونة للأنيميشن بعد إزالة الأصناف
+    page.classList.add(mode);
+  }
   manageAutoRefresh();
   HeroPh.sync();   // يوقف دوران النائب خارج صفحة الهبوط ويستأنفه عند العودة إليها
   // الرئيسية تستعيد موضعها دائمًا؛ الرجوع يستعيد موضع الصفحة السابقة؛ التقدّم يبدأ من الأعلى
@@ -7867,7 +7911,9 @@ function applyTheme(theme){
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
   const d = dark ? THEME_ICON.sun : THEME_ICON.moon;
-  $$('[data-action="toggleTheme"]').forEach(b=>{
+  // ‏`themePick` هو بند قائمة فائض المالك — نفس الفعل باسمٍ آخر (انظر `Actions`)،
+  // ويحتاج تبديلَ المسار نفسه وإلّا بقيت أيقونته على شكلٍ لا يصف الوضع الحالي.
+  $$('[data-action="toggleTheme"],[data-action="themePick"]').forEach(b=>{
     b.classList.toggle('is-dark', dark);
     const p = b.querySelector('.thm-ic-path');
     if(p && p.getAttribute('d') !== d){
@@ -8036,7 +8082,15 @@ function setLanguage(lang){
   try{ localStorage.setItem('mustadaira_language', lang); }catch(_){}
   const html=document.documentElement; html.lang=lang; html.dir = lang==='ar'?'rtl':'ltr';
   applyTranslations(document);
-  $$('[data-action="toggleLang"]').forEach(b=> b.textContent = t('langSwitch'));
+  /* 🔴 **لا تُتلف زرًّا مركَّبًا.** كان السطر يكتب `textContent` على **كل** زرّ
+     لغة، وبند اللغة في قائمة فائض المالك زرٌّ فيه أيقونةٌ وتسمية ⇒ يُمحى
+     الاثنان ويحلّ محلّهما «EN» عارية: سطرٌ بلا أيقونة ولا اسم بين سطرين
+     كاملين — وهو نصفُ ما شكا منه المالك في شكل القائمة. الزرّ العاري (شاشة
+     الترحيب · «حسابي») يبقى كما كان، والمركَّب تُكتب قيمتُه في خانتها. */
+  $$('[data-action="toggleLang"]').forEach(b=>{
+    if(b.childElementCount) return;
+    b.textContent = t('langSwitch');
+  });
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
     renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateFilterBar(); updateTrust();
@@ -8131,6 +8185,15 @@ function switchLanguage(lang){
 /* ===================== EVENT DELEGATION ===================== */
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, changePassword, toggleTheme, toggleLang,
+  /* 🔴 **اسمان آخران للفعلين نفسيهما — والسبب بنيويّ لا تجميلي.**
+     `[data-action="toggleTheme"]` يحمل حارس «الشمسين» (‏app.css §الحارس):
+     `> :not(.thm-ic){display:none!important}` مع `font-size:0!important`،
+     وهو حارسٌ صحيح لزرٍّ **أيقونته كلُّ محتواه**. لكنّ بند القائمة صفٌّ فيه
+     أيقونةٌ وتسميةٌ وقيمة ⇒ كان الحارس يمحو تسميته وقيمته فيظهر أيقونةً
+     عارية. و`toggleLang` كان يُكتب عليه `textContent` فيمحو الاثنين كذلك.
+     وإضعاف الحارس باستثناءات يفتح البابَ الذي أُغلق بعد خمس دفعات من العطل،
+     فالأصحّ أن يخرج البندُ من نطاقه: **نفس الدالّة، اسمُ فعلٍ آخر.** */
+  themePick:(btn,e)=>toggleTheme(btn,e), langPick:(btn,e)=>toggleLang(btn,e),
   deleteAccount, dismissOffline:()=>Offline.hide(),
   search:()=>renderPlaces(),
   openFilters, applyFilters, clearFiltersSheet,
@@ -8198,6 +8261,13 @@ const Actions = {
   toggleOwnMore:(btn)=>{
     const m=$('#ownMoreMenu'); if(!m) return;
     const open = m.hidden;
+    /* ⚠️ القيمتان تُكتبان **عند كل فتح** لا مرّةً عند الإقلاع: اللغة والثيم
+       يتبدّلان من خمسة مسارات (هذه القائمة · «حسابي» · شاشة الترحيب · تفضيل
+       النظام · الاستعادة من التخزين)، فمرآةٌ تُكتب مرّةً تنحرف عن الحالة. */
+    if(open){
+      setText('ownMoreLangVal', State.lang==='en' ? 'EN' : 'عربي');
+      setText('ownMoreThemeVal', t(document.body.classList.contains('dark') ? 'themeDarkVal' : 'themeLightVal'));
+    }
     m.hidden = !open; btn.setAttribute('aria-expanded', open?'true':'false');
     if(open && !document.__ownMoreBound){
       document.__ownMoreBound = true;
@@ -8225,7 +8295,10 @@ const Actions = {
   /* ⚠️ تُعرَض **الآن** لا «عند الفتح الجاي»: من ضغط الزرّ يريد أن يراها، ووعدٌ
      مؤجَّل يعني إعادة تشغيل التطبيق لاختبار شاشةٍ من ثلاث ضغطات. و`finish` هي
      التي تكتب المفتاح على أي حال، فلا حاجة إلى مسحه أوّلًا. */
-  obsReplay:()=>Obs.start(),
+  /* ⚠️ **«أعِد عرض شاشات الترحيب» حُذف** (قرار المالك 2026-08-13): سطرٌ في
+     «حسابي» لفعلٍ لا يفعله مستخدمٌ مرّةً في عمره — وُضع أصلًا لتيسير الاختبار،
+     وثمنُه يدفعه كلُّ لاعبٍ يفتح الصفحة. و`Obs.start` باقية: يناديها الإقلاع
+     الأوّل (`Obs.shouldShow`) وهو مسارها الحقيقي. */
   /* مبدّل لاعب/مالك: المؤشّر ينزلق بـ--seg-i (CSS)، واللوحان يتبادلان بصنف .off لا بـhidden
      (hidden يصفّر ارتفاع الغلاف ⇒ قفزة). الارتفاع يبقى = أطول لوح دائمًا. */
   onbRole:(btn)=>{ const role=btn.dataset.role||'player';

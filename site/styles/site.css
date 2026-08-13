@@ -1380,7 +1380,6 @@ html.dark .pl-range-i:focus{border-color:var(--lime)}
 .pl-rate{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:14.5px;color:#B7791F}
 html.dark .pl-rate{color:#F0C070}
 .pl-rate-n{color:var(--muted);font-weight:600;font-size:13px}
-.pl-rate-row{margin-top:10px}
 /* بطاقة استبعدتها التصفية: تنكمش وتختفي قبل أن تُرفع من التخطيط */
 .pl-card.is-out{opacity:0;transform:scale(.94);pointer-events:none}
 .pl-card.is-gone{display:none}
@@ -1390,21 +1389,11 @@ html.dark .pl-rate{color:#F0C070}
 .pl-back svg{transform:scaleX(var(--dirx));transition:transform var(--t) var(--ease)}
 @media (hover:hover){.pl-back:hover{color:var(--ink)}
   .pl-back:hover svg{transform:scaleX(var(--dirx)) translateX(-3px)}}
-.pl-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;
-  margin-top:clamp(22px,3vw,30px);max-width:660px}
-.pl-fact{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px}
-.pl-fact .k{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
-.pl-fact .v{font-weight:800;font-size:16px}
-.pl-h2{margin-top:clamp(28px,4vw,40px);font-size:clamp(20px,2.4vw,25px)}
-.pl-fields{list-style:none;display:grid;gap:9px;max-width:660px;margin-top:14px}
-.pl-fields li{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surface);
-  border:1px solid var(--line);border-radius:var(--r-sm);font-size:15px}
-.pl-fields .fn{font-weight:700}
-.pl-fields .fs{color:var(--muted);font-size:14px}
-.pl-fields .fp{margin-inline-start:auto;font-weight:800}
-.pl-am{list-style:none;display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
-.pl-am li{font-size:14px;font-weight:600;padding:8px 14px;border-radius:var(--r-full);
-  background:var(--lime-soft);border:1px solid var(--line);color:var(--ink-2)}
+/* صفحة الملعب صارت **اسمًا وموقعًا وفعلًا واحدًا** (قرار المالك 2026-08-13):
+   شبكةُ الحقائق وجدولُ الملاعب وقائمةُ المرافق حُذفت من المولّد ومعها قواعدها،
+   فالتفاصيل تعيش في التطبيق حيث تُحجَز وتتحدّث. والسطرُ أدناه يقول ذلك بدل
+   أن يترك فراغًا يُقرأ عطلًا. */
+.pl-inapp{margin-top:14px;max-width:60ch;font-size:15.5px;color:var(--muted);line-height:1.75}
 .pl-updated{margin-top:clamp(24px,3vw,32px);font-size:13.5px;color:var(--muted)}
 /* ملاحظة «ما هي الرياضة المتاحة» أعلى الدليل: شريط جانبي لا لوح — تُقرأ
    حاشيةً تشرح القائمة لا إعلانًا يزاحمها. */
@@ -1501,6 +1490,14 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
    بالعين في ثانية بدل ثلاث فقرات تُقرَأ في عشرين. */
 .steps-lean .step{padding-block:18px}
 .steps-lean .step h3{margin:0}
+/* 🔴 **والحشوة العلوية تُستعاد على الشاشة الواسعة.** فوق 820px يقفز رقمُ الخطوة
+   إلى أعلى البلاطة (‏`.step::before{top:0}` بعرض 48px) و`.step{padding-top:66px}`
+   هي ما يُنزل العنوان تحته. لكنّ `.steps-lean .step` نوعيّتها (0,2,0) تغلب
+   `.step` (0,1,0) **مهما كان الترتيب** — و`@media` لا تضيف نوعيّة (مزلقٌ مسجَّل)
+   ⇒ `padding-block:18px` تسحق الـ66 فيقع العنوان **داخل** الدائرة.
+   مقيس عند 1400px: الدائرة تشغل 1352.6…1400.6 والعنوان 1370.6…1396.2 — أي أن
+   السطر كلَّه داخل الرقم. (صورة المالك 2026-08-13.) */
+@media (min-width:820px){ .steps-lean .step{padding-block:66px 18px} }
 
 /* ② شبكة الملاعب على الرئيسة — **نفس بطاقة `/places`** بلا سمات التصفية
    (لا شيء يُصفّى هنا). قاعدة واحدة تخدم الصفحتين فلا تنحرف إحداهما. */

@@ -573,44 +573,21 @@ function Render-PlaceBody($p, $T, [string]$base) {
                      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>' +
                      (Tx $T 'plBackToList') + '</a>')
     [void]$sb.Append('<h1 class="h1-page">' + (HtmlEnc $p.name) + '</h1>')
-    [void]$sb.Append('<p class="lead">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + ' &middot; ' + (HtmlEnc $p.type) + '</p>')
-    if ($p.hasRating) { [void]$sb.Append('<p class="pl-rate-row">' + (Render-Stars $p $T) + '</p>') }
-
-    [void]$sb.Append('<div class="pl-facts">')
-    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPitches') + '</span><span class="v">' + $p.fields.Count + '</span></div>')
-    # The range is wrapped in <bdi dir="ltr"> and the currency is left outside it.
-    # Without that, an Arabic page renders "40 - 60" as "60 - 40": the dash is a
-    # bidi-neutral character between two European numbers, so the surrounding RTL
-    # direction wins and the two numbers swap - the page shows the highest price
-    # first and the lowest second. Measured on rendered pixels, not assumed; the
-    # DOM string is correct either way, which is exactly why this survived.
-    # An en dash (U+2013), matching the home page's pricing tile: the same two
-    # numbers are printed in both places and had drifted to two separators.
-    $priceTxt = $(if ($p.priceMin -eq $p.priceMax) { (Fmt-Price $p.priceMin) } else { (Fmt-Price $p.priceMin) + [char]0x2013 + (Fmt-Price $p.priceMax) })
-    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plPriceHour') + '</span><span class="v"><bdi dir="ltr">' + $priceTxt + '</bdi> ' + (Tx $T 'plCurrency') + '</span></div>')
-    [void]$sb.Append('<div class="pl-fact"><span class="k">' + (Tx $T 'plSurface') + '</span><span class="v">' + (HtmlEnc $p.type) + '</span></div>')
-    [void]$sb.Append('</div>')
-
-    [void]$sb.Append('<h2 class="h2 pl-h2">' + (Tx $T 'plFieldsTitle') + '</h2><ul class="pl-fields">')
-    foreach ($f in $p.fields) {
-        [void]$sb.Append('<li><span class="fn">' + (HtmlEnc $f.name) + '</span>')
-        if ($f.size) { [void]$sb.Append('<span class="fs">' + (HtmlEnc $f.size) + '</span>') }
-        # Who the pitch is for (migration 29). Printed ONLY when the row says so:
-        # an unset pitch carries no badge, because writing "mixed" over a policy
-        # nobody stated sends a woman to a men's pitch on a promise no one made.
-        $g = [string]$f.gender
-        if ($g -eq 'men' -or $g -eq 'women' -or $g -eq 'mixed') {
-            [void]$sb.Append('<span class="fg fg-' + $g + '">' + (Tx $T ('plGender_' + $g)) + '</span>')
-        }
-        [void]$sb.Append('<span class="fp">' + (Fmt-Price $f.price) + ' ' + (Tx $T 'plCurrency') + '</span></li>')
-    }
-    [void]$sb.Append('</ul>')
-
-    if ($p.amenities.Count -gt 0) {
-        [void]$sb.Append('<h2 class="h2 pl-h2">' + (Tx $T 'plAmenities') + '</h2><ul class="pl-am">')
-        foreach ($a in $p.amenities) { [void]$sb.Append('<li>' + (Tx $T $a) + '</li>') }
-        [void]$sb.Append('</ul>')
-    }
+    # Owner decision 2026-08-13: the site prints the NAME and where it is. Nothing
+    # else. Everything that used to sit here - pitch count, hourly price range,
+    # surface, the per-pitch table with sizes and prices, the amenity list - is
+    # live in the app, where it is also bookable and always current. A static
+    # page cannot be both: printed at build time it is a second copy of the truth
+    # that drifts from the database between deploys, and the only action it can
+    # offer is "download the app" anyway. So the page carries the one fact that
+    # makes it findable (name + area) and the one action it can complete.
+    #
+    # The location line keeps region and city and drops the surface: an address
+    # is how a visitor recognises the venue they meant; a surface type is a spec.
+    [void]$sb.Append('<p class="lead">' + (HtmlEnc $p.region) + ' &middot; ' + (HtmlEnc $p.city) + '</p>')
+    # Says WHY the rest is not here, so the empty space reads as a decision and
+    # not as a page that failed to load. Rule m5: no silent gap.
+    [void]$sb.Append('<p class="pl-inapp">' + (Tx $T 'plInApp') + '</p>')
 
     [void]$sb.Append('<div class="hero-cta cta-start"><a class="btn btn-pri btn-lg" href="' + $base + '/download/">' + (Tx $T 'plBookCta') + '</a>')
     # HtmlEnc escapes the quote so the attribute cannot be broken out of, but it

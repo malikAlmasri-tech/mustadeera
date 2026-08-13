@@ -391,6 +391,7 @@ plCurrency = د.أ
 plSurface = الأرضية
 plFieldsTitle = الملاعب والأسعار
 plAmenities = المرافق
+plInApp = الأسعار والأوقات المتاحة والمرافق كلّها داخل التطبيق — تتحدّث لحظة بلحظة.
 plBookCta = احجز من التطبيق
 plMapCta = افتح في الخرائط
 plBackToList = رجوع إلى الدليل
