@@ -29,6 +29,17 @@
 
     <h2>{{t.privWhereTitle}}</h2>
     <p>{{t.privWhereBody}}</p>
+    <!-- قانون حماية البيانات الشخصية الأردني (24 لسنة 2023) نافذٌ اليوم، وهو
+         يقيّد نقل البيانات خارج المملكة ويشترط الإفصاح. وخوادم Supabase خارج
+         الأردن قطعًا (لا منطقة أردنية عنده أصلًا) ⇒ النقل واقعٌ ويجب أن يُقال.
+         ⚠️ ولم تُذكر المنطقة بالاسم لأنها **غير مقيسة من هنا**: ترويسة
+         `CF-Ray` تعطي حافّة كلاودفلير الأقرب للقارئ (AMM) لا موقع القاعدة.
+         المالك يقرؤها من لوحة Supabase ⇒ Settings ⇒ General ⇒ Region. -->
+    <h2>{{t.privTransferTitle}}</h2>
+    <p>{{t.privTransferBody}}</p>
+
+    <h2>{{t.privBasisTitle}}</h2>
+    <p>{{t.privBasisBody}}</p>
 
     <!-- نتيجة ٢.٣: صار على الموقع نموذجٌ يجمع بيانات، فوجب أن يُذكر هنا —
          وبما هو صحيح فعلاً لا بأكثر منه. -->
@@ -49,6 +60,12 @@
 
     <h2>{{t.privKeepTitle}}</h2>
     <p>{{t.privKeepBody}}</p>
+
+    <!-- «راسلنا من صفحة التواصل» لا يكفي قانونًا: القانون يسأل عن **جهةٍ
+         مسؤولة** لا عن نموذج. والاسم المذكور هو اسم المنصّة نفسها — وهو صحيح
+         ولا يُخترَع؛ فإن وُجد كيانٌ مسجَّل باسمٍ آخر يُضاف هنا. -->
+    <h2>{{t.privOwnerTitle}}</h2>
+    <p>{{t.privOwnerBody}} <a class="in-link" href="{{base}}/contact/">{{t.linkContact}}</a></p>
 
     <h2>{{t.privContactTitle}}</h2>
     <p>{{t.privContactBody}} <a class="in-link" href="{{base}}/contact/">{{t.linkContact}}</a></p>

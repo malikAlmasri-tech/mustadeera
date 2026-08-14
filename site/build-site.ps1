@@ -314,6 +314,13 @@ if ($null -ne $PlacesData) {
         $PlaceModel += @{
             id = $placeId; name = [string]$p.name; city = [string]$p.city; region = [string]$p.region
             type = [string]$p.type; map = [string]$p.map_link; slug = $slug
+            # phone/image feed the SportsActivityLocation node only - nothing on
+            # the page prints them. The image is the first pitch photo that has
+            # one; a venue whose pitches carry no photo simply gets no image
+            # property, never a placeholder.
+            phone = [string]$p.phone
+            image = [string](@($fs | Where-Object { $_.image_url -and ([string]$_.image_url) -match '^(?i)https?://' } |
+                              Select-Object -First 1 | ForEach-Object { [string]$_.image_url }))
             fields = $fs; priceMin = ($prices | Measure-Object -Minimum).Minimum
             priceMax = ($prices | Measure-Object -Maximum).Maximum
             hasRating = $hasRating
@@ -372,6 +379,92 @@ $written = 0
 
 # ---- directory markup (generated from data, so it holds no placeholders) ----
 function Tx($T, [string]$k) { if ($T.ContainsKey($k)) { $T[$k] } else { "[[$k]]" } }
+
+# JSON string escaping for the ld+json block.
+# NOT HtmlEnc: that turns " into &quot;, which is correct inside an attribute and
+# WRONG inside a <script> element - the parser hands script content through raw,
+# so &quot; would reach JSON.parse literally and break the document. The one
+# thing that must not appear raw here is the sequence "</script"; escaping the
+# slash as \/ is legal JSON and closes that hole without touching anything else.
+function JsonEnc([string]$s) {
+    if ($null -eq $s) { return '' }
+    $s = $s.Replace('\', '\\').Replace('"', '\"')
+    $s = $s.Replace("`r", ' ').Replace("`n", ' ').Replace("`t", ' ')
+    $s.Replace('</', '<\/')
+}
+
+# ---------------------------------------------------------------------------
+#  Structured data (schema.org)
+#
+#  WHY THIS EXISTS
+#  One page per venue is already generated, and it is exactly the surface that
+#  catches "football pitch in Tla al Ali". Until now those pages carried only
+#  Organization + WebSite - nothing at all about the venue itself.
+#
+#  WHAT IS DELIBERATELY NOT EMITTED, AND WHY
+#   * geo - we do not store latitude/longitude. map_link is a shortened Google
+#     URL, not a coordinate pair. Inventing one would be a fabricated fact (m5).
+#   * priceRange / openingHoursSpecification - batch 29 REMOVED prices and times
+#     from these pages on the owner's decision: "a static page printing a price
+#     is a second source of truth that drifts between deploys". Metadata is not
+#     an exception to that - it is worse, because a stale price can sit in a
+#     search result for weeks. Live price and availability are in the app.
+#   * aggregateRating - the same batch removed the stars from these pages, so
+#     the rating is now marked up but NOWHERE VISIBLE. That breaks Google's own
+#     rule that structured data must describe content the visitor can see, and
+#     it is the identical mistake as priceRange: metadata claiming what the page
+#     does not say. Measured before deciding: the rendered page is name, area,
+#     one line pointing at the app, and two buttons - no stars anywhere.
+# ---------------------------------------------------------------------------
+function Ld-Place($p, $T, [string]$pageUrl) {
+    $n = @()
+    $n += '"@type":"SportsActivityLocation"'
+    $n += '"@id":"' + (JsonEnc $pageUrl) + '#venue"'
+    $n += '"name":"' + (JsonEnc $p.name) + '"'
+    $n += '"url":"' + (JsonEnc $pageUrl) + '"'
+
+    $addr = @('"@type":"PostalAddress"', '"addressCountry":"JO"')
+    if ($p.region) { $addr += '"addressLocality":"' + (JsonEnc $p.region) + '"' }
+    if ($p.city)   { $addr += '"addressRegion":"'   + (JsonEnc $p.city)   + '"' }
+    $n += '"address":{' + ($addr -join ',') + '}'
+
+    # E.164. The column already holds 962... with no plus, so one is prepended;
+    # anything that does not look like that is left out rather than guessed at.
+    if ($p.phone -match '^\d{8,15}$') { $n += '"telephone":"+' + $p.phone + '"' }
+    if ($p.image) { $n += '"image":"' + (JsonEnc $p.image) + '"' }
+    # Same scheme whitelist the visible Map button uses - a link we will not
+    # vouch for on the page is not one we vouch for in metadata either.
+    if ($p.map -and $p.map -match '^(?i)https?://') { $n += '"hasMap":"' + (JsonEnc $p.map) + '"' }
+    ',{' + ($n -join ',') + '}'
+}
+
+function Ld-Crumbs($T, [string]$homeUrl, [string]$listUrl, [string]$pageUrl, [string]$leaf) {
+    $item = {
+        param($pos, $name, $url)
+        '{"@type":"ListItem","position":' + $pos + ',"name":"' + (JsonEnc $name) + '","item":"' + (JsonEnc $url) + '"}'
+    }
+    $items = @(
+        (& $item 1 (Tx $T 'brandName')   $homeUrl),
+        (& $item 2 (Tx $T 'navPlaces')   $listUrl),
+        (& $item 3 $leaf                 $pageUrl)
+    )
+    ',{"@type":"BreadcrumbList","itemListElement":[' + ($items -join ',') + ']}'
+}
+
+# The four questions actually on the home page, in the order they appear there.
+# Keys only - the text lives in site/strings/*.txt like every other string, so
+# this file stays pure ASCII (PS 5.1 mis-decodes UTF-8 without a BOM).
+function Ld-Faq($T, [string]$pageUrl) {
+    $pairs = @(@('faqQ7','faqA7'), @('faqQ1','faqA1'), @('faqQ2','faqA2'), @('faqQ3','faqA3'))
+    $qs = @()
+    foreach ($pair in $pairs) {
+        if (-not ($T.ContainsKey($pair[0]) -and $T.ContainsKey($pair[1]))) { continue }
+        $qs += '{"@type":"Question","name":"' + (JsonEnc $T[$pair[0]]) +
+               '","acceptedAnswer":{"@type":"Answer","text":"' + (JsonEnc $T[$pair[1]]) + '"}}'
+    }
+    if ($qs.Count -eq 0) { return '' }
+    ',{"@type":"FAQPage","@id":"' + (JsonEnc $pageUrl) + '#faq","mainEntity":[' + ($qs -join ',') + ']}'
+}
 
 # Arabic changes the counted noun with the number, so "1 pitches" is not a
 # typo to shrug at - it reads as broken Arabic. 1 = singular, 2 = dual,
@@ -634,6 +727,9 @@ foreach ($lang in $Langs) {
             jsHref     = $JsHref
             title      = $(if ($T.ContainsKey($page.title)) { $T[$page.title] } else { '' })
             desc       = $(if ($T.ContainsKey($page.desc))  { $T[$page.desc]  } else { '' })
+            # Extra @graph nodes. Empty on every page that adds none - the
+            # placeholder must still resolve or the build's own key check fires.
+            jsonldExtra = $(if ($page.name -eq 'index') { Ld-Faq $T $canonical } else { '' })
         }
         # aria-current for the active nav item
         foreach ($p in $Pages) {
@@ -851,6 +947,12 @@ foreach ($lang in $Langs) {
         $pv['arUrl']     = $SiteOrigin + $pPath
         $pv['enUrl']     = $SiteOrigin + '/en' + $pPath
         $pv['pageName']  = 'place'
+        # The venue entity plus its trail. Both are built from the same model the
+        # page renders, so metadata cannot claim something the page does not.
+        $pv['jsonldExtra'] = (Ld-Place $p $T $pv['canonical']) +
+                             (Ld-Crumbs $T ($SiteOrigin + $lang.base + '/') `
+                                           ($SiteOrigin + $lang.base + '/places/') `
+                                           $pv['canonical'] $p.name)
         foreach ($q in $Pages) { $pv["cur_$($q.name)"] = $(if ($q.name -eq 'places') { ' aria-current="page"' } else { '' }) }
 
         $pBody = Render-PlaceBody $p $T $lang.base
