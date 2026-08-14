@@ -1461,6 +1461,12 @@ function countNoun(n, one, two, few, many){
 const nHours = (n) => (State.lang==='en')
   ? (n===1 ? '1 hour' : `${n} hours`)
   : countNoun(n, 'ساعة واحدة', 'ساعتين', 'ساعات', 'ساعة');
+/* «٤ أوقات فاضية اليوم» — رقمٌ حيّ يسبق معدودًا فيلزمه `countNoun`، وإلّا
+   خرجت «1 أوقات» و«11 أوقات». يُستعمل على بطاقة المكان. */
+const nFreeToday = (n) => (State.lang==='en')
+  ? (n===1 ? '1 slot free today' : `${n} slots free today`)
+  : countNoun(n, 'وقت واحد فاضي اليوم', 'وقتان فاضيان اليوم',
+                 'أوقات فاضية اليوم', 'وقتًا فاضيًا اليوم');
 /* مدّة الردّ المعتادة نصًّا: «١٥ دقيقة» · «ساعتان» · «١٫٥ ساعة».
    ⚠️ **اللغة وسيطٌ لا `State`**: دالّة نقيّة تُختبَر معزولةً في
       `tools/test-pure.mjs` — ونسخةٌ ثانية في ملفّ اختبار كانت ستنحرف.
@@ -3403,6 +3409,15 @@ function placeCard(p, eager){
   if(hasRating(p)) metaBits.push(h('span',{class:'pm-rating'}, h('span',{class:'sr-star'},'★'), ' '+ratingText(p)));
   metaBits.push(h('span',{class:'pm-loc'}, placeLocation(p)));
   metaBits.push(h('span',{class:'pm-fields'}, oneField?t('oneField'):t('fieldsCount',{n:p.fields.length})));
+  /* عددُ أوقات اليوم الفارغة — `placeAvailability` تحسبه أصلًا (`free`) ثمّ
+     كانت البطاقة **ترميه**: لا يظهر إلّا نقيضُه («غير متاح») عند الامتلاء.
+     وهو أنفع رقمٍ على البطاقة: من يتصفّح مساءً يسأل «في فاضي الليلة؟» لا
+     «كم ملعبًا عندهم؟».
+     ⚠️ **وهو قياسٌ لا وعد** (م5): مشتقٌّ من خانات الملعب ناقصَ المحجوز
+     ناقصَ المغلق، ولا يُعرَض إلّا إن كان أكبر من صفر — والصفرُ حالته
+     شارةُ «غير متاح» القائمة، لا رقمٌ يقول «صفر». */
+  if(av.state==='today' && av.free>0)
+    metaBits.push(h('span',{class:'pm-free'}, nFreeToday(av.free)));
   metaBits.forEach((bit,i)=>{
     if(i) meta.append(h('span',{class:'pm-sep','aria-hidden':'true'},'·'));
     meta.append(bit);
