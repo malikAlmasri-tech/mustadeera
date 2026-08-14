@@ -71,32 +71,28 @@
              كانت ستضيف ~مليون محرف إلى ورقةٍ تُحلَّل عند كل إقلاع.
              ⚠️ ولا صورة تدّعي إتاحة رياضة: النصّ لا يَعِد بها، والحالة الوحيدة
              التي تُقرأ وعدًا (قسم الرياضات) بقيت بشاراتها على الموقع. -->
-        <section class="obs-slide" data-slide="1" aria-labelledby="obsT1">
-          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/players-3148452.jpg')"></span>
-          <div class="obs-card">
-            <h2 class="obs-t" id="obsT1" tabindex="-1" data-i18n="onbS1T">احجز بلا مكالمات</h2>
-            <p class="obs-b" data-i18n="onbS1B">شوف الفاضي والسعر، وابعث طلبك.</p>
-          </div>
-        </section>
-        <section class="obs-slide" data-slide="2" aria-labelledby="obsT2">
-          <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/night-pitch-16826134.jpg')"></span>
-          <div class="obs-card">
-            <h2 class="obs-t" id="obsT2" tabindex="-1" data-i18n="onbS2T">طلبك ينتظر ردّ الملعب</h2>
-            <p class="obs-b" data-i18n="onbS2B">الحجز طلب — بيتأكّد لمّا الملعب يوافق، وبنعلمك أوّل ما يردّ.</p>
-          </div>
-        </section>
-        <section class="obs-slide" data-slide="3" aria-labelledby="obsT3">
+        <!-- ⚠️ كانت أربعًا فصارت اثنتين (والثانية مشروطة ⇒ **واحدةٌ غالبًا**).
+             المحذوفتان — «شوف الفاضي والسعر قبل ما تحجز» و«ابعث طلبك بضغطة» —
+             تصفان ما يراه المستخدم بعينه بعد ثانيتين من التصفّح، فكانتا تطلبان
+             لمساتٍ قبل أن يرى ملعبًا واحدًا. والباقية تقول ما **لا يُستنتَج من
+             الشاشة**: أنّ الحجز طلبٌ يوافق عليه الملعب ويصلك خبره — وهو التوقّع
+             الذي يحمي المنتج من خيبة، وهو وحده ما يستحقّ شاشةً قبل القيمة.
+             🔴 **والمقياس `I18N` لا النصّ الاحتياطي هنا**: الدفعة ٢٧ أعادت كتابة
+                الشرائح قصّةً (تصفَّح ⇒ ابعث ⇒ يوصلك الردّ) ولم تُحدَّث هذه
+                النصوص الاحتياطية معها ⇒ من قرأ الوسم وحده أبقى الشريحة الخطأ.
+                (وقعت الزلّة فعلًا في هذه الدفعة وصُحِّحت بقراءة `I18N`.) -->
+        <section class="obs-slide" data-slide="1" aria-labelledby="obsT3">
           <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/multisport-courts.jpg')"></span>
           <div class="obs-card">
-            <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">السعر والوقت الفاضي قدّامك</h2>
-            <p class="obs-b" data-i18n="onbS3B">كل ساعة وسعرها قدّامك قبل ما تحجز.</p>
+            <h2 class="obs-t" id="obsT3" tabindex="-1" data-i18n="onbS3T">الملعب يوافق، وبنعلمك</h2>
+            <p class="obs-b" data-i18n="onbS3B">أوّل ما يردّوا بيوصلك خبر، وحالة طلبك دايماً في «حجوزاتي».</p>
           </div>
         </section>
         <!-- ⚠️ هذه وحدها **تُحذف من الـDOM** إن لم يكن `GAMES_OK === true`
              (نفس العلَم الذي يحكم `#matchPick` حرفيًّا) — ميزةٌ خلف علَمٍ مُطفأ
              لا تُعلَن، والعلَم يبدأ `null` فما لا نعرفه لا يُعرَض. وحذفها ينقص
              الرابعة لا الثالثة ⇒ المسار يبقى ثلاث شرائح مضمونة. -->
-        <section class="obs-slide" data-slide="4" data-needs-games="1" aria-labelledby="obsT4">
+        <section class="obs-slide" data-slide="2" data-needs-games="1" aria-labelledby="obsT4">
           <span class="obs-shot" aria-hidden="true" style="background-image:url('assets/onb/players-16588259.jpg')"></span>
           <div class="obs-card">
             <h2 class="obs-t" id="obsT4" tabindex="-1" data-i18n="onbS4T">ناقصك لاعبين؟</h2>

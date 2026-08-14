@@ -260,10 +260,6 @@ const I18N = {
           خطوات متتابعة: **تصفَّح ⇒ ابعث ⇒ يوصلك الردّ**. ولا حقيقة سقطت:
           «الحجز طلب يوافق عليه الملعب» ما زالت مكتوبةً بالحرف — لكنّها صارت
           **خاتمة المسار** لا عقبةً في وسطه: الردّ يصلك، لا أنت تنتظره. */
-    onbS1T:'شوف الفاضي والسعر قبل ما تحجز',
-    onbS1B:'كل ساعة وسعرها قدّامك — بلا مكالمة ولا سؤال.',
-    onbS2T:'ابعث طلبك بضغطة',
-    onbS2B:'اختر يومك ووقتك وابعث — وخلص، ما في انتظار على الخطّ.',
     onbS3T:'الملعب يوافق، وبنعلمك',
     onbS3B:'أوّل ما يردّوا بيوصلك خبر، وحالة طلبك دايماً في «حجوزاتي».',
     onbS4T:'ناقصك لاعبين؟',
@@ -740,10 +736,6 @@ const I18N = {
     onbCreateAccount:'Create new account', onbOwnerEnter:'Owner dashboard login',
     onbOwnerNote:'Manage your venues, bookings and prices in one place.', onbTerms:'By continuing you agree to the Terms and Privacy Policy.',
     onbEyebrow:'Sports venue booking', introTag:'Book your venue',
-    onbS1T:'See what is free, and what it costs',
-    onbS1B:'Every hour and its price, up front - no call, no asking around.',
-    onbS2T:'Send your request in one tap',
-    onbS2B:'Pick your day and time and send. No waiting on the line.',
     onbS3T:'The venue approves, and we tell you',
     onbS3B:'You hear the moment they reply, and your request is always under “My bookings”.',
     onbS4T:'Short on players?',
@@ -4121,7 +4113,7 @@ function renderGmLive(){
    ══════════════════════════════════════════════════════════════════════════ */
 /* ⚠️ **رقم إصدار، ورُفع إلى `'2'`**: التوزيع تغيّر (ثلاث مضمونة ورابعة مشروطة)
    وشريحةٌ جديدة أُضيفت، فمن رأى النسخة الأولى لم يرَ ما يقوله المنتج اليوم. */
-const OBS_KEY = 'mustadaira:onb', OBS_VER = '2';
+const OBS_KEY = 'mustadaira:onb', OBS_VER = '3';
 const Obs = {
   i:0, n:0, slides:[], built:false,
   /* «مفتوحة» = الصفحة نفسها معروضة. علَمٌ مستقلّ كان يفترق عن الواقع في مسارٍ
@@ -4178,6 +4170,14 @@ const Obs = {
        العرض فتقفز الحبّة النشِطة بدل أن تتمدّد. */
     const dots=$('#obsDots');
     if(dots){
+      /* شريحةٌ واحدة ⇒ لا نقاط: نقطةٌ وحيدة تقول «واحدة من واحدة» فلا تخبر
+         بشيء وتُقرأ عنصرَ واجهةٍ معطَّلًا. وهي الحالة الغالبة عند أوّل إقلاع
+         (‏`GAMES_OK` يبدأ `null` فتُحذف المشروطة).
+         ⚠️ والصنف بـ`visibility` لا السمة `hidden`: الأخيرة تصطدم بـ
+            `[hidden]{display:none!important}` العامّة، والذيل شبكةُ
+            `1fr auto 1fr` تحتاج بقاء الصندوق كي يبقى الزرّ في مساره —
+            نفس درس انزياح النقاط المسجَّل في الدفعة ٢٩. */
+      dots.classList.toggle('is-off', this.n < 2);
       if(dots.childElementCount !== this.n){ clear(dots);
         for(let j=0;j<this.n;j++) dots.append(h('span',{class:'obs-dot'})); }
       [...dots.children].forEach((d,j)=>d.classList.toggle('on', j===k));
