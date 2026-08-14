@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "171971745294",
+    "project_id": "mustadeera-442c8",
+    "storage_bucket": "mustadeera-442c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171971745294:android:a001b2344c5ae4cb0e4e5f",
+        "android_client_info": {
+          "package_name": "com.almustadira.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmKbnMbXhGXrjwkPJkj2rCh0y71u4mp4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
