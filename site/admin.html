@@ -732,12 +732,21 @@ html.dark .res .no{color:#FF8A90}
            التفصيل الدقيق في جدول الأيام، حيث العرض يوفّر lost. -->
       و<strong>غير مؤكّدة</strong> تجمع المعلّق والملغى والمرفوض معًا.
       <strong>الملاعب</strong> عدد الملاعب النشِطة داخل المكان، و<strong>الخانات/يوم</strong> طاقته اليومية.</p>
+    <!-- 🔴 الحاشية ليست زينة: بلا هذه الجملة يُقرأ العمود «تسرّبك = كذا»، وهو
+         ادّعاءٌ لا تقوله البيانات. لا نرى إلّا ما مرّ بنا — فالرقم نصفُ
+         السؤال المرئي لا جوابه. -->
+    <p class="hint"><strong>عادوا عبرنا</strong>: من حجز في هذا المكان، كم منهم حجز فيه
+      <strong>مرّةً ثانية عبر المنصّة</strong>. والعميل رقم هاتف لا حساب.
+      ولا يظهر الرقم قبل ثمانية عملاء للمكان — نسبةٌ من ثلاثة ليست قياسًا.
+      ⚠️ وهو <strong>لا يقيس ما مرّ خارج المنصّة</strong>: لا نرى إلّا ما وصلنا.
+      رقمٌ منخفض قد يعني حجوزات مباشرة بعد أوّل مرّة، وقد يعني انقطاعًا عاديًّا —
+      والفرق تكشفه مكالمة مع الملعب لا هذا الجدول.</p>
     <div class="ad-scroll">
       <table id="places"><thead><tr>
         <th>المكان</th><th class="ad-c2">المدينة</th><th class="n ad-c2">ملاعب</th><th class="n ad-c2">خانات/يوم</th>
         <th class="n">الحجوزات</th><th class="n">مؤكّدة</th>
         <th class="n">غير مؤكّدة</th><th class="n">المبيعات</th><th class="n">دخلك</th><th class="n ad-c2">الحصّة</th>
-        <th class="n ad-c2">التقييم</th><th>الحالة</th>
+        <th class="n ad-c2">التقييم</th><th class="n ad-c2">عادوا عبرنا</th><th>الحالة</th>
       </tr></thead><tbody></tbody><tfoot></tfoot></table>
     </div>
   </section>
@@ -2100,9 +2109,36 @@ function renderPlacesTab(){
     var bkp=+p.bookings||0; return bkp >= 5 && (+p.confirmed||0)/bkp < 0.6; }).length;
   tabBadge('place', 'الملاعب', weak, true);
 
+  /* ── «عادوا عبر المنصّة» — النصف المرئي من سؤال العمولة ──────────────────
+     النموذج عمولة، والدفع نقدي، وشاشة الحجز تعطي اللاعبَ رقمَ الملعب. فالحجز
+     الثاني قد يمرّ بمكالمة مباشرة ولا نعرف أنه وقع.
+     🔴 **وهذا العمود لا يقيس التسرّب** — ولا يستطيع أحد: لا نرى إلّا ما مرّ
+     بنا. يقيس نصفَه المرئي: من حجز عندك، كم منهم **عاد عبرنا**. والرقم
+     المنخفض يتّسق مع التسرّب ولا يُثبته (قد يكون انقطاعًا عاديًّا) — لذلك
+     الحاشية تحته تقول ذلك حرفيًّا، وإلّا قُرئ الرقم «تسرّبك = كذا» وهو
+     ادّعاءٌ لا تقوله البيانات (م5).
+     ⚠️ **والعميل رقمُ هاتف لا حسابًا مسجَّلًا** — نفس تعريف تبويب العملاء. */
+  var retBy = {};
+  (function(){
+    var seen = {};                       // place -> phone -> عدد حجوزاته هناك
+    (D.bookings || []).forEach(function(b){
+      var ph = String(b.customer_phone || '').trim(); if (!ph) return;
+      var k = String(b.place_id || ''); if (!k) return;
+      (seen[k] = seen[k] || {})[ph] = (seen[k][ph] || 0) + 1;
+    });
+    Object.keys(seen).forEach(function(k){
+      var ppl = Object.keys(seen[k]);
+      var back = ppl.filter(function(ph){ return seen[k][ph] >= 2; }).length;
+      /* عتبةُ عرضٍ لا حساب: نسبةٌ من ثلاثة عملاء ليست قياسًا، وعرضُها يجعل
+         مكانًا جديدًا يبدو «مُسرِّبًا». دون العتبة شرطةٌ لا صفر. */
+      retBy[k] = ppl.length >= 8 ? Math.round(back / ppl.length * 100) : null;
+    });
+  })();
+
   tb.innerHTML = sorted.map(function(p){
     // بلا تقييم حقيقي ⇒ شرطة، لا صفر. نفس قاعدة hasRating في التطبيق والموقع.
     var rate = (p.rating === null || p.rating === undefined) ? '—' : (Math.round(p.rating*10)/10);
+    var ret = retBy[String(p.id)];
     // هنا «غير مؤكّدة» لا «معلّقة»: العرض لا يعطي lost لكل مكان، فلا سبيل
     // إلى فصل المعلّق عن الملغى — والتسمية تقول ما يمكن إثباته فقط.
     var open = Math.max(0, (+p.bookings||0) - (+p.confirmed||0));
@@ -2118,6 +2154,7 @@ function renderPlacesTab(){
              '<span class="share-f" style="inline-size:' + sh + '%"></span></span>' +
              '<span class="share-t">' + sh + '%</span></span></td>' +
            '<td class="n ad-c2">' + rate + '</td>' +
+           '<td class="n ad-c2">' + (ret === null || ret === undefined ? '—' : ret + '%') + '</td>' +
            '<td>' + (p.active ? '<span class="badge">نشط</span>' : '<span class="badge off">موقوف</span>') + '</td></tr>';
   }).join('');
   var sumOf = function(k){ return rows.reduce(function(a,p){ return a + (+p[k]||0); }, 0); };
@@ -2128,7 +2165,9 @@ function renderPlacesTab(){
     '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
     '<td class="n">' + Math.max(0, sumOf('bookings') - sumOf('confirmed')) + '</td>' +
     '<td class="n">' + money(totalRev) + '</td><td class="n">' + money(totalRev * RATE) + '</td>' +
-    '<td class="n ad-c2">100%</td><td class="ad-c2"></td><td></td></tr>';
+    /* الخليّتان الفارغتان: التقييم و«عادوا عبرنا». ولا مجموع لأيّهما —
+       متوسّطُ نسبٍ على أماكن مختلفة الأحجام رقمٌ لا معنى له، وجمعُها أسوأ. */
+    '<td class="n ad-c2">100%</td><td class="ad-c2"></td><td class="ad-c2"></td><td></td></tr>';
 }
 
 /* ── ④ العملاء ───────────────────────────────────────────────────────────── */

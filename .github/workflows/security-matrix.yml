@@ -1,0 +1,79 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  مصفوفة الأمان — كلّ حارسٍ يعتمد عليه المشروع، مؤكَّدًا على قاعدةٍ حيّة
+#
+#  لماذا وُجد هذا الـworkflow؟
+#  ──────────────────────────
+#  ترحيل `24` أغلق **تصعيد صلاحيات كاملًا** (‏`PATCH /profiles {"role":"admin"}`
+#  ⇒ القاعدة كلُّها)، ومعه ستّ ثغرات أصغر. و`security-matrix.mjs` يؤكّدها كلَّها
+#  — **لكنّه يُشغَّل باليد**، ولا شيء يمنع ترحيلًا لاحقًا من إعادة فتح أيٍّ منها.
+#  حارسٌ يعتمد على أن يتذكّره إنسان ليس حارسًا.
+#
+#  ⚠️ **بتوكن لاعبٍ عادي لا `service_role`** — والسكربت لا يقبل الثاني أصلًا:
+#     اختبارٌ يحتاج المفتاح الرئيسي لا يختبر ما يستطيعه المهاجم.
+#
+#  🔴 **ولا يُشغَّل على قاعدة الإنتاج**: السكربت **يُنشئ حجزًا ويُلغيه**، ويترك
+#     حساب الاختبار `active=false` (فحصُ «الموقوف لا يعيد تفعيل نفسه» ينجح
+#     بذلك). فالأسرار تشير إلى **مشروع Supabase اختباري**، والترحيلات آمنة
+#     لإعادة التشغيل فإنشاؤه رخيص.
+#
+#  ⚠️ **ويتخطّى بصوتٍ عالٍ إن غابت الأسرار** ولا يفشل: الأسرار تُضاف مرّةً
+#     واحدة من المالك، وحتى ذلك الحين لا يجوز أن يصبغ كلَّ دفعةٍ بالأحمر —
+#     فحصٌ أحمرُ دائمًا فحصٌ يُتجاهَل بعد أسبوع.
+#
+#  الإعداد (مرّة واحدة، Settings ⇒ Secrets and variables ⇒ Actions):
+#    SB_TEST_URL    https://<ref-اختباري>.supabase.co
+#    SB_TEST_ANON   المفتاح العام لذلك المشروع
+#    SB_TEST_PHONE  رقم حساب لاعبٍ عادي فيه
+#    SB_TEST_PASS   كلمة سرّه
+# ═══════════════════════════════════════════════════════════════════════════
+name: Security matrix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'migration/**'
+      - 'tools/security-matrix.mjs'
+      - '.github/workflows/security-matrix.yml'
+  pull_request:
+    paths:
+      - 'migration/**'
+      - 'tools/security-matrix.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # خطوةٌ منفصلة عمدًا: القرار يُتَّخذ ويُطبَع قبل أن يُنادى السكربت،
+      # فيُقرأ سببُ التخطّي في السجلّ بلا فتح الخطوة التالية.
+      - name: هل الأسرار موجودة؟
+        id: gate
+        env:
+          HAVE: ${{ secrets.SB_TEST_URL != '' && secrets.SB_TEST_ANON != '' }}
+        run: |
+          set -euo pipefail
+          if [ "$HAVE" = "true" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Security matrix skipped::لم تُضبَط أسرار المشروع الاختباري (SB_TEST_URL / SB_TEST_ANON) - الفحص لم يجرِ."
+          fi
+
+      - name: تشغيل المصفوفة
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          SB_URL:   ${{ secrets.SB_TEST_URL }}
+          SB_ANON:  ${{ secrets.SB_TEST_ANON }}
+          SB_PHONE: ${{ secrets.SB_TEST_PHONE }}
+          SB_PASS:  ${{ secrets.SB_TEST_PASS }}
+        run: node tools/security-matrix.mjs
