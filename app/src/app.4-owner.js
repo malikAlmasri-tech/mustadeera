@@ -1263,6 +1263,29 @@ const Notifs = {
     if (this.asked || !window.__notify) return;
     this.asked = true;
     try { await window.__notify.ensure(true); } catch(_){}
+    /* الإذن نفسه يخدم القناتين على أندرويد (‏POST_NOTIFICATIONS واحد)، فما إن
+       يُمنح حتى يُسجَّل رمز الدفع — لا نافذة ثانية ولا سؤال ثانٍ. */
+    this.registerPush();
+  },
+
+  /* رمز الجهاز ⇒ `profiles.fcm_token` (ترحيل 31).
+     ⚠️ **يُكتب فقط إن تغيّر**: الرمز ثابتٌ عبر الجلسات، وكتابتُه عند كل إقلاع
+        طلبٌ في كل مرّة بلا جديد — و`fcm_at` تبقى تقول متى تغيّر فعلًا.
+     ⚠️ **ولا يُسجَّل لضيف**: لا صفّ له في `profiles` أصلًا.
+     ⚠️ وغيابُ `__push` (لا خدمات جوجل · لا `google-services.json`) خروجٌ
+        صامت: القناة إضافةٌ لا شرط، والمركز والإشعار المحلّي يعملان بدونها. */
+  async registerPush(){
+    if (!window.__push) return;
+    if (!Session.player() && !Session.owner()) return;
+    let tok = '';
+    try { tok = await window.__push.register(); } catch(_){ return; }
+    if (!tok) return;
+    const lang = State.lang === 'en' ? 'en' : 'ar';
+    if (tok === this._pushTok && lang === this._pushLang) return;
+    const res = await API.get('savePushToken', { token: tok, lang }, 'push').catch(()=>null);
+    /* لا توست ولا رسالة عند الفشل: المستخدم لم يطلب هذا ولا يملك إصلاحه،
+       والفشل يعني «إشعارات أبطأ» لا «عمليةٌ لم تتمّ». */
+    if (res && res.success){ this._pushTok = tok; this._pushLang = lang; }
   },
 
   paint(){

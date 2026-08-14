@@ -65,6 +65,62 @@
     }catch(_){}
   }
 
+  /* ---- إشعارات الدفع (FCM) ----
+     الفرق عن `LocalNotifications` أعلاه: تلك تُعرَض **والتطبيق يعمل أو عند
+     فتحه**، وهذه توقظ هاتفًا مغلقًا — وهي الحلقة التي كان المنتج بلا محرّك
+     بدونها: المالك لا يعرف أنّ طلبًا وصل حتى يفتح التطبيق.
+
+     ⚠️ **وغيابها ليس عطلًا**: بلا `google-services.json` لا يوجد الملحق
+        أصلًا، فيبقى `__push` غيرَ معرَّف ويكتفي التطبيق بالمركز والإشعار
+        المحلّي كما كان بالضبط. لا فرع ولا رسالة خطأ.
+     ⚠️ **ولا يُطلَب الإذن هنا**: أندرويد 13+ يسأل مرّةً واحدة ولا يعيد بعد
+        الرفض، فموضعُه لحظةُ معناه (بعد أوّل حجز · عند دخول المالك) وهي في
+        `Notifs.askPermission` — وهذه تكتفي بما مُنح. */
+  var Push = P.PushNotifications;
+  if (Push) {
+    /* 🔴 القناة تُنشأ هنا **وإلّا سقطت الرسالة صامتةً**: أندرويد 8+ يرفض أيّ
+       إشعارٍ بمعرّف قناةٍ غير موجودة — بلا خطأ ولا سجلّ، فيبدو أن FCM لم يرسل.
+       والدالّة `push` ترسل `channel_id: 'mustadeera'` حرفيًّا، فالاسمان يجب
+       أن يتطابقا. و`importance: 5` كي يظهر فوق الشاشة: خبرٌ يخصّ حجزًا الليلة
+       لا يفيد في درج الإشعارات وحده. */
+    try{ Push.createChannel({ id: 'mustadeera', name: 'الحجوزات', importance: 5,
+                              visibility: 1, vibration: true }); }catch(_){}
+    window.__push = {
+      /* يُعيد وعدًا بالرمز أو '' — ولا يرمي أبدًا. */
+      register: function(){
+        return new Promise(function(resolve){
+          var done = false;
+          var finish = function(v){ if (!done){ done = true; resolve(v); } };
+          try{
+            Push.addListener('registration', function(t){ finish((t && t.value) || ''); });
+            Push.addListener('registrationError', function(){ finish(''); });
+            Push.checkPermissions().then(function(p){
+              if (!p || p.receive !== 'granted') return finish('');
+              Push.register();
+            }).catch(function(){ finish(''); });
+          }catch(_){ finish(''); }
+          /* الملحق قد لا يردّ إطلاقًا (خدمات جوجل غائبة على بعض الأجهزة) ⇒
+             لا ننتظر إلى الأبد: مهلةٌ تُعيد '' فيمضي الإقلاع. */
+          setTimeout(function(){ finish(''); }, 8000);
+        });
+      }
+    };
+    /* وصلت رسالة والتطبيق مفتوح: لا نعرضها ثانيةً — المركز يجلبها ويعرضها
+       بنفسه، وإظهارها هنا يكوّم إشعارين لخبرٍ واحد. نكتفي بإيقاظ الجلب. */
+    try{
+      Push.addListener('pushNotificationReceived', function(){
+        document.dispatchEvent(new CustomEvent('app:push-received'));
+      });
+      /* نقرة على إشعار دفع ⇒ **نفس الحدث** الذي يطلقه الإشعار المحلّي، بنفس
+         مفتاح `nid`: مسارٌ واحد في `app.js` لا اثنان ينحرفان. */
+      Push.addListener('pushNotificationActionPerformed', function(ev){
+        var d = ev && ev.notification && ev.notification.data;
+        document.dispatchEvent(new CustomEvent('app:notification-tap',
+          { detail: { nid: (d && d.nid) || '' } }));
+      });
+    }catch(_){}
+  }
+
   /* ---- تغذية لمسية أصلية ----
      `navigator.vibrate` يشغّل محرّك الاهتزاز الخام: نبضة واحدة بنفس الإحساس مهما
      كان السياق، وتحتاج إذن VIBRATE، وعلى iOS لا تعمل إطلاقًا. أمّا `Haptics`

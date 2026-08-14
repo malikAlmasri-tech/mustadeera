@@ -1044,6 +1044,23 @@ const API = {
         return { success: r.ok };
       }
 
+      /* رمز جهاز الدفع + لغة الإشعار ⇒ صفّ المستخدم نفسه (ترحيل 31).
+         ⚠️ `profiles_self_update` تحكم الصفوف لا الأعمدة، لكنّ مُشغِّل ترحيل 24
+            يجمّد `role` و`active` باتّجاه ⇒ هذان العمودان خارج حراسته فيمرّان،
+            ولا يستطيع أحد أن يكتب رمزًا في صفّ غيره (السياسة تُقيّد الصفّ).
+         ⚠️ **وغيابُ العمودين قبل الترحيل يردّ `PGRST204`** فيعود `success:false`
+            صامتًا — والمستخدم لا يرى شيئًا لأنه لم يطلب هذا الفعل أصلًا. */
+      case 'savePushToken': {
+        const tok = Session.player() || Session.owner();
+        const s = await sbSession(tok, !Session.player());
+        if (!s || !extra.token) return { success:false };
+        const r = await sbRest(`/profiles?id=eq.${encodeURIComponent(s.uid)}`, {
+          method:'PATCH', token:s.at,
+          body:{ fcm_token: extra.token, fcm_at: new Date().toISOString(), lang: extra.lang || 'ar' },
+        });
+        return { success: r.ok };
+      }
+
       case 'getPlayerProfile': {
         const s = await sbSession(extra.player_token, false);
         if (!s) return { success:false, message:'سجّل دخولك أول' };

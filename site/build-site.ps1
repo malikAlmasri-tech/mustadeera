@@ -185,6 +185,13 @@ if ($RelLive) {
         # and the hash would both look right.
         Copy-Item $RelLocal $apkFile -Force
         $ApkState = 'local'
+        # 🔴 البصمة والحجم يُحسَبان من الملفّ نفسه، ويتجاوزان ما في release.txt.
+        # كتابتهما بيد بجوار ملفٍّ يُعاد بناؤه في كل مرّة **مرآةٌ تنحرف**: أوّل
+        # بناءٍ بعد تعديلٍ يجعل الصفحة تعلن بصمةً لملفٍّ لم يعد موجودًا — ومن
+        # يتحقّق منها يظنّ الملفّ مُبدَّلًا. وهي بالضبط عائلة الأخطاء التي بُنيت
+        # لها حرّاس المرآة، فالعلاج حذفُ المصدر الثاني لا حراستُه.
+        $Rel['sha256'] = (Get-FileHash $apkFile -Algorithm SHA256).Hash.ToLower()
+        $Rel['size']   = '{0:N1} MB' -f ((Get-Item $apkFile).Length / 1MB)
     } elseif (Test-Path $apkFile) {
         $ApkState = 'cached'
     } else {

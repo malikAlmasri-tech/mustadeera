@@ -1854,6 +1854,9 @@ document.addEventListener('visibilitychange', ()=>{ manageAutoRefresh(); if(!doc
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ Notifs.load(); Tracker.refresh(); } });
 /* نقر إشعار الجهاز ⇒ فتح المركز، ومن سطره إلى الصفحة المعنيّة. */
 document.addEventListener('app:notification-tap', ()=>{ Notifs.load({silent:true}); Notifs.open(); });
+/* وصلت رسالة دفعٍ والتطبيق مفتوح: نجلب بلا إظهار — أندرويد عرضها بنفسه،
+   وإظهارها ثانيةً من `deliver()` يكوّم إشعارين لخبرٍ واحد. */
+document.addEventListener('app:push-received', ()=>{ Notifs.load({silent:true}); });
 // تفعيل السحب لإغلاق كل النوافذ
 $$('.modal-overlay').forEach(enableSwipe);
 
