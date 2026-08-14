@@ -140,7 +140,17 @@ foreach ($l in $Langs) { $Strings[$l.code] = Read-Strings (Join-Path $SiteDir "s
 # and the page renders the honest unavailable state instead of inventing a
 # version or a hash. See site/release.txt.
 $Rel = Read-Strings (Join-Path $SiteDir 'release.txt')
-$RelLive = ($Rel.ContainsKey('url') -and $Rel['url'] -ne '')
+# Two ways to point at the APK, and 'local' wins because it is the truthful one
+# now that the signed release is produced on this machine by gradle: there is no
+# remote copy to fetch until this build publishes one. 'url' stays for the case
+# where the file already lives somewhere else (a GitHub release, say).
+$RelLocal = $(if ($Rel.ContainsKey('local') -and $Rel['local'] -ne '') {
+                  $p = $Rel['local']
+                  # relative paths are read from the repo root, not from site\
+                  if (-not [IO.Path]::IsPathRooted($p)) { $p = Join-Path (Split-Path $SiteDir -Parent) $p }
+                  if (Test-Path $p) { $p } else { '' }
+              } else { '' })
+$RelLive = ($RelLocal -ne '') -or ($Rel.ContainsKey('url') -and $Rel['url'] -ne '')
 
 # ---- self-hosted APK -------------------------------------------------------
 # The APK is served from this origin, not linked off to GitHub, so the download
@@ -168,7 +178,14 @@ if ($RelLive) {
     $apkDir  = Join-Path $SiteDir 'static\downloads'
     $apkFile = Join-Path $apkDir $apkName
     if (-not (Test-Path $apkDir)) { New-Item -ItemType Directory -Path $apkDir -Force | Out-Null }
-    if (Test-Path $apkFile) {
+    if ($RelLocal -ne '') {
+        # Copied every build, not cached: the local file IS the source of truth,
+        # and a stale copy under downloads\ would quietly ship yesterday's APK
+        # under today's version name - the worst kind of wrong, because the page
+        # and the hash would both look right.
+        Copy-Item $RelLocal $apkFile -Force
+        $ApkState = 'local'
+    } elseif (Test-Path $apkFile) {
         $ApkState = 'cached'
     } else {
         try {
@@ -740,7 +757,14 @@ foreach ($lang in $Langs) {
         $vars['relDate']    = $(if ($Rel.ContainsKey('date'))    { $Rel['date'] }    else { '' })
         $vars['relSize']    = $(if ($Rel.ContainsKey('size'))    { $Rel['size'] }    else { '' })
         $vars['relSha']     = $(if ($Rel.ContainsKey('sha256'))  { $Rel['sha256'] }  else { '' })
-        $vars['relUrl']     = $(if ($Rel.ContainsKey('url'))     { $Rel['url'] }     else { '' })
+        # Prefer this origin's own copy, exactly like ctaDl below. The two used to
+        # disagree: the hero button downloaded the self-hosted file while the
+        # download page's OWN button sent the reader off-origin - so the page
+        # printing the SHA-256 was handing over a file it had not hashed.
+        # And with a local-only release (no remote url) this was href="", a button
+        # that silently reloads the page.
+        $vars['relUrl']     = $(if ($ApkHref -ne '') { $ApkHref }
+                                elseif ($Rel.ContainsKey('url')) { $Rel['url'] } else { '' })
 
         # ---- the "download the app" call to action ----
         # It points straight at the APK once a release exists, and falls back to
@@ -1089,7 +1113,8 @@ Write-Host ("  [shots]  {0} per language on /download - add more as site\static\
 # One line so the owner knows whether the site serves the APK itself or still
 # points at GitHub, without reading any code.
 switch ($ApkState) {
-    'none'   { Write-Host '  [apk]    no release yet - fill site\release.txt (url) and the site will host the file itself' -ForegroundColor DarkGray }
+    'none'   { Write-Host '  [apk]    no release yet - fill site\release.txt (local or url) and the site will host the file itself' -ForegroundColor DarkGray }
+    'local'  { Write-Host ("  [apk]    copied from the signed build -> {0}  (+ /app.apk)" -f $ApkHref) -ForegroundColor Green }
     'cached' { Write-Host ("  [apk]    self-hosted from cache -> {0}  (+ /app.apk)" -f $ApkHref) -ForegroundColor Green }
     'fetched'{ Write-Host ("  [apk]    downloaded once -> {0}  (+ /app.apk)" -f $ApkHref) -ForegroundColor Green }
     'failed' { Write-Warning 'could not download the APK - the button still points at the release URL. Re-run when the network is back.' }

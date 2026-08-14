@@ -124,15 +124,16 @@
 
       <div class="hero-cta">
 
-        <a class="btn btn-pri btn-lg" href="/download/" data-cta-dl
+        <a class="btn btn-pri btn-lg" href="/downloads/mustadaira-1.0.apk" download rel="noopener" data-cta-dl
            data-ios-href="/download/" data-ios-label="التطبيق للأندرويد — شوف البدائل">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
           <span data-cta-dl-label>نزّل التطبيق</span>
         </a>
         <a class="btn btn-ghost btn-lg" href="/places/">تصفّح الملاعب</a>
       </div>
-      <p class="hero-note">مجّاني · أندرويد · بلا بطاقة ولا دفع إلكتروني</p>
-
+      <p class="hero-note">مجّاني · أندرويد · بلا بطاقة ولا دفع إلكتروني <a class="in-link" href="/download/">طريقة التثبيت والبصمة</a></p>
+      
+      <div class="apk-bridge" id="apkBridge" hidden><p class="apk-bridge-t">بتتصفّح من الحاسوب؟ افتح هذا الرابط من هاتفك</p><p class="apk-bridge-u"><bdi dir="ltr">mustadeera.vercel.app/app.apk</bdi></p><p class="apk-bridge-n">نفس الملفّ، ورابط ما بيتغيّر مع الإصدارات.</p></div>
     </div>
 
     <figure class="hero-device">
@@ -313,11 +314,40 @@
     <h2 class="final-big">مباراة الليلة <span class="hi">على بُعد نقرة</span></h2>
     <p class="lead">نزّل التطبيق على أندرويد، أو تصفّح الملاعب المتاحة أوّلًا.</p>
     <div class="hero-cta">
-      <a class="btn btn-pri btn-lg" href="/download/">نزّل التطبيق</a>
+      <a class="btn btn-pri btn-lg" href="/downloads/mustadaira-1.0.apk" download rel="noopener">نزّل التطبيق</a>
       <a class="btn btn-sec btn-lg" href="/places/">تصفّح الملاعب</a>
     </div>
   </div>
 </section>
+
+<div class="dlbar" id="dlbar" hidden>
+  <div class="dlbar-in">
+    <span class="dlbar-txt">
+      <b>نزّل التطبيق للأندرويد</b>
+      <small>مجّاني · بلا بطاقة</small>
+    </span>
+    <a class="btn btn-pri dlbar-btn" href="/downloads/mustadaira-1.0.apk" download rel="noopener" data-dlbar-go>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
+      نزّل
+    </a>
+  </div>
+</div>
+
+<div class="dlsteps" id="dlsteps" hidden>
+  <div class="dlsteps-card" role="group" aria-labelledby="dlstepsT">
+    <button type="button" class="dlsteps-x" data-dlsteps-close aria-label="إغلاق">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <p class="dlsteps-t" id="dlstepsT">التثبيت بثلاث خطوات</p>
+    <ol class="dlsteps-list">
+      <li><b>1</b><span>افتح الملفّ من إشعار التنزيل أو من مجلّد «التنزيلات».</span></li>
+      <li><b>2</b><span>أندرويد بيسأل يسمح بالتثبيت من هذا المصدر — اضغط «إعدادات» وفعّلها.</span></li>
+      <li><b>3</b><span>إذا ظهر تحذير Play Protect اضغط «تثبيت على أي حال» — التطبيق مش على المتجر بعد.</span></li>
+    </ol>
+
+    <p class="dlsteps-n">بصمة الملفّ منشورة على صفحة التنزيل — قارنها إذا حابب تتأكّد.</p>
+  </div>
+</div>
 
 </main>
 <footer class="ft">

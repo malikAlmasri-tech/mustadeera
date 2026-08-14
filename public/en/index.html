@@ -124,15 +124,16 @@
 
       <div class="hero-cta">
 
-        <a class="btn btn-pri btn-lg" href="/en/download/" data-cta-dl
+        <a class="btn btn-pri btn-lg" href="/downloads/mustadaira-1.0.apk" download rel="noopener" data-cta-dl
            data-ios-href="/en/download/" data-ios-label="The app is Android only - see the options">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
           <span data-cta-dl-label>Download the app</span>
         </a>
         <a class="btn btn-ghost btn-lg" href="/en/places/">Browse the pitches</a>
       </div>
-      <p class="hero-note">Free · Android · No card, no online payment</p>
-
+      <p class="hero-note">Free · Android · No card, no online payment <a class="in-link" href="/en/download/">Install guide and checksum</a></p>
+      
+      <div class="apk-bridge" id="apkBridge" hidden><p class="apk-bridge-t">On a computer? Open this link on your phone</p><p class="apk-bridge-u"><bdi dir="ltr">mustadeera.vercel.app/app.apk</bdi></p><p class="apk-bridge-n">Same file, and a link that never changes between releases.</p></div>
     </div>
 
     <figure class="hero-device">
@@ -313,11 +314,40 @@
     <h2 class="final-big">Tonight's match <span class="hi">is one tap away</span></h2>
     <p class="lead">Download the Android app, or browse the available pitches first.</p>
     <div class="hero-cta">
-      <a class="btn btn-pri btn-lg" href="/en/download/">Download the app</a>
+      <a class="btn btn-pri btn-lg" href="/downloads/mustadaira-1.0.apk" download rel="noopener">Download the app</a>
       <a class="btn btn-sec btn-lg" href="/en/places/">Browse the pitches</a>
     </div>
   </div>
 </section>
+
+<div class="dlbar" id="dlbar" hidden>
+  <div class="dlbar-in">
+    <span class="dlbar-txt">
+      <b>Get the Android app</b>
+      <small>Free - no card</small>
+    </span>
+    <a class="btn btn-pri dlbar-btn" href="/downloads/mustadaira-1.0.apk" download rel="noopener" data-dlbar-go>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 12 5 5 5-5"/><path d="M4 21h16"/></svg>
+      Download
+    </a>
+  </div>
+</div>
+
+<div class="dlsteps" id="dlsteps" hidden>
+  <div class="dlsteps-card" role="group" aria-labelledby="dlstepsT">
+    <button type="button" class="dlsteps-x" data-dlsteps-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <p class="dlsteps-t" id="dlstepsT">Install in three steps</p>
+    <ol class="dlsteps-list">
+      <li><b>1</b><span>Open the file from the download notification or the Downloads folder.</span></li>
+      <li><b>2</b><span>Android asks you to allow installs from this source - tap Settings and turn it on.</span></li>
+      <li><b>3</b><span>If Play Protect warns you, tap "Install anyway" - the app is not on the store yet.</span></li>
+    </ol>
+
+    <p class="dlsteps-n">The file fingerprint is published on the download page - compare it if you want to be sure.</p>
+  </div>
+</div>
 
 </main>
 <footer class="ft">
