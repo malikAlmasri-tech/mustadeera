@@ -80,10 +80,64 @@ const okBy = (sel, list) => list.find(([frag]) => sel.includes(frag));
 const problems = [];
 const add = (file, line, check, sel, detail) => problems.push({ file, line, check, sel, detail });
 
+/* ── ④ توكنٌ مُعرَّف مرّتين تحت نفس المحدِّد ─────────────────────────────────
+   `--r-lg` كان `14px` في السطر ٦٤ و`12px` في ١٤٧٧، وكلاهما `:root` ⇒ الثانية
+   تفوز، فأيّ قراءةٍ لأعلى الملفّ تعطي رقمًا **غير المرسوم**. وبلغ العدد **٤٥
+   تصريحًا ميتًا** حين قِيس (2026-08-14) — سجلٌّ جيولوجي لتمريرات تصميمٍ متتالية
+   لا نظام تصميم. حُذفت كلُّها بصفر فرقٍ بصري مقيس، وهذا الحارس يمنع عودتها.
+
+   ⚠️ **ويُستثنى صنفان، وكلاهما تكرارٌ مقصود** — وبلا استثنائهما يخرج الحارس
+      صاخبًا، وحارسٌ صاخب حارسٌ مُعطَّل:
+      ① قاعدةٌ داخل @media/@supports — التجاوز هو الغرض منها أصلًا.
+      ② تصريحان **متتاليان** لنفس التوكن في نفس الكتلة — احتياطيّ التحسين
+        التدريجي (`--sp-page:cubic-bezier(…)` ثمّ `--sp-page:linear(…)`):
+        المتصفّح القديم يتجاهل الثاني ويُبقي الأوّل. */
+function dupTokens(file, css){
+  // مدى كل @media/@supports كي نعرف ما بداخله
+  const at = [];
+  for (const m of css.matchAll(/@(?:media|supports|container)[^{]*\{/g)){
+    let j = m.index + m[0].length - 1, d = 0;
+    for (; j < css.length; j++){
+      if (css[j] === '{') d++;
+      else if (css[j] === '}' && --d === 0) break;
+    }
+    at.push([m.index, j]);
+  }
+  const inAt = (i) => at.some(([a, b]) => i > a && i < b);
+
+  const seen = new Map();
+  const re = /([^{}]+)\{([^{}]*)\}/g;
+  let m;
+  while ((m = re.exec(css))){
+    const sel = m[1].trim().split('\n').pop().trim();
+    if (!sel || sel.startsWith('@') || inAt(m.index)) continue;      // ①
+    const bodyAt = m.index + m[1].length + 1;
+    const local = new Set();
+    for (const d of m[2].matchAll(/(--[a-z0-9-]+)\s*:/gi)){
+      if (local.has(d[1])) continue;                                  // ②
+      local.add(d[1]);
+      const key = sel + ' || ' + d[1];
+      const line = css.slice(0, bodyAt + d.index).split('\n').length;
+      if (!seen.has(key)) seen.set(key, []);
+      seen.get(key).push(line);
+    }
+  }
+  for (const [key, lines] of seen){
+    if (lines.length < 2) continue;
+    const [sel, tok] = key.split(' || ');
+    add(file, lines[lines.length - 1], 'توكن مكرّر', sel,
+        `${tok} مُعرَّف ${lines.length} مرّات على نفس المحدِّد (أسطر ${lines.join('، ')}) — الأخير يفوز والبقيّة ميتة`);
+  }
+}
+
 for (const file of ['app/src/app.css', 'app/src/native.css']){
   const p = path.join(ROOT, file);
   if (!fs.existsSync(p)) continue;
   const css = stripKeyframes(fs.readFileSync(p, 'utf8'));
+
+  /* ⚠️ التعليقات تُجرَّد **مع الحفاظ على أرقام الأسطر**: توكنٌ معلَّق عليه في
+     نثرٍ شارح يُقرأ تعريفًا ثانيًا فيخرج بلاغٌ كاذب (قِيس: ٥٦ ⇐ ٤٥ بعد التجريد). */
+  dupTokens(file, css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')));
 
   for (const { sel, body, line } of rulesOf(css)){
     // ① منطقية
@@ -120,4 +174,4 @@ if (problems.length){
   console.error('');
   process.exit(1);
 }
-console.log('  ✓ check-css-rules: منطقية · تتبّع · ارتفاع تفاعلي — لا مخالفة');
+console.log('  ✓ check-css-rules: منطقية · تتبّع · ارتفاع تفاعلي · توكن مكرّر — لا مخالفة');

@@ -27,7 +27,7 @@
   --light-border:rgba(15,70,78,.16); --light-danger:#D6303A; --light-warning:#8C5F16; --light-info:#2563C8;
 
   /* ----- Semantic tokens (active = light) ----- */
-  --bg-primary:var(--light-bg-primary); --bg-secondary:var(--light-bg-secondary); --bg-obsidian:#071A1E;
+                                                                                  --bg-obsidian:#071A1E;
   --primary:var(--light-primary); --primary-hover:var(--light-primary-hover); --primary-soft:var(--light-primary-soft); --accent:var(--light-accent);
   --copper-primary:#8CC63E; --copper-hover:#A5DA5B; --mint-electric:#12B76A; --mint-soft:rgba(18,183,106,.12);
   --danger:var(--light-danger); --warning:var(--light-warning); --info:var(--light-info);
@@ -35,33 +35,32 @@
   --danger-btn:#D2333E;   /* خلفية زر الخطر المعبّأ — عميق بما يكفي لتباين نص أبيض في الوضعين */
 
   /* خلفية نهارية ساكنة مسطّحة */
-  --bg-app:#FAFAF7;
+
   --surface-dark-glass:rgba(10,34,40,.65); --border-copper-faint:rgba(140,198,62,.22);
 
   /* ----- Legacy aliases (توافق كامل مع كل المكوّنات الحالية) ----- */
   --forest:#071A1E; --forest-2:#0C2A31; --emerald:#0F4B53; --emerald-2:#136069; --neon:#12B76A;
   --gold:#8CC63E; --gold-2:#A5DA5B; --gold-glow:rgba(140,198,62,.25);
-  --cream:var(--light-bg-primary); --surface:var(--light-surface); --surface-soft:var(--light-surface-soft); --surface-muted:var(--light-surface-muted);
+  --cream:var(--light-bg-primary);
   /* سطح صلب (بلا شفافية) — للعناصر المتكرّرة التي أُزيل منها backdrop-filter كي لا تُنشئ طبقة دمج لكل بطاقة */
-  --surface-solid:#FFFFFF;
-  --input-bg:rgba(255,255,255,.88); --ink:var(--light-text-primary); --ink-2:#2C3A30; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
+
+                                    --ink:var(--light-text-primary); --ink-2:#2C3A30; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
-  --line:var(--light-border); --line-2:rgba(15,70,78,.3);
-  --glass:rgba(255,255,255,.8); --glass-brd:rgba(15,70,78,.16);
+
+
 
   /* ----- Shadows (طبقات ناعمة باردة) ----- */
-  --shadow-xs:0 1px 2px rgba(20,35,25,.05);
-  --shadow-sm:0 2px 8px -2px rgba(20,35,25,.09);
-  --shadow-md:0 12px 28px -12px rgba(18,32,22,.18),0 2px 6px -2px rgba(18,32,22,.08);
-  --shadow-lg:0 30px 60px -20px rgba(18,32,22,.26),0 8px 18px -10px rgba(18,32,22,.12);
-  --shadow-card:0 18px 42px -22px rgba(18,32,22,.2),0 2px 8px -4px rgba(18,32,22,.07);
+
+
+
+
+
   /* ظل Lime ناعم لحالات الأزرار */
   --shadow-green:0 10px 24px -8px rgba(120,180,50,.4);
   --shadow-green-lg:0 16px 36px -10px rgba(120,180,50,.5);
 
   /* ----- Radii (مقياس موحّد · أكبر قليلاً للمسة فاخرة) ----- */
-  --radius-sm:10px; --radius-md:12px; --radius-lg:14px; --radius-xl:18px; --radius-2xl:22px; --radius-full:999px;
-  --r-sm:10px; --r-md:12px; --r-lg:14px; --r-xl:18px; --r-2xl:22px; --r-3xl:28px;
+
 
   /* ----- Spacing scale ----- */
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;
@@ -131,27 +130,27 @@
   --dark-border:rgba(127,189,199,.16); --dark-danger:#F0565C; --dark-warning:#E8B23C; --dark-info:#6FA0F0;
 
   /* ----- Semantic tokens (active = dark) ----- */
-  --bg-primary:var(--dark-bg-primary); --bg-secondary:var(--dark-bg-secondary);
+
   --primary:var(--dark-primary); --primary-hover:var(--dark-primary-hover); --primary-soft:var(--dark-primary-soft); --accent:var(--dark-accent);
   --copper-primary:#8CC63E; --copper-hover:#A5DA5B; --mint-electric:#4ADE80; --mint-soft:rgba(74,222,128,.11);
   --danger:var(--dark-danger); --warning:var(--dark-warning); --info:var(--dark-info);
   --danger-soft:rgba(240,86,92,.12); --warning-soft:rgba(232,178,60,.12); --info-soft:rgba(111,160,240,.12);
 
-  --bg-app:#081D22;
+
 
   /* ----- Legacy aliases ----- */
   --forest:#04141A; --forest-2:#0A272E; --emerald:#8CC63E; --emerald-2:#A5DA5B; --neon:#4ADE80;
   --gold:#8CC63E; --gold-2:#A5DA5B; --gold-glow:rgba(140,198,62,.22);
-  --cream:var(--dark-bg-primary); --surface:var(--dark-surface); --surface-soft:var(--dark-surface-soft); --surface-muted:var(--dark-surface-muted);
+  --cream:var(--dark-bg-primary);
   /* مكافئ صلب لـ rgba(15,45,52,.72) فوق خلفية #081D22 — نفس الوزن البصري بلا طبقة blur */
-  --surface-solid:#0D2830;
-  --input-bg:rgba(12,38,45,.62); --ink:var(--dark-text-primary); --ink-2:#D3DEDC; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
+
+                                 --ink:var(--dark-text-primary); --ink-2:#D3DEDC; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
-  --line:var(--dark-border); --line-2:rgba(140,198,62,.24);
-  --glass:rgba(7,25,30,.74); --glass-brd:rgba(127,189,199,.16);
-  --shadow-xs:0 1px 2px rgba(0,0,0,.32); --shadow-sm:0 2px 10px rgba(0,0,0,.34); --shadow-md:0 14px 32px -12px rgba(0,0,0,.45),0 2px 8px -3px rgba(0,0,0,.32);
-  --shadow-card:0 24px 54px -22px rgba(0,0,0,.5),0 2px 10px -4px rgba(0,0,0,.34);
-  --shadow-lg:0 30px 64px -18px rgba(0,0,0,.55),0 10px 22px -12px rgba(0,0,0,.4);
+
+
+
+
+
   --shadow-green:0 8px 24px -6px rgba(140,198,62,.3); --shadow-green-lg:0 14px 38px -8px rgba(140,198,62,.42);
   --g-btn:#8CC63E;  /* زر primary ليلي — نفس الـLime المسطّح (اتساق الهوية) */
   --g-btn-solid:#8CC63E; --btn-ink:#0B2227;
@@ -565,7 +564,7 @@
 /* ---------- (٧) شرائح الفلاتر المفعّلة ---------- */.fchips-bar{display:flex;gap:7px;align-items:center;overflow-x:auto;scrollbar-width:none;
   padding:8px var(--s-4);background:var(--glass);border-bottom:1px solid var(--line);
   backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%)}.fchips-bar::-webkit-scrollbar{display:none}.fchip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;max-width:62vw;
-  padding:6px 11px;border-radius:var(--radius-full);border:1.5px solid var(--line-2);
+  padding:6px 11px;border-radius:999px;border:1.5px solid var(--line-2);
   background:var(--primary-soft);color:var(--emerald);font-size:0.71875rem;font-weight:800;
   min-height:32px;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast),border-color var(--t-fast)}.fchip:active{transform:scale(.94)}.fchip:hover{border-color:var(--emerald-2)}.fchip-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fchip-x{display:inline-flex;flex-shrink:0;width:13px;height:13px;opacity:.75}.fchip-x svg{width:13px;height:13px}.fchip-clear{background:transparent;color:var(--muted);border-style:dashed}.fchip-clear:hover{color:var(--danger-ink);border-color:rgba(220,38,38,.4)}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.fchips-bar{background:var(--surface)} }@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.browse-sticky{background:var(--surface)} }
 
@@ -1476,7 +1475,6 @@
    صلبة عريضة بنص ثقيل **بلا تباعد حروف** (التباعد يفكّك العربية)، حدود
    1.5px للثانوي، ظلال أخفّ، وحقول أوضح. تمريرة تصحيح عامة على الموجود.
    ══════════════════════════════════════════════════════════════════════ */:root{
-  --radius-sm:8px;--radius-md:10px;--radius-lg:12px;--radius-xl:14px;--radius-2xl:16px;
   --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:14px;--r-2xl:16px;--r-3xl:20px;
 }
 /* — الأزرار الأساسية: عريضة، حاسمة، بلا تباعد حروف ولا لمعان — */.btn,.sbtn,.place-book-btn,.dsticky-btn,.search-btn,.onb-btn,.owner-action,.btn-danger,.cbtn,.fx-apply,.fx-reset{letter-spacing:0!important}.sbtn,.onb-btn-primary,.onb-btn-ghost{border-radius:12px}.sbtn{padding:15px;font-size:0.96875rem;font-weight:700;box-shadow:none}.onb-btn{min-height:52px;border-radius:12px;font-size:0.96875rem;font-weight:700}.onb-btn-primary{box-shadow:0 6px 18px -8px rgba(15,75,83,.5)}body.dark .onb-btn-primary{box-shadow:0 6px 18px -8px rgba(95,183,196,.42)}
@@ -1633,7 +1631,7 @@
   display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;
   transform:translate3d(0,0,0);opacity:0;will-change:transform,opacity}.ptr.snap{transition:transform var(--t-slow) var(--ease-out),opacity var(--t-base)}.ptr-ring{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
   background:var(--surface-solid);border:1.5px solid var(--line-2);box-shadow:var(--shadow-sm);color:var(--emerald)}.ptr-ring svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}.ptr-ring>svg>circle{opacity:.22}.ptr.ready .ptr-ring{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}.ptr.loading .ptr-ring{background:var(--g-btn);border-color:transparent;color:#0B2227;animation:ptrSpin .8s linear infinite}.ptr-txt{font-size:0.75rem;font-weight:800;color:var(--muted);background:var(--surface-solid);
-  border:1px solid var(--line);border-radius:var(--radius-full);padding:3px 10px;white-space:nowrap;box-shadow:var(--shadow-xs)}@keyframes ptrSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.ptr.loading .ptr-ring{animation:none}.ptr.snap{transition:none} }
+  border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap;box-shadow:var(--shadow-xs)}@keyframes ptrSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.ptr.loading .ptr-ring{animation:none}.ptr.snap{transition:none} }
 
 /* ---------- (٤) طبقة انقطاع الاتصال ---------- */
 /* ===== شريط «نسخة أحدث» =====
