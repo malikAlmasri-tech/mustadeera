@@ -263,12 +263,60 @@
    أيقونيًّا كجرس الرئيسية: حجمٌ صريح وهدف لمس مربّع. */.ghost-btn.notif-btn{padding:0;min-width:38px;display:inline-grid;place-items:center}.ghost-btn.notif-btn svg{width:19px;height:19px}
 
 /* ── مركز الإشعارات ── */.ntf-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}.ntf-head .modal-title{margin-bottom:0}.ntf-mark{margin-inline-start:auto;font-size:0.78125rem;flex:none}.notif-list{max-height:min(62vh,460px);overflow-y:auto;overscroll-behavior:contain;
-  margin:0 calc(var(--s-5) * -1) 16px;padding:0 var(--s-5)}.notif-row{display:flex;gap:11px;width:100%;text-align:start;padding:13px 0;
-  border-bottom:1px solid var(--line);background:none}.notif-row:last-child{border-bottom:0}
-/* النقطة تحمل «غير مقروء» بالشكل لا باللون وحده — من لا يميّز اللون يرى
-   دائرة مصمتة مقابل فراغ، وهذا فرق يُرى بلا لون. */.notif-dot{flex:none;width:9px;height:9px;margin-top:6px;border-radius:999px;background:transparent}.notif-row.unread .notif-dot{background:var(--mint-electric)}.notif-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.notif-t{font-size:0.875rem;font-weight:800;color:var(--ink)}.notif-row.unread .notif-t{color:var(--emerald)}body.dark .notif-row.unread .notif-t{color:var(--copper-primary)}.notif-b{font-size:0.8125rem;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}.notif-r{font-size:0.78125rem;color:var(--danger-ink);line-height:1.6}
+  margin:0 calc(var(--s-5) * -1) 16px;padding:0 var(--s-5);display:flex;flex-direction:column;gap:8px;
+  /* تلاشٍ في آخر ٢٢px يقول «تحت هذا مزيد» — البطاقة الأخيرة كانت تُقصّ في
+     منتصف نصّها بلا إشارة، فتُقرأ عطلَ رسمٍ لا حافّةَ تمرير.
+     ⚠️ وهو آمنٌ للقوائم القصيرة: ما لا محتوى فيه لا يظهر تلاشيه.
+     ⚠️ و`linear-gradient` بلا `blur` ولا `mix-blend-mode` — الأخير يفرض طبقة
+        دمجٍ بحجم الشاشة، وهو ما أُزيل من هذه الورقة في الدفعة ٢٨. */
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 22px),transparent);
+  mask-image:linear-gradient(to bottom,#000 calc(100% - 22px),transparent)}
+/* عنوان اليوم: لاصقٌ داخل القائمة فيبقى السياق ظاهرًا وأنت تنزل. والخلفية
+   مصمتة لا شفّافة — الصفوف تمرّ تحته، وشفّافيةٌ هنا تجعله يقرأ مطموسًا. */
+.notif-group{position:sticky;top:0;z-index:1;padding:9px 2px 5px;margin:0 -2px;
+  font-size:0.6875rem;font-weight:700;color:var(--muted);letter-spacing:var(--tr-wide);
+  background:var(--surface-solid)}
+.notif-group:first-child{padding-top:2px}
+/* الصفّ بطاقة لا سطرًا تفصله شعرة — نفس ما فُعل بصفّ جدول /admin (الدفعة ٢٧).
+   ⚠️ و`align-items:start` لا `center`: الجسد قد يبلغ سطرين أو ثلاثة، والتوسيط
+      يُنزل الأيقونة عن عنوانها فينفكّ ارتباطهما البصري. */
+.notif-row{display:flex;gap:11px;width:100%;text-align:start;align-items:flex-start;
+  padding:12px 13px;border:1px solid var(--line);border-radius:var(--r-lg);
+  background:var(--surface);box-shadow:var(--shadow-xs);position:relative;
+  transition:background var(--t-fast),border-color var(--t-fast)}
+.notif-row:active{background:var(--surface-soft)}
+/* مربّع الأيقونة: صبغةٌ من لون النبرة نفسه بعتامة منخفضة ⇒ الأيقونة تبقى
+   عالية التباين فوقه، والمربّع يفصلها عن سطح البطاقة بلا حدٍّ ثانٍ. */
+.notif-ic{flex:none;width:34px;height:34px;display:grid;place-items:center;
+  border-radius:var(--r-md);color:var(--nt-ink);background:var(--nt-bg)}
+.notif-ic svg{width:17px;height:17px}
+/* ثلاث نبرات لا أكثر، وكلُّها من توكناتٍ مقيسة في هذا الملفّ — لا لون جديد.
+   `ok` تأكيدٌ ونجاح · `no` رفضٌ وإلغاء · `wait` وصلَ طلبٌ أو نُقل موعد أو
+   انقضت مهلة: أفعالٌ تنتظر ردًّا ولا تحسم، فليست خضراء ولا حمراء. */
+.notif-row.tone-ok  {--nt-ink:var(--emerald);    --nt-bg:color-mix(in srgb, var(--emerald) 12%, transparent)}
+.notif-row.tone-no  {--nt-ink:var(--danger-ink); --nt-bg:color-mix(in srgb, var(--danger-ink) 12%, transparent)}
+.notif-row.tone-wait{--nt-ink:var(--warning-ink);--nt-bg:color-mix(in srgb, var(--warning-ink) 14%, transparent)}
+/* غير المقروء: سطحٌ أوضح + **شريطٌ جانبي مصمت** + النقطة — ثلاثتها معًا كي
+   يُقرأ بلا تمييز لون (مبدأ حبّة الشريط السفلي، الدفعة ١٠). والشريط منطقيّ
+   الاتّجاه (`inset-inline-start`) فيقع على حافّة البداية في اللغتين. */
+.notif-row.unread{background:var(--surface-soft);border-color:var(--line-2)}
+.notif-row.unread::before{content:'';position:absolute;inset-inline-start:0;top:10px;bottom:10px;
+  width:3px;border-radius:999px;background:var(--nt-ink)}
+.notif-dot{flex:none;width:8px;height:8px;margin-top:13px;border-radius:999px;background:var(--nt-ink)}
+.notif-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+/* العنوان والوقت على سطرٍ واحد: الوقت كان سطرًا رابعًا تحت الجسد فيبعد عمّا
+   يؤرّخه، وهو أوّل ما تسأل عنه العين في قائمة إشعارات. */
+.notif-head{display:flex;align-items:baseline;gap:8px}
+.notif-t{font-size:0.875rem;font-weight:700;color:var(--ink);flex:1;min-width:0}
+.notif-row.unread .notif-t{font-weight:800}
+.notif-b{font-size:0.8125rem;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
+.notif-r{font-size:0.78125rem;color:var(--danger-ink);line-height:1.6}
 /* `--muted` (6.2:1) لا `--soft` (2.87:1): «قبل ٤ دقائق» معلومة تُقرأ لا زخرفة —
-   وهي التي تفرّق بين إشعارٍ وصل الآن وإشعارٍ مضى عليه يومان. */.notif-time{font-size:0.71875rem;color:var(--muted);margin-top:2px}.notif-empty{padding:34px 6px;text-align:center}.notif-empty-t{font-size:0.9375rem;font-weight:800;color:var(--ink);margin-bottom:7px}.notif-empty-s{font-size:0.8125rem;color:var(--muted);line-height:1.75}
+   وهي التي تفرّق بين إشعارٍ وصل الآن وإشعارٍ مضى عليه يومان.
+   ⚠️ و`flex:none` + `white-space:nowrap`: «قبل ٤ دقائق» لا تُكسَر سطرين ولا
+      يزحمها عنوانٌ طويل — العنوان هو الذي ينكمش (`min-width:0` عليه). */
+.notif-time{font-size:0.71875rem;color:var(--muted);flex:none;white-space:nowrap}
+.notif-empty{padding:34px 6px;text-align:center}.notif-empty-t{font-size:0.9375rem;font-weight:800;color:var(--ink);margin-bottom:7px}.notif-empty-s{font-size:0.8125rem;color:var(--muted);line-height:1.75}
 
 /* ═══ لوح متابعة الحجز على الرئيسية ═══
    لوحٌ واحد لا قائمة، وحالته محمولة على **الشكل** لا اللون وحده: المعلّق

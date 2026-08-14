@@ -146,6 +146,8 @@ const I18N = {
     notifsOff:'تابع طلبك من «حجوزاتي»',
     notifsOffSub:'الإشعارات لسّه ما اشتغلت عنّا. حالة كل طلب وردّ الملعب بتلاقيها محدّثة في «حجوزاتي».',
     notifsPermTitle:'تفعيل الإشعارات', notifsPermAsk:'نُعلمك فور ردّ الملعب على طلبك.',
+    /* عناوين التجميع: الوقت النسبي وحده يجعل عشرين إشعارًا كتلةً واحدة */
+    ntfGroupYesterday:'أمس', ntfGroupOlder:'أقدم',
     ntfNewTitle:'طلب حجز جديد', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'تأكّد حجزك', ntfConfirmedBody:'{place} — {field} · {day} {time}',
     ntfRejectedTitle:'اعتذر الملعب عن طلبك', ntfRejectedBody:'{place} — {day} {time}',
@@ -641,6 +643,7 @@ const I18N = {
     notifsOff:'Follow your request under “My bookings”',
     notifsOffSub:'Notifications are not running yet. Every request and every venue reply stays up to date under “My bookings”.',
     notifsPermTitle:'Turn on notifications', notifsPermAsk:'We’ll tell you the moment the venue replies to your request.',
+    ntfGroupYesterday:'Yesterday', ntfGroupOlder:'Earlier',
     ntfNewTitle:'New booking request', ntfNewBody:'{name} — {field} · {day} {time}',
     ntfConfirmedTitle:'Your booking is confirmed', ntfConfirmedBody:'{place} — {field} · {day} {time}',
     ntfRejectedTitle:'The venue declined your request', ntfRejectedBody:'{place} — {day} {time}',
@@ -1170,6 +1173,9 @@ const ICON = {
   bath:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M6 19v2M18 19v2"/></svg>',
   dot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  /* الجرس: **نفس مسار جرس الرأس حرفيًّا** في app.html لا رسمٌ ثانٍ — شكلان
+     لمعنًى واحد ينحرفان، وهذا هو احتياطيّ الإشعارات التي لا نوع لها. */
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
   edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
   heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
@@ -6435,6 +6441,41 @@ const Notifs = {
     if ($('#modal-notifs')?.classList.contains('show')) this.render();
   },
 
+  /* أيقونةٌ ونبرةٌ لكل نوع.
+     كانت الأنواع الأحد عشر تُرسَم بالشكل نفسه تمامًا — «تأكّد حجزك» و«رفض
+     الملعب» و«انقضت المهلة» لا يفترق أحدها عن الآخر بلا قراءة، وكلّ ما يميّز
+     المقروءَ من غيره نقطةٌ 9px.
+     ⚠️ والنبرات **ثلاث لا أكثر**، وكلُّها من توكناتٍ مقيسة في هذا الملفّ
+     أصلًا — لا لونَ جديد يُخترَع: `ok` (تأكيدٌ ونجاح) · `no` (رفضٌ وإلغاء) ·
+     `wait` (وصلَ طلبٌ · نُقل موعد · انقضت مهلة — أفعالٌ تنتظر ردًّا لا تحسم). */
+  _face(kind){
+    return {
+      booking_new:       ['bell',  'wait'],
+      booking_confirmed: ['check', 'ok'],
+      booking_rejected:  ['x',     'no'],
+      booking_cancelled: ['x',     'no'],
+      booking_moved:     ['clock', 'wait'],
+      booking_expired:   ['clock', 'wait'],
+      slot_free:         ['ball',  'ok'],
+      game_joined:       ['person','ok'],
+      game_left:         ['person','wait'],
+      game_full:         ['check', 'ok'],
+      game_off:          ['x',     'no'],
+    }[kind] || ['bell', 'wait'];
+  },
+
+  /* التجميع بالأيام — يُحسَب من `created_at` ولا يُخزَّن.
+     ⚠️ والمقارنة **بتاريخٍ محلّي** لا بفرق ساعات: إشعارٌ وصل 11:50 مساءً
+     وآخر 12:10 صباحًا بينهما عشرون دقيقة وهما يومان مختلفان — والعكس بالعكس. */
+  _bucket(iso){
+    const d = new Date(iso), now = new Date();
+    const key = (x) => x.getFullYear() + '-' + x.getMonth() + '-' + x.getDate();
+    if (key(d) === key(now)) return t('today');
+    const y = new Date(now); y.setDate(y.getDate() - 1);
+    if (key(d) === key(y)) return t('ntfGroupYesterday');
+    return t('ntfGroupOlder');
+  },
+
   render(){
     const el = $('#notifList'); if (!el) return; clear(el);
     const mk = $('#notifMarkAll'); if (mk) mk.hidden = !this.unread();
@@ -6451,17 +6492,26 @@ const Notifs = {
         h('div',{class:'notif-empty-s'}, t('notifsEmptySub'))));
       return;
     }
+    let group = null;
     this.rows.forEach(n => {
       const tx = this.text(n); if (!tx) return;
-      const row = h('button',{class:'notif-row'+(n.read_at?'':' unread'), type:'button'},
-        h('span',{class:'notif-dot','aria-hidden':'true'}),
+      const g = this._bucket(n.created_at);
+      if (g !== group){ group = g; el.append(h('div',{class:'notif-group'}, g)); }
+
+      const [icon, tone] = this._face(n.kind);
+      const row = h('button',{class:'notif-row tone-'+tone+(n.read_at?'':' unread'), type:'button'},
+        h('span',{class:'notif-ic','aria-hidden':'true'}, ico(icon,'svg-sm')),
         h('span',{class:'notif-main'},
-          h('span',{class:'notif-t'}, tx.title),
+          h('span',{class:'notif-head'},
+            h('span',{class:'notif-t'}, tx.title),
+            h('span',{class:'notif-time'}, relTime(n.created_at))),
           /* القيم داخل الجملة معزولة اتّجاهيًّا: اسمُ ملعبٍ عربي داخل جملة
              إنجليزية ينقلب، ومدى وقتٍ داخل جملة عربية يسبق انتهاؤه ابتداءَه. */
           h('span',{class:'notif-b'}, ...this._bodyParts(tx)),
-          tx.reason ? h('span',{class:'notif-r'}, tx.reason) : null,
-          h('span',{class:'notif-time'}, relTime(n.created_at))));
+          tx.reason ? h('span',{class:'notif-r'}, tx.reason) : null),
+        /* غير المقروء يُحمَل على **الشكل** لا على اللون وحده (مبدأ الشريط
+           السفلي): شريطٌ جانبي مصمت + سطحٌ أوضح ⇒ يُقرأ بلا تمييز لون. */
+        n.read_at ? null : h('span',{class:'notif-dot','aria-hidden':'true'}));
       row.addEventListener('click', ()=>this.openRow(n));
       el.append(row);
     });
