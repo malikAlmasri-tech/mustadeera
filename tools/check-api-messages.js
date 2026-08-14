@@ -15,7 +15,7 @@
  */
 const fs = require('fs');
 
-const src = fs.readFileSync('app/src/app.js', 'utf8');
+const src = require('./app-source.cjs').read();
 
 /* The map, sliced by brace depth rather than by regex: the values contain
    braces, apostrophes and commas of their own. */

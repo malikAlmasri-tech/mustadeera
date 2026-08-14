@@ -192,17 +192,29 @@ function usedNames(code){
   return { calls, consts };
 }
 
-/* ── التشغيل ── */
+/* ── التشغيل ──
+   ⚠️ **التطبيق يُقرأ مجموعًا لا جزءًا جزءًا**: أجزاؤه الخمسة شظايا IIFE واحد،
+      فاسمٌ يُعرَّف في الأوّل ويُستعمَل في الثالث بلاغٌ كاذب لو فُحص كلٌّ وحده —
+      وبلاغٌ كاذب واحد يكفي لتعطيل الحارس كلِّه.
+   🔴 **ويفشل صراحةً إن غاب هدف**: كان الشرط `if (!fs.existsSync) continue`،
+      فلمّا قُسّم `app.js` اختفى الملفّ و**مرّ الحارس على ملفٍّ واحد معلنًا
+      النجاح** — وهو بالضبط «اختبارٌ يمرّ دائمًا» المسجَّل في CLAUDE.md.
+      الغياب الآن خطأ لا تخطٍّ. */
+const appSource = require('./app-source.cjs');
 const TARGETS = [
-  { file: 'app/src/app.js',    label: 'التطبيق' },
-  { file: 'app/src/native.js', label: 'طبقة أندرويد' },
+  { label: 'التطبيق',        text: () => appSource.read() },
+  { label: 'طبقة أندرويد',   text: () => fs.readFileSync(path.join(ROOT, 'app/src/native.js'), 'utf8') },
 ];
 
 let bad = 0, scanned = 0;
 for (const t of TARGETS){
-  const p = path.join(ROOT, t.file);
-  if (!fs.existsSync(p)) continue;
-  const code = strip(fs.readFileSync(p, 'utf8'));
+  let raw;
+  try { raw = t.text(); }
+  catch (e) {
+    console.error(`  ✗ check-globals: تعذّرت قراءة «${t.label}» — ${e.message}`);
+    process.exit(1);
+  }
+  const code = strip(raw);
   const dec = declaredNames(code);
   const { calls, consts } = usedNames(code);
   scanned++;
@@ -215,8 +227,16 @@ for (const t of TARGETS){
   if (miss.length){
     bad += miss.length;
     // العدد خارج العنوان: «4 اسمًا» خطأ و«4 أسماء» صواب، وصيغةُ جملةٍ تصحّ مع أيّ عدد
-    console.error(`\n  ✗ ${t.file} — أسماء مستعمَلة بلا تعريف، عددها ${miss.length}:`);
-    for (const [n, line, kind] of miss) console.error(`      ${t.file}:${line}  ${n}  (${kind})`);
+    /* السطر يُترجَم إلى ملفّه: رقمٌ داخل مدموجٍ من ٨٬٦٦٣ سطرًا لا يقود إلى
+       شيء، بينما «الجزء الفلاني، السطر كذا» يقود إليه مباشرةً. */
+    const map = t.label === 'التطبيق' ? appSource.readWithMap().map : null;
+    const where = (line) => {
+      if (!map) return `app/src/native.js:${line}`;
+      const seg = appSource.locate(map, line);
+      return `app/src/${seg.name}:${line - seg.from + 1}`;
+    };
+    console.error(`\n  ✗ ${t.label} — أسماء مستعمَلة بلا تعريف، عددها ${miss.length}:`);
+    for (const [n, line, kind] of miss) console.error(`      ${where(line)}  ${n}  (${kind})`);
   }
 }
 

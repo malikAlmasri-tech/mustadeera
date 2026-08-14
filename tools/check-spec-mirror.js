@@ -33,7 +33,7 @@ function sliceArr(src, marker) {
   throw new Error('unbalanced arr: ' + marker);
 }
 
-const app = fs.readFileSync('app/src/app.js', 'utf8');
+const app = require('./app-source.cjs').read();
 const adm = fs.readFileSync('site/admin.html', 'utf8');
 
 const FIELD_SPECS = eval('(' + slice(app, 'const FIELD_SPECS = {') + ')');

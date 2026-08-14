@@ -35,7 +35,23 @@ $enc  = New-Object System.Text.UTF8Encoding $false   # UTF-8 no BOM for outputs
 # so a separate file per asset would only add file:// round-trips at startup.
 $ah = [IO.File]::ReadAllText((Join-Path $Src 'app.html'))
 $ac = [IO.File]::ReadAllText((Join-Path $Src 'app.css'))
-$aj = [IO.File]::ReadAllText((Join-Path $Src 'app.js'))
+
+# app.js was one 8,663-line file. It is now five, concatenated here IN ORDER and
+# with NO separator, so the emitted bundle is byte-for-byte what it always was.
+# The parts are FRAGMENTS OF ONE IIFE, not modules - the app has zero globals by
+# design, and giving each part exports would change the shipped output, which is
+# precisely what this split promised not to do.
+# The order is load-bearing: a name is used before it is defined only inside
+# functions, never at top level. Reordering these lines breaks the app at boot.
+$AppParts = @('app.1-config-i18n.js', 'app.2-core.js', 'app.3-render.js',
+              'app.4-owner.js', 'app.5-actions.js')
+$sb = New-Object System.Text.StringBuilder
+foreach ($p in $AppParts) {
+    $f = Join-Path $Src $p
+    if (-not (Test-Path $f)) { throw "BUILD ABORTED: missing app source part '$p'." }
+    [void]$sb.Append([IO.File]::ReadAllText($f))
+}
+$aj = $sb.ToString()
 
 # Inlining is a string splice, so any of these sequences inside the sources
 # would close the tag early: the rest of the script becomes markup, the native
@@ -46,8 +62,16 @@ $aj = [IO.File]::ReadAllText((Join-Path $Src 'app.js'))
 # tag, an I18N string quoting HTML.
 # HTML ends a raw-text element at "</script" / "</style" regardless of what
 # follows, so match the prefix, not the well-formed tag.
-foreach ($pair in @(@{n='app.js'; t=$aj; m='</script'}, @{n='app.css'; t=$ac; m='</style'},
-                    @{n='app.js'; t=$aj; m='</body>'}, @{n='app.css'; t=$ac; m='</body>'})) {
+# Checked PER PART, not on the concatenation: a hit on the joined string proves
+# only that one of five files is at fault, and "somewhere in 8,663 lines" turns a
+# one-line fix into a hunt. The message names the file that actually carries it.
+$guarded = @(@{n='app.css'; t=$ac; m='</style'}, @{n='app.css'; t=$ac; m='</body>'})
+foreach ($p in $AppParts) {
+    $txt = [IO.File]::ReadAllText((Join-Path $Src $p))
+    $guarded += @{n=$p; t=$txt; m='</script'}
+    $guarded += @{n=$p; t=$txt; m='</body>'}
+}
+foreach ($pair in $guarded) {
     if ($pair.t -match [regex]::Escape($pair.m)) {
         throw ("BUILD ABORTED: {0} contains '{1}'. Inlining would close the tag early and " -f $pair.n, $pair.m) +
               "ship a silently broken APK. Escape it (e.g. '<' + '/script>') and rebuild."

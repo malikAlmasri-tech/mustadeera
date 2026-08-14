@@ -19,8 +19,11 @@
  *   node tools/test-pure.mjs
  */
 import fs from 'node:fs';
+/* مصدر التطبيق مجموعًا من أجزائه الخمسة — القائمة تُقرأ من `build.ps1` نفسه
+   فلا تنحرف عمّا يُشحَن فعلًا. (كان الملفّ واحدًا قبل تقسيم الدفعة ٣٣.) */
+import appSource from './app-source.cjs';
 
-const src = fs.readFileSync('app/src/app.js', 'utf8');
+const src = appSource.read();
 
 /* A `/` is a comment, a division, or the start of a regex literal, and only
  * context tells you which. Getting it wrong is not a near miss: `isHttpUrl`

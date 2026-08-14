@@ -1,5 +1,5 @@
 const fs = require('fs');
-const s = fs.readFileSync(process.argv[2] || 'app/src/app.js', 'utf8');
+const s = process.argv[2] ? fs.readFileSync(process.argv[2], 'utf8') : require('./app-source.cjs').read();
 const start = s.indexOf('const I18N = {');
 let i = s.indexOf('{', start), depth = 0, end = -1, inStr = null;
 for (; i < s.length; i++) {

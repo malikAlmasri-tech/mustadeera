@@ -16,7 +16,11 @@
  */
 const fs = require('fs');
 
-const read = (p) => fs.readFileSync(p, 'utf8');
+/* `app/src/app.js` صار خمسة أجزاء (الدفعة ٣٣) — الاسم يبقى مقروءًا هنا لأنه
+   يظهر في رسائل الانحراف، ويُحلّ إلى المصدر المدموج كما يبنيه `build.ps1`. */
+const read = (p) => p === 'app/src/app.js'
+  ? require('./app-source.cjs').read()
+  : fs.readFileSync(p, 'utf8');
 let failed = 0;
 function check(name, values) {
   const uniq = [...new Set(values.map(v => v.value))];

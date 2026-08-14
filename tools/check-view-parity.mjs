@@ -40,6 +40,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import appSource from './app-source.cjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TABLE = 'bookings';
@@ -57,10 +58,10 @@ const fail = (msg) => { console.error(msg); process.exit(1); };
 
 /* ── ① الاتّصال، من `app.js` لا من نسخةٍ هنا ───────────────────────────── */
 function readConn() {
-  const src = fs.readFileSync(path.join(ROOT, 'app', 'src', 'app.js'), 'utf8');
+  const src = appSource.read();     // خمسة أجزاء مدموجة كما يبنيها build.ps1
   const url = src.match(/URL:\s*'([^']+)'/);
   const key = src.match(/KEY:\s*'([^']+)'/);
-  if (!url || !key) fail('check-view-parity: تعذّرت قراءة SB.URL/SB.KEY من app/src/app.js');
+  if (!url || !key) fail('check-view-parity: تعذّرت قراءة SB.URL/SB.KEY من مصدر التطبيق');
   return { url: url[1].replace(/\/+$/, ''), key: key[1] };
 }
 
