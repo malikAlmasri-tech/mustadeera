@@ -4,7 +4,7 @@
   "description": "المستديرة — منصّة حجز ملاعب رياضية في الأردن. وجهان: تطبيق أندرويد مدمج (Capacitor) يجري فيه الحجز وحده، وموقع تسويقي ثابت مع لوحة /admin. Vanilla JS/HTML/CSS بلا مكتبات، والباكند Postgres/Supabase.",
   "main": "index.js",
   "scripts": {
-    "check": "node tools/check-globals.js && node tools/check-css-rules.js && node tools/check-contrast.js && node tools/check-i18n-parity.js && node tools/check-spec-mirror.js && node tools/check-api-messages.js && node tools/check-mirrors.js",
+    "check": "node tools/check-globals.js && node tools/check-css-rules.js && node tools/check-contrast.js && node tools/check-i18n-parity.js && node tools/check-spec-mirror.js && node tools/check-api-messages.js && node tools/check-mirrors.js && node tools/check-view-parity.mjs",
     "test": "node tools/test-pure.mjs",
     "test:rest": "node tools/security-matrix.mjs"
   },
