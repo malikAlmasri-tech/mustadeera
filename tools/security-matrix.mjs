@@ -202,6 +202,62 @@ if (!field) {
         after ? `price=${after.price} name=${after.customer_name}` : '');
     }
   }
+
+  /* The slot is the only resource in this business: it sells once and dies at
+     its hour. `bookings_no_double_idx` covers pending AND confirmed, so a
+     second request on a slot someone already holds must be refused outright.
+     Two players tapping the same 9pm slot is the ORDINARY case, not the edge. */
+  {
+    const d = day(31);                       // far enough out to be free on any project
+    const a = await rest('bookings', { method: 'POST', prefer: 'return=representation',
+      body: { ...base, booking_date: d } });
+    const held = a.data?.[0];
+    if (!held) {
+      assert('the same slot cannot be booked twice', null, `first insert failed: ${a.status} ${a.raw.slice(0, 120)}`);
+    } else {
+      const b = await rest('bookings', { method: 'POST', prefer: 'return=representation',
+        body: { ...base, booking_date: d, customer_name: 'matrix dup' } });
+      assert('the same slot cannot be booked twice', !b.ok, `second insert got ${b.status} ${b.raw.slice(0, 120)}`);
+      // leave nothing behind: this one is ours and it is still pending
+      await rest(`bookings?id=eq.${held.id}`, { method: 'PATCH', body: { status: 'cancelled' } });
+    }
+  }
+
+  /* The cancel window is enforced by a TRIGGER, not by hiding the button - the
+     recorded reason being that a `with check` answers a violation with "200 and
+     an empty row", which the client cannot read. So assert the ERROR NAME.
+     ⚠️ Time-dependent by nature: it needs a slot starting inside the window.
+        Slots run every two hours from midday, so at some clock times none
+        qualifies - then this SKIPS LOUDLY rather than failing at 5am. */
+  {
+    const now = new Date();
+    const soonH = field.slots
+      .map((s) => Number(s.h))
+      .filter((h) => h > now.getHours() && h - now.getHours() < 6)
+      .sort((x, y) => x - y)[0];
+    if (soonH === undefined) {
+      assert('cancelling inside the window is refused', null,
+        `no slot starts within the next 6h (now ${now.getHours()}:00, slots ${field.slots.map((s) => s.h).join(',')})`);
+    } else {
+      const today = new Date(Date.now() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      const a = await rest('bookings', { method: 'POST', prefer: 'return=representation',
+        body: { ...base, hour: soonH, booking_date: today } });
+      const row = a.data?.[0];
+      if (!row) {
+        assert('cancelling inside the window is refused', null,
+          `could not create a booking at ${soonH}:00 today: ${a.status} ${a.raw.slice(0, 120)}`);
+      } else {
+        const c = await rest(`bookings?id=eq.${row.id}`, { method: 'PATCH',
+          prefer: 'return=representation', body: { status: 'cancelled' } });
+        assert('cancelling inside the window is refused',
+          !c.ok && c.raw.includes('cancel_window_closed'), `${c.status} ${c.raw.slice(0, 140)}`);
+        /* It refused on purpose, so the row is still live and would hold a real
+           slot today. The owner/admin path is the only one allowed to clear it,
+           and this token is a plain player - so say so instead of leaving it silent. */
+        if (!c.ok) console.log(`        note: booking ${row.id} (today ${soonH}:00) is still pending — cancel it from /admin`);
+      }
+    }
+  }
 }
 
 /* ── 5. reviews (migration 25) ───────────────────────────────────────────── */
