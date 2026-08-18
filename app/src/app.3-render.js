@@ -1362,31 +1362,96 @@ async function renderGames(){
     el.append(emptyState({ iconHtml:courtSvg(State.sport), icon:'🤝',
       title:t('gmNoneTitle'), sub:t('gmNoneSub'),
       actionLabel:t('gmNoneCta'), action:()=>setMode('venues') }));
+    GAMES_PEEK = [];   // وإلّا بقي عددٌ على مربّع الشبكة فوق «ما في مباريات»
     return;
   }
   list.forEach((g,i)=>{ const c=gameCard(g, State.gamesJoined); c.style.animationDelay=`${Math.min(i,7)*0.05}s`; el.append(c); });
+  // الجلبة الكاملة أحدثُ من اللقطة ⇒ مربّع الشبكة يُصحَّح منها عند الرجوع إليها
+  GAMES_PEEK = (res.games||[]).map(g=>({ place_id:g.place_id, seats_left:g.seats_left }));
 }
 /* يُنادى بعد كل جلبة. يسأل القاعدة مرّةً واحدة (‏`GAMES_OK` يبقى بعدها)، ثمّ
    يُظهر المبدّل أو يُبقيه مخفيًّا. والضيف لا يراه أصلًا: الانضمام يتطلّب حسابًا. */
 async function updateModeSeg(){
-  const seg=$('#modeSeg'), row=$('#modeRow'); if(!seg) return;
+  /* 🔴 **الفحص كان داخل المبدّل، فسقط بسقوطه.** كانت الدالّة تبدأ بـ
+     `const seg=$('#modeSeg'); if(!seg) return;` — وحين حُذف المبدّل من صفحة
+     التصفّح (طلب المالك 2026-08-18) صارت تخرج فورًا ⇒ `sbProbeGames` لا يُنادى
+     أبدًا ⇒ `GAMES_OK` يبقى `null` ⇒ **مربّع «مباريات» لا يظهر في الشبكة قطّ**،
+     والميزة سليمة على الخادم تمامًا. (مقيس: المربّع غائب واللقطة تفضحه.)
+     والدرس هو المسجَّل حرفيًّا في الدفعة ١٦: علَمٌ يُسأل عنه من مسارٍ واحد يموت
+     بموت ذلك المسار — فالسؤال يخرج الآن من أيّ عنصر واجهة. */
   const tok=Session.player();
   if(tok && GAMES_OK === null){
     try{ await sbProbeGames(await sbSession(tok, false)); }catch(_){}
   }
-  /* ⚠️ الإخفاء على **الصفّ** لا على المبدّل وحده: صار صفًّا مستقلًّا في الغلاف
-     اللاصق، وإخفاء ابنه يترك حشوةَ الصفّ فيبقى شريطٌ فارغ بارتفاعٍ بلا محتوى. */
-  const off = (GAMES_OK !== true) || !tok;
-  seg.hidden = off; if(row) row.hidden = off;
-  if(off && State.mode==='games') setMode('venues');
+  if(GAMES_OK !== true && State.mode==='games') setMode('venues');
+  renderHub();
 }
+/* ═══ شبكة Bento — شاشة الدخول ════════════════════════════════════════════
+   خمس بطاقات بثلاث رتب: الحجز بطلٌ بعرض الشبكة (وهو النشاط الوحيد الذي يُدرّ
+   دخلًا اليوم)، والمباريات نصفُ عرض، والثلاثة القادمة أصغر.
+   ⚠️ ولا رقمَ مخترَعًا على أيٍّ منها: عدّاد المباريات مقروءٌ من `open_games`
+      ويُخفى عند الصفر، والثلاثة القادمة لا تحمل عددًا أصلًا. */
+/* ملعبُ سيداتٍ واحد نشِط يكفي لفتح المربّع — **من البيانات لا من الكود**، ومن
+   `State.allPlaces` لا `State.places`: الشبكة ليست مقصوصةً برياضة. */
+const womenVenues = () => (State.allPlaces||[])
+  .some(p => (p.fields||[]).some(f => f.active!==false && fieldGender(f)==='women'));
+function renderHub(){
+  /* التحية تُبنى هنا مباشرةً من نفس مصدر الرئيسية (‏`updatePlayerGreeting`
+     تكتب في `#greetEyebrow`/`#playerWelcome` وهما في صفحة التصفّح) — ونسخُ
+     نصٍّ من صفحةٍ أخرى يقرأ فراغًا قبل أن تُرسَم. فالمصدر واحد: نفس الدالّتين. */
+  updatePlayerGreeting();
+  const hr = new Date().getHours();
+  const gk = hr < 12 ? 'greetMorning' : (hr < 18 ? 'greetAfternoon' : 'greetEvening');
+  const g=$('#hubGreet'), nm=$('#hubName');
+  if(g){ g.textContent = t(gk); g.setAttribute('data-i18n', gk); }
+  if(nm) nm.textContent = Session.player() ? (State.player?.name || t('welcomeYou')) : t('welcomeGuest');
+  /* رسمُ الملعب خلف البطل — **نفس** `COURT` الذي يعرضه قسم الرياضات وحالة
+     «قريبًا»، لا صورةٌ ثالثة لنفس المعنى. ويتبع الرياضة المختارة. */
+  const art=$('#bentoArt'); if(art) art.innerHTML = courtSvg(State.sport) || '';
+  /* بطاقة المباريات تختفي بالكامل بنفس حارس المبدّل القديم: ترحيلٌ معلَّق أو
+     ضيفٌ بلا حساب ⇒ لا بابَ يُعرَض ثمّ يُسحَب. */
+  /* لوحُ «حجزك القادم» يُعاد رسمُه مع الشبكة: بياناته مجلوبةٌ سلفًا
+     (‏`Tracker.refresh` بعد الدخول وعند العودة إلى التطبيق)، والرسم هنا يجعله
+     يتبع اللغة كذلك — نصُّه مركَّبٌ من معطيات فلا يمسّه `data-i18n`. */
+  Tracker.paint();
+  const av=$('#hubAvatar');
+  if(av) av.textContent = ((State.player?.name||'').trim().charAt(0)) || t('avatarFallback');
+  const wc=$('#bentoWomen'), wn=$('#bentoWomenNote'), ws=$('#bentoWomenSoon');
+  if(wc){
+    const live=womenVenues();
+    wc.classList.toggle('is-soon', !live);
+    if(ws) ws.hidden = live;
+    if(wn){ wn.hidden = !live; wn.textContent = live ? t('hubWomenReady') : ''; }
+  }
+  const card=$('#bentoGames');
+  if(card){
+    const on = (GAMES_OK === true) && !!Session.player();
+    card.hidden = !on;
+    if(on){
+      const scope=new Set((State.places||[]).map(p=>String(p.place_id)));
+      const n=(GAMES_PEEK||[]).filter(x=>scope.has(String(x.place_id)) && Number(x.seats_left)>0).length;
+      const note=$('#bentoGamesNote');
+      if(note) note.textContent = n ? t('hubGamesOpen',{ n:nGames(n) }) : t('hubGamesNone');
+      card.classList.toggle('has-live', n>0);
+    }
+  }
+}
+/* نقرُ قسمٍ قادم **يقول ما هو ومتى** — ولا يفتح شاشةً بيضاء. نفس معالجة «فيزا»
+   في نافذة المراجعة بالحرف: الخيار ظاهرٌ ومعطَّل، والنقر يشرح بدل أن يُبتلع. */
+document.addEventListener('click', (e)=>{
+  const b=e.target.closest && e.target.closest('[data-soon]'); if(!b) return;
+  const k=b.dataset.soon;
+  buzz(8);
+  toast(t('hubSoon_'+k), 'warn');
+});
+/* ⚠️ شارةُ المبدّل حُذفت مع المبدّل نفسه (طلب المالك 2026-08-18) — والعدّ باقٍ
+   حيث يُقرأ فعلًا: مربّع «مباريات» في الشبكة، من نفس `GAMES_PEEK`. */
 function setMode(m){
   State.mode = (m==='games') ? 'games' : 'venues';
-  $$('#modeSeg .mode-btn').forEach(b=>{ const on=b.dataset.mode===State.mode;
-    b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
+  /* لم يعد في الصفحة مبدّلٌ يُزامَن — الوضع يُدخَل من مربّع الشبكة وحده،
+     و`State.mode` تبقى مصدر الحالة الوحيد لبقيّة الدالّة. */
   /* موضع الحبّة المنزلقة — نفس متغيّر مبدّل «لاعب/صاحب ملعب» بالحرف.
      والحبّة تُقاس من CSS لا من JS: الأزرار متساوية بـ`flex:1` فالنصف معلوم. */
-  const seg=$('#modeSeg'); if(seg) seg.style.setProperty('--seg-i', State.mode==='games'?'1':'0');
   const pl=$('#placesList'), gl=$('#gamesList'), cnt=$('#placesCount');
   const games = State.mode==='games';
   if(pl) pl.hidden=games; if(gl) gl.hidden=!games;

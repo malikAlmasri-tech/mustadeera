@@ -1,8 +1,13 @@
 /* ===================== ACTIONS (controllers) ===================== */
-async function updateBookingStatus(btn, rowNumber, status){
+async function updateBookingStatus(btn, rowNumber, status, opts){
   const booking=(State.ownerData?.bookings||[]).find(b=>Number(b.row_number)===Number(rowNumber));
   let reason='';
-  if (status==='confirmed'){
+  /* ⚠️ **ورقةُ القرار هي التأكيد** (`opts.skipConfirm`): كانت البطاقة تعرض
+     زرًّا ثمّ تسأل «متأكّد؟» في نافذة؛ والورقة الجديدة تعرض الحقائق نفسها ومعها
+     الزرّان ⇒ سؤالٌ ثانٍ بعدها نافذةٌ تسأل عمّا في النافذة التي تحتها.
+     والمسار الآخر (زرّ «أكّد» على حجزٍ ملغى أو مرفوض) يبقى بتأكيده كما كان:
+     هناك لا توجد ورقةٌ تسبقه. */
+  if (status==='confirmed' && !(opts && opts.skipConfirm)){
     const info = booking ? `${booking.name||''} — ${booking.field_name||''}\n${booking.date||''}  ${booking.time||''}` : '';
     const ok = await askConfirm(t('confirmBookingTitle'), t('confirmBookingMsg')+'\n\n'+info, t('actConfirm'));
     if(!ok) return;
@@ -161,7 +166,14 @@ async function saveClosure(btn){
     if(r && r.success){
       Modal.close('modal-closure', true);
       toast(t('closeOk') + (r.pending ? ' — '+t('closePendingWarn') : ''), 'success');
-      await refreshClosures(); renderOwnerCalendar(); safeRender('econ', ()=>renderOwnerEcon(State.ownerData?.bookings||[])); safeRender('today', renderOwnerToday);
+      await refreshClosures(); renderOwnerCalendar();
+      /* الإغلاق يغيّر **الطاقة**، فيغيّر كلّ ما يُقسَم عليها: كفاءة الخانة
+         وطاقةُ الذروة الفارغة. و`renderOwnerEcon` سقطت وحلّ محلّها لوحان
+         لكلٍّ منهما عتبتُه، فيُعاد رسمهما معًا لا واحدًا منهما. */
+      { const bk=State.ownerData?.bookings||[]; const sc=reportScoped(bk);
+        safeRender('leak', ()=>renderOwnerLeak(sc));
+        safeRender('capacity', ()=>renderOwnerCapacityCard(bk, sc)); }
+      safeRender('today', renderOwnerToday);
       return;
     }
     /* التعارض يُعرَض **داخل النافذة** بالأسماء والأوقات، لا كتوست يختفي:
@@ -184,7 +196,14 @@ async function ownerReopenDay(btn, field, ds){
     const r = await API.post({ action:'ownerReopenDay', owner_token:Session.owner(), field_id:field.field_id, date:ds });
     if(!r || !r.success){ toast(apiMsg(r&&r.message)||t('closeFail'),'error'); return; }
     toast(t('closeReopened'),'success');
-    await refreshClosures(); renderOwnerCalendar(); safeRender('econ', ()=>renderOwnerEcon(State.ownerData?.bookings||[])); safeRender('today', renderOwnerToday);
+    await refreshClosures(); renderOwnerCalendar();
+      /* الإغلاق يغيّر **الطاقة**، فيغيّر كلّ ما يُقسَم عليها: كفاءة الخانة
+         وطاقةُ الذروة الفارغة. و`renderOwnerEcon` سقطت وحلّ محلّها لوحان
+         لكلٍّ منهما عتبتُه، فيُعاد رسمهما معًا لا واحدًا منهما. */
+      { const bk=State.ownerData?.bookings||[]; const sc=reportScoped(bk);
+        safeRender('leak', ()=>renderOwnerLeak(sc));
+        safeRender('capacity', ()=>renderOwnerCapacityCard(bk, sc)); }
+      safeRender('today', renderOwnerToday);
   });
 }
 /* إعادة جلب الإغلاقات وحدها بعد تغييرها — أرخص من إعادة تحميل اللوحة كاملةً،
@@ -385,6 +404,11 @@ try{
 }catch(_){}
 
 /* ===================== ROUTER ===================== */
+/* 🔴 **و`hub` خارج الخريطة عمدًا** (طلب المالك 2026-08-18): الشريط السفلي يظهر
+   داخل صفحة الملاعب وأخواتها لا على الشبكة — والشبكة نفسها هي القائمة. وغيابُ
+   المفتاح هو الآليّة: `NAV_OF[name]` تعود `undefined` فلا يُظهَر شريطٌ أصلًا.
+   ⚠️ ويبقى زرّ «الرئيسية» في الشريط **مخرجًا مرئيًّا** من التصفّح إلى الشبكة —
+      بلا ذلك لا يعود إليها إلّا من يعرف إيماءة الرجوع، وهي مصيدةٌ مسجَّلة. */
 const NAV_OF = { home:'player', favorites:'player', bookings:'player', account:'player', owner:'owner' };
 /* مكدّس تنقّل داخلي: «رجوع» حقيقي داخل التطبيق دون مغادرة الموقع وبلا window.history */
 const NavStack = [];
@@ -412,7 +436,7 @@ function showPage(name, opts){
      يختار `#page-*`. */
   let navKey = name;
   if(name==='favorites'){ State.favOnly=true;  name='home'; }
-  else if(name==='home'){ State.favOnly=false; }
+  else if(name==='home'){ State.favOnly=false; navKey='hub'; }   // التصفّح ابنُ الشبكة فيضيء زرّها
   const cur=activePageName();
   if(cur) State.pageScroll[cur]=pageScrollGet();     // حفظ موضع الصفحة المغادَرة
   // دفع الصفحة الحالية للمكدّس — إلا عند الرجوع، والتحويل الداخلي، وإعادة عرض الصفحة نفسها (لا تكرار)
@@ -447,7 +471,11 @@ function showPage(name, opts){
   NavPill.schedule();
   // خطافات الصفحات — التحويلات الداخلية {redirect:true} كي لا تدخل المكدّس فتصنع حلقة
   if (name==='onboarding') Obs.enter();
-  if (name==='home'){ updateSecTitle(); renderPlaces(); }
+  if (name==='hub') renderHub();
+  /* ⚠️ **الدخول يعود إلى وضع الملاعب دائمًا**: لم يعد في الصفحة مبدّلٌ يُرجِع
+     منه، فمن دخل بعد زيارةٍ سابقة للمباريات كان سيجد قائمة مباريات بلا مخرج.
+     و`hubGames` تستدعي `setMode('games')` **بعد** هذا السطر فلا يتعارضان. */
+  if (name==='home'){ setMode('venues'); updateSecTitle(); renderPlaces(); }
   if (name==='bookings'){ if(!Session.player()&&State.guest){ toast(t('loginToSeeBookings'),'warn'); return showPage('playerLogin',{redirect:true}); } loadPlayerBookings(); }
   if (name==='account'){ if(!Session.player()){ return showPage('playerLogin',{redirect:true}); }
     const nm=State.player?.name||'', ph=State.player?.phone||'';
@@ -533,7 +561,7 @@ function buzz(ms){
     try{ document.dispatchEvent(new CustomEvent('app:page',{detail:activePageName()})); }catch(_){}
   };
   /* الإزالة تتبع الأنيميشن نفسه لا ساعةً موازية له. الساعتان لا تبدآن معًا:
-     ساعة CSS تبدأ عند أوّل رسم لعقدة `.intro` (وسمُها في أعلى <body> وورقتها في
+     ساعة CSS تبدأ عند أوّل رسم لعقدة `.intro` (وسمُها في أعلى «body» وورقتها في
      <head>)، وساعة `setTimeout` لا تبدأ إلّا بعد تحليل الحزمة كلّها وتنفيذ كلّ
      ما قبلها من IIFE. الفارق على WebView بارد مئات المللي‑ثانية، وكان اللوح
      يبقى فيها فوق الواجهة. `animationend` يقيس الساعة الصحيحة بلا رقم مكتوب. */
@@ -567,7 +595,7 @@ function buzz(ms){
   const VEL=0.5;            // px/ms — سرعة تُنجز الرجوع مهما كانت المسافة
   let sx=0, sy=0, t0=0, dx=0, tracking=false, locked=false, page=null, W=1, rtl=false;
 
-  const backable=()=>{ const p=activePageName(); return !!p && p!=='home' && p!=='welcome'; };
+  const backable=()=>{ const p=activePageName(); return !!p && p!=='hub' && p!=='welcome'; };
   /* هل نقطة اللمس داخل عنصر يتمرّر أفقيًا؟ (rails الأيام/الأوقات/الرياضات/التقييمات) */
   function inHScroller(el){
     for(let n=el; n && n!==document.body; n=n.parentElement){
@@ -774,8 +802,13 @@ async function refreshOwnerSilent(){
   const known=new Set(oldB.map(b=>Number(b.row_number)));
   const freshPending=newB.filter(b=>!known.has(Number(b.row_number)) && normStatus(b)==='pending').length;
   State.ownerData=res;
-  safeRender('stats', ()=>renderOwnerStats(newB));
-  safeRender('econ', ()=>renderOwnerEcon(newB));
+  /* ⚠️ **الاستطلاع يحترم نطاق التقارير كذلك.** كان يمرّر القائمة كاملةً بينما
+     الرسم الأوّل يمرّر المقصوصة ⇒ رقمٌ يتبدّل وحده كل استطلاع على مالكٍ اختار
+     «آخر ٣٠ يوم»، بلا أن يلمس شيئًا. مصدرٌ واحد للقصّ في الاثنين. */
+  const scopedNew = reportScoped(newB);
+  safeRender('stats', ()=>renderOwnerStats(scopedNew));
+  safeRender('revNotes', ()=>renderOwnerRevNotes(scopedNew));
+  safeRender('leak', ()=>renderOwnerLeak(scopedNew));
   safeRender('bookings', renderOwnerBookings);
   safeRender('today', renderOwnerToday);
   if(freshPending>0){
@@ -796,7 +829,7 @@ function manageAutoRefresh(){ const run=autoRefreshActive()&&!document.hidden; i
 
 /* ===================== AUTH ===================== */
 async function browse(){
-  State.guest=true; showPage('home'); placesSkeleton();
+  State.guest=true; showPage('hub'); placesSkeleton();
   await loadData(); renderPlaces();
 }
 async function playerLogin(btn){
@@ -824,7 +857,7 @@ async function playerLogin(btn){
          الجلسة** ⇒ لا مبدّل «مباريات» ولا خيار «مباراة مفتوحة» إطلاقًا. مقيس. */
       await updateModeSeg();
       if(await resumePendingBooking()) return;          // استئناف حجز الضيف إن وُجد
-      showPage('home');
+      showPage('hub');
     }catch(_){ toast(t('connLag'),'error'); }
   });
 }
@@ -1454,6 +1487,11 @@ function setLanguage(lang){
     HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     updatePlayerGreeting();
+    /* ⚠️ نصُّ الشبكة **مركَّبٌ من معطيات** (عدد المباريات · التحية) فلا يمسّه
+       `data-i18n`: مبدّل اللغة يترجم الوسوم الحاملة للسمة وحدها، وما بُني في
+       JS يبقى بلغة لحظة بنائه إلى الجلبة التالية. مقيس: البطاقة بقيت عربيّة
+       في الإنجليزية. (مزلق مسجَّل، ونفس علاج `Notifs.paint`.) */
+    if($('#page-hub')?.classList.contains('active')) renderHub();
     if($('#page-home')?.classList.contains('active')) renderPlaces();
     if($('#page-detail')?.classList.contains('active') && State.detail.place){ renderDetailBadges(State.detail.place); renderAmenitiesFull(State.detail.place); renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderDetailSticky(); if(State.detail.field) setText('dPrice', formatCurrency(State.detail.field.price)); }
     if($('#page-bookings')?.classList.contains('active')) loadPlayerBookings();
@@ -1572,6 +1610,31 @@ const Actions = {
   confirmJoin, saveMatch, closeMatchSeats, makeMatchPrivate,
   clearFilters:()=>{ $('#ownerDateFilter').value=''; $('#ownerFieldFilter').value='all'; const st=$('#ownerStatusFilter'); if(st)st.value='all'; const se=$('#ownerSearch'); if(se)se.value=''; renderOwnerBookings(); },
   refreshOwner:loadOwnerDashboard, toggleOwnerHistory:()=>{ State.showAllOwner=!State.showAllOwner; renderOwnerBookings(); },
+  /* شريطُ «ردّ الآن» وخانةُ «بانتظار ردّك» يقودان إلى **نفس** الموضع: أوّل
+     بطاقة معلّقة — بابان بارتفاعين لا وجهتان.
+     ⚠️ وإن كان المعروض هو المخطّط فالبطاقات غير مرسومة أصلًا، فيُبدَّل
+        الشكل **بلا حفظ** (`applyOwnerView` لا `setOwnerView`): ضغطةٌ على «ردّ
+        الآن» ليست تغييرًا لتفضيل العرض، ولا يجوز أن تُكتب فوق اختيار المالك. */
+  ownerGoPending:()=>{
+    showOwnerTab('today');
+    if(State.ownerView==='timeline') applyOwnerView('cards');
+    const el=$('#ownerToday .booking-strip.pending') || $('#ownerToday');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+  },
+  exportCsv:(btn)=>ownerExportCsv(btn),
+  /* بطاقة «مباريات» في الشبكة تفتح **نفس** صفحة التصفّح في وضع المباريات، لا
+     صفحةً ثالثة: القائمة والمبدّل موجودان هناك أصلًا، ونسخةٌ ثانية منهما
+     تنحرف عن الأولى عند أوّل تعديل. */
+  hubGames:()=>{ showPage('home'); setMode('games'); },
+  /* ملاعب السيدات: **نفس** صفحة الملاعب و**نفس** مرشِّح الجنس في `State.fx` —
+     لا قائمة ثانية ولا حالة ثانية. والشريحة تظهر في صفّ الفلاتر المفعّلة
+     فيراها المستخدم ويستطيع رفعها من حيث يرفع أيّ مرشِّح. */
+  hubWomen:()=>{
+    if(!womenVenues()){ buzz(8); toast(t('hubSoon_women'),'warn'); return; }
+    State.fx.genders = ['women'];
+    showPage('home');
+    updateFilterBar(); renderFilterChips(); renderPlaces();
+  },
   refreshAiInsights:()=>loadAiInsights(true), refreshAiReviews:()=>loadAiReviews(true), refreshAiWeather:()=>loadAiWeather(true),
   calPrev:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()-1, 1); renderOwnerCalendar(); },
   calNext:()=>{ if(!State.calMonth) State.calMonth=new Date(today()+'T12:00:00'); State.calMonth=new Date(State.calMonth.getFullYear(), State.calMonth.getMonth()+1, 1); renderOwnerCalendar(); },
@@ -1938,7 +2001,7 @@ async function init(){
   if (Session.player()){
     try{
       const res=await API.get('getPlayerBookings',{ player_token:Session.player() }, 'playerBookings');
-      if (res.success){ State.player=res.player; State.guest=false; updatePlayerGreeting(); showPage('home'); placesSkeleton(); await loadData(); renderPlaces(); Tracker.refresh(); return; }
+      if (res.success){ State.player=res.player; State.guest=false; updatePlayerGreeting(); showPage('hub'); placesSkeleton(); await loadData(); renderPlaces(); Tracker.refresh(); return; }
       Session.clear();
     }catch(_){ /* الإبقاء على شاشة الترحيب عند فشل الشبكة */ }
   }

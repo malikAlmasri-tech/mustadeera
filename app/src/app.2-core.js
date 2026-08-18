@@ -222,6 +222,10 @@ const nSeats = (n) => (State.lang==='en')
 const nPlaces = (n) => (State.lang==='en')
   ? (n===1 ? '1 venue' : `${n} venues`)
   : countNoun(n, 'مكان واحد', 'مكانان', 'أماكن', 'مكانًا');
+/* «٣ مباريات» — نفس القاعدة: رقمٌ حيّ يسبق معدودًا. */
+const nGames = (n) => (State.lang==='en')
+  ? (n===1 ? '1 game' : `${n} games`)
+  : countNoun(n, 'مباراة واحدة', 'مباراتان', 'مباريات', 'مباراةً');
 /* فرقٌ زمني بصيغة نسبية — Intl يتكفّل بالمعدود في اللغتين.
    ⚠️ الوحدة تُختار بالحجم لا بالثابت: «خلال ١٤٠ دقيقة» تُقرأ أسوأ من «خلال ساعتين». */
 function relFromNow(ms){
@@ -428,7 +432,11 @@ const sbBooking = (b) => ({
   // ترحيل 22. `visibility` غائبة قبله ⇒ `'private'` ⇒ لا شيء يتغيّر عن اليوم.
   visibility: b.visibility === 'open' ? 'open' : 'private',
   needed: b.players_needed==null ? null : Number(b.players_needed),
-  brought: b.players_brought==null ? null : Number(b.players_brought)
+  brought: b.players_brought==null ? null : Number(b.players_brought),
+  /* ترحيل 28 — لحظة **أوّل** خروج من `pending`. تُستعمل في لوحة المالك وحدها
+     (زمن ردّه، وأثر السرعة على نسبة التأكيد)، وغيابها قبل الترحيل `''` ⇒ لا
+     يُحسَب شيء ولا يُعرَض سطر. */
+  replied_at: b.replied_at || ''
 });
 
 /* ── عمليات القراءة العامة (بلا تسجيل دخول) ── */
@@ -471,6 +479,25 @@ async function sbGetReplySpeed(){
     return [];
   }
   REPLY_OK = true;
+  return r.data || [];
+}
+
+/* ═══ الطلب المكبوت (ترحيل 32) ═══════════════════════════════════════════
+   «كم لاعبًا ضغط *نبّهني إذا فضيت* على هذه الخانة» — مجمَّعًا بلا هويّة أحد.
+   ⚠️ **علَمٌ ثلاثيّ الحالات** بنفس نمط `GAMES_OK`/`REPLY_OK` بالحرف: قبل
+      الترحيل يردّ PostgREST 404/`PGRST205` ⇒ يُنزَّل العلَم ولا يُسأل ثانيةً،
+      **ولا يُعرَض لوحٌ ولا رسالة ولا فراغ**: هذا رقمٌ إضافي لا ميزةٌ مكسورة.
+   ⚠️ **وبلا `key`** — «المفتاح» في `sbFetch` رمزُ إلغاء، وتمريرُه إلى طلبين
+      داخل `Promise.all` واحدة يجعل الدفعة تُلغي نفسها (مزلق مسجَّل). */
+let DEMAND_OK = null;
+async function sbGetOwnerDemand(pid, token){
+  if (DEMAND_OK === false || !pid) return [];
+  const r = await sbRest(`/place_slot_demand?select=field_id,watch_date,hour,n&place_id=eq.${pid}`, { token });
+  if (!r.ok){
+    if (r.status === 404 || String(r.raw||'').includes('PGRST205')) DEMAND_OK = false;
+    return [];
+  }
+  DEMAND_OK = true;
   return r.data || [];
 }
 async function sbGetInitialData(key){
@@ -592,13 +619,30 @@ const SB_BK_COLS ='id,created_at,player_id,place_id,field_id,booking_date,hour,t
    حالة «قبل الترحيل»، وبعده لا تقع أبدًا (العلَم يُحفَظ للجلسة).
    ولا نخمّن أيّهما الناقص: كلاهما يأتي من ترحيل معلَّق، والسؤال أرخص من التخمين. */
 let SB_BK_EXTRA = ',cancel_kind,no_show,visibility,players_needed,players_brought';
+/* 🔴 **علَمٌ ثانٍ مستقلّ لا عمودٌ سادس في الأوّل** — و`replied_at` (ترحيل 28)
+   من ترحيلٍ آخر تمامًا. لو أُضيف إلى المجموعة الأولى لصار سقوطُه يُسقط معه
+   `no_show` و`visibility` صامتًا على قاعدةٍ شُغِّل عليها 15/16/22 ولم يُشغَّل
+   عليها 28 — أي **تعطيلُ ميزتين لغياب ثالثة**. فالجولة الثانية تسأل عن كلٍّ
+   على حدة بدل إسقاط الاثنين معًا، وبعدها يستقرّ العلمان فلا تقع إلّا جولةٌ
+   واحدة بقيّة الجلسة. */
+let SB_BK_REPLY = ',replied_at';
 async function sbBookingsQuery(path, opts){
-  if (SB_BK_EXTRA){
-    const r = await sbRest(path.replace('{cols}', SB_BK_COLS + SB_BK_EXTRA), opts);
+  const ask = (cols) => sbRest(path.replace('{cols}', SB_BK_COLS + cols), opts);
+  if (SB_BK_EXTRA || SB_BK_REPLY){
+    const r = await ask(SB_BK_EXTRA + SB_BK_REPLY);
     if (r.ok) return r;
-    SB_BK_EXTRA = '';   // الترحيلان معلَّقان ⇒ لا نسأل عنهما ثانيةً في هذه الجلسة
   }
-  return sbRest(path.replace('{cols}', SB_BK_COLS), opts);
+  if (SB_BK_EXTRA){
+    const r = await ask(SB_BK_EXTRA);
+    if (r.ok){ SB_BK_REPLY = ''; return r; }   // المجموعة الأولى تمرّ ⇒ الناقص هو الثاني
+    SB_BK_EXTRA = '';
+  }
+  if (SB_BK_REPLY){
+    const r = await ask(SB_BK_REPLY);
+    if (r.ok) return r;
+    SB_BK_REPLY = '';
+  }
+  return ask('');
 }
 
 async function sbCreateBooking(d, session){
@@ -839,11 +883,19 @@ async function checkAppVersion(){
 }
 
 let GAMES_OK = null;
+/* لقطةُ المباريات القادمة — تُملأ من **نفس** نداء الفحص، فالشارة على المبدّل
+   لا تكلّف طلبًا إضافيًّا. وثلاثة أعمدة لا `*`: العدّ لا يحتاج أكثر، ولا يخرج
+   من العرض ما لا يُقرأ. */
+let GAMES_PEEK = [];
 async function sbProbeGames(session){
   if (GAMES_OK !== null || !session) return GAMES_OK;
-  const r = await sbRest('/open_games?select=id&limit=0', { token: session.at });
-  // 404/PGRST205 = العرض غير موجود. وأي شيء آخر (حتى الرفض) إثباتُ وجود.
+  /* ⚠️ **صفوفٌ لا `limit=0`**: الفحص كان يسأل عن الوجود وحده، والشارة تحتاج
+     العدد — ونداءٌ ثانٍ لأجل رقمٍ يأتي مع الأوّل بذخٌ في الشبكة. والوجود يبقى
+     محسومًا كما كان: 404/`PGRST205` = العرض غير موجود، وأيّ ردٍّ آخر (حتى
+     الرفض) إثباتُ وجود. */
+  const r = await sbRest(`/open_games?select=place_id,seats_left&booking_date=gte.${today()}`, { token: session.at });
   GAMES_OK = !(r.status === 404 || String(r.raw||'').includes('PGRST205'));
+  GAMES_PEEK = (GAMES_OK && r.ok && Array.isArray(r.data)) ? r.data : [];
   return GAMES_OK;
 }
 async function sbGetOpenGames(session, key){
@@ -1081,7 +1133,7 @@ const API = {
         /* الكنس **قبل** الجلب لا بعده: لو جرى بعده لعرضت اللوحة طلبًا منقضيًا
            على أنه ينتظر ردًّا، ولوجد المالك زرَّي «قبول/رفض» على شيء انتهى. */
         await sbSweepExpiry(s);
-        const [pl, fl, bk, st, all, sum] = await Promise.all([
+        const [pl, fl, bk, st, all, sum, rs, dm] = await Promise.all([
           sbRest(`/places?select=*&id=eq.${pid}`, { token:s.at, key }),
           sbRest(`/fields?select=*&place_id=eq.${pid}&order=name`, { token:s.at }),
           sbBookingsQuery(`/bookings_full?select={cols}&place_id=eq.${pid}&order=booking_date.desc,hour.desc`, { token:s.at }),
@@ -1097,13 +1149,26 @@ const API = {
           own.length > 1
             ? sbRest(`/bookings_full?select=place_id,status,price,booking_date&place_id=in.(${own.join(',')})`, { token:s.at })
             : Promise.resolve({ ok:true, data:[] }),
+          /* 🔴 **الرقم الذي يُحكَم به على المالك كان محجوبًا عنه**: وسيط سرعة
+             ردّه يُعرَض للاعب فوق زرّ التأكيد (ترحيل 28) ولا يراه هو. والعرض
+             عامّ أصلًا فلا باب جديد يُفتح — جلبةٌ داخل الدفعة لا جلبة جديدة. */
+          sbRest(`/place_reply_speed?select=median_minutes,n&place_id=eq.${pid}`, { token:s.at }),
+          sbGetOwnerDemand(pid, s.at),
         ]);
         if (!pl.ok || !(pl.data||[]).length) return { success:false, message:'ما لقينا المكان تبعك' };
         // ملاحظة: المالك يرى ملاعبه **الموقوفة** أيضًا — كان هذا عطلًا في الباكند القديم
         // (getPlaces يُسقط active=false) وصار مضمونًا هنا بسياسة owns_place في RLS.
         const place = sbPlace(pl.data[0], (st.data||[])[0]);
         place.fields = (fl.data||[]).map(sbField);
+        const rsRow = (rs.ok && (rs.data||[])[0]) || null;
         return { success:true, place, fields: place.fields, bookings: (bk.data||[]).map(sbBooking),
+                 /* `null` معناه محدَّد: «لم يُقَس بعد» — العرض نفسه يحجب ما دون
+                    سبعة ردود، فلا يُعرَض للمالك رقمٌ مبنيّ على ثلاثة. */
+                 reply_speed: rsRow ? { median: Number(rsRow.median_minutes), n: Number(rsRow.n) } : null,
+                 demand: (dm||[]).map(d => ({ field_id:String(d.field_id),
+                                              date:String(d.watch_date||'').split('T')[0],
+                                              hour:Number(d.hour), n:Number(d.n)||0 })),
+                 demand_ok: DEMAND_OK === true,
                  place_id: pid, places: (all.data||[]).map(p => ({ place_id:String(p.id), place_name:p.name||'' })),
                  place_rows: (sum.data||[]).map(r => ({ place_id:String(r.place_id), status:String(r.status||''),
                                                         price:Number(r.price)||0, date:String(r.booking_date||'').split('T')[0] })) };
@@ -1373,7 +1438,9 @@ const State = {
      محفوظٌ كي لا يعود المالك إلى مكانه الأوّل بعد كل إعادة فتح، والخادم يفحصه
      ضدّ `place_ids` فقيمةٌ قديمة لمكانٍ لم يعد له تعود إلى المختار بلا خطأ. */
   ownerPlaceId: (()=>{ try{ return localStorage.getItem('mustadaira:ownerPlace')||''; }catch(_){ return ''; } })(),
-  ownerView: 'cards',
+  /* `null` = لم يُحسَم بعد ⇒ `resolveOwnerView` تختار بعدد الملاعب (أو من
+     تخزين اختيار المالك). وقيمةٌ ثابتة هنا كانت تُبطل الاستنتاج كلَّه. */
+  ownerView: null,
   /* شكل عرض الحجوزات: قائمة أو تقويم. **والتقويم ليس قسمًا بل شكلَ عرضٍ لنفس
      الصفوف**، فلا يستحقّ خانةً في شريطٍ من أربع خانات على شاشة 375px — بينما
      «التقارير» (وهي جواب سؤال «هل يربحني هذا؟») كانت بلا خانة إطلاقًا. */

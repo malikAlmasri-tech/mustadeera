@@ -146,13 +146,13 @@
                                 },
                                 {
                                     "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
-                                    "rating":  5.0,
-                                    "reviews_count":  5,
+                                    "rating":  4.8,
+                                    "reviews_count":  6,
                                     "reviews_dist":  [
                                                          0,
                                                          0,
                                                          0,
-                                                         0,
+                                                         1,
                                                          5
                                                      ]
                                 }
@@ -838,8 +838,41 @@
 
                                                },
                                      "gender":  null
+                                 },
+                                 {
+                                     "id":  "863eb31e-5f12-45e5-a83a-39f0041d404d",
+                                     "legacy_id":  null,
+                                     "place_id":  "6b95b6bd-290c-418a-b9c5-1bd48e23bec7",
+                                     "name":  "ملعب سباعي",
+                                     "size":  "7x7",
+                                     "price":  50.00,
+                                     "slots":  [
+                                                   {
+                                                       "h":  16,
+                                                       "label":  "4:00 - 6:00 م"
+                                                   },
+                                                   {
+                                                       "h":  18,
+                                                       "label":  "6:00 - 8:00 م"
+                                                   },
+                                                   {
+                                                       "h":  20,
+                                                       "label":  "8:00 - 10:00 م"
+                                                   },
+                                                   {
+                                                       "h":  22,
+                                                       "label":  "10:00 - 12:00 م"
+                                                   }
+                                               ],
+                                     "image_url":  "",
+                                     "active":  true,
+                                     "sport":  "football",
+                                     "attrs":  {
+
+                                               },
+                                     "gender":  null
                                  }
                              ],
-                   "Count":  14
+                   "Count":  15
                }
 }

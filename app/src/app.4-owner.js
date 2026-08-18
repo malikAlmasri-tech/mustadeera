@@ -106,14 +106,20 @@ function renderOwnerDashboard(){
   const d=State.ownerData; if(!d) return;
   renderOwnerPlaceSwitch();
   const bookings = d.bookings || [];
-  /* ⚠️ نطاق التقارير **مرشِّح مُدخَل لا تعديل حساب**: الدوالّ الثلاث تأخذ
-     مصفوفةً وتحسب منها، فتقليص المصفوفة يغيّر ما تشمله الأرقام ولا يمسّ سطرًا
-     واحدًا من رياضياتها (العمولة · الصافي · الإشغال كما هي بالحرف).
-     و«الكل» هو الافتراضي فلا يتغيّر شيء لمن لا يلمس المُبدِّل. */
+  /* ⚠️ نطاق التقارير **مرشِّح مُدخَل لا تعديل حساب**: الدوالّ تأخذ مصفوفةً
+     وتحسب منها، فتقليص المصفوفة يغيّر ما تشمله الأرقام ولا يمسّ سطرًا واحدًا
+     من رياضياتها. و«الكل» هو الافتراضي فلا يتغيّر شيء لمن لا يلمس المُبدِّل. */
   const scoped = reportScoped(bookings);
+  resolveOwnerView();
   safeRender('stats', ()=>renderOwnerStats(scoped));
-  safeRender('econ', ()=>renderOwnerEcon(scoped));
+  safeRender('revNotes', ()=>renderOwnerRevNotes(scoped));
+  safeRender('reply', ()=>renderOwnerReply(scoped));
+  safeRender('leak', ()=>renderOwnerLeak(scoped));
+  safeRender('demand', renderOwnerDemand);
+  safeRender('heat', ()=>renderOwnerHeat(scoped));
   safeRender('charts', ()=>renderOwnerCharts(scoped));
+  safeRender('capacity', ()=>renderOwnerCapacityCard(bookings, scoped));
+  safeRender('customers', ()=>renderOwnerCustomersCard(scoped));
   safeRender('fieldFilter', ()=>{
     const sel=$('#ownerFieldFilter'); const old=sel.value||'all';
     clear(sel); sel.append(h('option',{value:'all'},t('allFields')));
@@ -135,6 +141,7 @@ function renderOwnerDashboard(){
    والحبّة معًا. و«التقارير» ليست فيها زرّ — تُفتَح من بطاقة في «اليوم» —
    فالحبّة تُخفى حينها بدل أن تجلس على تبويب ليس هو المعروض. */
 function showOwnerTab(name){
+  const prev = State.ownerTab;
   State.ownerTab=name;
   $$('#nav-owner .nitem').forEach(b=>{ const on=b.dataset.otab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); b.setAttribute('tabindex', on?'0':'-1'); });
   /* اللوح المعروض قد يخالف اسم التبويب: «الحجوزات» تعرض التقويم حين يكون هو
@@ -149,24 +156,29 @@ function showOwnerTab(name){
   if(name==='today'){ renderOwnerToday(); if(State.ownerView==='timeline') renderOwnerTimeline(); }
   if(name==='reports' && State.ownerData){ loadAiInsights(); loadAiReviews(); }   // 🤖 جلب كسول أول مرة فقط
   if(name==='bookings'){ State.ownerNewCount=0; updateOwnerTabBadge(); }          // فتح التبويب يصفّر شارة الجديد
-  window.scrollTo({ top:0, behavior:'instant' });
+  /* 🔴 **الصعود إلى الرأس عند تبديل التبويب وحده.** كانت تُصعّد دائمًا، وهي
+     تُنادى من `renderOwnerDashboard` بعد **كل** إعادة جلب ⇒ المالك يردّ على
+     طلبٍ في منتصف قائمة اليوم فتقفز به الصفحة إلى أعلاها، ويردّ على عشرة.
+     وتبديلُ التبويب يستحقّ الصعود (لوحٌ جديد يُقرأ من أوّله)، وإعادةُ الرسم
+     في مكانك لا تستحقّه. */
+  if(prev !== name) window.scrollTo({ top:0, behavior:'instant' });
 }
 /* ===================== OWNER · TODAY TAB ===================== */
 function renderOwnerToday(){
   const el=$('#ownerToday'); if(!el) return;
   const all=State.ownerData?.bookings||[]; const fields=State.ownerData?.fields||[]; const td=today();
-  const todayB=all.filter(b=>String(b.date||'').split('T')[0]===td);
+  const onDay=(ds)=>all.filter(b=>String(b.date||'').split('T')[0]===ds);
+  const todayB=onDay(td);
   /* ⚠️ **الترتيب بالمهلة لا بالساعة.** كان الترتيب بساعة اللعب، فيقع الطلب
      الذي وصل أمس ويكاد ينقضي **تحت** طلبٍ وصل قبل دقيقة لأن مباراته أبكر —
-     وهو بالضبط الطلب الذي جاء المالك من أجله. والمهلة تجمع الاثنين أصلًا:
-     `min(الوصول + المهلة, بدء الخانة)` ⇒ الترتيب بها يقدّم الأقدم **و**
-     يقدّم من موعده الليلة معًا. */
+     وهو بالضبط الطلب الذي جاء المالك من أجله. */
   const pend=todayB.filter(b=>normStatus(b)==='pending')
     .sort((a,b)=>{ const x=replyDeadlineMs(a), y=replyDeadlineMs(b);
                    if(Number.isNaN(x)) return 1; if(Number.isNaN(y)) return -1;
                    return x-y || Number(a.hour)-Number(b.hour); });
   const conf=todayB.filter(b=>normStatus(b)==='confirmed');
-  const revenue=conf.reduce((s,b)=>s+(Number(b.price)||0),0);
+  const dayRevenue=(list)=>list.filter(b=>normStatus(b)==='confirmed').reduce((s,b)=>s+(Number(b.price)||0),0);
+  const revenue=dayRevenue(todayB);
   // أوقات اليوم الفارغة (من بيانات المالك مباشرة)
   const bookedToday={};
   todayB.forEach(b=>{ const s=normStatus(b); if(s==='cancelled'||s==='rejected') return; const fid=String(b.field_id); const hr=Number(b.hour); if(!Number.isNaN(hr)){ (bookedToday[fid] ||= new Set()).add(hr); } });
@@ -174,22 +186,64 @@ function renderOwnerToday(){
   // «أوقات متاحة اليوم» تعدّ المفتوح وحده: خانةٌ مغلقة ليست متاحة للحجز.
   fields.forEach(f=>{ if(f.active===false) return; const slots=openSlotsFor(f, td); totalSlots+=slots.length; const set=bookedToday[String(f.field_id)]||new Set(); booked+=slots.filter(s=>set.has(s.hour)).length; });
   setText('otToday', todayB.length); setText('otPending', pend.length); setText('otRevenue', formatMoney(revenue)); setText('otFree', Math.max(totalSlots-booked,0));
-  // اتجاه آخر 7 أيام على بطاقة «حجوزات اليوم» (بلا الملغاة/المرفوضة)
-  setSpark('otToday', [...Array(7)].map((_,i)=>{ const ds=dateAfter(i-6); return all.filter(b=>String(b.date||'').split('T')[0]===ds && !['cancelled','rejected'].includes(normStatus(b))).length; }));
+  /* ⚠️ **شريط الفعل يُخفى عند الصفر ولا يعرض «٠ طلبات»**: شريطٌ لاصق يأكل
+     ارتفاعًا من كل شاشة مقابل خبرٍ سارّ لا يحتاج شريطًا. */
+  const wrap=$('#otAlertWrap');
+  if(wrap){
+    const on = pend.length>0;
+    wrap.hidden = !on;
+    if(on) setText('otAlertTxt', t('otAlertTxt', { n: nRequests(pend.length) }));
+  }
+  const cell=$('#otPendingCell'); if(cell) cell.classList.toggle('is-hot', pend.length>0);
+  /* المقارنة: نفس اليوم من الأسابيع الأربعة الماضية — لا الأمس. */
+  const cmp=$('#otRevCmp');
+  if(cmp){ clear(cmp);
+    put(cmp, compareLine(revenue, sameWeekdayAvg(all, td, (ds)=>dayRevenue(onDay(ds))), td,
+                         (v)=>formatMoney(Math.round(v)))); }
+  renderOwnerNext(todayB);
   clear(el);
   if(!todayB.length){ el.append(emptyState({icon:'📅', title:t('noBookingsToday'), sub:t('noBookingsTodaySub')})); return; }
   const rest=todayB.filter(b=>normStatus(b)!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
   if(pend.length){
     el.append(sectionTitle(t('pendingReply'), pend.length));
     /* حاشيةٌ صادقة عن **آلية** الانقضاء لا وعدٌ بها: بلا cron في الخطّة
-       المجانية، الكنس يقع عند فتح اللوحة. وإن كان ترحيل 15 معلَّقًا فلا
-       انقضاء إطلاقًا — والحاشية تقول ذلك بدل أن تَعِد بما لا يحدث. */
+       المجانية، الكنس يقع عند فتح اللوحة. */
     el.append(h('div',{class:'ot-note'},
       h('span',{class:'ot-note-sub'}, t('otSoonestFirst')),
       h('span',{}, SWEEP_OK ? t('expirySweepNote') : t('expirySweepOff'))));
     pend.forEach(b=>el.append(ownerBookingCard(b)));
   }
   if(rest.length){ el.append(sectionTitle(t('restToday'), rest.length)); rest.forEach(b=>el.append(ownerBookingCard(b))); }
+}
+
+/* ═══ «القادم الآن» — سطرٌ واحد يهزم أربع بلاطات ══════════════════════════
+   المالك الواقف عند البوّابة الثامنة مساءً لا يسأل عن إشغال الشهر: يسأل «مين
+   جايّ الحين؟». والجواب في البيانات كلَّه، وكان يحتاج نقرتين ليصل إليه.
+   ⚠️ ولا يُعرَض شيء بلا حجزٍ قادم اليوم (م5) — لا لوحٌ فارغ ولا «لا يوجد».
+   ⚠️ و«جارية الآن» حالةٌ ثالثة: الخانة ساعتان، فما بدأ ولم ينتهِ ليس قادمًا
+      ولا ماضيًا — وهو أكثر ما يعني الواقف عند البوّابة. */
+function renderOwnerNext(todayB){
+  const box=$('#otNext'); if(!box) return; clear(box);
+  const now=Date.now();
+  const up=(todayB||[])
+    .filter(b=>['confirmed','pending'].includes(normStatus(b)))
+    .map(b=>({ b, ts:slotStartMs(b) }))
+    .filter(x=>!Number.isNaN(x.ts) && (x.ts + 2*3600e3) > now)
+    .sort((a,b)=>a.ts-b.ts)[0];
+  if(!up) return;
+  const b=up.b, live = up.ts <= now;
+  const lbl=statusLabel(runtimeStatus(b));
+  const phone=normalizePhone(b.phone||'');
+  box.append(h('div',{class:'ot-next'+(live?' is-live':'')},
+    h('div',{class:'ot-next-top'},
+      h('span',{class:'ot-next-when'}, live ? t('otNextLive') : t('otNextIn',{ rel: relFromNow(up.ts-now) })),
+      h('span',{class:'badge '+lbl.c}, lbl.t)),
+    h('div',{class:'ot-next-who'},
+      h('bdi',{}, b.name||'-'), h('span',{class:'ot-next-dot'}, '·'),
+      h('bdi',{}, b.field_name||''), h('span',{class:'ot-next-dot'}, '·'),
+      h('bdi',{dir:'ltr'}, b.time||'')),
+    phone ? h('a',{class:'ot-next-call', href:'tel:'+phone, 'aria-label':t('otNextCall')},
+              ico('phone','svg-sm'), h('bdi',{dir:'ltr'}, b.phone||'')) : null));
 }
 
 /* ═══════════ المخطّط الزمني ليوم واحد (ج-٣) ═══════════════════════════════
@@ -220,9 +274,8 @@ function renderOwnerTimeline(){
   const el=$('#ownerTimeline'); if(!el) return; clear(el);
   const fields=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
   const td=tlDate(), now=today();
-  /* شريط اليوم: المخطّط يخدم التخطيط لا متابعة الساعة الجارية وحدها، فالمالك
-     يسأل «شو وضع الخميس؟» بقدر ما يسأل «شو وضع اليوم؟». والسهم فيزيائي
-     فيُقلب بالاتّجاه في الورقة لا هنا. */
+  /* شريط اليوم: المخطّط يخدم التخطيط لا متابعة الساعة الجارية وحدها. والسهم
+     فيزيائي فيُقلب بالاتّجاه في الورقة لا هنا. */
   const bar=h('div',{class:'tl-bar'},
     (()=>{ const b=h('button',{class:'tl-nav', type:'button', 'aria-label':t('tlPrevDay')},
              h('span',{class:'tl-nav-ic', html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>'}));
@@ -238,7 +291,6 @@ function renderOwnerTimeline(){
            b.addEventListener('click',()=>{ State.tlDate=now; renderOwnerTimeline(); }); return b; })());
   el.append(bar);
   if(!fields.length){ el.append(emptyState({icon:'🥅', title:t('noFieldsTitle'), sub:t('noFieldsSub')})); return; }
-  // كل ساعات اليوم عبر الملاعب كلّها، مرتّبة — عمودٌ لكل ساعة يظهر في أيٍّ منها
   const hours=[...new Set(fields.flatMap(f=>fieldSlots(f).map(s=>s.hour)))].sort((a,b)=>a-b);
   if(!hours.length){ el.append(emptyState({icon:'🕒', title:t('tlNoHours'), sub:t('tlNoHoursSub')})); return; }
   const byKey={};
@@ -247,18 +299,22 @@ function renderOwnerTimeline(){
     const st=normStatus(b); if(st==='cancelled'||st==='rejected') return;
     byKey[String(b.field_id)+'@'+Number(b.hour)] = b;
   });
-  /* «راح» تُقاس بساعة **اليوم المعروض** لا بالساعة الحالية مطلقًا: يومٌ قادم
-     لا شيء فيه راح، ويومٌ ماضٍ كلّه راح. وبلا هذا الفرق كان الغد يُرسَم نصفه
-     رماديًّا لأن الساعة عندنا الآن الثامنة. */
+  /* «راح» تُقاس بساعة **اليوم المعروض** لا بالساعة الحالية مطلقًا. */
   const past = (hr) => td < now ? true : td > now ? false : (hr + 2) <= new Date().getHours();
   const wrap=h('div',{class:'tl-wrap'});
-  const grid=h('div',{class:'tl-grid', style:{ gridTemplateColumns:`auto repeat(${hours.length}, minmax(58px,1fr))` }});
-  grid.append(h('div',{class:'tl-head tl-name'}, t('tlField')));
-  hours.forEach(hr=> grid.append(h('div',{class:'tl-head'}, h('bdi',{dir:'ltr'}, String(hr).padStart(2,'0')+':00'))));
-  fields.forEach(f=>{
-    const own = fieldSlots(f).map(s=>s.hour);
-    grid.append(h('div',{class:'tl-name', title:f.field_name}, h('bdi',{}, f.field_name)));
-    hours.forEach(hr=>{
+  /* 🔴 **الساعاتُ صفوفًا والملاعبُ أعمدة** (كانت معكوسة). والسبب سؤالٌ لا ذوق:
+     السطر الواحد صار «الثامنة مساءً عبر ملاعبك كلّها» — وهو السؤال الذي يُسأل
+     («هل امتلأت الثامنة؟»)، وقراءتُه مسحٌ أفقيّ واحد لا تنقّلٌ بين صفوف. ومع
+     أربعة عشر ملعبًا كان الجواب أربعة عشر صفًّا يُقرأ كلٌّ منها على حدة.
+     والزمن ينساب لأسفل كما يُقرأ أيّ تقويم، فالتمرير الرأسي طبيعيّ على الهاتف
+     والأفقيّ يبقى للملاعب وحدها مع عمود الساعة مثبَّتًا. */
+  const grid=h('div',{class:'tl-grid', style:{ gridTemplateColumns:`auto repeat(${fields.length}, minmax(76px,1fr))` }});
+  grid.append(h('div',{class:'tl-head tl-name tl-hour'}, t('tlHour')));
+  fields.forEach(f=> grid.append(h('div',{class:'tl-head tl-fname', title:f.field_name}, h('bdi',{}, f.field_name))));
+  hours.forEach(hr=>{
+    grid.append(h('div',{class:'tl-name tl-hour'}, h('bdi',{dir:'ltr'}, String(hr).padStart(2,'0')+':00')));
+    fields.forEach(f=>{
+      const own = fieldSlots(f).map(s=>s.hour);
       const cellWrap=h('div',{class:'tl-cell'});
       if(!own.includes(hr)){ cellWrap.append(h('span',{class:'tl-off','aria-hidden':'true'}, '·')); grid.append(cellWrap); return; }
       const cl = slotClosure(f.field_id, td, hr);
@@ -342,7 +398,20 @@ function setOwnerBkView(v){
     b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on?'true':'false'); });
   showOwnerTab('bookings');
 }
-function setOwnerView(v){
+/* ⚠️ **الافتراضي يتبع عدد الملاعب، والاختيار يعلو عليه.** «قائمة» تجيب «مين
+   مستنّي ردّي؟» وهي أفضل شكلٍ لذلك؛ أمّا «شو وضع اليوم؟» على أربعة عشر ملعبًا
+   فلا تجيبه قائمةٌ إطلاقًا — تجيبه شبكةٌ واحدة. فمن له أكثر من ملعبين يفتح على
+   المخطّط، ومن له ملعبٌ أو ملعبان يفتح على البطاقات. **واختيارُ المالك يُحفَظ**
+   فلا يُعاد فرضُ الافتراضي عليه في كل إقلاع. */
+function resolveOwnerView(){
+  if(State.ownerView) return;
+  let saved=null; try{ saved=localStorage.getItem('mustadaira:ownerView'); }catch(_){}
+  if(saved==='timeline' || saved==='cards'){ applyOwnerView(saved); return; }
+  const n=(State.ownerData?.fields||[]).filter(f=>f.active!==false).length;
+  applyOwnerView(n > 2 ? 'timeline' : 'cards');
+}
+/* يطبّق الشكل بلا حفظ — يفصل «ما اخترتَه» عن «ما استنتجناه». */
+function applyOwnerView(v){
   State.ownerView = (v==='timeline') ? 'timeline' : 'cards';
   $$('#ownerViewSeg .ov-btn').forEach(b=>{ const on=b.dataset.ov===State.ownerView;
     b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on?'true':'false'); });
@@ -351,6 +420,10 @@ function setOwnerView(v){
   if(tl) tl.hidden=!on; if(cd) cd.hidden=on;
   const card=$('#tlCard'); if(card && !on){ card.hidden=true; clear(card); }
   if(on) renderOwnerTimeline();
+}
+function setOwnerView(v){
+  applyOwnerView(v);
+  try{ localStorage.setItem('mustadaira:ownerView', State.ownerView); }catch(_){}
 }
 /* ===================== OWNER · CALENDAR TAB (Vanilla) ===================== */
 function ownerBookingsByDate(){
@@ -461,7 +534,11 @@ function createBarChart(data, opts){
     const cx=(i+0.5)*slot, v=Number(d.value)||0, bh=v/max*(H-padB-padT), y=H-padB-bh;
     s+='<rect class="bar-r" x="'+(cx-bw/2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(bh,2).toFixed(1)+'" rx="4"/>';
     if(opts.showVal && v>0) s+='<text class="bar-v" x="'+cx.toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle">'+Math.round(v)+'</text>';
-    s+='<text class="bar-x" x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+sanTxt(d.label)+'</text>';
+    /* ⚠️ تسميةٌ كل `every` عمودًا: ثلاثون عمودًا يوميًّا تعني ثلاثين تسمية على
+       عرض شاشة، وهي تتداخل حتمًا (نفس درس أسماء الأيام العربية في الدفعة ٢٩).
+       والاسم المنطوق يبقى كاملًا لأنه يُبنى من المصفوفة لا من المرسوم. */
+    if(!opts.every || i % opts.every === 0)
+      s+='<text class="bar-x" x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+sanTxt(d.label)+'</text>';
   });
   /* ⚠️ `role="img"` مع `aria-hidden="true"` **تناقض** وكانتا معًا هنا: الثانية
      تحذف العنصر من شجرة الوصول تمامًا فلا يبقى للأولى أثر. والاسم يُبنى من
@@ -503,19 +580,54 @@ function chartDayLabel(ds){
   }
   return AR_DOW_TIGHT[d.getDay()] || '';
 }
+/* ═══ الرسوم تتبع النطاق ═════════════════════════════════════════════════
+   🔴 كانت مثبَّتةً على «آخر ٧ أيام» بينما المُبدِّل فوقها يقول «الكل / ٣٠ / ٩٠»
+   ⇒ تناقضٌ ظاهرٌ للمستخدم: يغيّر النطاق فلا يتحرّك الرسم. والحلّ ربطُها،
+   **وتغييرُ حجم الدلو مع النطاق**: تسعون عمودًا يوميًّا على شاشة هاتف تُقرأ
+   خطًّا أسودَ لا رسمًا (وهو نفس درس تداخل تسميات الأيام). فالعدد يبقى بين
+   ستّة وثلاثين عمودًا مهما كان النطاق، **والدلو مكتوبٌ على الشارة** كي لا
+   يُقرأ عمودُ أسبوعٍ عمودَ يوم. */
+function ownerRevSeries(scoped){
+  const r = State.reportRange || 'all';
+  const conf = scoped.filter(b=>normStatus(b)==='confirmed');
+  const sum = (from, to) => conf.filter(b=>{ const d=String(b.date||'').split('T')[0]; return d>=from && d<=to; })
+                                .reduce((s,b)=>s+(Number(b.price)||0),0);
+  if(r === 'd30'){
+    const data=[...Array(30)].map((_,i)=>{ const ds=dateAfter(i-29); return { label: shortDate(ds), value: sum(ds,ds) }; });
+    return { data, every:5, scope:t('bucketDay') };
+  }
+  if(r === 'd90'){
+    const data=[...Array(13)].map((_,i)=>{ const to=dateAfter(-7*(12-i)); const from=dayShift(to,-6);
+                                           return { label: shortDate(to), value: sum(from,to) }; });
+    return { data, every:2, scope:t('bucketWeek') };
+  }
+  const data=[...Array(6)].map((_,i)=>{
+    const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-(5-i));
+    const from=ymd(d); const e=new Date(d.getFullYear(), d.getMonth()+1, 0);
+    return { label: monthTight(d), value: sum(from, ymd(e)) };
+  });
+  return { data, every:1, scope:t('bucketMonth') };
+}
+/* 🔴 **و`month:'short'` بالعربية ليست مختصرة كذلك** — نفس مزلق `weekday:'short'`
+   بالضبط: Intl يردّ «أغسطس» و«سبتمبر» كاملتين بينما الإنجليزية تردّ «Aug».
+   ومقيسٌ في المعاينة أنّ الأسماء الكاملة تُقصّ على ستّة أعمدة بعرض شاشة.
+   والمصفوفة مكتوبة لا مقصوصة من مخرَج Intl: قصُّ ثلاثة محارف يكسر عند أوّل
+   لهجة تختلف («آب» في الشام مقابل «أغسطس»). */
+const AR_MONTH_TIGHT = ['ينا','فبر','مار','أبر','مايو','يون','يول','أغس','سبت','أكت','نوف','ديس'];
+function monthTight(d){
+  if(State.lang==='en'){
+    try{ return new Intl.DateTimeFormat('en-GB', { month:'short' }).format(d); }catch(_){}
+  }
+  return AR_MONTH_TIGHT[d.getMonth()] || String(d.getMonth()+1);
+}
 function renderOwnerCharts(bookings){
-  const fields=State.ownerData?.fields||[];
-  const days=[...Array(7)].map((_,i)=>dateAfter(i-6));
-  // 1) الإيراد اليومي (المؤكّد فقط)
-  const revData=days.map(ds=>({ label: chartDayLabel(ds),
-    value: bookings.filter(b=>String(b.date||'').split('T')[0]===ds && normStatus(b)==='confirmed').reduce((s,b)=>s+(Number(b.price)||0),0) }));
-  const rc=$('#ownerRevChart'); if(rc){ clear(rc); rc.append( revData.some(d=>d.value>0) ? createBarChart(revData,{showVal:false, label:t('chartRevenue')}) : h('div',{class:'chart-empty'}, t('noData')) ); }
-  // 2) إشغال الأسبوع (نفس منطق renderOwnerEcon)
-  const dset=new Set(days);
-  const confW=bookings.filter(b=>dset.has(String(b.date||'').split('T')[0]) && normStatus(b)==='confirmed');
-  const totalSlots=fields.reduce((s,f)=>s+fieldSlots(f).length,0)*7;
-  const oc=$('#ownerOccChart'); if(oc){ clear(oc); oc.append(createDonut(calcPercent(confW.length,totalSlots), t('occupancy'))); }
-  // 3) التوزيع حسب الساعة (المؤكّد)
+  const ser = ownerRevSeries(bookings);
+  const badge=$('#repChartScope'); if(badge) badge.textContent = ser.scope;
+  const rc=$('#ownerRevChart');
+  if(rc){ clear(rc); rc.append( ser.data.some(d=>d.value>0)
+    ? createBarChart(ser.data,{ showVal:false, every:ser.every, label:t('chartRevenue') })
+    : h('div',{class:'chart-empty'}, t('noData')) ); }
+  // التوزيع حسب الساعة (المؤكّد) — يتبع النطاق نفسه لأن مصدره `scoped`
   const byHour={}; bookings.filter(b=>normStatus(b)==='confirmed').forEach(b=>{ const hr=Number(b.hour); if(!Number.isNaN(hr)) byHour[hr]=(byHour[hr]||0)+1; });
   const hrs=Object.keys(byHour).map(Number).sort((a,b)=>a-b);
   const hc=$('#ownerHoursChart'); if(hc){ clear(hc); hc.append( hrs.length ? createBarChart(hrs.map(hr=>({label:hr+':00', value:byHour[hr]})),{showVal:true, label:t('chartHours')}) : h('div',{class:'chart-empty'}, t('noData')) ); }
@@ -530,53 +642,27 @@ function renderOwnerStats(bookings){
   const webRev=fromWeb.reduce((s,b)=>s+(Number(b.price)||0),0);
   const manualRev=manual.reduce((s,b)=>s+(Number(b.price)||0),0);
   const profit=webRev*CONFIG.COMMISSION; const net=webRev-profit+manualRev;
-  const rate=bookings.length?Math.round((confirmed.length/bookings.length)*100):0;
-  const topField=getTopBy(bookings,b=>String(b.field_id||''),b=>b.field_name||'-');
-  const topSource=getTopBy(bookings,b=>String(b.source||'direct').trim()||'direct',b=>String(b.source||'direct').trim()||'direct');
   setText('oTotal',bookings.length); setText('oConfirmed',confirmed.length); setText('oPending',pending.length); setText('oToday',todayCount);
   setText('oWeek',`${t('last7')}: ${weekCount}`); setText('oRevenue',formatMoney(webRev)); setText('oProfit',formatMoney(profit)); setText('oNet',formatMoney(net));
-  setText('oRate',rate+'%'); requestAnimationFrame(()=>{ const bar=$('#oRateBar'); if(bar)bar.style.width=Math.min(rate,100)+'%'; });
-  setText('oTopField', topField?`${topField.label} (${topField.count})`:'-'); setText('oTopSource', topSource?`${topSource.label} (${topSource.count})`:'-');
+  /* 🔴 **النسبة بمقامها أو لا نسبة.** «نسبة التأكيد ٦٧٪» على ثلاثة حجوزات
+     جملةٌ صحيحة حسابيًّا وكاذبة عمليًّا، والقاعدة مطبَّقة في `place_reply_speed`
+     منذ ترحيل 28 (عتبةٌ **داخل العرض**) ومتروكةٌ هنا. `pctRow` تفرضها. */
+  const perf=$('#repPerf');
+  if(perf){
+    clear(perf);
+    put(perf, pctRow(t('confirmRate'), confirmed.length, bookings.length));
+    const topField=getTopBy(bookings,b=>String(b.field_id||''),b=>b.field_name||'-');
+    const topSource=getTopBy(bookings,b=>String(b.source||'direct').trim()||'direct',b=>String(b.source||'direct').trim()||'direct');
+    if(topField) perf.append(statRow(t('topField'), topField.label, t('outOf',{ a: topField.count, b: bookings.length })));
+    if(topSource) perf.append(statRow(t('topSource'), topSource.label, t('outOf',{ a: topSource.count, b: bookings.length })));
+    const hourTop=getTopBy(confirmed,b=>String(b.hour||''),b=>b.time||((b.hour||'-')+':00'));
+    if(hourTop) perf.append(statRow(t('bestTime'), hourTop.label, t('outOf',{ a: hourTop.count, b: confirmed.length })));
+    put(perf, pctRow(t('siteShare'), confirmed.filter(isWebsite).length, confirmed.length, t('hintDirectVsExt')));
+  }
   // اتجاه آخر 14 يوماً: كل الطلبات (بطاقة الكل) + المؤكدة (بطاقتها، بلون النعناع)
   const days14=[...Array(14)].map((_,i)=>dateAfter(i-13));
   setSpark('oTotal', days14.map(ds=>bookings.filter(b=>String(b.date)===ds).length));
   setSpark('oConfirmed', days14.map(ds=>confirmed.filter(b=>String(b.date)===ds).length), 'spark-ok');
-}
-function renderOwnerEcon(bookings){
-  const fields=State.ownerData?.fields||[]; const days=new Set(Array.from({length:7},(_,i)=>dateAfter(i)));
-  const week=bookings.filter(b=>days.has(String(b.date||'').split('T')[0]));
-  const confW=week.filter(b=>normStatus(b)==='confirmed');
-  /* ⚠️ الطاقة = الخانات **المفتوحة** لا كل الخانات (ترحيل 17). بلا هذا تُقرأ
-     جمعةُ الصيانة «إيرادًا ضائعًا» إلى الأبد، ويهبط الإشغال بلا أن يكون
-     المالك أخطأ في شيء — وهو الرقم الذي تُبنى عليه كل نصيحة في اللوحة. */
-  let totalSlots=0;
-  for(let i=0;i<7;i++){ const d=dateAfter(i); fields.forEach(f=>{ if(f.active!==false) totalSlots+=openSlotsFor(f, d).length; }); }
-  const occ=calcPercent(confW.length,totalSlots);
-  const avgPrice=fields.length?fields.reduce((s,f)=>s+(Number(f.price)||0),0)/fields.length:0;
-  const lost=Math.round(Math.max(totalSlots-confW.length,0)*avgPrice);
-  const cancelled=bookings.filter(b=>['cancelled','rejected'].includes(normStatus(b)));
-  const cancelRate=calcPercent(cancelled.length,bookings.length);
-  const confAll=bookings.filter(b=>normStatus(b)==='confirmed');
-  const webShare=calcPercent(confAll.filter(isWebsite).length, confAll.length);
-  const hourTop=getTopBy(confAll,b=>String(b.hour||''),b=>b.time||((b.hour||'-')+':00'));
-  const phones={}; confAll.forEach(b=>{const k=normalizePhone(b.phone||'')||String(b.player_id||''); if(k)phones[k]=(phones[k]||0)+1;});
-  const uniq=Object.keys(phones).length; const ret=Object.values(phones).filter(c=>c>1).length;
-  const returnRate=calcPercent(ret,uniq);
-  let decision=t('econMore');
-  if(occ<40)decision=t('econLow');
-  else if(occ>=60&&occ<=80)decision=t('econGood');
-  else if(occ>=85)decision=t('econHigh');
-  setText('oOccupancy',occ+'%'); setText('oLost',formatMoney(lost)); setText('oCancel',cancelRate+'%');
-  setText('oBestTime',hourTop?hourTop.label:'-'); setText('oWebShare',webShare+'%'); setText('oReturn',returnRate+'%'); setText('oDecision',decision);
-  /* «لم يحضر» — عدداً وقيمةً. البلاطة تظهر حين يوجد ما يُعرَض فعلاً: صفرٌ
-     دائم قبل ترحيل 16 يُقرأ «ما في تخلّف عن الحضور»، وهو ادّعاء لا قياس. */
-  const noShows = confAll.filter(isNoShow);
-  const nsItem = $('#oNoShowItem');
-  if (nsItem){
-    const on = noShows.length > 0;
-    nsItem.hidden = !on;
-    if (on) setText('oNoShow', `${noShows.length} · ${formatMoney(noShows.reduce((s,b)=>s+(Number(b.price)||0),0))}`);
-  }
 }
 /* ═══ مهلة ردّ المالك (١.٢) ═══════════════════════════════════════════════
    الموعد النهائي = **الأقرب** من: وصول الطلب + المهلة · وبدء الخانة نفسها.
@@ -666,10 +752,17 @@ function ownerBookingCard(b){
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
   const waBtn=()=>h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener',class:'owner-wa-link'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
   if (normStatus(b)==='pending'){
-    // طلب معلّق: قبول/رفض بارزان بعرض كامل (مرجع لوحة المالك) + واتساب ثانوي
-    card.append(h('div',{class:'owner-decide'},
-      mk('owner-approve','✓ '+t('actApprove'),'confirmed'),
-      mk('owner-decline','✕ '+t('actDecline'),'rejected')));
+    /* 🔴 **زرٌّ واحد يفتح ورقة القرار، لا زرّان متجاوران على البطاقة.**
+       وخلف الزرَّين مال، وكانا متساويَي الوزن على شاشةٍ تُلمَس بإبهام واحد في
+       أعلى قائمةٍ طويلة — أسوأ موضعٍ ممكن لقرارٍ لا يُتراجَع عنه بسهولة.
+       والورقة تحلّ ثلاثة معًا: مسارُ الإبهام إلى أسفل الشاشة، وتسلسلٌ هرميّ
+       حقيقيّ (قبولٌ مملوء · رفضٌ هادئ)، والعودةُ إلى **موضعك في القائمة** بعد
+       الردّ بدل إعادة الصفحة من رأسها.
+       ⚠️ **وبلا نقرةٍ إضافية**: «قبول» كان يمرّ بنافذة تأكيدٍ على أي حال —
+          والورقة **هي** تلك النافذة وقد صارت تحمل القرارين معًا. */
+    const open=h('button',{class:'owner-action owner-approve owner-decide-open'}, t('dcOpen'));
+    open.addEventListener('click', ()=>openDecideSheet(b));
+    card.append(h('div',{class:'owner-decide'}, open));
     card.append(h('div',{class:'owner-actions-sec'}, waBtn()));
   } else {
     const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
@@ -842,6 +935,584 @@ function toggleFieldActive(f, sw){
       } else { toast(apiMsg(res&&res.message)||t('fieldFail'),'error'); sw.disabled=false; }
     })
     .catch(err=>{ if(!isAbort(err)) toast(t('fieldErr'),'error'); sw.disabled=false; });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   تحليلات لوحة المالك — رقمٌ بلا مقارنة لا يقول شيئًا
+
+   القاعدة التي تحكم هذا القسم كلَّه: **لا نسبة بلا مقامها، ولا نسبة تحت
+   العتبة أصلًا.** «نسبة التأكيد ٦٧٪» على ثلاثة حجوزات جملةٌ صحيحة حسابيًّا
+   وكاذبة عمليًّا. والقاعدة مطبَّقة في القاعدة نفسها منذ ترحيل 28
+   (`place_reply_speed` تحجب ما دون سبعة **داخل العرض** لا في الواجهة)،
+   وكانت مطبَّقةً هناك وحده ومتروكةً في ستّة مواضع هنا. `OWNER_MIN_N` هو
+   نفس السبعة — والرقم واحدٌ عمدًا: عتبتان مختلفتان لنفس الفكرة تنحرفان.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const OWNER_MIN_N = 7;
+
+/* إزاحة يومٍ بصيغة YYYY-MM-DD. `dateAfter` تُزيح عن **اليوم** وحده، والمقارنة
+   الأسبوعية تحتاج الإزاحة عن تاريخٍ معطًى. والظهيرة عمدًا: منتصف الليل يقع في
+   حفرة التوقيت الصيفي في بعض المناطق فيقفز اليوم يومًا. */
+function dayShift(ds, n){
+  const d = new Date(String(ds)+'T12:00:00');
+  d.setDate(d.getDate()+n);
+  return ymd(d);
+}
+const dowOf = (ds) => new Date(String(ds)+'T12:00:00').getDay();
+
+/* أوّل يومٍ فيه أثرٌ لهذا المكان — حدُّ المقارنة الأدنى. ويومٌ سابقٌ لوجود
+   المكان **ليس صفرًا** بل غياب: عدُّه صفرًا يجعل كلَّ مكانٍ جديد يقرأ «أعلى
+   من المعتاد بـ٤٠٠٪» في أسبوعه الأوّل. */
+function ownerFirstDate(list){
+  let min='';
+  (list||[]).forEach(b=>{ const d=String(b.date||''); if(d && (!min || d<min)) min=d; });
+  return min;
+}
+
+/* متوسّط نفس اليوم من الأسابيع الأربعة الماضية.
+   ⚠️ **بنفس اليوم لا بالأمس**: الطلب على الملاعب موسميّته أسبوعية حادّة —
+      الخميس ليس الأحد — فمقارنةُ خميسٍ بأربعاء تقيس اليومَ لا الأداء.
+   ⚠️ ويعود `null` بأقلّ من عيّنتين: مقارنةٌ بعيّنةٍ واحدة ليست متوسّطًا. */
+function sameWeekdayAvg(all, ds, valueFn, weeks){
+  weeks = weeks || 4;
+  const first = ownerFirstDate(all);
+  const vals = [];
+  for(let k=1; k<=weeks; k++){
+    const d = dayShift(ds, -7*k);
+    if(first && d < first) continue;
+    vals.push(Number(valueFn(d)) || 0);
+  }
+  if(vals.length < 2) return null;
+  return { avg: vals.reduce((a,b)=>a+b,0)/vals.length, n: vals.length };
+}
+/* سطر المقارنة الرمادي تحت الرقم البطل. ولا يُرسَم بلا أساسٍ يُقارَن به (م5). */
+function compareLine(now, base, ds, fmt){
+  if(!base) return null;
+  const avg = base.avg;
+  const txt = t('cmpAvg', { n: base.n, day: arabicDay(ds), val: fmt(avg) });
+  let delta = null;
+  if(avg > 0){
+    const pct = Math.round(((now - avg)/avg)*100);
+    if(pct !== 0) delta = { pct, up: pct > 0 };
+  } else if(now > 0){
+    delta = { pct:null, up:true };
+  }
+  return h('div',{class:'cmp-line'},
+    h('span',{}, txt),
+    delta ? h('span',{class:'cmp-delta '+(delta.up?'is-up':'is-down')},
+      delta.pct===null ? t('cmpAboveNone')
+        : t(delta.up?'cmpUp':'cmpDown', { p: Math.abs(delta.pct) })) : null);
+}
+
+/* ═══ ساعات الذروة — تُحسَب ولا تُفترَض ══════════════════════════════════
+   لا «المساء ذروة» مكتوبةً بيد: الذروة هي **الساعات التي تحمل نصف حجوزاتك**
+   مأخوذةً من الأزحم نزولًا. والمالك يقرأ أسماءها فيستطيع أن يخالفها إن أراد —
+   وهذا هو الفرق بين رقمٍ يُفهَم ورقمٍ يُصدَّق. ولا تُحسَب تحت العتبة. */
+function ownerPeakHours(confirmed){
+  const total = confirmed.length;
+  if(total < OWNER_MIN_N) return null;
+  const byHour = {};
+  confirmed.forEach(b=>{ const hr=Number(b.hour); if(Number.isFinite(hr)) byHour[hr]=(byHour[hr]||0)+1; });
+  const hrs = Object.keys(byHour).map(Number).sort((a,b)=> byHour[b]-byHour[a] || a-b);
+  if(!hrs.length) return null;
+  const set = new Set(); let acc = 0;
+  for(const hr of hrs){ set.add(hr); acc += byHour[hr]; if(acc*2 >= total) break; }
+  return set;
+}
+const hourTxt = (hr) => String(hr).padStart(2,'0')+':00';
+/* «١٨:٠٠ · ٢٠:٠٠ · ٢٢:٠٠» — والأرقام معزولة LTR وإلّا قلبها bidi في السطر العربي */
+function hoursListEl(set){
+  const arr=[...set].sort((a,b)=>a-b);
+  return h('bdi',{dir:'ltr'}, arr.map(hourTxt).join(' · '));
+}
+
+/* نافذة القياس الماضية: من بداية النطاق المختار إلى اليوم، ومحدودةٌ بأوّل يومٍ
+   فيه أثر. **والمستقبل خارجها**: خانةُ الخميس القادم لم تُعرَض بعد، وعدُّها
+   «فارغة» يجعل كلَّ حسابِ كفاءةٍ يهبط كلّما فتحتَ التقويم أبعد. */
+function ownerWindow(all){
+  const days = REPORT_RANGES[State.reportRange || 'all'];
+  const td = today();
+  const first = ownerFirstDate(all);
+  let from = days ? dateAfter(-(days-1)) : (first || td);
+  if(first && from < first) from = first;
+  if(from > td) from = td;
+  return { from, to: td };
+}
+const windowDates = (w) => { const out=[]; for(let d=w.from; d<=w.to; d=dayShift(d,1)) out.push(d); return out; };
+
+/* ═══ كفاءة الخانة — نسخةُ الملاعب من RevPASH ════════════════════════════
+   الإيراد ÷ **الخانات المعروضة**، لا الإيراد وحده (يتجاهل الحجم) ولا الإشغال
+   وحده (يتجاهل السعر). وذروةً وغيرَ ذروة لا رقمًا واحدًا — وهو بيت القصيد:
+   رقمٌ مجمَّع يخلط ملعبًا ممتلئًا ثلاث ساعات بملعبٍ نصفِ ممتلئ طوال اليوم.
+   ⚠️ و«المعروضة» لا «المتاحة» بدقّة: `fieldSlots` هي ما يُعلنه الملعب، وتاريخُ
+      الإغلاقات الماضية غير محفوظ في العميل (‏`sbGetClosures` تجلب اليوم وما
+      بعده) — فالتسمية تقول ما يُحسَب بالضبط بدل أن تدّعي دقّةً لا تملكها. */
+function ownerCapacity(all, scoped){
+  const fields=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
+  if(!fields.length) return null;
+  const w = ownerWindow(all);
+  const dates = windowDates(w);
+  if(dates.length < 7) return null;
+  const conf = scoped.filter(b => normStatus(b)==='confirmed' && String(b.date||'') >= w.from && String(b.date||'') <= w.to);
+  const peak = ownerPeakHours(conf);
+  const slots = { peak:0, off:0 };
+  dates.forEach(d=>{ fields.forEach(f=>{ fieldSlots(f).forEach(s=>{
+    if(peak && peak.has(s.hour)) slots.peak++; else slots.off++;
+  }); }); });
+  const sold = { peak:{n:0,rev:0}, off:{n:0,rev:0} };
+  conf.forEach(b=>{ const k = (peak && peak.has(Number(b.hour))) ? 'peak' : 'off';
+                    sold[k].n++; sold[k].rev += Number(b.price)||0; });
+  return { window:w, days:dates.length, peak, slots, sold,
+           all:{ slots: slots.peak+slots.off, n: sold.peak.n+sold.off.n, rev: sold.peak.rev+sold.off.rev } };
+}
+
+/* ═══ زمن الاستباق — كم يومًا قبل اللعب يحجز الناس ═══════════════════════
+   «متى أفتح التقويم» و«متى أخفّض لملء خانة الغد» سؤالان جوابهما هذا الرقم.
+   ⚠️ **والوسيط لا المتوسّط**: حجزٌ واحد قبل ستّة أشهر يسحب المتوسّط وحده.
+   ⚠️ **وحجوزات المالك اليدوية مستثناة**: يُدخلها بعد أن تقع، فزمن استباقها
+      يقيس متى فتح اللوحة لا متى قرّر اللاعب. */
+function ownerLeadDays(scoped){
+  const vals = scoped.filter(b => !isOwnerManual(b) && ['confirmed','pending'].includes(normStatus(b)))
+    .map(b=>{
+      const c = new Date(String(b.timestamp||'').replace(' ','T')).getTime();
+      const d = new Date(String(b.date||'')+'T12:00:00').getTime();
+      if(Number.isNaN(c) || Number.isNaN(d)) return null;
+      return Math.max(0, Math.round((d - c)/86400000));
+    }).filter(v => v !== null).sort((a,b)=>a-b);
+  if(vals.length < OWNER_MIN_N) return null;
+  const mid = Math.floor(vals.length/2);
+  const med = vals.length%2 ? vals[mid] : Math.round((vals[mid-1]+vals[mid])/2);
+  return { median: med, n: vals.length };
+}
+
+/* ═══ عملاء لا حجوزات ═════════════════════════════════════════════════════
+   «معدّل العودة ٪» رقمٌ وصفيّ؛ والقائمة هي القابلة للفعل. والعميل **رقم هاتف**
+   لا حسابًا مسجَّلًا (نفس تعريف `/admin`) — فحجزُ الواتساب الذي أدخله المالك
+   لنفس الرقم عميلٌ واحد لا اثنان.
+   🔒 ولا باب خصوصيةٍ جديد: المالك يرى `customer_phone` لحجوزات ملعبه أصلًا
+      عبر RLS، وهذا تجميعٌ لما يراه لا كشفٌ لما لا يراه. */
+function ownerCustomers(scoped){
+  const map = {};
+  scoped.filter(b => normStatus(b)==='confirmed').forEach(b=>{
+    const k = normalizePhone(b.phone||'') || String(b.player_id||'');
+    if(!k) return;
+    const c = (map[k] ||= { key:k, name:b.name||'', phone:b.phone||'', n:0, total:0, last:'' });
+    c.n++; c.total += Number(b.price)||0;
+    const d = String(b.date||'');
+    if(d > c.last){ c.last = d; if(b.name) c.name = b.name; if(b.phone) c.phone = b.phone; }
+  });
+  const list = Object.values(map);
+  const td = today(), cut = dateAfter(-21);
+  return {
+    list,
+    uniq: list.length,
+    back: list.filter(c=>c.n>1).length,
+    top: list.slice().sort((a,b)=> b.total-a.total || b.n-a.n).slice(0,10),
+    /* «انقطع» = عميلٌ **معتاد** (حجزان فأكثر) آخرُ لعبةٍ له مضت وتجاوزت ثلاثة
+       أسابيع. ومن حجز مرّةً واحدة ليس منقطعًا بل لم يصر عميلًا بعد. */
+    lapsed: list.filter(c => c.n>1 && c.last && c.last < cut && c.last <= td)
+                .sort((a,b)=> b.total-a.total).slice(0,10),
+  };
+}
+
+/* ═══ أثر سرعة الردّ ══════════════════════════════════════════════════════
+   الوسيط وحده يقول «كم»، ولا يقول «وماذا يترتّب». وهذا هو الترتّب: نسبة
+   التأكيد لمن رُدّ عليه بسرعة مقابل من انتظر.
+   ⚠️ **والانقضاء التلقائي خارج الحساب** (‏`cancel_kind='expired'`): المُشغِّل
+      في ترحيل 28 لا يكتب له `replied_at` أصلًا، وعدُّه ردًّا يجعل المُهمِل يبدو
+      أسرعَ كلّما أهمل. وكلا الدلوين يحتاج عتبته وإلّا لم يُعرَض شيء. */
+function ownerReplyEffect(scoped){
+  const fast=[], slow=[];
+  scoped.forEach(b=>{
+    if(!b.replied_at) return;
+    if(isExpiredBooking(b)) return;
+    const c = new Date(String(b.timestamp||'').replace(' ','T')).getTime();
+    const r = new Date(String(b.replied_at||'').replace(' ','T')).getTime();
+    if(Number.isNaN(c) || Number.isNaN(r) || r < c) return;
+    const mins = (r-c)/60000;
+    if(mins <= 10) fast.push(b); else if(mins > 60) slow.push(b);
+  });
+  if(fast.length < OWNER_MIN_N || slow.length < OWNER_MIN_N) return null;
+  const box = (arr) => { const ok = arr.filter(b=>normStatus(b)==='confirmed').length;
+                         return { n: arr.length, ok, rate: calcPercent(ok, arr.length) }; };
+  return { fast: box(fast), slow: box(slow) };
+}
+
+/* صفُّ «تسمية ⇠ قيمة» بمقامٍ اختياري تحته — المكوّن الوحيد لكل رقمٍ في
+   التقارير، فلا ينحرف شكلُ رقمٍ عن شكل جاره. */
+/* `Element.append(null)` يكتب النصّ «null» في الصفحة — والقيمة الغائبة هنا
+   شائعة (كل نسبةٍ تحت العتبة تعود `null`). فالإضافة تمرّ من هنا دائمًا. */
+const put = (box, el) => { if(el && box) box.append(el); };
+function statRow(label, value, hint, tone){
+  return h('div',{class:'srow'+(tone?' '+tone:'')},
+    h('div',{class:'srow-main'},
+      h('span',{class:'srow-lbl'}, label),
+      h('span',{class:'srow-val'}, value)),
+    hint ? h('div',{class:'srow-hint'}, hint) : null);
+}
+/* نسبةٌ **بمقامها دائمًا**، وتحت العتبة لا تُعرَض نسبةٌ إطلاقًا بل يُقال العدد
+   وسببُ الامتناع. هذه م5 حرفيًّا مطبَّقةً على النسب. */
+function pctRow(label, part, total, hint){
+  if(!total) return null;
+  if(total < OWNER_MIN_N)
+    return statRow(label, t('tooFewVal',{ n: total }), t('tooFewHint',{ min: OWNER_MIN_N }), 'is-thin');
+  return statRow(label, calcPercent(part,total)+'%', t('outOf',{ a: part, b: total }) + (hint ? ' · '+hint : ''));
+}
+
+/* ═══════════ لوحات التقارير ═══════════════════════════════════════════════ */
+
+/* ملاحظات تحت ملخّص الإيراد: ما يعنيه الرقم فعلًا. */
+function renderOwnerRevNotes(scoped){
+  const box=$('#repRevNotes'); if(!box) return; clear(box);
+  /* ⚠️ **التزامٌ لا نقد** — ولا بوّابة دفع في هذا المنتج (قرار المالك)، فما
+     يُعرَض وعدُ دفعٍ عند الملعب. وطباعةُ «إيراد» بلا هذا السطر تجعل المالك
+     يظنّ الرقم في جيبه، ثمّ يُفاجَأ بفرقٍ لا يعرف مصدره. */
+  box.append(h('div',{class:'rev-note'}, t('revCommitNote')));
+  const conf = scoped.filter(b=>normStatus(b)==='confirmed');
+  const ns = conf.filter(isNoShow);
+  if(ns.length){
+    box.append(h('div',{class:'rev-note is-warn'},
+      t('revUncollected', { n: ns.length, v: formatMoney(ns.reduce((s,b)=>s+(Number(b.price)||0),0)) })));
+  }
+  /* أثر المباريات المفتوحة — حجوزاتٌ ما كانت لتقع: لاعبٌ واحد لا يملأ ملعبًا.
+     ولا يُعرَض السطر بلا مباراةٍ واحدة (م5). */
+  const og = conf.filter(b=>b.visibility==='open');
+  if(og.length){
+    box.append(h('div',{class:'rev-note is-ok'},
+      t('revOpenGames', { n: og.length, v: formatMoney(og.reduce((s,b)=>s+(Number(b.price)||0),0)) })));
+  }
+}
+
+/* سرعة ردّك — الرقم الذي يقرؤه اللاعب فوق زرّ التأكيد، ومعه أثرُه. */
+function renderOwnerReply(scoped){
+  const card=$('#repReplyCard'), box=$('#repReplyBody'); if(!card||!box) return;
+  const rs = State.ownerData && State.ownerData.reply_speed;
+  if(!rs || !Number.isFinite(rs.median)){ card.hidden=true; clear(box); return; }
+  card.hidden=false; clear(box);
+  box.append(statRow(t('repReplyMedian'), replySpeedText(rs.median, State.lang),
+                     t('repReplyBasis', { n: nReplies(rs.n) })));
+  box.append(h('p',{class:'cap'}, t('repReplySeen')));
+  const eff = ownerReplyEffect(scoped);
+  if(eff){
+    box.append(statRow(t('repReplyFast'), eff.fast.rate+'%', t('outOf',{ a: eff.fast.ok, b: eff.fast.n })));
+    box.append(statRow(t('repReplySlow'), eff.slow.rate+'%', t('outOf',{ a: eff.slow.ok, b: eff.slow.n })));
+  }
+}
+
+/* «أين يتسرّب المال؟» — ثلاثة أرقام تُخلَط عادةً، وواحدٌ منها وحده فعلٌ لك.
+   🔴 **و«الإيراد الضائع» القديم حُذف**: كان (كلّ خانة فارغة × السعر)، فيحسب
+      خانة التاسعة صباحًا التي لن يحجزها أحد في أيّ كون. رقمٌ مخيف بلا فعل
+      يُدرِّب صاحبه على تجاهله — وهو نفس عيب الزرّ الذي يَعِد بما لا يقع.
+      محلُّه **ما طُلب فعلًا**: طلبٌ وصلك وانقضى بلا ردّ. */
+function renderOwnerLeak(scoped){
+  const box=$('#repLeak'); if(!box) return; clear(box);
+  const sum = (arr) => arr.reduce((s,b)=>s+(Number(b.price)||0),0);
+  const expired = scoped.filter(isExpiredBooking);
+  const rejected = scoped.filter(b => normStatus(b)==='rejected' && !isExpiredBooking(b));
+  const cancelled = scoped.filter(b => normStatus(b)==='cancelled');
+  /* ⚠️ **المنقضي ليس المرفوض** (ترحيل 15 يفرّقهما، واللوحة كانت تجمعهما في
+     «إلغاء/رفض ٪»): الرفض **قرارُك** والانقضاء **إهمالُك**، وجمعُهما يطمس
+     الفرق الوحيد الذي يستطيع صاحبه أن يفعل شيئًا حياله.
+     ⚠️ وصفُّ المنقضي لا يُعرَض إن كان العمود غائبًا أصلًا (ترحيل 15 معلَّق):
+        صفرٌ لا مصدر له يُقرأ «لا يحدث هذا عندي» وهو ادّعاء لا قياس. */
+  if(SB_BK_EXTRA || expired.length){
+    box.append(statRow(t('leakExpired'), formatMoney(sum(expired)),
+      t('leakExpiredHint', { n: nRequests(expired.length) }), expired.length ? 'is-bad' : ''));
+  }
+  box.append(statRow(t('leakRejected'), formatMoney(sum(rejected)), t('leakRejectedHint', { n: nRequests(rejected.length) })));
+  box.append(statRow(t('leakCancelled'), formatMoney(sum(cancelled)), t('leakCancelledHint', { n: nBookings(cancelled.length) })));
+  const ns = scoped.filter(b => normStatus(b)==='confirmed' && isNoShow(b));
+  if(ns.length) box.append(statRow(t('leakNoShow'), formatMoney(sum(ns)), t('leakNoShowHint', { n: nBookings(ns.length) })));
+  /* الطاقة الفارغة تبقى — **موسومةً سقفًا نظريًّا لا هدفًا**، ومقصورةً على
+     ساعات الذروة: تلك وحدها التي كان يمكن أن تُباع فعلًا. */
+  const cap = ownerCapacity(State.ownerData?.bookings||[], scoped);
+  if(cap && cap.peak && cap.slots.peak){
+    const empty = Math.max(cap.slots.peak - cap.sold.peak.n, 0);
+    const avg = cap.sold.peak.n ? (cap.sold.peak.rev / cap.sold.peak.n) : 0;
+    if(empty && avg > 0){
+      box.append(statRow(t('leakIdlePeak'), formatMoney(Math.round(empty*avg)),
+        t('leakIdlePeakHint', { n: empty, days: nDays(cap.days) })));
+      box.append(h('p',{class:'cap'}, t('leakIdleCeiling')));
+    }
+  }
+}
+
+/* الطلب المكبوت (ترحيل 32) — أثمنُ إشارةٍ في القاعدة، ولا يراها أحد. */
+function renderOwnerDemand(){
+  const card=$('#repDemandCard'), box=$('#repDemand'); if(!card||!box) return;
+  const d=State.ownerData;
+  const rows = (d && d.demand) || [];
+  if(!d || !d.demand_ok || !rows.length){ card.hidden=true; clear(box); return; }
+  card.hidden=false; clear(box);
+  const fieldName = (fid) => ((d.fields||[]).find(f=>String(f.field_id)===String(fid))||{}).field_name || '';
+  const td = today();
+  /* الصفوف القادمة أوّلًا: تلك وحدها ما زال يمكن فعلُ شيء حيالها اليوم
+     (تُفتح خانة · يُلغى إغلاق · يُضاف ملعب)، والماضية تصلح للتسعير لا للفعل. */
+  const soon = rows.filter(r => r.date >= td).sort((a,b)=> b.n-a.n || a.date.localeCompare(b.date) || a.hour-b.hour).slice(0,6);
+  if(soon.length){
+    box.append(h('div',{class:'dm-head'}, t('repDemandSoon')));
+    soon.forEach(r=> box.append(h('div',{class:'dm-row'},
+      h('span',{class:'dm-when'}, arabicDay(r.date)+' ', h('bdi',{dir:'ltr'}, hourTxt(r.hour))),
+      h('span',{class:'dm-where'}, h('bdi',{}, fieldName(r.field_id))),
+      h('span',{class:'dm-n'}, t('repDemandN', { n: nWaiting(r.n) })))));
+  }
+  /* وتجميعٌ بالساعة على النافذة كلّها — هذه هي التي تقود التسعير (18)
+     والإغلاق (17): أيّ ساعةٍ عليها طلبٌ يفوق ما تعرضه. */
+  const byHour={}; rows.forEach(r=> byHour[r.hour]=(byHour[r.hour]||0)+r.n);
+  const hrs=Object.keys(byHour).map(Number).sort((a,b)=> byHour[b]-byHour[a] || a-b).slice(0,4);
+  if(hrs.length){
+    box.append(h('div',{class:'dm-head'}, t('repDemandByHour')));
+    box.append(h('div',{class:'dm-hours'}, hrs.map(hr=>
+      h('span',{class:'dm-chip'}, h('bdi',{dir:'ltr'}, hourTxt(hr)), ' ', h('b',{}, String(byHour[hr]))))));
+  }
+}
+
+/* كفاءة الخانة + زمن الاستباق. */
+function renderOwnerCapacityCard(all, scoped){
+  const box=$('#repCap'); if(!box) return; clear(box);
+  const cap = ownerCapacity(all, scoped);
+  if(!cap){ box.append(h('p',{class:'cap'}, t('repCapNone'))); return; }
+  const per = (rev, slots) => slots ? formatMoney(Math.round((rev/slots)*100)/100) : '—';
+  if(cap.peak){
+    box.append(h('div',{class:'peak-line'}, t('repPeakIs'), ' ', hoursListEl(cap.peak)));
+    box.append(statRow(t('repRevpashPeak'), per(cap.sold.peak.rev, cap.slots.peak),
+      t('repRevpashHint', { n: cap.sold.peak.n, s: cap.slots.peak })));
+    box.append(statRow(t('repRevpashOff'), per(cap.sold.off.rev, cap.slots.off),
+      t('repRevpashHint', { n: cap.sold.off.n, s: cap.slots.off })));
+    put(box, pctRow(t('repOccPeak'), cap.sold.peak.n, cap.slots.peak));
+    put(box, pctRow(t('repOccOff'),  cap.sold.off.n,  cap.slots.off));
+  } else {
+    box.append(statRow(t('repRevpashAll'), per(cap.all.rev, cap.all.slots),
+      t('repRevpashHint', { n: cap.all.n, s: cap.all.slots })));
+    put(box, pctRow(t('occupancy'), cap.all.n, cap.all.slots));
+    box.append(h('p',{class:'cap'}, t('repPeakTooFew')));
+  }
+  box.append(h('p',{class:'cap'}, t('repCapBasis', { days: nDays(cap.days) })));
+  const lead = ownerLeadDays(scoped);
+  if(lead) box.append(statRow(t('repLead'), t('repLeadVal', { n: nDays(lead.median) }), t('repLeadHint', { n: nBookings(lead.n) })));
+}
+
+/* عملاء لا حجوزات. */
+function renderOwnerCustomersCard(scoped){
+  const box=$('#repCust'); if(!box) return; clear(box);
+  const c = ownerCustomers(scoped);
+  if(!c.uniq){ box.append(h('p',{class:'cap'}, t('repCustNone'))); return; }
+  box.append(statRow(t('repCustUniq'), String(c.uniq), t('repCustUniqHint')));
+  put(box, pctRow(t('returnRate'), c.back, c.uniq, t('repCustBackHint')));
+  if(c.top.length){
+    box.append(h('div',{class:'dm-head'}, t('repCustTop')));
+    box.append(h('div',{class:'cust-list'}, c.top.map(x=>
+      h('div',{class:'cust-row'},
+        h('span',{class:'cust-name'}, h('bdi',{}, x.name || x.phone || '—')),
+        h('span',{class:'cust-n'}, t('repCustTimes', { n: nTimes(x.n) })),
+        h('span',{class:'cust-val'}, formatMoney(x.total))))));
+  }
+  /* «منقطعون» — القائمة هي القابلة للفعل: رقمٌ تتصل به، لا نسبةٌ تقرؤها. */
+  if(c.lapsed.length){
+    box.append(h('div',{class:'dm-head'}, t('repCustLapsed')));
+    box.append(h('div',{class:'cust-list'}, c.lapsed.map(x=>
+      h('div',{class:'cust-row'},
+        h('span',{class:'cust-name'}, h('bdi',{}, x.name || x.phone || '—')),
+        h('span',{class:'cust-n'}, shortDate(x.last)),
+        x.phone ? h('a',{class:'cust-wa', href:'https://wa.me/'+String(x.phone).replace(/^0/,'962'), target:'_blank', rel:'noopener',
+                        'aria-label': t('actWhatsapp')}, ico('wa','svg-sm')) : null))));
+    box.append(h('p',{class:'cap'}, t('repCustLapsedHint')));
+  }
+}
+
+/* ═══ خريطة الامتلاء: ٧ أيام × ساعات ══════════════════════════════════════
+   الخليّة **عددُ حجوزاتٍ مؤكّدة** لا نسبة: تاريخُ الإغلاقات الماضية غير محفوظ
+   في العميل، ونسبةٌ مقامُها مجهول تكذب بثقة. والتمييز الذي يهمّ محفوظٌ مع ذلك:
+   ساعةٌ **لا يعرضها أيّ ملعب** تُرسَم شرطةً لا صفرًا — فيفرّق القارئ بين «لا
+   أبيع هذه الساعة» و«أبيعها ولا يشتريها أحد»، وهما قراران متعاكسان. */
+function renderOwnerHeat(scoped){
+  const box=$('#ownerHeat'); if(!box) return; clear(box);
+  const fields=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
+  const offered = new Set(fields.flatMap(f=>fieldSlots(f).map(s=>s.hour)));
+  const hours=[...offered].sort((a,b)=>a-b);
+  if(!hours.length){ box.append(h('p',{class:'cap'}, t('tlNoHoursSub'))); return; }
+  const w = ownerWindow(State.ownerData?.bookings||[]);
+  const cells={}; let max=0;
+  scoped.filter(b => normStatus(b)==='confirmed' && String(b.date||'') >= w.from && String(b.date||'') <= w.to)
+    .forEach(b=>{ const hr=Number(b.hour); if(!Number.isFinite(hr)) return;
+      const k = dowOf(b.date)+'@'+hr; cells[k]=(cells[k]||0)+1; if(cells[k]>max) max=cells[k]; });
+  const badge=$('#repHeatRange'); if(badge) badge.textContent = t('repHeatDays', { n: nDays(windowDates(w).length) });
+  if(!max){ box.append(h('p',{class:'cap'}, t('repHeatNone'))); return; }
+  const grid=h('div',{class:'heat-grid', style:{ gridTemplateColumns:`auto repeat(${hours.length}, minmax(30px,1fr))` }});
+  grid.append(h('div',{class:'heat-head heat-day'}, ''));
+  hours.forEach(hr=> grid.append(h('div',{class:'heat-head'}, h('bdi',{dir:'ltr'}, String(hr).padStart(2,'0')))));
+  for(let d=0; d<7; d++){
+    grid.append(h('div',{class:'heat-day'}, dowTightLabel(d)));
+    hours.forEach(hr=>{
+      const n = cells[d+'@'+hr] || 0;
+      const lvl = n===0 ? 0 : Math.min(4, Math.ceil((n/max)*4));
+      grid.append(h('div',{ class:'heat-cell l'+lvl,
+        title: `${dowTightLabel(d)} ${hourTxt(hr)} — ${n}`,
+        'aria-hidden':'true' }, n ? String(n) : ''));
+    });
+  }
+  box.append(h('div',{class:'heat-wrap'}, grid));
+  box.append(h('div',{class:'heat-legend'},
+    h('span',{}, t('repHeatLow')),
+    h('i',{class:'heat-key l1'}), h('i',{class:'heat-key l2'}), h('i',{class:'heat-key l3'}), h('i',{class:'heat-key l4'}),
+    h('span',{}, t('repHeatHigh', { n: max }))));
+  /* والاسم المنطوق يُبنى من نفس الأرقام المرسومة: شبكةٌ من ٧×ن خليّة لا تُقرأ
+     خليّةً خليّة، والأعلى وحده هو الخبر. */
+  let topK='', topV=0;
+  Object.keys(cells).forEach(k=>{ if(cells[k]>topV){ topV=cells[k]; topK=k; } });
+  if(topK){
+    const [dd,hh]=topK.split('@');
+    box.append(h('p',{class:'cap'}, t('repHeatAria', { day: dowTightLabel(Number(dd)), hr: hourTxt(Number(hh)), n: nBookings(topV) })));
+  }
+}
+/* تسمية اليوم القصيرة — نفس مصفوفة الرسوم، والإنجليزية من Intl.
+   ⚠️ و`weekday:'short'` بالعربية ليست مختصرة (يردّ «الخميس» كاملة) — والمزلق
+      مسجَّل، فالمصفوفة مكتوبة لا مقصوصة من مخرَج Intl. */
+function dowTightLabel(d){
+  if(State.lang==='en'){
+    try{ return new Intl.DateTimeFormat('en-GB',{weekday:'short'}).format(new Date(Date.UTC(2024,0,7+d,12))); }catch(_){}
+  }
+  return AR_DOW_TIGHT[d] || '';
+}
+
+/* ═══ تصدير CSV ═══════════════════════════════════════════════════════════
+   ⚠️ **ولا يُدّعى ما لا يقع.** `<a download>` لا يفعل شيئًا في WebView أندرويد
+      (لا مستمعَ تنزيل مسجَّلًا)، وWeb Share غير مطبَّقة فيه أصلًا — فزرٌّ يقول
+      «نزّل» ثمّ لا ينزل شيء هو بالضبط ما تمنعه م5. فالمسار يُختار **بحسب أين
+      نعمل**: مشاركةٌ إن وُجدت، وإلّا نسخٌ إلى الحافظة على الجهاز (والرسالة
+      تقول «نسخنا» لا «نزّلنا»)، وتنزيلٌ حقيقي في المتصفّح.
+   ⚠️ و`﻿` في أوّل الملفّ: بدونه يقرأ إكسل كلَّ اسمٍ عربي محرفاتٍ مشوّهة —
+      نفس ما فُعل في تصدير `/admin`. */
+/* ⚠️ **بلا تعبيرٍ نمطيّ فيه علامة اقتباس.** `/[",\n]/` تبدو بريئة، وقد أعمت
+   `check-globals` عن **كلّ تعريفٍ بعدها في الشجرة كلّها**: الحارس يتخطّى
+   النصوص ولا يعرف التعابير النمطية، فقرأ `"` بدايةَ نصٍّ وابتلع ما بعده ⇒
+   ثمانية عشر بلاغًا كاذبًا عن أسماء معرَّفة فعلًا (وبلاغٌ كاذب واحد يكفي
+   ليُعطَّل الحارس كلُّه — درسٌ مسجَّل). والبديل أوضح على أي حال. */
+const CSV_SPECIAL = ['"', ',', ';', '\n', '\r'];
+const csvCell = (v) => {
+  const s = String(v==null ? '' : v);
+  const need = CSV_SPECIAL.some(ch => s.indexOf(ch) >= 0);
+  return need ? '"' + s.split('"').join('""') + '"' : s;
+};
+const csvRows = (rows) => rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
+
+function ownerBookingsCsv(scoped){
+  const head=[t('csvDate'),t('csvHour'),t('csvField'),t('csvName'),t('csvPhone'),t('csvStatus'),t('csvPrice'),t('csvSource'),t('csvCreated')];
+  const body=scoped.slice().sort((a,b)=> String(b.date||'').localeCompare(String(a.date||'')) || Number(b.hour)-Number(a.hour))
+    .map(b=>[ b.date||'', b.time||hourTxt(Number(b.hour)||0), b.field_name||'', b.name||'', b.phone||'',
+              isExpiredBooking(b) ? t('csvExpired') : statusLabel(normStatus(b)).t,
+              Number(b.price)||0, b.source||'direct', String(b.timestamp||'').replace('T',' ').slice(0,16) ]);
+  return csvRows([head, ...body]);
+}
+function ownerCustomersCsv(scoped){
+  const c=ownerCustomers(scoped);
+  const head=[t('csvName'),t('csvPhone'),t('csvTimes'),t('csvTotal'),t('csvLast')];
+  return csvRows([head, ...c.list.slice().sort((a,b)=>b.total-a.total)
+    .map(x=>[x.name||'', x.phone||'', x.n, Math.round(x.total*100)/100, x.last||''])]);
+}
+/* يُرجع ما **حدث فعلًا** لا ما نتمنّاه: 'share' · 'download' · 'copy' · 'abort' · 'fail' */
+async function deliverText(filename, text){
+  const native = document.body.classList.contains('native');
+  const blob = new Blob(['﻿'+text], { type:'text/csv;charset=utf-8' });
+  try{
+    if(navigator.canShare && navigator.share && typeof File === 'function'){
+      const f = new File([blob], filename, { type:'text/csv' });
+      if(navigator.canShare({ files:[f] })){ await navigator.share({ files:[f], title:filename }); return 'share'; }
+    }
+  }catch(e){ if(e && e.name==='AbortError') return 'abort'; }
+  if(!native){
+    try{
+      const url=URL.createObjectURL(blob);
+      const a=h('a',{ href:url, download:filename });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(()=>{ try{ URL.revokeObjectURL(url); }catch(_){} }, 4000);
+      return 'download';
+    }catch(_){}
+  }
+  try{ await navigator.clipboard.writeText(text); return 'copy'; }catch(_){}
+  return 'fail';
+}
+async function ownerExportCsv(btn){
+  const d=State.ownerData; if(!d) return;
+  const kind=(btn && btn.dataset.csv) || 'bookings';
+  const scoped=reportScoped(d.bookings||[]);
+  if(!scoped.length){ toast(t('csvEmpty'),'error'); return; }
+  const stamp=today();
+  const name=(kind==='customers'?'customers-':'bookings-')+stamp+'.csv';
+  const text=kind==='customers' ? ownerCustomersCsv(scoped) : ownerBookingsCsv(scoped);
+  await withLoading(btn, async()=>{
+    const how=await deliverText(name, text);
+    if(how==='abort') return;
+    if(how==='fail'){ toast(t('csvFail'),'error'); return; }
+    toast(t(how==='copy' ? 'csvCopied' : how==='share' ? 'csvShared' : 'csvSaved'),'success');
+  });
+}
+
+/* «٣ طلبات» — رقمٌ حيّ يسبق معدودًا ⇒ يمرّ بـ`countNoun`، وإلّا خرجت
+   «1 طلبات» و«11 طلبات». نفس نمط `nSeats` و`nPlaces` بالحرف. */
+const nRequests = (n) => (State.lang==='en')
+  ? (n===1 ? '1 request' : `${n} requests`)
+  : countNoun(n, 'طلب واحد', 'طلبان', 'طلبات', 'طلبًا');
+const nBookings = (n) => (State.lang==='en')
+  ? (n===1 ? '1 booking' : `${n} bookings`)
+  : countNoun(n, 'حجز واحد', 'حجزان', 'حجوزات', 'حجزًا');
+/* الصفر له صيغته: «نفس اليوم» أوضح من «٠ أيام» — وهي الحالة الشائعة فعلًا
+   في زمن الاستباق (من يحجز لليلته). */
+const nDays = (n) => (State.lang==='en')
+  ? (n===0 ? 'same day' : n===1 ? '1 day' : `${n} days`)
+  : (n===0 ? 'نفس اليوم' : countNoun(n, 'يوم واحد', 'يومان', 'أيام', 'يومًا'));
+const nReplies = (n) => (State.lang==='en')
+  ? (n===1 ? '1 reply' : `${n} replies`)
+  : countNoun(n, 'ردّ واحد', 'ردّان', 'ردود', 'ردًّا');
+const nTimes = (n) => (State.lang==='en')
+  ? (n===1 ? 'once' : n===2 ? 'twice' : `${n}×`)
+  : countNoun(n, 'مرّة واحدة', 'مرّتان', 'مرّات', 'مرّة');
+const nWaiting = (n) => (State.lang==='en')
+  ? (n===1 ? '1 waiting' : `${n} waiting`)
+  : countNoun(n, 'لاعب واحد مستنّي', 'لاعبان مستنّيان', 'لاعبين مستنّين', 'لاعبًا مستنّيًا');
+
+/* ═══ ورقة القرار ═════════════════════════════════════════════════════════
+   كلُّ ما يحتاجه القرار في مكانٍ واحد أسفل الشاشة: الحقائق، ثمّ فعلٌ مملوء
+   وفعلٌ هادئ. ولا تُعيد كتابة البطاقة: تعرض ما **يُقرَّر عليه** لا ما يُتصفَّح.
+   ⚠️ و«رفض» يمرّ بسببٍ إلزامي كما كان (‏`askReason(…, true)`) — والسبب يفيد
+      مرّتين: يصل اللاعب في رسالة الواتساب، ويبقى في `cancel_reason` بيانًا
+      يُحلَّل لاحقًا («ليش برفض؟» سؤالٌ لا جواب له اليوم رغم أنّ العمود موجود). */
+function openDecideSheet(b){
+  const sub=$('#dcSub'), body=$('#dcBody'), acts=$('#dcActions');
+  if(!body || !acts) return;
+  const dl=replyDeadlineChip(b), age=bookingAge(b);
+  if(sub) sub.textContent = [age && age.label, dl && dl.label].filter(Boolean).join(' · ');
+  clear(body); clear(acts);
+  const row=(icon, val)=>h('div',{class:'dc-fact'}, ico(icon,'svg-sm'), h('bdi',{}, String(val==null?'-':val)));
+  body.append(h('div',{class:'dc-facts'},
+    row('cal', (b.date||'') + ' · ' + (b.time||'')),
+    row('resize', b.field_name||''),
+    row('person', b.name||'-'),
+    row('phone', b.phone||'-'),
+    row('money', formatCurrency(b.price||0))));
+  /* المباراة المفتوحة تُقال **قبل** القبول لا بعده: العدد يغيّر القرار نفسه
+     (كم إنسانًا يدخل الملعب)، ومعلومةٌ تغيّر قرارًا مكانها قبله. */
+  if(b.visibility === 'open'){
+    body.append(h('div',{class:'own-open'},
+      h('span',{class:'own-open-badge pending'}, t('gmBadgeWaiting'), ' · ', t('gmOwnerUpTo',{ n: Number(b.needed||0) })),
+      h('span',{class:'own-open-note'}, t('gmOwnerNote'))));
+  }
+  const ok=h('button',{class:'sbtn'}, t('actApprove'));
+  ok.addEventListener('click', ()=>decideBooking(ok, b, 'confirmed'));
+  const phone=normalizePhone(b.phone||'');
+  const wa = phone ? h('a',{ class:'cbtn dc-wa', href:'https://wa.me/'+phone, target:'_blank', rel:'noopener' },
+                        ico('wa','svg-sm'), ' '+t('actWhatsapp')) : null;
+  /* «رفض» زرٌّ نصّي بلا تعبئة: أهدأُ من القبول عمدًا، وهدفُ لمسه كامل. */
+  const no=h('button',{class:'dc-decline'}, t('actDecline'));
+  no.addEventListener('click', ()=>decideBooking(no, b, 'rejected'));
+  acts.append(ok); if(wa) acts.append(wa); acts.append(no);
+  Modal.open('modal-decide');
+}
+/* ⚠️ **تُغلَق الورقة أوّلًا** ثمّ يقع الفعل: `Modal.open` ينادي `closeAll`،
+   فنافذة السبب كانت ستُخفي الورقة على أي حال — وإغلاقُها صراحةً يجعل مسار
+   الرجوع (Escape · سحب · نقر خارجها) متّسقًا مع مسار الفعل. */
+async function decideBooking(btn, b, status){
+  Modal.close('modal-decide', true);
+  await updateBookingStatus(btn, b.row_number, status, { skipConfirm:true });
 }
 
 /* ===================== OWNER · AI (مستشار الأعمال · التقييمات · الطقس) =====================

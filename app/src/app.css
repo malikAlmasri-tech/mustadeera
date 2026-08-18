@@ -2420,7 +2420,7 @@ html[dir="ltr"] .own-more-menu{ transform-origin:0 0 }
   border:1.5px solid var(--line-2); border-radius:16px; background:var(--surface) }
 .tl-grid{ display:grid; min-inline-size:max-content }
 .tl-cell,.tl-head,.tl-name{ padding:7px 6px; font-size:0.78125rem; font-weight:700; text-align:center;
-  border-block-end:1px solid var(--line-1) }
+  border-block-end:1px solid var(--line) }
 .tl-head{ position:sticky; inset-block-start:0; z-index:2; background:var(--surface);
   color:var(--muted); font-variant-numeric:tabular-nums }
 .tl-name{ position:sticky; inset-inline-start:0; z-index:3; background:var(--surface);
@@ -2440,8 +2440,8 @@ html[dir="rtl"] .tl-name{ box-shadow:-1px 0 0 var(--line-2) }
 .tl-pending{ border-color:var(--warning-ink); color:var(--warning-ink); background:var(--warning-soft) }
 .tl-confirmed{ border-color:var(--mint-electric); color:var(--mint-electric); background:var(--mint-soft) }
 .tl-closed{ border-color:var(--line-2); color:var(--muted); cursor:default;
-  background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line-1) 5px 6px) }
-.tl-past{ opacity:1; border-style:dotted; border-color:var(--line-1); color:var(--soft) }
+  background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line) 5px 6px) }
+.tl-past{ opacity:1; border-style:dotted; border-color:var(--line); color:var(--soft) }
 .tl-legend{ display:flex; flex-wrap:wrap; gap:10px; margin-block-start:10px;
   font-size:0.78125rem; font-weight:700; color:var(--muted) }
 .tl-legend span{ display:inline-flex; align-items:center; gap:5px }
@@ -2498,7 +2498,7 @@ html[dir="rtl"] .tl-name{ box-shadow:-1px 0 0 var(--line-2) }
 .stepper-b{ inline-size:var(--tap-min); min-block-size:var(--tap-min); flex:none;
   font-size:1.3125rem; font-weight:800; line-height:1; color:var(--ink);
   background:var(--surface-muted); transition:background var(--t-fast) }
-.stepper-b:hover{ background:var(--line-1) }
+.stepper-b:hover{ background:var(--line) }
 .stepper-b:active{ transform:scale(.94) }
 .stepper-i.finput{ flex:1 1 0; min-inline-size:0; text-align:center;
   border:0; border-radius:0; background:transparent; margin:0;
@@ -2509,7 +2509,7 @@ html[dir="rtl"] .tl-name{ box-shadow:-1px 0 0 var(--line-2) }
 .stepper-i[type=number]{ -moz-appearance:textfield; appearance:textfield }
 
 /* ⑤ شريط الاكتمال — مكوّن واحد في ثلاثة مواضع (مراجعة · بطاقة · انضمام) */
-.seat-bar{ block-size:5px; border-radius:999px; background:var(--line-1);
+.seat-bar{ block-size:5px; border-radius:999px; background:var(--line);
   overflow:hidden; margin-block-start:9px }
 .seat-bar-fill{ display:block; block-size:100%; inline-size:0; border-radius:999px;
   background:var(--copper-primary); transition:inline-size 260ms var(--ease-out) }
@@ -2633,3 +2633,260 @@ body.dark .cal-cell.sel, body.dark .field-switch.on{
 /* شريحةٌ واحدة ⇒ النقاط تُخفى ويبقى صندوقها: الذيل شبكة `1fr auto 1fr`،
    وحذفُ العمود الأوسط يُخرج الزرّ عن مساره (درس الدفعة ٢٩). */
 .obs-dots.is-off{visibility:hidden}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── 33) لوحة المالك: الفعل أوّلًا، والرقم بمقارنته ──
+
+   القسم مالكُ كل ما أُضيف في هذه الدفعة، ولا يُعدَّل شيءٌ منه فوقه (نفس ما
+   فُعل بحركة البطاقة وبحالة «مختار»: ملكيّةٌ واحدة لا تصريحاتٌ متناثرة).
+   ⚠️ ولا لون هويّة جديدًا: كلُّ نبرةٍ هنا من `--act-bg` أو من الثلاثي الدلالي
+      (‏`--ok-ink` · `--warning-ink` · `--danger-ink`) — وهي مقيسةٌ أصلًا.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① شريط الفعل — لاصقٌ، ويُخفى تمامًا عند الصفر (‏`hidden` من JS).
+   ⚠️ `top:0` كـ`.home-sticky` بالضبط: المتمرِّر هو المستند لا `#app`. */
+.ot-alert-wrap{ position:sticky; inset-block-start:0; z-index:40;
+  padding-block:8px; margin-block-end:12px; background:var(--bg) }
+.ot-alert-wrap[hidden]{ display:none }
+.ot-alert{ inline-size:100%; min-block-size:var(--tap); display:flex; align-items:center;
+  justify-content:space-between; gap:10px; padding:12px 14px; border-radius:14px;
+  background:var(--warning-soft); border:1.5px solid var(--warning);
+  color:var(--warning-ink); font-size:0.9375rem; font-weight:800; text-align:start }
+.ot-alert:active{ transform:scale(.985) }
+.ot-alert-cta{ flex-shrink:0; font-weight:800; text-decoration:underline;
+  text-underline-offset:3px }
+
+/* ② «القادم الآن» — سطرٌ واحد يجيب سؤال الواقف عند البوّابة. */
+.ot-next{ background:var(--surface-solid); border:1.5px solid var(--line-2);
+  border-radius:16px; padding:12px 14px; margin-block-end:12px;
+  box-shadow:var(--shadow-card) }
+.ot-next.is-live{ border-color:var(--act-bg) }
+.ot-next-top{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+.ot-next-when{ font-size:1.0625rem; font-weight:800; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:var(--tr-tight) }
+.ot-next.is-live .ot-next-when{ color:var(--act-bg) }
+.ot-next-who{ display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+  margin-block-start:5px; font-size:0.84375rem; font-weight:700; color:var(--muted) }
+.ot-next-dot{ color:var(--soft) }
+.ot-next-call{ display:inline-flex; align-items:center; gap:6px; min-block-size:var(--tap-min);
+  margin-block-start:6px; font-size:0.84375rem; font-weight:800; color:var(--act-bg) }
+
+/* ③ البطل + الشريط المضغوط. */
+.ot-hero{ margin-block-end:12px }
+.ot-hero-lbl{ font-size:0.84375rem; font-weight:800; color:var(--muted) }
+.ot-hero-val{ font-size:2.125rem; font-weight:800; color:var(--ink); line-height:1.15;
+  margin-block-start:4px; font-variant-numeric:tabular-nums; letter-spacing:var(--tr-tighter) }
+.ot-hero-note{ margin-block-start:8px; font-size:0.78125rem; font-weight:700; color:var(--muted) }
+.ot-mini{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-block-end:16px }
+.ot-mini-cell{ display:flex; flex-direction:column; align-items:center; gap:2px;
+  min-block-size:var(--tap); padding:10px 6px; border-radius:14px;
+  background:var(--surface-soft); border:1.5px solid var(--line); text-align:center }
+.ot-mini-val{ font-size:1.1875rem; font-weight:800; color:var(--ink);
+  font-variant-numeric:tabular-nums }
+.ot-mini-lbl{ font-size:0.6875rem; font-weight:700; color:var(--muted); line-height:1.35 }
+/* «بانتظار ردّك» **زرٌّ لا عرض** — ويشتدّ حين يكون فيه ما يُفعَل. */
+.ot-mini-cell.is-act{ cursor:pointer }
+.ot-mini-cell.is-hot{ background:var(--warning-soft); border-color:var(--warning) }
+.ot-mini-cell.is-hot .ot-mini-val,.ot-mini-cell.is-hot .ot-mini-lbl{ color:var(--warning-ink) }
+.ot-mini-cell.is-act:active{ transform:scale(.985) }
+
+/* ④ سطر المقارنة — رمادي تحت الرقم، والفرق نبرةٌ لا صرخة. */
+.cmp-line{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px;
+  margin-block-start:6px; font-size:0.78125rem; font-weight:700; color:var(--muted) }
+.cmp-delta{ font-weight:800 }
+.cmp-delta.is-up{ color:var(--ok-ink) }
+.cmp-delta.is-down{ color:var(--warning-ink) }
+
+/* ⑤ صفُّ الرقم — مكوّنٌ واحد لكل رقمٍ في التقارير فلا ينحرف شكلُ رقمٍ عن جاره. */
+.srow{ padding-block:9px; border-block-end:1px solid var(--line) }
+.srow:last-child{ border-block-end:0 }
+.srow-main{ display:flex; align-items:baseline; justify-content:space-between; gap:12px }
+.srow-lbl{ font-size:0.84375rem; font-weight:700; color:var(--ink-2) }
+.srow-val{ font-size:1rem; font-weight:800; color:var(--ink);
+  font-variant-numeric:tabular-nums; white-space:nowrap }
+.srow-hint{ margin-block-start:2px; font-size:0.6875rem; font-weight:600; color:var(--muted) }
+.srow.is-thin .srow-val{ color:var(--muted) }
+.srow.is-bad .srow-val{ color:var(--danger-ink) }
+
+/* ⑥ ملاحظات الإيراد. */
+.rev-note{ margin-block-start:10px; padding:9px 11px; border-radius:12px;
+  background:var(--surface-soft); border:1px solid var(--line);
+  font-size:0.78125rem; font-weight:700; color:var(--muted); line-height:1.6 }
+.rev-note.is-warn{ background:var(--warning-soft); border-color:var(--warning); color:var(--warning-ink) }
+.rev-note.is-ok{ background:var(--mint-soft); border-color:var(--mint-electric); color:var(--ok-ink) }
+
+/* ⑦ الطلب المكبوت. */
+.dm-head{ margin-block:12px 6px; font-size:0.78125rem; font-weight:800; color:var(--muted) }
+.dm-row{ display:flex; align-items:center; gap:8px; padding-block:8px;
+  border-block-end:1px solid var(--line); font-size:0.84375rem; font-weight:700 }
+.dm-row:last-child{ border-block-end:0 }
+.dm-when{ color:var(--ink); font-weight:800; white-space:nowrap }
+.dm-where{ flex:1; min-inline-size:0; color:var(--muted);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.dm-n{ flex-shrink:0; padding:3px 9px; border-radius:999px;
+  background:color-mix(in srgb, var(--act-bg) 14%, transparent);
+  color:var(--act-bg); font-weight:800; font-size:0.6875rem }
+.dm-hours{ display:flex; flex-wrap:wrap; gap:7px }
+.dm-chip{ display:inline-flex; align-items:center; gap:5px; padding:5px 10px;
+  border-radius:999px; border:1.5px solid var(--line-2); color:var(--ink-2);
+  font-size:0.78125rem; font-weight:700; font-variant-numeric:tabular-nums }
+
+/* ⑧ كفاءة الخانة. */
+.peak-line{ margin-block-end:8px; font-size:0.84375rem; font-weight:800; color:var(--ink) }
+
+/* ⑨ العملاء — والاسم هو الذي يتقلّص، لا الرقم. */
+.cust-list{ display:flex; flex-direction:column }
+.cust-row{ display:flex; align-items:center; gap:10px; padding-block:8px;
+  border-block-end:1px solid var(--line); font-size:0.84375rem; font-weight:700 }
+.cust-row:last-child{ border-block-end:0 }
+.cust-name{ flex:1; min-inline-size:0; color:var(--ink);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.cust-n{ flex-shrink:0; color:var(--muted); font-variant-numeric:tabular-nums }
+.cust-val{ flex-shrink:0; color:var(--ink); font-weight:800; font-variant-numeric:tabular-nums }
+.cust-wa{ flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+  min-inline-size:var(--tap-min); min-block-size:var(--tap-min); color:var(--ok-ink) }
+
+/* ⑩ خريطة الامتلاء — الشبكة تُمرَّر أفقيًّا وعمودُ اليوم مثبَّت، كالمخطّط. */
+.heat-wrap{ overflow-x:auto; overscroll-behavior-x:contain;
+  border:1.5px solid var(--line-2); border-radius:14px; background:var(--surface) }
+.heat-grid{ display:grid; min-inline-size:max-content }
+.heat-head,.heat-day,.heat-cell{ padding:5px 4px; font-size:0.6875rem; font-weight:800;
+  text-align:center; font-variant-numeric:tabular-nums }
+.heat-head{ color:var(--muted) }
+.heat-day{ position:sticky; inset-inline-start:0; z-index:2; background:var(--surface);
+  color:var(--ink); text-align:start; min-inline-size:52px;
+  box-shadow:1px 0 0 var(--line-2) }
+html[dir="rtl"] .heat-day{ box-shadow:-1px 0 0 var(--line-2) }
+/* ⚠️ **خمس درجات بلون واحد** لا خمسة ألوان: التدرّج يُقرأ كميّةً، والألوان
+   المختلفة تُقرأ أصنافًا. و`l0` سطحٌ لا فراغ كي تبقى الشبكة مقروءة. */
+.heat-cell{ margin:1px; border-radius:6px; min-block-size:26px; color:transparent }
+.heat-cell.l0{ background:var(--surface-muted) }
+.heat-cell.l1{ background:color-mix(in srgb, var(--act-bg) 16%, transparent) }
+.heat-cell.l2{ background:color-mix(in srgb, var(--act-bg) 34%, transparent) }
+.heat-cell.l3{ background:color-mix(in srgb, var(--act-bg) 58%, transparent) }
+/* 🔴 **الرقم على الدرجة الرابعة وحدها.** كتبتُ `color:var(--ink)` على الثالثة
+   فقاست **2.94:1** نهاريًّا (مقيسة بتركيب الشفّافية لا بقراءة أقرب خلفية):
+   خلفيةُ الخليّة مزيجٌ متوسّط، فلا الحبر الداكن يظهر عليها ولا الفاتح. وعلى
+   الرابعة الطرفان مملوكان لنا (‏`--act-ink` على `--act-bg`) فتقيس 9.76 نهاري
+   و7.23 ليلي. والأرقام ليست المعلومة على أي حال: اللون هو الكميّة، والعدد
+   الدقيق في `title` وفي سطر الملخّص تحت الشبكة. */
+.heat-cell.l4{ background:var(--act-bg); color:var(--act-ink) }
+.heat-legend{ display:flex; align-items:center; gap:6px; margin-block-start:9px;
+  font-size:0.6875rem; font-weight:700; color:var(--muted) }
+.heat-key{ inline-size:14px; block-size:14px; border-radius:4px }
+.heat-key.l1{ background:color-mix(in srgb, var(--act-bg) 16%, transparent) }
+.heat-key.l2{ background:color-mix(in srgb, var(--act-bg) 34%, transparent) }
+.heat-key.l3{ background:color-mix(in srgb, var(--act-bg) 58%, transparent) }
+.heat-key.l4{ background:var(--act-bg) }
+
+/* ⑪ المخطّط بعد قلبه: العمود الأوّل صار ساعةً (أضيقُ من اسم ملعب)، وأسماء
+   الملاعب صعدت إلى صفّ الرأس فتحتاج قصًّا لا عرضًا ثابتًا. */
+.tl-name.tl-hour{ min-inline-size:56px; max-inline-size:64px; text-align:center;
+  font-variant-numeric:tabular-nums }
+.tl-fname{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  max-inline-size:110px; color:var(--ink) }
+
+/* ⑫ ورقة القرار — قبولٌ مملوء، ورفضٌ هادئ. والفجوة هي ما يصنع الرتبة. */
+.dc-facts{ display:grid; gap:8px; margin-block-end:14px }
+.dc-fact{ display:flex; align-items:center; gap:8px;
+  font-size:0.9375rem; font-weight:700; color:var(--ink) }
+#dcActions{ display:flex; flex-direction:column; gap:10px; margin-block-end:12px }
+.dc-wa{ margin:0 }
+/* ⚠️ `min-block-size` لا `height`: النصّ ينمو بتكبير خطّ النظام والصندوق يتبعه. */
+.dc-decline{ min-block-size:var(--tap); margin-block-start:2px; background:transparent;
+  color:var(--danger-ink); font-size:0.9375rem; font-weight:700;
+  text-decoration:underline; text-underline-offset:4px }
+.dc-decline:active{ transform:scale(.985) }
+/* زرّ فتح الورقة يرث شكل «قبول» القديم بعرضٍ كامل — الوزن نفسه، والوجهة تغيّرت. */
+.owner-decide-open{ inline-size:100% }
+
+/* شارةُ «مباريات» الحيّة — عددٌ مقروءٌ من `open_games`، وتُخفى عند الصفر (م5).
+   ⚠️ و`min-block-size` لا `height`: الرقم ينمو بتكبير خطّ النظام والصندوق يتبعه.
+   ⚠️ ولونُها لهجةُ الفعل لا تعبئةٌ صاخبة: المبدّل نطاقٌ لا إجراء، والمملوء
+      الوحيد في الشاشة يبقى زرّ «احجز» (‏§31). */
+/* 🔴 **حذفٌ بـregex ترك محدِّرًا معلّقًا فابتلع القاعدة التي تليه.**
+   النمط طابق **داخل** `.mode-btn.active .mode-badge{…}` فحُذف جسمُها وبقي
+   المحدِّر عاريًا، فالتقط أوّل كتلةٍ بعده — وهي `.bento{…}` ⇒ صارت الشبكة
+   مشروطةً بزرٍّ محذوف، فانهارت إلى عمود واحد. **والبناء نجح والحرّاس مرّت**،
+   ولم يفضحه إلّا النظر إلى اللقطة. ونفس درس «لا تقتطع وسمًا بـregex من ملفٍّ
+   مُصغَّر السطور» مطبَّقًا على CSS: القصّ يقع بمطابقة **الكتلة كاملةً
+   بمحدِّرها**، أو بيدٍ بعد النظر. */
+/* ══════════════════════════════════════════════════════════════════════════
+   ── 34) شبكة Bento — شاشة الدخول ──
+
+   شبكة CSS خالصة بلا مكتبة، والرتبة تُقرأ من **الحجم** لا من اللون وحده:
+   البطل بعمودين، والمباريات بعمود، والقادمة أقصر.
+   ⚠️ ولا `backdrop-filter` ولا ظلٌّ ملوَّن: أُزيلت من الأسطح المعتمة في §13
+      و§9 لأن كل طبقة دمجٍ تُحسَب على الـGPU لكل بطاقة — والبطاقات هنا خمس.
+   ⚠️ **والمملوء الوحيد هو الفعل** (‏§31): البطل وحده يحمل لون الفعل، والبقيّة
+      أسطحٌ محايدة بحدّ. ولون الهوية لا يُستعمل نصًّا على سطحٍ فاتح (مزلق مقيس).
+   ══════════════════════════════════════════════════════════════════════════ */
+.bento{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-block-start:4px }
+.bento-card{ position:relative; overflow:hidden; display:flex; flex-direction:column;
+  align-items:flex-start; gap:6px; min-block-size:var(--tap); padding:16px;
+  border-radius:var(--r-xl); border:1.5px solid var(--line-2);
+  background:var(--surface-solid); color:var(--ink); text-align:start;
+  box-shadow:var(--shadow-card); transition:transform var(--t-fast) var(--ease-out) }
+.bento-card:active{ transform:scale(.985) }
+.bt-ttl{ font-size:0.9375rem; font-weight:700; color:inherit; line-height:1.35 }
+/* ⚠️ **بلا `opacity`**: هي تُركّب النصّ **وخلفيته معًا** نحو الأب فتهدم النسبة
+   ولا تضربها (مزلق مقيس: 2.45 ⇒ 1.63 في موضعٍ سابق)، وأسوأ من ذلك أنّ
+   `getComputedStyle(el).color` لا يراها ⇒ **القياس نفسه يكذب**. اللون كامل،
+   والتراتب من الحجم والوزن. */
+.bt-sub{ font-size:0.84375rem; font-weight:600 }
+.bt-note{ font-size:0.78125rem; font-weight:700; color:var(--muted) }
+.bt-ic{ display:inline-flex; margin-block-end:2px; color:var(--act-bg) }
+.bt-ic svg{ inline-size:26px; block-size:26px }
+
+/* ① البطل — عمودان، ولون الفعل، والرسم خلفه لا فوقه. */
+.bt-hero{ grid-column:1 / -1; flex-direction:row; align-items:center; gap:12px;
+  min-block-size:112px; background:var(--act-bg); color:var(--act-ink); border-color:transparent }
+.bt-hero .bt-body{ display:flex; flex-direction:column; gap:3px; flex:1; min-inline-size:0 }
+.bt-hero .bt-ttl{ font-size:1.375rem; font-weight:800; letter-spacing:var(--tr-tight) }
+/* السهم فيزيائي، والاتّجاه منطقي ⇒ يُقلب بالاتّجاه لا يُكتب مرّتين — نفس
+   معالجة `.own-entry-arw` بالحرف. */
+.bt-arw{ display:inline-flex; flex-shrink:0 }
+html[dir="rtl"] .bt-arw{ transform:scaleX(-1) }
+.bt-arw svg{ inline-size:22px; block-size:22px }
+/* رسمُ الملعب علامةٌ خافتة خلف النصّ — زخرفة لا معلومة، فلا تُقرأ ولا تُنطق. */
+/* 🔴 و`fill:none;stroke` مكتوبةٌ في `.empty-court .court-svg` **وحدها** —
+   فالرسم نفسه خارجَها يُملأ أسودَ افتراضًا ويخرج كتلةً صمّاء (مقيس: ظهر
+   مستطيلًا لا مخطّطًا). فالقواعد تُعاد هنا، ولا تُوسَّع هناك: ذاك محدِّدٌ
+   لحالةٍ فارغة، وتوسيعه يجرّ الرسم إلى كل موضعٍ لم يُقصَد.
+   ⚠️ والنسبة 160×100 كما في `viewBox`: مربّعٌ يمطّ الملعب فيكذب على أبعاده. */
+.bt-art{ position:absolute; inset-block-start:50%; inset-inline-end:-14px;
+  inline-size:150px; block-size:94px; transform:translateY(-50%);
+  opacity:.22; pointer-events:none }
+.bt-art .court-svg{ display:block; inline-size:100%; block-size:100%;
+  fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round }
+
+/* ② المباريات — سطحٌ محايد، والحيويّة في الحدّ لا في التعبئة. */
+.bt-games.has-live{ border-color:var(--act-bg) }
+
+/* ③ القادمة — شارةٌ صادقة، والبطاقة أهدأ من العاملة بلا أن تبدو معطوبة. */
+.bt-soon .bt-ic{ color:var(--muted) }
+.bt-soon .bt-ttl{ color:var(--ink-2) }
+.bt-soon-tag{ margin-block-start:2px; padding:3px 9px; border-radius:999px;
+  background:var(--surface-muted); color:var(--muted);
+  font-size:0.6875rem; font-weight:800 }
+.bt-sm{ padding:14px }
+.bt-sm .bt-ttl{ font-size:0.84375rem }
+
+/* ⑤ زرّ الحساب في رأس الشبكة — حرفُ الاسم لا أيقونةُ شخصٍ عامّة. */
+/* 🔴 **ورأس الشبكة داكنٌ في الثيمين** (مقيس: `rgb(14,61,69)`)، فحبرُ الهوية
+   عليه حبرٌ داكن على داكن — قِستُه أوّلَ مرّة فخرج الأفاتار **شبحًا لا يكاد
+   يُرى**، ولم تفضحه إلّا اللقطة المكبَّرة. فالطقم من **الجرس المجاور نفسه**
+   (‏`.ghost-btn`: أبيضُ على شفافيةٍ بيضاء) لا من التوكنات العامّة: عنصران
+   متجاوران في رأسٍ واحد لا يجوز أن يختلف أساسُ لونهما. */
+.hub-ava{ inline-size:38px; block-size:38px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.13); color:#fff;
+  border:1.5px solid rgba(255,255,255,.22);
+  font-size:0.9375rem; font-weight:800; line-height:1 }
+.hub-ava:active{ transform:scale(.94) }
+
+/* ⑥ مربّع السيدات — حالتان بمكوّن واحد: مفتوح، أو «قريبًا» بنفس هدوء الثلاثة. */
+.bt-women .bt-note{ color:var(--act-bg); font-weight:800 }
+.bt-women.is-soon .bt-ic{ color:var(--muted) }
+.bt-women.is-soon .bt-ttl{ color:var(--ink-2) }
