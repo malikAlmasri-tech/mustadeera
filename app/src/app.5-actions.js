@@ -649,7 +649,7 @@ function buzz(ms){
     // المسافة تحسم، أو السرعة مع مسافة معقولة (12% على الأقل) — كي لا ترجع رفّة إصبع عابرة
     const done = dx > W*TRIG || (v > VEL && dx > W*0.12);
     const el=page;
-    if(done){ buzz(8); reset(); navigateBack('home'); return; }
+    if(done){ buzz(8); reset(); navigateBack('hub'); return; }
     el.classList.remove('pg-drag'); el.classList.add('pg-settle');
     el.style.transform='';
     const clean=()=>{ el.classList.remove('pg-settle'); el.removeEventListener('transitionend',clean); };
@@ -1037,7 +1037,7 @@ const Verify = {
      من «حسابي» وحدها؛ وما عداها فالرئيسة. */
   leave(){
     this.stopTimer();
-    if(NavStack[NavStack.length-1] === 'account'){ navigateBack('home'); return; }
+    if(NavStack[NavStack.length-1] === 'account'){ navigateBack('hub'); return; }
     showPage('home', {redirect:true});
   },
 };
@@ -1196,6 +1196,7 @@ async function confirmBooking(btn){
     if(!(need>=2) || !(got>=1) || got>need){ toast(t('gmLiveBad'),'warn'); return; }
     vis='open';
   }
+  let sent = null;
   await withLoading(btn, async()=>{
     try{
       const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:shown, source:getSource(),
@@ -1211,18 +1212,24 @@ async function confirmBooking(btn){
       (State.bookedSlots[field.field_id] ||= {})[date] ||= []; State.bookedSlots[field.field_id][date].push(hour);
       /* السعر يُمرَّر صراحةً: الخادم أوّلًا (وهو صاحب الحقيقة) ثمّ المعروض.
          ومعه حالة النشر، وإلّا بقي الإيصال يعِد ضمنًا بما لم يقع. */
-      Modal.close('modal-booking');
-      showBookingSuccess({ place, field, date, hour,
-        price: (res.price != null ? Number(res.price) : shown),
-        visibility: vis, needed: need, brought: got }, res.booking_id);
-      if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
-      Tracker.refresh();          // اللوح يظهر على الرئيسية فور إرسال الطلب لا بعد دورة
-      /* لحظة طلب الإذن: الطلب أُرسل للتوّ وينتظر ردًّا، فالسؤال «أنُعلمك حين
-         يردّون؟» جوابه أمام عينه. طلبُه عند الإقلاع يُرفَض ثمّ لا يعود
-         أندرويد يسمح بطرحه — والرفض حينها رفضٌ لسؤال لم يُفهَم بعد. */
-      Notifs.askPermission();
+      /* ⚠️ **لا يُكتب على الزرّ من داخل `withLoading`**: هي تُعيد `innerHTML`
+         في `finally` فتمحو كلَّ ما كُتب (مزلق مسجَّل). فالعلَم يخرج من هنا،
+         والحالة النهائية تُكتب بعد انتهائها. */
+      sent = { price: (res.price != null ? Number(res.price) : shown), id: res.booking_id };
     }catch(_){ toast(t('bookingConnLag'),'error'); }
   });
+  if(!sent) return;
+  /* الزرّ يقول «تمّ» **بعد** جواب الخادم لا قبله (م5)، ثمّ تُغلَق الورقة. */
+  await btnDone(btn);
+  Modal.close('modal-booking');
+  showBookingSuccess({ place, field, date, hour, price: sent.price,
+                       visibility: vis, needed: need, brought: got }, sent.id);
+  if($('#page-detail').classList.contains('active')){ State.detail.hour=null; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
+  Tracker.refresh();          // اللوح يظهر على الشبكة فور إرسال الطلب لا بعد دورة
+  /* لحظة طلب الإذن: الطلب أُرسل للتوّ وينتظر ردًّا، فالسؤال «أنُعلمك حين
+     يردّون؟» جوابه أمام عينه. طلبُه عند الإقلاع يُرفَض ثمّ لا يعود أندرويد
+     يسمح بطرحه — والرفض حينها رفضٌ لسؤال لم يُفهَم بعد. */
+  Notifs.askPermission();
 }
 async function submitReview(btn){
   if(!State.review.rating){ toast(t('reviewNeed'),'warn'); return; }
@@ -1578,6 +1585,20 @@ function switchLanguage(lang){
 }
 
 /* ===================== EVENT DELEGATION ===================== */
+/* ═══ علامةُ النجاح على الزرّ ═════════════════════════════════════════════
+   الزرّ كان يبقى محمَّلًا حتى تختفي الورقة تحته — لحظةٌ تُقرأ تعليقًا لا نجاحًا.
+   الآن يقول «تمّ» بعلامةٍ داخله قبل الإغلاق بـ`400ms`.
+   ⚠️ **ولا يُنادى إلّا بعد نجاحٍ مؤكَّد**: علامةٌ تسبق الجواب هي بالضبط ما
+      تمنعه م5 — وعدٌ بما لم يقع بعد.
+   ⚠️ و«تقليل الحركة» لا يُلغيها: هي **حالة** لا زخرفة، والانتظار وحده يُلغى. */
+function btnDone(btn, label){
+  if(!btn) return Promise.resolve();
+  btn.classList.add('is-done');
+  clear(btn);
+  btn.append(h('span',{class:'btn-check','aria-hidden':'true'}), label || t('successDone'));
+  buzz(10);
+  return new Promise(res => setTimeout(res, 400));
+}
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, changePassword, toggleTheme, toggleLang,
   /* 🔴 **اسمان آخران للفعلين نفسيهما — والسبب بنيويّ لا تجميلي.**
@@ -1744,7 +1765,10 @@ document.addEventListener('pointerdown', (e)=>{
 /* إظهار/إخفاء زر مسح البحث حسب وجود نص */
 function updateSearchClear(){ const s=$('#searchInput'), c=$('#searchClear'); if(c) c.classList.toggle('show', !!(s&&s.value.trim())); }
 document.addEventListener('click', (e)=>{
-  const nav=e.target.closest('[data-nav]'); if(nav){ showPage(nav.dataset.nav); return; }
+  /* اهتزازٌ خفيف عند التنقّل المقصود من الشريط وحده — لا عند كل `showPage`
+     (التحويلات الداخلية تُنادى برمجيًّا، واهتزازٌ بلا لمسة يُقرأ عطلًا).
+     وإيماءةُ الرجوع تهتزّ أصلًا عند اكتمالها في `edgeBackGesture`. */
+  const nav=e.target.closest('[data-nav]'); if(nav){ buzz(6); showPage(nav.dataset.nav); return; }
   const otab=e.target.closest('[data-otab]'); if(otab){ showOwnerTab(otab.dataset.otab); return; }
   const go=e.target.closest('[data-go]'); if(go){ if(go.tagName==='A') e.preventDefault(); showPage(go.dataset.go); return; }
   const star=e.target.closest('[data-star]'); if(star){ setRating(Number(star.dataset.star)); return; }

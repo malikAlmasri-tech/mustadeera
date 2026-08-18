@@ -1888,12 +1888,22 @@ function renderReview(){
       cell(t('rvPhone'), State.player?.phone||'-', 'phone'),
       cell(t('rvStatus'), logged?t('statusPlayer'):t('statusGuest'), 'person'),
       cell(t('rvSize'), field.size||'—', 'resize')));
+  /* 🔴 **الموعد يخرج من الشبكة ويصير بطلًا.** كان خليّةً من أربع بنفس الوزن،
+     واللاعب يفتح هذه الورقة ليتأكّد من شيءٍ واحد: **متى ألعب؟** — وهو نفس درس
+     لوح «حجزك القادم» في الدفعة ١٨ حرفيًّا (الوزنان كانا مقلوبين هناك أيضًا).
+     ⚠️ و`tabular-nums` في الورقة: الرقم يتبدّل بتبدّل الاختيار، وبأرقامٍ
+        متغيّرة العرض يرتجف السطر تحته. */
   el.append(
     h('div',{class:'rc-head'},
       h('div',{class:'rc-place'}, place.place_name),
       h('div',{class:'rc-loc'}, ico('pin','svg-sm'), ' '+placeLocation(place))),
+    h('div',{class:'bk-when'},
+      h('span',{class:'bk-when-lbl'}, t('rvWhen')),
+      h('span',{class:'bk-when-val'},
+        dayLabel(date)+' '+shortDate(date),
+        h('br',{}),
+        h('bdi',{dir:'ltr'}, slot?slotDisplay(slot):''))),
     h('div',{class:'rc-grid'},
-      cell(t('rvWhen'), dayLabel(date)+' '+shortDate(date)+' · '+(slot?slotDisplay(slot):''), 'cal'),
       cell(t('rvDuration'), t('twoHours'), 'clock'),
       cell(t('rvField'), fieldGender(field)
              ? h('span',{}, field.field_name, h('span',{class:'gd-badge gd-'+fieldGender(field)}, genderLabel(fieldGender(field))))

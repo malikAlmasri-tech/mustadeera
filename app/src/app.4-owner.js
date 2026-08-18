@@ -784,7 +784,10 @@ function ownerBookingCard(b){
        لا يثق بما تعرضه الواجهة. والزرّ يظهر في الحالتين (تعليم ورجوع) لأن
        علامةً لا تُرفَع يتجنّبها صاحبها فيموت المقياس. */
     if (normStatus(b)==='confirmed' && isFinished(b)){
-      const ns=h('button',{class:'owner-action '+(isNoShow(b)?'owner-edit':'owner-reject')},
+      /* ⚠️ **نبرةٌ دافئة لا حمراء**: التطبيق باردٌ كلُّه (تيل)، فالتحذير يضيع
+         فيه ما لم يُكسَر البرود — والأحمر محجوزٌ للخطر الذي لا يُتراجَع عنه
+         (حذف حساب · إلغاء حجز)، و«لم يحضر» علامةٌ تُرفَع وتُنزَل. */
+      const ns=h('button',{class:'owner-action '+(isNoShow(b)?'owner-edit':'is-warn')},
         isNoShow(b) ? t('noShowUndoBtn') : t('noShowBtn'));
       ns.addEventListener('click', ()=>ownerToggleNoShow(ns, b));
       actions.append(ns);
@@ -2025,7 +2028,7 @@ const Notifs = {
         h('div',{class:'notif-empty-s'}, t('notifsEmptySub'))));
       return;
     }
-    let group = null;
+    let group = null, newSeen = 0;
     this.rows.forEach(n => {
       const tx = this.text(n); if (!tx) return;
       const g = this._bucket(n.created_at);
@@ -2045,6 +2048,10 @@ const Notifs = {
         /* غير المقروء يُحمَل على **الشكل** لا على اللون وحده (مبدأ الشريط
            السفلي): شريطٌ جانبي مصمت + سطحٌ أوضح ⇒ يُقرأ بلا تمييز لون. */
         n.read_at ? null : h('span',{class:'notif-dot','aria-hidden':'true'}));
+      /* غير المقروء يصل **بعد** المقروء بقليل فتلتقطه العين بلا لونٍ فاقع.
+         والفهرس للجديد وحده: لو عُدَّت الصفوف كلُّها لتأخّر أوّلُ جديدٍ خلف
+         عشرين قديمًا، فصار التأخير ضجيجًا لا إشارة. والقديم بلا حركة أصلًا. */
+      if(!n.read_at){ row.style.setProperty('--ntf-i', String(Math.min(newSeen++, 6))); }
       row.addEventListener('click', ()=>this.openRow(n));
       el.append(row);
     });

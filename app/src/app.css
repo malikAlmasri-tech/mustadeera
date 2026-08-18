@@ -2890,3 +2890,70 @@ html[dir="rtl"] .bt-arw{ transform:scaleX(-1) }
 .bt-women .bt-note{ color:var(--act-bg); font-weight:800 }
 .bt-women.is-soon .bt-ic{ color:var(--muted) }
 .bt-women.is-soon .bt-ttl{ color:var(--ink-2) }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── 35) البطاقة العائمة، والحرارة، والارتداد ──
+
+   ⚠️ **وهذا القسم مالكُ ما فيه**: كلُّ تصريحٍ سابق لهذه المحدِّدات صار ميتًا
+      بحكم الترتيب، وأيُّ تعديلٍ قادم يقع هنا لا فوقه (نفس ما فُعل بحركة
+      البطاقة وبحالة «مختار»).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① الورقة السفلية تصير **بطاقةً عائمة**: هامشٌ من الجوانب والأسفل، وحوافّ
+   دائرية من الجهات الأربع. والفرق ليس زخرفيًّا — الورقة الملتصقة تُقرأ امتدادًا
+   للإطار، والعائمة تُقرأ **طبقةً فوقه**، فتُفهَم على أنها قرارٌ مؤقّت يُغلَق.
+   ⚠️ **والهامش السفلي يحترم الحافّة الآمنة**: `env(safe-area-inset-bottom)`
+      وإلّا جلست البطاقة تحت شريط الإيماءة في الأجهزة التي تحمله.
+   ⚠️ **ولا يُلمَس `max-height`**: هي 88vh، والهامش 12px يتركها داخل الشاشة
+      (مقيس: أطول ورقة 747px من 812) — فلا حاجة إلى رقمٍ ثانٍ يجب أن يوافق
+      الأوّل، وهما رقمان يختلفان يومًا. */
+.modal-overlay{ padding-inline:12px;
+  padding-block-end:calc(12px + env(safe-area-inset-bottom, 0px)) }
+/* ⚠️ **24 لا 20**: `--r-3xl` اختيرت لورقةٍ زاويتاها السفليتان قائمتان أصلًا،
+   والبطاقة العائمة تُظهر أركانها الأربعة — فنصفُ قطرٍ أكبر هو ما يجعلها
+   تُقرأ بطاقةً لا ورقةً انزلقت. (مقيس: 12px هامشًا و24px نصفَ قطر.) */
+.modal-overlay > .modal{ border-radius:24px }
+
+/* ② حرارةٌ في الأزرار الثانوية الحاسمة. التطبيق باردٌ كلُّه (تيل)، فالتحذير
+   يضيع فيه ما لم يُكسَر البرود. و**نبرةٌ لا صراخ**: `--warning-ink` على صبغةٍ
+   منه — لا أحمرُ صارخ، فالفعل هنا قابلٌ للتراجع في معظمه.
+   ⚠️ ولا يُمَسّ الخطر الحقيقي (`--danger`): «حذف الحساب» و«إلغاء الحجز» يبقيان
+      أحمرين — التحذير غيرُ الخطر، وخلطُهما يُفقد الأحمرَ معناه. */
+.cbtn.is-warn, .owner-action.is-warn{
+  background:color-mix(in srgb, var(--warning-ink) 14%, transparent);
+  color:var(--warning-ink);
+  border:1.5px solid color-mix(in srgb, var(--warning-ink) 42%, transparent);
+  box-shadow:none }
+
+/* ③ الموعد بطلُ ورقة المراجعة. اللاعب يفتحها ليتأكّد من شيءٍ واحد: **متى
+   ألعب؟** — وكان سطرًا بين أربعة بنفس الوزن. الآن حبّةٌ بصبغة الفعل وحجمٍ
+   يسبق كلَّ ما حولها، و`tabular-nums` كي لا ترتجف الأرقام بين حالةٍ وأخرى. */
+.bk-when{ display:flex; flex-direction:column; gap:2px; align-items:center;
+  margin-block-end:14px; padding:12px 14px; border-radius:var(--r-xl);
+  background:color-mix(in srgb, var(--act-bg) 12%, transparent);
+  border:1.5px solid color-mix(in srgb, var(--act-bg) 34%, transparent) }
+.bk-when-lbl{ font-size:0.78125rem; font-weight:700; color:var(--muted) }
+.bk-when-val{ font-size:1.25rem; font-weight:800; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:var(--tr-tight); text-align:center }
+
+/* ④ زرُّ الإرسال يقول «تمّ» قبل أن تُغلَق الورقة. النجاح كان يقع في شاشةٍ
+   تالية، فيبقى الزرّ محمَّلًا حتى تختفي الورقة تحته — لحظةٌ يظنّها المستخدم
+   تعليقًا. والعلامة تُرسَم بـ`clip-path` على عنصرٍ واحد: بلا SVG وبلا مكتبة. */
+.sbtn.is-done{ pointer-events:none }
+.btn-check{ display:inline-flex; align-items:center; justify-content:center;
+  inline-size:20px; block-size:20px; margin-inline-end:8px; border-radius:50%;
+  background:currentColor; color:inherit }
+.btn-check::after{ content:''; inline-size:10px; block-size:6px;
+  border-inline-start:2.2px solid var(--act-bg); border-block-end:2.2px solid var(--act-bg);
+  transform:rotate(-45deg) translate(1px,-1px) }
+
+/* ⑤ الإشعارات غير المقروءة تصل **بعد** المقروءة بقليل، فتلفت العين بلا لون
+   فاقع. والتأخير من ترتيبها هي وحدها (‏`--ntf-i` تُكتب في JS للجديدة فقط)،
+   والمقروءة تظهر فورًا بلا حركة.
+   ⚠️ و«تقليل الحركة» يُلغيها: هي تأكيدٌ لا معلومة — والمعلومة في السطح والشريط
+      الجانبي والنقطة، وكلُّها ثابتة. */
+@media (prefers-reduced-motion: no-preference){
+  .notif-row.unread{ animation:ntfIn 320ms var(--ease-out) both;
+    animation-delay:calc(120ms + var(--ntf-i, 0) * 50ms) }
+  @keyframes ntfIn{ from{ opacity:0; translate:0 10px } to{ opacity:1; translate:0 0 } }
+}
