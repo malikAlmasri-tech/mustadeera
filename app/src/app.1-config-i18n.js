@@ -182,6 +182,19 @@ const I18N = {
     rvDay:'اليوم', rvTime:'الوقت', rvDuration:'المدة', rvPrice:'السعر النهائي', rvName:'الاسم', rvPhone:'الهاتف', rvStatus:'الحالة', rvHost:'المضيف',
     rvSize:'حجم الملعب', rvTotal:'الإجمالي', rvWhen:'اليوم والوقت', rvField:'الملعب', rvYourInfo:'بياناتك', rvReadyNote:'جاهز للإرسال — سيُرسَل طلب الحجز عند التأكيد.',
     twoHours:'ساعتان', statusGuest:'ضيف', statusPlayer:'حساب لاعب مسجّل',
+    /* ═══ ملاحظة لصاحب الملعب (ترحيل 33) ═══ */
+    bkNoteLink:'تحب تقول شي لصاحب الملعب؟', bkNoteHint:'بتوصل مع طلبك، وما بتنعدّل بعدها.',
+    bkNotePh:'مثلاً: احنا ١٠ لاعبين، وبنحتاج صدريّات وكرتين…', bkNoteSaid:'قال:',
+    /* ═══ مسار الانتظار في شاشة النجاح (البند ٣٢) ═══
+       الخطوة الثالثة تقول «في الحالتين» صراحةً: أكثر ما يقلق اللاعب أن يبقى
+       ينتظر ردًّا لن يأتي أصلًا. */
+    sfl_sent:'وصل طلبك', sfl_sent_sub:'صاحب الملعب وصله إشعار فيه.',
+    sfl_review:'صاحب الملعب عم يراجع', sfl_review_sub:'ما في إشي محجوز لهلق — تقدر تكمّل تصفّح.',
+    sfl_answer:'بيوصلك الردّ', sfl_answer_sub:'قبول أو اعتذار — بنخبرك بالحالتين.',
+    sflWhileWait:'وبينما تنتظر', sflTake:'خُذه', sflToday:'نفس اليوم',
+    /* ═══ شريط الانتظار على البطاقة (البند ٣٣) ═══ */
+    pwWaiting:'بانتظار ردّ الملعب',
+    seeAltBtn:'شوف أوقات بديلة',
     bkNote:'الطلب يصل إدارة الملعب، ويتأكّد بعد موافقتهم. تابعه من «حجوزاتي».', confirmBooking:'أرسل الطلب', changeTime:'تغيير الموعد',
     authTitle:'خطوة أخيرة ويكتمل حجزك', authDesc:'سجّل دخولك أو أنشئ حساباً — اختيارك (الملعب واليوم والوقت) محفوظ وسنكمل من النقطة نفسها.',
     authBackEdit:'عودة لتعديل الموعد',
@@ -213,6 +226,7 @@ const I18N = {
     hubSoon_store:'المتجر لسّه ما فتح — رح نخبرك أوّل ما يجهز.',
     hubSoon_academy:'الأكاديميات والتدريب لسّه ما فتحوا — رح نخبرك أوّل ما يجهزوا.',
     hubSoon_tournament:'البطولات لسّه ما فتحت — رح نخبرك أوّل ما تجهز.',
+    hubNextTitle:'قريبًا على المستديرة', hubNextAria:'أقسام قادمة',
     modeGamesOpen:'{n} فيها مقاعد فاضية',
     otAlertTxt:'{n} بانتظار ردّك', otAlertCta:'ردّ الآن',
     otRevenueNote:'التزام لا نقد — التحصيل عندك في الملعب',
@@ -264,6 +278,36 @@ const I18N = {
     csvSaved:'نزّلنا الملف', csvShared:'جهّزنا الملف للمشاركة',
     csvCopied:'نسخنا الجدول — الصقه في الواتساب أو الإيميل',
     dcTitle:'طلب بانتظار ردّك', dcOpen:'ردّ على الطلب',
+
+    /* ═══ تاريخ العميل على بطاقة الطلب (البند ٥٧) ═══
+       جملةٌ واحدة تفصل بين ثلاثة قرارات مختلفة. و«غاب» لا «لم يحضر»: الأولى
+       وصفُ واقعةٍ والثانية اسمُ العلامة في اللوحة — والمالك يقرأ هنا لا يعلّم. */
+    chNew:'أول طلب — عميل جديد', chFirstPlay:'طلب سابق، ولم يلعب بعد',
+    otOfSlots:'من {n} خانة معروضة', otOnFields:'على {n}', otOldest:'أقدمها {rel}',
+    /* 🔴 «{n} سابقة» كانت تخرج «28 حجزًا سابقة» — **الصفة بعد معدود متغيّر
+       تنكسر مع العدد**، وهو المزلق المسجَّل في `CLAUDE.md` حرفيًّا («٥ حجوزات
+       مؤكّدًا» · «١٣ ملعبًا نشِطة»). و`countNoun` تصلح الاسم ولا تصلح ما بعده.
+       العلاج المكتوب هناك: **انزع الصفة** — فعلٌ يسبق المعدود يصحّ مع أي عدد
+       («سبق له حجز واحد» · «سبق له 28 حجزًا»). ومقيس في المعاينة بعد الإصلاح. */
+    chClean:'سبق له {n} · بلا غياب', chWithNoShow:'سبق له {n} · غاب {k}',
+    chTop:'سبق له {n} · أكثر عملائك',
+    /* «راحت بلا ردّ» في تبويب اليوم (البند ٦١) */
+    otLostTitle:'راحت بلا ردّ: {n} ≈ {m}', otLostSub:'انقضت مهلتها ({h} ساعة) قبل أن تصلها',
+    /* أسباب الرفض والإلغاء — مغلقة، وتُخزَّن رمزًا (البند ٥٨) */
+    rsn_slot_taken:'الوقت انحجز للتو', rsn_field_closed:'الملعب مسكّر هذا اليوم',
+    rsn_maintenance:'صيانة', rsn_short_notice:'الطلب متأخّر — ما بنلحق',
+    rsn_weather:'الجو', rsn_emergency:'ظرف طارئ',
+    reasonPickOne:'اختر سبباً — أو اكتب واحداً',
+    reasonAfterNote:'بيوصل اللاعب سببك، والتطبيق بيعرض عليه أقرب الأوقات الفاضية عندك.',
+    /* تراجع (البند ٦٠) */
+    undoWord:'تراجع', undoOk:'رجع الطلب لقائمة انتظارك',
+    undoDone_confirmed:'قبلتَ الطلب', undoDone_rejected:'رفضتَ الطلب', undoDone_cancelled:'ألغيتَ الحجز',
+    /* ورقة خليّة المخطّط (البند ٦٢) */
+    slClosedWhy:'مسكّر — {r}', slClosedNoWhy:'مسكّر بدون سبب مكتوب',
+    slReopenDay:'افتح هذا اليوم للملعب', slAnswerHere:'ردّ على الطلب',
+    slOpenCard:'افتح البطاقة', slCallPlayer:'اتصل باللاعب',
+    slFreeHistory:'هذي الساعة انحجزت {n} من آخر ٧ ليالي',
+    slAddManual:'حجز خارجي على هذه الساعة', slCloseHour:'سكّر هذه الساعة',
     tlHour:'الساعة',
     otTodayLbl:'حجوزات اليوم', otPendingLbl:'بانتظار ردّك', otRevenueLbl:'إيراد اليوم المتوقّع', otFreeLbl:'أوقات متاحة اليوم',
     hintByPlayDate:'حسب تاريخ اللعب', hintTodayReq:'طلبات اليوم', hintConfToday:'المؤكد اليوم', hintBookable:'قابلة للحجز',
@@ -725,6 +769,14 @@ const I18N = {
     rvDay:'Day', rvTime:'Time', rvDuration:'Duration', rvPrice:'Final price', rvName:'Name', rvPhone:'Phone', rvStatus:'Status', rvHost:'Host',
     rvSize:'Field size', rvTotal:'Total', rvWhen:'Day & time', rvField:'Field', rvYourInfo:'Your details', rvReadyNote:'Ready to submit — your booking request will be sent when you confirm.',
     twoHours:'2 hours', statusGuest:'Guest', statusPlayer:'Registered player',
+    bkNoteLink:'Want to tell the venue anything?', bkNoteHint:'Sent with your request; cannot be edited after.',
+    bkNotePh:'e.g. we are 10 players and need bibs and two balls…', bkNoteSaid:'They wrote:',
+    sfl_sent:'Request sent', sfl_sent_sub:'The venue got a notification.',
+    sfl_review:'The venue is reviewing', sfl_review_sub:'Nothing is held yet — keep browsing.',
+    sfl_answer:'You get the answer', sfl_answer_sub:'Accepted or declined — we tell you either way.',
+    sflWhileWait:'While you wait', sflTake:'Take it', sflToday:'Same day',
+    pwWaiting:'Waiting on the venue',
+    seeAltBtn:'See other times',
     bkNote:'Your request reaches the venue and is confirmed once they approve. Follow it under “My bookings”.', confirmBooking:'Send request', changeTime:'Change time',
     authTitle:'One last step to finish booking', authDesc:'Log in or create an account — your selection (field, day and time) is saved and we’ll continue from the same point.',
     authBackEdit:'Back to edit time',
@@ -751,6 +803,7 @@ const I18N = {
     hubSoon_store:'The store is not open yet — we will tell you the moment it is.',
     hubSoon_academy:'Academies and coaching are not open yet — we will tell you the moment they are.',
     hubSoon_tournament:'Tournaments are not open yet — we will tell you the moment they are.',
+    hubNextTitle:'Coming to Al-Mustadeera', hubNextAria:'Upcoming sections',
     modeGamesOpen:'{n} with seats left',
     otAlertTxt:'{n} awaiting your reply', otAlertCta:'Reply now',
     otRevenueNote:'A commitment, not cash — collected at your venue',
@@ -802,6 +855,24 @@ const I18N = {
     csvSaved:'File downloaded', csvShared:'File ready to share',
     csvCopied:'Table copied — paste it into WhatsApp or email',
     dcTitle:'Request awaiting your reply', dcOpen:'Reply to request',
+
+    chNew:'First request — new customer', chFirstPlay:'Requested before, has not played yet',
+    otOfSlots:'of {n} slots on offer', otOnFields:'across {n}', otOldest:'oldest {rel}',
+    chClean:'{n} before · never a no-show', chWithNoShow:'{n} before · no-show {k}',
+    chTop:'{n} before · your top customer',
+    otLostTitle:'Expired without a reply: {n} ≈ {m}', otLostSub:'Their {h}-hour window ran out before you answered',
+    rsn_slot_taken:'Slot was just taken', rsn_field_closed:'Field is closed that day',
+    rsn_maintenance:'Maintenance', rsn_short_notice:'Too short notice',
+    rsn_weather:'Weather', rsn_emergency:'Emergency',
+    reasonPickOne:'Pick a reason — or write one',
+    reasonAfterNote:'The player gets your reason, and the app shows them your nearest free times.',
+    undoWord:'Undo', undoOk:'Back in your queue',
+    undoDone_confirmed:'Request accepted', undoDone_rejected:'Request declined', undoDone_cancelled:'Booking cancelled',
+    slClosedWhy:'Closed — {r}', slClosedNoWhy:'Closed, no reason written',
+    slReopenDay:'Reopen this day for this field', slAnswerHere:'Answer the request',
+    slOpenCard:'Open the card', slCallPlayer:'Call the player',
+    slFreeHistory:'This hour was booked {n} of the last 7 nights',
+    slAddManual:'Off-site booking for this hour', slCloseHour:'Close this hour',
     tlHour:'Hour',
     otTodayLbl:'Today’s bookings', otPendingLbl:'Awaiting your reply', otRevenueLbl:'Expected revenue today', otFreeLbl:'Free slots today',
     hintByPlayDate:'By play date', hintTodayReq:'Today’s requests', hintConfToday:'Confirmed today', hintBookable:'Bookable',

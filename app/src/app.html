@@ -205,7 +205,7 @@
             <input type="checkbox" id="playerRemember" class="remember-box">
             <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
           </label>
-          <button class="sbtn" data-action="playerLogin" data-i18n="enter">دخول</button>
+          <button class="sbtn btn-go" data-action="playerLogin" data-i18n="enter">دخول</button>
         </div>
         <div class="fgroup auth-alt" style="--i:4">
           <button class="cbtn" data-go="playerRegister" data-i18n="register">إنشاء حساب جديد</button>
@@ -267,7 +267,7 @@
             <input type="checkbox" id="regRemember" class="remember-box">
             <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
           </label>
-          <button class="sbtn" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
+          <button class="sbtn btn-go" data-action="playerRegister" data-i18n="createAccount">إنشاء الحساب</button>
         </div>
         <div class="fgroup auth-alt" style="--i:5">
           <button class="cbtn" data-go="playerLogin" data-i18n="haveAccount">عندي حساب</button>
@@ -355,7 +355,7 @@
           <input type="checkbox" id="ownerRemember" class="remember-box">
           <span data-i18n="rememberMe">تذكّرني على هذا الجهاز</span>
         </label>
-        <button class="sbtn" data-action="ownerLogin" data-i18n="enter">دخول</button>
+        <button class="sbtn btn-go" data-action="ownerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-action="navBack" data-fallback="welcome" data-i18n="back">رجوع</button>
       </div>
     </div>
@@ -428,22 +428,32 @@
           <span class="bt-note" id="bentoWomenNote"></span>
           <span class="bt-soon-tag" id="bentoWomenSoon" data-i18n="soonBadge" hidden>قريباً</span>
         </button>
-        <!-- ③ الأقسام القادمة — شارةٌ صادقة، وبطاقةٌ لا تفتح على فراغ. -->
-        <button type="button" class="bento-card bt-soon" data-soon="store">
-          <span class="bt-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
-          <span class="bt-ttl" data-i18n="hubStore">متجر المستديرة</span>
-          <span class="bt-soon-tag" data-i18n="soonBadge">قريباً</span>
-        </button>
-        <button type="button" class="bento-card bt-soon bt-sm" data-soon="academy">
-          <span class="bt-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span>
-          <span class="bt-ttl" data-i18n="hubAcademy">أكاديميات وتدريب</span>
-          <span class="bt-soon-tag" data-i18n="soonBadge">قريباً</span>
-        </button>
-        <button type="button" class="bento-card bt-soon bt-sm" data-soon="tournament">
-          <span class="bt-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
-          <span class="bt-ttl" data-i18n="hubTournament">بطولات</span>
-          <span class="bt-soon-tag" data-i18n="soonBadge">قريباً</span>
-        </button>
+        <!-- ④ الأقسام الثلاثة القادمة — **بطاقة واحدة لا ثلاث** (قرار المالك 2026-08-18).
+             مقيس عند 375px قبله: البطل **112px** وأربعة مربّعات «قريبًا»
+             **249px** — أي أنّ ما لا يعمل يأخذ **ضعفي ما يعمل** في أوّل شاشة
+             بعد الدخول. وم٥ محفوظة كما هي: **لا يُخفى قسمٌ ولا يُحذف**، وكلُّ
+             واحدة تبقى `[data-soon]` فنقرُها يقول **ما هي** بنفس المفاتيح
+             الثلاثة حرفيًّا. ما تغيّر الوزن لا الإفصاح.
+             ⚠️ و«ملاعب سيدات» **يبقى مربّعًا مستقلًّا** وإن حمل الشارة اليوم:
+                جاهزيّته **من القاعدة** (ملعبٌ نشِط يصرّح `gender='women'`) فيفتح
+                بلا نشر نسخة، والثلاثة تحتاج شاشةً كاملة يوم توجد. -->
+        <div class="bt-next" role="group" data-i18n-aria="hubNextAria" aria-label="أقسام قادمة">
+          <span class="bt-next-ttl" data-i18n="hubNextTitle">قريبًا على المستديرة</span>
+          <span class="bt-next-row">
+            <button type="button" class="bt-next-chip" data-soon="store">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span data-i18n="hubStore">متجر المستديرة</span>
+            </button>
+            <button type="button" class="bt-next-chip" data-soon="academy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
+              <span data-i18n="hubAcademy">أكاديميات وتدريب</span>
+            </button>
+            <button type="button" class="bt-next-chip" data-soon="tournament">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+              <span data-i18n="hubTournament">بطولات</span>
+            </button>
+          </span>
+        </div>
       </div>
     </div>
   </section>
@@ -576,20 +586,22 @@
       <div class="detail-badges" id="dBadges"></div>
       <!-- الاتصال والخريطة ظاهران دائمًا: كانا داخل تبويب «الموقع» — تبويبٌ كامل
            لسطرين وزرّين، لا يُفتَح إلّا بعد أن يكون القرار قد اتُّخذ. -->
-      <div class="detail-actions detail-actions-top">
-        <a class="action-link action-call" id="callBtn">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
-        </a>
-        <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
-        </a>
-      </div>
+      <!-- 🔴 **زرّا الاتصال والخريطة انتقلا إلى «عن الملعب»** (قرار المالك
+           2026-08-18). كانا هنا منذ الدفعة ١٩ لأنهما كانا مدفونَين خلف تبويبٍ
+           لا يزوره أحد — والعلاج حينها صحيح والموضع خاطئ: مقيس أنّهما يقعان
+           عند **y=371** أي **فوق** التبويبات (435) و**فوق** «اختر الملعب»
+           (508). وهما **مخرجان خارج المنتج**: المكالمة هي العادة التي يحاول
+           التطبيق أن يحلّ محلّها، والخريطة تبويبٌ خارجي — فوضعُهما في رأس
+           قمع التحويل يعرض على الزائر بابَي خروجٍ قبل أن يعرض عليه القرار. -->
       <!-- صفّ المرافق المضغوط: أهمّ ثلاثة وشريحة «+n» تفتح «عن الملعب» -->
       <div id="dAmenRow"></div>
 
       <!-- تبويبان لا أربعة: «احجز» يحمل المسار، و«عن الملعب» يجمع ما كان
            مبعثرًا على ثلاثة تبويبات لا يزورها أحد (المرافق · التقييمات · الموقع). -->
       <div class="detail-tabs" id="detailTabs" role="tablist" data-i18n-aria="ariaDetailTabs" aria-label="أقسام الملعب">
+        <!-- الإبهام **عنصرٌ حقيقي** لا `::before`: مزلقٌ مقيس في هذا المشروع —
+             الإعلان نفسه حرفيًّا ينزلق على عنصرٍ ولا ينزلق على عنصرٍ زائف. -->
+        <span class="dtab-thumb" aria-hidden="true"></span>
         <button type="button" class="dtab-btn active" role="tab" data-action="setDetailTab" data-dtab="book" aria-selected="true" data-i18n="dtabBook">احجز</button>
         <button type="button" class="dtab-btn" role="tab" data-action="setDetailTab" data-dtab="about" aria-selected="false" data-i18n="dtabAbout">عن الملعب</button>
       </div>
@@ -647,11 +659,21 @@
           </summary>
           <div id="placeStats" style="margin-top:12px"></div>
         </details>
-        <button class="sbtn detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
+        <button class="sbtn btn-go detail-book-inline" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
       </div>
 
       <!-- ===== تبويب: عن الملعب (المرافق + التقييمات + الموقع) ===== -->
       <div class="dtab-panel" data-dtab-panel="about" role="tabpanel" hidden>
+        <!-- الاتصال والموقع أوّلَ ما في التبويب: هما أكثر ما يُطلَب منه، ولا
+             يُخفيان شيئًا — صفّ المرافق المضغوط فوق التبويبات يقود إلى هنا. -->
+        <div class="detail-actions detail-actions-top">
+          <a class="action-link action-call" id="callBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg> <span data-i18n="callBtn">اتصال</span>
+          </a>
+          <a class="action-link action-map" id="mapLink" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg> <span data-i18n="locationBtn">الموقع</span>
+          </a>
+        </div>
         <section class="detail-section" data-i18n-aria="servicesTitle" aria-label="الخدمات والمرافق">
           <div class="dsec-head"><span class="dsec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg></span><h2 class="dsec-title" data-i18n="servicesTitle">الخدمات والمرافق</h2></div>
           <div id="detailAmenities"></div>
@@ -872,18 +894,30 @@
           <div class="ot-hero-lbl" data-i18n="otRevenueLbl">إيراد اليوم المتوقّع</div>
           <div class="ot-hero-val" id="otRevenue">0</div>
           <div class="ot-hero-cmp" id="otRevCmp"></div>
+          <!-- خطّ سبعة أيام — **نفس** `createSparkline` المستعملة على بطاقات
+               الإحصاء، لا مكوّن ثانٍ. وهو الموضع الوحيد الذي يحمل اتجاهًا: عدّادُ
+               طابورٍ أو عددُ خاناتٍ فارغة لا «اتجاه» له، ورسمُ خطٍّ عليه زخرفة. -->
+          <div class="ot-hero-spark" id="otRevSpark"></div>
           <!-- ⚠️ **التزامٌ لا نقد**: لا بوّابة دفع في هذا المنتج، فما يُعرَض
                وعدُ دفعٍ عند الملعب لا مبلغٌ في الجيب. والسطر يقول ذلك بدل أن
                يطبع رقمًا يظنّه المالك محصَّلًا. -->
           <div class="ot-hero-note" data-i18n="otRevenueNote">التزام لا نقد — التحصيل عندك في الملعب</div>
         </div>
         <div class="ot-mini">
-          <div class="ot-mini-cell"><span class="ot-mini-val" id="otToday">0</span><span class="ot-mini-lbl" data-i18n="otTodayLbl">حجوزات اليوم</span></div>
-          <div class="ot-mini-cell"><span class="ot-mini-val" id="otFree">0</span><span class="ot-mini-lbl" data-i18n="otFreeLbl">أوقات متاحة اليوم</span></div>
+          <!-- ⚠️ **لكلّ خانة مقامُها هي، ولا يتكرّر اثنان**: «من ١٦ خانة» تحت عدد
+               الحجوزات، و«على ٣ ملاعب» تحت الفارغة، و«أقدمها منذ …» تحت المعلّق.
+               ولو حمل الاثنان الأوّلان نفس المقام لقال اللوحُ الشيء مرّتين. -->
+          <div class="ot-mini-cell"><span class="ot-mini-val" id="otToday">0</span><span class="ot-mini-lbl" data-i18n="otTodayLbl">حجوزات اليوم</span><span class="ot-mini-sub" id="otTodaySub"></span></div>
+          <div class="ot-mini-cell"><span class="ot-mini-val" id="otFree">0</span><span class="ot-mini-lbl" data-i18n="otFreeLbl">أوقات متاحة اليوم</span><span class="ot-mini-sub" id="otFreeSub"></span></div>
           <!-- **زرٌّ لا عرض**: «بانتظار ردّك» هي الخانة الوحيدة من الثلاث التي
                تطلب فعلًا، فتقود إلى القائمة كما يقود الشريط اللاصق فوقها. -->
-          <button type="button" class="ot-mini-cell is-act" id="otPendingCell" data-action="ownerGoPending"><span class="ot-mini-val" id="otPending">0</span><span class="ot-mini-lbl" data-i18n="otPendingLbl">بانتظار ردّك</span></button>
+          <button type="button" class="ot-mini-cell is-act" id="otPendingCell" data-action="ownerGoPending"><span class="ot-mini-val" id="otPending">0</span><span class="ot-mini-lbl" data-i18n="otPendingLbl">بانتظار ردّك</span><span class="ot-mini-sub" id="otPendingSub"></span></button>
         </div>
+        <!-- «راحت بلا ردّ» — الرقم موجود في التقارير منذ الدفعة ٣٣، وموضعه
+             الصحيح **هنا**: الإهمال يُصحَّح اليوم لا في مراجعة الشهر. ويُترجَم
+             مالًا لأن «٣ طلبات» لا تُحرّك أحدًا و«‏١٤٠ د.أ» تُحرّك.
+             ⚠️ ويُخفى تمامًا عند الصفر: صفرٌ هنا خبرٌ سارّ لا يحتاج لوحًا. -->
+        <div id="otLost"></div>
         <!-- 🤖 الطقس **بعد** الرقم البطل لا قبله: نصيحةٌ تُقرأ،
              والرقمُ والطلبُ المعلّق هما ما جاء المالك من أجله. وكان يجلس بين
              شريط الفعل والبطل فيدفعهما تمريرةً كاملة. -->
@@ -1183,6 +1217,22 @@
         <summary><span data-i18n="payWhyLink">ليش ما في بطاقة؟</span></summary>
         <p class="pay-why-b"><span data-i18n="payCardSub">الدفع بالبطاقة لسا ما اشتغل — بنشغّله أول ما تجهز بوّابة الدفع.</span> <span data-i18n="payCardWhy">ولمّا يشتغل، الرقم بينكتب عند بوّابة الدفع — التطبيق ما بيشوفه ولا بيخزّنه.</span></p>
       </details>
+      <!-- ============ ملاحظة لصاحب الملعب (ترحيل 33) ============
+           ما كان يُقال في المكالمة التي جاء المنتج ليلغيها: «نحن عشرة ولازم
+           صدريّات» · «ممكن نتأخّر ربع ساعة». سقط في الطريق بلا بديل، فصار
+           المالك يقبل ثمّ يتّصل ليسأل.
+           ⚠️ **اختياريّ وفي طيّة**: أكثر الطلبات لا تحتاجه، وحقلٌ مفتوح دائمًا
+              في مسار المال يطلب قرارًا من كلّ لاعب مقابل فائدةٍ للقليل منهم.
+           ⚠️ **ويُخفى كلُّه إن لم يُشغَّل الترحيل** (‏`SB_BK_NOTE`) — لا يُعرَض
+              حقلٌ سيُهمَل ما يُكتب فيه (م5). -->
+      <details class="disclosure bk-note-fold" id="bkNoteFold" hidden>
+        <summary><span data-i18n="bkNoteLink">تحب تقول شي لصاحب الملعب؟</span></summary>
+        <textarea class="finput bk-note-input" id="bkNoteInput" maxlength="240" rows="2"
+                  data-i18n-ph="bkNotePh" data-i18n-aria="bkNoteLink"
+                  aria-label="ملاحظة لصاحب الملعب"
+                  placeholder="مثلاً: احنا ١٠ لاعبين، وبنحتاج صدريّات وكرتين…"></textarea>
+        <div class="bk-note-foot"><span data-i18n="bkNoteHint">بتوصل مع طلبك، وما بتنعدّل بعدها.</span><span id="bkNoteCount" class="bk-note-count"></span></div>
+      </details>
       <div class="bk-note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <span data-i18n="bkNote">الطلب يصل إدارة الملعب، ويتأكّد بعد موافقتهم. تابعه من «حجوزاتي».</span>
@@ -1190,7 +1240,7 @@
       <!-- «عادةً يردّ خلال ن» — يُملأ من app.js، ويبقى فارغًا تمامًا لمكانٍ
            لا يُقاس بعد (‏العرض نفسه يحجب ما دون سبعة ردود). -->
       <div id="bkReplySpeed"></div>
-      <button class="sbtn" data-action="confirmBooking" data-i18n="confirmBooking">أرسل الطلب</button>
+      <button class="sbtn btn-go" data-action="confirmBooking" data-i18n="confirmBooking">أرسل الطلب</button>
       <button class="cbtn" data-action="changeTime" data-i18n="changeTime">تغيير الموعد</button>
     </div>
   </div>
@@ -1302,7 +1352,7 @@
       <input class="finput" id="mPrice" type="number" inputmode="numeric" placeholder="40" style="margin-bottom:13px">
       <label class="form-label" for="mRepeat" data-i18n="repeatWeeksLbl">كرّر أسبوعياً</label>
       <select class="finput" id="mRepeat" style="margin-bottom:18px"></select>
-      <button class="sbtn" data-action="saveManual" data-i18n="saveBookingBtn">حفظ الحجز</button>
+      <button class="sbtn btn-go" data-action="saveManual" data-i18n="saveBookingBtn">حفظ الحجز</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
   </div>
@@ -1345,7 +1395,7 @@
         <option value="evening" data-i18n="slotEvening">Evening — مسائي</option>
       </select>
       <label class="checkbox-row"><input type="checkbox" id="fieldActive" checked> <span data-i18n="activeLbl">نشط</span></label>
-      <button class="sbtn" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
+      <button class="sbtn btn-go" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>
   </div>
@@ -1487,7 +1537,17 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="reasonTitle" data-i18n="reasonTitleDefault">سبب التحديث</div>
       <div class="modal-sub" id="reasonHint"></div>
+      <!-- ⚠️ **أسبابٌ جاهزة بدل حقلٍ حرّ.** الرفض كان يطلب كتابةً في لحظة
+           استعجال، فيكتب المالك «مش متاح» أو يترك الحقل ويعود — والنصّ الحرّ
+           لا يُحلَّل بعدُ («ليش برفض؟» سؤالٌ بلا جواب رغم أنّ العمود موجود).
+           والشرائح تُخزَّن **رمزًا لا نصًّا**: نصٌّ مخزَّن يُجمَّد على لغة لحظة
+           كتابته فيقرؤه مستخدم الإنجليزية عربيًّا — نفس درس ترحيل ١٤. -->
+      <div class="rsn-chips" id="reasonChips" hidden></div>
       <textarea class="finput" id="reasonInput" data-i18n-aria="reasonPlaceholder" aria-label="سبب التحديث" placeholder="مثلاً: الوقت غير متاح أو يوجد صيانة..." data-i18n-ph="reasonPlaceholder" style="margin-bottom:18px"></textarea>
+      <!-- البند ٥٩: ما يصل اللاعب فعلًا بعد الرفض — سببُك ثمّ **بدائل حيّة**
+           يحسبها التطبيق عنده لحظتَها. ولا تُسمّى أوقاتٌ بعينها هنا: ما نكتبه
+           الآن يتجمّد، وقد يُحجَز الوقت قبل أن يقرأه. -->
+      <div class="rsn-after" id="reasonAfter" hidden></div>
       <button class="sbtn" id="reasonConfirm" style="background:var(--danger-btn)!important" data-i18n="confirmWord">تأكيد</button>
       <button class="cbtn" id="reasonCancel" data-i18n="backWord">رجوع</button>
     </div>
@@ -1509,6 +1569,22 @@
       <div class="modal-sub" id="dcSub"></div>
       <div id="dcBody"></div>
       <div id="dcActions"></div>
+      <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- ============ SLOT SHEET (خليّة المخطّط الزمني) ============
+       ⚠️ **نقرُ الخليّة كان يعمل ولا يقول شيئًا**: يفتح البطاقة أو لوح الإغلاق
+       بحسب امتلاء الخانة، فيبقى المالك يخمّن ما الذي ستفعله الضغطة. والورقة
+       تجعل كلَّ حالةٍ تعرض ما يمكن فعله بها **وحده** — والقاعدة نفسها
+       المطبَّقة على أزرار البطاقة: لا يُعرَض إلّا ما يُغيّر شيئًا. -->
+  <div class="modal-overlay" id="modal-slot" role="dialog" aria-modal="true" aria-labelledby="slTitle">
+    <div class="modal" data-modal="slot">
+      <div class="modal-grip"><div class="modal-handle"></div></div>
+      <div class="modal-title" id="slTitle"></div>
+      <div class="modal-sub" id="slSub"></div>
+      <div id="slBody"></div>
+      <div id="slActions"></div>
       <button class="cbtn" data-action="closeModal" data-i18n="closeWord">إغلاق</button>
     </div>
   </div>
@@ -1560,6 +1636,14 @@
       <div class="scard-title" id="successTitle" data-i18n="successDone">تمام!</div>
       <div class="scard-text" id="successText"></div>
       <div class="scard-summary" id="successSummary" hidden></div>
+      <!-- ⚠️ **مسار الانتظار مرسومًا** (البند ٣٢): الإيصال كان يقول «وصل طلبك»
+           ثمّ يصمت، فيبقى اللاعب لا يعرف ما الذي يحدث الآن ولا متى ينتهي ولا
+           ماذا لو رُفض. والخطوات الثلاث تقول ذلك بلا وعدِ زمنٍ لا نملكه:
+           أُرسل ✓ · صاحب الملعب يراجع (جارية) · يصلك الردّ **في الحالتين**. -->
+      <div class="scard-flow" id="successFlow" hidden></div>
+      <!-- «بينما تنتظر» (البند ٣٤) — بدائل حيّة من نفس المحرّك، ويُخفى كلُّه
+           إن لم يوجد بديلٌ فعلًا (م5). -->
+      <div class="scard-wait" id="successWait" hidden></div>
       <div class="scard-actions" id="successActions">
         <button class="sbtn" data-action="closeSuccess" data-i18n="successOkBtn">تمام</button>
       </div>
@@ -1615,7 +1699,7 @@
       <!-- الضيف وحده يراه: يقول ما ينتظره **قبل** أن يضغط لا بعده -->
       <div class="dsticky-guest" id="dstickyGuest" data-i18n="guestNeedAcct" hidden>بتحتاج حساب لإرسال الطلب</div>
     </div>
-    <button class="dsticky-btn" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
+    <button class="dsticky-btn btn-go" data-action="openBooking" data-i18n="continueBooking">متابعة الحجز</button>
   </div>
 
   <!-- ============ BOTTOM NAV ============ -->

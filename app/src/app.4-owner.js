@@ -186,6 +186,30 @@ function renderOwnerToday(){
   // «أوقات متاحة اليوم» تعدّ المفتوح وحده: خانةٌ مغلقة ليست متاحة للحجز.
   fields.forEach(f=>{ if(f.active===false) return; const slots=openSlotsFor(f, td); totalSlots+=slots.length; const set=bookedToday[String(f.field_id)]||new Set(); booked+=slots.filter(s=>set.has(s.hour)).length; });
   setText('otToday', todayB.length); setText('otPending', pend.length); setText('otRevenue', formatMoney(revenue)); setText('otFree', Math.max(totalSlots-booked,0));
+  /* ═══ البلاطة تصير أربعة أسطر: تسمية ⇐ رقم ⇐ **مقامه** ⇐ اتجاه ═══════════
+     رقمٌ مطلق بلا مقام لا يقول شيئًا («٧» مقابل ماذا؟) — وهي القاعدة المطبَّقة
+     على البطل منذ الدفعة ٣٣ ومتروكةٌ في الخانات الثلاث تحته.
+     ⚠️ **ولكلٍّ مقامٌ يخصّه**: لو حملت «الحجوزات» و«الفارغة» نفس المقام لقال
+        اللوحُ الشيءَ مرّتين بصيغتين — وهو ضجيجٌ لا معلومة. */
+  const openFields = fields.filter(f=>f.active!==false && openSlotsFor(f, td).length);
+  setText('otTodaySub',   totalSlots ? t('otOfSlots', { n: totalSlots }) : '');
+  setText('otFreeSub',    openFields.length ? t('otOnFields', { n: nFields(openFields.length) }) : '');
+  /* أقدمُ معلَّق: العدد يقول «كم»، وهذا يقول «منذ متى» — وهو ما يُحرّك. */
+  const oldest = pend.length ? pend.reduce((a,b2)=>{
+    const x=new Date(String(a.timestamp||'').replace(' ','T')).getTime();
+    const y=new Date(String(b2.timestamp||'').replace(' ','T')).getTime();
+    return (Number.isNaN(y) || (!Number.isNaN(x) && x<=y)) ? a : b2; }) : null;
+  const oldestTs = oldest ? new Date(String(oldest.timestamp||'').replace(' ','T')).getTime() : NaN;
+  setText('otPendingSub', (!Number.isNaN(oldestTs)) ? t('otOldest', { rel: relFromNow(oldestTs-Date.now()) }) : '');
+  /* خطّ سبعة أيام على البطل وحده — والاتجاه هو الشيء الوحيد الذي يحمله المال
+     ولا تحمله الخانات الثلاث (طابورٌ وعددُ خاناتٍ فارغة لا اتجاه لهما). */
+  const spark=$('#otRevSpark');
+  if(spark){ clear(spark);
+    const days=[]; const base=new Date(td+'T12:00:00');
+    for(let i=6;i>=0;i--){ const d=new Date(base); d.setDate(d.getDate()-i);
+      days.push(dayRevenue(onDay(d.toISOString().slice(0,10)))); }
+    put(spark, createSparkline(days, 'spark-hero'));
+  }
   /* ⚠️ **شريط الفعل يُخفى عند الصفر ولا يعرض «٠ طلبات»**: شريطٌ لاصق يأكل
      ارتفاعًا من كل شاشة مقابل خبرٍ سارّ لا يحتاج شريطًا. */
   const wrap=$('#otAlertWrap');
@@ -201,6 +225,7 @@ function renderOwnerToday(){
     put(cmp, compareLine(revenue, sameWeekdayAvg(all, td, (ds)=>dayRevenue(onDay(ds))), td,
                          (v)=>formatMoney(Math.round(v)))); }
   renderOwnerNext(todayB);
+  renderOwnerLostWeek(all, td);
   clear(el);
   if(!todayB.length){ el.append(emptyState({icon:'📅', title:t('noBookingsToday'), sub:t('noBookingsTodaySub')})); return; }
   const rest=todayB.filter(b=>normStatus(b)!=='pending').sort((a,b)=>Number(a.hour)-Number(b.hour));
@@ -214,6 +239,33 @@ function renderOwnerToday(){
     pend.forEach(b=>el.append(ownerBookingCard(b)));
   }
   if(rest.length){ el.append(sectionTitle(t('restToday'), rest.length)); rest.forEach(b=>el.append(ownerBookingCard(b))); }
+}
+
+/* ═══ «راحت بلا ردّ» في تبويب اليوم ═══════════════════════════════════════
+   الرقم يُحسَب في التقارير منذ الدفعة ٣٣، وموضعُه الصحيح هنا: **الإهمال
+   يُصحَّح اليوم لا في مراجعة آخر الشهر**. و«٣ طلبات» رقمٌ لا يُحرّك أحدًا،
+   و«‏١٤٠ د.أ» يُحرّك — فيُترجَم مالًا كما يفعل لوح «وين بضيّع؟» بالضبط.
+   ⚠️ **والمنقضي ليس المرفوض**: الرفض قرارُك (وقد يكون صائبًا)، والانقضاء
+      إهمالُك وحده — وهو الفرق الوحيد الذي يستطيع صاحبه أن يفعل شيئًا حياله.
+      ولذلك `isExpiredBooking` لا `status==='rejected'`.
+   ⚠️ **ويُخفى عند الصفر**: صفرٌ هنا خبرٌ سارّ، ولوحٌ يقول «٠» يُدرَّب صاحبُه
+      على تجاهله فيغفل عنه يوم يصير ثلاثة. */
+function renderOwnerLostWeek(all, td){
+  const box=$('#otLost'); if(!box) return; clear(box);
+  const from = new Date(td+'T12:00:00'); from.setDate(from.getDate()-7);
+  const fromDs = from.toISOString().slice(0,10);
+  const lost=(all||[]).filter(b=>{
+    if(!isExpiredBooking(b)) return false;
+    const ds=String(b.date||'').split('T')[0];
+    return ds >= fromDs && ds <= td;
+  });
+  if(!lost.length) return;
+  const money=lost.reduce((s,b)=>s+(Number(b.price)||0),0);
+  box.append(h('div',{class:'ot-lost'},
+    h('span',{class:'ot-lost-ic','aria-hidden':'true'}, ico('clock','svg-sm')),
+    h('div',{class:'ot-lost-txt'},
+      h('b',{}, t('otLostTitle', { n: nRequests(lost.length), m: formatMoney(Math.round(money)) })),
+      h('span',{}, t('otLostSub', { h: CONFIG.REPLY_DEADLINE_H })))));
 }
 
 /* ═══ «القادم الآن» — سطرٌ واحد يهزم أربع بلاطات ══════════════════════════
@@ -328,13 +380,14 @@ function renderOwnerTimeline(){
       else { cls+='tl-free'; label=t('tlFree'); }
       /* الاسم المنطوق يحمل **الملعب والساعة والحالة** معًا: الخليّة وحدها في
          شبكة لا تُقرأ صفًّا وعمودًا كالجدول، فالسياق يُكتب فيها. */
-      const btn=h('button',{ class:cls, type:'button', disabled:dis||undefined,
+      /* ⚠️ **المغلق صار قابلًا للنقر** بعد أن كان `disabled`: إعادةُ الفتح فعلٌ
+         يقع على المغلق وحده، ومنعُ نقره كان يترك المالك بلا طريقٍ إليه من
+         حيث يراه. والماضي يبقى ميّتًا — لا فعل عليه. */
+      const dead = dis && !cl;
+      const btn=h('button',{ class:cls, type:'button', disabled:dead||undefined,
         'aria-label': `${f.field_name} — ${String(hr).padStart(2,'0')}:00 — ${label}` }, label);
-      if(!dis){
-        btn.addEventListener('click', ()=>{
-          if(b) openOwnerBookingFromTimeline(b);
-          else openClosure(td);
-        });
+      if(!dead){
+        btn.addEventListener('click', ()=> openSlotSheet({ field:f, date:td, hour:hr, booking:b, closure:cl }));
       }
       cellWrap.append(btn); grid.append(cellWrap);
     });
@@ -346,6 +399,75 @@ function renderOwnerTimeline(){
     key('tl-confirmed', t('statusConfirmed')), key('tl-closed', t('tlClosed')),
     key('tl-past', t('tlPast'))));
 }
+/* ═══ ورقة خليّة المخطّط (البند ٦٢) ═══════════════════════════════════════
+   المخطّط كان يُقرأ ولا يُعمَل منه: نقرُ الخليّة يفتح البطاقة أو لوح الإغلاق
+   بحسب امتلائها، فيبقى المالك يخمّن ما ستفعله الضغطة — ويخرج من المخطّط إلى
+   شاشةٍ أخرى ليفعل ما كان يستطيع فعله من مكانه.
+   ⚠️ **ولكل حالةٍ أفعالُها وحدها**: نفس قاعدة أزرار البطاقة («لا يُعرَض إلّا ما
+      يُغيّر شيئًا») مطبَّقةً على الشبكة.
+   ⚠️ **والخانة الفارغة تحمل سياقها**: «هذه الساعة حُجزت ن من آخر ٧ ليالٍ» —
+      رقمٌ مقيس من حجوزات المالك نفسها يمنع إغلاقًا يكلّف صاحبَه أغلى ساعاته.
+      ولا يُعرَض السطر بلا سابقةٍ تُقاس (صفرٌ من سبعٍ لا يُكتب: الغياب ليس خبرًا
+      هنا، والملعب قد يكون جديدًا). */
+function slotHistory(field, hour, date){
+  const all=State.ownerData?.bookings||[]; const base=new Date(date+'T12:00:00');
+  const days=[]; for(let i=1;i<=7;i++){ const d=new Date(base); d.setDate(d.getDate()-i); days.push(d.toISOString().slice(0,10)); }
+  const hit=new Set();
+  all.forEach(b=>{
+    if(String(b.field_id)!==String(field.field_id)) return;
+    if(Number(b.hour)!==Number(hour)) return;
+    if(normStatus(b)!=='confirmed') return;
+    const ds=String(b.date||'').split('T')[0];
+    if(days.includes(ds)) hit.add(ds);
+  });
+  return hit.size;
+}
+function openSlotSheet(o){
+  const { field, date, hour, booking, closure } = o;
+  const body=$('#slBody'), acts=$('#slActions'); if(!body||!acts) return;
+  const st = booking ? normStatus(booking) : null;
+  const stateTxt = closure ? t('tlClosed') : st==='pending' ? t('statusPending')
+                 : st==='confirmed' ? t('statusConfirmed') : t('tlFree');
+  setText('slTitle', `${field.field_name} — ${fmtHour12(hour)}`);
+  setText('slSub', `${date===today()?t('today'):dayLabel(date)} ${shortDate(date)} · ${stateTxt}`);
+  clear(body); clear(acts);
+  /* الزرّ يُمرَّر إلى مُعالِجه: `withLoading` تخرج فورًا بلا زرّ (`if(!btn) return`)،
+     فنداءٌ بلا عنصرٍ حقيقي كان سيصمت تمامًا — لا فعل ولا خطأ. */
+  const act=(cls,label,fn)=>{ const b=h('button',{class:cls, type:'button'}, label); b.addEventListener('click',()=>fn(b)); return b; };
+  const shut=()=>Modal.close('modal-slot', true);
+
+  if(closure){
+    body.append(h('div',{class:'sl-hint'}, closure.reason ? t('slClosedWhy',{ r:closure.reason }) : t('slClosedNoWhy')));
+    /* إعادةُ الفتح **باليوم لا بالساعة**: `ownerReopenDay` تحذف إغلاقات الملعب
+       في ذلك اليوم كلَّها — والزرّ يقول ذلك بالحرف بدل أن يَعِد بساعة. */
+    acts.append(act('sbtn', t('slReopenDay'), async(b)=>{
+      await ownerReopenDay(b, field, date); renderOwnerTimeline(); shut(); }));
+    Modal.open('modal-slot'); return;
+  }
+  if(booking){
+    const row=(icon,val)=>h('div',{class:'dc-fact'}, ico(icon,'svg-sm'), h('bdi',{}, String(val==null?'-':val)));
+    body.append(h('div',{class:'dc-facts'},
+      row('person', booking.name||'-'), row('phone', booking.phone||'-'),
+      row('money', formatCurrency(booking.price||0))));
+    put(body, custHistLine(booking));
+    const phone=normalizePhone(booking.phone||'');
+    if(st==='pending'){
+      acts.append(act('sbtn', t('slAnswerHere'), ()=>{ shut(); openDecideSheet(booking); }));
+    } else {
+      acts.append(act('sbtn', t('slOpenCard'), ()=>{ shut(); openOwnerBookingFromTimeline(booking); }));
+    }
+    if(phone) acts.append(h('a',{class:'cbtn', href:'tel:'+phone}, ico('phone','svg-sm'), ' '+t('slCallPlayer')));
+    Modal.open('modal-slot'); return;
+  }
+  /* خانة فارغة: السياق أوّلًا ثمّ الفعلان — إغلاقٌ يسحبها من العرض، أو حجزٌ
+     خارجيّ يملؤها بمن اتّصل على الهاتف. وكلاهما كان يستلزم مغادرة المخطّط. */
+  const n=slotHistory(field, hour, date);
+  if(n) body.append(h('div',{class:'sl-hint'}, t('slFreeHistory',{ n: nTimes(n) })));
+  acts.append(act('sbtn', t('slAddManual'), ()=>{ shut(); openManual({ fieldId:String(field.field_id), date, hour }); }));
+  acts.append(act('cbtn', t('slCloseHour'), ()=>{ shut(); openClosure(date, { fieldId:String(field.field_id), hour }); }));
+  Modal.open('modal-slot');
+}
+
 /* ═══════════ تجزئة التقارير بين الأماكن (ج-٥) ═══════════════════════════
    بقيّة اللوحة تصف **المكان المختار** — والجلبة نفسها مقصورة عليه، فلا خلط.
    وهذا اللوح وحده يقارن، ولا يُعرَض إطلاقًا لمالكِ مكان واحد.
@@ -696,11 +818,62 @@ function bookingAge(b){
   const label = mins<1 ? t('ageNow') : mins<60 ? t('ageMin',{n:mins}) : mins<1440 ? t('ageHr',{n:Math.floor(mins/60)}) : t('ageDay',{n:Math.floor(mins/1440)});
   return { label, cls: mins<15?'age-ok' : mins<60?'age-warn' : 'age-late' };
 }
+
+/* ═══ تاريخ العميل — أهمّ معلومةٍ تُغيّر قرار القبول، وكانت غائبة ═══════════
+   كان المالك يقرأ اسمًا ورقمًا ويقرّر: أهذا زبونٌ من سنة، أم رقمٌ غاب مرّتين،
+   أم أوّل مرّة؟ ثلاثة أجوبةٍ تُغيّر القرار، وكلُّها في `State.ownerData.bookings`
+   عنده أصلًا — لا طلب شبكة ولا عمود جديد.
+   ⚠️ **المطابقة على الرقم لا على الاسم**: العميل عندنا **رقم هاتف** لا حساب
+      (نفس تعريف `/admin` حرفيًّا)، والاسم يُكتب مرّةً «أحمد» ومرّةً «احمد».
+      و`normalizePhone` هي نفسها التي يُشتقّ منها بريدُ الدخول ⇒ صيغتان لرقمٍ
+      واحد تُقرآن واحدًا.
+   ⚠️ **ولا يُعدّ إلّا ما مضى فعلًا** (`isFinished`): حجزٌ مؤكَّد الأسبوع القادم
+      ليس سجلًّا بعد، وعدُّه يجعل كلَّ عميلٍ جديد يبدو قديمًا.
+   ⚠️ **و«أكثر عملائك» تحت العتبة لا تُقال**: صدارةٌ بحجزين تصف قلّة البيانات
+      لا العميل — نفس `OWNER_MIN_N` المطبَّقة في التقارير. */
+function customerHistory(b){
+  const phone = normalizePhone(b && b.phone);
+  if(!phone) return null;
+  const all = State.ownerData?.bookings || [];
+  const mine = [], byPhone = {};
+  all.forEach(x=>{
+    const p = normalizePhone(x.phone); if(!p) return;
+    if(normStatus(x)==='confirmed' && isFinished(x)) (byPhone[p] ||= []).push(x);
+    if(p===phone && String(x.row_number)!==String(b.row_number)) mine.push(x);
+  });
+  const done = (byPhone[phone]||[]).filter(x=>String(x.row_number)!==String(b.row_number));
+  const n = done.length;
+  if(!n) return { text: mine.length ? t('chFirstPlay') : t('chNew'), cls:'ch-new' };
+  const noShows = done.filter(isNoShow).length;
+  /* الصدارة تُقاس على **من لعب فعلًا** لا على من أرسل طلبًا: أكثر عملائك هو
+     أكثرهم حضورًا، لا أكثرهم طلبًا. */
+  const top = Object.values(byPhone).reduce((m,l)=>Math.max(m,l.length), 0);
+  if(noShows) return { text: t('chWithNoShow', { n: nBookings(n), k: nTimes(noShows) }), cls:'ch-warn' };
+  if(n >= OWNER_MIN_N && n === top) return { text: t('chTop', { n: nBookings(n) }), cls:'ch-ok' };
+  return { text: t('chClean', { n: nBookings(n) }), cls:'ch-ok' };
+}
+function custHistLine(b){
+  const ch = customerHistory(b); if(!ch) return null;
+  return h('div',{class:'cust-hist '+ch.cls}, ico('person','svg-sm'), h('span',{}, ch.text));
+}
+/* ملاحظة اللاعب — نصٌّ من مستخدم ⇒ يمرّ بـ`h()` (textContent) لا بـ`innerHTML`.
+   والسقف مفروضٌ في القاعدة (‏240) فلا يفيض السطر مهما أُرسل. */
+function noteLine(b){
+  const txt = String((b && b.note) || '').trim(); if(!txt) return null;
+  return h('div',{class:'bk-note-said'},
+    h('span',{class:'bk-note-said-lbl'}, t('bkNoteSaid')),
+    h('bdi',{class:'bk-note-said-txt'}, txt));
+}
 function ownerBookingCard(b){
-  const lbl=statusLabel(runtimeStatus(b));
-  const age=bookingAge(b);
-  const dl=replyDeadlineChip(b);
-  const card=h('div',{class:'card booking-strip '+normStatus(b)+(isNoShow(b)?' bk-noshow':''), style:{marginBottom:'14px'}},
+  /* 🔴 **الشارة وشريحتا العمر والمهلة خرجت كلُّها إلى الشريط العلوي** (الدفعة ٤٠):
+     كانت أربعةَ عناصر مكدَّسةً في عمودٍ بأعلى اليمين تقول شيئًا واحدًا، وتزاحم
+     اسمَ الملعب على أضيق موضعٍ في البطاقة. وما بقي في هذا الركن شارةُ «لم يحضر»
+     وحدها — وهي **حقيقةٌ أخرى** لا حالةٌ ثانية. */
+  const card=h('div',{class:'card booking-strip has-hd '+normStatus(b)+(isNoShow(b)?' bk-noshow':''), style:{marginBottom:'14px'}});
+  card.append(bookingStripHead(b, true));
+  const body=h('div',{class:'bk-body'});
+  card.append(body);
+  body.append(
     h('div',{style:{display:'flex',justifyContent:'space-between',gap:'8px',alignItems:'flex-start',marginBottom:'9px'}},
       h('div',{class:'owner-bk-head'},
         // أفاتار أحرف العميل (م4، نمط المرجع) — تمييز بصري سريع لصاحب الحجز
@@ -716,20 +889,22 @@ function ownerBookingCard(b){
           h('div',{style:{display:'flex',gap:'10px',marginTop:'4px',flexWrap:'wrap'}},
             h('span',{class:'info-line muted'}, ico('cal','svg-sm'), ' '+b.date),
             h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time)))),
-      h('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'5px'}},
-        h('span',{class:'badge '+lbl.c}, lbl.t),
-        isNoShow(b) ? h('span',{class:'badge badge-red'}, t('noShowBadge')) : null,
-        age && h('span',{class:'age-chip '+age.cls}, '⏱ '+age.label),
-        // العدّاد تحت العمر: العمر يقول «منذ متى وصل»، والعدّاد يقول «كم بقي» —
-        // والثاني هو الذي يُحرّك، والأوّل هو الذي يُفسّر.
-        dl && h('span',{class:'dl-chip '+dl.cls}, dl.label))),
+      isNoShow(b) ? h('span',{class:'badge badge-red', style:{flexShrink:'0'}}, t('noShowBadge')) : null),
+    );
+  body.append(
     h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px',marginBottom:'11px'}},
       h('span',{class:'info-line'}, ico('person','svg-sm'), ' '+(b.name||'-')),
       h('span',{class:'info-line'}, ico('phone','svg-sm'), ' '+(b.phone||'-')),
       h('span',{class:'info-line'}, ico('resize','svg-sm'), ' '+(b.players||'-')),
       h('span',{class:'info-line'}, ico('money','svg-sm'), ' '+formatCurrency(b.price||0)),
-      h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct')))
-  );
+      h('span',{class:'info-line', style:{color:isOwnerManual(b)?'#2563eb':'var(--ink-2)'}}, isOwnerManual(b)?t('externalBooking'):t('srcPrefix')+(b.source||'direct'))));
+  /* سطر التاريخ **على المعلّق وحده**: هو الموضع الذي يُتَّخذ فيه قرار، وعلى
+     المؤكَّد يصير خبرًا لا يُغيّر شيئًا — والقاعدة المكتوبة في هذا الملفّ
+     أنّ ما لا يُغيّر شيئًا لا يُعرَض. */
+  if(normStatus(b)==='pending') put(body, custHistLine(b));
+  /* ملاحظة اللاعب (ترحيل 33) — تُعرَض في **كل** الحالات لا على المعلّق وحده:
+     «بنحتاج صدريّات» يبقى نافعًا بعد القبول إلى أن تُلعب المباراة. */
+  put(body, noteLine(b));
   /* (٤.٥) المالك يعرف شيئًا واحدًا جديدًا: هذا الحجز مباراة مفتوحة وكم عددها.
      ولا يُدير مقاعد ولا يرى منضمّين — ومسؤوليّته **لم تتغيّر**: حجزٌ واحد،
      صاحبُ حجزٍ واحد، دافعٌ واحد. والسطر يقول ذلك صراحةً كي لا يظنّ أنه صار
@@ -740,15 +915,15 @@ function ownerBookingCard(b){
      الذي تُغيّره المعلومة هو قرار القبول نفسه، فمكانها قبله لا بعده. */
   if (b.visibility === 'open'){
     const total=Number(b.needed||0), live = normStatus(b)==='confirmed';
-    card.append(h('div',{class:'own-open'},
+    body.append(h('div',{class:'own-open'},
       h('span',{class:'own-open-badge'+(live?'':' pending')}, t(live?'gmBadgeLive':'gmBadgeWaiting'), ' · ',
         // العدد الذي يهمّ المالك واحد: **كم إنسانًا يدخل ملعبه** — لا تفصيل
         // المقاعد (منشور/مُحضَر) وهو شأن المضيف. و«حتى» لأن المقاعد قد لا تمتلئ.
         t('gmOwnerUpTo', { n: total })),
       h('span',{class:'own-open-note'}, t('gmOwnerNote'))));
   }
-  if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('expiredReason')));
-  else if (b.cancel_reason) card.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+b.cancel_reason));
+  if (isExpiredBooking(b)) body.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('expiredReason')));
+  else if (b.cancel_reason) body.append(h('div',{class:'reason-box', style:{marginTop:'0',marginBottom:'11px'}}, t('cancelReasonPrefix')+reasonText(b.cancel_reason)));
   const mk=(cls,txt,st)=>{ const x=h('button',{class:'owner-action '+cls}, txt); x.addEventListener('click',()=>updateBookingStatus(x,b.row_number,st)); return x; };
   const waBtn=()=>h('a',{href:'https://wa.me/'+String(b.phone||'').replace(/^0/,'962'),target:'_blank',rel:'noopener',class:'owner-wa-link'}, h('button',{class:'owner-action owner-wa'}, ico('wa','svg-sm'), ' '+t('actWhatsapp')));
   if (normStatus(b)==='pending'){
@@ -762,8 +937,8 @@ function ownerBookingCard(b){
           والورقة **هي** تلك النافذة وقد صارت تحمل القرارين معًا. */
     const open=h('button',{class:'owner-action owner-approve owner-decide-open'}, t('dcOpen'));
     open.addEventListener('click', ()=>openDecideSheet(b));
-    card.append(h('div',{class:'owner-decide'}, open));
-    card.append(h('div',{class:'owner-actions-sec'}, waBtn()));
+    body.append(h('div',{class:'owner-decide'}, open));
+    body.append(h('div',{class:'owner-actions-sec'}, waBtn()));
   } else {
     const actions=h('div',{style:{display:'flex',gap:'7px',flexWrap:'wrap'}});
     /* 🔴 **الأزرار تتبع الحالة** (بلاغ المالك 2026-08-13). كانت الحالات الثلاث
@@ -792,7 +967,7 @@ function ownerBookingCard(b){
       ns.addEventListener('click', ()=>ownerToggleNoShow(ns, b));
       actions.append(ns);
     }
-    card.append(actions);
+    body.append(actions);
   }
   return card;
 }
@@ -1492,6 +1667,10 @@ function openDecideSheet(b){
     row('person', b.name||'-'),
     row('phone', b.phone||'-'),
     row('money', formatCurrency(b.price||0))));
+  /* التاريخ في الورقة كذلك لا على البطاقة وحدها: **هنا** تُضغط «قبول»، وهذه
+     هي المعلومة الوحيدة التي تفصل بين زبونٍ من سنة ورقمٍ غاب مرّتين. */
+  put(body, custHistLine(b));
+  put(body, noteLine(b));
   /* المباراة المفتوحة تُقال **قبل** القبول لا بعده: العدد يغيّر القرار نفسه
      (كم إنسانًا يدخل الملعب)، ومعلومةٌ تغيّر قرارًا مكانها قبله. */
   if(b.visibility === 'open'){
@@ -1869,7 +2048,7 @@ const Notifs = {
       seats: nSeats(Number(d.seats_left||0)),
     };
     const reason = (n.kind === 'booking_rejected' || n.kind === 'booking_cancelled') && d.cancel_reason
-      ? t('ntfReason', { r: d.cancel_reason }) : '';
+      ? t('ntfReason', { r: reasonText(d.cancel_reason) }) : '';
     /* نسختان من الجسد: `body` خام تُقسَّم في الـDOM ويُلَفّ المدى الزمني
        بـ`<bdi dir="ltr">`، و`bodyNative` نصٌّ عارٍ لشريط النظام حيث لا DOM
        فيُعزَل المدى بمحارف Unicode المكافئة. */

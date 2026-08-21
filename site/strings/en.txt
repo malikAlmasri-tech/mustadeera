@@ -35,7 +35,7 @@ navCta = Book now
 heroBadge = Sports venue booking
 heroTitleA = Your court is ready.
 heroTitleHi = Without a single call.
-heroSub = Browse the venues near you, see the hours that are actually free, and send your request in under a minute. Football pitches are open now, and the other sports are on the way.
+heroSub = Browse the venues near you, see the hours that are actually free, and send your request — the answer comes back from the venue itself. All of it happens inside the app, and this page is its door. Football is what is open for booking today; the other sports are on the way.
 heroCtaPrimary = Download the app
 heroCtaSecondary = Browse the pitches
 heroNote = Free · Android · No card, no online payment
@@ -124,14 +124,10 @@ featPriceRowExtraVal = 0.00
 featPriceTableNote = You pay the venue directly - cash, or however it accepts.
 
 # ---------- How it works ----------
-howEyebrow = How it works
-howTitle = Three steps, one minute.
-howStep1Title = Pick a sport and a venue
-howStep1Desc = Switch sport at the top of the screen, then browse by area. Photos, amenities, price and surface type are all there.
-howStep2Title = Pick a time
-howStep2Desc = The right day, then a free hour. Booked slots aren't shown at all.
-howStep3Title = Send the request
-howStep3Desc = It reaches the pitch straight away and their decision comes back to you. Track it any time from My Bookings.
+howTitle = Three steps between you and the match.
+howStep1Title = Browse and pick your time
+howStep2Title = Send the request — nothing to pay
+howStep3Title = The venue answers you
 
 # ---------- Pitch owners ----------
 ownersEyebrow = For pitch owners
@@ -459,6 +455,9 @@ faqA6 = From the **For venue owners** page: fill in the form and we will call yo
 # what the product even is.
 faqQ7 = Is the app only for football?
 faqA7 = No. Five sports are in the app, and football is what is open for booking today because those are the pitches registered with us. We never show a pitch you cannot book.
+
+faqQ8 = Can I book from this website?
+faqA8 = No. This page only explains what Al-Mustadeera is. Browsing venues and sending requests happen inside the Android app.
 
 # ---------- Directory filter ----------
 plSearchPh = Search by venue or area

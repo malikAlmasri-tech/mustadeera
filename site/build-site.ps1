@@ -572,55 +572,91 @@ function Render-Shots($T, [string]$langCode) {
     $sb.ToString()
 }
 
-function Render-PlacesList($model, $T, [string]$base) {
-    # A list of NAMES. Nothing else.
-    #
-    # This page is not where booking happens (owner decision 1), so its whole
-    # job is: find your pitch, open it. Everything that used to be printed on a
-    # card here - area, city, surface, pitch count, price, stars - is printed in
-    # full on the venue's own page, one tap away. None of it was deleted; it was
-    # never in two places to begin with after this change, which is the point:
-    # a card that repeats the detail page is a second copy that drifts.
-    #
-    # No search box, no chips, no sort, no price range either. Seven venues do
-    # not need six controls, and a filter that filters nothing is the exact
-    # thing rule m5 rejects.
+# One row component for both the directory and the home strip.
+#
+# Batch 26 cut this page down to bare names, and its reason still holds: the
+# page is not where booking happens (owner decision 1), so six controls and six
+# facts on seven venues is noise. What it did NOT solve is the other half of the
+# same job - "find your pitch". A column of names alone gives the eye no rhythm
+# and no way to tell two similar names apart, which is exactly what the external
+# reference solved with a numbered list.
+#
+# So each row gains two things and nothing more:
+#   - an index (01, 02, ...) - pure rhythm, no claim, and it tells you how long
+#     the list is before you scroll it.
+#   - the area line - the one fact that actually helps you find your pitch. Not
+#     surface, not price, not stars: those live on the venue page, one tap away,
+#     and printing them here recreates the second copy batch 26 removed.
+#
+# The thumbnail is a hatched placeholder, NOT the seeded image. Every image_url
+# in the database today is a Pexels stock photo, and printing one under a venue
+# name says "this is that pitch" when it is not - rule m5. The gate is the host,
+# so the day an owner uploads a real photo from anywhere else it appears here on
+# the next build with no edit to this file.
+$script:StockHosts = @('images.pexels.com', 'images.unsplash.com')
+
+function Venue-Photo($p) {
+    $u = ''
+    foreach ($f in $p.fields) {
+        $v = [string]$f.image_url
+        if ($v -and ($v -match '^(?i)https?://')) { $u = $v; break }
+    }
+    if (-not $u) { return '' }
+    foreach ($h in $script:StockHosts) { if ($u -like ('*' + $h + '*')) { return '' } }
+    $u
+}
+
+function Render-VenueRows($model, $T, [string]$base, [string]$extraClass) {
     $sb = New-Object System.Text.StringBuilder
-    [void]$sb.Append('<ul class="pl-names">')
+    [void]$sb.Append('<ol class="pl-names' + $extraClass + '">')
+    $i = 0
     foreach ($p in $model) {
+        $i++
         $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
+        $num  = '{0:00}' -f $i
+        # The area line: region and city, whichever exist, joined once.
+        # NOTE: the separator is the HTML entity, not the character. PS 5.1
+        # mis-decodes UTF-8 without a BOM, and a literal middle dot in this file
+        # shipped as mojibake ("mid-dot" rendered as two bytes) - which is the
+        # exact reason CLAUDE.md forbids non-ASCII in .ps1 at all. Each part is
+        # encoded first, then joined, so HtmlEnc never sees the entity's "&".
+        $where = @($p.region, $p.city | Where-Object { $_ -and $_ -ne '' } |
+                   ForEach-Object { HtmlEnc $_ }) -join ' &middot; '
+        $photo = Venue-Photo $p
         [void]$sb.Append('<li><a class="pl-name-link" href="' + $href + '">')
+        [void]$sb.Append('<span class="pl-num" aria-hidden="true">' + $num + '</span>')
+        if ($photo) {
+            [void]$sb.Append('<span class="pl-thumb"><img src="' + (HtmlEnc $photo) + '" alt="" loading="lazy" decoding="async" width="56" height="56"></span>')
+        } else {
+            # Hatched, and labelled in the markup only for the eye - it carries no
+            # information a screen reader needs, so it stays aria-hidden.
+            [void]$sb.Append('<span class="pl-thumb pl-thumb-empty" aria-hidden="true"></span>')
+        }
+        [void]$sb.Append('<span class="pl-name-c">')
         [void]$sb.Append('<span class="pl-name-t">' + (HtmlEnc $p.name) + '</span>')
+        if ($where) { [void]$sb.Append('<span class="pl-name-w">' + $where + '</span>') }
+        [void]$sb.Append('</span>')
         [void]$sb.Append('<svg class="pl-name-arw" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>')
         [void]$sb.Append('</a></li>')
     }
-    [void]$sb.Append('</ul>')
+    [void]$sb.Append('</ol>')
     $sb.ToString()
 }
 
-# The home page's "venues you can book right now" strip. It is the same rows
-# the directory renders, cut to the first few and pointed at /places/ for the
-# rest - the strongest content on the site was buried under nine cards of prose.
-#
-# It is NOT a second card component: the markup is the directory's card with the
-# filter attributes dropped (nothing filters here), so one CSS rule serves both
-# and a change to the card cannot drift between the two pages.
+function Render-PlacesList($model, $T, [string]$base) {
+    Render-VenueRows $model $T $base ''
+}
+
+# The home page's "venues you can book right now" strip - the same rows, cut to
+# the first few and pointed at /places/ for the rest. One component, not two
+# that drift.
 #
 # An empty database renders nothing at all - no heading over a void (rule m5).
 function Render-HomeVenues($model, $T, [string]$base, [int]$take) {
     if ($model.Count -eq 0) { return '' }
     $subset = @($model | Select-Object -First $take)
     $sb = New-Object System.Text.StringBuilder
-    # Same name list the directory renders - one component, not two that drift.
-    [void]$sb.Append('<ul class="pl-names pl-names-home">')
-    foreach ($p in $subset) {
-        $href = $base + '/places/' + [uri]::EscapeDataString($p.slug) + '/'
-        [void]$sb.Append('<li><a class="pl-name-link" href="' + $href + '">')
-        [void]$sb.Append('<span class="pl-name-t">' + (HtmlEnc $p.name) + '</span>')
-        [void]$sb.Append('<svg class="pl-name-arw" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>')
-        [void]$sb.Append('</a></li>')
-    }
-    [void]$sb.Append('</ul>')
+    [void]$sb.Append((Render-VenueRows $subset $T $base ' pl-names-home'))
     # "See all N" only when there is more to see.
     if ($model.Count -gt $subset.Count) {
         [void]$sb.Append('<p class="pl-more"><a class="btn btn-ghost" href="' + $base + '/places/">' +

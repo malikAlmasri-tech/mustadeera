@@ -72,6 +72,17 @@
   --r-sm:10px; --r:14px; --r-lg:20px; --r-xl:28px; --r-full:999px;
   --wrap:1160px;
   --hd-h:66px;
+  /* ارتفاع الرأس بعد التمرير. الرأس `sticky` أي **باقٍ في التدفّق**، فتقليص
+     ارتفاعه يزيح ما تحته 14px مرّةً واحدة عند عتبة `is-scrolled` (‏y>8) —
+     لا في كل إطار. ولا تذبذب عند العتبة: تغيّر ارتفاع المستند لا يغيّر
+     `scrollY`، فالشرط لا ينقلب على نفسه. */
+  --hd-h-sm:52px;
+  /* فجوة شبكة Bento — ومنها يُشتقّ هامش عنوان البلاطة (نصفها) بدل رقمٍ
+     يُكتب بيد فينحرف عنها أوّل مرّة تتغيّر الفجوة. */
+  --bento-gap:14px;
+  /* ارتفاع شريط التنزيل اللاصق. **يُفرَض عليه ويُحجَز في التذييل من نفس
+     التوكن**: رقمان يجب أن يتّفقا مكتوبان في موضعين سيختلفان يومًا. */
+  --dlbar-h:70px;
 
   /* ---- الحركة: مقياس واحد يحكم كل انتقال في الموقع ----
      --ease   خروج هادئ (دخول العناصر) · --spring ارتداد خفيف (الضغط والتفاعل)
@@ -271,11 +282,15 @@ html.dark .btn-sec{color:var(--lime)}
 /* =============================================================
    5 · الهيدر · شريط التقدّم · درج الجوّال
    ============================================================= */
-.hd{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
-  border-bottom:1px solid var(--line);backdrop-filter:blur(12px);
-  /* حافّة الزجاج: خطّ ضوء داخلي عند الحرف العُلوي يفصل الشريط عمّا يمرّ
-     تحته. ساكن تمامًا — الظلّ المتحرّك عند التمرير يبقى على ::after وحده
-     لأن box-shadow غير مركَّب على الـGPU. */
+.hd{position:sticky;top:0;z-index:50;background:var(--bg);
+  border-bottom:1px solid var(--line);
+  /* ⚠️ **خلفية صلبة لا `backdrop-filter`.** الضباب كان `blur(12px)` فوق خلفية
+     بشفافية 88٪ ⇒ طبقة دمجٍ بعرض الشاشة تبقى حيّة **طوال التمرير** لتُعيد
+     ترشيح ما يمرّ تحتها في كل إطار — وهو بالضبط ما أُزيل من التطبيق في
+     §9 و§13 و§28. والفرق المرئي عند أعلى الصفحة صفر: الرأس في التدفّق فوق
+     الهيرو لا فوقه، فالـ88٪ كانت تُركَّب على `--bg` نفسه.
+     ⚠️ وحافّة الزجاج **باقية**: هي خطّ ضوء داخلي ساكن (‏`inset`) لا مُرشِّح،
+     ولا تكلّف طبقة دمج — فالهوية تبقى والكلفة تسقط. */
   box-shadow:inset 0 1px 0 var(--glass-rim)}
 /* طبقة الظلّ منفصلة كي يظهر الظلّ عند التمرير بتغيّر opacity وحده
    (box-shadow نفسه غير مركَّب على الـGPU — تحريكه يُعيد الرسم كل إطار). */
@@ -283,7 +298,12 @@ html.dark .btn-sec{color:var(--lime)}
   box-shadow:var(--sh);opacity:0;transition:opacity var(--t-slow) var(--ease)}
 .hd{isolation:isolate}
 html.is-scrolled .hd::after{opacity:1}
-.hd-in{display:flex;align-items:center;gap:clamp(12px,3vw,28px);min-height:var(--hd-h)}
+.hd-in{display:flex;align-items:center;gap:clamp(12px,3vw,28px);min-height:var(--hd-h);
+  transition:min-height var(--t-slow) var(--ease)}
+/* الرأس التكيّفي: مرحّبٌ عند القمّة ومضغوطٌ بعدها. والتقليص يقع **مرّة واحدة**
+   عند عتبة `is-scrolled` لا في كل إطار، فلا تخطيط متكرّر أثناء التمرير. */
+html.is-scrolled .hd-in{min-height:var(--hd-h-sm)}
+@media (prefers-reduced-motion:reduce){.hd-in{transition:none}}
 .hd-brand{flex-shrink:0;display:block}
 .hd-logo{width:93px;height:34px;object-fit:contain;
   transition:transform var(--t-slow) var(--ease)}
@@ -723,11 +743,13 @@ html.dark .stat-n{color:var(--lime)}
 /* =============================================================
    9 · شبكة Bento
    ============================================================= */
-.bento{display:grid;gap:14px;grid-template-columns:1fr;margin-top:clamp(28px,4vw,44px)}
+.bento{display:grid;gap:var(--bento-gap);grid-template-columns:1fr;margin-top:clamp(28px,4vw,44px)}
 .bt{position:relative;overflow:hidden;isolation:isolate;
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:clamp(20px,2.6vw,28px);box-shadow:var(--sh-sm)}
-.bt h3{font-size:clamp(18px,2vw,21px);margin-bottom:9px}
+/* هامش العنوان = **نصف فجوة الشبكة** (قانون التقارب): ما بين العنوان ووصفه
+   أقرب ممّا بين بطاقةٍ وأختها، فيُقرآن كتلةً واحدة. ومشتقٌّ لا مكتوب. */
+.bt h3{font-size:clamp(18px,2vw,21px);margin-bottom:calc(var(--bento-gap) / 2)}
 .bt p{color:var(--muted);font-size:15.5px;line-height:1.75}
 .bt-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
   background:var(--teal-soft);color:var(--teal);margin-bottom:15px;
@@ -1098,10 +1120,13 @@ html.dark .sport-live .sport-court>svg{opacity:.62}
   box-shadow:var(--sh-sm);overflow:hidden;
   transition:border-color var(--t),box-shadow var(--t-slow) var(--ease)}
 .faq[open]{border-color:var(--line-2);box-shadow:var(--sh)}
+/* ⚠️ **`<summary>` ليس `h1..h3`** فلا تطاله قاعدة العناوين، وكان يرث
+   `--lh-body` (‏1.85) ⇒ 30.5px لنصٍّ 16.5px: سؤالٌ يقود قسمًا كاملًا مطبوعٌ
+   طباعةَ فقرة. الأرقام هنا هي أرقام `h1,h2,h3` نفسها لا أرقامًا جديدة. */
 .faq-q{display:flex;align-items:center;gap:14px;cursor:pointer;list-style:none;
   padding:17px clamp(16px,2.4vw,22px);font-family:var(--f-head);font-weight:700;font-size:16.5px;
-  color:var(--ink);transition:color var(--t-fast)}
-html[lang="ar"] .faq-q{font-family:var(--f-body);font-weight:800}
+  line-height:1.22;color:var(--ink);transition:color var(--t-fast)}
+html[lang="ar"] .faq-q{font-family:var(--f-body);font-weight:800;line-height:1.35}
 .faq-q::-webkit-details-marker{display:none}
 @media (hover:hover){.faq-q:hover{color:var(--teal)} html.dark .faq-q:hover{color:var(--lime)}}
 .faq-ic{flex-shrink:0;margin-inline-start:auto;display:grid;place-items:center;
@@ -1532,6 +1557,7 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
    ⚠️ ولا يُبنى أصلًا في حالة «لا إصدار بعد» (البناء يحذف الجزء كلّه)، فلا
       حاجة إلى حالة معطَّلة هنا. */
 .dlbar{position:fixed;inset-inline:0;inset-block-end:0;z-index:60;
+  min-block-size:var(--dlbar-h);
   padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));
   background:var(--surface);border-top:1px solid var(--line);
   box-shadow:0 -8px 24px rgba(0,0,0,.10);
@@ -1546,6 +1572,16 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
 /* فوق 900px التنقّل كامل وزرّ الهيرو ظاهر ⇒ الشريط تكرار */
 @media (min-width:900px){.dlbar{display:none}}
 @media (prefers-reduced-motion:reduce){.dlbar{transition:none}}
+/* 🔴 **الشريط كان يبتلع آخر التذييل.** مقيس عند 375px في نهاية الصفحة: قمّة
+   الشريط عند 743 و«Switch to English» يقع 764…790 ⇒ **مغطًّى بالكامل وغير
+   قابل للنقر**، و«© 2026» مقصوصٌ نصفه. و`.ft` حشوتها السفلية `0`.
+   ⚠️ ويُحجَز **من نفس التوكن** الذي يفرض ارتفاع الشريط، لا برقمٍ ثانٍ.
+   ⚠️ و`:has` عمدًا: الشريط **لا يُبنى أصلًا** قبل وجود إصدار (البناء يحذف
+      الجزء كلّه) ⇒ حشوةٌ دائمة كانت ستترك فراغًا تحت تذييلٍ لا شريط تحته. */
+@media (max-width:899px){
+  body:has(.dlbar) .ft{
+    padding-block-end:calc(var(--dlbar-h) + env(safe-area-inset-bottom,0px) + 12px)}
+}
 
 /* ⑧ خطوات التثبيت — تُفتَح بعد بدء التنزيل، لأن تحذير Play Protect يظهر هناك */
 .dlsteps{position:fixed;inset:0;z-index:70;display:grid;place-items:end center;
@@ -1575,14 +1611,30 @@ html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::a
    ستّ أدوات وستّ حقائق على سبعة ملاعب. الصفحة ليست مكان الحجز (قرار ١)،
    ومهمّتها أن يجد الزائر اسم ملعبه ويفتحه — والتفاصيل كلّها في صفحته.
    ══════════════════════════════════════════════════════════════════════════ */
-.pl-names{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
-.pl-name-link{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  min-height:56px;padding:14px 18px;border:1px solid var(--line);border-radius:var(--r);
+.pl-names{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:none}
+.pl-name-link{display:flex;align-items:center;gap:12px;
+  min-height:56px;padding:12px 16px;border:1px solid var(--line);border-radius:var(--r);
   background:var(--surface);color:var(--ink);text-decoration:none;font-weight:700;font-size:16px;
   transition:border-color var(--t-fast),transform var(--t) var(--spring)}
 @media (hover:hover){.pl-name-link:hover{border-color:var(--line-2);transform:translateY(-1px)}}
 .pl-name-link:active{transform:scale(.995)}
+/* الرقم إيقاعٌ لا ادّعاء: يقول للعين أين هي من القائمة قبل أن تمرّرها.
+   و`tabular-nums` فلا يرتجف عمود الأرقام بين ٠١ و١١. */
+.pl-num{flex:none;min-width:22px;font-size:12.5px;font-weight:800;color:var(--muted);
+  font-variant-numeric:tabular-nums;letter-spacing:.04em}
+/* النائب المخطَّط — يقول «هنا صورة» ولا يدّعي أنها صورة هذا الملعب.
+   ويتحوّل إلى <img> حقيقية من نفس القاعدة يوم يرفع المالك صورةً غير مخزون. */
+.pl-thumb{flex:none;width:52px;height:52px;border-radius:calc(var(--r) - 6px);overflow:hidden;
+  background:var(--surface-2);display:block}
+.pl-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.pl-thumb-empty{border:1px dashed var(--line-2);
+  background-image:repeating-linear-gradient(135deg,var(--line) 0 4px,transparent 4px 10px)}
+.pl-name-c{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
 .pl-name-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* المنطقة: الحقيقة الوحيدة التي تساعد فعلًا على «إيجاد ملعبك» — وما عداها
+   مطبوعٌ كاملًا في صفحة الملعب على بُعد نقرة (قرار الدفعة ٢٦ يبقى قائمًا). */
+.pl-name-w{font-size:12.5px;font-weight:600;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pl-name-arw{flex:none;color:var(--muted)}
 /* السهم فيزيائي ⇒ يُقلب بالاتجاه */
 html[dir="rtl"] .pl-name-arw{transform:scaleX(-1)}

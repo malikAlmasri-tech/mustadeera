@@ -725,6 +725,10 @@ function setDetailTab(name){
   State.detailTab=name;
   $$('#detailTabs .dtab-btn').forEach(b=>{ const on=b.dataset.dtab===name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on?'true':'false'); });
   $$('#page-detail .dtab-panel').forEach(p=>{ const on=p.dataset.dtabPanel===name; p.hidden=!on; p.classList.toggle('active', on); });
+  /* الإبهام ينزلق بمتغيّر فهرس لا بقياس في JS: التبويبان متساويان
+     (`1fr 1fr`) فالموضع **مشتقٌّ من الشبكة** لا مقيس — وما يُشتقّ لا ينحرف
+     عند تبديل اللغة ولا يحتاج rAF (وهو لا يُطلَق في تبويب مخفيّ — مزلق مسجّل). */
+  const tabs=$('#detailTabs'); if(tabs) tabs.style.setProperty('--dtab-i', name==='about' ? '1' : '0');
 }
 /* سطر التقييم بجانب الاسم — يفتح «عن الملعب» عند قسم التقييمات.
    ⚠️ `hidden` لا نصّ فارغ: مكانٌ بلا تقييم يعرض **لا شيء**، و«★ 0 (0)» ادّعاءٌ
@@ -881,6 +885,24 @@ function renderDetailSticky(){
      ليُنشَر لها مقعد)، ولا تظهر إطلاقًا ما لم يثبت ترحيل 22. */
   const oe=$('#detailOpenEntry');
   if(oe) oe.hidden = !(done && GAMES_OK === true && Session.player());
+  markDetailSteps();
+}
+/* 🔴 **مقياسٌ يُعرَض مرّةً عند نهايته لا يعمل.** كان في المسار مقياسان:
+   أرقامٌ مطبوعة 1·2·3 على صفحة الملعب **لا تتغيّر أبدًا**، ومؤشّرٌ من
+   أربع خطوات لا يظهر إلّا في ورقة المراجعة — أي **عند الخطوة الأخيرة**.
+   والعلاج ليس مكوّنًا ثالثًا بل أن تقول الأرقام القائمة حالتَها: ما اكتمل
+   يحمل ✓، والجاري مميّز، والقادم هادئ. صفرُ وسمٍ جديد وصفرُ مفتاح ترجمة.
+   ⚠️ والعلامة في `::after` من CSS لا نصًّا في العقدة: الرقم يبقى منطوقًا
+      لقارئ الشاشة، وال✓ زخرفةٌ تُرى ولا تُقال مرّتين. */
+function markDetailSteps(){
+  const { field, date, hour } = State.detail;
+  const st=[!!field, !!(field&&date), hour!=null];
+  $$('#page-detail .dtab-panel[data-dtab-panel="book"] .dsec-num').forEach((el,i)=>{
+    const done = !!st[i];
+    const current = !done && (i===0 || !!st[i-1]);
+    el.classList.toggle('is-done', done);
+    el.classList.toggle('is-current', current);
+  });
 }
 function renderSubFields(){
   const el=$('#subFields'); clear(el);
@@ -897,7 +919,12 @@ function renderSubFields(){
              لا يحمل شارة: «مشترك» المفترضة تُرسل لاعبةً إلى ملعبٍ للرجال. */
           fieldGender(f) ? h('span',{class:'gd-badge gd-'+fieldGender(f)}, genderLabel(fieldGender(f))) : null)),
       h('div',{class:'subfield-price'}, formatCurrency(f.price)));
-    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); renderDetailSticky(); });
+    /* 🔴 **دفعٌ للأمام في المسار السعيد.** `scrollToDetailSection` مكتوبة منذ
+       دفعات، ولا تُنادى إلّا عند **الخطأ** (تحقّق ناقص) أو من لوح البدائل
+       — أي أنّ مسار الخطأ موجَّه ومسار النجاح صامت، وهو العكس.
+       مقيس عند 375×667: قسم «اختيار الموعد» يبدأ عند **y=767** ⇒ من
+       اختار ملعبًا لا يرى أيّ يومٍ أصلًا. */
+    card.addEventListener('click', ()=>{ State.detail.field=f; State.detail.hour=null; renderSubFields(); renderDetailHero(); renderDetailDays(); renderDetailTimes(); renderPlaceStats(); setText('dPrice', formatCurrency(f.price)); renderDetailSticky(); scrollToDetailSection('time'); });
     el.append(card);
   });
 }
@@ -944,6 +971,10 @@ function renderDetailDays(){
   for(let i=0;i<7;i++){ const d=dateAfter(i);
     el.append(dayButton(d, i, d===State.detail.date, async()=>{
       State.detail.date=d; State.detail.hour=null; renderDetailDays(); renderDetailSticky(); timeSkeleton($('#detailTimes'),6);
+      /* التمرير إلى الأوقات **فورًا مع الهيكل لا بعد الجلبة**: الهيكل
+         يحجز الارتفاع أصلًا، فانتظار الشبكة يجعل الصفحة تقفز تحت إصبعه
+         بعد أن يكون قد بدأ يقرأ. */
+      scrollToTimes();
       try{ await ensurePublicBookings(); }catch(_){}
       renderDetailDays(); renderDetailTimes();
     }, State.detail.field));
@@ -1059,21 +1090,36 @@ function renderDetailTimes(){
 
    الترتيب: **نفس اليوم أوّلًا** على ملعب فرعي آخر (أقرب بديل نفسيًّا — الموعد
    محفوظ)، ثمّ الأيام التالية بالترتيب على أي ملعب. */
-function findAlternative(){
+/* ⚠️ **مُعمَّمة إلى قائمة، والترتيب كما هو حرفيًّا**: لوح البدائل يريد واحدًا،
+   و«بينما تنتظر» (البند ٣٤) يريد اثنين — ونسخةٌ ثانية من نفس المنطق تنحرف عن
+   الأولى أوّل مرّة تتغيّر قاعدة الترتيب. و`skip` تستثني الخانة التي طُلبت للتوّ:
+   `State.bookedSlots` لا تحملها بعدُ (الطلب `pending` لم تصله جلبةٌ جديدة)،
+   فبلا الاستثناء يقترح التطبيق على اللاعب **نفس ما حجزه قبل ثانية**. */
+function findAlternatives(limit=1, skip){
   const place = State.detail.place; const cur = State.detail.field;
-  if(!place || !cur) return null;
+  if(!place || !cur) return [];
   const fields = (place.fields||[]).filter(f=>f.active!==false);
+  const out=[];
+  const blocked = (field, date, hour) => !!(skip && String(skip.fieldId)===String(field.field_id)
+                                            && skip.date===date && Number(skip.hour)===Number(hour));
   /* المفتوح وحده (ترحيل 17): اقتراحُ خانةٍ مغلقة أسوأ من ألّا نقترح — ننقل
      المستخدم بضغطة إلى زرٍّ لا يستطيع النقر عليه، فيبدو التطبيق مكسورًا. */
-  const firstFreeOn = (field, date) => {
+  const freeOn = (field, date) => {
     const taken=(State.bookedSlots[field.field_id]?.[date])||[];
-    return openSlotsFor(field, date).find(s=>!taken.includes(s.hour)) || null;
+    return openSlotsFor(field, date).filter(s=>!taken.includes(s.hour) && !blocked(field,date,s.hour));
   };
   // ① اليوم نفسه، ملعب فرعي آخر
   for(const f of fields){
     if(String(f.field_id)===String(cur.field_id)) continue;
-    const s=firstFreeOn(f, State.detail.date);
-    if(s) return { field:f, date:State.detail.date, slot:s, sameDay:true };
+    const s=freeOn(f, State.detail.date)[0];
+    if(s){ out.push({ field:f, date:State.detail.date, slot:s, sameDay:true }); if(out.length>=limit) return out; }
+  }
+  /* ①ب ساعةٌ أخرى في **نفس** الملعب ونفس اليوم — لم تكن في الترتيب لأن الطالب
+     الأصلي كان يقف على خانةٍ محجوزة في هذا الملعب، أمّا من أرسل طلبه للتوّ
+     فأقربُ بديلٍ إليه ساعةٌ ثانية في ملعبه هو. */
+  if(skip){
+    const s=freeOn(cur, State.detail.date)[0];
+    if(s){ out.push({ field:cur, date:State.detail.date, slot:s, sameDay:true }); if(out.length>=limit) return out; }
   }
   // ② الأيام التالية — الملعب الحالي أوّلًا في كل يوم، فهو ما اختاره المستخدم.
   // الفهرس يُشتقّ بالمطابقة على dateAfter نفسها التي بنت الشريط: لا حساب فرق
@@ -1083,12 +1129,13 @@ function findAlternative(){
   for(let i=start+1;i<7;i++){
     const d=dateAfter(i);
     for(const f of [cur, ...fields.filter(f=>String(f.field_id)!==String(cur.field_id))]){
-      const s=firstFreeOn(f, d);
-      if(s) return { field:f, date:d, slot:s, sameDay:false };
+      const s=freeOn(f, d)[0];
+      if(s){ out.push({ field:f, date:d, slot:s, sameDay:false }); if(out.length>=limit) return out; }
     }
   }
-  return null;
+  return out;
 }
+function findAlternative(){ return findAlternatives(1)[0] || null; }
 /* ═══════════ (٤) المباريات المفتوحة ═══════════════════════════════════════
    الحصّة **تقديرية دائمًا**: سعر الخانة ÷ عدد اللاعبين. ولا تُخزَّن — تُحسَب من
    `bookings.price` وهي لقطةٌ لا تتغيّر بتغيّر قواعد التسعير (ترحيل 18)، فما
@@ -1516,6 +1563,10 @@ function showJoinSuccess(g){
     /* الحصّة **موسومة تقديرًا** هنا كما في كل موضع آخر — رقمٌ عارٍ يُقرأ سعرًا مقطوعًا */
     cell(t('rvPrice'), h('span',{}, h('bdi',{dir:'ltr'}, formatCurrency(gameShare(g.price, total))),
       ' ', h('small',{class:'gc-est'}, t('gmShareTag'))), 'money')));
+  /* المسار ثمّ البدائل ثمّ الأزرار: «ماذا يحدث الآن» قبل «ماذا أفعل الآن»،
+     وكلاهما قبل مغادرة الشاشة. */
+  renderSuccessFlow();
+  renderSuccessWait(info);
   const act=$('#successActions'); clear(act);
   const goB=h('button',{class:'sbtn'}, t('navBookings')); goB.addEventListener('click',()=>{ Modal.close('success'); showPage('bookings'); });
   const goC=h('button',{class:'cbtn'}, ico('cal','svg-sm'), ' '+t('addToCalendar'));
@@ -1820,14 +1871,32 @@ function renderPlayerStats(list){
 function detailSelectionComplete(){
   const d=State.detail; return !!(d.place && d.field && d.date && d.hour!=null);
 }
+/* تمريرٌ إلى شبكة الأوقات وحدها لا إلى رأس قسم الموعد: بعد اختيار اليوم
+   يكون صفُّ الأيام وراءه، وإعادتُه إلى أعلى الشاشة ترجع بالمستخدم خطوة.
+   ⚠️ و`block:'nearest'` لا `'start'`: إن كانت الشبكة مرئية أصلًا فلا تتحرّك
+      الصفحة — تمريرٌ بلا حاجة يُقرأ عطلًا لا مساعدة. */
+function scrollToTimes(){
+  const g=$('#detailTimes'); if(!g) return;
+  requestAnimationFrame(()=>{ try{ g.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(_){} });
+}
 function scrollToDetailSection(which, focus){
   if(!$('#page-detail')?.classList.contains('active')) showPage('detail');
   const sel = which==='field' ? '.detail-section[aria-label="اختيار الملعب"]' : '.detail-section[aria-label="اختيار الموعد"]';
   const sec=$(sel);
   requestAnimationFrame(()=>{ if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'}); if(focus){ const f=$(focus); if(f){ try{ f.focus(); }catch(_){} } } });
 }
-function updateBookingStep(){   // النافذة دائماً عند خطوة المراجعة: 1 و2 مكتملتان، 3 نشطة
-  $$('#bkSteps .bk-step').forEach(s=>{ const n=Number(s.dataset.step); s.classList.toggle('done', n<3); s.classList.toggle('active', n===3); s.setAttribute('aria-current', n===3?'step':'false'); });
+/* 🔴 **المؤشّر كان مزاحًا خطوةً كاملة.** الدفعة ٢٥ جعلت الخطوات
+   **أربعًا** (ملعب · يوم · وقت · تأكيد) وبقيت هذه الدالّة على ثلاث:
+   `n<3` مكتملة و`n===3` نشِطة ⇒ **«الوقت» يُعلَم نشِطًا وأنت في
+   المراجعة، و«التأكيد» لا يُعلَم أصلًا** — مقيس: نقطتُه تردّ `rgb(255,255,255)`
+   أي خلفيّتها الافتراضية، و`aria-current` يقع على الخطوة الخطأ. والوسم نفسه
+   يقول الصواب (`class="bk-step active" data-step="4"`)، فكان JS ينقضه عند
+   أوّل فتح. **والعدد يُقرأ من الوسم لا يُكتب رقمًا** فلا ينحرف مرّةً أخرى
+   يوم تُضاف خطوة خامسة. */
+function updateBookingStep(){
+  const li=$$('#bkSteps .bk-step');
+  const last=li.length;   // المراجعة هي الأخيرة دائمًا
+  li.forEach(s=>{ const n=Number(s.dataset.step); s.classList.toggle('done', n<last); s.classList.toggle('active', n===last); s.setAttribute('aria-current', n===last?'step':'false'); });
 }
 function openBookingReview(preferOpen){
   const { place, field, date, hour } = State.detail;
@@ -1860,6 +1929,20 @@ function openBookingReview(preferOpen){
     /* «مفتوحة» تُختار سلفًا لمن دخل من بطاقة «ناقصك لاعبين؟» وحده — وبشرط أن
        يكون الترحيل ثابتًا **الآن** لا أن يكون كان ثابتًا حين ظهر الزرّ. */
     setVisPick((preferOpen && GAMES_OK === true) ? 'open' : 'private');
+  }
+  /* ملاحظة لصاحب الملعب (ترحيل 33) — تُصفَّر عند كل فتح كما يُصفَّر نوع المباراة:
+     ما قيل عن مباراةٍ لا يُعاد على التي بعدها.
+     ⚠️ **والحقل يُخفى كلُّه إن غاب العمود** (‏`SB_BK_NOTE` فارغة بعد أوّل جلبةٍ
+        على قاعدةٍ لم يُشغَّل عليها الترحيل): حقلٌ يُكتب فيه ثمّ يُهمَل ما كُتب
+        أسوأ من غيابه (م5). */
+  const fold=$('#bkNoteFold'), noteIn=$('#bkNoteInput');
+  if(fold && noteIn){
+    fold.hidden = !SB_BK_NOTE;
+    fold.open = false; noteIn.value = '';
+    /* إسناد الخاصّية لا `addEventListener`: العنصر ثابت في HTML ولا يُعاد
+       إنشاؤه، فالإضافة تكدّس مستمعًا في كل فتح (مزلقٌ مسجَّل). */
+    noteIn.oninput = ()=> setText('bkNoteCount', noteIn.value.length ? `${noteIn.value.length}/240` : '');
+    setText('bkNoteCount','');
   }
   renderReview();
   Modal.open('modal-booking');
@@ -1933,7 +2016,73 @@ function resetSuccessCard(){
   const eb=$('#successEyebrow'); if(eb){ eb.hidden=true; eb.textContent=''; }
   const icon=$('#successIcon'); if(icon){ icon.classList.remove('is-check'); icon.textContent='🎉'; }
   const sum=$('#successSummary'); if(sum){ sum.hidden=true; clear(sum); }
+  const fl=$('#successFlow'); if(fl){ fl.hidden=true; clear(fl); }
+  const wt=$('#successWait'); if(wt){ wt.hidden=true; clear(wt); }
   const act=$('#successActions'); if(act){ clear(act); act.append(h('button',{class:'sbtn','data-action':'closeSuccess'}, t('successOkBtn'))); }
+}
+
+/* ═══ مسار الانتظار — ثلاث خطوات (البند ٣٢) ═══════════════════════════════
+   الإيصال كان يقول «وصل طلبك» ثمّ يصمت: لا يقول ما الذي يحدث الآن، ولا أنّ
+   الردّ يصل **في الحالتين** (وهو أكثر ما يقلق: «وإذا رفضوا، بعرف ولّا بضلّني
+   مستنّي؟»). والخطوات تقول ذلك بلا وعدِ زمنٍ لا نملكه.
+   ⚠️ **والخطوة الثانية لا تَعِد بمدّة**: «عادةً يردّ خلال ن» تُعرَض في مكانها
+      (فوق زرّ التأكيد) حين تُقاس وحدها — والعرض يحجب ما دون سبعة ردود.
+   ⚠️ والحركة `aria-hidden`: النصّ نفسه يقول الحالة، ونبضةٌ تُنطق ضجيج. */
+function renderSuccessFlow(){
+  const box=$('#successFlow'); if(!box) return; clear(box);
+  const steps=[
+    { k:'sent',   cls:'is-done' },
+    { k:'review', cls:'is-live' },
+    { k:'answer', cls:'' }
+  ];
+  const list=h('ol',{class:'sflow'});
+  steps.forEach((st,i)=>{
+    list.append(h('li',{class:'sflow-step '+st.cls},
+      h('span',{class:'sflow-rail','aria-hidden':'true'},
+        h('span',{class:'sflow-dot'}), i<steps.length-1 ? h('span',{class:'sflow-line'}) : null),
+      h('span',{class:'sflow-txt'},
+        h('b',{}, t('sfl_'+st.k)),
+        h('span',{}, t('sfl_'+st.k+'_sub')))));
+  });
+  box.append(list); box.hidden=false;
+}
+
+/* ═══ «بينما تنتظر» (البند ٣٤) ════════════════════════════════════════════
+   الطلب لا يحجز شيئًا حتى يُقبَل، فالانتظار وقتٌ ميّت يستطيع اللاعب أن يملأه
+   بطلبٍ ثانٍ لو أراد. والبدائل من **نفس** محرّك لوح البدائل (الدفعة ١٤) —
+   لا قائمة ثانية تنحرف.
+   ⚠️ **وتُستثنى الخانة التي طُلبت للتوّ**: `State.bookedSlots` لا تحملها بعد،
+      فبلا الاستثناء يقترح التطبيق ما حجزه صاحبه قبل ثانية.
+   ⚠️ **ولا يُعرَض اللوح بلا بديل** — عنوانٌ فوق فراغ أسوأ من غيابه (م5). */
+function renderSuccessWait(info){
+  const box=$('#successWait'); if(!box) return; clear(box);
+  let alts=[];
+  try{ alts = findAlternatives(2, { fieldId:info.field && info.field.field_id, date:info.date, hour:info.hour }); }catch(_){ alts=[]; }
+  if(!alts.length) return;
+  box.append(h('div',{class:'swait-ttl'}, t('sflWhileWait')));
+  alts.forEach(a=>{
+    /* عزلُ الاسم والوقت بـ<bdi> كما في لوح البدائل بالحرف: اسم الملعب عربي
+       دائمًا («ملعب 2») والجملة قد تكون إنجليزية، والمدى رقمان تفصلهما شرطة
+       محايدة ينقلبان في السطر العربي. */
+    const row=h('button',{class:'swait-row', type:'button'},
+      h('span',{class:'swait-txt'},
+        h('bdi',{dir:'ltr', class:'swait-time'}, slotDisplay(a.slot)),
+        h('span',{class:'swait-sub'},
+          a.sameDay ? t('sflToday') : dayLabel(a.date), ' · ', h('bdi',{}, a.field.field_name))),
+      h('span',{class:'swait-go'}, t('sflTake')));
+    row.addEventListener('click', ()=>{
+      Modal.close('success');
+      /* **نفس** أفعال زرّ لوح البدائل حرفيًّا (لا `renderDetail` — لا وجود لها):
+         ننقل الاختيار ونعيد رسم أجزاء الصفحة، ولا نفتح المراجعة تلقائيًّا —
+         اللاعب يقرّر متى يرسل طلبًا ثانيًا. */
+      State.detail.field=a.field; State.detail.date=a.date; State.detail.hour=a.slot.hour;
+      renderSubFields(); renderDetailHero(); setText('dPrice', formatCurrency(a.field.price));
+      renderDetailDays(); renderDetailTimes(); renderPlaceStats(); renderDetailSticky();
+      scrollToDetailSection('time','#detailTimes .tbtn.sel');
+    });
+    box.append(row);
+  });
+  box.hidden=false;
 }
 function showSimpleSuccess(text){
   resetSuccessCard();
@@ -2014,7 +2163,58 @@ function showBookingSuccess(info, bookingId){
   Modal.open('success');
 }
 
+/* ═══ شريط حالة البطاقة — مكوّن واحد للوجهين (الدفعة ٤٠) ══════════════════
+   الحالة الواحدة كانت موزّعة على **خمسة حاملين** على البطاقة نفسها: خطٌّ جانبيّ
+   ٣px · شارةٌ أعلى اليمين · شريحةُ عمر · شريحةُ مهلة · وصندوق `.pw-strip` الذي
+   أضافته الدفعة ٣٩. خمسةُ عناصر تقول شيئًا واحدًا، وأربعةٌ منها مكدَّسةٌ في
+   الزاوية العليا فتتنافس على أضيق موضعٍ في البطاقة.
+   والبديل بندٌ **بعرض البطاقة** يُقرأ قبل المحتوى: نقطة · اسم الحالة · وعمرُها
+   في الطرف الآخر · وتحته شريطُ المهلة ٣px ملتصقًا لا صندوقًا يأكل ٨٩ بكسلًا.
+   ⚠️ **والحالة تبقى محمولةً على أكثر من اللون** كما تشترط الورقة: النصّ يقولها
+      صراحةً («بانتظار ردّ الملعب» لا لونٌ أصفر وحده)، والنقطة شكلٌ ثانٍ.
+   ⚠️ **ولا يُنسَخ المكوّن**: نفس الدالّة تبني شريط اللاعب وشريط المالك، والفرق
+      وسيطٌ واحد — من يقرأ الحالة أنت أم هو. ونسختان تنحرفان أوّل تعديل. */
+const STRIP_TONE = { 'badge-green':'ok', 'badge-yellow':'wait', 'badge-red':'no', 'badge-blue':'info' };
+function bookingStripHead(b, forOwner){
+  const rt  = runtimeStatus(b);
+  const lbl = statusLabel(rt);
+  const tone = STRIP_TONE[lbl.c] || 'wait';
+  /* المعلّق يقول **من ينتظر مَن**: «بانتظار ردّ الملعب» للّاعب و«بانتظار ردّك»
+     للمالك — نفس الحالة، وجملتان لأن القارئ اثنان. وما عدا المعلّق اسمُه واحد. */
+  const text = (normStatus(b)==='pending')
+    ? (forOwner ? t('otPendingLbl') : t('pwWaiting'))
+    : (isExpiredBooking(b) ? t('statusExpired') : lbl.t);
+  /* 🔴 **خانةٌ واحدة تحمل الأعجل من الاثنين، لا الاثنان معًا.** كان على البطاقة
+     شريحتان: العمر («قبل ١٢ دقيقة» — يفسّر) والمهلة («بقيت ٤ ساعات» — تُحرّك).
+     وإظهارُهما دائمًا يعيد التكديس الذي جاء الشريط ليحلَّه، وإسقاطُ إحداهما
+     يخسر معنًى. فالخانة تعرض العمر ما دام الوقت مريحًا، وتنقلب إلى المهلة حين
+     تدخل نافذة التحذير أو تفوت — أي أنّها تحمل **ما يهمّ في هذه اللحظة** وحده. */
+  const age = bookingAge(b);
+  const dlc = replyDeadlineChip(b);
+  const urgent = dlc && (dlc.cls==='dl-warn' || dlc.cls==='dl-over');
+  const side = urgent ? dlc.label : (age ? age.label : null);
+  const head = h('div',{class:'bk-hd tone-'+tone+(urgent?' is-urgent':'')},
+    h('span',{class:'bk-hd-dot','aria-hidden':'true'}),
+    h('span',{class:'bk-hd-lbl'}, text),
+    side ? h('span',{class:'bk-hd-ago'}, side) : null);
+  /* شريط المهلة: للمعلّق وحده وبطابعٍ زمنيّ صالح. ونسبته من **الوصول إلى
+     الموعد النهائي** لا من الآن — فهو يقول كم استُهلك لا كم بقي، وهو ما يجعل
+     امتلاءه إنذارًا. ⚠️ وزخرفةٌ صرفة (`aria-hidden`): النصّ تحته يقول الرقم. */
+  let bar = null;
+  if (normStatus(b)==='pending'){
+    const created = new Date(String(b.timestamp||'').replace(' ','T')).getTime();
+    const dl = replyDeadlineMs(b);
+    if(!Number.isNaN(created) && !Number.isNaN(dl) && dl > created){
+      const pct = Math.min(100, Math.max(0, (Date.now()-created)/(dl-created)*100));
+      bar = h('div',{class:'bk-hd-bar'+(pct>=100?' is-over':''),'aria-hidden':'true'},
+               h('span',{style:{inlineSize:pct+'%'}}));
+    }
+  }
+  return h('div',{class:'bk-hd-wrap'}, head, bar);
+}
+
 /* ===================== RENDER: PLAYER BOOKINGS ===================== */
+
 function playerBookingCard(b){
   const rt = runtimeStatus(b); const lbl = statusLabel(rt);
   const status = normStatus(b);
@@ -2024,10 +2224,12 @@ function playerBookingCard(b){
      بلا كلمة، فيبقى اللاعب يبحث عن زرٍّ حُذف تحت عينيه. */
   const eligible = cancellableByStatus(b);
   const canCancel = eligible && withinCancelWindow(b);
-  const card = h('div',{class:'card booking-strip '+status, style:{marginBottom:'14px'}},
-    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px',marginBottom:'8px'}},
-      h('div',{style:{fontSize:'14px',fontWeight:'800',color:'var(--ink)'}}, b.place_name+' - '+b.field_name),
-      h('span',{class:'badge '+lbl.c}, lbl.t)),
+  /* الجسم في غلافٍ بحشوته: الشريط بعرض البطاقة كاملًا، والبطاقة صارت بلا
+     حشوةٍ خارجية (‏`.booking-strip{padding:0}`) — وإلّا انحسر الشريط عن حافّتيها. */
+  const card = h('div',{class:'card booking-strip has-hd '+status, style:{marginBottom:'14px'}});
+  card.append(bookingStripHead(b, false));
+  const body = h('div',{class:'bk-body'},
+    h('div',{style:{fontSize:'14px',fontWeight:'800',color:'var(--ink)',marginBottom:'8px'}}, b.place_name+' - '+b.field_name),
     h('div',{style:{display:'flex',flexDirection:'column',gap:'5px'}},
       h('div',{class:'info-line muted'}, ico('pin','svg-sm'), ' '+b.city),
       h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap'}},
@@ -2035,13 +2237,30 @@ function playerBookingCard(b){
         h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time)),
       h('div',{style:{display:'flex',gap:'14px',flexWrap:'wrap'}},
         h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+(b.players||'')),
-        h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(b.price))))
-  );
-  /* «انقضت المهلة» تُكتب هنا لا تُخزَّن: الصفّ يحمل `cancel_kind` والجملة
-     تُبنى بلغة المستخدم الحالية — نفس مبدأ الإشعارات (ترحيل 14). ولا نُلبس
-     الملعبَ رفضًا لم يقله. */
-  if (isExpiredBooking(b)) card.append(h('div',{class:'reason-box'}, t('expiredReason')));
-  else if (b.cancel_reason) card.append(h('div',{class:'reason-box'}, t('reasonPrefix')+b.cancel_reason));
+        h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(b.price)))));
+  card.append(body);
+  if (isExpiredBooking(b)) body.append(h('div',{class:'reason-box'}, t('expiredReason')));
+  else if (b.cancel_reason) body.append(h('div',{class:'reason-box'}, t('reasonPrefix')+reasonText(b.cancel_reason)));
+  /* ═══ البند ٣٦: رفضٌ بمخرج ═══
+     الرفض بلا بديل يُقرأ بابًا مغلقًا، والتطبيق يملك محرّك بدائل حيًّا منذ
+     الدفعة ١٤. والزرّ يفتح **صفحة الملعب على نفس اليوم** لا قائمةً مجمَّدة:
+     ما نكتبه الآن قد يُحجَز قبل أن يُقرأ (نفس سبب امتناعنا عن تسمية أوقاتٍ في
+     نصّ الرفض عند المالك).
+     ⚠️ و«انقضت المهلة» تدخل معها: الطلب مات بلا ردّ، وصاحبه ما زال يريد أن يلعب. */
+  if (['rejected','cancelled'].includes(status) && !isFinished(b)){
+    const again=h('button',{class:'cbtn bk-act'}, ico('clock','svg-sm'), ' '+t('seeAltBtn'));
+    again.addEventListener('click', ()=>{
+      openDetail(b.place_id, { awaitFresh:true }).then(()=>{
+        /* اليوم نفسه إن كان ما زال في الشريط (سبعة أيام)، وإلّا اليوم الحالي
+           — ولا نضع تاريخًا مضى: زرٌّ يقود إلى يومٍ لا يُحجَز عطلٌ ظاهر. */
+        const ds = String(b.date||'').split('T')[0];
+        const inRange = Array.from({length:7},(_,i)=>dateAfter(i)).includes(ds);
+        if(inRange){ State.detail.date = ds; renderDetailDays(); renderDetailTimes(); renderDetailSticky(); }
+        scrollToDetailSection('time','#detailDays .day-btn');
+      }).catch(()=>{});
+    });
+    body.append(h('div',{class:'bk-actions'}, again));
+  }
   /* مباراة مفتوحة: شارةٌ على البطاقة وزرُّ إدارة. والحالة تُقال بدقّة —
      **المعلّقة لم تُنشَر بعد** (قيد ①: لا مقعد قبل التأكيد)، والمؤكّدة منشورة. */
   if (b.visibility === 'open'){
@@ -2056,7 +2275,7 @@ function playerBookingCard(b){
       mg.addEventListener('click', ()=>openMatchManage(b));
       box.append(mg);
     }
-    card.append(box);
+    body.append(box);
   }
   if (canCancel){
     const label = b.place_name+' - '+b.field_name;
@@ -2071,9 +2290,9 @@ function playerBookingCard(b){
     const btn=h('button',{class:'cbtn bk-act danger-outline-btn'}, t('cancelBookingBtn'));
     btn.addEventListener('click', ()=>playerCancelBooking(btn, b, label));
     row.append(btn);
-    card.append(row);
+    body.append(row);
   } else if (eligible){
-    card.append(cancelClosedPanel(b));
+    body.append(cancelClosedPanel(b));
   }
   return card;
 }
@@ -2193,8 +2412,12 @@ async function playerCancelBooking(btn, b, label){
      يعد أمامه قرار يستفيد من الحاشية. والمهلة تُذكَر مع كونه داخلها الآن —
      فيعرف أنه يُلغي بحقّه لا في منطقة رمادية. */
   const hint = t('cancelWindowHint',{ h: nHours(CONFIG.CANCEL_WINDOW_H) }) + ' ' + t('playerCancelHint',{label});
-  const reason = await askReason(t('playerCancelTitle'), hint, t('confirmCancelBtn'));
-  if (reason===null) return;
+  /* بلا شرائح هنا: أسبابُ اللاعب لا تُحصى في أربعٍ («ما لحقنا»، «تغيّر الملعب»،
+     «انسحب لاعبان») — والقائمة المغلقة تفيد حيث تُحلَّل الإجابات، وهي عند
+     المالك لا عند اللاعب. والحقل يبقى اختياريًّا كما كان. */
+  const r = await askReason(t('playerCancelTitle'), hint, t('confirmCancelBtn'));
+  if (r===null) return;
+  const reason = r.text || '';
   await withLoading(btn, async()=>{
     try{
       const res = await API.post({ action:'updateBookingStatus', player_token:Session.player(), row_number:b.row_number, status:'cancelled', cancel_reason: reason || t('playerCancelledDefault') });

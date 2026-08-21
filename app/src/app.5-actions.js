@@ -12,20 +12,52 @@ async function updateBookingStatus(btn, rowNumber, status, opts){
     const ok = await askConfirm(t('confirmBookingTitle'), t('confirmBookingMsg')+'\n\n'+info, t('actConfirm'));
     if(!ok) return;
   }
+  let reasonSaid='';
   if (status==='cancelled'||status==='rejected'){
-    const r=await askReason(status==='cancelled'?t('cancelReasonTitle'):t('rejectReasonTitle'), t('reasonHint'), t('confirmWord'), true);
-    if (r===null) return; reason=r;
+    /* البند ٥٩: **ما يصل اللاعب** مكتوبٌ قبل الضغط لا بعده. والسبب وحده لم يكن
+       يكفي: الرفض بلا مخرجٍ يُقرأ بابًا مغلقًا، والتطبيق يملك محرّك بدائل حيًّا
+       منذ الدفعة ١٤ (ملعبٌ آخر بنفس الساعة ⇐ أقرب ساعة ⇐ أقرب يوم). فالجملة
+       تعِد بما يقع فعلًا، **ولا تسمّي وقتًا بعينه**: ما نكتبه الآن يتجمّد، وقد
+       يُحجَز قبل أن يقرأه. */
+    const r=await askReason(status==='cancelled'?t('cancelReasonTitle'):t('rejectReasonTitle'),
+                            t('reasonHint'), t('confirmWord'), true,
+                            { codes: status==='cancelled'?CANCEL_REASONS:REJECT_REASONS,
+                              after: t('reasonAfterNote') });
+    if (r===null) return;
+    reason=r.code; reasonSaid=r.text;
   }
   // فتح تبويب واتساب الآن (ضمن إيماءة المستخدم ⇒ لا يحظره المتصفح) وتوجيهه بعد نجاح التحديث
   const waWin = (booking && normalizePhone(booking.phone)) ? window.open('about:blank','_blank') : null;
+  const prevStatus = booking ? normStatus(booking) : null;
+  const prevReason = booking ? (booking.cancel_reason||'') : '';
   await withLoading(btn, async()=>{
     try{
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(), row_number:rowNumber, status, cancel_reason:reason });
       if (!res.success){ try{ waWin&&waWin.close(); }catch(_){} toast(apiMsg(res.message)||t('updateFail'),'error'); return; }
-      if (booking) sendWhatsApp(booking, status, reason, waWin);
+      if (booking) sendWhatsApp(booking, status, reasonSaid, waWin);
       await loadOwnerDashboard(); await loadData();
       if ($('#page-home').classList.contains('active')) renderPlaces();
+      /* البند ٦٠: التراجع **بعد نجاح الإرسال** لا قبله. المسار المؤجَّل (نرسل
+         بعد خمس ثوانٍ) كان أنظف نظريًّا وفاشلًا عمليًّا: فتحُ واتساب يستلزم
+         إيماءةَ مستخدم، وفتحُه يُخلفّ التطبيق فورًا فيقع «الإرسال عند الخروج»
+         ويموت الشريط قبل أن يُرى. فالإرسال فوريّ، والتراجع كتابةٌ ثانية. */
+      if (prevStatus && prevStatus!==status) offerUndo(rowNumber, prevStatus, prevReason, status);
     }catch(_){ try{ waWin&&waWin.close(); }catch(_){} toast(t('updateErr'),'error'); }
+  });
+}
+/* إعادة الحالة إلى ما كانت عليه. `owns_place` تسمح للمالك بالكتابة على حجوزات
+   مكانه بلا قيدِ اتّجاه (‏`bookings_update` في `01_schema`)، فالرجوع إلى
+   `pending` كتابةٌ مشروعة لا التفافٌ على حارس.
+   ⚠️ ويُمحى السبب معها: سببُ رفضٍ عاد صاحبه عنه لا يبقى معلّقًا على الصفّ. */
+function offerUndo(rowNumber, prevStatus, prevReason, doneStatus){
+  undoToast(t('undoDone_'+doneStatus), async()=>{
+    try{
+      const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(),
+                                 row_number:rowNumber, status:prevStatus, cancel_reason:prevReason });
+      if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('updateFail'),'error'); return; }
+      toast(t('undoOk'),'success');
+      await loadOwnerDashboard(); await loadData();
+    }catch(_){ toast(t('updateErr'),'error'); }
   });
 }
 function sendWhatsApp(b, status, reason='', win=null){
@@ -43,14 +75,61 @@ function sendWhatsApp(b, status, reason='', win=null){
   setTimeout(()=>window.open(url,'_blank'),500);
 }
 
+/* ═══ أسباب مغلقة تُخزَّن رمزًا لا نصًّا (البند ٥٨) ════════════════════════
+   قائمتان لا واحدة: **الرفض** جوابٌ على طلبٍ لم يُقبَل بعد، و**الإلغاء** نقضٌ
+   لاتّفاقٍ قائم — والأسباب المعقولة في الحالتين مختلفة، وخلطُهما يعطي المالك
+   خيارًا لا يصف حالته.
+   ⚠️ **والمخزَّن رمزٌ إنجليزيّ قصير** (`slot_taken`) لا الجملة العربية: النصّ
+      المخزَّن يُجمَّد على لغة لحظة كتابته، فيقرؤه مستخدم الإنجليزية عربيًّا —
+      وهو بالضبط ما بُني له مبدأ «الصفّ يحمل `kind` والجملة تُكتب في الواجهة»
+      في ترحيل ١٤. والرمز يُترجَم عند العرض بـ`reasonText`.
+   ⚠️ **ومرآةٌ في `/admin`**: اللوحة تقرأ `cancel_reason` خامًا، فلها نسخةٌ من
+      هذه القائمة — وإلّا قرأ الأدمن رمزًا عاريًا. */
+const REJECT_REASONS = ['slot_taken','field_closed','maintenance','short_notice'];
+const CANCEL_REASONS = ['maintenance','weather','emergency','slot_taken'];
+/* رمزٌ معروف ⇒ جملةٌ بلغة القارئ الحالية · وما عداه نصُّ المالك كما كتبه. */
+function reasonText(raw){
+  const k=String(raw||'').trim();
+  if(!k) return '';
+  return (REJECT_REASONS.includes(k) || CANCEL_REASONS.includes(k)) ? t('rsn_'+k) : k;
+}
+
 /* ---- Reason modal as a Promise ---- */
-function askReason(title, hint, confirmLabel, required=false){
+/* يُرجع `{code, text}`: `code` يُخزَّن في `cancel_reason`، و`text` هو الجملة
+   المقروءة التي تذهب إلى رسالة الواتساب — الرقم واحد والقارئان اثنان. */
+function askReason(title, hint, confirmLabel, required=false, opts){
   return new Promise(resolve=>{
     const input=$('#reasonInput'), ok=$('#reasonConfirm'), no=$('#reasonCancel');
+    const chipBox=$('#reasonChips'), after=$('#reasonAfter');
+    const codes=(opts && opts.codes) || [];
+    let picked=null;
     setText('reasonTitle',title); setText('reasonHint',hint); input.value=''; ok.textContent=confirmLabel||t('confirmWord'); clearFieldError('reasonInput');
-    Modal.open('modal-reason'); setTimeout(()=>input.focus(),200);
+    if(chipBox){
+      clear(chipBox); chipBox.hidden = !codes.length;
+      codes.forEach(code=>{
+        const c=h('button',{class:'rsn-chip', type:'button', 'aria-pressed':'false'}, t('rsn_'+code));
+        c.addEventListener('click', ()=>{
+          /* الشريحة تُختار وتُلغى: من ضغطها بالخطأ لا يحتاج إغلاق الورقة. */
+          picked = (picked===code) ? null : code;
+          Array.from(chipBox.children).forEach(x=>{ const on = x===c && picked===code;
+            x.classList.toggle('on', on); x.setAttribute('aria-pressed', on?'true':'false'); });
+          if(picked) clearFieldError('reasonInput');
+        });
+        chipBox.append(c);
+      });
+    }
+    if(after){ after.hidden = !(opts && opts.after); if(opts && opts.after) after.textContent = opts.after; }
+    Modal.open('modal-reason');
+    /* التركيز على الحقل الحرّ **فقط حين لا توجد شرائح**: فتحُ لوحة المفاتيح
+       فوق قائمةِ خياراتٍ يخفيها، والمقصود أن تُقرَأ أوّلًا. */
+    if(!codes.length) setTimeout(()=>input.focus(),200);
     const done=(val)=>{ Modal.close('modal-reason'); ok.onclick=null; no.onclick=null; clearFieldError('reasonInput'); resolve(val); };
-    ok.onclick=()=>{ const v=input.value.trim(); if(required && !v){ setFieldError('reasonInput',t('reasonRequired')); input.focus(); return; } done(v); };
+    ok.onclick=()=>{
+      const v=input.value.trim();
+      if(picked) return done({ code:picked, text:t('rsn_'+picked) + (v ? ' — '+v : '') });
+      if(required && !v){ setFieldError('reasonInput', codes.length ? t('reasonPickOne') : t('reasonRequired')); input.focus(); return; }
+      done({ code:v, text:v });
+    };
     no.onclick=()=>done(null);
   });
 }
@@ -73,13 +152,16 @@ function askConfirm(title, message, confirmLabel, cancelLabel, danger){
 
 /* ---- Manual booking ---- */
 function manualField(){ return (State.ownerData?.fields||[]).find(f=>String(f.field_id)===String(State.manual.fieldId)); }
-async function openManual(){
+/* `pre = {fieldId, date, hour}` من ورقة خليّة المخطّط: «حجزٌ خارجيّ على هذه
+   الساعة» فعلٌ يقع على خانةٍ بعينها، فيبدأ عليها. */
+async function openManual(pre){
   if (!Session.owner()){ showPage('ownerLogin'); return; }
   if (!State.ownerData) await loadOwnerDashboard();
   const fields=State.ownerData?.fields||[]; if(!fields.length){ toast(t('noFieldsAdded'),'warn'); return; }
   try{ await loadPublicBookings(); }catch(_){}
-  State.manual={ fieldId:String(fields[0].field_id), date:today(), hour:null };
-  $('#mName').value=''; $('#mPhone').value=''; $('#mPrice').value=fields[0].price||'';
+  const pf = (pre && pre.fieldId && fields.find(f=>String(f.field_id)===String(pre.fieldId))) || fields[0];
+  State.manual={ fieldId:String(pf.field_id), date:(pre&&pre.date)||today(), hour:(pre&&pre.hour!=null)?Number(pre.hour):null };
+  $('#mName').value=''; $('#mPhone').value=''; $('#mPrice').value=pf.price||'';
   // خيار التكرار الأسبوعي (تعبئة بترجمة حيّة)
   const rep=$('#mRepeat'); if(rep){ clear(rep); rep.append(h('option',{value:'1'}, t('repeatNone'))); [2,3,4,5,6,8].forEach(n=> rep.append(h('option',{value:String(n)}, t('repeatFor',{n})))); rep.value='1'; }
   const sel=$('#mField'); clear(sel); fields.forEach(f=> sel.append(h('option',{value:f.field_id}, `${f.field_name} — ${f.size} — ${formatCurrency(f.price)}`))); sel.value=State.manual.fieldId;
@@ -132,7 +214,10 @@ function fillHourSelect(sel, hours, extraEnd){
   // نهاية النطاق تحتاج ساعةً بعد آخر بداية، وإلّا استحال إغلاق آخر خانة
   if(extraEnd){ const last=hours[hours.length-1]+2; sel.append(h('option',{value:String(last)}, fmtHour12(last))); }
 }
-function openClosure(ds){
+/* `pre = {fieldId, hour}` يأتي من ورقة خليّة المخطّط (البند ٦٢): المالك ضغط
+   ساعةً بعينها، فيفتح اللوح **عليها** لا على اليوم كلّه — وإلّا صار عليه أن
+   يعيد اختيار ما اختاره للتوّ، وهو أسرعُ طريقٍ إلى إغلاق يومٍ كامل بالخطأ. */
+function openClosure(ds, pre){
   const fields=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
   if(!fields.length) return;
   State.closureDate=ds;
@@ -144,6 +229,15 @@ function openClosure(ds){
   fillHourSelect($('#clTo'), hrs, true);
   $('#clTo').value = String(hrs[hrs.length-1]+2);
   $('#clScope').value='day'; $('#clHours').hidden=true; $('#clReason').value='';
+  if(pre && pre.fieldId){
+    sel.value = String(pre.fieldId);
+    if(pre.hour != null){
+      /* الخانة ساعتان (‏`to` حصريّ) — نفس شرط `slotClosure` بالحرف، فلا يُغلَق
+         بالخطأ ما لم يقصده. */
+      $('#clScope').value='hours'; $('#clHours').hidden=false;
+      $('#clFrom').value=String(pre.hour); $('#clTo').value=String(Number(pre.hour)+2);
+    }
+  }
   const res=$('#clResult'); res.hidden=true; clear(res);
   // إسناد الخاصّية لا addEventListener: العنصر ثابت في HTML ولا يُعاد إنشاؤه،
   // فالإضافة تكدّس مستمعاً في كل فتح.
@@ -1196,11 +1290,16 @@ async function confirmBooking(btn){
     if(!(need>=2) || !(got>=1) || got>need){ toast(t('gmLiveBad'),'warn'); return; }
     vis='open';
   }
+  /* ملاحظة لصاحب الملعب (ترحيل 33) — تُقرأ من الحقل مباشرةً ولا تُخزَّن في
+     `State`: قيمةٌ تُقرأ مرّةً عند الإرسال، ومرآةٌ لها في الحالة تنحرف عن
+     الحقل أوّل مرّة يُعاد فيها بناء النافذة. */
+  const noteIn=$('#bkNoteInput');
+  const note = (SB_BK_NOTE && noteIn) ? noteIn.value.trim().slice(0,240) : '';
   let sent = null;
   await withLoading(btn, async()=>{
     try{
       const res=await API.post({ action:'createBooking', player_token:Session.player(), date, place_id:place.place_id, place_name:place.place_name, field_id:field.field_id, field_name:field.field_name, city:place.city, time:slot.label, hour, name, phone, players:field.size, price:shown, source:getSource(),
-        visibility:vis, needed:need, brought:got });
+        visibility:vis, needed:need, brought:got, note });
       if(!res.success){ toast(apiMsg(res.message)||t('bookingFailRetry'),'error'); await loadData(); return; }
       /* ⚠️ الخادم هو من يكتب السعر (‏`t_booking_price` في ترحيل 18)، ونحن
          نعرض ما حسبناه. وإن اختلفا — قاعدة تسعير تغيّرت بين فتح الشاشة
@@ -1228,8 +1327,23 @@ async function confirmBooking(btn){
   Tracker.refresh();          // اللوح يظهر على الشبكة فور إرسال الطلب لا بعد دورة
   /* لحظة طلب الإذن: الطلب أُرسل للتوّ وينتظر ردًّا، فالسؤال «أنُعلمك حين
      يردّون؟» جوابه أمام عينه. طلبُه عند الإقلاع يُرفَض ثمّ لا يعود أندرويد
-     يسمح بطرحه — والرفض حينها رفضٌ لسؤال لم يُفهَم بعد. */
-  Notifs.askPermission();
+     يسمح بطرحه — والرفض حينها رفضٌ لسؤال لم يُفهَم بعد.
+     🔴 **ولا يُطرَح مع ورقة النجاح في الثانية نفسها**: كان النداء يقع في
+     المهمّة التي تُفتَح فيها شاشة النجاح ⇒ طبقتان تتنازعان الثانية نفسها،
+     ونافذة الإذن الأصليّة تحجب الخبر الذي جاءت من أجله. تُؤجّل إلى ما بعد
+     إغلاق الورقة. */
+  awaitSuccessClose(()=>Notifs.askPermission());
+}
+/* ينتظر اختفاء طبقة النجاح ثمّ ينفّذ.
+   ⚠️ **ويستسلم بعد دقيقة**: مؤقّتٌ ينتظر صنفًا قد لا يُزال أبدًا يبقى
+      يدور إلى آخر الجلسة — وطلبُ الإذن متأخّرًا أفضل من ألّا يُطلَب. */
+function awaitSuccessClose(fn){
+  const ov=$('#success');
+  if(!ov || !ov.classList.contains('show')){ fn(); return; }
+  let n=0;
+  const tick=setInterval(()=>{
+    if(!ov.classList.contains('show') || ++n>120){ clearInterval(tick); fn(); }
+  }, 500);
 }
 async function submitReview(btn){
   if(!State.review.rating){ toast(t('reviewNeed'),'warn'); return; }
@@ -1624,7 +1738,9 @@ const Actions = {
   authRegister:()=>{ Modal.close('modal-authchoice'); showPage('playerRegister'); },
   verifyPhone:(btn)=>Verify.submit(btn), resendCode:(btn)=>Verify.resend(btn),
   vfContinue:()=>Verify.leave(), goVerify:()=>showPage('verifyPhone'),
-  openManual, saveManual, addField:openAddField, saveField, saveReschedule,
+  /* بلا وسيط: المُوزِّع ينادي `fn(act, e)` فيصل **العنصر** مكان التعبئة
+     المسبقة — يتحمّله `openManual` بلا عطل، لكنّه يقرأ غلطًا. */
+  openManual:()=>openManual(), saveManual, addField:openAddField, saveField, saveReschedule,
   saveClosure, addPriceRule,
   setMode:(btn)=>setMode(btn.dataset.mode||'venues'),
   visPick:(btn)=>setVisPick(btn.dataset.vis||'private'),

@@ -222,6 +222,11 @@ const nSeats = (n) => (State.lang==='en')
 const nPlaces = (n) => (State.lang==='en')
   ? (n===1 ? '1 venue' : `${n} venues`)
   : countNoun(n, 'مكان واحد', 'مكانان', 'أماكن', 'مكانًا');
+/* «٣ ملاعب» — المعدود هنا الملعب الفرعي لا المكان، وهما شيئان مختلفان في هذا
+   المنتج (مجمّعٌ واحد فيه عدّة ملاعب). */
+const nFields = (n) => (State.lang==='en')
+  ? (n===1 ? '1 field' : `${n} fields`)
+  : countNoun(n, 'ملعب واحد', 'ملعبان', 'ملاعب', 'ملعبًا');
 /* «٣ مباريات» — نفس القاعدة: رقمٌ حيّ يسبق معدودًا. */
 const nGames = (n) => (State.lang==='en')
   ? (n===1 ? '1 game' : `${n} games`)
@@ -436,7 +441,10 @@ const sbBooking = (b) => ({
   /* ترحيل 28 — لحظة **أوّل** خروج من `pending`. تُستعمل في لوحة المالك وحدها
      (زمن ردّه، وأثر السرعة على نسبة التأكيد)، وغيابها قبل الترحيل `''` ⇒ لا
      يُحسَب شيء ولا يُعرَض سطر. */
-  replied_at: b.replied_at || ''
+  replied_at: b.replied_at || '',
+  /* ترحيل 33 — ما قاله اللاعب لصاحب الملعب لحظة الطلب. غيابُها قبل الترحيل
+     `''` ⇒ لا سطر يُعرَض على البطاقة، ولا فرعٌ ثانٍ في الرسم. */
+  note: b.player_note || ''
 });
 
 /* ── عمليات القراءة العامة (بلا تسجيل دخول) ── */
@@ -626,21 +634,47 @@ let SB_BK_EXTRA = ',cancel_kind,no_show,visibility,players_needed,players_brough
    على حدة بدل إسقاط الاثنين معًا، وبعدها يستقرّ العلمان فلا تقع إلّا جولةٌ
    واحدة بقيّة الجلسة. */
 let SB_BK_REPLY = ',replied_at';
+/* 🔴 **وعلَمٌ ثالث مستقلّ** لـ`player_note` (ترحيل 33) — للسبب نفسه المكتوب
+   فوقه بالحرف: ضمُّه إلى إحدى المجموعتين يجعل غيابَه يُسقط معه أعمدةَ ترحيلٍ
+   آخر شُغِّل فعلًا. ثلاثة أعلامٍ ⇒ ثلاثةُ ترحيلاتٍ مستقلّة، وكلٌّ يسقط وحده. */
+let SB_BK_NOTE = ',player_note';
+/* 🔴 **التراجع يقع على «عمودٌ مفقود» وحده، لا على أيّ فشل.** كانت السلسلة تُعيد
+   المحاولة كلّما `!r.ok` — و401 (توكنٌ منتهٍ) و5xx تدخلان في ذلك: أربعُ جولاتٍ
+   لا تُصلح شيئًا، **والأسوأ أنّ الأعلام الثلاثة تُصفَّر نهائيًّا** فتُطفأ «لم
+   يحضر» والمباريات المفتوحة والملاحظة **بقيّة الجلسة** لأجل انقطاعٍ عابر في
+   المصادقة. مقيس في المعاينة: بتوكنٍ لا يصلح خرجت **خمس** طلبات متتالية.
+   وPostgREST يسمّي العلّة: عمودٌ غير موجود ⇒ 400 ومعه `42703`. فالشرط عليه. */
+const isMissingCol = (r) => r && r.status === 400 && /42703|does not exist/i.test(String(r.raw||''));
 async function sbBookingsQuery(path, opts){
   const ask = (cols) => sbRest(path.replace('{cols}', SB_BK_COLS + cols), opts);
-  if (SB_BK_EXTRA || SB_BK_REPLY){
+  if (SB_BK_EXTRA || SB_BK_REPLY || SB_BK_NOTE){
+    const r = await ask(SB_BK_EXTRA + SB_BK_REPLY + SB_BK_NOTE);
+    if (r.ok || !isMissingCol(r)) return r;
+  }
+  /* الجولات التالية تُسقط واحدةً واحدة: أوّلُ مجموعةٍ تمرّ تُثبت أنّ الناقص
+     غيرُها، فيستقرّ العلَم ولا تقع جولةٌ ثانية بقيّة الجلسة. */
+  if (SB_BK_NOTE){
     const r = await ask(SB_BK_EXTRA + SB_BK_REPLY);
-    if (r.ok) return r;
+    if (r.ok){ SB_BK_NOTE = ''; return r; }
+    if (!isMissingCol(r)) return r;
   }
   if (SB_BK_EXTRA){
     const r = await ask(SB_BK_EXTRA);
-    if (r.ok){ SB_BK_REPLY = ''; return r; }   // المجموعة الأولى تمرّ ⇒ الناقص هو الثاني
+    if (r.ok){ SB_BK_REPLY = ''; SB_BK_NOTE = ''; return r; }   // المجموعة الأولى تمرّ ⇒ الناقص غيرها
+    if (!isMissingCol(r)) return r;
     SB_BK_EXTRA = '';
   }
   if (SB_BK_REPLY){
     const r = await ask(SB_BK_REPLY);
-    if (r.ok) return r;
+    if (r.ok){ SB_BK_NOTE = ''; return r; }
+    if (!isMissingCol(r)) return r;
     SB_BK_REPLY = '';
+  }
+  if (SB_BK_NOTE){
+    const r = await ask(SB_BK_NOTE);
+    if (r.ok) return r;
+    if (!isMissingCol(r)) return r;
+    SB_BK_NOTE = '';
   }
   return ask('');
 }
@@ -653,6 +687,10 @@ async function sbCreateBooking(d, session){
     customer_name: d.name || session.name || '', customer_phone: sbPhone(d.phone || session.phone),
     players_size: d.players || '', price: Number(d.price||0), source: d.source || 'direct', status: 'pending'
   };
+  /* ملاحظة اللاعب (ترحيل 33) — تُرسَل **فقط حين كُتبت**: عمودٌ غير موجود يردّ
+     `PGRST204` فيُفشل الحجز كلَّه، وإرسالُ `null` دائمًا كان سيكسر كلّ حجزٍ على
+     قاعدةٍ لم يُشغَّل عليها الترحيل. نفس منطق أعمدة 22 أعلاه بالحرف. */
+  if (d.note) body.player_note = String(d.note).slice(0, 240);
   /* أعمدة ترحيل 22 تُرسَل **فقط** حين تُطلَب مباراة مفتوحة: الحجز الخاصّ لا
      يحملها أصلًا (قيد `bookings_open_counts_chk` يرفض ملأها على الخاصّة)،
      فإرسالها دائمًا كان يُفشل كلّ حجز عادي قبل الترحيل بلا داعٍ. */
@@ -665,6 +703,14 @@ async function sbCreateBooking(d, session){
   /* ترحيل 22 معلَّق والمستخدم اختار «مفتوحة» ⇒ `PGRST204`. **لا نتراجع صامتًا
      إلى خاصّة**: هو طلب صراحةً أن يُنشر طلبُه، وكتابتُه خاصًّا بلا كلمة تجعله
      ينتظر منضمّين لن يأتوا. نقولها ونترك له القرار. */
+  /* 🔴 والملاحظة تُفحَص **قبل** حارس المباراة المفتوحة: لو غاب عمودُها ردّ
+     PostgREST نفسَ `PGRST204`، فتُقرأ «ترحيل 22 معلَّق» وهي بريئة. ونعيد
+     الإرسال بلا ملاحظة لا نردّ خطأً: الحجز هو المقصود، والملاحظة تحسينٌ عليه
+     — وإسقاطُ الحجز لأجل سطرٍ اختياري خسارةٌ في غير محلّها. */
+  if (!r.ok && body.player_note !== undefined && String(r.raw||'').includes('PGRST204')){
+    delete body.player_note; SB_BK_NOTE = '';
+    r = await sbRest('/bookings', { method:'POST', token: session.at, prefer:'return=representation', body });
+  }
   if (!r.ok && d.visibility === 'open' && String(r.raw||'').includes('PGRST204')){
     return { success:false, message: t('gmNotReady') };
   }
@@ -1624,6 +1670,31 @@ function toast(message, type='error', ms=3400){
   clearTimeout(toast._t);
   requestAnimationFrame(() => el.classList.add('show'));
   toast._t = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+/* ═══ توست بتراجع + شريطٍ يفرغ (البند ٦٠) ═════════════════════════════════
+   قرارُ المالك على الطلب لا يُتراجَع عنه اليوم إلّا بضغطاتٍ ومسارٍ آخر، وهو
+   قرارٌ يُضغَط بإبهامٍ واحد على شاشةٍ صغيرة في أعلى قائمةٍ طويلة — أي أنّ
+   الضغطة الخاطئة **واقعةٌ متوقّعة** لا حالةٌ نادرة.
+   ⚠️ **والشريط ليس زينة**: «تراجع» بلا مهلةٍ مرئية يجعل صاحبَه يتردّد ثمّ يفقده،
+      والشريط يقول كم بقي بلا رقمٍ يُقرَأ.
+   ⚠️ **والتراجع يعيد الحالة فعلًا ولا يَعِد بأكثر**: إن كان إشعارٌ قد وصل
+      اللاعب في الثواني الماضية فقد وصل — والنصّ يقول «رجع لقائمة انتظارك»
+      لا «كأنّ شيئًا لم يكن».
+   ⚠️ ولا يُستعمَل `role="status"` للزرّ: العنصر نفسه منطقةٌ حيّة، والزرّ
+      داخلها يُعلَن ولا يُركَّز عليه تلقائيًّا — ولذلك يبقى للمالك مخرجٌ ثانٍ
+      دائم (زرّ «أكّد» على البطاقة المرفوضة). */
+function undoToast(message, onUndo, ms=6000){
+  const el = $('#toast'); if(!el) return;
+  clear(el); clearTimeout(toast._t);
+  const bar = h('span',{class:'toast-drain','aria-hidden':'true', style:{animationDuration:ms+'ms'}});
+  const btn = h('button',{class:'toast-undo', type:'button'}, t('undoWord'));
+  const hide = ()=>{ el.classList.remove('show'); };
+  btn.addEventListener('click', ()=>{ clearTimeout(toast._t); hide(); try{ onUndo(); }catch(_){} });
+  el.append(h('span',{class:'toast-icon'}, '✓'), h('span',{class:'toast-txt'}, message), btn, bar);
+  el.className = 'toast success has-undo';
+  requestAnimationFrame(()=> el.classList.add('show'));
+  toast._t = setTimeout(hide, ms);
 }
 
 /* مؤشّر تحميل على الزر + تعطيله (يمنع النقر المزدوج Double-Submit) */

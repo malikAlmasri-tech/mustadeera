@@ -89,5 +89,36 @@ const slot10 = [
 ].filter(Boolean);
 if (slot10.length === 3) check('10:00 slot label', slot10);
 
+
+/* -- decline / cancel reason codes ---------------------------------------
+   The app stores a short ASCII code in `bookings.cancel_reason`, never the
+   Arabic sentence: stored prose freezes on the language of the moment it was
+   written (the lesson migration 14 was built on). The code is translated at
+   read time - in the app from I18N, and in /admin from its own map, because
+   the dashboard reads `cancel_reason` raw.
+   A code missing from the dashboard map prints as a bare `slot_taken` in the
+   chart - silently, since any string is a valid object key. So the guard is
+   set-membership, not equality: /admin may know MORE codes (older ones still
+   sitting in old rows) but never fewer. */
+function codeSet(file, re, label) {
+  const m = read(file).match(re);
+  if (!m) { failed++; console.log(`  MISSING ${label} in ${file}`); return null; }
+  return new Set(m[1].match(/[a-z_]+/g) || []);
+}
+const appReject = codeSet('app/src/app.5-actions.js', /REJECT_REASONS\s*=\s*\[([^\]]*)\]/, 'REJECT_REASONS');
+const appCancel = codeSet('app/src/app.5-actions.js', /CANCEL_REASONS\s*=\s*\[([^\]]*)\]/, 'CANCEL_REASONS');
+const adminCodes = codeSet('site/admin.html', /var REASON_AR\s*=\s*\{([\s\S]*?)\};/, 'REASON_AR');
+if (appReject && appCancel && adminCodes) {
+  const app = new Set([...appReject, ...appCancel]);
+  const missing = [...app].filter(c => !adminCodes.has(c));
+  if (!missing.length) {
+    console.log(`  ok    reason codes = ${app.size} known to both`);
+  } else {
+    failed++;
+    console.log('  DRIFT reason codes');
+    console.log(`          in app but not in /admin REASON_AR: ${missing.join(', ')}`);
+  }
+}
+
 console.log(failed ? `\n${failed} mismatch(es).` : '\nall mirrors agree.');
 process.exit(failed ? 1 : 0);

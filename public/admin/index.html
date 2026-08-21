@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="/assets/fonts/fonts-ar.css">
 
-<link rel="stylesheet" href="/build/site.104dfca5.css">
+<link rel="stylesheet" href="/build/site.0d1ec77a.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 <script src="/build/site.48cfbfaa.js" defer></script>
 <style>
@@ -85,7 +85,17 @@ html.dark .kpi.hot .v{color:var(--lime)}
 .ad-sec h2{font-size:17px;margin-bottom:4px}
 /* سطر يقول ما الذي يعدّه هذا الجدول بالضبط — رقم بلا تعريف رقمٌ يُساء فهمه */
 .ad-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7}
+/* 🔴 **الرأس اللاصق أدناه كان كودًا ميتًا حتى هذا السطر.** `overflow-x:auto`
+   تجعل `overflow-y` تُحسَب `auto` ⇒ يصير **هذا الصندوق** هو مرسى الالتصاق لا
+   الصفحة، وارتفاعه من محتواه (‏`clientH === scrollH`) فلا يتمرّر رأسيًّا أبدًا
+   ⇒ `top:0` لا تُفعَّل. مقيس بعد تمرير 400px: `thead.top = **−204**` — الرأس
+   خرج من الشاشة كأنّه غير لاصق. وسقفُ ارتفاعٍ واحد يُحييه:
+   الصندوق يصير قابلًا للتمرير رأسيًّا فيلتصق رأسه بأعلاه.
+   ⚠️ **والجداول القصيرة لا تتأثّر بحرف**: السقف لا يعمل إلّا على ما تجاوزه
+      (مقيس: 199 · 248 · 450 دون السقف، و804 · 551 فوقه).
+   ⚠️ **وفوق 700px وحدها**: تحتها تصير الصفوف بطاقات و`thead` مخفيّ أصلًا. */
 .ad-scroll{overflow-x:auto;overscroll-behavior-x:contain}
+@media (min-width:701px){.ad-scroll{max-block-size:72vh}}
 table{width:100%;border-collapse:collapse;font-size:15px;min-width:620px}
 th,td{text-align:start;padding:11px 13px;white-space:nowrap}
 /* الرأس لاصق داخل الإطار القابل للتمرير: عمود الرقم يبقى معرَّفًا مهما نزلت */
@@ -147,8 +157,11 @@ tbody tr:last-child td{border-bottom:0}
      هذه أعمدةٌ لا تحمل قرارًا على الهاتف. (مقيس: 435px ⇐ بعدها.) */
   .ad-scroll td.ad-c2{display:none}
   /* العمود الأوّل عنوانُ البطاقة: يفقد التثبيت ولا يحمل تسمية — الاسم يقول نفسه */
+  /* عنوان البطاقة يرتفع درجةً عن أسطرها (14 ⇐ 15) فيُقرأ عنوانًا لا سطرًا
+     أوّل. والوزن يبقى 800 لأنه وزن كل عنوان بطاقة في اللوحة (‏`.ad-pl .nm` ·
+     `.usr-card .nm` · `.ad-pa-top b`) — و700 هنا وحدها كانت ستصنع شذوذًا. */
   .ad-scroll td:first-child{position:static;box-shadow:none;background:transparent;
-    font-weight:800;font-size:14px;border-bottom:1px solid var(--line);
+    font-weight:800;font-size:15px;border-bottom:1px solid var(--line);
     padding-bottom:8px;margin-bottom:6px;display:block}
   .ad-scroll td:first-child::before{content:none}
   .ad-scroll tfoot td:first-child{background:transparent}
@@ -178,7 +191,8 @@ tfoot td{background:var(--bg-2);font-weight:800;border-top:2px solid var(--line-
 .share-b{inline-size:56px;block-size:6px;border-radius:99px;background:var(--surface-2);
   border:1px solid var(--line);overflow:hidden;flex:none}
 .share-f{display:block;block-size:100%;background:var(--lime);border-radius:99px}
-.share-t{font-size:13px;color:var(--muted);font-weight:700;min-inline-size:38px;text-align:end}
+.share-t{font-size:13px;color:var(--muted);font-weight:700;min-inline-size:38px;text-align:end;
+  font-variant-numeric:tabular-nums}
 
 .feed{list-style:none;display:grid;gap:8px;max-height:440px;overflow-y:auto;overscroll-behavior:contain}
 .feed li{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 13px;
@@ -243,21 +257,34 @@ html.dark .badge.off{color:#FF8A90}
    يجعل كل سؤال في مكانه: «كم ربحت؟» غير «من لم يردّ عليه أحد؟».
    أزرار حقيقية بـrole=tab وaria-selected، والتنقّل بالأسهم — لا div
    يتظاهر بأنه تبويب. */
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+/* ⚠️ **صفٌّ واحد ينزلق، لا التفاف.** مقيس عند 375px: ستّة تبويبات كانت تلتفّ
+   إلى **ثلاثة صفوف = 93px** (‏44px وحدها على الحاسوب)، ومعها الرأس 116 وشريط
+   الحالة 81 ⇒ **290px من الأطر قبل أيّ محتوى** على شاشة 812.
+   والتبويبات **وجهاتٌ متوازية لا تسلسل**، فإخفاء بعضها خلف انزلاقٍ أفقيّ هو
+   النمط القائم في التطبيق أصلًا (شريط الرياضات · تبويبات المالك الخمسة). */
+.tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;margin-bottom:20px;
   border-bottom:1px solid var(--line);padding-bottom:0}
-.tab{position:relative;padding:11px 16px;font-family:inherit;font-size:14.5px;font-weight:700;
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;flex:none;padding:11px 16px;font-family:inherit;font-size:14.5px;font-weight:700;
   color:var(--muted);background:none;border:0;cursor:pointer;border-radius:var(--r-sm) var(--r-sm) 0 0;
   transition:color var(--t-fast),background-color var(--t-fast)}
-.tab::after{content:'';position:absolute;inset-inline:8px;bottom:-1px;block-size:2px;
-  background:var(--lime);border-radius:2px;transform:scaleX(0);transform-origin:inline-start;
+/* ⚠️ `bottom:0` لا `-1px`: الحاوية صارت صندوق تمرير (‏`overflow-x:auto` تجعل
+   `overflow-y` تُحسَب `auto`) ⇒ بكسلٌ واحد خارج الصندوق كان يصنع تمريرًا رأسيًّا
+   ويقصّ المؤشّر. و`bottom:0` يقع على صندوق الحشوة، أي فوق الحدّ مباشرةً. */
+.tab::after{content:'';position:absolute;inset-inline:8px;bottom:0;block-size:3px;
+  background:var(--lime);border-radius:3px 3px 0 0;transform:scaleX(0);transform-origin:inline-start;
   transition:transform var(--t) var(--ease)}
 .tab[aria-selected="true"]{color:var(--ink)}
 .tab[aria-selected="true"]::after{transform:scaleX(1)}
 @media (hover:hover){.tab:hover{color:var(--ink);background:var(--surface-2)}}
 .tab .cnt{display:inline-block;margin-inline-start:6px;font-size:11.5px;font-weight:800;
-  padding:1px 7px;border-radius:var(--r-full);background:var(--lime-soft);color:var(--ink-2)}
+  padding:1px 7px;border-radius:var(--r-full);background:var(--lime-soft);color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
 .tab .cnt.warn{background:rgba(214,48,58,.14)}
 .panel[hidden]{display:none}
+  .ad-chip{flex:none;white-space:nowrap}
+}
 
 /* ===== الرسوم — SVG مبنيّ في JS، بلا مكتبة =====
    كلّها من نفس الصفوف التي تغذّي الجداول. لا رسم بلا جدول يقابله:
@@ -270,7 +297,7 @@ html.dark .badge.off{color:#FF8A90}
 .card .cap{font-size:12.5px;color:var(--muted);margin-bottom:12px;line-height:1.65}
 .chart{display:block;width:100%;height:auto;overflow:visible}
 .chart .grid-l{stroke:var(--line);stroke-width:1}
-.chart .axis-t{fill:var(--muted);font-size:10px;font-weight:600}
+.chart .axis-t{fill:var(--muted);font-size:10px;font-weight:600;font-variant-numeric:tabular-nums}
 .chart .bar{fill:var(--teal)}
 html.dark .chart .bar{fill:var(--lime)}
 .chart .bar-2{fill:var(--lime);opacity:.55}
@@ -319,7 +346,8 @@ html.dark .chart .dot{stroke:var(--lime)}
 .fc .fc-r{font-size:12.5px;color:var(--muted);font-weight:700}
 .fc .fc-m{font-size:12px;color:var(--muted);line-height:1.7;margin-top:7px}
 /* سهم الاتّجاه — ومعه الكلمة، فلا يُعتمَد على اللون ولا على الشكل وحده */
-.trend{font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+.trend{font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:4px;
+  font-variant-numeric:tabular-nums}
 .trend.up{color:var(--ok-ink,#0B7A43)}
 .trend.down{color:#B02718}
 .trend.flat{color:var(--muted)}
@@ -366,7 +394,7 @@ html.dark .brief li.warn::before{color:#E8B84B}
 .ad-chips{display:flex;gap:8px;flex-wrap:wrap}
 .ad-chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
   border:1px solid var(--line);border-radius:999px;padding:6px 13px;color:var(--muted)}
-.ad-chip b{font-size:15px;font-weight:900;color:var(--ink)}
+.ad-chip b{font-size:15px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
 .ad-chip.ok{border-color:var(--line-2);color:var(--teal)}
 html.dark .ad-chip.ok{color:var(--lime)}
 .ad-chip.warn{border-color:rgba(154,106,30,.45);color:#7A5210}
@@ -394,6 +422,10 @@ html.dark .ad-add[aria-current="true"]{border-color:var(--lime);color:var(--lime
 /* ⚠️ شرائح تصفية بدل القوائم المنسدلة في جدولي «العملاء» و«الأماكن»: القائمة
    تُخفي خياراتها حتى تُفتَح، فلا يعرف القارئ **بم** يستطيع أن يصفّي ولا **بم**
    يصفّي الآن. والشريحة تقول الاثنين بلا نقرة. */
+/* ⚠️ سقفٌ أدنى للجدول **الذي تحته مرشِّح وحده**: تصفيةٌ تُفرغه كانت تُسقط
+   825px من ارتفاع الصفحة دفعةً فيقفز التمرير تحت الإصبع. و200px ≈ ثلاثة
+   صفوف، وهي لا تمسّ جدولًا أطول منها. */
+.ad-fchips + .ad-scroll{min-block-size:200px}
 .ad-fchips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
 .ad-fchip{font-size:13px;font-weight:700;padding:7px 13px;border-radius:999px;
   border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;
@@ -544,6 +576,30 @@ html.dark .fr-del{color:#FF8A90}
 .res .no{color:#B02718;font-weight:900;flex:none}
 html.dark .res .yes{color:#5FD08A}
 html.dark .res .no{color:#FF8A90}
+/* ⚠️ **موضع هذه الكتلة هو نصف الإصلاح.** كانت أوّلًا بعد `.panel[hidden]`
+   أي **قبل** تعريف `.ad-chips` و`.ad-fchips` — و`@media` لا تضيف نوعيّة ⇒
+   `flex-wrap:wrap` الأساسي كان يغلب `nowrap` هنا ويبقى الشريط صفّين (مقيس
+   83px بعد التعديل، أي بلا أثر). فمحلّها آخر الورقة، بعد كل ما تنقضه. */
+/* ═══ اللصق على الجوّال: التنقّل لا الهويّة (قرار المالك 2026-08-19) ═══
+   كان `.ad-bar` وحده اللاصق وهو **116px** عند 375px، أي أنّ المثبَّت طوال
+   التمرير هو الشعارُ وزرُّ الخروج — وكلاهما يُلمَس مرّةً في الجلسة — بينما
+   التبويبات وشرائح التصفية (وهي ما يُلمَس فعلًا) تمشي مع المحتوى: شريحةُ
+   تصفية فوق جدولٍ طوله 825px تعني العودة 800px لتبديل مرشِّح.
+   الآن الثابت **84px** (تبويبات 50 + شرائح 34) بدل 116، وهو تنقّلٌ لا هويّة.
+   ⚠️ **والإزاحة مشتقّة لا مقدَّرة**: `--ad-tabs-h` تفرض ارتفاع الشريط وتُزيح
+      الشرائح به معًا، فلا رقمان يتفارقان. */
+@media (max-width:700px){
+  :root{--ad-tabs-h:50px}
+  .ad-bar{position:static}
+  .tabs{position:sticky;top:0;z-index:19;background:var(--bg);
+    min-block-size:var(--ad-tabs-h);margin-bottom:14px}
+  .ad-fchips{position:sticky;top:var(--ad-tabs-h);z-index:18;
+    background:var(--bg);padding-block:8px;margin-bottom:6px}
+  /* شرائح الحالة كذلك: صفٌّ ينزلق بدل صفّين يلتفّان (مقيس 81px عند 375). */
+  .ad-chips{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px}
+  .ad-chips::-webkit-scrollbar{display:none}
+
 </style>
 </head>
 <body>
@@ -961,7 +1017,7 @@ html.dark .res .no{color:#FF8A90}
   </div>
 
   <p class="note" id="dataNote"></p>
-  <p class="note">بناء 2026-08-18</p>
+  <p class="note">بناء 2026-08-21</p>
 </main>
 
 <script>
@@ -2324,11 +2380,23 @@ function renderOps(W){
   }
 
   // أسباب الإلغاء — كما كُتبت، بلا تخمين للفارغ
+  //
+  // ⚠️ **مرآةُ `REJECT_REASONS`/`CANCEL_REASONS` في `app.5-actions.js`**، ويقارنهما
+  //    `tools/check-mirrors.js`. التطبيق صار يخزّن **رمزًا** لا جملةً عربية (نصٌّ
+  //    مخزَّن يُجمَّد على لغة لحظة كتابته)، فبلا هذه الخريطة يقرأ الأدمن `slot_taken`
+  //    عاريًا في الرسم.
+  // ⚠️ والفائدة الثانية أكبر من الترجمة: النصّ الحرّ **لا يتجمّع** («مش متاح» و«غير
+  //    متاح» و«مو فاضي» ثلاثة أعمدة لسببٍ واحد)، والرمز يتجمّع — فصار سؤال «ليش
+  //    برفض؟» له جوابٌ يُقرأ لأوّل مرّة.
+  var REASON_AR = { slot_taken:'الوقت انحجز للتو', field_closed:'الملعب مسكّر هذا اليوم',
+                    maintenance:'صيانة', short_notice:'الطلب متأخّر', weather:'الجو',
+                    emergency:'ظرف طارئ' };
   var lost = D.bookings.filter(function(b){ var s=b.status; return s==='cancelled'||s==='rejected'; });
   var byR = {}, noR = 0;
   lost.forEach(function(b){
     var r = String(b.cancel_reason||'').trim();
     if (!r) { noR++; return; }
+    r = REASON_AR[r] || r;
     byR[r] = (byR[r]||0) + 1;
   });
   var rs = Object.keys(byR).map(function(k){ return { k:k, v:byR[k] }; })
