@@ -1349,6 +1349,17 @@ const API = {
         if (data.price  !== undefined) body.price  = Number(data.price||0);
         if (data.active !== undefined) body.active = data.active !== false;
         if (data.slots  !== undefined) body.slots  = parseSlots(data.slots).map(x => ({ h:x.hour, label:x.label }));
+        /* صور الملعب (2026-08-22) — العمود قائمٌ في `01_schema` منذ البداية
+           و`fields_owner_write` سياسةٌ `for all` على الصفّ كلِّه، فلا ترحيل
+           ولا سياسة جديدة. والتنظيف هنا **لا في الواجهة وحدها**: الواجهة
+           تُخفي ما سيُرفَض، والخادم هو الحكم — ورابطٌ بمخطَّط آخر يصل الـDOM
+           داخل WebView ومعه جسرٌ أصلي. */
+        /* ⚠️ **بنفس محلّل العرض لا بنسخةٍ ثانية منه**: `fieldImages` هي التي
+           يقرأ بها التطبيقُ العمودَ (فصلٌ على `، 
+ |` ثمّ `isHttpUrl` ثمّ
+           إزالةُ التكرار)، ومحلّلان لصيغةٍ واحدة يختلفان يومًا. */
+        if (data.image_url !== undefined)
+          body.image_url = fieldImages({ image_url: data.image_url }).join('|');
         const r = await sbRest(`/fields?id=eq.${data.field_id}`, { method:'PATCH', token:s.at, prefer:'return=representation', body });
         if (!r.ok || !(r.data||[]).length) return { success:false, message:'هذا الملعب مش تابع لحسابك' };
         return { success:true, message:'تم حفظ التعديلات' };
@@ -1368,7 +1379,8 @@ const API = {
         const body = {
           place_id: s.place_id, name: String(data.field_name||'ملعب').trim(), size: data.size || '5×5',
           price: Number(data.price||0), slots: parseSlots(data.slots).map(x => ({ h:x.hour, label:x.label })),
-          image_url: data.image_url || '', active: true, sport
+          image_url: fieldImages({ image_url: data.image_url }).join('|'),
+          active: true, sport
         };
         let r = await sbRest('/fields', { method:'POST', token:s.at, prefer:'return=representation', body });
         /* ترحيل 13 معلَّق على المالك ⇒ العمود غير موجود، وPostgREST يردّ
@@ -1463,13 +1475,15 @@ const State = {
   // وضع عرض البطاقات (شبكة/قائمة) — محفوظ ويُستعاد بعد إعادة التحميل
   view: (()=>{ try{ return localStorage.getItem('mustadaira:viewMode')==='list'?'list':'grid'; }catch(_){ return 'grid'; } })(),
   player: null, owner: null, ownerData: null, guest: false,
-  filter: 'all',                                              // المنطقة (تبويبات)
+  filter: 'all',                                              // المنطقة (داخل ورقة الفلاتر منذ 2026-08-22)
+  filterDraft: null,                                          // مسودّتها أثناء فتح الورقة — كبقيّة المرشِّحات
   // فلاتر متقدّمة (ورقة الفلاتر) + الترتيب — تعتمد فقط على البيانات الموجودة
   fx: { minPrice:null, maxPrice:null, sizes:[], types:[], minRating:0, availableToday:false, amenities:[], genders:[] },
   fxDraft: null,                                              // مسودّة أثناء فتح الورقة (تُلتزم عند "تطبيق")
   sort: 'default', sortDraft: 'default',
   showAllPlayer: false, showAllOwner: false,
   editingField: 'edit',
+  fieldImgs: [],                                              // روابط صور الملعب أثناء فتح نافذته (تُلتزم عند «حفظ»)
   refreshTimer: null,
   // اختيارات المستخدم (بدل المتغيرات العامة المتفرّقة)
   detail: { place:null, field:null, date: today(), hour:null },
@@ -1634,11 +1648,11 @@ async function loadData(opts={}){
      مشتقّة من البيانات نفسها: ملعب بادل يُسجَّل في اللوحة الآن ⇒ تُفتَح بادل
      عند أوّل تحديث، بلا نشر نسخة جديدة من التطبيق. */
   checkAppVersion();   // بلا await: خبرٌ لا يؤخّر رسم الصفحة
-  try { await loadInitialData(!!opts.force); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateTrust(); updateModeSeg(); return true; }
+  try { await loadInitialData(!!opts.force); renderSportTabs(); updateSportSections(); pruneRegionFilter(); updateTrust(); updateModeSeg(); return true; }
   catch(e){
     if (isAbort(e)) return false;                          // ألغاه طلب أحدث — تجاهل
     const cached = cacheRead();
-    if (cached && cached.length){ State.allPlaces = normalizePlaces(cached); State.dataLoaded = true; applySportScope(); buildBookedSlots([]); renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
+    if (cached && cached.length){ State.allPlaces = normalizePlaces(cached); State.dataLoaded = true; applySportScope(); buildBookedSlots([]); renderSportTabs(); updateSportSections(); pruneRegionFilter(); updateTrust(); toast(t('apiCached'),'warn'); return true; }
     return false;
   }
 }

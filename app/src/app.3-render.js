@@ -55,16 +55,14 @@ function enableSwipeX(track, cb){
 
 /* ===================== RENDER: HOME / PLACES ===================== */
 function getRegions(){ const seen=new Set(), out=[]; State.places.forEach(p=>{ const r=String(p.region||'').trim(); if(!r||normalizeText(r)==='all')return; const k=normalizeText(r); if(seen.has(k))return; seen.add(k); out.push(r); }); return out; }
-function renderRegionTabs(){
-  const el = $('#regionTabs'); if(!el) return;
+/* 🔴 **شريط المناطق حُذف — المنطقة صارت داخل ورقة الفلاتر** (طلب المالك
+   2026-08-22). وما بقي منه هو الحارس وحده: منطقةٌ مختارة لم تعد موجودة في
+   الرياضة الحالية (‏`applySportScope` تقصّ الأماكن) تُصفَّر بدل أن تُخرج قائمةً
+   فارغة بلا سبب ظاهر. وكان هذا السطر مدفونًا في `renderRegionTabs`، فالنداء
+   الذي كان يرسم صار نداءً **يتحقّق** — والاسم يقول ذلك. */
+function pruneRegionFilter(){
   const regions = getRegions();
   if (State.filter!=='all' && !regions.some(r=>normalizeText(r)===normalizeText(State.filter))) State.filter='all';
-  clear(el);
-  /* ⚠️ شريحة القلب حُذفت من هنا: صارت «المفضّلة» زرًّا في الشريط السفلي.
-     بابان لميزةٍ واحدة انحرافٌ مؤجَّل — أحدهما يُنسى عند أوّل تعديل. وشريط
-     المناطق صار **تصفيةَ منطقةٍ وحدها**، تعمل داخل المفضّلة كما تعمل خارجها. */
-  el.append(h('button',{class:'ftab'+(State.filter==='all'?' active-tab':''), onclick:()=>setFilter('all')}, t('all')));
-  regions.forEach(r => el.append(h('button',{class:'ftab'+(normalizeText(r)===normalizeText(State.filter)?' active-tab':''), onclick:()=>setFilter(r)}, r)));
 }
 /* عنوان قسم الرئيسية يتبع الحالة: مباريات ⇐ مفضّلة ⇐ الملاعب المتاحة.
    ثلاث حالات ومصدرٌ واحد — وإلّا بقي «الملاعب المتاحة» فوق قائمة مفضّلة. */
@@ -73,7 +71,7 @@ function updateSecTitle(){
   const k = State.mode==='games' ? 'modeGamesTitle' : State.favOnly ? 'favTab' : 'availableFields';
   ttl.textContent=t(k); ttl.setAttribute('data-i18n',k);
 }
-function setFilter(f){ State.filter=f; renderRegionTabs(); renderPlaces(); }
+
 
 /* ═══════════════════════════════════════════════════════════════════════════
    الرياضات (تقسيمة أعلى الرئيسية)
@@ -120,40 +118,26 @@ function setSport(k){
   State.sport=k;
   applySportScope();                    // البيانات تُقصّ أولاً، ثمّ يُرسَم ما بُني عليها
   State.filter='all';                   // منطقة كرة القدم قد لا توجد في البادل أصلاً
-  renderSportTabs(); renderSportDropdown(); updateSportSections();
-  renderRegionTabs(); updateFilterBar(); renderPlaces();
+  renderSportTabs(); updateSportSections();
+  updateFilterBar(); renderPlaces();
+  /* ⚠️ **والحبّة تُجلَب إلى الرؤية**: الرياضات خمسٌ في مسارٍ ينزلق أفقيًّا،
+     فاختيارُ آخرها من ورقةٍ أو من مربّعٍ في الشبكة كان يترك المختارة خارج
+     الشاشة — أي أنّ الشريط يقول شيئًا لا يُرى. */
+  const on=$('#sportTabs .sport-tab.active');
+  if(on && on.scrollIntoView) try{ on.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); }catch(_){}
 }
-/* قائمة الرياضات المنسدلة في شريط التصفّح (مزامنة مع مبدّل الفلاتر عبر setSport) */
-function renderSportDropdown(){
-  const cur=SPORTS.find(s=>s.key===State.sport)||SPORTS[0];
-  const ic=$('#sportDDIc'); if(ic) ic.innerHTML=ICON[cur.icon]||ICON.ball;   // SVG ثابت موثوق
-  setText('sportDDName', t(cur.label));
-  const menu=$('#sportDDMenu'); if(!menu) return; clear(menu);
-  SPORTS.forEach(s=>{
-    const active=State.sport===s.key;
-    const item=h('button',{class:'sport-dd-item'+(active?' active':''), type:'button', role:'option', 'aria-selected':active?'true':'false'},
-      h('span',{class:'sport-dd-ic', html:ICON[s.icon]||ICON.ball, 'aria-hidden':'true'}),
-      h('span',{class:'sport-dd-lbl'}, t(s.label)));
-    if(sportSoon(s.key)) item.append(h('span',{class:'sport-dd-soon'}, t('soonBadge')));
-    item.addEventListener('click',()=>{ setSport(s.key); closeSportDD(); });
-    menu.append(item);
-  });
-}
-function toggleSportDD(){
-  const dd=$('#sportDD'); if(!dd) return;
-  const open=dd.classList.toggle('open');
-  $('#sportDDMenu').hidden=!open; $('#sportDDBtn')?.setAttribute('aria-expanded', open?'true':'false');
-}
-function closeSportDD(){
-  const dd=$('#sportDD'); if(!dd || !dd.classList.contains('open')) return;
-  dd.classList.remove('open'); $('#sportDDMenu').hidden=true; $('#sportDDBtn')?.setAttribute('aria-expanded','false');
-}
-/* إخفاء أدوات التصفّح (المناطق/العنوان) عند اختيار رياضة لا ملعب لها بعد —
-   المعيار الآن **وجود ملاعب** لا اسم الرياضة: تصفيةُ لا شيء بمناطق لا شيء عبث.
-   زرّ الفلاتر يبقى ظاهرًا لأن مُبدِّل الرياضات صار داخل ورقة الفلاتر (وإلا انحبس المستخدم). */
+/* 🔴 **القائمة المنسدلة للرياضات حُذفت** (2026-08-22): صارت الرياضات هي
+   الشريط نفسه، فزرٌّ يقول اسم الرياضة الحالية ويُخفي الأربع الباقيات صار
+   بابًا ثانيًا لنفس الفعل — والباب الثاني ينحرف عن الأوّل عند أوّل تعديل
+   (درس شريحة القلب، الدفعة ١٩). و`renderSportTabs` هي الراسم الوحيد الآن. */
+/* إخفاء ما لا معنى له عند اختيار رياضة لا ملعب لها بعد — والمعيار **وجود
+   ملاعب** لا اسم الرياضة: عنوانُ «الملاعب المتاحة» فوق لوح «قريباً» يناقضه.
+   🔴 **وشريط الرياضات لا يُخفى أبدًا**: هو الآن المخرج الوحيد من الرياضة
+      الفارغة (كان مُبدِّلها في ورقة الفلاتر، ومنذ 2026-08-22 صار الشريط)،
+      فإخفاؤه معه يحبس المستخدم — وهي المصيدة المسجَّلة في الدفعة ٢٣. */
 function updateSportSections(){
   const off=sportSoon(State.sport);
-  ['#regionTabs','#page-home .sec-title'].forEach(sel=>{ const n=$(sel); if(n) n.style.display=off?'none':''; });
+  const n=$('#page-home .sec-title'); if(n) n.style.display=off?'none':'';
 }
 
 /* تحليل مركزي للمرافق (يُستخدم في البطاقة والتفاصيل والفلاتر).
@@ -310,6 +294,10 @@ function activeFilterCount(){
   n+=fx.sizes.length+fx.types.length+fx.amenities.length+fx.genders.length;
   if(fx.minRating>0) n++; if(fx.availableToday) n++;
   if(State.sort!=='default') n++;
+  /* المنطقة تُعَدّ منذ أن دخلت الورقة (2026-08-22): كانت شريطًا ظاهرًا يقول
+     حالته بنفسه، فعدُّها كان تكرارًا؛ وصارت خلف زرّ الفلاتر فغيابها من العدّ
+     يجعل الزرّ يقول «صفر» وقائمةٌ مقصوصةٌ تحته. */
+  if(State.filter!=='all') n++;
   return n;
 }
 function resetAllFilters(){
@@ -366,7 +354,7 @@ function renderFilterChips(){
   clear(bar);
   if(!list.length){ bar.hidden=true; return; }   // hidden لا شفافية: صفّ فارغ لاصق كان يأكل ارتفاعًا
   bar.hidden=false;
-  const after=()=>{ renderRegionTabs(); renderPlaces(); };   // renderPlaces ينادي updateFilterBar ⇒ الشرائح تُعاد بناؤها
+  const after=()=>{ pruneRegionFilter(); renderPlaces(); };   // renderPlaces ينادي updateFilterBar ⇒ الشرائح تُعاد بناؤها
   list.forEach(c=>{
     const b=h('button',{class:'fchip', type:'button', 'aria-label':t('fchipRemove',{v:c.label})},
       h('span',{class:'fchip-lbl'}, c.label), ico('x','fchip-x'));
@@ -539,7 +527,7 @@ function renderPlaces(opts){
     if (q) Track.searchEmpty({ q: normQuery(rawQ), region: State.filter, sport: State.sport });
     el.append(emptyState({ icon:'🔍', title:t('noResultsTitle'),
       sub: hasAny ? t('noResultsSub') : t('noResultsSubPlain'),
-      actionLabel: hasAny?t('clearFiltersBtn'):null, action: hasAny?()=>{ resetAllFilters(); renderRegionTabs(); renderPlaces(); }:null }));
+      actionLabel: hasAny?t('clearFiltersBtn'):null, action: hasAny?()=>{ resetAllFilters(); pruneRegionFilter(); renderPlaces(); }:null }));
     return;
   }
   list.forEach((p,i) => {
@@ -565,16 +553,28 @@ const numOrNull = (v)=>{ const n=Number(v); return (v===''||Number.isNaN(n))?nul
 function openFilters(){
   State.fxDraft = JSON.parse(JSON.stringify(State.fx));   // مسودّة معزولة
   State.sortDraft = State.sort;
+  /* المنطقة صارت داخل الورقة (2026-08-22) ⇒ لها مسودّتها كبقيّة المرشِّحات:
+     تُطبَّق عند «تطبيق» لا عند النقر، وإلّا تغيّرت القائمة تحت الورقة المفتوحة. */
+  State.filterDraft = State.filter;
   renderFiltersSheet();
   Modal.open('modal-filters');
 }
 /* عدّاد زرّ «تطبيق» — يُقرأ من المسودّة، فيجب أن تكون المسودّة محدَّثة أولاً */
+/* ما بداخل طيّة «مواصفات أكثر» وحده — يُكتب على رأسها فلا يبقى مرشِّحٌ مفعَّل
+   مطويًّا بلا أثرٍ ظاهر. */
+function fxMoreCount(fx){
+  return fx.sizes.length + fx.types.length + fx.amenities.length + fx.genders.length + (fx.minRating>0?1:0);
+}
 function updateFxApplyCount(){
   const fx=State.fxDraft; if(!fx) return;
   let n=0; if(fx.minPrice!=null)n++; if(fx.maxPrice!=null)n++;
   n+=fx.sizes.length+fx.types.length+fx.amenities.length+fx.genders.length;
   if(fx.minRating>0)n++; if(fx.availableToday)n++; if(State.sortDraft!=='default')n++;
+  // المنطقة مرشِّحٌ كبقيّتها منذ أن دخلت الورقة — وكانت خارج العدّ لأنها كانت شريطًا ظاهرًا
+  if(State.filterDraft && State.filterDraft!=='all') n++;
   setText('fxApplyCount', n? `${t('apply')} (${n})` : t('apply'));
+  const mc=$('#fxMoreCount'), k=fxMoreCount(fx);
+  if(mc){ mc.textContent=String(k); mc.hidden = k===0; }
 }
 /* ⚠️ الحقول الثابتة (السعر · «متاح اليوم») تعيش في HTML ولا يُعاد إنشاؤها، بينما
    كل نقرة على شريحة تُعيد بناء الورقة و**تُعيد كتابة قيمها من المسودّة**. وما دامت
@@ -593,11 +593,17 @@ function renderFiltersSheet(){
   // الترتيب
   const sw=$('#fxSort'); clear(sw);
   Object.entries(SORT_LABEL).forEach(([v,k])=>{ const c=fxChip(t(k), State.sortDraft===v); c.addEventListener('click',()=>{ State.sortDraft=v; renderFiltersSheet(); }); sw.append(c); });
-  // المنطقة
-  const reg=$('#fxRegion'); const cur=reg.value; clear(reg);
-  reg.append(h('option',{value:'all'},t('allRegions')));
-  getRegions().forEach(r=> reg.append(h('option',{value:r}, r)));
-  reg.value = (State.filter!=='all' && getRegions().some(r=>r===State.filter)) ? State.filter : 'all';
+  /* المنطقة — شرائح لا قائمة منسدلة. المناطق ستٌّ في القاعدة كلِّها، ومنسدلةٌ
+     بستّة خيارات تخفيها كلَّها خلف نقرة ثمّ تعرضها في طبقة نظام. وهي نفس
+     `fxChip` المستعملة في الحجم والنوع والمرافق ⇒ مكوّنٌ واحد لمعنًى واحد. */
+  const rg=$('#fxRegions'); if(rg){ clear(rg);
+    const regions=getRegions();
+    const pick=(v)=>{ State.filterDraft=v; renderFiltersSheet(); };
+    const all=fxChip(t('all'), (State.filterDraft||'all')==='all');
+    all.addEventListener('click',()=>pick('all')); rg.append(all);
+    regions.forEach(r=>{ const c=fxChip(r, normalizeText(r)===normalizeText(State.filterDraft||'all'));
+      c.addEventListener('click',()=>pick(r)); rg.append(c); });
+  }
   // السعر — إسناد الخاصّية (لا addEventListener) لأنه **متكافئ**: الحقول ثابتة في HTML
   // وإعادة البناء تمرّ هنا عشرات المرّات، فالإضافة كانت ستكدّس مستمعًا في كل مرّة.
   $('#fxMin').value = fx.minPrice ?? ''; $('#fxMax').value = fx.maxPrice ?? '';
@@ -631,6 +637,12 @@ function renderFiltersSheet(){
               : am.append(h('span',{class:'fx-empty'},t('noData')));
   // عدّاد المسودّة
   updateFxApplyCount();
+  /* ⚠️ **الطيّة تُفتَح إن كان بداخلها مرشِّحٌ مفعَّل، ولا تُغلَق أبدًا بيدنا.**
+     الفتح لأنّ مرشِّحًا يعمل ومطويٌّ يُقرأ عطلًا في القائمة؛ وترك الإغلاق
+     للمستخدم لأنّ كل نقرة شريحةٍ تُعيد بناء الورقة — فإغلاقٌ تلقائي كان
+     سيطوي الطيّة تحت إصبعه وهو يختار داخلها. */
+  const more=$('#fxMore');
+  if(more && !more.open && fxMoreCount(fx)>0) more.open=true;
 }
 function applyFilters(){
   const fx=State.fxDraft; if(!fx) return;
@@ -638,13 +650,14 @@ function applyFilters(){
   if(fx.minPrice!=null && fx.maxPrice!=null && fx.minPrice>fx.maxPrice){ const tmp=fx.minPrice; fx.minPrice=fx.maxPrice; fx.maxPrice=tmp; }
   fx.availableToday=$('#fxToday').checked;
   State.fx=fx; State.sort=State.sortDraft; State.fxDraft=null;
-  const reg=$('#fxRegion').value; State.filter = reg==='all'?'all':reg;
+  State.filter = (State.filterDraft && State.filterDraft!=='all') ? State.filterDraft : 'all';
+  State.filterDraft=null;
   Modal.close('modal-filters');
-  renderRegionTabs(); renderPlaces();
+  pruneRegionFilter(); renderPlaces();
 }
 function clearFiltersSheet(){
   State.fxDraft={ minPrice:null,maxPrice:null,sizes:[],types:[],minRating:0,availableToday:false,amenities:[],genders:[] };
-  State.sortDraft='default'; $('#fxRegion').value='all';
+  State.sortDraft='default'; State.filterDraft='all';
   renderFiltersSheet();
 }
 
@@ -1512,6 +1525,13 @@ function setMode(m){
      ⚠️ والدرس أعمّ: أيّ عنصرٍ يُنقَل داخل حاويةٍ تُخفى بالكامل يرث إخفاءها —
      فابحث عن `.hidden = ` على الحاوية قبل نقل أي شيء إليها. */
   const bs=$('#browseSticky'); if(bs) bs.hidden=games;
+  /* 🔴 **مبدّل شكل البطاقات يُخفى في «مباريات»** (طلب المالك 2026-08-22):
+     `State.view` تحكم `#placesList` وحدها — `renderGames` تبني قائمتها بشكلٍ
+     واحد ولا تقرأ العلَم إطلاقًا. فزرّان يبدّلان شكلًا لا يتبدّل هما بالضبط
+     ما تمنعه م5: أداةٌ معروضة لا تفعل شيئًا. ويعودان مع الملاعب.
+     ⚠️ ونسخةُ الورقة (‏`.fx-chip.vt-btn`) تبقى: الورقة نفسها مخفيّةٌ في هذا
+        الوضع (`#browseSticky` يحمل زرّها)، و`updateViewToggle` تُزامن الاثنين. */
+  const vs=$('#page-home .sec-title-home .view-seg'); if(vs) vs.hidden=games;
   /* شرائح الفلاتر المفعّلة: تُخفى في «مباريات»، وعند العودة **تُعاد بناؤها** لا
      تُظهَر عمياءً — `renderFilterChips` هي وحدها من يعرف أفارغةٌ هي أم لا. */
   const fc=$('#fchipsBar');

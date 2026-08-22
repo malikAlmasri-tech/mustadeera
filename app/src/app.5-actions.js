@@ -181,6 +181,56 @@ function renderManualTimes(){
 }
 
 /* ---- Fields modal ---- */
+/* ═══ صور الملعب — إضافةٌ وحذفٌ وترتيب (طلب المالك 2026-08-22) ═════════════
+   المصدر واحد: `State.fieldImgs` مصفوفةُ روابطَ تُبنى عند فتح النافذة من
+   `fieldImages(f)` — أي من **نفس المحلّل** الذي يقرأ به التطبيقُ العمودَ،
+   فلا صيغتان تنحرفان. وتُكتب عند الحفظ مفصولةً بـ`|` (وهي أحد فواصله
+   الثلاثة، وأسلمُها: الرابط قد يحمل فاصلة).
+   ⚠️ **والأولى هي التي تُعرَض** — `placeCard` و`field-thumb` كلاهما يأخذ
+      `fieldImages(f)[0]` — فالترتيب معلومةٌ لا زينة، ولذلك زرُّ «اجعلها
+      الأولى» موجود والحاشيةُ تقول القاعدة. */
+function renderFieldImgs(){
+  const box=$('#fieldImgList'); if(!box) return; clear(box);
+  const list=State.fieldImgs||[];
+  if(!list.length){ box.append(h('p',{class:'fimg-empty'}, t('fldImgsNone'))); return; }
+  list.forEach((u,i)=>{
+    const row=h('div',{class:'fimg-row'+(i===0?' is-first':'')});
+    /* الصورة نفسها هي المعاينة: رابطٌ صحيح المخطَّط قد يكون مكسورًا على أي
+       حال، و`onerror` يقولها بدل مربّعٍ فارغ يُقرأ عطلًا في التطبيق. */
+    const img=h('img',{src:u, alt:'', width:'96', height:'64', loading:'lazy', decoding:'async'});
+    const thumb=h('span',{class:'fimg-thumb'}, img);
+    const url=h('span',{class:'fimg-url'}, h('bdi',{dir:'ltr'}, u));
+    /* رابطٌ صحيح المخطَّط قد يكون مكسورًا على أي حال، والمالك لن يعرف إلّا
+       حين يفتح التطبيق كلاعب. فالسطر يقول ذلك هنا **قبل الحفظ**. */
+    img.addEventListener('error', ()=>{
+      row.classList.add('is-broken');
+      url.append(h('span',{class:'fimg-bad'}, t('fldImgsBroken')));
+    });
+    row.append(thumb, url);
+    if(i===0) row.append(h('span',{class:'fimg-tag'}, t('fldImgsFirst')));
+    else {
+      const up=h('button',{class:'fimg-btn', type:'button'}, t('fldImgsMakeFirst'));
+      up.addEventListener('click', ()=>{ State.fieldImgs=[u,...list.filter(x=>x!==u)]; renderFieldImgs(); });
+      row.append(up);
+    }
+    const del=h('button',{class:'fimg-btn is-del', type:'button',
+      'aria-label':t('fldImgsRemove')}, ico('x','svg-sm'));
+    del.addEventListener('click', ()=>{ State.fieldImgs=list.filter((_,k)=>k!==i); renderFieldImgs(); });
+    row.append(del);
+    box.append(row);
+  });
+}
+function fieldImgAdd(){
+  const inp=$('#fieldImgInput'); if(!inp) return;
+  const u=inp.value.trim();
+  if(!u){ inp.focus(); return; }
+  /* نفس حارس `fieldImages` بالحرف: ما لا يمرّ منه لن يُرسَم أبدًا، فرفضُه
+     هنا **مع سببه** خيرٌ من قبوله ثمّ اختفائه بلا كلمة. */
+  if(!isHttpUrl(u)){ toast(t('fldImgsBadUrl'),'warn'); inp.focus(); return; }
+  State.fieldImgs = State.fieldImgs || [];
+  if(State.fieldImgs.includes(u)){ toast(t('fldImgsDup'),'warn'); inp.value=''; return; }
+  State.fieldImgs.push(u); inp.value=''; renderFieldImgs(); buzz(6);
+}
 function openEditField(fieldId){
   State.editingField='edit';
   const f=(State.ownerData.fields||[]).find(x=>String(x.field_id)===String(fieldId)); if(!f)return;
@@ -188,6 +238,7 @@ function openEditField(fieldId){
   $('#fieldId').value=f.field_id; $('#fieldName').value=f.field_name; $('#fieldName').disabled=true;
   $('#fieldSize').value=f.size; $('#fieldSize').disabled=true; $('#fieldPrice').value=f.price;
   $('#fieldSlots').value=slotsToKeyword(f.slots); $('#fieldActive').checked=f.active!==false;
+  State.fieldImgs=fieldImages(f); $('#fieldImgInput').value=''; renderFieldImgs();
   Modal.open('modal-field');
 }
 function openAddField(){
@@ -196,6 +247,7 @@ function openAddField(){
   $('#fieldId').value=''; $('#fieldName').value=''; $('#fieldName').disabled=false;
   $('#fieldSize').value='6×6'; $('#fieldSize').disabled=false; $('#fieldPrice').value='40';
   $('#fieldSlots').value='full'; $('#fieldActive').checked=true;
+  State.fieldImgs=[]; $('#fieldImgInput').value=''; renderFieldImgs();
   Modal.open('modal-field');
 }
 
@@ -609,7 +661,18 @@ function showPage(name, opts){
   const y = (name==='home' && !keyChanged) ? (State.pageScroll.home||0)
           : name==='home' ? 0
           : (opts.back ? (State.pageScroll[name]||0) : 0);
-  requestAnimationFrame(()=>pageScrollSet(y));
+  /* 🔴 **التمرير يُضبَط في نفس المهمّة لا في `requestAnimationFrame`** (بلاغ
+     المالك 2026-08-22: «في تعليق أثناء الانتقال»). كان النداء مؤجَّلًا إلى
+     الفريم التالي — أي إلى **الفريم الأوّل من الحركة** — فيقع `scrollTo` على
+     مستندٍ طوله آلاف البكسلات بينما طبقتان تنزلقان فوقه: إعادةُ رسمٍ كاملة في
+     أثقل فريم في الانتقال، وقفزةٌ مرئية على العودة إلى صفحةٍ محفوظ موضعها.
+     والتأجيل لم يكن لازمًا أصلًا: `void page.offsetWidth` قبله بأسطر **يُجبر
+     التخطيط** فالصفحة مقيسةٌ وقابلة للتمرير إلى موضعها فورًا.
+     ⚠️ ويبقى تصحيحٌ في الفريم التالي **للحالة الوحيدة التي تحتاجه**: موضعٌ
+        محفوظ أبعدُ من ارتفاعٍ لم يكتمل بعد (صورٌ لم تُحمَّل) — يُقصّ عندها إلى
+        أقصى ما يسمح به المستند، فيصحّحه فريمٌ واحد بلا كلفةٍ في المسار العادي. */
+  pageScrollSet(y);
+  if(y > 0) requestAnimationFrame(()=>{ if(Math.abs(pageScrollGet()-y) > 2) pageScrollSet(y); });
   // إشعار طبقة native (شريط الحالة يتلوّن حسب الصفحة) — خامل تمامًا على المتصفح
   try{ document.dispatchEvent(new CustomEvent('app:page',{detail:name})); }catch(_){}
 }
@@ -1318,8 +1381,12 @@ async function confirmBooking(btn){
     }catch(_){ toast(t('bookingConnLag'),'error'); }
   });
   if(!sent) return;
-  /* الزرّ يقول «تمّ» **بعد** جواب الخادم لا قبله (م5)، ثمّ تُغلَق الورقة. */
-  await btnDone(btn);
+  /* 🔴 **علامة «تمّ» على الزرّ حُذفت** (طلب المالك 2026-08-22): كانت تُكتب ثمّ
+     تُغلَق الورقة ثمّ تُفتح شاشة النجاح ⇒ **تأكيدان متتاليان لفعلٍ واحد**،
+     والثاني يغطّي الأوّل بعد 400ms فلا يُقرأ إلّا وميضًا. وشاشة النجاح هي
+     التأكيد: تقول ما وقع وتحمل الموعد والملعب ومسار الانتظار.
+     ⚠️ و`btnDone` حُذفت معها: لم يبقَ لها مستهلك، وكتلةٌ تُقرأ في المصدر
+        وهي ميّتة تُضلّل من يقرأ بعدنا (مزلقٌ مسجَّل). */
   Modal.close('modal-booking');
   showBookingSuccess({ place, field, date, hour, price: sent.price,
                        visibility: vis, needed: need, brought: got }, sent.id);
@@ -1399,9 +1466,13 @@ async function saveField(btn){
   if(!field_name||!size||!price){ toast(t('fieldNeed'),'warn'); return; }
   await withLoading(btn, async()=>{
     try{
+      /* `|` هو الفاصل: `fieldImages` تقبل `,` و`
+` و`|`، والرابط قد يحمل
+         فاصلةً في مسار أو استعلام ⇒ الفصلُ بها كان يشطر رابطًا واحدًا اثنين. */
+      const image_url=(State.fieldImgs||[]).join('|');
       const payload=State.editingField==='add'
-        ? { action:'ownerAddField', owner_token:Session.owner(), field_name, size, price, slots }
-        : { action:'ownerUpdateField', owner_token:Session.owner(), field_id, price, slots, active };
+        ? { action:'ownerAddField', owner_token:Session.owner(), field_name, size, price, slots, image_url }
+        : { action:'ownerUpdateField', owner_token:Session.owner(), field_id, price, slots, active, image_url };
       const res=await API.post(payload);
       if(!res.success){ toast(apiMsg(res.message)||t('fieldFail'),'error'); return; }
       Modal.close('modal-field', true); try{ localStorage.removeItem(CONFIG.CACHE_KEY); }catch(_){}
@@ -1604,7 +1675,7 @@ function setLanguage(lang){
   });
   // أعد رسم المحتوى الديناميكي للصفحة النشطة دون فقد الحالة/الجلسة/الفلاتر
   try{
-    renderSportTabs(); renderSportDropdown(); updateSportSections(); renderRegionTabs(); updateFilterBar(); updateTrust();
+    renderSportTabs(); updateSportSections(); pruneRegionFilter(); updateFilterBar(); updateTrust();
     HeroPh.sync();   // كلمات النائب المتحرّك تتبع اللغة — ويُلغى المؤقّت القديم فلا يتراكم
     // ترجمة سطر الترحيب حسب حالة الجلسة (ضيف/مسجّل) دون كسر التخصيص
     updatePlayerGreeting();
@@ -1699,20 +1770,6 @@ function switchLanguage(lang){
 }
 
 /* ===================== EVENT DELEGATION ===================== */
-/* ═══ علامةُ النجاح على الزرّ ═════════════════════════════════════════════
-   الزرّ كان يبقى محمَّلًا حتى تختفي الورقة تحته — لحظةٌ تُقرأ تعليقًا لا نجاحًا.
-   الآن يقول «تمّ» بعلامةٍ داخله قبل الإغلاق بـ`400ms`.
-   ⚠️ **ولا يُنادى إلّا بعد نجاحٍ مؤكَّد**: علامةٌ تسبق الجواب هي بالضبط ما
-      تمنعه م5 — وعدٌ بما لم يقع بعد.
-   ⚠️ و«تقليل الحركة» لا يُلغيها: هي **حالة** لا زخرفة، والانتظار وحده يُلغى. */
-function btnDone(btn, label){
-  if(!btn) return Promise.resolve();
-  btn.classList.add('is-done');
-  clear(btn);
-  btn.append(h('span',{class:'btn-check','aria-hidden':'true'}), label || t('successDone'));
-  buzz(10);
-  return new Promise(res => setTimeout(res, 400));
-}
 const Actions = {
   browse, playerLogin, playerRegister, ownerLogin, logout:doLogout, saveAccount, changePassword, toggleTheme, toggleLang,
   /* 🔴 **اسمان آخران للفعلين نفسيهما — والسبب بنيويّ لا تجميلي.**
@@ -1741,6 +1798,7 @@ const Actions = {
   /* بلا وسيط: المُوزِّع ينادي `fn(act, e)` فيصل **العنصر** مكان التعبئة
      المسبقة — يتحمّله `openManual` بلا عطل، لكنّه يقرأ غلطًا. */
   openManual:()=>openManual(), saveManual, addField:openAddField, saveField, saveReschedule,
+  fieldImgAdd,
   saveClosure, addPriceRule,
   setMode:(btn)=>setMode(btn.dataset.mode||'venues'),
   visPick:(btn)=>setVisPick(btn.dataset.vis||'private'),
@@ -1782,10 +1840,15 @@ const Actions = {
   setView:(btn)=>setViewMode(btn.dataset.view||'grid'),
   setDetailTab:(btn)=>setDetailTab(btn.dataset.dtab||'book'),
   openAboutReviews:()=>openAboutTab(true),
-  toggleSportDD:()=>toggleSportDD(),
   openNotifs:()=>Notifs.open(), notifsMarkAll:()=>Notifs.markAll(),
   openTracker:()=>{ if(Session.player()) showPage('bookings'); },
-  navBack:(btn)=>navigateBack(btn.dataset.fallback||'home'),
+  navBack:(btn)=>navigateBack(btn.dataset.fallback||'hub'),
+  /* 🔴 **وجهةٌ لا خطوة**: «رجوع للرئيسية» يقصد الشبكة بعينها، و`navigateBack`
+     تعود إلى **ما قبلك في المكدّس** — فمن دخل «حسابي» من «حجوزاتي» كان يهبط
+     على «حجوزاتي» والزرُّ يعِده بالرئيسية. و`{back:true}` كي يكون الانتقال
+     رجوعًا في شكله كما هو في معناه، ولئلّا تُدفَع الصفحة المغادَرة إلى
+     المكدّس فتصير الشبكةُ ورقةً في تاريخٍ يعود إليها. */
+  hubBack:()=>showPage('hub',{back:true}),
   obsSkip:()=>Obs.finish(), obsNext:()=>Obs.next(), obsBack:()=>Obs.back(),
   ownerPlaceMenu:()=>openOwnerPlaceMenu(),
   ownerView:(btn)=>setOwnerView(btn.dataset.ov||'cards'),
@@ -1892,8 +1955,6 @@ document.addEventListener('click', (e)=>{
   const fn=Actions[act.dataset.action]; if(fn) fn(act, e);
 });
 /* إغلاق قائمة الرياضات المنسدلة عند النقر خارجها أو بمفتاح Escape */
-document.addEventListener('click', (e)=>{ if(!e.target.closest('#sportDD')) closeSportDD(); });
-document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSportDD(); });
 /* بحث الهيرو بصفحة الهبوط — يعبّئ بحث الرئيسية ثم يتصفّح كضيف */
 const heroForm=$('#heroSearchForm');
 if(heroForm){ heroForm.addEventListener('submit',(e)=>{ e.preventDefault(); const hi=$('#heroSearchInput'); const v=hi?hi.value.trim():''; const s=$('#searchInput'); if(s) s.value=v; updateSearchClear(); browse(); }); }

@@ -320,7 +320,11 @@
 
 /* ═══ لوح متابعة الحجز على الرئيسية ═══
    لوحٌ واحد لا قائمة، وحالته محمولة على **الشكل** لا اللون وحده: المعلّق
-   نبضةٌ متحرّكة وحدّ متقطّع، والمؤكّد نقطةٌ ثابتة وحدّ متّصل. */.trk-wrap{padding:14px var(--s-5) 0}.trk{display:block;width:100%;text-align:start;padding:15px 16px;border-radius:var(--r-xl);
+   نبضةٌ متحرّكة وحدّ متقطّع، والمؤكّد نقطةٌ ثابتة وحدّ متّصل. *//* 🔴 **الحشوة الجانبية حُذفت** (بلاغ المالك 2026-08-22: «أبعاده مش مزبوطة»).
+   اللوح ابنُ `.pad` (‏`padding:28px var(--s-5)`)، فحشوةٌ ثانية بـ`var(--s-5)`
+   كانت تُضيّقه **٤٠px** عن بطاقات الشبكة المجاورة له — مقيس: 295.2 مقابل
+   335.2 لبطاقة «ملاعب». الآن الحافّتان واحدة، والفاصل السفلي وحده يبقى. */
+.trk-wrap{padding:0 0 12px}.trk{display:block;width:100%;text-align:start;padding:15px 16px;border-radius:var(--r-xl);
   background:var(--surface);border:1.5px solid var(--line-2);box-shadow:var(--shadow-card);
   transition:transform var(--t-fast),box-shadow var(--t-fast)}.trk:active{transform:scale(.985)}.trk.is-pending{border-style:dashed}.trk-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}.trk-state{display:inline-flex;align-items:center;gap:8px;font-size:0.84375rem;font-weight:800;color:var(--ink-2)}.trk-title{margin-inline-start:auto;font-size:0.78125rem;font-weight:700;color:var(--muted)}.trk-pulse{width:9px;height:9px;border-radius:999px;background:var(--mint-electric);flex:none}.trk.is-pending .trk-pulse{background:var(--warning);animation:trkPulse 1.8s var(--ease-out) infinite}@keyframes trkPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.72);opacity:.55}}
 /* 🔴 الوزنان مقلوبان عمّا كانا: **الموعد هو العنوان، والمكان هو الحاشية.**
@@ -1211,9 +1215,7 @@
 
 /* --- إبراز قبول/رفض للطلب المعلّق --- */.owner-decide{display:flex;gap:8px;margin-bottom:8px}.owner-decide .owner-action{flex:1;justify-content:center;min-height:46px;font-size:0.9375rem}.owner-approve{background:var(--g-btn);color:#0B2227}.owner-decline{background:transparent;color:var(--danger-ink);border:1.5px solid var(--danger);box-shadow:none}.owner-actions-sec{display:flex;gap:8px;flex-wrap:wrap}.owner-wa-link{display:inline-flex}
 
-/* --- FAB إضافة ملعب (تبويب الملاعب فقط) --- */
-/* ⚠️ فوق الشريط السفلي لا تحته: `bottom:18px` كانت تضع الزرّ العائم **خلف**
-   شريط المالك (‏z-index:100 عليه) فيُقصّ نصفه. */.owner-fab{position:fixed;inset-inline-end:18px;bottom:calc(var(--bnav-h) + 14px + env(safe-area-inset-bottom));z-index:60;display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 20px;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:1rem;font-weight:var(--fw-black);box-shadow:var(--shadow-lg),var(--shadow-green);transition:transform var(--t-fast) var(--ease-spring)}.owner-fab svg{width:20px;height:20px}.owner-fab:hover{transform:translateY(-2px)}.owner-fab:active{transform:scale(.95)}.owner-fab[hidden]{display:none}
+/* --- (‏زرّ إضافة الملعب العائم حُذف 2026-08-22 — بابان لفعلٍ واحد؛ الباقي رابطُ الرأس) --- */
 
 /* --- مبدّل تشغيل/إيقاف الملعب --- */.field-switch{width:46px;height:27px;border-radius:999px;background:var(--surface-muted);border:1.5px solid var(--line-2);position:relative;flex-shrink:0;cursor:pointer;padding:0;min-height:0;transition:background var(--t-base),border-color var(--t-base)}.field-switch-knob{position:absolute;top:2px;inset-inline-start:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:inset-inline-start var(--t-base) var(--ease-spring)}.field-switch.on{background:var(--g-btn);border-color:transparent}.field-switch.on .field-switch-knob{inset-inline-start:calc(100% - 21px)}.field-switch:disabled{opacity:.6;cursor:default}.field-card.field-off{opacity:.62}.field-off-badge{font-size:0.84375rem;font-weight:800;color:var(--danger-ink);background:var(--danger-soft);border-radius:999px;padding:2px 9px}
 
@@ -1422,7 +1424,6 @@
 /* بطاقة حجز المالك: حشوة أهدأ وحدّ حالة أنحف (نظافة أصلية) */.booking-strip{border-inline-start-width:3px}
 /* صفوف الملاعب: مضغوطة، مصغّرة صورة على الطرف الابتدائي، المبدّل بمنتصف الصف */.field-card{padding:14px 16px}.field-row-main{display:flex;align-items:flex-start;gap:12px;min-width:0}.field-thumb{width:52px;height:52px;border-radius:14px;overflow:hidden;flex-shrink:0;background:var(--surface-muted);
   border:1px solid var(--line);display:grid;place-items:center}.field-thumb img{width:100%;height:100%;object-fit:cover;display:block}.field-thumb svg{width:24px;height:24px;stroke:var(--soft);fill:none;stroke-width:1.5;opacity:.85}.field-card .field-switch{align-self:center}.field-off{opacity:.72}
-/* FAB: ضغطة أصلية لا رفعة ماوس */body.native .owner-fab:hover{transform:none}body.native .owner-fab{transition:transform .12s cubic-bezier(.2,0,0,1),box-shadow .12s ease}body.native .owner-fab:active{transform:scale(.94)}
 /* المبدّل: انضغاط لحظي عند اللمس */body.native .field-switch:active{transform:scale(.94)}body.native .field-switch{transition:background var(--t-base),border-color var(--t-base),transform .12s cubic-bezier(.2,0,0,1)}
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -2950,16 +2951,9 @@ html[dir="rtl"] .bt-arw{ transform:scaleX(-1) }
 .bk-when-val{ font-size:1.25rem; font-weight:800; color:var(--ink);
   font-variant-numeric:tabular-nums; letter-spacing:var(--tr-tight); text-align:center }
 
-/* ④ زرُّ الإرسال يقول «تمّ» قبل أن تُغلَق الورقة. النجاح كان يقع في شاشةٍ
-   تالية، فيبقى الزرّ محمَّلًا حتى تختفي الورقة تحته — لحظةٌ يظنّها المستخدم
-   تعليقًا. والعلامة تُرسَم بـ`clip-path` على عنصرٍ واحد: بلا SVG وبلا مكتبة. */
-.sbtn.is-done{ pointer-events:none }
-.btn-check{ display:inline-flex; align-items:center; justify-content:center;
-  inline-size:20px; block-size:20px; margin-inline-end:8px; border-radius:50%;
-  background:currentColor; color:inherit }
-.btn-check::after{ content:''; inline-size:10px; block-size:6px;
-  border-inline-start:2.2px solid var(--act-bg); border-block-end:2.2px solid var(--act-bg);
-  transform:rotate(-45deg) translate(1px,-1px) }
+/* ④ 🔴 **علامة «تمّ» على زرّ الإرسال حُذفت** (طلب المالك 2026-08-22): كانت
+   تأكيدًا أوّل تعقبه شاشةُ النجاح بعد 400ms — تأكيدان لفعلٍ واحد، والثاني
+   يبتلع الأوّل. وقواعدها حُذفت معها فلا تبقى ميتةً في الورقة. */
 
 /* ⑤ الإشعارات غير المقروءة تصل **بعد** المقروءة بقليل، فتلفت العين بلا لون
    فاقع. والتأخير من ترتيبها هي وحدها (‏`--ntf-i` تُكتب في JS للجديدة فقط)،
@@ -3365,3 +3359,116 @@ body.dark .modal[data-modal="booking"] > .sbtn{
 .ot-hero-spark .sparkline{ position:static; inset:auto; z-index:auto; opacity:1;
   display:block; inline-size:100%; block-size:26px; color:var(--act-bg) }
 .ot-hero-spark .sparkline svg{ inline-size:100%; block-size:100% }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §41 — دفعة بلاغات المالك 2026-08-22
+   ثلاثة عشر بندًا، وكلُّ قاعدةٍ هنا نتيجةُ قياسٍ في المعاينة لا تقديرٍ.
+   ⚠️ وموضعُها آخرُ الملفّ **عمدًا**: كلُّ ما تنقضه أعلاها بنوعيّةٍ مكافئة
+      (مزلقٌ مسجَّل ثلاث مرّات: «تقليل الحركة» §29 · `prefers-contrast` §30 ·
+      كتلة جوّال `/admin` في الدفعة ٣٨).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── ① رأس الشبكة: حشوةٌ وحيّزٌ آمن ──────────────────────────────────────
+   🔴 مقيس قبله عند 375px: الجرس يبدأ عند **`left:0` بالضبط** والرأس بلا أيّ
+   حشوة — لأنّ `.app-header` المجرَّدة لا تحمل حشوةً أصلًا، وكلُّ من يستعملها
+   يحمل مُعدِّلًا (`home`/`compact`/`auth`) فيه حشوته. والشبكة وحدها كانت بلا
+   مُعدِّل. والحيّز الآمن أعلى لازمٌ كما هو في الثلاثة: نتوء الكاميرا يقع فوقه. */
+.app-header.hub{
+  padding: max(14px, calc(env(safe-area-inset-top,0px) + 12px)) var(--s-5) 14px;
+  border-radius:0 0 var(--r-2xl) var(--r-2xl) }
+
+/* ── ② زرّ الرجوع إلى الشبكة في رؤوس التبويبات ──────────────────────────
+   طقمه من `.icon-btn` في رأس الهوم حرفيًّا: سطحٌ محايد بحدّ وحبرٌ داكن —
+   عنصران في رأسٍ واحد لا يجوز أن يختلف أساسُ لونهما (درس الأفاتار، الدفعة ٣٤). */
+.hdr-back{ inline-size:var(--tap-min); block-size:var(--tap-min); flex:none;
+  display:grid; place-items:center; border-radius:10px;
+  background:var(--surface-muted); border:1px solid var(--line); color:var(--ink);
+  transition:background var(--t-fast), transform var(--t-fast) var(--ease-out) }
+.hdr-back svg{ inline-size:20px; block-size:20px }
+.hdr-back:active{ transform:scale(.94) }
+@media(hover:hover){ .hdr-back:hover{ background:var(--surface-soft) } }
+/* السهم فيزيائي والاتّجاه منطقي — نفس معالجة `.detail-back` و`.own-entry-arw` */
+html[dir="ltr"] .hdr-back svg{ transform:scaleX(-1) }
+/* رأسا «حجوزاتي» و«حسابي»: صفٌّ واحد — الزرّ ثمّ العنوانان.
+   ⚠️ `min-inline-size:0` على عمود العناوين وإلّا منع النصُّ الطويل الصفَّ من
+      الانكماش فخرج الزرّ عن الحافّة (سلوك flex الافتراضي `min-width:auto`). */
+.hdr-row{ display:flex; align-items:center; gap:12px }
+.hdr-titles{ min-inline-size:0; flex:1 }
+/* صفحة التصفّح: الزرّ أوّل عناصر صفّ الترحيب، وهو صفٌّ `flex` قائم. */
+.app-header.home .home-bar > .hdr-back{ margin-inline-end:2px; align-self:center }
+
+/* ── ③ شريط الرياضات في مسار التصفّح ────────────────────────────────────
+   كان `.sport-tabs` يلتفّ على أسطر داخل ورقة الفلاتر؛ وهو الآن داخل مُمرِّرٍ
+   أفقيّ، فالالتفاف يجعله كتلةً بثلاثة أسطر تأكل ثلث الشاشة. */
+.browse-rail .sport-tabs{ flex-wrap:nowrap; gap:8px }
+/* 🔴 **ارتفاعٌ حقيقي 44 لا شبح** — الحبّة كانت `min-height:42px` في ورقة
+   الفلاتر (مقيس)، وهناك لم يكن فرق البكسلين مهمًّا لأنها في ورقةٍ فسيحة؛
+   وهنا صارت هدفَ لمسٍ دائمًا في شريطٍ لاصق. والنموّ غير مؤذٍ فالصفّ ينزلق
+   أفقيًّا — و«الأبسط الذي يعمل يغلب الأذكى الذي لا يعمل» (الدفعة ٢٤).
+   ⚠️ والنوعية (0,2,0) تغلب `.sport-tab` (0,1,0) مهما كان الترتيب. */
+.browse-rail .sport-tab{ scroll-snap-align:start; min-block-size:var(--tap-min) }
+
+/* ── ④ ورقة الفلاتر: طيّة «مواصفات أكثر» ────────────────────────────────
+   `.disclosure` تحمل حدَّين أفقيَّين، وهي هنا بين مجموعتين لهما هامشهما ⇒
+   الحدّ العلوي كان يقع على حدّ المجموعة فوقه فيُقرأ خطًّا ثخينًا. */
+.fx-more{ margin-block:6px var(--s-5) }
+.fx-more > summary{ padding-block:14px }
+.fx-more .fx-group:last-of-type{ margin-block-end:6px }
+/* عدد المرشِّحات المفعَّلة داخل الطيّة — على رأسها كي لا يبقى مطويًّا بلا أثر */
+.fx-more-n{ margin-inline-start:auto; min-inline-size:22px; block-size:22px;
+  display:inline-grid; place-items:center; padding-inline:6px; border-radius:999px;
+  background:color-mix(in srgb, var(--act-bg) 14%, transparent);
+  color:var(--act-bg);
+  font-size:0.75rem; font-weight:800; font-variant-numeric:tabular-nums }
+
+/* ── ⑤ صور الملعب في نافذة الملعب ───────────────────────────────────────
+   صفٌّ لكل صورة: معاينة ⇐ الرابط ⇐ فعلٌ واحد. ولا شبكة بطاقات: الروابط
+   طويلة وقراءتها هي ما يميّز صورةً عن أختها حين تتشابه المعاينتان. */
+.fimg{ margin-block:14px 4px }
+.fimg-list{ display:flex; flex-direction:column; gap:8px; margin-block:8px }
+.fimg-row{ display:flex; align-items:center; gap:10px; padding:8px;
+  border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface-soft) }
+.fimg-row.is-first{ border-color:color-mix(in srgb, var(--act-bg) 40%, transparent) }
+.fimg-thumb{ inline-size:56px; block-size:40px; flex:none; border-radius:8px;
+  overflow:hidden; background:var(--surface-muted); display:grid; place-items:center }
+.fimg-thumb img{ inline-size:100%; block-size:100%; object-fit:cover; display:block }
+.fimg-row.is-broken .fimg-thumb{ opacity:.45 }
+.fimg-url{ flex:1; min-inline-size:0; font-size:0.75rem; color:var(--muted);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.5 }
+.fimg-bad{ display:block; color:var(--danger-ink); font-weight:700 }
+.fimg-tag{ flex:none; font-size:0.6875rem; font-weight:800; padding:3px 8px;
+  border-radius:999px; background:color-mix(in srgb, var(--act-bg) 14%, transparent);
+  color:var(--act-bg) }
+/* هدفا لمسٍ حقيقيّان لا شبح: النموّ هنا غير مؤذٍ، و«الأبسط الذي يعمل يغلب
+   الأذكى الذي لا يعمل» (الدفعة ٢٤). */
+.fimg-btn{ flex:none; min-block-size:var(--tap-min); padding-inline:10px;
+  border-radius:10px; background:var(--surface-muted); border:1px solid var(--line);
+  color:var(--ink-2); font-size:0.75rem; font-weight:700;
+  display:inline-grid; place-items:center }
+.fimg-btn.is-del{ inline-size:var(--tap-min); padding-inline:0; color:var(--danger-ink) }
+.fimg-btn:active{ transform:scale(.94) }
+.fimg-add{ display:flex; gap:8px; align-items:stretch }
+.fimg-add .finput{ flex:1; min-inline-size:0; margin:0 }
+.fimg-add-btn{ flex:none; inline-size:auto; padding-inline:18px; margin:0 }
+.fimg-empty, .fimg-hint{ font-size:0.75rem; color:var(--muted); line-height:1.6; margin-block:6px 0 }
+
+/* ── ⑥ لوحة المالك: عمود الإجراءات في بطاقة الملعب ──────────────────────
+   🔴 مقيس قبله عند 375px: «تعديل» 66.3px و«التسعير» 98.7px يبدآن من 36.8
+   وينتهيان عند 103.1 و135.5 ⇒ حافّةٌ مسنَّنة على الطرفين معًا؛ والمبدّل يحمل
+   `align-self:center` (‏`.field-card .field-switch` أعلى الملفّ) فيغلب
+   `align-items` للأب ⇒ يبدأ عند 63.2. ثلاثةُ عناصر بثلاث محاذيات في عمود.
+   و`stretch` تجعل الزرّين بعرضٍ واحد هو عرض الأوسع، والمبدّل يبقى بحجمه
+   الطبيعي محاذيًا لحافّتهما — فالحافّتان مستقيمتان. */
+.field-acts{ display:flex; flex-direction:column; align-items:stretch; gap:8px; flex:none }
+.field-acts .owner-action{ justify-content:center }
+.field-card .field-acts .field-switch{ align-self:flex-end }
+
+/* ── ⑦ لوحة المالك: الموعد على بطاقة الحجز ──────────────────────────────
+   كان سطرين صغيرين بلون `--muted` أحدهما **التاريخ خامًا** (`2026-08-22`).
+   ونفس وزن `.trk-when` في لوح «حجزك القادم»: الموعد هو البطل في الوجهين. */
+.owner-bk-when{ display:flex; align-items:center; flex-wrap:wrap; gap:6px;
+  margin-block-start:6px; font-size:1rem; font-weight:800; color:var(--ink);
+  line-height:1.35; font-variant-numeric:tabular-nums }
+.owner-bk-when .svg-sm{ color:var(--muted); flex:none }
+.owner-bk-when-sep{ color:var(--soft); font-weight:700 }
+.owner-bk-when-time{ letter-spacing:var(--tr-tight) }

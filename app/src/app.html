@@ -378,7 +378,11 @@
        المتصفّح ضيفًا: نفس حارس المبدّل القديم بالحرف (`GAMES_OK === true`
        و`Session.player()`) — لا يُعرَض بابٌ ثمّ يُسحَب. -->
   <section class="page" id="page-hub">
-    <header class="app-header">
+    <!-- 🔴 **`hub` مُعدِّلٌ لا زينة** (بلاغ المالك 2026-08-22: «أيقونة التنبيهات
+         ملزقة بطرف الشاشة»). كان الرأس بلا مُعدِّل أصلًا (`home`/`compact`/`auth`
+         كلُّها تحمل حشوتها في محدِّرها هي) ⇒ لا حشوة ولا حيّز آمن أعلى:
+         مقيس أنّ الجرس يبدأ عند `left:0` بالضبط. -->
+    <header class="app-header hub">
       <div class="head-flex">
         <div>
           <div class="hi-line" id="hubGreet">&nbsp;</div>
@@ -460,7 +464,14 @@
 
   <section class="page" id="page-home">
     <header class="app-header home">
+      <!-- 🔴 **زرّ رجوعٍ إلى الشبكة في كل تبويب** (طلب المالك 2026-08-22).
+           الشبكة هي مهبط الجلسة منذ الدفعة ٣٤، والمخرج الوحيد منها إليها كان
+           **زرّ «الرئيسية» في الشريط السفلي** — أي أنّ الرجوع كان يُطلَب من
+           أسفل الشاشة بينما العين في أعلاها، ومن لا يعرف إيماءة الرجوع لا
+           يجد شيئًا في مكانه المعتاد. والزرّ يذهب إلى `hub` **مباشرةً** لا
+           إلى ما قبله في المكدّس: «رجوع للرئيسية» وجهةٌ لا خطوة. -->
       <div class="home-bar">
+        <button class="hdr-back" data-action="hubBack" data-i18n-aria="hubBackAria" aria-label="رجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
         <div class="home-greet">
           <div class="greet-eyebrow" id="greetEyebrow" data-i18n="greetEvening">مساء الخير</div>
           <div class="greet-name" id="playerWelcome">أهلاً بك</div>
@@ -508,18 +519,17 @@
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
         <span class="filter-count" id="filterCount" hidden>0</span>
       </button>
+      <!-- 🔴 **الرياضات في الشريط والمناطق في الفلتر** (طلب المالك 2026-08-22).
+           كان العكس: المناطق تنزلق في الشريط، والرياضة خلف قائمةٍ منسدلة على
+           طرفه، والرياضات **مرّةً ثانية** داخل ورقة الفلاتر — أي **بابان
+           للرياضة وبابٌ واحد للمنطقة**، والرياضة هي التي تقصّ البيانات كلَّها
+           (‏`applySportScope`: تبديلها يغيّر الأماكن والمناطق والمقاسات معًا)
+           بينما المنطقة تصفّي داخل ما بقي. فالأعلى صوتًا يجب أن يكون الأوسع أثرًا.
+           ⚠️ والقائمة المنسدلة سقطت معها: مبدّلٌ ظاهرٌ بحبّاته أصدق من زرٍّ يقول
+              اسم الرياضة الحالية ويُخفي أنّ هناك خمسًا — و«قريباً» تُقرأ على
+              الحبّة نفسها لا بعد فتح قائمة. -->
       <div class="browse-rail" id="browseRail">
-        <nav class="region-tabs" id="regionTabs"></nav>
-      </div>
-      <!-- قائمة منسدلة للرياضات على الطرف المقابل للفلاتر (وصول سريع لتبديل الرياضة) -->
-      <div class="sport-dd" id="sportDD">
-        <button class="sport-dd-btn" id="sportDDBtn" type="button" data-action="toggleSportDD" aria-haspopup="listbox" aria-expanded="false" data-i18n-aria="sportsAria" aria-label="اختر الرياضة">
-          <span class="sport-dd-ic" id="sportDDIc" aria-hidden="true"></span>
-          <!-- نصّ مؤقّت حتى يكتبه renderSportDropdown من الرياضة المختارة -->
-          <span class="sport-dd-name" id="sportDDName">الرياضة</span>
-          <svg class="sport-dd-chev" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="sport-dd-menu" id="sportDDMenu" role="listbox" hidden></div>
+        <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
       </div>
     </div>
     <!-- شرائح الفلاتر المفعّلة — تُبنى من State.fx/State.filter، ومخفيّة تمامًا حين لا فلتر -->
@@ -694,11 +704,21 @@
   <!-- ============ BOOKINGS ============ -->
   <section class="page" id="page-bookings">
     <header class="app-header compact"><div class="header-grid"></div>
-      <div class="title-row">
+            <!-- 🔴 **زرّ رجوعٍ إلى الشبكة في كل تبويب** (طلب المالك 2026-08-22).
+           الشبكة هي مهبط الجلسة منذ الدفعة ٣٤، والمخرج الوحيد منها إليها كان
+           **زرّ «الرئيسية» في الشريط السفلي** — أي أنّ الرجوع كان يُطلَب من
+           أسفل الشاشة بينما العين في أعلاها، ومن لا يعرف إيماءة الرجوع لا
+           يجد شيئًا في مكانه المعتاد. والزرّ يذهب إلى `hub` **مباشرةً** لا
+           إلى ما قبله في المكدّس: «رجوع للرئيسية» وجهةٌ لا خطوة. -->
+<div class="hdr-row">
+        <button class="hdr-back" data-action="hubBack" data-i18n-aria="hubBackAria" aria-label="رجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
+        <div class="hdr-titles"><div class="title-row">
         <svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg> <span data-i18n="bookingsTitle">حجوزاتي</span>
       </div>
       <div class="muted-white" data-i18n="bookingsSub">كل حجوزاتك في مكان واحد</div>
-    </header>
+            </div>
+      </div>
+</header>
     <div class="pad">
       <div id="playerStats"></div>
       <div id="bookingsList"></div>
@@ -708,11 +728,15 @@
   <!-- ============ ACCOUNT ============ -->
   <section class="page" id="page-account">
     <header class="app-header compact"><div class="header-grid"></div>
-      <div class="title-row">
+      <div class="hdr-row">
+        <button class="hdr-back" data-action="hubBack" data-i18n-aria="hubBackAria" aria-label="رجوع للرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
+        <div class="hdr-titles"><div class="title-row">
         <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg> <span data-i18n="accountTitle">حسابي</span>
       </div>
       <div class="muted-white" data-i18n="accountSub">بيانات حساب اللاعب</div>
-    </header>
+            </div>
+      </div>
+</header>
     <div class="pad">
       <div class="profile-head">
         <div class="profile-avatar" id="accAvatar" aria-hidden="true">م</div>
@@ -1114,11 +1138,11 @@
       </div>
 
     </div>
-    <!-- زر عائم لإضافة ملعب (يظهر فقط في تبويب الملاعب) -->
-    <button class="owner-fab" id="ownerAddFab" data-action="addField" data-i18n-aria="addFieldBtn" aria-label="إضافة ملعب" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-      <span data-i18n="addFieldBtn">إضافة ملعب</span>
-    </button>
+    <!-- 🔴 **الزرّ العائم لإضافة ملعب حُذف** (طلب المالك 2026-08-22): كان بابين
+         لفعلٍ واحد في الشاشة نفسها — رابطٌ في عنوان «إدارة الملاعب» وزرٌّ عائم
+         فوق آخر بطاقة. وبابان لميزةٍ واحدة انحرافٌ مؤجَّل (درس شريحة القلب،
+         الدفعة ١٩)، والعائم هو الزائد: يحجب محتوى القائمة التي جاء يضيف إليها.
+         والباقي زرُّ الرأس، وهو الذي اختاره المالك بالاسم. -->
   </section>
 
   <!-- ============ BOOKING REVIEW MODAL (مراجعة فقط — لا اختيار يوم/وقت هنا) ============ -->
@@ -1264,36 +1288,49 @@
       <div class="modal-grip"><div class="modal-handle"></div></div>
       <div class="modal-title" id="fxTitle" data-i18n="filtersTitle">الفلاتر والترتيب</div>
       <div class="modal-sub" data-i18n="filtersSub">فلترة حسب البيانات المتاحة للملاعب.</div>
-      <fieldset class="fx-group"><legend class="fx-label" data-i18n="sportLbl">الرياضة</legend>
-        <nav class="sport-tabs" id="sportTabs" data-i18n-aria="sportsAria" aria-label="اختر الرياضة"></nav>
-        <!-- هنا وحده يرى المستخدمُ الرياضاتِ الخمس مجتمعة، فهنا تُقال القاعدة:
-             المنصّة لكل الملاعب الرياضية، والمفتوح اليوم كرة القدم. بدون هذا
-             السطر تُقرأ شارات «قريباً» عطلًا في التطبيق لا خطّة معلنة. -->
-        <p class="fx-hint" data-i18n="sportsHint">المفتوح هو ما سُجّلت ملاعبه فعلاً، و«قريباً» ينتظر ملعبه الأوّل.</p>
-      </fieldset>
+      <!-- ══ إعادة هيكلة الورقة (طلب المالك 2026-08-22: «أوضح وأسهل») ══
+           كانت **إحدى عشرة مجموعةً مفتوحةً كلُّها** بارتفاع 1428px (مقيس)
+           بترتيبٍ يتبع تاريخ إضافتها لا تكرار استعمالها: الرياضة (وهي في
+           الشريط الآن) ⇐ الترتيب ⇐ طريقة العرض ⇐ المنطقة ⇐ السعر ⇐ …
+           فيقع **أكثر ما يُصفَّى به** (المنطقة والسعر) رابعًا وخامسًا، وتتصدّرها
+           أداتان لا تُخفيان نتيجةً واحدة (الترتيب · شكل البطاقات).
+           والترتيب الآن على السؤال: **أين ⇐ بكم ⇐ متى** ثمّ الترتيب، ثمّ
+           المواصفات خلف طيّة، ثمّ شكلُ العرض آخرًا لأنه ليس تصفيةً أصلًا.
+           ⚠️ **والطيّة تنفتح وحدها إن كان بداخلها مرشِّحٌ مفعَّل**، ومعها عدده:
+              طيٌّ يُخفي فلترًا يعمل هو بالضبط ما يجعل المستخدم يظنّ القائمة
+              معطوبة. -->
+
+      <!-- ① أين — شرائح لا قائمة منسدلة: المناطق ستّ في القاعدة كلِّها،
+           ومنسدلةٌ بستّة خيارات تُخفيها كلَّها خلف نقرة. وهي نفس حبّات
+           `.fx-chip` المستعملة في بقيّة الورقة. -->
+      <fieldset class="fx-group"><legend class="fx-label" data-i18n="regionLbl">المنطقة</legend><div class="fx-chips" id="fxRegions"></div></fieldset>
+      <!-- ② بكم -->
+      <div class="fx-group"><div class="fx-label" data-i18n="priceJod">السعر (دينار)</div>
+        <div class="grid-2"><input class="finput" id="fxMin" data-i18n-aria="priceFromAria" aria-label="أقل سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="من" data-i18n-ph="from"><input class="finput" id="fxMax" data-i18n-aria="priceToAria" aria-label="أعلى سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="إلى" data-i18n-ph="to"></div>
+      </div>
+      <!-- ③ متى -->
+      <div class="fx-group"><label class="checkbox-row"><input type="checkbox" id="fxToday"> <span data-i18n="availableToday">متاح اليوم فقط</span></label></div>
+      <!-- ④ الترتيب — يغيّر ترتيب النتائج لا عددها، فبعد التصفية لا قبلها -->
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="sortLabel">الترتيب</legend><div class="fx-chips" id="fxSort"></div></fieldset>
-      <!-- مبدّل العرض جاء من عنوان القسم (٣.١): من يريد ضبط شكل القائمة يفتح
-           هذه الورقة، ولا حاجة إلى زرَّين دائمَين فوق البطاقات.
-           ⚠️ ويُطبَّق **فورًا** لا عند «تطبيق»: هو تفضيل عرضٍ محفوظ لا مرشِّح
-           يغيّر النتائج، فوضعه في المسودّة كان سيجعل «تطبيق (1)» تعدّ ما ليس
-           تصفية. -->
+      <!-- ⑤ المواصفات — نفس مكوّن `.disclosure` المستعمل في صفحة الملعب
+           والإيصال: نمطٌ واحد لمعنًى واحد («محتوًى يسند القرار ولا يُنجزه»). -->
+      <details class="disclosure fx-more" id="fxMore">
+        <summary><span data-i18n="fxMoreLink">مواصفات أكثر</span><span class="fx-more-n" id="fxMoreCount" hidden>0</span></summary>
+        <fieldset class="fx-group"><legend class="fx-label" data-i18n="fieldSize">حجم الملعب</legend><div class="fx-chips" id="fxSizes"></div></fieldset>
+        <fieldset class="fx-group"><legend class="fx-label" data-i18n="type">النوع</legend><div class="fx-chips" id="fxTypes"></div></fieldset>
+        <fieldset class="fx-group"><legend class="fx-label" data-i18n="rating">التقييم</legend><div class="fx-chips" id="fxRating"></div></fieldset>
+        <!-- ⚠️ يُخفى القسم كلّه ما لم يصرّح ملعبٌ واحد (ترحيل 29 · `genderDeclared`) -->
+        <fieldset class="fx-group" id="fxGenderWrap" hidden><legend class="fx-label" data-i18n="genderLbl">لمن الملعب</legend><div class="fx-chips" id="fxGenders"></div></fieldset>
+        <fieldset class="fx-group"><legend class="fx-label" data-i18n="amenities">المرافق</legend><div class="fx-chips" id="fxAmenities"></div></fieldset>
+      </details>
+      <!-- ⑥ شكل البطاقات — **ليس مرشِّحًا**: لا يغيّر النتائج ولا يُعدّ في
+           «تطبيق (n)»، ويُطبَّق فورًا لا عند «تطبيق». فآخرُ الورقة موضعه. -->
       <fieldset class="fx-group"><legend class="fx-label" data-i18n="viewModeAria">طريقة العرض</legend>
         <div class="fx-chips view-toggle" role="group">
           <button type="button" class="fx-chip vt-btn" data-action="setView" data-view="grid" data-i18n="viewGrid" aria-pressed="true">عرض شبكي</button>
           <button type="button" class="fx-chip vt-btn" data-action="setView" data-view="list" data-i18n="viewList" aria-pressed="false">عرض قائمة</button>
         </div>
       </fieldset>
-      <div class="fx-group"><label class="fx-label" for="fxRegion" data-i18n="regionLbl">المنطقة</label><select class="finput" id="fxRegion"></select></div>
-      <div class="fx-group"><div class="fx-label" data-i18n="priceJod">السعر (دينار)</div>
-        <div class="grid-2"><input class="finput" id="fxMin" data-i18n-aria="priceFromAria" aria-label="أقل سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="من" data-i18n-ph="from"><input class="finput" id="fxMax" data-i18n-aria="priceToAria" aria-label="أعلى سعر بالدينار" type="number" inputmode="numeric" min="0" placeholder="إلى" data-i18n-ph="to"></div>
-      </div>
-      <fieldset class="fx-group"><legend class="fx-label" data-i18n="fieldSize">حجم الملعب</legend><div class="fx-chips" id="fxSizes"></div></fieldset>
-      <fieldset class="fx-group"><legend class="fx-label" data-i18n="type">النوع</legend><div class="fx-chips" id="fxTypes"></div></fieldset>
-      <fieldset class="fx-group"><legend class="fx-label" data-i18n="rating">التقييم</legend><div class="fx-chips" id="fxRating"></div></fieldset>
-      <div class="fx-group"><label class="checkbox-row"><input type="checkbox" id="fxToday"> <span data-i18n="availableToday">متاح اليوم فقط</span></label></div>
-      <!-- ⚠️ يُخفى القسم كلّه ما لم يصرّح ملعبٌ واحد (ترحيل 29 · `genderDeclared`) -->
-      <fieldset class="fx-group" id="fxGenderWrap" hidden><legend class="fx-label" data-i18n="genderLbl">لمن الملعب</legend><div class="fx-chips" id="fxGenders"></div></fieldset>
-      <fieldset class="fx-group"><legend class="fx-label" data-i18n="amenities">المرافق</legend><div class="fx-chips" id="fxAmenities"></div></fieldset>
       <div class="fx-actions">
         <button class="sbtn" data-action="applyFilters"><span id="fxApplyCount" data-i18n="apply">تطبيق</span></button>
         <button class="cbtn" data-action="clearFiltersSheet" data-i18n="clearAll">مسح الكل</button>
@@ -1395,6 +1432,29 @@
         <option value="evening" data-i18n="slotEvening">Evening — مسائي</option>
       </select>
       <label class="checkbox-row"><input type="checkbox" id="fieldActive" checked> <span data-i18n="activeLbl">نشط</span></label>
+      <!-- ══ صور الملعب — عملية واضحة (طلب المالك 2026-08-22) ══════════════
+           لم يكن للمالك **أيّ** طريق إلى الصور من التطبيق: `image_url` عمودٌ
+           في `fields` يقرؤه `fieldImages` ويرسمه على البطاقة وفي مصغّرة تبويب
+           الملاعب، ولا يكتبه إلّا `/admin`. فمن يفتح ملعبًا اليوم يبقى بلا
+           صورة إلى أن يُطلَب ذلك من الأدمن.
+           ⚠️ **بروابط لا برفع ملفّات، ويُقال ذلك صراحةً**: لا مخزَن ملفّات في
+              المشروع (لا bucket ولا دالّة رفع)، وزرُّ «اختر صورة» كان سيَعِد
+              بما لا يقع (م5). والحقل يقول من أين يأتي الرابط.
+           ⚠️ **والحارس هو `isHttpUrl` نفسه** الذي يحرس `fieldImages` و`map_link`
+              (قائمة بيضاء بالمخطَّط لا سوداء بالكلمة): ما يُرفَض **يُقال سببه
+              عند الإضافة** لا يُحفَظ ثمّ يختفي صامتًا عند القراءة.
+           ⚠️ و`type="url"` **يقترح ولا يمنع** (مزلقٌ مسجَّل): المتصفّح يقبل
+              `javascript:` عنوانًا صالحًا، فالفحص في الكود لا في السمة. -->
+      <div class="fimg" id="fieldImgWrap">
+        <div class="fx-label" data-i18n="fldImgsLbl">صور الملعب</div>
+        <div class="fimg-list" id="fieldImgList"></div>
+        <div class="fimg-add">
+          <input class="finput" id="fieldImgInput" type="url" inputmode="url" dir="ltr"
+                 placeholder="https://…" data-i18n-aria="fldImgsAdd" aria-label="أضف رابط صورة">
+          <button type="button" class="cbtn fimg-add-btn" data-action="fieldImgAdd" data-i18n="fldImgsAdd">أضف</button>
+        </div>
+        <p class="fimg-hint" data-i18n="fldImgsHint">الصورة الأولى هي التي تظهر على بطاقة الملعب.</p>
+      </div>
       <button class="sbtn btn-go" data-action="saveField" style="margin-top:8px" data-i18n="saveBtn">حفظ</button>
       <button class="cbtn" data-action="closeModal" data-i18n="cancelWord">إلغاء</button>
     </div>

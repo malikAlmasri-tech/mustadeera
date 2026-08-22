@@ -149,7 +149,6 @@ function showOwnerTab(name){
   const panel = (name==='bookings' && State.ownerBkView==='calendar') ? 'calendar' : name;
   $$('#page-owner .owner-tab').forEach(p=>{ p.hidden = (p.id !== 'ownerTab-'+panel); });
   NavPill.schedule();
-  const fab=$('#ownerAddFab'); if(fab) fab.hidden = (name!=='fields');   // FAB إضافة ملعب — تبويب الملاعب فقط
   if(panel==='calendar') renderOwnerCalendar();
   /* المخطّط يُعاد رسمه مع البطاقات: كلاهما يقرأ نفس الجلبة، وإعادة رسم واحدٍ
      دون الآخر تترك شكلًا يتقدّم على الثاني بجلبة كاملة. */
@@ -886,9 +885,30 @@ function ownerBookingCard(b){
           ownerPlaces().length > 1
             ? h('div',{class:'info-line muted', style:{marginTop:'3px'}}, ico('pin','svg-sm'), ' ', h('bdi',{}, b.place_name||''))
             : null,
-          h('div',{style:{display:'flex',gap:'10px',marginTop:'4px',flexWrap:'wrap'}},
-            h('span',{class:'info-line muted'}, ico('cal','svg-sm'), ' '+b.date),
-            h('span',{class:'info-line muted'}, ico('clock','svg-sm'), ' '+b.time)))),
+          /* 🔴 **الموعد صار عنوانًا لا حاشيتين** (بلاغ المالك 2026-08-22:
+             «بطاقات الحجز تكون أوضح من ناحية اليوم والساعة»). كان سطرين
+             صغيرين بلون `--muted`: أحدهما **التاريخ خامًا** كما يخرج من القاعدة
+             (`2026-08-22`) والآخر مدى الوقت — أي أنّ المالك يقرأ رقمًا آليًّا
+             ليعرف أيّ يومٍ هذا. الآن اسمُ اليوم أوّلًا («اليوم» و«بكرا» حيث
+             يصحّان) ثمّ التاريخ القصير ثمّ المدى، بوزنٍ يميّزه عن بقيّة السطور.
+             ⚠️ **ونفس مكوّن لوح «حجزك القادم» بالحرف** (`.trk-when` منذ الدفعة
+                ١٨): الموعد هو البطل في الوجهين لأنّ السؤال واحد — «متى؟».
+             ⚠️ و`<bdi dir="ltr">` على المدى وحده: «4:00 م - 6:00 م» داخل جملة
+                عربية ينقلب فيسبق الانتهاءُ الابتداء (مزلقٌ مسجَّل).
+             ⚠️ والأرقام `tabular-nums` في CSS: البطاقات تُقرأ عمودًا واحدًا،
+                وأرقامٌ متفاوتة العرض تجعل الأعمدة تتعرّج. */
+          /* 🔴 و`.bk-when` **محجوزةٌ أصلًا** لحبّة الموعد في ورقة المراجعة
+             (‏§35 ③: عمود موسَّط بصبغة الفعل وحدّ) — فاسمي كان سيرثها فيخرج
+             صفُّ التاريخ عمودًا موسَّطًا داخل بطاقةٍ محاذاتها من البداية. وهي
+             نفس عائلة `pl-card` و`place-meta` المسجَّلة: **فضاء الأصناف مشترك،
+             والاسم العامّ يسرق قاعدةً لم تكتبها.** */
+          h('div',{class:'owner-bk-when'},
+            ico('cal','svg-sm'),
+            h('span',{class:'owner-bk-when-day'}, dayLabel(b.date)+' '+shortDate(String(b.date).split('T')[0])),
+            h('span',{class:'owner-bk-when-sep','aria-hidden':'true'}, '·'),
+            h('bdi',{dir:'ltr', class:'owner-bk-when-time'},
+              slotDisplay({ hour:Number(b.hour), startHour:Number(b.hour),
+                            endHour:Number(b.hour)+2, label:b.time||'' }))))),
       isNoShow(b) ? h('span',{class:'badge badge-red', style:{flexShrink:'0'}}, t('noShowBadge')) : null),
     );
   body.append(
@@ -1064,8 +1084,21 @@ function renderOwnerBookings(){
       el.append(wrap);
     });
   };
-  if (active.length){ el.append(sectionTitle(t('ownerActiveUpcoming'),active.length)); grouped(active); }
-  else el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--soft)',marginBottom:'11px'}},t('noActiveUpcoming')));
+  /* 🔴 **ما ينتظر ردَّك أوّلًا** (طلب المالك 2026-08-22). كانت القائمة مرتَّبة
+     بالتاريخ وحده، فالمعلّق يقع حيث يقع بينها — مقيس على بيانات الشبكة:
+     `مؤكّد · مؤكّد · مؤكّد · معلّق · مؤكّد · معلّق` ⇒ الطلب الذي ينتظر جوابًا
+     مدفونٌ بين ما لا يحتاج جوابًا. وهو المكان الوحيد الذي يخسر فيه المالك
+     خانةً حقيقية: المعلّق **يحجزها** (‏`bookings_no_double_idx` يشمل `pending`)
+     ثمّ تنقضي مهلته فتضيع (الدفعة ١٢ ②).
+     ⚠️ **وقسمٌ ثالث لا فرزٌ داخل القسم**: الترتيب داخل «الحالية والقادمة» يبقى
+        بالتاريخ كما هو — تجميعُ اليوم هو ما يجعل القائمة تُقرأ، وخلطُ معلّقٍ
+        بعيدٍ في رأس يومٍ قريب كان سيكسره.
+     ⚠️ **ولا يُعرَض القسم فارغًا**: صفرُ معلّقاتٍ حالةٌ صحيحة تُقال بغيابها. */
+  const waiting = active.filter(b=>normStatus(b)==='pending');
+  const rest    = active.filter(b=>normStatus(b)!=='pending');
+  if (waiting.length){ el.append(sectionTitle(t('otPendingLbl'),waiting.length)); grouped(waiting); }
+  if (rest.length){ el.append(sectionTitle(t('ownerActiveUpcoming'),rest.length)); grouped(rest); }
+  if (!active.length) el.append(h('div',{class:'card',style:{textAlign:'center',color:'var(--soft)',marginBottom:'11px'}},t('noActiveUpcoming')));
   if (finished.length){ el.append(sectionTitle(t('ownerFinished'),finished.length)); grouped(finished); }
 }
 function renderOwnerFields(){
@@ -1097,7 +1130,13 @@ function renderOwnerFields(){
             h('span',{class:'info-line muted'}, ico('resize','svg-sm'), ' '+f.size),
             h('span',{class:'info-line muted'}, ico('money','svg-sm'), ' '+formatCurrency(f.price))),
           h('div',{style:{fontSize:'11px',color:'var(--soft)',marginTop:'3px'}}, t('slotsLbl')+': '+t({full:'kwFull',morning:'kwMorning',evening:'kwEvening'}[slotsToKeyword(f.slots)]||'kwFull')))),
-        h('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'8px',flexShrink:'0'}}, sw, edit, pricing))));
+        /* 🔴 **عمود الإجراءات صار صنفًا لا أنماطًا سطرية** (بلاغ المالك
+           2026-08-22: «تأكّد من محاذاة الأزرار»). مقيس قبله عند 375px:
+           «تعديل» 66.3px و«التسعير» 98.7px يبدآن من 36.8 وينتهيان عند 103.1
+           و135.5 ⇒ حافّةٌ مسنَّنة؛ والمبدّل يحمل `align-self:center` في
+           `app.css` فيغلب `align-items:flex-end` للأب ⇒ يبدأ عند 63.2 لا 36.8،
+           أي **ثلاثة عناصر بثلاث محاذيات في عمودٍ واحد**. */
+        h('div',{class:'field-acts'}, sw, edit, pricing))));
   });
 }
 /* تبديل تشغيل/إيقاف ملعب مباشرة (بلا فتح نافذة) عبر ownerUpdateField القائم */
