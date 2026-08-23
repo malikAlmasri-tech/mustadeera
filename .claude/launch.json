@@ -4,20 +4,50 @@
     {
       "name": "koora-app",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8012", "--directory", "app/src"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8012",
+        "--directory",
+        "app/src"
+      ],
       "port": 8012
     },
     {
       "name": "koora-app-b",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8013", "--directory", "app/src"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8013",
+        "--directory",
+        "app/src"
+      ],
       "port": 8013
     },
     {
       "name": "koora-site",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8020", "--directory", "public"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8020",
+        "--directory",
+        "public"
+      ],
       "port": 8020
+    },
+    {
+      "name": "koora-app-c",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8014",
+        "--directory",
+        "app/src"
+      ],
+      "port": 8014
     }
   ]
 }

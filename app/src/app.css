@@ -15,15 +15,15 @@
   color-scheme:light;  /* الثيم النهاري (Marble White · مشتق من الشعار: Teal عميق + Lime) — الداكن في body.dark */
 
   /* ----- Brand palette (نهاري · أبيض نظيف + Teal #0F4B53 + Lime #8CC63E — من Brand Kit) ----- */
-  --light-bg-primary:#FAFAF7; --light-bg-secondary:#F2F2F0;
-  --light-surface:rgba(255,255,255,.92); --light-surface-soft:rgba(255,255,255,.7); --light-surface-muted:#ECEEEA;
+  --light-bg-primary:#F2F6F7; --light-bg-secondary:#E7EEEF;
+  --light-surface:rgba(255,255,255,.92); --light-surface-soft:rgba(255,255,255,.7); --light-surface-muted:#E7EEEF;
   --light-primary:#0F4B53; --light-primary-hover:#0C3B42; --light-primary-soft:rgba(15,75,83,.1);
   /* --light-text-muted: كان #8C9BA0 ⇒ **2.45:1** على أغمق سطح يقع عليه
      (‏`--surface-muted:#ECEDEF`) و2.87 على الأبيض — راسبٌ في كل سطح من الأربعة،
      وهو مستعمل في ٢٨ موضعًا نصّيًّا لا زخرفيًّا وحدها. الجديد **4.80:1** على أسوأ
-     سطح (‏5.16 صفحة · 5.63 أبيض). و`H=195° S=9.52%` **لم تتغيّرا** — اللمعان وحده
-     نزل، فيبقى الرماديُّ مائلًا إلى Teal لا رماديًّا محايدًا بلا صلة بالهوية. */
-  --light-accent:#12B76A; --light-text-primary:#17262A; --light-text-secondary:#51646A; --light-text-muted:#5B6A6F;
+     سطح (‏5.15 صفحة · 5.60 أبيض). و`H=188° S=14.87%` — أُعيد ضبط الصبغة على زاوية
+     الهوية نفسها (‏OKLCH H=208°، زاوية `#0F4B53` بالضبط) في الدفعة ٤٢، فيبقى الرماديُّ مائلًا إلى Teal لا رماديًّا محايدًا بلا صلة بالهوية. */
+  --light-accent:#12B76A; --light-text-primary:#172628; --light-text-secondary:#4E6569; --light-text-muted:#536C70;
   --light-border:rgba(15,70,78,.16); --light-danger:#D6303A; --light-warning:#8C5F16; --light-info:#2563C8;
 
   /* ----- Semantic tokens (active = light) ----- */
@@ -44,7 +44,7 @@
   --cream:var(--light-bg-primary);
   /* سطح صلب (بلا شفافية) — للعناصر المتكرّرة التي أُزيل منها backdrop-filter كي لا تُنشئ طبقة دمج لكل بطاقة */
 
-                                    --ink:var(--light-text-primary); --ink-2:#2C3A30; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
+                                    --ink:var(--light-text-primary); --ink-2:#273A3D; --muted:var(--light-text-secondary); --soft:var(--light-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
 
 
@@ -119,14 +119,15 @@
   color-scheme:dark;
 
   /* ----- Brand palette (dark · Deep Teal Night — مشتق من أغمق درجات الشعار + Lime) ----- */
-  --dark-bg-primary:#081D22; --dark-bg-secondary:#0B252B;
-  --dark-surface:rgba(15,45,52,.72); --dark-surface-soft:rgba(22,58,66,.6); --dark-surface-muted:#0F2E35;
+  --dark-bg-primary:#021012; --dark-bg-secondary:#031619;
+  --dark-surface:rgba(15,45,52,.72); --dark-surface-soft:rgba(22,58,66,.6); --dark-surface-muted:#0A262A;
   --dark-primary:#8CC63E; --dark-primary-hover:#A5DA5B; --dark-primary-soft:rgba(140,198,62,.12);
   /* --dark-text-muted: كان #70847F ⇒ **4.02:1** على أفتح سطح ليلي (‏`--surface-muted:#1B2329`)
      و4.38 على `--surface`. ⚠️ ونجاحه على خلفية الصفحة (4.89) هو ما كان يُمرّره من
-     أي فحصٍ يقيس سطحًا واحدًا. الجديد **4.78:1** على أسوأ سطح (‏5.88 صفحة · 5.27 سطح).
-     و`H=165° S=8.20%` كما هما — اللمعان وحده ارتفع. */
-  --dark-accent:#4ADE80; --dark-text-primary:#EAF0EE; --dark-text-secondary:#A7B9B8; --dark-text-muted:#7D918C;
+     أي فحصٍ يقيس سطحًا واحدًا. الجديد **4.77:1** على أسوأ سطح (‏5.82 صفحة · 5.25 سطح).
+     و`H=187° S=10.46%` — أُعيد ضبطها على زاوية الهوية (‏OKLCH H=208°) في الدفعة
+     ٤٢؛ وكانت 165° أي **خضراء** بينما أسطحُها زرقاء (‏237°) — عائلتان في ثيم. */
+  --dark-accent:#4ADE80; --dark-text-primary:#EBEFF0; --dark-text-secondary:#A9B8BB; --dark-text-muted:#7B9194;
   --dark-border:rgba(127,189,199,.16); --dark-danger:#F0565C; --dark-warning:#E8B23C; --dark-info:#6FA0F0;
 
   /* ----- Semantic tokens (active = dark) ----- */
@@ -144,7 +145,7 @@
   --cream:var(--dark-bg-primary);
   /* مكافئ صلب لـ rgba(15,45,52,.72) فوق خلفية #081D22 — نفس الوزن البصري بلا طبقة blur */
 
-                                 --ink:var(--dark-text-primary); --ink-2:#D3DEDC; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
+                                 --ink:var(--dark-text-primary); --ink-2:#D5DDDE; --muted:var(--dark-text-secondary); --soft:var(--dark-text-muted);
   --soft-green:var(--mint-soft); --soft-blue:var(--info-soft); --soft-yellow:var(--warning-soft); --soft-red:var(--danger-soft);
 
 
@@ -245,7 +246,7 @@
 /* خيط ذهبي ناعم أسفل الهيدر (يتبع الزوايا الدائرية) */.app-header.home::after,.app-header.auth::after,.app-header.compact::after{content:'';position:absolute;left:14%;right:14%;bottom:0;height:1px;background:var(--copper-primary);opacity:.3;z-index:2}.app-header>*{position:relative;z-index:1}.app-header.home{padding:18px var(--s-5) 22px;border-radius:0 0 var(--r-2xl) var(--r-2xl)}.app-header.auth{padding:58px var(--s-6) 40px;text-align:center;border-radius:0 0 var(--r-3xl) var(--r-3xl)}.app-header.compact{padding:var(--s-6) var(--s-5);border-radius:0 0 var(--r-2xl) var(--r-2xl)}.header-grid{position:absolute;inset:0;background-image:var(--pattern-rings);background-size:132px 132px;pointer-events:none;mask-image:linear-gradient(180deg,#000,transparent)}.header-emoji{font-size:2.875rem;margin-bottom:14px;display:inline-flex;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}.header-emoji svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.header-title{font-size:1.5rem;font-weight:800;letter-spacing:var(--tr-tighter);text-shadow:0 2px 10px rgba(0,0,0,.22)}.header-subtitle{font-size:0.84375rem;opacity:.74;margin-top:6px;font-weight:500}
 
 /* الأدوات لا تتقلّص (أهداف لمس)، والعلامة تتقلّص ويُقصّ نصّها —
-   وإلا فاض الصفّ عند اسم مستخدم طويل («أهلاً مالك مؤيد المصري») أو نصوص إنجليزية أعرض */.home-bar{display:flex;justify-content:space-between;align-items:center;gap:8px}.home-tools{flex-shrink:0}.home-brand{min-width:0}.home-brand>div:last-child{min-width:0}.brand-name,.brand-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.home-brand{display:flex;align-items:center;gap:12px;cursor:pointer;transition:opacity var(--t-fast)}@media(hover:hover){.home-brand:hover{opacity:.85}}.home-brand:active{transform:scale(.98)}.brand-logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;border:1.5px solid rgba(255,255,255,.18);box-shadow:0 3px 10px rgba(0,0,0,.14);background:rgba(255,255,255,.1)}.brand-mark{width:60%;height:60%;fill:none;stroke:var(--copper-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.brand-name{font-size:1.3125rem;font-weight:800;letter-spacing:var(--tr-tighter);font-family:'Montserrat','Changa',sans-serif;color:var(--copper-primary);text-shadow:0 2px 6px rgba(0,0,0,.2)}.brand-sub{font-size:0.78125rem;opacity:.7;font-weight:500}.home-tools{display:flex;align-items:center;gap:8px}.icon-btn{min-width:var(--tap);min-height:var(--tap);display:grid;place-items:center;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:14px;font-size:1.0625rem;backdrop-filter:blur(8px);transition:background var(--t-fast),transform var(--t-fast)}.icon-btn:hover{background:rgba(255,255,255,.24)}.icon-btn:active{transform:scale(.92)}.icon-btn svg{width:20px;height:20px}
+   وإلا فاض الصفّ عند اسم مستخدم طويل («أهلاً مالك مؤيد المصري») أو نصوص إنجليزية أعرض */.home-bar{display:flex;justify-content:space-between;align-items:center;gap:8px}.home-tools{flex-shrink:0}.home-brand{min-width:0}.home-brand>div:last-child{min-width:0}.brand-name,.brand-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.home-brand{display:flex;align-items:center;gap:12px;cursor:pointer;transition:opacity var(--t-fast)}@media(hover:hover){.home-brand:hover{opacity:.85}}.home-brand:active{transform:scale(.98)}.brand-logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;border:1.5px solid rgba(255,255,255,.18);box-shadow:0 3px 10px rgba(0,0,0,.14);background:rgba(255,255,255,.1)}.brand-mark{width:60%;height:60%;fill:none;stroke:var(--copper-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.brand-name{font-size:1.3125rem;font-weight:800;letter-spacing:var(--tr-tighter);font-family:'Montserrat','Changa',sans-serif;color:var(--copper-primary);text-shadow:0 2px 6px rgba(0,0,0,.2)}.brand-sub{font-size:0.78125rem;opacity:.7;font-weight:500}.home-tools{display:flex;align-items:center;gap:8px}.icon-btn{min-width:var(--tap);min-height:var(--tap);display:grid;place-items:center;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;font-size:1.0625rem;backdrop-filter:blur(8px);transition:background var(--t-fast),transform var(--t-fast)}.icon-btn:hover{background:rgba(255,255,255,.24)}.icon-btn:active{transform:scale(.92)}.icon-btn svg{width:20px;height:20px}
 
 /* ── الجرس وشارته ──
    الشارة على الحافّة المنطقية العليا: `inset-inline-end` لا `right` كي تنتقل
@@ -627,7 +628,7 @@
    (رياضات ~60px + فلاتر/مناطق ~54px) بصفّ واحد ~52px ⇒ توفير رأسي كبير على الهاتف. */.browse-rail{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:9px var(--s-5);scroll-snap-type:x proximity;overscroll-behavior-x:contain}.browse-rail::-webkit-scrollbar{display:none}
 /* الرياضات والمناطق تتدفّق داخل مسار الانزلاق الواحد بلا تمرير مستقل ولا حشوة */.browse-rail>nav{display:flex;align-items:center;gap:8px;padding:0;margin:0;overflow:visible;flex-shrink:0}.browse-rail>nav>*{scroll-snap-align:start}
 /* زرّ الفلاتر مثبّت على حافة البدء أثناء الانزلاق (نمط Airbnb) + تلاشٍ يذيب الحبوب تحته */.browse-rail .filter-btn{position:sticky;inset-inline-start:0;z-index:3;flex-shrink:0;background:var(--surface)}.browse-rail .filter-btn::after{content:'';position:absolute;top:0;bottom:0;inset-inline-end:-13px;width:13px;background:linear-gradient(to left,var(--surface),transparent);pointer-events:none}html[dir="ltr"] .browse-rail .filter-btn::after{background:linear-gradient(to right,var(--surface),transparent)}
-/* فاصل رفيع بين الرياضات والمناطق */.browse-div{flex-shrink:0;width:1px;height:26px;background:var(--line-2);margin-inline:3px;border-radius:10px}.filter-btn{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 15px;min-height:42px;font-size:0.84375rem;font-weight:700;box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}.filter-btn:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}.filter-btn:active{transform:scale(.97)}.filter-btn.has-filters{border-color:var(--emerald-2);color:var(--emerald);background:var(--soft-green)}body.dark .filter-btn.has-filters{background:rgba(15,75,83,.12)}.filter-btn svg{flex-shrink:0}.filter-count{min-width:20px;min-height:20px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:0.78125rem;font-weight:900;line-height:1}.fx-group{border:none;margin:0 0 16px;padding:0}.fx-label{font-size:0.84375rem;font-weight:700;color:var(--ink);margin-bottom:9px;display:block;padding:0}.fx-chips{display:flex;flex-wrap:wrap;gap:8px}.fx-chip{background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 14px;min-height:40px;font-size:0.84375rem;font-weight:700;transition:all var(--t-fast) var(--ease-out)}.fx-chip:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}.fx-chip:active{transform:scale(.96)}.fx-chip.on{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}.fx-empty{font-size:0.84375rem;color:var(--soft);font-weight:600}
+/* فاصل رفيع بين الرياضات والمناطق */.browse-div{flex-shrink:0;width:1px;height:26px;background:var(--line-2);margin-inline:3px;border-radius:10px}.filter-btn{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:10px;padding:9px 15px;min-height:42px;font-size:0.84375rem;font-weight:700;box-shadow:var(--shadow-xs);transition:border-color var(--t-fast),color var(--t-fast),transform var(--t-fast)}.filter-btn:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}.filter-btn:active{transform:scale(.97)}.filter-btn.has-filters{border-color:var(--emerald-2);color:var(--emerald);background:var(--soft-green)}body.dark .filter-btn.has-filters{background:rgba(15,75,83,.12)}.filter-btn svg{flex-shrink:0}.filter-count{min-width:20px;min-height:20px;padding:0 5px;display:grid;place-items:center;border-radius:999px;background:var(--g-btn);color:#0B2227;font-size:0.78125rem;font-weight:900;line-height:1}.fx-group{border:none;margin:0 0 16px;padding:0}.fx-label{font-size:0.84375rem;font-weight:700;color:var(--ink);margin-bottom:9px;display:block;padding:0}.fx-chips{display:flex;flex-wrap:wrap;gap:8px}.fx-chip{background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2);border-radius:999px;padding:9px 14px;min-height:40px;font-size:0.84375rem;font-weight:700;transition:all var(--t-fast) var(--ease-out)}.fx-chip:hover{border-color:rgba(15,75,83,.4);color:var(--emerald)}.fx-chip:active{transform:scale(.96)}.fx-chip.on{background:var(--g-btn);border-color:transparent;color:#0B2227;box-shadow:var(--shadow-green)}.fx-empty{font-size:0.84375rem;color:var(--soft);font-weight:600}
 /* حاشية تحت مجموعة فلترة تشرحها — تُقرأ توضيحاً لا خياراً: بلا حدّ ولا خلفية
    لوح، وبوزن أخفّ من الحبّات فوقها كي لا تزاحمها. */.fx-hint{margin:9px 0 0;font-size:0.78125rem;line-height:1.65;color:var(--muted);font-weight:600}.fx-actions{display:grid;grid-template-columns:1.6fr 1fr;gap:8px;position:sticky;bottom:0;background:var(--surface);padding-top:12px;margin-top:4px}.fx-actions .cbtn,.fx-actions .sbtn{margin:0}
 
@@ -1236,18 +1237,18 @@
    ⚠️ كانت هنا قاعدةٌ تقتل `#app::before,#app::after` بـ`display:none!important`.
    وهي **الدليل القاطع** على أن طبقات الشفق الثماني والشبكة كانت ميتةً منذ
    هذه الدفعة: يُقرأ في المصدر ثمانُ تدرّجات و`blur(36px)` وحركةُ ٢٦ ثانية،
-   ولا يُرسَم منها شيء. حُذف المصدر فسقط معه هدفُ هذه القاعدة. */:root{--bg-app:#F4F5F6;--bg-primary:#F4F5F6;--bg-secondary:#ECEDEF}body.dark{--bg-app:#0A0E11;--bg-primary:#0A0E11;--bg-secondary:#0E1418}body{background:var(--bg-primary)!important}#app{background:var(--bg-primary)}
+   ولا يُرسَم منها شيء. حُذف المصدر فسقط معه هدفُ هذه القاعدة. */:root{--bg-app:#F2F6F7;--bg-primary:#F2F6F7;--bg-secondary:#E7EEEF}body.dark{--bg-app:#021012;--bg-primary:#021012;--bg-secondary:#031619}body{background:var(--bg-primary)!important}#app{background:var(--bg-primary)}
 
 /* ── 2) نظام أسطح/حدود/ظلال أصيل (أسطح صلبة بلا زجاج على كروم المحتوى) ── */:root{
-  --surface-solid:#FFFFFF;--surface:#FFFFFF;--surface-soft:#F4F5F6;--surface-muted:#ECEDEF;--glass:#FFFFFF;
-  --line:rgba(17,24,28,.09);--line-2:rgba(17,24,28,.14);--glass-brd:rgba(17,24,28,.08);
+  --surface-solid:#FFFFFF;--surface:#FFFFFF;--surface-soft:#F2F6F7;--surface-muted:#E7EEEF;--glass:#FFFFFF;
+  --line:rgba(23,38,40,.09);--line-2:rgba(23,38,40,.14);--glass-brd:rgba(23,38,40,.08);
   --shadow-xs:0 1px 2px rgba(16,24,32,.05);
   --shadow-sm:0 1px 4px rgba(16,24,32,.08);
   --shadow-md:0 6px 20px -6px rgba(16,24,32,.14);
   --shadow-card:0 2px 10px -3px rgba(16,24,32,.10);
   --shadow-lg:0 16px 40px -12px rgba(16,24,32,.20);
 }body.dark{
-  --surface-solid:#151B1F;--surface:#151B1F;--surface-soft:#10161A;--surface-muted:#1B2329;--glass:#0E1417;
+  --surface-solid:#061D20;--surface:#061D20;--surface-soft:#04181B;--surface-muted:#0A262A;--glass:#031619;
   --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.14);--glass-brd:rgba(255,255,255,.08);
   --shadow-xs:0 1px 2px rgba(0,0,0,.4);
   --shadow-sm:0 1px 4px rgba(0,0,0,.5);
@@ -1308,7 +1309,7 @@
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 /* أسطح كانت تعتمد على الضبابية ⇒ تصبح صلبة صريحة */.browse-sticky,.fchips-bar{background:var(--surface)!important;border-bottom:1px solid var(--line)!important}.fchips-bar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.detail-sticky{background:var(--surface)!important;border-top:1px solid var(--line)!important;
   box-shadow:0 -0.5px 0 var(--line),0 -8px 24px -16px rgba(16,24,32,.14)!important}body.dark .detail-sticky{box-shadow:0 -0.5px 0 var(--line),0 -8px 24px -14px rgba(0,0,0,.55)!important}.modal{box-shadow:0 -16px 48px -20px rgba(0,0,0,.34)!important}.toast{box-shadow:var(--shadow-md)!important}
-/* حقول الإدخال: رمادي فاتح صلب داخل البطاقات البيضاء (نمط نماذج أصيل) */:root{--input-bg:#F4F5F6}body.dark{--input-bg:#10161A}.finput{background:var(--input-bg)!important;border-color:var(--line-2)!important}
+/* حقول الإدخال: رمادي فاتح صلب داخل البطاقات البيضاء (نمط نماذج أصيل) */:root{--input-bg:#F2F6F7}body.dark{--input-bg:#04181B}.finput{background:var(--input-bg)!important;border-color:var(--line-2)!important}
 
 /* ── 12) شاشة الترحيب الأصلية (onboarding خاص بالتطبيق: هيرو Teal + لوح إجراءات سفلي) ── */#page-welcome{padding:0!important;background:var(--bg-primary);isolation:isolate}
 /* 🔴 ارتفاع اللوح فوق الهيرو، **ومصدره واحد**.
@@ -1574,7 +1575,7 @@
    تبويب بحافّة الصفّ فيبتلع حشوته (قيس: انزلاق -12px تلقائي) ⇒ التبويب يلتصق
    بالزرّ. شريط تبويبات حرّ لا يحتاج التقاطًا أصلًا. */.browse-rail{scroll-snap-type:none}.browse-rail>nav>*{scroll-snap-align:none}
 /* زرّا الفلاتر والرياضة: دائرتان أيقونيتان متطابقتان تحدّان الصفّ */.browse-sticky>.filter-btn{flex-shrink:0;position:relative;width:44px;height:44px;min-height:44px;padding:0;
-  justify-content:center;border-radius:999px;border:1.5px solid var(--line-2);background:var(--surface);
+  justify-content:center;border-radius:10px;border:1.5px solid var(--line-2);background:var(--surface);
   box-shadow:none;margin-inline-start:var(--s-5)}.browse-sticky>.filter-btn svg{width:18px;height:18px}.browse-sticky>.filter-btn::before,.browse-sticky>.filter-btn::after{content:none}.browse-sticky>.filter-btn.has-filters{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}body.dark .browse-sticky>.filter-btn.has-filters{background:rgba(140,198,62,.14);border-color:rgba(140,198,62,.55);color:#A5DA5B}
 /* عدّاد الفلاتر: شارة ركنية صغيرة فوق الأيقونة (بعد زوال النص) */.browse-sticky>.filter-btn .filter-count{position:absolute;top:-3px;inset-inline-end:-3px;min-width:18px;min-height:18px;
   padding:0 4px;font-size:0.84375rem;border:2px solid var(--surface)}
@@ -2894,7 +2895,7 @@ html[dir="rtl"] .bt-arw{ transform:scaleX(-1) }
    يُرى**، ولم تفضحه إلّا اللقطة المكبَّرة. فالطقم من **الجرس المجاور نفسه**
    (‏`.ghost-btn`: أبيضُ على شفافيةٍ بيضاء) لا من التوكنات العامّة: عنصران
    متجاوران في رأسٍ واحد لا يجوز أن يختلف أساسُ لونهما. */
-.hub-ava{ inline-size:38px; block-size:38px; border-radius:50%;
+.hub-ava{ inline-size:44px; block-size:44px; border-radius:50%;
   display:inline-flex; align-items:center; justify-content:center;
   background:rgba(255,255,255,.13); color:#fff;
   border:1.5px solid rgba(255,255,255,.22);
@@ -3472,3 +3473,21 @@ html[dir="ltr"] .hdr-back svg{ transform:scaleX(-1) }
 .owner-bk-when .svg-sm{ color:var(--muted); flex:none }
 .owner-bk-when-sep{ color:var(--soft); font-weight:700 }
 .owner-bk-when-time{ letter-spacing:var(--tr-tight) }
+
+
+/* =============================================================
+   §33 · تجانس أزرار الرؤوس (طلب المالك 2026-08-24)
+   كانت ثلاثة مقاسات وشكلان لصنفٍ واحد من الأزرار: `.hdr-back` 44×44 نصف‑قطر 10 ·
+   الجرس **38×40** (عرضه من `.notif-btn` وارتفاعه من `.ghost-btn`) · والفلتر
+   **دائرة** بـ999 من `.browse-sticky>.filter-btn`. مقيس على الجهاز وفي المعاينة.
+   القاعدة المطبَّقة: **مقاسٌ واحد لكل أزرار الرأس (‏44×44 = `--tap-min`)**،
+   والشكل يتبع المعنى لا الموضع: **فعلٌ ⇒ 10px** (رتبة «تحكّم» في سلّم §37)
+   و**هويّةٌ ⇒ دائرة** (الأفاتار حرفُ الاسم، والدائرة عُرفٌ راسخ للهويّة في
+   iOS وMaterial معًا) — فالاختلاف الباقي **دلاليّ مقصود لا انحراف**.
+   ⚠️ والمحدِّد يذكر الرأس صراحةً كي يعلو على `.ghost-btn`/`.notif-btn`:
+   `@media` والترتيب لا يضيفان نوعيّة — مزلق مسجَّل في CLAUDE.md. */
+.app-header.hub .own-acts > .notif-btn,
+.app-header.compact .own-acts > .notif-btn{
+  inline-size:var(--tap-min); block-size:var(--tap-min);
+  min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
+  border-radius:10px }

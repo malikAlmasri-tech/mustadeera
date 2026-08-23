@@ -582,7 +582,11 @@ function showPage(name, opts){
      يختار `#page-*`. */
   let navKey = name;
   if(name==='favorites'){ State.favOnly=true;  name='home'; }
-  else if(name==='home'){ State.favOnly=false; navKey='hub'; }   // التصفّح ابنُ الشبكة فيضيء زرّها
+  else if(name==='home'){ State.favOnly=false; }
+  /* زرّ «الرئيسية» في الشريط يقصد **قائمة الملاعب** لا الشبكة (طلب المالك 2026-08-24):
+     كان `data-nav="hub"` فيخرج من التبويب كلّه إلى شاشةٍ أعلى. والشبكة تبقى مهبطَ
+     الجلسة ويصلها سهمُ `.hdr-back` في الرأس ⇒ البابان قائمان، وكلٌّ يقول وجهته. */
+  else if(name==='hub'){ navKey='home'; }   // الشبكة تُبقي حبّة «الرئيسية» مكانها
   const cur=activePageName();
   if(cur) State.pageScroll[cur]=pageScrollGet();     // حفظ موضع الصفحة المغادَرة
   // دفع الصفحة الحالية للمكدّس — إلا عند الرجوع، والتحويل الداخلي، وإعادة عرض الصفحة نفسها (لا تكرار)
