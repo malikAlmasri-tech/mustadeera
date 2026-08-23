@@ -694,8 +694,13 @@ html.dark .stat-n{color:var(--lime)}
    ملتوية» إلى «جهاز»: عند الدوران تنكشف حافّة الإطار من جهة وتختفي من
    الأخرى — فرق منظور حقيقي لا يمكن رسمه بتدرّج. */
 .hp-scr{position:relative;display:block;overflow:hidden;transform:translateZ(3px);
-  border-radius:clamp(30px,3.6vw,40px);background:#0B0F12}
-.hero-mockup{display:block;width:100%;height:auto}
+  border-radius:clamp(30px,3.6vw,40px);background:#0B0F12;
+  /* ⚠️ الشكل على **الإطار** لا على الصورة: كان `height:auto` يجعل الجهازَ نسخةً
+     من نسبة الملفّ، ولقطةُ 800×1050 كانت تُخرج هاتفًا **نسبته 0.762** — أي لوحًا
+     قصيرًا عريضًا لا هاتفًا (الهاتف الحقيقي 0.46). وبتثبيتها هنا يبقى الجهاز
+     هاتفًا مهما تبدّلت اللقطة، ولا تُعاد كتابة CSS مع كل تحديث صورة. */
+  aspect-ratio:9/19.1}
+.hero-mockup{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
 
 /* شعاع ضوء يعبر الزجاج. ساكن تمامًا (لا يومض ولا يمرّ): اللمعات الثلاث
    أُزيلت بطلب المالك في الدفعة الثانية، وهذه ليست عودةً إليها — هي انعكاس
