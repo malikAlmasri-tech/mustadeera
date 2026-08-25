@@ -391,6 +391,34 @@ function Get-Hash8([string]$s) {
     } finally { $sha.Dispose() }
 }
 
+# The hero mockup is hashed and served from /build/ for the same reason the
+# stylesheet is - and it learned that reason the hard way. Batch 44 changed the
+# SHAPE of the phone (the frame now pins 9/19.1 and the image is object-fit:
+# cover), while the filename stayed /assets/app-mockup-<lang>.png. Any browser
+# that had visited before kept serving its cached 800x1050 copy into a frame
+# built for 660x1400, so cover cropped ~38% of the WIDTH away: step numbers and
+# the primary button sliced off. It looked like a broken render, and it was
+# invisible to us because a fresh profile always fetched the new file.
+# A stale copy is now impossible: change the picture, change the URL.
+function Get-FileHash8([string]$path) {
+    (Get-FileHash $path -Algorithm SHA256).Hash.ToLower().Substring(0, 8)
+}
+$MockupHref = @{}
+foreach ($mk in @('ar','en')) {
+    $mkSrc = Join-Path $SiteDir ('static\assets\app-mockup-' + $mk + '.png')
+    if (Test-Path $mkSrc) {
+        $mkName = 'app-mockup-' + $mk + '.' + (Get-FileHash8 $mkSrc) + '.png'
+        $mkDir  = Join-Path $Out 'build'
+        if (-not (Test-Path $mkDir)) { New-Item -ItemType Directory -Path $mkDir -Force | Out-Null }
+        Copy-Item $mkSrc (Join-Path $mkDir $mkName) -Force
+        $MockupHref[$mk] = '/build/' + $mkName
+    } else {
+        # No mockup on disk is a real state, not a crash: the hero simply has no
+        # picture. Falling back to the unhashed path keeps the page valid.
+        $MockupHref[$mk] = '/assets/app-mockup-' + $mk + '.png'
+    }
+}
+
 $CssName = 'site.' + (Get-Hash8 $CssMin) + '.css'
 $JsName  = 'site.' + (Get-Hash8 $Js)     + '.js'
 $CssHref = '/build/' + $CssName
@@ -785,6 +813,7 @@ foreach ($lang in $Langs) {
             fontHref   = $lang.font
             cssHref    = $CssHref
             jsHref     = $JsHref
+            mockupHref = $MockupHref[$lang.code]
             title      = $(if ($T.ContainsKey($page.title)) { $T[$page.title] } else { '' })
             desc       = $(if ($T.ContainsKey($page.desc))  { $T[$page.desc]  } else { '' })
             # Extra @graph nodes. Empty on every page that adds none - the
