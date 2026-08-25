@@ -289,6 +289,14 @@ const Session = (() => {
     setPlayer: (t,remember) => { setRaw('player_token', t, remember); del('owner_token'); },   // دخول لاعب ⇒ احذف توكن المالك
     setOwner:  (t,remember) => { setRaw('owner_token', t, remember); del('player_token'); },   // دخول مالك ⇒ احذف توكن اللاعب
     clear:   () => { del('player_token'); del('owner_token'); },
+    /* ثلاث حالات لا اثنتان: `light` · `dark` · `system`.
+       ⚠️ و`system` **ليست الغياب**: الغياب كان يتبع الجهاز أصلًا، لكن ما إن يختار
+       المستخدم وضعًا حتى يستحيل عليه العودة — لا قيمة تعني «اتبع جهازي». فصارت
+       قيمةً مخزَّنة صريحة، والافتراضي عند أوّل إقلاع هو هي.
+       و`themePref()` تُرجع **ما اختاره**، و`theme()` تُرجع **ما يُرسَم** — وخلطُهما
+       يجعل «حسب الجهاز» تُحفَظ ثمّ تُقرأ `dark` فتضيع عند أوّل إعادة فتح. */
+    themePref: () => { try { const v = localStorage.getItem('mustadaira:theme'); return (v==='light'||v==='dark'||v==='system') ? v : 'system'; } catch(_){ return 'system'; } },
+    systemDark: () => { try { return !!(window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches); } catch(_){ return false; } },
     theme:   () => { try { const v = localStorage.getItem('mustadaira:theme'); if(v==='light'||v==='dark') return v; return (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches) ? 'dark' : 'light'; } catch(_){ return 'light'; } },
     setTheme:t => { try { localStorage.setItem('mustadaira:theme', t); } catch(_){} },
   };

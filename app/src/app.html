@@ -22,7 +22,7 @@
 </head>
 <body>
 <!-- منع وميض الثيم: يُطبّق الوضع قبل رسم الصفحة + يكتشف تفضيل النظام أول مرة -->
-<script>(function(){try{var k='mustadaira:theme',v=localStorage.getItem(k);if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){document.body.classList.add('dark');}var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',v==='dark'?'#0A0F0B':'#F6F8F4');}catch(e){}})();</script>
+<script>(function(){try{var k='mustadaira:theme',p=localStorage.getItem(k),v;if(p==='light'||p==='dark'){v=p;}else{v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark'){document.body.classList.add('dark');}var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',v==='dark'?'#021012':'#F2F6F7');}catch(e){}})();</script>
 <!-- سرعة الافتتاح: الإقلاع الأوّل كامل (1.76s) وما بعده 58% (~1.02s) — شاشة تُرى
      عشرين مرّة يوميًّا لا تحتمل ثانيتين، والاختصار أفقه أوسع من الحذف: الهوية تبقى.
      ⚠️ **هنا لا في app.js**: الأخير يُحمَّل في آخر الصفحة بينما لوح الافتتاح
@@ -773,9 +773,9 @@
         <div class="settings-row">
           <div class="settings-info">
             <span class="settings-ic"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></span>
-            <span data-i18n="darkModeLbl">الوضع الليلي</span>
+            <span data-i18n="darkModeLbl">المظهر</span>
           </div>
-          <button class="settings-toggle" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+          <span class="settings-val" id="settingsThemeVal"></span><button class="settings-toggle" data-action="toggleTheme" data-i18n-aria="ariaToggleTheme" aria-label="تبديل الوضع"><svg class="thm-ic" viewBox="0 0 24 24" aria-hidden="true"><path class="thm-ic-path" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
         </div>
         <div class="settings-row">
           <div class="settings-info">

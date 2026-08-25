@@ -1491,12 +1491,23 @@ async function saveField(btn){
 const THEME_ICON = {
   moon:'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z',
   sun :'M12 7.9a4.1 4.1 0 1 0 0 8.2 4.1 4.1 0 1 0 0-8.2M12 2.6v2.1M12 19.3v2.1'
-      +'M2.6 12h2.1M19.3 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5'
+      +'M2.6 12h2.1M19.3 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5',
+  /* «حسب الجهاز» شاشةٌ نصفُها مضيء — ورسمُها **داخل نفس المسار الواحد** لا
+     عنصرًا ثانيًا: حارس «الشمسين» يُخفي كلَّ ابنٍ غير `.thm-ic` بـ!important،
+     فأيقونةٌ ثانية كانت ستُرسَم ولا تُرى (مزلق مسجَّل في CLAUDE.md). */
+  auto:'M4 5.4h16v10.9H4zM9.6 20.4h4.8M12 16.3v4.1M12 5.4v10.9a5.5 5.5 0 0 0 0-10.9Z'
 };
-function applyTheme(theme){
+/* الوضع الفعّال يُشتقّ من التفضيل لا يُخزَّن ثانيةً — مصدرُ حقيقةٍ واحد. */
+function resolveTheme(pref){ return pref==='system' ? (Session.systemDark() ? 'dark' : 'light') : pref; }
+function applyTheme(pref){
+  const p = (pref==='light'||pref==='dark'||pref==='system') ? pref : 'system';
+  const theme = resolveTheme(p);
   const dark = theme==='dark';
   document.body.classList.toggle('dark', dark);
-  const d = dark ? THEME_ICON.sun : THEME_ICON.moon;
+  /* الأيقونة تصف **ما اختاره** لا ما يُرسَم: في «حسب الجهاز» تبقى أيقونةَ الشاشة
+     ولو كان المرسوم ليليًّا، وإلّا استحال على المستخدم أن يعرف أنّه في الوضع
+     التلقائي أصلًا. */
+  const d = p==='system' ? THEME_ICON.auto : (dark ? THEME_ICON.sun : THEME_ICON.moon);
   // ‏`themePick` هو بند قائمة فائض المالك — نفس الفعل باسمٍ آخر (انظر `Actions`)،
   // ويحتاج تبديلَ المسار نفسه وإلّا بقيت أيقونته على شكلٍ لا يصف الوضع الحالي.
   $$('[data-action="toggleTheme"],[data-action="themePick"]').forEach(b=>{
@@ -1508,8 +1519,30 @@ function applyTheme(theme){
       b.classList.remove('thm-pop'); void b.offsetWidth; b.classList.add('thm-pop');
     }
   });
-  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#081D22':'#FAFAF7');
+  $$('[data-action="toggleTheme"],[data-action="themePick"]').forEach(b=>b.classList.toggle('is-auto', p==='system'));
+  paintThemeLabels();
+  /* ⚠️ الرقمان كانا بائتين: `#081D22`/`#FAFAF7` هنا و`#0A0F0B`/`#F6F8F4` في سكربت
+     الرأس — ثلاث قيمٍ لِلونين، ولا واحدة منها لون الصفحة بعد الدفعة ٤٢. */
+  const meta=$('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', dark?'#021012':'#F2F6F7');
 }
+/* راسمٌ واحد لكل موضعٍ يُكتب فيه اسمُ المظهر (بند قائمة المالك · صفّ «تفضيلات»).
+   ⚠️ ويُنادى من `applyTheme` **ومن مسار تبديل اللغة**: النصّ مركَّبٌ من معطًى لا
+   من `data-i18n`، فلا يمسّه المبدّل — مزلقٌ مسجَّل في CLAUDE.md. */
+function paintThemeLabels(){
+  const tp = Session.themePref();
+  const key = tp==='system' ? 'themeAutoVal' : (tp==='dark' ? 'themeDarkVal' : 'themeLightVal');
+  ['ownMoreThemeVal','settingsThemeVal'].forEach(id=>{ const el=$('#'+id); if(el) el.textContent = t(key); });
+}
+
+/* تغيّرُ وضع الجهاز يُعاد تطبيقه **حيًّا** ما دام التفضيل «حسب الجهاز» — وبدونه
+   يبقى الاسمُ وعدًا لا يقع حتى إعادة تشغيل التطبيق. */
+(function watchSystemTheme(){
+  try{
+    const mq = matchMedia('(prefers-color-scheme:dark)');
+    const on = ()=>{ if(Session.themePref()==='system') applyTheme('system'); };
+    if(mq.addEventListener) mq.addEventListener('change', on); else if(mq.addListener) mq.addListener(on);
+  }catch(_){}
+})();
 /* ══════════════════════════════════════════════════════════════════════
    تبديل الثيم — كشف دائري من الزرّ المضغوط، بمسارين.
 
@@ -1545,8 +1578,11 @@ function withThemeTransition(commit){
   clearTimeout(themingTimer);
   themingTimer = setTimeout(()=>root.classList.remove('theming'), THEME_MS + 60);
 }
+/* الدورة ثلاثية: نهاري ⇐ ليلي ⇐ حسب الجهاز ⇐ نهاري.
+   والبند في قائمة الفائض يكتب القيمة الحالية بجانبه، فالدورة مكتشَفة لا مخمَّنة. */
+const THEME_CYCLE = { light:'dark', dark:'system', system:'light' };
 function toggleTheme(btn, e){
-  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  const next = THEME_CYCLE[Session.themePref()] || 'light';
   const commit = ()=>{ Session.setTheme(next); applyTheme(next); };
   let reduce=false; try{ reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
   const r = (btn && btn.getBoundingClientRect) ? btn.getBoundingClientRect() : null;
@@ -1697,7 +1733,7 @@ function setLanguage(lang){
        المكان + الموعد)، فلا يمسّهما تبديل اللغة إلّا بإعادة بنائهما.
        ⚠️ مقيس: بدون هذين السطرين يبقى اللوح إنجليزيًّا بعد الرجوع إلى العربية
           — ونصُّه مكتوبٌ منذ آخر جلبة، فلا شيء يعيد كتابته حتى الجلبة التالية. */
-    Notifs.paint(); Tracker.paint();
+    Notifs.paint(); Tracker.paint(); paintThemeLabels();
     if($('#page-verifyPhone')?.classList.contains('active')) Verify.syncText();
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
     // نصوص التبويبات تغيّرت ⇒ عروض الأزرار تغيّرت. قفزة لا انزلاق: الحبّة
@@ -1890,7 +1926,7 @@ const Actions = {
        النظام · الاستعادة من التخزين)، فمرآةٌ تُكتب مرّةً تنحرف عن الحالة. */
     if(open){
       setText('ownMoreLangVal', State.lang==='en' ? 'EN' : 'عربي');
-      setText('ownMoreThemeVal', t(document.body.classList.contains('dark') ? 'themeDarkVal' : 'themeLightVal'));
+      paintThemeLabels();
     }
     m.hidden = !open; btn.setAttribute('aria-expanded', open?'true':'false');
     if(open && !document.__ownMoreBound){
@@ -2185,7 +2221,7 @@ function initAuthForms(){
 }
 
 async function init(){
-  applyTheme(Session.theme());
+  applyTheme(Session.themePref());
   setLanguage(State.lang);   // يضبط lang/dir + يطبّق الترجمة على الواجهة الثابتة
   validateI18nParity();      // تحقّق تكافؤ مفاتيح ar/en (تحذير كونسول فقط)
   Dirty.init();              // مراقبة الإدخال في نوافذ النماذج (تحذير التعديلات غير المحفوظة)

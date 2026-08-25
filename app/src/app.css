@@ -3491,3 +3491,12 @@ html[dir="ltr"] .hdr-back svg{ transform:scaleX(-1) }
   inline-size:var(--tap-min); block-size:var(--tap-min);
   min-inline-size:var(--tap-min); min-block-size:var(--tap-min);
   border-radius:10px }
+
+
+/* §34 · قيمة المظهر بجانب مبدّله — الزرّ صار ثلاثيَّ الحالات (الدفعة ٤٥)، وضابطٌ
+   ثلاثيّ بلا نصٍّ يقول حالته تخمينٌ لا اختيار. نفس مكوّن `#ownMoreThemeVal`. */
+.settings-val{font-size:0.8125rem;font-weight:700;color:var(--muted);
+  white-space:nowrap;margin-inline-end:8px;
+  /* ⚠️ الصفّ `space-between` وصار ثلاثةَ أبناء ⇒ الثالثُ يطفو في **المنتصف**
+     لا بجانب مبدّله. و`auto` يدفع القيمةَ والمبدّلَ معًا إلى الطرف. */
+  margin-inline-start:auto}
