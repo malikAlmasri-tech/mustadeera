@@ -31,16 +31,29 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = path.join(ROOT, 'app', 'src', '_preview_app.html');
-const OUT = path.join(ROOT, 'app', 'src', '_preview_owner.html');
+/* `--web` يوجّه الشبكة نفسها إلى **بندل الويب** (`public/owner/index.html`) بدل
+   بندل المعاينة. اللوحة واحدة في الاثنين — نفس المصادر — والفرقُ الذي يستحقّ
+   فحصًا مستقلًّا اثنان: غيابُ الطبقة الأصلية، وحارسُ `WEB_OWNER` الذي يقصّ
+   الموجّه. وبلا هذا العلَم يبقى السطحُ المشحون الوحيد الذي لا تصله أداة. */
+const WEB = process.argv.includes('--web');
+const SRC = WEB ? path.join(ROOT, 'public', 'owner', 'index.html')
+                : path.join(ROOT, 'app', 'src', '_preview_app.html');
+const OUT = WEB ? path.join(ROOT, 'public', 'owner', '_preview_owner.html')
+                : path.join(ROOT, 'app', 'src', '_preview_owner.html');
 
 if (process.argv.includes('--rm')) {
-  if (fs.existsSync(OUT)) { fs.unlinkSync(OUT); console.log('  removed ' + path.relative(ROOT, OUT)); }
-  else console.log('  nothing to remove');
+  /* تُمسح النسختان دائمًا مهما كان العلَم: نسخةُ `public/` **متتبّعة في git**،
+     وصفحةٌ تتخطّى تسجيل الدخول لا تُترك في مخرَجٍ يُنشَر. */
+  let gone = 0;
+  for (const p of [path.join(ROOT, 'app', 'src', '_preview_owner.html'),
+                   path.join(ROOT, 'public', 'owner', '_preview_owner.html')]) {
+    if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('  removed ' + path.relative(ROOT, p)); gone++; }
+  }
+  if (!gone) console.log('  nothing to remove');
   process.exit(0);
 }
 if (!fs.existsSync(SRC)) {
-  console.error('  x لا يوجد _preview_app.html — شغّل build.ps1 أوّلًا.');
+  console.error('  x لا يوجد ' + path.relative(ROOT, SRC) + ' — شغّل build.ps1 أوّلًا.');
   process.exit(1);
 }
 

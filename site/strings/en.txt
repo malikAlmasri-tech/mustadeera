@@ -170,6 +170,7 @@ footerColLegal = Legal
 linkDownload = Download the app
 linkWebApp = Venue directory
 linkOwners = For pitch owners
+linkOwnerConsole = Owner dashboard
 linkAbout = About us
 linkContact = Contact
 linkPrivacy = Privacy policy
@@ -286,6 +287,9 @@ ownHow3 = You sign in to your dashboard and start receiving requests - and chang
 ownCostTitle = What does it cost?
 ownCostBody = Registering your venue and running the dashboard are free. Subscription details are agreed with you before activation.
 ownPageCta = Register your pitch
+ownConsoleTitle = Have an account? Open your dashboard in a browser
+ownConsoleBody = The app is Android-only, and many owners work from a desktop. The same dashboard - requests, bookings, reports and pitches - opens in your browser with the same phone number and password. Player booking itself stays in the app.
+ownConsoleCta = Open your dashboard
 
 # =========================================================
 #  Privacy  /privacy   ·   Terms  /terms

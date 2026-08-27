@@ -44,6 +44,24 @@ const CONFIG = {
   AI_TIMEOUT: 45000,    // مهلة طلبات AI (نموذج + طقس عبر الخادم — أبطأ من الطلبات العادية)
 };
 
+/* ===================== وضع الويب: لوحة المالك وحدها =====================
+   صاحب الملعب قد يعمل على حاسوب، والتطبيق أندرويد وحده ⇒ لوحته تُخدَم من
+   الموقع على `/owner/`. **وهي البندل نفسه حرفًا بحرف**: `build.ps1` يكتب هناك
+   ما يبنيه للـAPK ناقصًا الطبقةَ الأصلية (`$appWeb` — وهي محسوبة في الملفّ
+   أصلًا)، فلا تُكتب لوحةٌ ثانية تنحرف عن الأولى بعد أسبوع. ولا ميزة هنا ليست
+   هناك: ما يراه المالك على الشاشتين شيء واحد لأن مصدره واحد.
+
+   ⚠️ **والراية تفتح بابًا واحدًا وتُقفل ما عداه.** قرار المالك ① يقول إنّ
+   **الحجز من التطبيق وحده**، وخدمةُ البندل كاملًا على الويب تُعيد الـSPA التي
+   سُحبت 2026-07-28 بالحرف. والحارس في `showPage` — وهي الموجّه **الوحيد** في
+   التطبيق — فلا يُطلَب من كلّ مسارٍ أن يتذكّر نفسه (نفس مبدأ `applySportScope`:
+   القصّ في موضعٍ واحد لا في سبعة).
+
+   ⚠️ **والعلامة تُحقَن في `<head>` ولا تُستنتَج من `location`**: مجلّدٌ يُعاد
+   تسميته يومًا كان سيُسقط الحارس **صامتًا** فيَنشر التطبيق كلَّه على الويب —
+   وهو أخطر اتجاهَي الفشل. والحقنة يفحصها `build.ps1` في المخرَج بعد كتابته. */
+const WEB_OWNER = (()=>{ try{ return document.documentElement.classList.contains('web-owner'); }catch(_){ return false; } })();
+
 /* الأوقات الافتراضية — بيانات محايدة لغوياً: hour (مطابقة الحجز/الخادم) + startHour/endHour
    لتوليد التسمية حسب اللغة. الحقل label هو القيمة الكنسية المُرسلة للخادم (بروتوكول حجز،
    يطابقه الباكند العربي) فيبقى ثابتاً؛ العرض الإنجليزي يُولَّد من الساعات عبر slotDisplay(). */
@@ -97,6 +115,8 @@ const I18N = {
     enter:'دخول', browseNoAccount:'أريد التصفّح بلا حساب', haveAccount:'لديّ حساب', name:'الاسم',
     regTitle:'إنشاء حساب', regSubtitle:'احفظ حجوزاتك وتابعها في أي وقت', createAccount:'إنشاء الحساب',
     ownerLoginTitle:'دخول المالك', ownerLoginSubtitle:'لوحة تحكم الملاعب والحجوزات', back:'رجوع',
+    webOwnerDocTitle:'لوحة المالك — المستديرة',
+    webOwnerHint:'هاي لوحة صاحب الملعب على المتصفّح — نفس اللي بالتطبيق. أمّا الحجز نفسه فبصير من التطبيق.',
     searchPh:'اكتب اسم المكان أو المنطقة…', search:'ابحث', availableFields:'الملاعب المتاحة', refresh:'تحديث',
     fldImgsLbl:'صور الملعب', fldImgsAdd:'أضف', fldImgsNone:'ما في صور لهذا الملعب بعد.',
     fldImgsFirst:'الأولى', fldImgsMakeFirst:'خلّيها الأولى', fldImgsRemove:'احذف الصورة',
@@ -706,6 +726,8 @@ const I18N = {
     enter:'Log in', browseNoAccount:'Browse without an account', haveAccount:'I have an account', name:'Name',
     regTitle:'Create account', regSubtitle:'Save your bookings and track them anytime', createAccount:'Create account',
     ownerLoginTitle:'Owner login', ownerLoginSubtitle:'Fields and bookings dashboard', back:'Back',
+    webOwnerDocTitle:'Owner dashboard - Al-Mostadeera',
+    webOwnerHint:'The venue owner console in your browser - the same one that is in the app. Booking itself happens in the app.',
     searchPh:'Type a place or area name…', search:'Search', availableFields:'Available fields', refresh:'Refresh',
     fldImgsLbl:'Pitch photos', fldImgsAdd:'Add', fldImgsNone:'No photos for this pitch yet.',
     fldImgsFirst:'First', fldImgsMakeFirst:'Make it first', fldImgsRemove:'Remove photo',

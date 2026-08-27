@@ -26,6 +26,7 @@ app/    ⇒ التطبيق فقط          site/   ⇒ الموقع فقط
 | **حركة الموقع وسلوكه** | `site/scripts/site.js` | `public/build/site.<hash>.js` |
 | **نصوص الموقع** | `site/strings/ar.txt` + `en.txt` | — |
 | **لوحة الإدارة** | `site/admin.html` | `public/admin/` |
+| **لوحة المالك على الويب** | لا تُحرَّر — هي مصادر التطبيق نفسها | `public/owner/` ⇐ `build.ps1` |
 
 > **اللوحة تربط ورقة أنماط الموقع وسكربته نفسيهما** (مبصومَين). أي تعديل في
 > توكنات الموقع أو أزراره أو تبديل ثيمه يصل إليها تلقائيًّا — لا تُنسَخ الأنماط.
@@ -118,6 +119,7 @@ koora/
 | `public/build/site.<hash>.js` | `site/scripts/site.js` — الاسم يحمل بصمة المحتوى |
 | `app/www/index.html` | `app/src/` ⇐ `build.ps1` |
 | `app/src/_preview_app.html` | نفسه + علم `body.native` للمعاينة |
+| `public/owner/index.html` | `app/src/` ⇐ `build.ps1` — **نفس بندل التطبيق** ناقصًا الطبقة الأصلية، وفيه علامة `web-owner` التي تقصّ الموجّه على شاشتَي المالك وحدهما |
 | `android/app/src/main/assets/public/` | `app/www/` ⇐ `npx cap sync` |
 
 ---

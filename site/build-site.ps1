@@ -1115,6 +1115,7 @@ Write-Text (Join-Path $Out 'robots.txt') @"
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /owner
 
 Sitemap: $SiteOrigin/sitemap.xml
 "@

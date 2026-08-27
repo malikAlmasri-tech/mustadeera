@@ -575,6 +575,16 @@ function navigateBack(fallback){
 }
 function showPage(name, opts){
   opts=opts||{};
+  /* 🔒 **لوحة المالك على الويب: بابان لا ثالث لهما.**
+     البندل المخدوم على `/owner/` هو بندل التطبيق نفسه، فبلا هذا الحارس تصير
+     كلُّ صفحة لاعبٍ فيه مبذولةً على المتصفّح — وهي الـSPA التي سُحبت بقرار
+     المالك ① (الحجز من التطبيق وحده). وموضعُه هنا لأنّ `showPage` هي الموجّه
+     الوحيد: كلّ `data-nav` وكلّ نداءٍ في الشيفرة يمرّ من هنا، فلا مسار يُنسى.
+     ⚠️ و`redirect` كي لا تدخل الصفحةُ المحوَّل عنها مكدّسَ الرجوع فتصنع حلقة. */
+  if (WEB_OWNER && name!=='owner' && name!=='ownerLogin'){
+    name = Session.owner() ? 'owner' : 'ownerLogin';
+    opts = Object.assign({}, opts, { redirect:true });
+  }
   /* «المفضّلة» ليست صفحةً بل **حالةً** على الرئيسية: مسارٌ واحد يعرض `home`
      مع `favOnly=true`، و`home` يفرضها `false`. مصدر الحالة واحد ⇒ لا نسخة
      ثانية من `renderPlaces` ولا شريحة ثانية تنحرف عنه.
@@ -1704,6 +1714,9 @@ function setLanguage(lang){
   try{ localStorage.setItem('mustadaira_language', lang); }catch(_){}
   const html=document.documentElement; html.lang=lang; html.dir = lang==='ar'?'rtl':'ltr';
   applyTranslations(document);
+  /* عنوان التبويب: `docTitle` يَعِد بالحجز («احجز ملعبك») وهذه الصفحة لا تحجز.
+     وهو مركَّبٌ بعد `applyTranslations` لا بدلًا منها — فالسمة تكتب أوّلًا. */
+  if (WEB_OWNER) document.title = t('webOwnerDocTitle');
   /* 🔴 **لا تُتلف زرًّا مركَّبًا.** كان السطر يكتب `textContent` على **كل** زرّ
      لغة، وبند اللغة في قائمة فائض المالك زرٌّ فيه أيقونةٌ وتسمية ⇒ يُمحى
      الاثنان ويحلّ محلّهما «EN» عارية: سطرٌ بلا أيقونة ولا اسم بين سطرين
@@ -2230,6 +2243,23 @@ async function init(){
   initStickyDedup();         // منع تكرار زرّ متابعة الحجز (اللاصق × الداخلي)
   initAuthForms();           // شروط كلمة السرّ الحيّة + خانات كود التحقّق
   initRovingGroups();        // مجموعات الاختيار: tabindex متنقّل + تنقّل بالأسهم
+  /* ═══ الويب: لوحة المالك وحدها ═══
+     ⚠️ **بلا `loadData()`**: الأماكن والملاعب وشريط الأرقام وفحصُ الإصدار
+     كلُّها جهةُ اللاعب، ولوحة المالك مستقلّة عنها تمامًا (`getOwnerData` وحدها
+     — صفر استعمال لـ`State.allPlaces` في `app.4-owner.js`). وجلبُها هنا كان
+     يشتري ثلاثة أضرار بلا مقابل: طلباتٌ لبياناتٍ لا تُعرَض، وتوستُ خطأِ شبكةٍ
+     عن شاشةٍ غير معروضة، وشريطُ «حدّث تطبيقك» على صفحةِ ويبٍ محدَّثةٌ أصلًا
+     (`checkAppVersion` تُنادى من داخل `loadData`).
+     و`Notifs.load()` يبقى: الجرس في رأس اللوحة، والدالّة تخرج صامتةً بلا جلسة. */
+  if (WEB_OWNER){
+    const back = $('#page-ownerLogin [data-action="navBack"]'); if(back) back.hidden = true;
+    const note = $('#ownerWebNote'); if(note) note.hidden = false;
+    Notifs.load();
+    if (Session.owner()){
+      $('#nav-owner').classList.add('show'); showPage('owner'); loadOwnerDashboard();
+    } else showPage('ownerLogin');
+    return;
+  }
   loadData().then(updateTrust);
   Notifs.load();             // الجرس يعرف عدده قبل أن ينظر إليه المستخدم
   if (Session.owner()){

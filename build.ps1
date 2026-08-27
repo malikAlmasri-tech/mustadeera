@@ -149,3 +149,68 @@ Write-Host "  to APK:  npx cap sync android   then   cd android; .\gradlew.bat a
 # build-site.ps1 locates itself and wipes public\ before writing, so a file
 # dropped from the generator stops being served instead of lingering forever.
 & (Join-Path $Root 'site\build-site.ps1')
+
+# ===== 3) the owner console on the web ========================================
+# Owners work from a desktop too, and the app is Android-only, so their
+# dashboard is served from the site at /owner/ - and it is THE SAME BUNDLE.
+# $appWeb above is exactly what goes into the APK minus the native layer, and
+# it is already computed, so this costs one string splice. A second, hand-
+# written owner panel would have drifted from this one inside a week - that is
+# the whole reason FIELD_SPECS needed a mirror guard.
+#
+# Booking stays app-only (owner decision 1). The bundle carries every player
+# page with it, so the emitted copy is MARKED and app.js routes only 'owner'
+# and 'ownerLogin' while the mark is present (see WEB_OWNER in
+# app.1-config-i18n.js). The mark is injected, never inferred from location:
+# a renamed folder would drop the guard silently and republish the whole SPA,
+# which is the dangerous direction of failure.
+#
+# This section runs AFTER build-site.ps1 on purpose - that script wipes public\
+# before it writes, so anything emitted earlier would simply be deleted.
+$ownerMark = "<script>document.documentElement.classList.add('web-owner');</script>"
+$ownerHead = "<meta name=""robots"" content=""noindex, nofollow"">`r`n$ownerMark`r`n</head>"
+
+# Counted on $appWeb, NOT on app.html: the CSS and JS are inlined by now, and a
+# literal "</head>" inside either is ordinary text to the parser but a second
+# match for String.Replace - which swaps EVERY occurrence. Same lesson as the
+# "</body>" guard above, one element over.
+$headCloses = ([regex]::Matches($appWeb, [regex]::Escape('</head>'))).Count
+if ($headCloses -ne 1) {
+    throw ("BUILD ABORTED: the web bundle contains {0} occurrences of '</head>' (expected exactly 1). " -f $headCloses) +
+          "String.Replace is global, so the owner mark would be injected more than once."
+}
+$ownerHtml = $appWeb.Replace('</head>', $ownerHead)
+
+$OwnerOut = Join-Path $Root 'public\owner'
+if (-not (Test-Path $OwnerOut)) { New-Item -ItemType Directory -Path $OwnerOut -Force | Out-Null }
+[IO.File]::WriteAllText((Join-Path $OwnerOut 'index.html'), $ownerHtml, $enc)
+
+# Fonts and images only. onb\ is 700 KB of onboarding photography the owner
+# console can never display (#page-onboarding is unreachable behind the guard),
+# and they are CSS background-image on elements inside .page{display:none} - a
+# box that is never generated never fetches its background, so their absence
+# costs nothing and no 404 is logged. icon-*.png are Android launcher icons and
+# no markup references them at all.
+$ownerAssets = Join-Path $OwnerOut 'assets'
+if (Test-Path $ownerAssets) { Remove-Item $ownerAssets -Recurse -Force }
+New-Item -ItemType Directory -Path $ownerAssets -Force | Out-Null
+foreach ($d in @('fonts', 'img')) {
+    $src = Join-Path $Root "app\assets\$d"
+    if (-not (Test-Path $src)) { throw "BUILD ABORTED: app\assets\$d is missing - the owner console needs it." }
+    Copy-Item $src (Join-Path $ownerAssets $d) -Recurse -Force
+}
+
+# Verify what was WRITTEN, not what we meant to write. The mark is the only
+# thing standing between /owner/ and a full browser copy of the player app, so
+# it is read back off disk exactly once.
+$ownerBack = [IO.File]::ReadAllText((Join-Path $OwnerOut 'index.html'))
+$markCount = ([regex]::Matches($ownerBack, [regex]::Escape($ownerMark))).Count
+if ($markCount -ne 1) {
+    throw ("BUILD ABORTED: public\owner\index.html carries {0} owner marks (expected exactly 1). " -f $markCount) +
+          "Without exactly one, the page would serve the whole player app on the web."
+}
+if ($ownerBack -notmatch [regex]::Escape('const WEB_OWNER')) {
+    throw "BUILD ABORTED: public\owner\index.html has no WEB_OWNER guard in its bundle. " +
+          "The mark would be inert and every player page would be reachable at /owner/."
+}
+Write-Host ("  [owner]  {0,9:N0} chars  ->  public\owner\index.html  (/owner/ - same bundle, owner routes only)" -f $ownerHtml.Length) -ForegroundColor Green

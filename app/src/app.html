@@ -357,6 +357,10 @@
         </label>
         <button class="sbtn btn-go" data-action="ownerLogin" data-i18n="enter">دخول</button>
         <button class="cbtn" data-action="navBack" data-fallback="welcome" data-i18n="back">رجوع</button>
+        <!-- على الويب لا شيء وراء هذه الشاشة ⇒ زرّ «رجوع» يُخفى وهذا السطر يحلّ
+             محلّه: يقول ما هذه الصفحة، ويقول صراحةً أنّ الحجز يبقى في التطبيق
+             (قرار المالك ①) فلا يبحث المالك عن باب حجزٍ ليس هنا. -->
+        <p class="fhint" id="ownerWebNote" data-i18n="webOwnerHint" style="text-align:center;margin-top:14px" hidden>لوحة صاحب الملعب على المتصفّح.</p>
       </div>
     </div>
   </section>
