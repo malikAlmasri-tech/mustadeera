@@ -3524,6 +3524,316 @@ html[dir="ltr"] .hdr-back svg{ transform:scaleX(-1) }
 
 </style>
 <meta name="robots" content="noindex, nofollow">
+<style>
+/* ===== WEB LAYER (owner console only) ===== */
+/* ═══════════════════════════════════════════════════════════════════════════
+   web.css — طبقة الويب: لوحة المالك تصير موقعًا لا هاتفًا ممدودًا
+
+   موازيةٌ لـ`native.css` بالضبط: تلك تُحقَن في الـAPK وحده وتقول «أنت على
+   جهاز»، وهذه تُحقَن في `public/owner/` وحده وتقول «أنت على متصفّح». ولا
+   واحدة منهما تمسّ الأخرى، ولا واحدة منهما تلمس منطقًا.
+
+   ⚠️ **والمهامّ لا تتغيّر بحرف — العرضُ وحده.** لا سطر JS هنا، ولا عنصر
+   يُضاف أو يُحذف: نفس `renderOwnerDashboard` يبني نفس العقد، وهذه الورقة
+   تعيد **تخطيطها**. فأيّ ترقية في اللوحة تصل الوجهين معًا لأن مصدرها واحد —
+   وهو الشرط الذي منع أصلًا كتابة لوحةٍ ثانية على نمط `/admin`.
+
+   ⚠️ **وكلُّ محدِّر هنا يبدأ بـ`html.web-owner`** — الصنف الذي يحقنه البناء
+   في نسخة الويب وحدها. فيستحيل أن يتسرّب سطرٌ منها إلى التطبيق ولو أُدرجت
+   الورقة فيه بالخطأ: العلامة غائبة ⇒ صفر محدِّر يطابق.
+
+   ⚠️ **والشكل الجديد فوق 1000px وحده.** تحتها يبقى تخطيط التطبيق كما هو —
+   وهو مقيسٌ ومصقولٌ على 375px منذ أربعين دفعة، والمالك الذي يفتح اللوحة من
+   متصفّح هاتفه يجد ما يعرفه لا تخطيطًا ثالثًا يتعلّمه.
+
+   ⚠️ **و`:has()` هي البوّابة، والغياب يسقط بأمان**: متصفّحٌ لا يعرفها لا
+   يطابق قاعدة الشبكة فيحصل على تخطيط اليوم — يعمل بتمامه، أقلَّ فخامةً.
+   والقاعدة تُشترَط بـ`#nav-owner.show` تحديدًا لأنّ الشبكة معناها «هناك رصيف
+   جانبي»: شاشة الدخول لا شريط لها، فلا تدخل الشبكة أصلًا.
+
+   الأقسام:  W1 الهيكل · W2 الرصيف · W3 الشريط العلوي · W4 القماشة
+             W5 شبكات المحتوى · W6 شاشة الدخول · W7 الحوارات · W8 صقل
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html.web-owner{
+  /* عرض الرصيف — مصدرٌ واحد يقرؤه عمودُ الشبكة والرصيفُ نفسه، فلا رقمان
+     يتفارقان يومًا (درسُ `--onb-lift` المسجَّل). */
+  --wo-rail: 264px;
+  --wo-gutter: 30px;
+  --wo-canvas: 1320px;
+}
+
+/* ── W0) لوح الافتتاح لا يُعرَض على الويب — وهو **في كل العروض لا فوق 1000px**
+   الشاشةُ الترحيبية بالعلامة عُرفُ تطبيقٍ يُقلَع بردًا: تملأ الوقت الذي يستغرقه
+   النظام في فتحه. وصفحةُ ويبٍ لا إقلاعَ لها — والمالك يفتح هذه اللوحة عشرين
+   مرّةً في اليوم، فثانيةٌ ونصف من شعارٍ قبل حقلَي الدخول احتكاكٌ لا هوية.
+   ⚠️ ولا يُلمَس منطقُه: مؤقّتاته تجري و`el.remove()` يقع كما هو — نُخفي اللوح
+      فقط، فلا مسارَ إقلاعٍ يتغيّر ولا سطرَ JS يُفرَّع. */
+html.web-owner .intro{ display: none }
+
+@media (min-width: 1000px){
+
+/* ── W1) الهيكل: رصيفٌ وقماشة ────────────────────────────────────────────
+   `#app` كان عمودًا بعرض 1100px موسَّطًا — أي هاتفًا عريضًا. صار شبكةً من
+   عمودين، والرصيف في الأوّل والصفحة في الثاني **بإسنادٍ صريح** لأن ترتيب
+   الـDOM يضع الشريط بعد كلّ الصفحات. و`grid-column:1` منطقيّ لا فيزيائي:
+   يقع يمينًا في العربية ويسارًا في الإنجليزية بلا فرعٍ لكلّ اتجاه. */
+html.web-owner #app{ max-width: none }
+
+html.web-owner #app:has(> #nav-owner.show){
+  display: grid;
+  grid-template-columns: var(--wo-rail) minmax(0, 1fr);
+  min-height: 100vh;
+}
+html.web-owner #app:has(> #nav-owner.show) > #nav-owner{
+  grid-column: 1; grid-row: 1;
+  align-self: start;                    /* وإلّا امتدّ الرصيف بطول الصفحة فبطل التصاقه */
+}
+html.web-owner #app:has(> #nav-owner.show) > .page.active{
+  grid-column: 2; grid-row: 1;
+  min-height: 100vh;
+  padding-bottom: 0;                    /* حشوةُ الشريط السفلي — ولا شريط سفليًّا هنا */
+  /* 🔴 **وهذان السطران هما الإصلاح، وكُشفا بالقياس لا بالقراءة.** الدفعة ٢٤
+     أعطت `#page-owner.active` فوق 1024px عرضًا أقصى 1100 و`margin:auto` —
+     وكان صحيحًا يوم كانت الصفحة عمودًا في تدفّق عادي. لكنّ `margin:auto` على
+     **عنصرِ شبكة** لا يوسّطه فحسب: يجعل عرضه `fit-content`. فخرجت الصفحة
+     **555px** داخل عمودٍ عرضُه 1165، موسَّطةً فيه، والقماشة تبدو ضيّقة بلا
+     سببٍ ظاهر — والقاعدة سليمةٌ في مكانها. القماشة تُحدّ في `.pad` أدناه. */
+  max-width: none;
+  margin-inline: 0;
+}
+
+/* التلاشي أسفل الشاشة (‏§36) يقول «تحت هذا مزيد» فوق شريطٍ سفليّ. ولا شريط
+   سفليَّ في هذا الشكل ⇒ شريطٌ داكن يطفو على قماشة بلا معنى. */
+html.web-owner:has(.bnav.show)::after{ content: none }
+
+
+/* ── W2) الرصيف: الشريط السفلي يقف ────────────────────────────────────────
+   نفس العنصر ونفس الأزرار الأربعة ونفس `showOwnerTab` — تغيّر محورُه فقط.
+   ⚠️ و`!important` هنا ردٌّ على `!important` هناك: قواعد §13 تفرض خلفية
+      الشريط وظلَّه العلوي، وهي أعلى من التخصيص وحده. */
+html.web-owner #nav-owner.show{
+  position: sticky;
+  inset-block-start: 0;
+  inset-inline: auto;
+  transform: none;
+  inline-size: auto;
+  max-width: none;
+  block-size: 100vh;
+  overflow-y: auto;                     /* خطُّ نظامٍ كبير لا يقصّ بندًا */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 22px 14px 18px;
+  border-top: 0;
+  border-inline-end: 1px solid var(--line);
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
+/* العلامة أعلى الرصيف — `--logo-lockup` توكنٌ يقلب نفسه بالثيم، فلا صورة
+   تُختار بيد ولا واحدة تختفي على سطحها. و`center` لا جهةً: محايدةُ اتجاه. */
+html.web-owner #nav-owner.show::before{
+  content: "";
+  display: block;
+  block-size: 34px;
+  margin-block-end: 18px;
+  background: var(--logo-lockup) no-repeat center / contain;
+}
+
+/* الحبّة تُقاس بـ`getBoundingClientRect` لصفٍّ أفقي — ولا صفَّ هنا. والحالة
+   تبقى محمولةً على الصبغة والحدّ والوزن (‏§31) لا على اللون وحده. */
+html.web-owner #nav-owner .nav-pill{ display: none }
+
+html.web-owner #nav-owner .nitem{
+  flex: none;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 13px;
+  padding-block: 10px;
+  min-block-size: 46px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--muted);
+  transition: background-color .16s var(--ease-out), color .16s var(--ease-out);
+}
+html.web-owner #nav-owner .nitem .nicon{ inline-size: 22px; block-size: 22px; margin: 0 }
+html.web-owner #nav-owner .nitem:hover{ background: var(--surface-soft); color: var(--ink) }
+
+/* نفس تعبير §31 حرفيًّا — صبغةٌ من لون الفعل وحبرٌ منه وحدٌّ منه. ولا نمطَ
+   ثانيًا لنفس المعنى في المشروع. */
+html.web-owner #nav-owner .nitem.active,
+html.web-owner body.dark #nav-owner .nitem.active{
+  background: color-mix(in srgb, var(--act-bg) 14%, transparent);
+  color: var(--act-bg);
+  border-color: var(--act-bg);
+  font-weight: 800;
+}
+
+
+/* ── W3) الشريط العلوي ───────────────────────────────────────────────────
+   الرأس كان لوحًا بحوافّ سفلية دائرية يمشي مع التمرير — وهو شكلُ رأسِ تطبيق.
+   صار شريطًا لاصقًا بحدٍّ سفليّ: خطُّ فصلٍ بين القماشة وما فوقها. */
+html.web-owner #page-owner > .app-header.compact{
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 30;
+  padding: 15px var(--wo-gutter);
+  border-radius: 0;
+  border-block-end: 1px solid var(--line);
+}
+html.web-owner #page-owner > .app-header .own-place{ font-size: 1.1875rem; font-weight: 800 }
+
+
+/* ── W4) القماشة: عرضٌ محدود ─────────────────────────────────────────────
+   ⚠️ **والحدُّ 1320 لا «ملء الشاشة»**: سطرٌ يمتدّ على 2560px لا يُقرأ، والعين
+      تفقد أوّلَ السطر قبل أن تبلغ آخره. */
+html.web-owner #page-owner > .pad{
+  padding: 24px var(--wo-gutter) 64px;
+  max-inline-size: var(--wo-canvas);
+  margin-inline: auto;
+}
+
+
+/* ── W5) شبكات المحتوى: بطاقاتٌ تتجاور بدل أن تتكدّس ─────────────────────
+   `auto-fill` لا عددٌ مكتوب: عدد أبناء كلّ تبويب **متغيّر** (بطاقاتٌ تُخفى
+   حين لا بيانات لها — لوحُ الطقس · «راحت بلا ردّ» · بطاقات الـAI)، وشبكةٌ
+   بعمودين مكتوبين تترك فجوةً كلّما اختفى واحد. و`align-items:start` كي لا
+   تتمدّد بطاقةٌ قصيرة لتساوي أطولَ جارتها. */
+html.web-owner .owner-tab{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+html.web-owner .owner-tab > *{ margin: 0 }
+
+/* ما يمتدّ بعرض القماشة: عنوانٌ يفصل قسمًا · مبدّلٌ · شبكةُ إحصاء · مخطّطٌ
+   زمنيّ أفقي · وقوائمُ لها شبكتُها الداخلية أدناه. */
+html.web-owner .owner-tab > .sec-title,
+html.web-owner .owner-tab > .rep-group,
+html.web-owner .owner-tab > .stat-grid,
+html.web-owner .owner-tab > .rep-range,
+html.web-owner .owner-tab > .ov-seg,
+html.web-owner .owner-tab > #otAlertWrap,
+html.web-owner .owner-tab > #otNext,
+html.web-owner .owner-tab > #ownerTimelineWrap,
+html.web-owner .owner-tab > #ownerToday,
+html.web-owner .owner-tab > #ownerBookings,
+html.web-owner .owner-tab > #ownerFields,
+html.web-owner .owner-tab > #repByPlace{ grid-column: 1 / -1 }
+
+/* بطاقةٌ فيها رسمٌ أو خريطةُ حرارة أو جدولُ عملاء تحتاج عرضًا: تُنتقى
+   **بمحتواها** لا باسمٍ يُكتب عليها، فلا يلزم تعديلُ وسمٍ مشترك مع التطبيق. */
+html.web-owner .owner-tab > .card:has(.chart-area),
+html.web-owner .owner-tab > .card:has(#ownerHeat),
+html.web-owner .owner-tab > .card:has(#repCust),
+html.web-owner .owner-tab > .card:has(#repDemand){ grid-column: 1 / -1 }
+
+/* مرشِّحاتُ الحجوزات: على الهاتف بطاقةٌ بحقلين في صفّين، وعلى الحاسوب **شريطُ
+   ترشيحٍ** بعرض القماشة — أربعة حقول في صفّ واحد، وهو شكلُ كلّ جدولٍ على الويب.
+   وتُنتقى البطاقةُ بحقلها لا باسمٍ يُضاف إليها في الوسم المشترك. */
+html.web-owner .owner-tab > .card:has(#ownerSearch),
+html.web-owner .owner-tab > #obfChips{ grid-column: 1 / -1 }
+html.web-owner .owner-tab > .card:has(#ownerSearch){
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+html.web-owner .owner-tab > .card:has(#ownerSearch) > .section-title{ grid-column: 1 / -1 }
+/* `display:contents` يرفع الغلاف من التخطيط فيصير حقلاه بندَين في شبكة البطاقة —
+   فتصطفّ الخمسة في صفٍّ واحد بلا لمس الوسم المشترك ولا نقل عنصرٍ بـJS. */
+html.web-owner .owner-tab > .card:has(#ownerSearch) > .grid-2{ display: contents }
+
+/* القوائم الطويلة تصير أعمدة: بطاقةُ حجزٍ عرضُها 900px تعرض فراغًا لا معلومة.
+   والعناوين داخلها تمتدّ فتبقى الأقسام مقروءة. */
+html.web-owner #ownerToday,
+html.web-owner #ownerBookings,
+html.web-owner #ownerFields{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+html.web-owner :is(#ownerToday, #ownerBookings, #ownerFields) > :is(.sec-title, .ot-note, .empty, .ot-lost){
+  grid-column: 1 / -1;
+}
+html.web-owner :is(#ownerToday, #ownerBookings, #ownerFields) > .card{ margin: 0 }
+
+/* بلاطات المقياس: صفٌّ واحد يُقرأ دفعةً على الحاسوب بدل مربّعين فوق مربّعين.
+   ⚠️ و`auto-fit` لا رقمٌ مكتوب في `.stat-grid`: عددُ بلاطاتها يتغيّر بتغيّر
+      ما تستطيع البياناتُ قولَه (بلاطةٌ تحت العتبة لا تُعرَض أصلًا). */
+html.web-owner .ot-mini{ grid-template-columns: repeat(3, 1fr) }
+html.web-owner .owner-tab > .stat-grid{ grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) }
+
+/* المخطّط الزمني يمرّر أفقيًّا داخل قماشةٍ أعرض، فيظهر منه أكثر بلا تغيير. */
+html.web-owner #ownerTimelineWrap{ overflow-x: auto }
+
+
+/* ── W6) شاشة الدخول: بطاقةٌ في وسط الصفحة ───────────────────────────────
+   كانت شاشةً بعرض الجهاز — على 1440px تصير حقلَين مفقودَين في فراغ. */
+html.web-owner #page-ownerLogin.active{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding-block: 40px;
+}
+html.web-owner #page-ownerLogin > *{ inline-size: 100%; max-inline-size: 460px }
+/* الرأس كان سطحًا ثانيًا فوق البطاقة ⇒ صندوقان متلاصقان بحافّةٍ مستقيمة بينهما
+   يُقرآن عطلًا في المحاذاة. الآن الرأس شفّاف (الأيقونةُ والعنوان يطفوان فوق
+   الصفحة) و**البطاقة هي السطح الوحيد** — وهي صورةُ كلّ شاشة دخولٍ على الويب.
+   ⚠️ و`!important` لأن سطح الرأس مفروضٌ بها في §13. */
+html.web-owner #page-ownerLogin .app-header.auth{
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding-block-end: 6px;
+}
+html.web-owner #page-ownerLogin .pad{ padding-block: 0 }
+/* ارتفاعٌ خفيف: البطاقة تطفو على القماشة بدل أن تُطبَع عليها. */
+html.web-owner #page-ownerLogin .auth-card{ box-shadow: 0 18px 44px rgba(16,24,32,.10) }
+html.web-owner body.dark #page-ownerLogin .auth-card{ box-shadow: 0 18px 44px rgba(0,0,0,.45) }
+
+
+/* ── W7) الحوارات: ورقةٌ سفلية تصير حوارًا موسَّطًا ───────────────────────
+   الورقة السفلية عُرفُ الهاتف (الإبهام أسفل الشاشة)، والفأرة لا إبهام لها.
+   ⚠️ ولا يُلمَس `Modal.open` ولا مساراتُ الإغلاق الأربعة: التوسيط تنسيقٌ
+      خالص على نفس الصنف، فتتصرّف الأربعة بلا استثناء (درسٌ مسجَّل). */
+html.web-owner .modal-overlay{ align-items: center }
+html.web-owner .modal{
+  max-inline-size: 620px;
+  max-height: 86vh;
+  border-radius: var(--r-3xl);
+  padding-block-end: 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+}
+html.web-owner body.dark .modal{ box-shadow: 0 24px 70px rgba(0,0,0,.55) }
+
+
+/* ── W8) صقل: ما تفعله الفأرة ولا يفعله الإصبع ───────────────────────────
+   ⚠️ **بلا حركةٍ لا نهائية وبلا `backdrop-filter`**: الأولى محذوفةٌ من
+      المشروع كلّه (‏§28)، والثانية طبقةُ دمجٍ لكل بطاقة في قائمة — وهو
+      بالضبط ما أُزيل في §9 و§13 و§28. التحويم انتقالٌ على حدٍّ لا غير. */
+html.web-owner .owner-tab > .card{
+  transition: border-color .16s var(--ease-out);
+}
+html.web-owner .owner-tab > .card:hover{ border-color: var(--line-2) }
+
+/* السحب للتحديث إيماءةُ لمسٍ لا فأرة، ومؤشّرُه على الحاسوب عنصرٌ لا يُفسَّر. */
+html.web-owner .ptr{ display: none }
+
+}   /* ← نهاية @media (min-width:1000px) */
+
+</style>
 <script>document.documentElement.classList.add('web-owner');</script>
 </head>
 <body>

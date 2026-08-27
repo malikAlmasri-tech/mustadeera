@@ -130,7 +130,7 @@ function dupTokens(file, css){
   }
 }
 
-for (const file of ['app/src/app.css', 'app/src/native.css']){
+for (const file of ['app/src/app.css', 'app/src/native.css', 'app/src/web.css']){
   const p = path.join(ROOT, file);
   if (!fs.existsSync(p)) continue;
   const css = stripKeyframes(fs.readFileSync(p, 'utf8'));

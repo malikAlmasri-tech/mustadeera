@@ -168,7 +168,25 @@ Write-Host "  to APK:  npx cap sync android   then   cd android; .\gradlew.bat a
 # This section runs AFTER build-site.ps1 on purpose - that script wipes public\
 # before it writes, so anything emitted earlier would simply be deleted.
 $ownerMark = "<script>document.documentElement.classList.add('web-owner');</script>"
-$ownerHead = "<meta name=""robots"" content=""noindex, nofollow"">`r`n$ownerMark`r`n</head>"
+
+# The web presentation layer - the exact mirror of native.css. That one is
+# injected into the APK only and says "you are on a device"; this one is
+# injected into public/owner/ only and says "you are in a browser": a left
+# rail instead of a bottom bar, a sticky top bar, a bounded canvas, cards in
+# columns, centred dialogs. It contains NO logic and NO markup: the same
+# renderOwnerDashboard builds the same nodes, this sheet only re-lays them
+# out - which is what keeps one dashboard instead of two.
+# Every selector in it starts with html.web-owner, so it cannot leak into the
+# app even if it were ever inlined there: the mark is absent, nothing matches.
+$wcss = [IO.File]::ReadAllText((Join-Path $Src 'web.css'))
+foreach ($pair in @(@{n='web.css'; t=$wcss; m='</style'}, @{n='web.css'; t=$wcss; m='</body>'})) {
+    if ($pair.t -match [regex]::Escape($pair.m)) {
+        throw ("BUILD ABORTED: {0} contains '{1}' - see the note above the first guard." -f $pair.n, $pair.m)
+    }
+}
+$ownerHead = "<meta name=""robots"" content=""noindex, nofollow"">`r`n" +
+             "<style>`r`n/* ===== WEB LAYER (owner console only) ===== */`r`n$wcss`r`n</style>`r`n" +
+             "$ownerMark`r`n</head>"
 
 # Counted on $appWeb, NOT on app.html: the CSS and JS are inlined by now, and a
 # literal "</head>" inside either is ordinary text to the parser but a second
@@ -208,6 +226,10 @@ $markCount = ([regex]::Matches($ownerBack, [regex]::Escape($ownerMark))).Count
 if ($markCount -ne 1) {
     throw ("BUILD ABORTED: public\owner\index.html carries {0} owner marks (expected exactly 1). " -f $markCount) +
           "Without exactly one, the page would serve the whole player app on the web."
+}
+if ($ownerBack -notmatch [regex]::Escape('WEB LAYER (owner console only)')) {
+    throw "BUILD ABORTED: public\owner\index.html carries no web layer. " +
+          "The console would render as a stretched phone instead of a desktop dashboard."
 }
 if ($ownerBack -notmatch [regex]::Escape('const WEB_OWNER')) {
     throw "BUILD ABORTED: public\owner\index.html has no WEB_OWNER guard in its bundle. " +
