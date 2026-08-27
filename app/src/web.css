@@ -33,6 +33,9 @@ html.web-owner{
   --wo-rail: 264px;
   --wo-gutter: 30px;
   --wo-canvas: 1320px;
+  /* ارتفاع الشريط العلويّ — يقرؤه الشريطُ نفسه (ارتفاعًا أدنى) ورؤوسُ الأيّام
+     اللاصقة (إزاحةً). رقمٌ واحد لموضعين يجب أن يتّفقا (‏§W11). */
+  --wo-topbar: 116px;
 }
 
 /* ── W0) لوح الافتتاح لا يُعرَض على الويب — وهو **في كل العروض لا فوق 1000px**
@@ -238,15 +241,16 @@ html.web-owner .owner-tab > .card:has(#ownerSearch) > .grid-2{ display: contents
 
 /* القوائم الطويلة تصير أعمدة: بطاقةُ حجزٍ عرضُها 900px تعرض فراغًا لا معلومة.
    والعناوين داخلها تمتدّ فتبقى الأقسام مقروءة. */
+/* ⚠️ **و`#ownerBookings` ليست منها** — أبناؤها مجموعاتُ أيّام لا بطاقات، وشبكتُها
+   في §W11 وحدها. (وهو العطل الذي صنع «البعثرة»: انظر هناك.) */
 html.web-owner #ownerToday,
-html.web-owner #ownerBookings,
 html.web-owner #ownerFields{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 14px;
   align-items: start;
 }
-html.web-owner :is(#ownerToday, #ownerBookings, #ownerFields) > :is(.sec-title, .ot-note, .empty, .ot-lost){
+html.web-owner :is(#ownerToday, #ownerFields) > :is(.sec-title, .ot-note, .empty, .ot-lost){
   grid-column: 1 / -1;
 }
 html.web-owner :is(#ownerToday, #ownerBookings, #ownerFields) > .card{ margin: 0 }
@@ -422,5 +426,95 @@ html.web-owner :is(#ownerToday, #ownerBookings) .booking-strip:has(.owner-action
   margin-block-end: 0;
 }
 html.web-owner :is(#ownerToday, #ownerBookings) .owner-actions-sec{ margin-block-start: 0 }
+
+
+/* ── W11) تبويب الحجوزات: صفحةُ قائمة لا لوحةَ بطاقات ───────────────────
+   بلاغ المالك: «مبعثر جدًّا». والسبب **عطلٌ أدخلته الدفعة ٤٩ نفسها**، لا ذوق.
+
+   🔴 **أبناء `#ownerBookings` مجموعاتُ أيّام لا بطاقات.** كلُّ ابنٍ منها غلافٌ
+   بلا صنف يحمل **رأسَ يومٍ + بطاقاتِ ذلك اليوم**. وقد وضعتُها في شبكةٍ بعمودين
+   على فرض أنّها بطاقاتٌ متشابهة ⇒ صارت **الأيّامُ تتعرّج بين عمودين بارتفاعاتٍ
+   متفاوتة**: 816 · 902 · 437 · 816 ثمّ 1641 · 691 · 691 (مقيسة). فمن يتتبّع
+   الأيّام بالترتيب يقفز يمينًا ويسارًا ويعلو وينزل — وهي البعثرة حرفيًّا.
+   والقياسُ هو ما كشفها: القراءةُ كانت تقول «بطاقاتٌ في عمودين» — وصفٌ صحيح
+   للشكل وخاطئ للبنية.
+
+   ✅ **والعلاج قلبُ المستويين**: الأيّام **عمودٌ واحد** بترتيبها الزمني، و**داخل
+   اليوم** تتجاور بطاقاتُه — فيبقى التسلسل مقروءًا ويُستغلّ العرضُ في موضعه. */
+
+/* التبويب تدفّقٌ عموديّ: شريطُ أدواتٍ ثمّ قائمة — لا شبكةَ بطاقاتٍ تبعثر أدواتها */
+html.web-owner #ownerTab-bookings{
+  display: flex;
+  flex-direction: column;
+  /* 🔴 **و`align-items` تنقلب معناها بانقلاب التدفّق.** `.owner-tab` تحمل
+     `align-items:start` — وهي في الشبكة «لا تتمدّد البطاقةُ القصيرة رأسيًّا»،
+     وفي عمودٍ مرن تصير **المحورَ المتقاطع أفقيًّا**: «انكمشْ إلى محتواك».
+     فخرجت القائمةُ 524px والبطاقةُ 237 والعنوانُ 128 داخل قماشةٍ 1106 (مقيسة).
+     وهي عائلةُ `margin:auto` على بند شبكة نفسُها: **خاصّيةٌ صحيحةٌ في تدفّق
+     ينقلب معناها في آخر.** */
+  align-items: stretch;
+  gap: 14px;
+}
+/* مبدّل «قائمة/التقويم» و«عرض السجل الكامل»: بمقاسهما لا بعرض القماشة.
+   الأوّل كان شريطًا بعرض 1106px لزرَّين، والثاني **بطاقةً ضائعة في عمودٍ أوسط**
+   (مقيس: عرض 357 عند x=779) — وهو أظهرُ ما يُقرأ بعثرةً في الشاشة. */
+html.web-owner #ownerBkSegList{ align-self: flex-start; inline-size: auto }
+html.web-owner #ownerHistoryToggle{
+  align-self: flex-start;
+  inline-size: auto;
+  min-inline-size: 240px;
+  margin: 0;
+}
+
+/* القائمة: يومٌ تحت يوم */
+html.web-owner #ownerBookings{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* وداخل اليوم: بطاقاتُه تتجاور، ورأسُه يمتدّ فوقها.
+   والانتقاء **بالمحتوى** (`:has(> .day-group)`) لا بغياب الصنف: الغلاف بلا سمة
+   `class` اليوم، وأوّلُ صنفٍ يُضاف إليه غدًا كان سيُسقط القاعدة صامتةً. */
+html.web-owner #ownerBookings > *:has(> .day-group){
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+html.web-owner #ownerBookings > *:has(> .day-group) > .day-group{ grid-column: 1 / -1 }
+
+/* رأسُ اليوم **لاصقٌ أصلًا** في التطبيق (‏`position:sticky` — مقيس)، وإزاحتُه
+   هناك مضبوطةٌ على رأس الهاتف. وهنا الشريط العلويّ لاصقٌ بارتفاعٍ آخر ⇒ بلا
+   إزاحةٍ جديدة ينزلق رأسُ اليوم **تحته** فيختفي.
+   ⚠️ **والرقمان يقرآن توكنًا واحدًا** فلا يتفارقان: الشريطُ يأخذه ارتفاعًا أدنى،
+      ورأسُ اليوم يأخذه إزاحة. وإن كبر الشريطُ باسمِ مكانٍ طويل تسلّل الرأسُ
+      تحته قليلًا — تدهورٌ لطيف لا انكسار. */
+html.web-owner #page-owner > .app-header.compact{ min-block-size: var(--wo-topbar) }
+
+/* 🔴 **وخلفيةُ اللاصق كانت شفّافة** (‏`rgba(…,.12)`) — وهو صحيحٌ لعنصرٍ يمشي مع
+   المحتوى، وعطلٌ لعنصرٍ يقف فوقه: البطاقاتُ تعبر تحته فيُقرأ الرأسُ مشوّشًا.
+   والخلفيةُ تُشتقّ من `currentColor` فتخرج **معتمةً** ومركَّبةً على لون الصفحة،
+   وتتبع كلَّ نبرةٍ من نبرات اليوم بقاعدةٍ واحدة بدل قاعدةٍ لكلّ حالة. */
+html.web-owner #ownerBookings .day-group{
+  inset-block-start: var(--wo-topbar);
+  z-index: 6;
+  /* أساسٌ معتم **تحت** صبغة الحالة: الصبغة توكنٌ شفّاف (`--mint-soft`)، ولا
+     يُركَّب على لون الصفحة بـ`color-mix` (فالمزج يمزج الشفافيةَ أيضًا). فالطبقتان:
+     لونٌ معتم في `background-color` وصبغةٌ فوقه في `background-image`. */
+  background-color: var(--bg-primary);
+}
+html.web-owner #ownerBookings .day-group.future{
+  background-image: linear-gradient(var(--mint-soft), var(--mint-soft));
+}
+/* و«اليوم» كان **الشيء المملوء الوحيد في القائمة**: شريطُ Lime صلبٌ بعرض 1106px
+   بينما كلُّ يومٍ آخر صبغةٌ هادئة. وعلى 375px كان لمسةً، وعلى القماشة صار لوحًا
+   ينافس زرَّ الفعل — وهو ما تمنعه §31 نصًّا. فصار يتميّز **بلون الفعل** لا
+   بالتعبئة: نبرةٌ مختلفة عن أيّام الغد (نعناع) بلا صراخ، وبنفس لغة «مختار». */
+html.web-owner #ownerBookings .day-group.today,
+html.web-owner body.dark #ownerBookings .day-group.today{
+  background-image: none;
+  background-color: color-mix(in srgb, var(--act-bg) 14%, var(--bg-primary));
+  color: var(--act-bg);
+}
 
 }   /* ← نهاية @media (min-width:1000px) */
