@@ -181,7 +181,23 @@ html.web-owner #page-owner > .pad{
    حين لا بيانات لها — لوحُ الطقس · «راحت بلا ردّ» · بطاقات الـAI)، وشبكةٌ
    بعمودين مكتوبين تترك فجوةً كلّما اختفى واحد. و`align-items:start` كي لا
    تتمدّد بطاقةٌ قصيرة لتساوي أطولَ جارتها. */
-html.web-owner .owner-tab{
+/* 🔴 **و`#ownerTab-calendar` ليس لوحةَ بطاقات — وقد كسرته هذه الشبكة.**
+   التقويم تبويبٌ مستقلّ بصنف `.owner-tab` نفسه، وأجزاؤه **أربعةُ أبناءٍ متسلسلة**
+   يبني كلٌّ منها على الذي قبله: رأسُ الشهر · صفُّ أيّام الأسبوع (شبكة ٧) · شبكةُ
+   الأيّام (شبكة ٧) · ولوحُ اليوم المختار. فوضعُها في ثلاثة أعمدةٍ فرّقها: صفُّ
+   الأسبوع في عمودٍ وشبكةُ الأيّام في آخر **بعرضين مختلفين فلا يتحاذيان**، ولوحُ
+   اليوم في ثالث. بلاغ المالك بالصورة: «حتى لمّا اختار تقويم، ولا إشي مرتّب».
+   ⚠️ **والدرس: صنفٌ مشترك لا يعني بنيةً مشتركة** — `.owner-tab` تجمع لوحةَ بطاقاتٍ
+      وصفحةَ قائمةٍ وتقويمًا، وشبكةُ البنتو تصحّ للأولى وحدها. */
+html.web-owner #ownerTab-calendar{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+html.web-owner #ownerTab-calendar > #ownerBkSegCal{ align-self: flex-start; inline-size: auto; margin: 0 }
+
+html.web-owner .owner-tab:not(#ownerTab-calendar){
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   /* 🔴 **ومسارٌ ضمنيّ يجب أن يُقاس كالصريح.** عند 1000px يتّسع `auto-fill`
@@ -481,7 +497,15 @@ html.web-owner #ownerBookings > *:has(> .day-group){
   gap: 12px;
   align-items: start;
 }
-html.web-owner #ownerBookings > *:has(> .day-group) > .day-group{ grid-column: 1 / -1 }
+html.web-owner #ownerBookings > *:has(> .day-group) > .day-group{ grid-column: 1 / -1; margin: 0 }
+/* 🔴 **وهوامشُ التكديس العمودي تُصفَّر داخل الشبكة.** البطاقةُ الثانية تحمل
+   `margin-top:20px` من قاعدةِ تجاورٍ عمودية (‏`.booking-strip + .booking-strip`) —
+   وهي فاصلٌ صحيح في قائمةٍ عمودية، وفي **صفٍّ** تدفع البطاقة الثانية **٢٠px
+   أخفض من أختها** فيميل الصفّ. مقيس: 679 مقابل 699. والفجوةُ مهمّة الشبكة
+   (`gap`) لا مهمّة الهوامش، فوجودُ الاثنين معًا خطأٌ مضاعف.
+   ⚠️ والقاعدة القائمة كانت على **الابن المباشر** لـ`#ownerBookings` — والبطاقات
+      هنا أحفادٌ داخل غلاف اليوم، فلم تطلها. */
+html.web-owner #ownerBookings > *:has(> .day-group) > .card{ margin: 0 }
 
 /* رأسُ اليوم **لاصقٌ أصلًا** في التطبيق (‏`position:sticky` — مقيس)، وإزاحتُه
    هناك مضبوطةٌ على رأس الهاتف. وهنا الشريط العلويّ لاصقٌ بارتفاعٍ آخر ⇒ بلا
@@ -498,12 +522,17 @@ html.web-owner #page-owner > .app-header.compact{ min-block-size: var(--wo-topba
 html.web-owner #ownerBookings .day-group{
   inset-block-start: var(--wo-topbar);
   z-index: 6;
-  /* أساسٌ معتم **تحت** صبغة الحالة: الصبغة توكنٌ شفّاف (`--mint-soft`)، ولا
-     يُركَّب على لون الصفحة بـ`color-mix` (فالمزج يمزج الشفافيةَ أيضًا). فالطبقتان:
-     لونٌ معتم في `background-color` وصبغةٌ فوقه في `background-image`. */
-  background-color: var(--bg-primary);
 }
+/* 🔴 **والأساس المعتم يُعطى للمتغيّر الذي يحتاجه وحده.** أوّلُ تمريرةٍ وضعته على
+   `.day-group` كلِّها — فمحا خلفيةَ **`.past`** (وهي `--surface-muted` **معتمةٌ
+   أصلًا**) وتركها بلون الصفحة: رأسُ يومٍ ماضٍ **بلا خلفية إطلاقًا**، تاريخُه
+   يمينًا وعدّاداتُه في أقصى اليسار وبينهما فراغٌ بعرض الشاشة. بلاغ المالك بالصورة.
+   ⚠️ **والدرس: قاعدةٌ شاملة على عائلةِ متغيّراتٍ تُصلح ما تعرفه وتكسر ما لم تعدّه.**
+   ثلاثةٌ هنا لا اثنان: `today` · `future` · `past`. */
 html.web-owner #ownerBookings .day-group.future{
+  /* الصبغة توكنٌ **شفّاف**، ولا تُركَّب على لون الصفحة بـ`color-mix` (فالمزج يمزج
+     الشفافيةَ أيضًا). فالطبقتان: لونٌ معتم تحت، وصبغةٌ فوقه. */
+  background-color: var(--bg-primary);
   background-image: linear-gradient(var(--mint-soft), var(--mint-soft));
 }
 /* و«اليوم» كان **الشيء المملوء الوحيد في القائمة**: شريطُ Lime صلبٌ بعرض 1106px
