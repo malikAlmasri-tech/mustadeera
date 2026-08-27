@@ -180,7 +180,13 @@ html.web-owner #page-owner > .pad{
    تتمدّد بطاقةٌ قصيرة لتساوي أطولَ جارتها. */
 html.web-owner .owner-tab{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  /* 🔴 **ومسارٌ ضمنيّ يجب أن يُقاس كالصريح.** عند 1000px يتّسع `auto-fill`
+     لمسارٍ واحد، ثمّ يُجبر امتدادُ البطل (`span 2`) الشبكةَ على مسارٍ **ضمنيّ**
+     ثانٍ — والضمنيّ مقاسُه `auto` لا `1fr` ⇒ خرج العمودان **340 و307.6**:
+     شبكةٌ غير متساوية بلا سببٍ ظاهر (مقيسة). و`grid-auto-columns` تُخضع
+     الضمنيَّ لنفس القاعدة، فالعمودان متساويان مهما كان العرض. */
+  grid-auto-columns: 1fr;
   gap: 18px;
   align-items: start;
 }
@@ -201,12 +207,18 @@ html.web-owner .owner-tab > #ownerBookings,
 html.web-owner .owner-tab > #ownerFields,
 html.web-owner .owner-tab > #repByPlace{ grid-column: 1 / -1 }
 
-/* بطاقةٌ فيها رسمٌ أو خريطةُ حرارة أو جدولُ عملاء تحتاج عرضًا: تُنتقى
-   **بمحتواها** لا باسمٍ يُكتب عليها، فلا يلزم تعديلُ وسمٍ مشترك مع التطبيق. */
-html.web-owner .owner-tab > .card:has(.chart-area),
+/* بطاقةٌ فيها خريطةُ حرارة أو جدولُ عملاء أو لوحُ طلبٍ غير ملبَّى تحتاج عرضًا:
+   تُنتقى **بمحتواها** لا باسمٍ يُكتب عليها، فلا يلزم تعديلُ وسمٍ مشترك مع التطبيق.
+   ⚠️ **والرسوم البيانية ليست منها** — والسبب في §W9 ③: هي SVG بمقياسٍ يتبع عرضَها،
+      فالعرضُ الزائد يكبّرها لا يُظهر منها أكثر. أمّا خريطة الحرارة فشبكةُ HTML
+      حقيقية: كلُّ بكسلٍ إضافي خليّةٌ أوسع تُقرأ. */
 html.web-owner .owner-tab > .card:has(#ownerHeat),
 html.web-owner .owner-tab > .card:has(#repCust),
 html.web-owner .owner-tab > .card:has(#repDemand){ grid-column: 1 / -1 }
+
+/* حاويةٌ بلا محتوى تبقى بندًا في الشبكة (‏`#repByPlace` لمالكِ مكانٍ واحد) —
+   بصفر ارتفاع، لكنّها تشغل خانةً وتزيح `dense` عن ترتيبه. و`:empty` تُسقطها. */
+html.web-owner .owner-tab > :empty{ display: none }
 
 /* مرشِّحاتُ الحجوزات: على الهاتف بطاقةٌ بحقلين في صفّين، وعلى الحاسوب **شريطُ
    ترشيحٍ** بعرض القماشة — أربعة حقول في صفّ واحد، وهو شكلُ كلّ جدولٍ على الويب.
@@ -302,5 +314,113 @@ html.web-owner .owner-tab > .card:hover{ border-color: var(--line-2) }
 
 /* السحب للتحديث إيماءةُ لمسٍ لا فأرة، ومؤشّرُه على الحاسوب عنصرٌ لا يُفسَّر. */
 html.web-owner .ptr{ display: none }
+
+
+/* ── W9) الإحصائيات: رقمٌ واحد يتصدّر، وصفُّ بلاطاتٍ يُمسَح بنظرة ────────
+   مبنيّ على عقد بلاطة الإحصاء: **تسمية · قيمة · فرقٌ منسوبٌ إلى مدّةٍ مسمّاة ·
+   خطُّ اتجاه**. وكلُّ ما يلي إصلاحُ خرقٍ مقيس، لا إعادةَ تلوين.
+
+   🔴 ① **رقمُ البطل كان 34px** — والعقد يقول ≥48 لأنّه الرقمُ الذي تقود به
+      اللوحة. وكان يتنافس مع قيم البلاطات (19) وبلاطات التقارير (27) فلا
+      يتصدّر شيء.
+   🔴 ② **وكان بأرقامٍ جدولية.** `tabular-nums` تعطي كلَّ رقمٍ عرضَ `0` —
+      وهي **للأعمدة** (صفوفُ جدول · تسمياتُ محور) حيث يجب أن تتحاذى رأسيًّا.
+      وعلى قيمةٍ عرضية مفردة تُخرج رقمًا **مفكَّكًا** حروفُه متباعدة. فأُلغيت
+      عن القيم الكبيرة المفردة **وبقيت** حيث تعمل: السطرُ الصغير تحت البلاطة
+      (مقامٌ يُقارَن بجاره) وتسمياتُ المحاور وصفوفُ الجداول.
+   ⚠️ ③ **ولم تُقلَب مراتبُ الـDOM.** العقد يضع التسمية قبل القيمة، وقلبُها
+      بـ`order` كان يجعل قارئ الشاشة يقرأ غيرَ ما يرى المبصر — وهي قاعدةُ هذا
+      المشروع المكتوبة في الدفعة ١٨ حرفيًّا. فالقيمة تبقى أوّلًا (وهي تتحاذى
+      عبر البلاطات بحكم كونها أوّل سطر)، والتحسينُ في المقاس والتنفّس. */
+
+/* رقم البطل: واحدٌ في الشاشة، والبطاقة تحمله على عمودين فيتصدّر بالحجم لا باللون */
+html.web-owner .owner-tab > .ot-hero{ grid-column: span 2 }
+html.web-owner .ot-hero-val{
+  font-size: 3rem;
+  line-height: 1.1;
+  font-variant-numeric: normal;
+}
+html.web-owner .ot-hero-lbl{ font-size: 0.875rem }
+/* 🔴 **وخطُّ الاتجاه كان يكذب على شكله.** الـSVG بـ`viewBox="0 0 100 26"` و
+   `preserveAspectRatio="none"`، وكان يُمَطّ إلى **689×26** ⇒ تمدُّدٌ أفقيّ
+   ×6.9 ورأسيّ ×1: كلُّ ميلٍ في المنحنى يُسحَق سبعةَ أضعاف فيُقرأ الخطُّ
+   **مسطرةً** لا اتجاهًا. وعلى 375px كان 300×26 (×3) فبقي مقروءًا.
+   العلاج بالهندسة لا بالتلوين: عرضٌ مقيَّد وارتفاعٌ مضاعَف ⇒ نسبةٌ قريبة من
+   نسبة الـviewBox فيعود الميل إلى قدره. */
+html.web-owner .ot-hero-spark{
+  margin-block-start: 6px;
+  max-inline-size: 420px;
+}
+html.web-owner .ot-hero-spark .sparkline{ block-size: 56px }
+/* `dense` يسدّ الثقب الذي يتركه امتدادُ البطل: بطاقةٌ لاحقةٌ بعمودٍ واحد ترتفع
+   إليه. وترتيبُ الـDOM لا يتغيّر ⇒ قارئ الشاشة يقرأ التسلسل كما كُتب، والبطاقات
+   مستقلّةٌ بذاتها فلا يحمل ترتيبُها البصريّ معنًى يُكسَر. */
+html.web-owner .owner-tab{ grid-auto-flow: row dense }
+
+/* صفُّ البلاطات: يمتدّ بعرض القماشة فيصير صفَّ مؤشّراتٍ يُمسَح بنظرة واحدة */
+html.web-owner .owner-tab > .ot-mini{ grid-column: 1 / -1 }
+html.web-owner .ot-mini-cell{ padding: 14px 16px; min-block-size: 104px }
+html.web-owner .ot-mini-val{ font-size: 1.5rem; font-variant-numeric: normal }
+html.web-owner .ot-mini-lbl{ font-size: 0.75rem }
+html.web-owner .ot-mini-sub{ font-size: 0.71875rem }
+
+/* بلاطات التقارير: نفس العقد ونفس السلّم — فلا لغتان لنفس المعنى في لوحةٍ واحدة */
+html.web-owner .stat-card{ padding: 16px 18px }
+html.web-owner .stat-value{ font-size: 2rem; font-variant-numeric: normal }
+html.web-owner .stat-label{ font-size: 0.8125rem }
+/* خطُّ الاتجاه في البلاطة شريطٌ خلفيّ مطلقٌ أسفلها بعتامة ٠٫٥ — يُقرأ زخرفةً
+   لا اتجاهًا. ورفعُه وحده **يجعله يعبر تحت الحاشية** فيتراكب المنحنى والنصّ،
+   وهو نمطٌ فاسد صريح (تسميةٌ يقطعها مَعْلَم). فيُرفَع **ومعه حشوةٌ سفلية**
+   تفتح له شريطَه الخاصّ تحت النصّ — فيصير سطرًا في البلاطة لا طبقةً فوقها. */
+html.web-owner .stat-card{ padding-block-end: 46px }
+html.web-owner .stat-card .sparkline{ opacity: .7; block-size: 32px }
+
+/* 🔴 ④ **الرسوم كانت تُمَطّ ٤.٦٧ أضعاف.** الـSVG بـ`viewBox="0 0 228 126"`
+   و`preserveAspectRatio="xMidYMid meet"`، وحين مُنحت البطاقةُ عرضَ القماشة
+   خرج الرسم **1064×588** ⇒ كلُّ ما فيه يكبر بالمقياس نفسه: تسمياتُ المحور
+   **٧٥px** والأعمدة **١٢١px** (مقيسة). ولا خطأ في الرسم — الخطأ أنّه صُمِّم
+   عند عرضٍ واحد (‏على 375px يخرج 335×185 وتسمياتُه ~15px، وهي الصورة المقصودة).
+   ⚠️ **ولا يُعالَج بتصغير `font-size` في الورقة**: القيمة داخل الـSVG بوحدات
+      الـviewBox، فتُضرَب في المقياس نفسه — «الرقم في الورقة ليس الرقم على
+      الشاشة» (مزلقٌ مسجَّل). العلاجُ الوحيد الصادق **حدُّ العرض**، فيبقى
+      المقياس قريبًا من المقياس المصمَّم عليه. */
+html.web-owner .chart-area{ max-inline-size: 380px; margin-inline: auto }
+
+
+/* ── W10) عرض الحجوزات: بطاقةٌ تُقرأ في أربعة أسطر لا سبعة ───────────────
+   البطاقة تحمل خمس كتل: الرأس (ملعب وموعد) · خمسُ حقائق (اسم · هاتف · عدد ·
+   سعر · مصدر) · تاريخ العميل · قرارٌ أساسي · واتساب. وكانت كلُّها تتكدّس
+   عموديًّا — وهو صحيحٌ على 375px حيث لا عرضَ يُنفَق، ومهدورٌ على 546px.
+
+   ⚠️ **والمكسب من الصفوف لا من التصغير**: لا حرف يصغر ولا معلومة تُخفى —
+   الحقائقُ الخمس تصطفّ في سطر، والفعلان في سطر. أربعةُ أسطر بدل سبعة. */
+/* شبكةٌ من عمودين: كلُّ شيء يمتدّ عليهما، **إلّا الفعلين** فيتقاسمان صفًّا
+   واحدًا — القرارُ يتمدّد وواتساب يأخذ مقاسه. وبلا وسمٍ جديد ولا نقلِ عقدة:
+   الإسنادُ الصريح للعمود يكفي، والتوضيعُ التلقائي يضع الثاني بجانب الأوّل لأن
+   المؤشّر لا يرجع إلى صفٍّ سابق. وإن غاب واتساب انهار العمودُ الثاني إلى صفر
+   فيأخذ القرارُ العرضَ كلَّه — بلا فرعٍ ولا استثناء. */
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 9px 12px;
+  align-items: center;
+}
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body > *{ grid-column: 1 / -1 }
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body > .owner-decide{ grid-column: 1 }
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body > .owner-actions-sec{ grid-column: 2 }
+/* الحقائق الخمس: صفٌّ واحد يلتفّ عند الحاجة — بدل شبكةٍ بعمودين تُطيل البطاقة */
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body .info-line{ margin: 0 }
+html.web-owner :is(#ownerToday, #ownerBookings) .bk-body > *:has(> .info-line){
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  align-items: center;
+}
+/* الفعلان في سطرٍ واحد: القرارُ يتمدّد وواتساب يأخذ مقاسه — ولا زرَّ بعرض
+   البطاقة كاملةً، فهو وزنٌ لا يستحقّه فعلٌ ثانوي. */
+html.web-owner :is(#ownerToday, #ownerBookings) .booking-strip:has(.owner-actions-sec) .owner-decide{
+  margin-block-end: 0;
+}
+html.web-owner :is(#ownerToday, #ownerBookings) .owner-actions-sec{ margin-block-start: 0 }
 
 }   /* ← نهاية @media (min-width:1000px) */
