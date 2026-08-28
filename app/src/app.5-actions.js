@@ -35,8 +35,13 @@ async function updateBookingStatus(btn, rowNumber, status, opts){
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(), row_number:rowNumber, status, cancel_reason:reason });
       if (!res.success){ try{ waWin&&waWin.close(); }catch(_){} toast(apiMsg(res.message)||t('updateFail'),'error'); return; }
       if (booking) sendWhatsApp(booking, status, reasonSaid, waWin);
-      await loadOwnerDashboard(); await loadData();
+      await refreshAfterOwnerWrite();
       if ($('#page-home').classList.contains('active')) renderPlaces();
+      /* 🤚 تغذية لمسية على **نتيجة** الفعل لا على لمسه: القبول نبضةٌ خفيفة
+         والرفض/الإلغاء نبضةٌ ثقيلة — ذاكرةٌ عضلية تقول «وقع» بلا أن يرفع
+         المالك عينه عن البوّابة. وبعد ردّ الخادم لا قبله: اهتزازٌ يسبق
+         النجاح وعدٌ بما لم يقع (م5). */
+      buzz(status === 'confirmed' ? 8 : 26);
       /* البند ٦٠: التراجع **بعد نجاح الإرسال** لا قبله. المسار المؤجَّل (نرسل
          بعد خمس ثوانٍ) كان أنظف نظريًّا وفاشلًا عمليًّا: فتحُ واتساب يستلزم
          إيماءةَ مستخدم، وفتحُه يُخلفّ التطبيق فورًا فيقع «الإرسال عند الخروج»
@@ -44,6 +49,27 @@ async function updateBookingStatus(btn, rowNumber, status, opts){
       if (prevStatus && prevStatus!==status) offerUndo(rowNumber, prevStatus, prevReason, status);
     }catch(_){ try{ waWin&&waWin.close(); }catch(_){} toast(t('updateErr'),'error'); }
   });
+}
+/* ═══ إعادة الجلب بعد كتابةٍ من المالك — ما يُعرَض وحده ═══════════════════════
+   🔴 كان السطر `await loadOwnerDashboard(); await loadData();` — **جلبتان
+   متتاليتان**، والثانية جهةُ اللاعب بتمامها: `sbGetInitialData` وحدها ستّة
+   طلباتٍ متوازية (‏`places` · `fields` · `place_stats` · `booked_slots` ·
+   الإغلاقات · سرعة الردّ) ومعها `checkAppVersion` ⇒ **سبعة طلبات**.
+   ⚠️ **وعلى `/owner/` لا يُرسَم منها شيء إطلاقًا** — وهو بعينه السبب المكتوب
+      في `init()` لاستثناء `loadData()` هناك: بياناتٌ لا تُعرَض، وتوستُ خطأِ
+      شبكةٍ عن شاشةٍ غائبة، **وشريطُ «حدّث تطبيقك» على صفحةِ ويبٍ محدَّثةٌ
+      أصلاً**. أي أنّ مسار الإقلاع كان يستثنيه ومسارُ الفعل يعيده بعد كلّ ردّ.
+   ⚠️ **وفي التطبيق تبقيان معًا** (المالك متصفِّحٌ أيضًا) لكن **بالتوازي**:
+      لا تعتمد إحداهما على الأخرى، والتتابع كان يجمع زمنَيهما بلا سبب.
+      ومفتاحا الإجهاض مختلفان (`ownerData` مقابل `initialData`) فلا تُلغي
+      إحداهما الأخرى — وهو المزلق المسجّل في `sbFetch`.
+   ⚠️ **ولا تحديثٌ متفائل** (اقترحته المراجعة): الخانة تُباع مرّةً واحدة،
+      و`bookings_no_double_idx` يجعل القبول **قابلًا للفشل فعلاً** عند تسابق.
+      وعرضُ «تمّ القبول» ثمّ سحبُه هو «بابٌ يُعرَض ثمّ يُسحَب» الذي يرفضه هذا
+      المشروع في كلّ دفعة. فالعلاج **حذفُ الانتظار لا إخفاؤه**. */
+function refreshAfterOwnerWrite(){
+  return WEB_OWNER ? loadOwnerDashboard()
+                   : Promise.all([ loadOwnerDashboard(), loadData() ]);
 }
 /* إعادة الحالة إلى ما كانت عليه. `owns_place` تسمح للمالك بالكتابة على حجوزات
    مكانه بلا قيدِ اتّجاه (‏`bookings_update` في `01_schema`)، فالرجوع إلى
@@ -55,8 +81,8 @@ function offerUndo(rowNumber, prevStatus, prevReason, doneStatus){
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(),
                                  row_number:rowNumber, status:prevStatus, cancel_reason:prevReason });
       if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('updateFail'),'error'); return; }
-      toast(t('undoOk'),'success');
-      await loadOwnerDashboard(); await loadData();
+      toast(t('undoOk'),'success'); buzz(8);
+      await refreshAfterOwnerWrite();
     }catch(_){ toast(t('updateErr'),'error'); }
   });
 }

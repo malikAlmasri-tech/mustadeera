@@ -830,23 +830,43 @@ function bookingAge(b){
       ليس سجلًّا بعد، وعدُّه يجعل كلَّ عميلٍ جديد يبدو قديمًا.
    ⚠️ **و«أكثر عملائك» تحت العتبة لا تُقال**: صدارةٌ بحجزين تصف قلّة البيانات
       لا العميل — نفس `OWNER_MIN_N` المطبَّقة في التقارير. */
+/* 🔴 **كان المسح كاملًا لكلّ بطاقة** — أي O(n²). الدالّة تُبنى منها
+   `byPhone` من الحجوزات كلِّها، وتُنادى مرّةً لكلّ بطاقةٍ معلّقة وفي ورقة القرار
+   وفي تبويب «اليوم» ⇒ مالكٌ بثلاثين طلبًا معلّقًا وخمسة آلاف حجز يدفع مئة
+   وخمسين ألف نداء `normalizePhone` في إعادة رسمٍ واحدة. واليوم الكلفة صغيرة
+   (مقيس على الشبكة: ٧ بطاقاتٍ معلّقة × ٥٤٥ حجزًا) — وهي تكبر بنجاح المالك،
+   وهو أسوأ وقتٍ لاكتشافها.
+   ⚠️ **والمفتاح هويّةُ المصفوفة نفسها** (`===`) لا طابعُ وقتٍ ولا علَمٌ يُرفَع
+      باليد: `loadOwnerDashboard` تُسند `State.ownerData = res` بمصفوفةٍ جديدة
+      عند كلّ جلبة، فالفهرس يسقط من نفسه ولا يبقى بائتًا بعد قبولٍ أو رفض.
+      وعلَمٌ يُصفَّر يدويًّا كان سينسى أوّل مسارِ كتابةٍ يُضاف بعدنا. */
+let CH_SRC = null, CH_IDX = null;
+function custIndex(all){
+  if(CH_SRC === all && CH_IDX) return CH_IDX;
+  const byPhone = {}, seen = {};
+  all.forEach(x=>{
+    const p = normalizePhone(x.phone); if(!p) return;
+    (seen[p] ||= []).push(x);
+    if(normStatus(x)==='confirmed' && isFinished(x)) (byPhone[p] ||= []).push(x);
+  });
+  let top = 0; for(const k in byPhone) if(byPhone[k].length > top) top = byPhone[k].length;
+  CH_SRC = all; CH_IDX = { byPhone, seen, top };
+  return CH_IDX;
+}
 function customerHistory(b){
   const phone = normalizePhone(b && b.phone);
   if(!phone) return null;
   const all = State.ownerData?.bookings || [];
-  const mine = [], byPhone = {};
-  all.forEach(x=>{
-    const p = normalizePhone(x.phone); if(!p) return;
-    if(normStatus(x)==='confirmed' && isFinished(x)) (byPhone[p] ||= []).push(x);
-    if(p===phone && String(x.row_number)!==String(b.row_number)) mine.push(x);
-  });
-  const done = (byPhone[phone]||[]).filter(x=>String(x.row_number)!==String(b.row_number));
+  const ix = custIndex(all);
+  const row = String(b.row_number);
+  const mine = (ix.seen[phone]||[]).filter(x=>String(x.row_number)!==row);
+  const done = (ix.byPhone[phone]||[]).filter(x=>String(x.row_number)!==row);
   const n = done.length;
   if(!n) return { text: mine.length ? t('chFirstPlay') : t('chNew'), cls:'ch-new' };
   const noShows = done.filter(isNoShow).length;
   /* الصدارة تُقاس على **من لعب فعلًا** لا على من أرسل طلبًا: أكثر عملائك هو
      أكثرهم حضورًا، لا أكثرهم طلبًا. */
-  const top = Object.values(byPhone).reduce((m,l)=>Math.max(m,l.length), 0);
+  const top = ix.top;
   if(noShows) return { text: t('chWithNoShow', { n: nBookings(n), k: nTimes(noShows) }), cls:'ch-warn' };
   if(n >= OWNER_MIN_N && n === top) return { text: t('chTop', { n: nBookings(n) }), cls:'ch-ok' };
   return { text: t('chClean', { n: nBookings(n) }), cls:'ch-ok' };
@@ -1004,6 +1024,10 @@ async function ownerToggleNoShow(btn, b){
       const res = await API.post({ action:'ownerSetNoShow', owner_token:Session.owner(), row_number:b.row_number, no_show:on });
       if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('noShowFail'),'error'); return; }
       toast(res.message,'success');
+      /* 🤚 نبضةٌ ثقيلة عند **الرفع** وخفيفة عند التراجع: «لم يحضر» أثقل ما
+         يسجّله المالك على لاعب (المادّة ٩ — الحجز يبقى مكتملًا والعمولة
+         مستحقّة)، فوزنُ اللمسة يطابق وزنَ الفعل. وبعد ردّ الخادم لا قبله. */
+      buzz(on ? 26 : 8);
       await loadOwnerDashboard();
     }catch(e){ if(!isAbort(e)) toast(t('noShowFail'),'error'); }
   });
@@ -1927,12 +1951,35 @@ function aiMetaLine(res){
 function renderAiInsights(){
   const el=$('#aiInsights'); if(!el) return; clear(el);
   const res=aiState().insights; if(!res) return;
+  /* ⭐ **من نصيحةٍ إلى الشاشة التي تُنفَّذ فيها** (مراجعة جيميناي، البند ٩).
+     التوصية كانت نصًّا مغلقًا: يقرأ المالك «جرّب سعرًا أقلّ صباح الثلاثاء» ثمّ
+     يمشي ثلاث نقرات (الشريط ⇐ الملاعب ⇐ التسعير) ليصل إلى حيث يفعلها.
+     ⚠️ **والزرّ ينقل ولا يكتب قاعدةً ولا يقترح رقمًا**: التوصية نصٌّ حرّ من
+        النموذج، واشتقاقُ ملعبٍ وساعةٍ وسعرٍ منه اختراعٌ يمرّ تحت اسم «تطبيق
+        فوري» — وهو م5 حرفيًّا. المالك يقرّر، ونحن نختصر الطريق.
+     ⚠️ **وعلى `pricing` وحدها**: هي النوع الوحيد الذي له شاشةٌ واحدة لا لبس
+        فيها. و`warning`/`marketing` لا شاشة لهما فزرٌّ عليهما يَعِد بمكانٍ
+        لا وجود له.
+     ⚠️ **وملعبٌ واحد ⇒ تُفتَح تسعيرتُه مباشرةً**: لا لبس أصلًا حينها، وقائمةٌ
+        من عنصرٍ واحد نقرةٌ بلا قرار. وأكثرُ من ملعب ⇒ التبويب: التوصية
+        على مستوى المكان، وتسميةُ ملعبٍ بعينه نيابةً عن المالك تخمين. */
+  const goPricing=()=>{
+    const fs=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
+    if(fs.length===1) return openPricing(fs[0].field_id);
+    showOwnerTab('fields');
+  };
   const paint=(list)=>list.forEach(it=>{
+    const box=h('div',{},
+      h('div',{class:'ai-i-title'}, String(it.title||'')),
+      h('div',{class:'ai-i-text'}, String(it.advice||'')));
+    if(String(it.type)==='pricing' && (State.ownerData?.fields||[]).length){
+      const go=h('button',{class:'ai-i-go', type:'button'}, t('aiGoPricing'), h('span',{class:'btn-go','aria-hidden':'true'}));
+      go.addEventListener('click', ()=>{ buzz(6); goPricing(); });
+      box.append(go);
+    }
     el.append(h('div',{class:'ai-insight t-'+String(it.type||'opportunity')},
       h('span',{class:'ai-i-ico','aria-hidden':'true'}, AI_TYPE_ICON[it.type]||'🤖'),
-      h('div',{},
-        h('div',{class:'ai-i-title'}, String(it.title||'')),
-        h('div',{class:'ai-i-text'}, String(it.advice||'')))));
+      box));
   });
   if(!res.success){
     /* الفشل لا يعني الفراغ: نعرض ما تستطيع الأرقام قوله، **موسومًا بما هو**.

@@ -3522,6 +3522,60 @@ html[dir="ltr"] .hdr-back svg{ transform:scaleX(-1) }
      لا بجانب مبدّله. و`auto` يدفع القيمةَ والمبدّلَ معًا إلى الطرف. */
   margin-inline-start:auto}
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   §42 · مراجعة جيميناي على لوحة المالك — الشكل يُقرأ أسرع من اللون، والقائمة
+         الطويلة لا تُخطَّط كلُّها (2026-08-28)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ① القائمة الطويلة: تخطيطٌ لما يُرى وحده.
+   🔴 **مقيسٌ قبل التغيير** على شبكة `owner-harness` عند 1440 و«عرض السجل
+   الكامل» مفعَّلًا: **٣٤٢ بطاقة · ١٨٬٧٥١ عقدة · ارتفاع مستند ٧٤٬٦٧١px**،
+   وكلُّ إعادة رسمٍ (شريحة فلترٍ أو دفعةُ حروفٍ في البحث) تكلّف **بناءً ٣٤٨ms
+   ثمّ تخطيطًا ٥١٩ms** — أي نحو تسعة أعشار الثانية يتجمّد فيها التمرير.
+   ⚠️ **والمراجعة اقترحت `IntersectionObserver` يُلغي تصيير ما يخرج من الشاشة
+      — والأداة الصحيحة هنا ليست هي.** `content-visibility:auto` تفعل ما وصفته
+      بالضبط (تخطّي تخطيطِ ورسمِ ما هو خارج الإطار مع حجزِ ارتفاعه) **بلا سطر
+      JS، وبلا إخراج العقد من الشجرة** — فيبقى Ctrl+F وقارئُ الشاشة والتركيز
+      يصل إلى كلّ بطاقة، وهو ما يخسره الإلغاءُ اليدوي للتصيير.
+      وهي **النمط القائم في هذا المشروع أصلًا** على `.place-card` منذ دفعات،
+      وكان متروكًا في القائمة الوحيدة التي تطول فعلًا.
+   ⚠️ و`auto` في `contain-intrinsic-size` تعني «تذكَّرِ المقاسَ الحقيقي بعد أوّل
+      رسم» ⇒ الرقم المكتوب تقديرُ الإقلاع وحده لا سقفًا يُقصّ عنده شيء.
+   ⚠️ **وعلى `#ownerBookings` وحدها لا على `.booking-strip` عامّةً**: قائمةُ
+      اللاعب حجوزاتُه هو — بضع بطاقات — والحاويةُ ثمنٌ بلا مقابل هناك. */
+#ownerBookings .booking-strip{ content-visibility:auto; contain-intrinsic-size:auto 278px }
+
+/* ② الحالة تُقرأ بالشكل لا باللون وحده — تحت شمس الظهيرة خاصّةً.
+   المخطّط الزمني يفعل ذلك منذ الدفعة ٢٥ (حدٌّ متّصل/متقطّع/منقّط ونقشٌ مائل
+   للمغلق)، **والبطاقة كانت متروكة**: أربع نبرات وأربع دوائر متطابقة، فمن لا
+   يميّز الأخضر من الكهرماني يقرأ نقطةً واحدة في الحالات كلِّها.
+   والنصّ بجانبها يقول الحالة صراحةً منذ الدفعة ٤٠ ⇒ **الشكل حاملٌ ثالث** لا
+   بديلٌ عن النصّ.
+   ⚠️ **والشكل يتبع الحالة، واللونُ يتبع العَجَلة**: `is-urgent` تقلب النبرة
+      إلى الأحمر ولا تمسّ الشكل — فالمثلَّث يبقى يقول «معلّق» بينما اللون يقول
+      «اقتربت المهلة». حاملان لمحورين، لا حاملان لمحورٍ واحد. */
+/* مؤكَّد ⇒ دائرة (كما كانت) · معلّق ⇒ مثلَّث · ملغى/مرفوض ⇒ مربّع · خبر ⇒ معيَّن.
+   ⚠️ والمثلَّث بالحدود لا بـ`clip-path`: `border-block-end` لا اتّجاه لها
+      (الكتلة رأسيّة في اللغتين) فيشير الرأسُ إلى أعلى في العربية والإنجليزية
+      معًا بلا فرعٍ لكلّ اتجاه — و`clip-path` كانت ستحتاج قياسًا في الاثنين. */
+.bk-hd.tone-wait  .bk-hd-dot{ border-radius:0; background:transparent;
+  inline-size:0; block-size:0;
+  border-inline:4.5px solid transparent; border-block-end:8px solid currentColor }
+.bk-hd.tone-no    .bk-hd-dot{ border-radius:2px; inline-size:8px; block-size:8px }
+.bk-hd.tone-info  .bk-hd-dot{ border-radius:1px; transform:rotate(45deg);
+  /* ٦px مربّعًا = ٨٫٥px قطرًا ⇒ صندوقه يساوي الدائرةَ والمربّعَ والمثلّث
+     (٨px) فلا يزحزح التسمية عن محاذاتها في الحالات الأربع. */
+  inline-size:6px; block-size:6px }
+
+/* ③ زرُّ الفعل على بطاقة التوصية: من نصيحةٍ إلى الشاشة التي تُنفَّذ فيها.
+   يُعرَض على توصيات التسعير وحدها (‏`t-pricing`)، وهي النوع الوحيد الذي له
+   شاشةٌ واحدة لا لبس فيها. */
+.ai-insight .ai-i-go{ margin-block-start:8px; min-block-size:var(--tap-min);
+  display:inline-flex; align-items:center; gap:6px; padding-inline:14px;
+  border-radius:10px; border:1.5px solid var(--line-2); background:var(--surface);
+  font-size:0.8125rem; font-weight:700; color:var(--act-bg) }
+
 </style>
 <meta name="robots" content="noindex, nofollow">
 <style>
@@ -4073,6 +4127,13 @@ html.web-owner body.dark #ownerBookings .day-group.today{
   background-color: color-mix(in srgb, var(--act-bg) 14%, var(--bg-primary));
   color: var(--act-bg);
 }
+
+/* ── W12) الارتفاع المحجوز للبطاقة خارج الإطار ───────────────────────────
+   مقيسٌ على هذا السطح لا منقولٌ من الهاتف: القماشة أوسع فيلتفّ النصّ أقلّ،
+   والوسيط **٢٩٦px** عند 1440 مقابل **٢٧٨** عند 375. ورقمٌ منقول يجعل شريط
+   التمرير يكذب بفارقهما إلى أن يُمرَّ على كلّ بطاقة (`auto` تتذكّر المقاس
+   الحقيقي بعد أوّل رسم، فالمكتوب تقديرُ ما لم يُرسَم بعد وحده). */
+html.web-owner #ownerBookings .booking-strip{ contain-intrinsic-size:auto 296px }
 
 }   /* ← نهاية @media (min-width:1000px) */
 
@@ -6332,6 +6393,7 @@ const I18N = {
     wxA_warn:'احتمال مطر أو حرارة مرتفعة — تابع الطلبات المعلّقة مبكراً وأبقِ اللاعبين على اطلاع.',
     wxA_info:'الأجواء ممتازة خلال ٣ أيام — خصم بسيط على الخانات الفارغة قد يملؤها.',
     aiNoInsights:'لا توصيات بعد — كلما زادت الحجوزات صارت التوصيات أدق.',
+    aiGoPricing:'افتح التسعير',
     aiNoReviews:'لا تقييمات بعد — عندما يقيّم اللاعبون مكانك سيظهر الملخّص هنا.',
     aiPraises:'ما يمدحه اللاعبون', aiComplaints:'ما يشتكون منه',
     aiSentiment_positive:'انطباع إيجابي', aiSentiment_mixed:'انطباع متفاوت', aiSentiment_negative:'انطباع سلبي',
@@ -6894,6 +6956,7 @@ const I18N = {
     wxA_warn:'Possible rain or high heat — follow up on pending requests early and keep players informed.',
     wxA_info:'Excellent weather for the next 3 days — a small discount on empty slots could fill them.',
     aiNoInsights:'No recommendations yet — the more bookings, the sharper the advice.',
+    aiGoPricing:'Open pricing',
     aiNoReviews:'No reviews yet — once players rate your venue, the summary appears here.',
     aiPraises:'What players praise', aiComplaints:'What they complain about',
     aiSentiment_positive:'Positive sentiment', aiSentiment_mixed:'Mixed sentiment', aiSentiment_negative:'Negative sentiment',
@@ -12580,23 +12643,43 @@ function bookingAge(b){
       ليس سجلًّا بعد، وعدُّه يجعل كلَّ عميلٍ جديد يبدو قديمًا.
    ⚠️ **و«أكثر عملائك» تحت العتبة لا تُقال**: صدارةٌ بحجزين تصف قلّة البيانات
       لا العميل — نفس `OWNER_MIN_N` المطبَّقة في التقارير. */
+/* 🔴 **كان المسح كاملًا لكلّ بطاقة** — أي O(n²). الدالّة تُبنى منها
+   `byPhone` من الحجوزات كلِّها، وتُنادى مرّةً لكلّ بطاقةٍ معلّقة وفي ورقة القرار
+   وفي تبويب «اليوم» ⇒ مالكٌ بثلاثين طلبًا معلّقًا وخمسة آلاف حجز يدفع مئة
+   وخمسين ألف نداء `normalizePhone` في إعادة رسمٍ واحدة. واليوم الكلفة صغيرة
+   (مقيس على الشبكة: ٧ بطاقاتٍ معلّقة × ٥٤٥ حجزًا) — وهي تكبر بنجاح المالك،
+   وهو أسوأ وقتٍ لاكتشافها.
+   ⚠️ **والمفتاح هويّةُ المصفوفة نفسها** (`===`) لا طابعُ وقتٍ ولا علَمٌ يُرفَع
+      باليد: `loadOwnerDashboard` تُسند `State.ownerData = res` بمصفوفةٍ جديدة
+      عند كلّ جلبة، فالفهرس يسقط من نفسه ولا يبقى بائتًا بعد قبولٍ أو رفض.
+      وعلَمٌ يُصفَّر يدويًّا كان سينسى أوّل مسارِ كتابةٍ يُضاف بعدنا. */
+let CH_SRC = null, CH_IDX = null;
+function custIndex(all){
+  if(CH_SRC === all && CH_IDX) return CH_IDX;
+  const byPhone = {}, seen = {};
+  all.forEach(x=>{
+    const p = normalizePhone(x.phone); if(!p) return;
+    (seen[p] ||= []).push(x);
+    if(normStatus(x)==='confirmed' && isFinished(x)) (byPhone[p] ||= []).push(x);
+  });
+  let top = 0; for(const k in byPhone) if(byPhone[k].length > top) top = byPhone[k].length;
+  CH_SRC = all; CH_IDX = { byPhone, seen, top };
+  return CH_IDX;
+}
 function customerHistory(b){
   const phone = normalizePhone(b && b.phone);
   if(!phone) return null;
   const all = State.ownerData?.bookings || [];
-  const mine = [], byPhone = {};
-  all.forEach(x=>{
-    const p = normalizePhone(x.phone); if(!p) return;
-    if(normStatus(x)==='confirmed' && isFinished(x)) (byPhone[p] ||= []).push(x);
-    if(p===phone && String(x.row_number)!==String(b.row_number)) mine.push(x);
-  });
-  const done = (byPhone[phone]||[]).filter(x=>String(x.row_number)!==String(b.row_number));
+  const ix = custIndex(all);
+  const row = String(b.row_number);
+  const mine = (ix.seen[phone]||[]).filter(x=>String(x.row_number)!==row);
+  const done = (ix.byPhone[phone]||[]).filter(x=>String(x.row_number)!==row);
   const n = done.length;
   if(!n) return { text: mine.length ? t('chFirstPlay') : t('chNew'), cls:'ch-new' };
   const noShows = done.filter(isNoShow).length;
   /* الصدارة تُقاس على **من لعب فعلًا** لا على من أرسل طلبًا: أكثر عملائك هو
      أكثرهم حضورًا، لا أكثرهم طلبًا. */
-  const top = Object.values(byPhone).reduce((m,l)=>Math.max(m,l.length), 0);
+  const top = ix.top;
   if(noShows) return { text: t('chWithNoShow', { n: nBookings(n), k: nTimes(noShows) }), cls:'ch-warn' };
   if(n >= OWNER_MIN_N && n === top) return { text: t('chTop', { n: nBookings(n) }), cls:'ch-ok' };
   return { text: t('chClean', { n: nBookings(n) }), cls:'ch-ok' };
@@ -12754,6 +12837,10 @@ async function ownerToggleNoShow(btn, b){
       const res = await API.post({ action:'ownerSetNoShow', owner_token:Session.owner(), row_number:b.row_number, no_show:on });
       if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('noShowFail'),'error'); return; }
       toast(res.message,'success');
+      /* 🤚 نبضةٌ ثقيلة عند **الرفع** وخفيفة عند التراجع: «لم يحضر» أثقل ما
+         يسجّله المالك على لاعب (المادّة ٩ — الحجز يبقى مكتملًا والعمولة
+         مستحقّة)، فوزنُ اللمسة يطابق وزنَ الفعل. وبعد ردّ الخادم لا قبله. */
+      buzz(on ? 26 : 8);
       await loadOwnerDashboard();
     }catch(e){ if(!isAbort(e)) toast(t('noShowFail'),'error'); }
   });
@@ -13677,12 +13764,35 @@ function aiMetaLine(res){
 function renderAiInsights(){
   const el=$('#aiInsights'); if(!el) return; clear(el);
   const res=aiState().insights; if(!res) return;
+  /* ⭐ **من نصيحةٍ إلى الشاشة التي تُنفَّذ فيها** (مراجعة جيميناي، البند ٩).
+     التوصية كانت نصًّا مغلقًا: يقرأ المالك «جرّب سعرًا أقلّ صباح الثلاثاء» ثمّ
+     يمشي ثلاث نقرات (الشريط ⇐ الملاعب ⇐ التسعير) ليصل إلى حيث يفعلها.
+     ⚠️ **والزرّ ينقل ولا يكتب قاعدةً ولا يقترح رقمًا**: التوصية نصٌّ حرّ من
+        النموذج، واشتقاقُ ملعبٍ وساعةٍ وسعرٍ منه اختراعٌ يمرّ تحت اسم «تطبيق
+        فوري» — وهو م5 حرفيًّا. المالك يقرّر، ونحن نختصر الطريق.
+     ⚠️ **وعلى `pricing` وحدها**: هي النوع الوحيد الذي له شاشةٌ واحدة لا لبس
+        فيها. و`warning`/`marketing` لا شاشة لهما فزرٌّ عليهما يَعِد بمكانٍ
+        لا وجود له.
+     ⚠️ **وملعبٌ واحد ⇒ تُفتَح تسعيرتُه مباشرةً**: لا لبس أصلًا حينها، وقائمةٌ
+        من عنصرٍ واحد نقرةٌ بلا قرار. وأكثرُ من ملعب ⇒ التبويب: التوصية
+        على مستوى المكان، وتسميةُ ملعبٍ بعينه نيابةً عن المالك تخمين. */
+  const goPricing=()=>{
+    const fs=(State.ownerData?.fields||[]).filter(f=>f.active!==false);
+    if(fs.length===1) return openPricing(fs[0].field_id);
+    showOwnerTab('fields');
+  };
   const paint=(list)=>list.forEach(it=>{
+    const box=h('div',{},
+      h('div',{class:'ai-i-title'}, String(it.title||'')),
+      h('div',{class:'ai-i-text'}, String(it.advice||'')));
+    if(String(it.type)==='pricing' && (State.ownerData?.fields||[]).length){
+      const go=h('button',{class:'ai-i-go', type:'button'}, t('aiGoPricing'), h('span',{class:'btn-go','aria-hidden':'true'}));
+      go.addEventListener('click', ()=>{ buzz(6); goPricing(); });
+      box.append(go);
+    }
     el.append(h('div',{class:'ai-insight t-'+String(it.type||'opportunity')},
       h('span',{class:'ai-i-ico','aria-hidden':'true'}, AI_TYPE_ICON[it.type]||'🤖'),
-      h('div',{},
-        h('div',{class:'ai-i-title'}, String(it.title||'')),
-        h('div',{class:'ai-i-text'}, String(it.advice||'')))));
+      box));
   });
   if(!res.success){
     /* الفشل لا يعني الفراغ: نعرض ما تستطيع الأرقام قوله، **موسومًا بما هو**.
@@ -14236,8 +14346,13 @@ async function updateBookingStatus(btn, rowNumber, status, opts){
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(), row_number:rowNumber, status, cancel_reason:reason });
       if (!res.success){ try{ waWin&&waWin.close(); }catch(_){} toast(apiMsg(res.message)||t('updateFail'),'error'); return; }
       if (booking) sendWhatsApp(booking, status, reasonSaid, waWin);
-      await loadOwnerDashboard(); await loadData();
+      await refreshAfterOwnerWrite();
       if ($('#page-home').classList.contains('active')) renderPlaces();
+      /* 🤚 تغذية لمسية على **نتيجة** الفعل لا على لمسه: القبول نبضةٌ خفيفة
+         والرفض/الإلغاء نبضةٌ ثقيلة — ذاكرةٌ عضلية تقول «وقع» بلا أن يرفع
+         المالك عينه عن البوّابة. وبعد ردّ الخادم لا قبله: اهتزازٌ يسبق
+         النجاح وعدٌ بما لم يقع (م5). */
+      buzz(status === 'confirmed' ? 8 : 26);
       /* البند ٦٠: التراجع **بعد نجاح الإرسال** لا قبله. المسار المؤجَّل (نرسل
          بعد خمس ثوانٍ) كان أنظف نظريًّا وفاشلًا عمليًّا: فتحُ واتساب يستلزم
          إيماءةَ مستخدم، وفتحُه يُخلفّ التطبيق فورًا فيقع «الإرسال عند الخروج»
@@ -14245,6 +14360,27 @@ async function updateBookingStatus(btn, rowNumber, status, opts){
       if (prevStatus && prevStatus!==status) offerUndo(rowNumber, prevStatus, prevReason, status);
     }catch(_){ try{ waWin&&waWin.close(); }catch(_){} toast(t('updateErr'),'error'); }
   });
+}
+/* ═══ إعادة الجلب بعد كتابةٍ من المالك — ما يُعرَض وحده ═══════════════════════
+   🔴 كان السطر `await loadOwnerDashboard(); await loadData();` — **جلبتان
+   متتاليتان**، والثانية جهةُ اللاعب بتمامها: `sbGetInitialData` وحدها ستّة
+   طلباتٍ متوازية (‏`places` · `fields` · `place_stats` · `booked_slots` ·
+   الإغلاقات · سرعة الردّ) ومعها `checkAppVersion` ⇒ **سبعة طلبات**.
+   ⚠️ **وعلى `/owner/` لا يُرسَم منها شيء إطلاقًا** — وهو بعينه السبب المكتوب
+      في `init()` لاستثناء `loadData()` هناك: بياناتٌ لا تُعرَض، وتوستُ خطأِ
+      شبكةٍ عن شاشةٍ غائبة، **وشريطُ «حدّث تطبيقك» على صفحةِ ويبٍ محدَّثةٌ
+      أصلاً**. أي أنّ مسار الإقلاع كان يستثنيه ومسارُ الفعل يعيده بعد كلّ ردّ.
+   ⚠️ **وفي التطبيق تبقيان معًا** (المالك متصفِّحٌ أيضًا) لكن **بالتوازي**:
+      لا تعتمد إحداهما على الأخرى، والتتابع كان يجمع زمنَيهما بلا سبب.
+      ومفتاحا الإجهاض مختلفان (`ownerData` مقابل `initialData`) فلا تُلغي
+      إحداهما الأخرى — وهو المزلق المسجّل في `sbFetch`.
+   ⚠️ **ولا تحديثٌ متفائل** (اقترحته المراجعة): الخانة تُباع مرّةً واحدة،
+      و`bookings_no_double_idx` يجعل القبول **قابلًا للفشل فعلاً** عند تسابق.
+      وعرضُ «تمّ القبول» ثمّ سحبُه هو «بابٌ يُعرَض ثمّ يُسحَب» الذي يرفضه هذا
+      المشروع في كلّ دفعة. فالعلاج **حذفُ الانتظار لا إخفاؤه**. */
+function refreshAfterOwnerWrite(){
+  return WEB_OWNER ? loadOwnerDashboard()
+                   : Promise.all([ loadOwnerDashboard(), loadData() ]);
 }
 /* إعادة الحالة إلى ما كانت عليه. `owns_place` تسمح للمالك بالكتابة على حجوزات
    مكانه بلا قيدِ اتّجاه (‏`bookings_update` في `01_schema`)، فالرجوع إلى
@@ -14256,8 +14392,8 @@ function offerUndo(rowNumber, prevStatus, prevReason, doneStatus){
       const res=await API.post({ action:'updateBookingStatus', owner_token:Session.owner(),
                                  row_number:rowNumber, status:prevStatus, cancel_reason:prevReason });
       if(!res || !res.success){ toast(apiMsg(res&&res.message)||t('updateFail'),'error'); return; }
-      toast(t('undoOk'),'success');
-      await loadOwnerDashboard(); await loadData();
+      toast(t('undoOk'),'success'); buzz(8);
+      await refreshAfterOwnerWrite();
     }catch(_){ toast(t('updateErr'),'error'); }
   });
 }
