@@ -32,12 +32,12 @@ on:
   push:
     branches: [main]
     paths:
-      - 'migration/**'
+      - 'db/migration/**'
       - 'tools/security-matrix.mjs'
       - '.github/workflows/security-matrix.yml'
   pull_request:
     paths:
-      - 'migration/**'
+      - 'db/migration/**'
       - 'tools/security-matrix.mjs'
   workflow_dispatch:
 

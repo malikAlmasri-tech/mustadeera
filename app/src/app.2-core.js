@@ -1031,7 +1031,7 @@ async function sbSetNoShow(d, session){
    **كل** الأعمدة أمامه — السعر والملعب واسم صاحب الحجز. الدالّة أضيق:
    تعدّل `booking_date` و`hour` وحدهما بعد التحقّق من الملكية والحالة والتوفّر،
    والقيد الفريد في القاعدة يحسم التزامن كما في الإنشاء.
-   ⚠️ تحتاج تشغيل `migration/09_player_reschedule.sql` مرّة واحدة. قبله يردّ
+   ⚠️ تحتاج تشغيل `db/migration/09_player_reschedule.sql` مرّة واحدة. قبله يردّ
    PostgREST 404/PGRST202 ⇒ نقولها للمستخدم صراحةً بدل «حدث خطأ» مبهم. */
 async function sbRescheduleBooking(d, session){
   if (!session) return { success:false, message:'انتهت جلستك، ادخل من جديد' };
@@ -1045,7 +1045,7 @@ async function sbRescheduleBooking(d, session){
 }
 
 /* ── تأكيد رقم الهاتف — دالّتان في القاعدة، ولا شيء منهما في المتصفّح ──
-   الكود يُولَّد ويُجزَّأ ويُقارَن داخل Postgres (‏`migration/11_phone_verification.sql`).
+   الكود يُولَّد ويُجزَّأ ويُقارَن داخل Postgres (‏`db/migration/11_phone_verification.sql`).
    ولا يعرف التطبيق الكودَ ولا الحدودَ الزمنية: يطلب، ويقرأ ما تردّه الدالّة.
 
    ثلاثة ردود مختلفة تمامًا يجب ألّا تُخلَط:
@@ -1117,7 +1117,7 @@ const API = {
                  player:{ player_id:s.uid, name:s.name, phone:s.phone, verified: !!s.verified } };
       }
       /* ── الإشعارات ───────────────────────────────────────────────────────
-         الصفوف تُكتب داخل القاعدة (‏migration/14) ولا يكتبها أحد من هنا.
+         الصفوف تُكتب داخل القاعدة (‏db/migration/14) ولا يكتبها أحد من هنا.
          و`notif_read` تقصر القراءة على `profile_id = auth.uid()` ⇒ لا مرشِّح
          على المستخدم في الرابط أصلاً: RLS هو المرشِّح، وإضافةُ واحدٍ هنا كانت
          ستوهم بأن الأمان في الرابط لا في القاعدة.

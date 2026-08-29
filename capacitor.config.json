@@ -3,6 +3,7 @@
   "appName": "AL-Mustadira",
   "webDir": "app/www",
   "android": {
+    "path": "app/android",
     "backgroundColor": "#0F4B53"
   }
 }

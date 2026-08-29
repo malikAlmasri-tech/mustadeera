@@ -223,7 +223,7 @@ html.dark .feed .a[data-act="delete"]{color:#FF8A90}
 
 /* رأس السجلّ + مؤشّر حالة البثّ. المؤشّر يقول الحقيقة دائمًا: أخضر فقط بعد
    وصول حدث فعلي عبر المقبس، لا بمجرّد نجاح الاتصال (نجاح الاشتراك لا يعني
-   أن الأحداث تصل — راجع migration/08_realtime_audit.sql). */
+   أن الأحداث تصل — راجع db/migration/08_realtime_audit.sql). */
 .sec-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .sec-head h2{margin-bottom:0}
 .rt{display:inline-flex;align-items:center;gap:7px;margin-inline-start:auto;
@@ -850,7 +850,7 @@ html.dark .res .no{color:#FF8A90}
       <p class="note">⛔ <strong>عرض كلمة السرّ مستحيل</strong> — المخزَّن بصمة bcrypt أحادية الاتجاه.
         وإعادة التعيين لا تجري من هذه الصفحة عمدًا: تحتاج مفتاح <code>service_role</code>،
         ووضعه في صفحة يفتحها المتصفّح يعني تسليم القاعدة كاملةً لأي شخص يقرأ المصدر.
-        نفّذها من محرّر SQL في Supabase — الوصفة في <code>migration/RECIPES.sql</code> §8.</p>
+        نفّذها من محرّر SQL في Supabase — الوصفة في <code>db/migration/RECIPES.sql</code> §8.</p>
     </section>
   </div>
 
@@ -1062,7 +1062,7 @@ html.dark .res .no{color:#FF8A90}
     <ul class="feed" id="feed"></ul>
     <p class="note">يُكتب بـtrigger داخل القاعدة، فلا يستطيع أي عميل تجاوزه أو تزويره.</p>
     <p class="note hide" id="rtHint">💡 الأحداث تصل بالتحديث الدوري لا بالبثّ الحيّ.
-      إن أردتها فورية شغّل <code>migration/08_realtime_audit.sql</code> مرّة واحدة — يُدرِج
+      إن أردتها فورية شغّل <code>db/migration/08_realtime_audit.sql</code> مرّة واحدة — يُدرِج
       <code>audit_log</code> في نشر Realtime. اللوحة تعمل في الحالتين.</p>
   </section>
   </div>
@@ -2464,7 +2464,7 @@ function renderOps(W){
    السياسات القائمة تسمح بهذا اليوم بلا ترحيل: places_write_admin تعطي
    الأدمن الكتابة على `places`، وfields_owner_write على `fields`. الاستثناء
    الوحيد `place_owners` — لا سياسة كتابة له أصلًا ⇒ ربط المالك يفشل حتى
-   يُشغَّل migration/10. ولذلك هو **خطوة أخيرة اختيارية**: فشلها لا يُسقط
+   يُشغَّل db/migration/10. ولذلك هو **خطوة أخيرة اختيارية**: فشلها لا يُسقط
    المكان، ويُقال سببها صراحةً بدل «حدث خطأ».
    ═══════════════════════════════════════════════════════════════════════════ */
 var SLOT_ALL = [
@@ -2722,7 +2722,7 @@ var MIG = [
   { n:'13', label:'رياضة الملعب',            kind:'col',  table:'fields',   col:'sport' },
   { n:'14', label:'الإشعارات',               kind:'tbl',  table:'notifications' },
   // ⚠️ `booking_rules` لا `app_settings`: الثاني جدول الترحيل 11 (مزوّد الرسائل)
-  //    وقد تصادم الاسمان — انظر `migration/23_settings_split.sql`.
+  //    وقد تصادم الاسمان — انظر `db/migration/23_settings_split.sql`.
   { n:'15', label:'مهلة الإلغاء والانقضاء',  kind:'tbl',  table:'booking_rules' },
   { n:'16', label:'لم يحضر',                 kind:'col',  table:'bookings', col:'no_show' },
   { n:'17', label:'إغلاق الأيام',            kind:'tbl',  table:'field_closures' },
@@ -2741,7 +2741,7 @@ var MIG = [
      `bookings_full` مُعرَّف بـ`select b.*` — و`*` تُفكّ **عند إنشاء العرض**
      فتتجمّد قائمتُه. والتطبيق يقرأ من العرض ⇒ لا «لم يحضر» ولا شارة مباراة
      مفتوحة ولا تمييز «انقضت المهلة»، **وبلا عطلٍ ظاهر** لأن الجلب يتراجع
-     ثلاث جولات. يُصلحه [`30_bookings_full_refresh.sql`](migration/). */
+     ثلاث جولات. يُصلحه [`30_bookings_full_refresh.sql`](db/migration/). */
   { n:'30', label:'أعمدة العرض bookings_full', kind:'col', table:'bookings_full', col:'no_show' }
 ];
 var MIG_STATE = {};
@@ -2770,7 +2770,7 @@ function renderDemand(){
   if (!HAS_EVENTS){
     el.innerHTML = '<p class="frm-n">⚠️ <strong>ترحيل ٢١ لم يُشغَّل بعد</strong> — جدول ' +
       '<code>events</code> غير موجود، فلا شيء يُسجَّل ولا شيء يُقاس. ' +
-      'شغّل <code>migration/21_events.sql</code> مرّة واحدة. ' +
+      'شغّل <code>db/migration/21_events.sql</code> مرّة واحدة. ' +
       '<strong>وهذا ليس «لا طلب غير ملبّى»</strong> — لا مقياس أصلًا. ' +
       'والقياس <strong>لا يعمل بأثر رجعي</strong>: ما مضى قبل التشغيل لن يظهر أبدًا.</p>';
     return;
@@ -2880,7 +2880,7 @@ function renderApps(){
     cnt.hidden = true;
     box.innerHTML = '<p class="frm-n">⚠️ <strong>ترحيل ١٩ لم يُشغَّل بعد</strong> — جدول ' +
       '<code>place_applications</code> غير موجود، فلا نموذج على الموقع يستقبل شيئًا ولا صندوق هنا. ' +
-      'شغّل <code>migration/19_place_applications.sql</code> مرّة واحدة. ' +
+      'شغّل <code>db/migration/19_place_applications.sql</code> مرّة واحدة. ' +
       '<strong>وهذا ليس «لا طلبات»</strong> — لا مكان تصل إليه أصلًا.</p>';
     return;
   }
@@ -3009,7 +3009,7 @@ function renderAddLists(){
     if (!HAS_SPORT) mn.innerHTML = '⚠️ <strong>ترحيل ١٣ لم يُشغَّل بعد</strong> — العمودان ' +
       '<code>fields.sport</code> و<code>fields.attrs</code> غير موجودين في القاعدة، ' +
       'فكل ملعب تُنشئه هنا <strong>سيُرفَض</strong> ما دام يحمل رياضةً ومواصفات. ' +
-      'شغّل <code>migration/13_field_sports.sql</code> مرّة واحدة من محرّر SQL ' +
+      'شغّل <code>db/migration/13_field_sports.sql</code> مرّة واحدة من محرّر SQL ' +
       'ثمّ حدّث هذه الصفحة. (وبقيّة اللوحة تعمل كما هي.)';
   }
 }
@@ -3301,7 +3301,7 @@ $('#addForm').addEventListener('submit', function(e){
         // 42501 = انتهاك سياسة RLS. السبب معروف مسبقًا فيُقال باسمه.
         else res.push({ warn: 'تعذّر ربط المالك (' + pr.status + '). ' +
           '<code>place_owners</code> ليس له سياسة كتابة في القاعدة بعد ⇒ حتى الأدمن ممنوع. ' +
-          'شغّل <code>migration/10_admin_place_owners.sql</code> مرّة واحدة ثمّ أعد الربط. ' +
+          'شغّل <code>db/migration/10_admin_place_owners.sql</code> مرّة واحدة ثمّ أعد الربط. ' +
           '<strong>المكان وملاعبه أُنشئا بنجاح</strong> ولا حاجة إلى إعادتهما.' });
 
         /* رفع الدور — منفصلٌ عن الربط عمدًا: الربط يقول «هذا المكان له»،
@@ -3365,7 +3365,7 @@ $('#addForm').addEventListener('submit', function(e){
     } else if (ex && ex.step === 'fields' && r && r.migration13){
       msg = '<strong>ترحيل قاعدة البيانات ١٣ لم يُشغَّل بعد.</strong> العمودان ' +
         '<code>fields.sport</code> و<code>fields.attrs</code> غير موجودين، فالقاعدة ترفض ' +
-        'تسجيل رياضة الملعب ومواصفاته. شغّل <code>migration/13_field_sports.sql</code> ' +
+        'تسجيل رياضة الملعب ومواصفاته. شغّل <code>db/migration/13_field_sports.sql</code> ' +
         'مرّة واحدة من محرّر SQL ثمّ أعد الإرسال — <strong>النموذج ما زال ممتلئًا كما هو</strong>. ' +
         '<br>وحُذف المكان الذي أُنشئ قبل قليل، فلن يتكرّر اسمه.';
     } else if (ex && ex.step === 'fields'){

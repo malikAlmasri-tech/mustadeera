@@ -87,7 +87,7 @@ node tools/security-matrix.mjs --url https://<ref>.supabase.co --anon <key> --ph
 ## إعادة توليد الاستيراد من تصدير جديد
 
 ```bash
-node migration/build_import.mjs
+node db/migration/build_import.mjs
 ```
 
 يقرأ `CSV/`، ويطبع **تقرير تعارضات قبل الكتابة** (خانات مزدوجة تصطدم بالقيد الفريد · معرّفات يتيمة · طوابع زمنية لا تُفسَّر · ملفّات ناقصة)، ثم يكتب `02_import.sql` و`03_owners.sql`.

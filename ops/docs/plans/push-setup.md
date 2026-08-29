@@ -33,13 +33,13 @@ com.almustadira.app
 3. نزّل `google-services.json` وضعه في:
 
 ```
-C:\Users\malik\OneDrive\Desktop\koora\android\app\google-services.json
+C:\Users\malik\OneDrive\Desktop\koora\app\android\app\google-services.json
 ```
 
 ⚠️ **ولا تفعّل Authentication في Firebase** — الهويّة تبقى على Supabase.
 FCM خدمةٌ منفصلة تمامًا ولا تلمسها.
 ✅ **ولا تعديل على gradle**: القالب يطبّق الملحق تلقائيًّا حين يجد الملفّ
-(‏`android/app/build.gradle` سطر ٧٠)، والـclasspath موجود أصلًا. مقيس: البناء
+(‏`app/android/app/build.gradle` سطر ٧٠)، والـclasspath موجود أصلًا. مقيس: البناء
 ينجح مع الملفّ وبدونه.
 
 ---
@@ -67,11 +67,14 @@ supabase secrets set FCM_SERVICE_ACCOUNT="$(Get-Content -Raw 'C:\path\to\service
 ## ③ نشر الدالّة وربطها بالقاعدة
 
 ```bash
-supabase functions deploy push --project-ref nxqddfuwtrsabprxcfez --use-api
+cd db; supabase functions deploy push --project-ref nxqddfuwtrsabprxcfez --use-api
 ```
 
+⚠️ **من `db/` لا من الجذر**: الـCLI يقرأ `supabase/functions/` نسبةً إلى مجلّد
+التشغيل، والمجلّد صار `db/supabase/` (ترتيب 2026-08-30).
+
 ثمّ **شغّل ترحيل 31** من محرّر SQL في لوحة Supabase
-(‏[`migration/31_push_tokens.sql`](../../migration/31_push_tokens.sql))، ثمّ
+(‏[`db/migration/31_push_tokens.sql`](../../migration/31_push_tokens.sql))، ثمّ
 املأ المفتاحين — سطران في نفس المحرّر:
 
 ```sql
@@ -87,7 +90,7 @@ update public.app_settings set value = '<المفتاح العام anon>' where 
 ## ثمّ: أعِد بناء الـAPK وثبّته
 
 ```bash
-powershell -ExecutionPolicy Bypass -File build.ps1; npx.cmd cap sync android; cd android; .\gradlew.bat assembleRelease
+powershell -ExecutionPolicy Bypass -File build.ps1; npx.cmd cap sync android; cd app\android; .\gradlew.bat assembleRelease
 ```
 
 ⚠️ **واحذف النسخة القديمة من الجهاز قبل التثبيت** إن كانت debug — توقيعان
@@ -128,7 +131,7 @@ select created, (content::jsonb) from net._http_response order by created desc l
 | | |
 |---|---|
 | ترحيل `31` | `fcm_token` · `fcm_at` · `lang` + مُشغِّل `t_push_notify` **غير حاجز** (‏`pg_net`) — بطءُ FCM لا يُبطئ إدراج الحجز |
-| `supabase/functions/push` | يبني الجملة **بلغة المستخدم** لا يقرؤها من الصفّ (نصٌّ مخزَّن يُجمَّد على لغة لحظة كتابته) · ويوقّع OAuth2 · ويخزّن التوكن حتى انتهائه · **وينظّف الرمز الميّت** عند `UNREGISTERED` |
+| `db/supabase/functions/push` | يبني الجملة **بلغة المستخدم** لا يقرؤها من الصفّ (نصٌّ مخزَّن يُجمَّد على لغة لحظة كتابته) · ويوقّع OAuth2 · ويخزّن التوكن حتى انتهائه · **وينظّف الرمز الميّت** عند `UNREGISTERED` |
 | `native.js` | تسجيل الرمز · **إنشاء القناة `mustadeera`** (بدونها يسقط الإشعار صامتًا على أندرويد ٨+) · ونقرةُ الدفع تُطلق **نفس حدث** الإشعار المحلّي فلا مسارَين |
 | `app.js` | يحفظ الرمز **عند تغيّره فقط**، ولا يسجّل لضيف، ويصمت عند الفشل — المستخدم لم يطلب هذا ولا يملك إصلاحه |
 

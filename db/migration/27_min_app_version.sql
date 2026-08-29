@@ -24,7 +24,7 @@
 --
 --  ⚠️ والرقم المقارَن هو `versionCode` لا `versionName`: عددٌ صحيح يكبر أبدًا،
 --     بينما «1.10» و«1.9» لا يترتّبان عدديًّا ولا نصّيًّا بالطريقة نفسها.
---     ومصدره في التطبيق `CONFIG.APP_BUILD`، **ونسخته في `android/app/build.gradle`
+--     ومصدره في التطبيق `CONFIG.APP_BUILD`، **ونسخته في `app/android/app/build.gradle`
 --     هي الأصل** — حارس المرآة `tools/check-mirrors.js` يقارنهما.
 --
 --  ⚠️ **بعد 15** (‏`booking_rules`).

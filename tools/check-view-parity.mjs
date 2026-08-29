@@ -24,7 +24,7 @@
    ─────────
    ① يقرأ `SB.URL` و`SB.KEY` من `app/src/app.js` **نفسه** لا من نسخةٍ هنا —
      المفتاح `anon` عامّ بالتصميم (الأمان في RLS)، ونسخةٌ ثانية تنحرف.
-   ② يستخرج أعمدة `bookings` من `migration/*.sql`: جسم `create table` ومعه
+   ② يستخرج أعمدة `bookings` من `db/migration/*.sql`: جسم `create table` ومعه
      كلّ `add column` في كلّ `alter table … bookings` (وهي **متعدّدة الأسطر**
      في 16 و22 ⇒ القراءة بالجملة حتى الفاصلة المنقوطة لا بالسطر).
    ③ يسأل الجدول بالقائمة كلّها دفعةً واحدة. و`42703` **يسمّي العمود** في
@@ -67,7 +67,7 @@ function readConn() {
 
 /* ── ② أعمدة الجدول، من الترحيلات ──────────────────────────────────────── */
 function columnsFromMigrations() {
-  const dir = path.join(ROOT, 'migration');
+  const dir = path.join(ROOT, 'db', 'migration');
   const cols = new Set();
 
   for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.sql')).sort()) {
@@ -162,7 +162,7 @@ async function surviving(conn, rel, cols) {
 /* ── التشغيل ───────────────────────────────────────────────────────────── */
 const conn = readConn();
 const declared = columnsFromMigrations();
-if (!declared.length) fail(`check-view-parity: لم يُستخرَج عمودٌ واحد لـ${TABLE} من migration/*.sql`);
+if (!declared.length) fail(`check-view-parity: لم يُستخرَج عمودٌ واحد لـ${TABLE} من db/migration/*.sql`);
 
 /* ⚠️ **السؤالان كلاهما داخل الحماية** لا الأوّل وحده: الشبكة قد تسقط بينهما،
    فيمرّ الجدول ثمّ يرمي العرضُ رميةً غير ملتقطة — وهو فشلٌ يبدو عطلًا في
@@ -187,7 +187,7 @@ if (notInView.length) {
   «غير مُفعّلة» لا مكسورة، لأن الجلب يتراجع ولا يصرخ شيء.
 
   العلاج: **احذف العرض ثمّ أنشئه** — \`create or replace view\` لا تكفي
-  (ترتيب الأعمدة يتغيّر). القالب في migration/30_bookings_full_refresh.sql.`);
+  (ترتيب الأعمدة يتغيّر). القالب في db/migration/30_bookings_full_refresh.sql.`);
   process.exit(1);
 }
 

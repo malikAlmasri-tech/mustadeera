@@ -36,11 +36,15 @@
 ## النشر (مرّة واحدة)
 
 ```bash
-supabase functions deploy ai
+cd db; supabase functions deploy ai
 ```
 
+> ⚠️ **من `db/` لا من الجذر** — الـCLI يبحث عن `supabase/functions/<الاسم>`
+> نسبةً إلى مجلّد التشغيل، وحالةُ الربط في `supabase/.temp/`. نُقل المجلّد إلى
+> `db/supabase/` في ترتيب 2026-08-30، فصار `cd db` جزءًا من كلّ أمر يعتمد عليهما.
+
 ```bash
-supabase secrets set GEMINI_API_KEY=AIza...
+cd db; supabase secrets set GEMINI_API_KEY=AIza...
 ```
 
 مفتاح Gemini من [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — وفيه

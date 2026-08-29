@@ -100,7 +100,7 @@
 com.almustadira.app
 ```
 
-3. نزّل `google-services.json` وضعه في مجلّد `android/app/` في المستودع.
+3. نزّل `google-services.json` وضعه في مجلّد `app/android/app/` في المستودع.
 4. قل لي «جاهز» — والباقي عليّ.
 
 ⚠️ **ولا تفعّل Authentication في Firebase** — لا نستعمله، والهويّة تبقى على

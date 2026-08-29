@@ -143,7 +143,7 @@ Write-Host ""
 Write-Host ("  [app]    {0,9:N0} chars  ->  app\www\index.html  (+{1:N0} native)" -f $app.Length, $injected) -ForegroundColor Green
 if ($injected -le 0) { Write-Warning "native layer was NOT injected - is </body> still present in app\src\app.html?" }
 Write-Host "  preview: server on app\src\  then  _preview_app.html" -ForegroundColor DarkGray
-Write-Host "  to APK:  npx cap sync android   then   cd android; .\gradlew.bat assembleDebug" -ForegroundColor DarkGray
+Write-Host "  to APK:  npx cap sync android   then   cd app\android; .\gradlew.bat assembleDebug" -ForegroundColor DarkGray
 
 # ===== 2) the public site =====================================================
 # build-site.ps1 locates itself and wipes public\ before writing, so a file

@@ -19,7 +19,7 @@
 #     مرآةٌ تنحرف، ومن يتحقّق من بصمةٍ بائتة يظنّ الملفّ مُبدَّلًا.
 #
 #  ⚠️ وعند كل إصدار جديد: ارفع `versionCode` و`versionName` في
-#     android/app/build.gradle **قبل** البناء، وإلّا شُحن إصدارٌ يحمل رقم
+#     app/android/app/build.gradle **قبل** البناء، وإلّا شُحن إصدارٌ يحمل رقم
 #     سابقه فلا يعرف أحدٌ أيّهما على جهازه. و`check-mirrors` يحرس الرقم.
 # =========================================================
 
@@ -27,5 +27,5 @@ version = 1.0
 date = 2026-08-14
 size =
 sha256 =
-local = android/app/build/outputs/apk/release/app-release.apk
+local = app/android/app/build/outputs/apk/release/app-release.apk
 url =

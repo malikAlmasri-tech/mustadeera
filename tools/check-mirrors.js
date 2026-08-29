@@ -47,7 +47,7 @@ console.log('mirrors:');
 const rate = [
   grab('site/admin.html',        /var RATE\s*=\s*([\d.]+)/,        'RATE'),
   grab('app/src/app.js',         /COMMISSION:\s*([\d.]+)/,         'CONFIG.COMMISSION'),
-  grab('migration/01_schema.sql', /\)\s*\*\s*([\d.]+),\s*2\)\s*as commission/, 'admin_daily'),
+  grab('db/migration/01_schema.sql', /\)\s*\*\s*([\d.]+),\s*2\)\s*as commission/, 'admin_daily'),
 ].filter(Boolean);
 if (rate.length === 3) check('commission rate', rate);
 
@@ -56,7 +56,7 @@ if (rate.length === 3) check('commission rate', rate);
    compares against `min_app_version`. If they drift, the version gate is
    measuring a number nobody installed. */
 const build = [
-  grab('android/app/build.gradle', /versionCode\s+(\d+)/,   'versionCode'),
+  grab('app/android/app/build.gradle', /versionCode\s+(\d+)/,   'versionCode'),
   grab('app/src/app.js',           /APP_BUILD:\s*(\d+)/,    'CONFIG.APP_BUILD'),
 ].filter(Boolean);
 if (build.length === 2) check('app build number', build);
@@ -67,14 +67,14 @@ if (build.length === 2) check('app build number', build);
    but shipping them different is never intentional. */
 const win = [
   grab('app/src/app.js',                /CANCEL_WINDOW_H:\s*(\d+)/, 'CONFIG.CANCEL_WINDOW_H'),
-  grab('migration/15_booking_expiry.sql', /\('player_cancel_window_hours',\s*(\d+)/, 'booking_rules'),
+  grab('db/migration/15_booking_expiry.sql', /\('player_cancel_window_hours',\s*(\d+)/, 'booking_rules'),
 ].filter(Boolean);
 if (win.length === 2) check('player cancel window (h)', win);
 
 /* ── owner reply deadline ─────────────────────────────────────────────── */
 const reply = [
   grab('app/src/app.js',                  /REPLY_DEADLINE_H:\s*(\d+)/, 'CONFIG.REPLY_DEADLINE_H'),
-  grab('migration/15_booking_expiry.sql', /\('owner_reply_deadline_hours',\s*(\d+)/, 'booking_rules'),
+  grab('db/migration/15_booking_expiry.sql', /\('owner_reply_deadline_hours',\s*(\d+)/, 'booking_rules'),
 ].filter(Boolean);
 if (reply.length === 2) check('owner reply deadline (h)', reply);
 
@@ -85,7 +85,7 @@ if (reply.length === 2) check('owner reply deadline (h)', reply);
 const slot10 = [
   grab('app/src/app.js',              /\{label:'([^']*)',hour:10,/,        'DEFAULT_SLOTS'),
   grab('site/admin.html',             /\{ h:10, label:'([^']*)' \}/,       'SLOT_SETS'),
-  grab('migration/build_import.mjs',  /full: '[^']*?10=([^|']*)\|/,        'SLOT_SETS'),
+  grab('db/migration/build_import.mjs',  /full: '[^']*?10=([^|']*)\|/,        'SLOT_SETS'),
 ].filter(Boolean);
 if (slot10.length === 3) check('10:00 slot label', slot10);
 

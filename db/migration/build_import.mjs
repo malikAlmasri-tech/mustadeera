@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   مولّد ملفّ الاستيراد: CSV (تصدير Google Sheets) ⟶ migration/02_import.sql
+   مولّد ملفّ الاستيراد: CSV (تصدير Google Sheets) ⟶ db/migration/02_import.sql
 
-   التشغيل:  node migration/build_import.mjs
+   التشغيل:  node db/migration/build_import.mjs
    قابل لإعادة التشغيل: صدّر الشيت من جديد وأعد التشغيل ⇒ ملفّ استيراد محدَّث.
 
    يطبع تقرير تعارضات **قبل** الكتابة (تواريخ فاسدة · معرّفات يتيمة · خانات
@@ -130,7 +130,7 @@ if (!owners) report.warnings.push('⛔ ملفّ Owners.csv مفقود — لن �
 const L = [];
 L.push(`-- ═══════════════════════════════════════════════════════════════════`);
 L.push(`-- استيراد بيانات المستديرة من Google Sheets — مولَّد آليًّا`);
-L.push(`-- المصدر: migration/CSV/*.csv   ·   المولّد: migration/build_import.mjs`);
+L.push(`-- المصدر: db/migration/CSV/*.csv   ·   المولّد: db/migration/build_import.mjs`);
 L.push(`-- وُلِّد في: ${new Date().toISOString()}`);
 L.push(`-- التشغيل: لوحة Supabase ← SQL Editor ← لصق ← Run  (يعمل داخل معاملة واحدة)`);
 L.push(`-- ═══════════════════════════════════════════════════════════════════`);
@@ -320,4 +320,4 @@ console.log('\n═══ تقرير الاستيراد ═══');
 console.log('الأعداد:', report.counts);
 console.log(`\nالتحذيرات (${report.warnings.length}):`);
 report.warnings.length ? report.warnings.forEach(w => console.log('  ' + w)) : console.log('  ✓ لا شيء');
-console.log(`\n✅ كُتب: migration/02_import.sql  (${L.join('\n').length.toLocaleString()} محرف)\n`);
+console.log(`\n✅ كُتب: db/migration/02_import.sql  (${L.join('\n').length.toLocaleString()} محرف)\n`);

@@ -12,9 +12,9 @@
 --     «نبّهني إذا فضيت» (ترحيل 20) وعدُها كلُّه «سنُشعرك».
 --
 --  ⚠️ **ولا يعمل هذا الملفّ وحده.** يحتاج ثلاثة أشياء من المالك:
---       ① مشروع Firebase، ومنه `google-services.json` ⇒ `android/app/`
+--       ① مشروع Firebase، ومنه `google-services.json` ⇒ `app/android/app/`
 --       ② مفتاح حساب خدمة (JSON) ⇒ سرّ Supabase باسم `FCM_SERVICE_ACCOUNT`
---       ③ نشر الدالّة:  supabase functions deploy push
+--       ③ نشر الدالّة:  cd db; supabase functions deploy push   ← من db/ لا الجذر
 --     وحتى تكتمل، **كلّ شيء يبقى عاملًا كما هو**: الصفوف تُكتب، والمركز
 --     يعرضها، والإشعار المحلّي يظهر عند الفتح. الدفع إضافةٌ لا استبدال.
 --

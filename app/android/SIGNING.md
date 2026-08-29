@@ -12,7 +12,7 @@
 
 ## الخطوة 1 — أنشئ المفتاح
 
-من مجلّد `android/` شغّل هذا الأمر. سيسألك عن كلمة سرّ **تكتبها أنت** (6 محارف فأكثر)،
+من مجلّد `app/android/` شغّل هذا الأمر. سيسألك عن كلمة سرّ **تكتبها أنت** (6 محارف فأكثر)،
 ثم عن اسمك والمدينة والدولة — أجب بما تشاء، لا يظهر للمستخدمين.
 
 ```bash
@@ -27,7 +27,7 @@ keytool -genkeypair -v -keystore mustadeera-release.jks -keyalg RSA -keysize 204
 
 ## الخطوة 2 — عرّف الـgradle بمكانه
 
-أنشئ ملفًّا اسمه `android/keystore.properties` بهذا المحتوى، وضع كلمة سرّك مكان
+أنشئ ملفًّا اسمه `app/android/keystore.properties` بهذا المحتوى، وضع كلمة سرّك مكان
 `YOUR_PASSWORD` (نفسها في السطرين إن لم تُعطِ كلمة سرّ منفصلة للمفتاح):
 
 ```properties
@@ -43,28 +43,28 @@ keyPassword=YOUR_PASSWORD
 ## الخطوة 3 — ابنِ
 
 ```bash
-cd android && ./gradlew.bat assembleRelease
+cd app/android && ./gradlew.bat assembleRelease
 ```
 
-المخرَج: `android/app/build/outputs/apk/release/app-release.apk`
+المخرَج: `app/android/app/build/outputs/apk/release/app-release.apk`
 
 للنشر على متجر Play يُطلب **AAB** لا APK:
 
 ```bash
-cd android && ./gradlew.bat bundleRelease
+cd app/android && ./gradlew.bat bundleRelease
 ```
 
-المخرَج: `android/app/build/outputs/bundle/release/app-release.aab`
+المخرَج: `app/android/app/build/outputs/bundle/release/app-release.aab`
 
 ## الخطوة 4 — تحقّق أن التوقيع فعلًا مطبَّق
 
 ```bash
-cd android && ./gradlew.bat signingReport
+cd app/android && ./gradlew.bat signingReport
 ```
 
 ابحث عن `Variant: release` — يجب أن يظهر تحته مسار `mustadeera-release.jks` لا
 `debug.keystore`. إن ظهر debug فمعناه أن `keystore.properties` لم يُقرأ (خطأ في اسمه
-أو مكانه: يجب أن يكون داخل `android/` مباشرةً).
+أو مكانه: يجب أن يكون داخل `app/android/` مباشرةً).
 
 ---
 

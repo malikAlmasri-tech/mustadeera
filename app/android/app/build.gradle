@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
 // ── توقيع نسخة الإصدار ────────────────────────────────────────────────────────
-// يُقرأ من android/keystore.properties وهو ملفّ **خارج git** (راجع .gitignore).
+// يُقرأ من app/android/keystore.properties وهو ملفّ **خارج git** (راجع .gitignore).
 // غيابه لا يكسر شيئًا: البناء يستمرّ، ونسخة release تخرج غير موقّعة فقط.
-// إنشاء المفتاح: راجع android/SIGNING.md — كلمة السرّ يكتبها المالك ولا تُخزَّن هنا.
+// إنشاء المفتاح: راجع app/android/SIGNING.md — كلمة السرّ يكتبها المالك ولا تُخزَّن هنا.
 def keystorePropsFile = rootProject.file("keystore.properties")
 def keystoreProps = new Properties()
 def hasKeystore = keystorePropsFile.exists()
