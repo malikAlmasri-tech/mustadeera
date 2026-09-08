@@ -1,0 +1,2597 @@
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   المستديرة — التطبيق
+   ───────────────────────────────────────────────────────────────────
+   وحدةٌ واحدة مغلّفة: صفر متغيّرٍ عامّ في window عدا ما تحتاجه الواجهة.
+   ═══════════════════════════════════════════════════════════════════ */
+(function () {
+'use strict';
+
+var $  = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+var S = {
+  boot: null, page: 'home', ready: false,
+  calc: null, econ: null,          // مدخلاتٌ محلّية حتى يُطلَب الحفظ صراحةً
+  calcDirty: false, econDirty: false,
+  wrote: false,
+  vFilter: { q: '', status: '', region: '' },
+  palIdx: 0, palRows: [], sheetCtx: null, stageOn: false,
+  /* بأيّ وحدةٍ يُعرَض حقل «متى تنضمّ» لكلّ رياضة — عرضٌ محض، لا يُحفَظ
+     في الشيت ولا يُبنى منه `start` إلّا لحظة الكتابة. */
+  econUnits: []
+};
+
+var stagePrevTheme = null;   // المظهر قبل فتح وضع العرض — يُستعاد عند إغلاقه
+
+/**
+ * عدّادٌ متصاعد على عنصرٍ حقيقي — بدل قفزةٍ فورية من رقمٍ لرقم.
+ * يقرأ الرقم الحاليّ من نصّ العنصر نفسه فلا يحتاج حالةً محفوظة، ويحترم
+ * «تقليل الحركة» — القاعدة العامّة في CSS لا تمسّ هذه الحلقة لأنها ليست
+ * transition/animation بل كتابة نصٍّ يدويّة بـrequestAnimationFrame.
+ */
+var REDUCE_MOTION = matchMedia('(prefers-reduced-motion: reduce)');
+function animateNumber(el, toVal, opts) {
+  opts = opts || {};
+  var fmt = opts.fmt || n0, dur = opts.dur || 320;
+  if (REDUCE_MOTION.matches || !isNum(toVal)) { el.textContent = fmt(toVal); return; }
+
+  var fromVal = Number(String(el.textContent || '0').replace(/[^0-9.\-]/g, '')) || 0;
+  if (Math.abs(toVal - fromVal) < 0.5) { el.textContent = fmt(toVal); return; }
+
+  if (el._animRaf) cancelAnimationFrame(el._animRaf);
+  var t0 = performance.now();
+  (function tick(now) {
+    var p = Math.min(1, (now - t0) / dur);
+    var eased = 1 - Math.pow(1 - p, 3);          // خروجٌ مكعّب — يبطئ قرب الوصول
+    el.textContent = fmt(fromVal + (toVal - fromVal) * eased);
+    el._animRaf = p < 1 ? requestAnimationFrame(tick) : null;
+  })(t0);
+}
+
+var PAGES = [
+  { g: 'العمل',   items: [
+    { id: 'home',   t: 'لوحة اليوم',        ic: 'home',    sub: 'ما يستحقّ فعلًا اليوم' },
+    { id: 'venues', t: 'الملاعب',            ic: 'pin',     sub: 'قائمتك، وأين وصلتَ مع كلٍّ منها' },
+    { id: 'tasks',  t: 'المهام',             ic: 'square',  sub: 'ما عليك أنت' },
+    { id: 'logs',   t: 'سجل التواصل',        ic: 'chat',    sub: 'ماذا قلتَ ومتى ولمن' }
+  ]},
+  { g: 'الأرقام', items: [
+    { id: 'calc',   t: 'حاسبة الملعب',       ic: 'calc',    sub: 'ما يربحه هو — هذه ما تفتحها أمامه' },
+    { id: 'econ',   t: 'اقتصاديات المنصة',   ic: 'chart',   sub: 'ما تربحه أنت' }
+  ]},
+  { g: 'المرجع',  items: [
+    { id: 'terms',  t: 'نموذج العمل',        ic: 'sliders', sub: 'النسب والسقف والقواعد — مصدر الحقيقة' },
+    { id: 'ideas',  t: 'الأفكار',            ic: 'bulb',    sub: 'صندوق الوارد' }
+  ]}
+];
+
+/* ═══ الجسر إلى الخادم ═══════════════════════════════════════════ */
+var READ_ONLY = { getBootstrap: 1, refresh: 1 };
+function call(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  if (!READ_ONLY[fn]) S.wrote = true;
+  setSync('busy');
+  return new Promise(function (res, rej) {
+    google.script.run
+      .withSuccessHandler(function (r) { setSync('ok'); res(r); })
+      .withFailureHandler(function (e) { setSync('err'); rej(e); })
+      [fn].apply(null, args);
+  });
+}
+
+/* «محفوظ» تُقال بعد كتابةٍ وقعت فعلًا لا عند أوّل قراءة —
+   وإلّا ادّعى الشريط حفظًا لم يحدث. */
+function setSync(state) {
+  var el = $('#sync'); if (!el) return;
+  el.className = 'sync' + (state === 'busy' ? ' busy' : state === 'err' ? ' err' : '');
+  $('#syncTxt').textContent = state === 'busy' ? 'نكتب…'
+                            : state === 'err'  ? 'ما وصل'
+                            : S.wrote ? 'محفوظ في الشيت' : 'متّصل بالشيت';
+}
+
+/* ═══ التوستات ═══════════════════════════════════════════════════ */
+function toast(msg, kind) {
+  var el = document.createElement('div');
+  el.className = 'toast ' + (kind || 'ok');
+  el.innerHTML = icon(kind === 'bad' ? 'alert' : 'check') + '<span>' + esc(msg) + '</span>';
+  $('#toasts').appendChild(el);
+  setTimeout(function () {
+    el.classList.add('out');
+    setTimeout(function () { el.remove(); }, 220);
+  }, kind === 'bad' ? 5200 : 3000);
+}
+
+/* ═══ مساعدات على البيانات ═══════════════════════════════════════ */
+var C = {};                                   // الثوابت
+function T() { return terms(C); }
+
+function venues()  { return (S.boot.venues.rows  || []).filter(function (r) { return r['اسم الملعب']; }); }
+function tasksAll(){ return (S.boot.tasks.rows   || []).filter(function (r) { return r['المهمّة']; }); }
+function ideasAll(){ return (S.boot.ideas.rows   || []).filter(function (r) { return r['الفكرة']; }); }
+function logsAll() { return (S.boot.logs.rows    || []).filter(function (r) { return r['الملعب'] || r['خلاصة ما دار']; }); }
+
+var ON_PLATFORM = 'على المنصّة';
+
+/** كم يومًا مضى على تاريخٍ نصّيّ (YYYY-MM-DD) — أو `null` إن لم يكن تاريخًا. */
+function daysAgo(d) {
+  if (!d) return null;
+  var t = Date.parse(String(d) + 'T00:00:00');
+  if (isNaN(t)) return null;
+  return Math.max(0, Math.round((Date.now() - t) / 86400000));
+}
+function daysSince(row) { return daysAgo(row['آخر تواصل']); }
+
+function phoneDigits(p) { return String(p || '').replace(/\D/g, ''); }
+function intlPhone(p) {
+  var d = phoneDigits(p);
+  if (!d) return '';
+  if (d.indexOf('962') === 0) return d;
+  if (d.charAt(0) === '0') return '962' + d.slice(1);
+  return '962' + d;
+}
+function telHref(p) { var d = intlPhone(p); return d ? 'tel:+' + d : ''; }
+function waHref(p)  { var d = intlPhone(p); return d ? 'https://wa.me/' + d : ''; }
+
+function vocab(table, col) {
+  var v = (S.boot.vocab && S.boot.vocab[table] && S.boot.vocab[table][col]) || [];
+  return v.slice();
+}
+
+/** ملاعب فرعية على المنصّة — مقيسة من الصفوف لا مكتوبة بيد. */
+function liveSubfields() {
+  var n = 0, missing = 0;
+  venues().forEach(function (r) {
+    if (String(r['الحالة'] || '').trim() !== ON_PLATFORM) return;
+    var s = Number(r['عدد الملاعب الفرعية']);
+    if (s > 0) n += s; else missing++;
+  });
+  return { total: n, missing: missing };
+}
+
+/* ═══ الإقلاع ════════════════════════════════════════════════════ */
+function boot() {
+  call('getBootstrap').then(function (b) {
+    S.boot = b; C = b.constants || {};
+
+    S.calc = Object.assign({ current: 30, subfields: 1, price: 40, varCost: 5, through: 1, newB: 8 }, b.calcInputs || {});
+    S.econ = JSON.parse(JSON.stringify(b.econInputs || {}));
+    if (!S.econ.sports || !S.econ.sports.length) {
+      S.econ = { sports: [{ name: 'كرة قدم', places: 30, perPlace: 1, weekly: 15, price: 40 }],
+                 msgCost: .01, msgPer: 1, infra: 33, fixed: 0, churn: 0, newPlace: 3 };
+    }
+    /* شهرُ الانضمام قد يغيب (شيتٌ لم يُنشَأ فيه صفُّ الخطّة بعد) ⇒ يُطبَّع
+       إلى ١ = «على المنصّة اليوم». والغيابُ هنا حالةٌ عادية لا عطل. */
+    S.econ.sports.forEach(function (x) { x.start = Math.max(1, Math.round(Number(x.start) || 1)); });
+    /* انحرافُ السيناريوهات: يأتي من الشيت إن كُتب، وإلّا فالأرقام المبدئية.
+       و`|| SCEN_DEFAULTS.x` وحدها لا تكفي — صفرٌ محفوظٌ عمدًا قيمةٌ صالحة
+       («لا انحراف»)، فيُفحَص الوجودُ لا الصدق. */
+    var dflt = function (v, d) { return isNum(Number(v)) && v !== '' && v !== null ? Number(v) : d; };
+    S.econ.devWeekly   = dflt(S.econ.devWeekly,   SCEN_DEFAULTS.weekly);
+    S.econ.devChurn    = dflt(S.econ.devChurn,    SCEN_DEFAULTS.churn);
+    S.econ.devNewPlace = dflt(S.econ.devNewPlace, SCEN_DEFAULTS.newPlace);
+
+    /* ── ③④ الطلبُ والتحصيل: افتراضاتٌ **محايدة** لا مخترَعة ──────────
+       شيتٌ لم يُكتب فيه صفُّهما بعد يقرأ «تبنٍّ كامل · بلا تسريب · تحصيلٌ
+       فوريّ» — أي **سلوكَ النموذج قبل هذه الدفعة بالحرف**، فلا يتحرّك
+       رقمٌ تحت المالك بلا أن يطلبه. والقيمةُ الصحيحة تُقاس من ملاعبه.
+       و`dflt` لا `||` لأنّ صفرًا محفوظًا عمدًا قيمةٌ صالحة هنا كذلك. */
+    S.econ.adopt0      = dflt(S.econ.adopt0,      1);
+    S.econ.adoptMax    = dflt(S.econ.adoptMax,    1);
+    S.econ.adoptMonths = dflt(S.econ.adoptMonths, 6);
+    S.econ.leak        = dflt(S.econ.leak,        0);
+    S.econ.collect     = dflt(S.econ.collect,     1);
+    S.econ.collectDays = dflt(S.econ.collectDays, 0);
+    S.econ.sports.forEach(function (x) { x.maxPlaces = Math.max(0, Number(x.maxPlaces) || 0); });
+    S.econStartRow = b.econStartRow || 0;
+
+    $('#btnSheet').href = b.sheetUrl || '#';
+    paintStaticIcons();
+    $('#msgCopy').onclick = copyProposal;
+    buildNav();
+    paintTheme();
+    $('#boot').hidden = true;
+    $('#shell').hidden = false;
+    S.ready = true;
+    go(location.hash.replace('#', '') || 'home');
+    setSync('ok');
+  }).catch(function (e) {
+    var m = (e && e.message) ? e.message : 'ما قدرنا نقرأ الشيت.';
+    $('#boot').classList.add('is-err');
+    $('#bootMsg').textContent = m;
+  });
+}
+
+/* ═══ التنقّل ════════════════════════════════════════════════════ */
+function buildNav() {
+  var h = '';
+  PAGES.forEach(function (grp) {
+    h += '<p class="nav-sec">' + esc(grp.g) + '</p>';
+    grp.items.forEach(function (p) {
+      h += '<button class="nav-btn" type="button" data-go="' + p.id + '">' +
+             icon(p.ic) + '<span>' + esc(p.t) + '</span>' +
+             '<span class="tail" data-tail="' + p.id + '" hidden></span></button>';
+    });
+  });
+  $('#nav').innerHTML = h;
+}
+
+function pageMeta(id) {
+  for (var i = 0; i < PAGES.length; i++) {
+    var f = PAGES[i].items.filter(function (p) { return p.id === id; })[0];
+    if (f) return f;
+  }
+  return PAGES[0].items[0];
+}
+
+function go(id) {
+  if (!pageMeta(id) || !S.ready) id = 'home';
+  S.page = id;
+  history.replaceState(null, '', '#' + id);
+
+  var m = pageMeta(id);
+  $('#pageTitle').textContent = m.t;
+  $('#pageSub').textContent   = m.sub;
+  $$('#nav .nav-btn').forEach(function (b) { b.classList.toggle('on', b.dataset.go === id); });
+  $('#rail').classList.remove('open');
+
+  render();
+  $('.view').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function render() {
+  var v = $('#view');
+  var fn = ({ home: vHome, venues: vVenues, calc: vCalc, econ: vEcon,
+              terms: vTerms, tasks: vTasks, ideas: vIdeas, logs: vLogs })[S.page];
+  v.innerHTML = fn ? fn() : '';
+  if (afterRender[S.page]) afterRender[S.page]();
+  paintBadges();
+}
+var afterRender = {};
+
+function paintBadges() {
+  var due = toCall().length, open = openTasks().length;
+  setTail('venues', due, due > 0);
+  setTail('tasks', open, false);
+}
+function setTail(id, n, hot) {
+  var el = $('[data-tail="' + id + '"]');
+  if (!el) return;
+  el.hidden = !n;
+  el.textContent = n;
+  el.className = 'tail' + (hot ? ' hot' : '');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ① لوحة اليوم
+   ═══════════════════════════════════════════════════════════════════ */
+
+function toCall() {
+  return venues()
+    .filter(function (r) { return String(r['الحالة'] || '').trim() !== ON_PLATFORM; })
+    .map(function (r) { var d = daysSince(r); return { r: r, d: d, k: (d === null ? 99999 : d) }; })
+    .sort(function (a, b) { return b.k - a.k; });
+}
+function openTasks() {
+  return tasksAll().filter(function (t) {
+    var st = String(t['الحالة'] || '').trim();
+    return st !== 'تمّت' && st !== 'منجزة' && st !== 'ملغاة' && st !== 'مكتملة';
+  });
+}
+function undecidedIdeas() {
+  return ideasAll().filter(function (i) { return String(i['القرار'] || '').trim() === 'لم يُقرَّر' || !String(i['القرار'] || '').trim(); });
+}
+function unfilled() {
+  var out = [];
+  Object.keys(C).forEach(function (k) {
+    if (String(C[k].value).indexOf('املأني') > -1) out.push({ cell: k, label: C[k].label, hint: C[k].hint });
+  });
+  return out;
+}
+
+function vHome() {
+  var t = T(), sf = liveSubfields();
+  var all = venues(), live = all.filter(function (r) { return String(r['الحالة'] || '').trim() === ON_PLATFORM; });
+  var ceiling = sf.total * t.cap;
+  var calls = toCall(), tasks = openTasks(), ideas = undecidedIdeas(), gaps = unfilled();
+
+  var h = '<div class="stack">';
+
+  /* ── الرقم البطل: سقفٌ مقيس لا توقُّع ── */
+  h += '<div class="grid g-4">' +
+    '<div class="hero">' +
+      '<p class="h-l">سقف دخلك الشهري اليوم</p>' +
+      '<div class="h-v">' + big(ceiling, 'د.أ') + '</div>' +
+      '<p class="h-d">' + esc(fieldsNoun(sf.total)) + ' فرعيًّا على المنصّة × ' + n0(t.cap) + ' سقف كلٍّ. ' +
+      '<b>سقفٌ لا توقُّع</b> — ولا يبلغه إلّا الملعب الذي امتلأ.</p>' +
+      (sf.missing ? '<p class="h-d" style="color:var(--warn);margin-top:6px">' +
+        icon('alert') + ' ' + placesNoun(sf.missing) + ' على المنصّة بلا «عدد الملاعب الفرعية» — الرقم أعلاه ناقصٌ بمقدارها.</p>' : '') +
+    '</div>' +
+
+    kpi('أماكن على المنصّة', n0(live.length), 'من ' + placesNoun(all.length) + ' في قائمتك') +
+    kpi('يستحقّون اتّصالًا', n0(calls.length), calls.length ? 'أقدمهم ' + (calls[0].d === null ? 'ما تواصلتَ معه أصلًا' : 'منذ ' + daysNoun(calls[0].d)) : 'لا أحد ينتظر') +
+  '</div>';
+
+  /* ── مين تتصل فيه اليوم ── */
+  h += '<div class="card"><div class="card-h"><h3>مين تتصل فيه اليوم؟</h3>' +
+       '<p>الأقدم أوّلًا — ومن لم تتواصل معه قطّ فوق الجميع</p>' +
+       '<button class="btn quiet sm sp" type="button" data-go="venues">كلّ الملاعب ' + icon('arrow') + '</button></div>';
+
+  if (!calls.length) {
+    h += '<div class="empty"><h4>ما في أحد ينتظر اتّصالًا</h4><p>كلّ من في قائمتك إمّا على المنصّة أو تواصلتَ معه للتوّ.</p></div>';
+  } else {
+    h += '<div class="call">';
+    calls.slice(0, 6).forEach(function (c, i) {
+      var r = c.r, ph = r['رقم التلفون'];
+      var when = c.d === null ? 'ما في تواصل مسجَّل' : 'آخر تواصل منذ ' + daysNoun(c.d);
+      h += '<div class="call-row' + (c.d === null || c.d > 21 ? ' hot' : '') + '">' +
+        '<span class="call-rank">' + (i + 1) + '</span>' +
+        '<span class="call-b"><b>' + esc(r['اسم الملعب']) + '</b>' +
+          '<span>' + esc(r['المنطقة'] || '—') + ' · ' + esc(when) + (r['الخطوة التالية'] ? ' · ' + esc(r['الخطوة التالية']) : '') + '</span></span>' +
+        '<span class="call-a">' +
+          (ph ? '<a class="icon-btn" href="' + esc(telHref(ph)) + '" aria-label="اتّصل بـ' + esc(r['اسم الملعب']) + '">' + icon('phone') + '</a>' +
+                '<a class="icon-btn" href="' + esc(waHref(ph)) + '" target="_blank" rel="noopener" aria-label="واتساب">' + icon('wa') + '</a>'
+              : '<span class="chip warn"><span class="shape"></span>لا رقم</span>') +
+          '<button class="icon-btn" type="button" data-venue="' + r._row + '" aria-label="افتح البطاقة">' + icon('edit') + '</button>' +
+        '</span></div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+
+  /* ── صفّان: المهام والأفكار ── */
+  h += '<div class="grid g-2">';
+
+  h += '<div class="card"><div class="card-h"><h3>مهامّ مفتوحة</h3><p>' + n0(tasks.length) + '</p>' +
+       '<button class="btn quiet sm sp" type="button" data-add="task">' + icon('plus') + 'أضف</button></div>';
+  h += tasks.length
+    ? '<ul>' + tasks.slice(0, 6).map(function (t2) {
+        return '<li class="call-row" style="padding:10px 0">' +
+          '<button class="icon-btn" type="button" data-done="' + t2._row + '" aria-label="علّمها منجزة">' + icon('check') + '</button>' +
+          '<span class="call-b"><b style="font-size:14px">' + esc(t2['المهمّة']) + '</b>' +
+          '<span>' + esc([t2['المجال'], t2['الأولوية'], t2['الموعد']].filter(Boolean).join(' · ') || '—') + '</span></span></li>';
+      }).join('') + '</ul>'
+    : '<div class="empty"><p>لا مهامّ مفتوحة.</p></div>';
+  h += '</div>';
+
+  h += '<div class="card"><div class="card-h"><h3>أفكار تنتظر قرارًا</h3><p>' + n0(ideas.length) + '</p>' +
+       '<button class="btn quiet sm sp" type="button" data-go="ideas">افتحها ' + icon('arrow') + '</button></div>';
+  h += ideas.length
+    ? '<ul>' + ideas.slice(0, 6).map(function (i2) {
+        return '<li class="call-row" style="padding:10px 0"><span class="call-b"><b style="font-size:14px">' +
+          esc(i2['الفكرة']) + '</b><span>' + esc(i2['من أين جاءت'] || '—') + '</span></span>' +
+          '<span class="chip warn"><span class="shape"></span>لم يُقرَّر</span></li>';
+      }).join('') + '</ul>'
+    : '<div class="empty"><p>كلّ فكرةٍ أخذت حكمها.</p></div>';
+  h += '</div>';
+
+  h += '</div>';
+
+  /* ── الخانات الناقصة: ما سيسألك عنه المحامي ── */
+  if (gaps.length) {
+    h += '<div class="note warn">' + icon('alert') + '<div><b>' + countNoun(gaps.length, 'خانةٌ واحدة', 'خانتان', 'خانات', 'خانة') +
+         ' في نموذج عملك بلا جواب</b> — وهي بالضبط ما سيسألك عنه المحامي: ' +
+         gaps.map(function (g) { return '«' + esc(g.label) + '»'; }).join('، ') +
+         '. <button class="btn quiet sm" type="button" data-go="terms">افتح نموذج العمل</button></div></div>';
+  }
+
+  h += '</div>';
+  return h;
+}
+
+function kpi(label, val, den, trend) {
+  return '<div class="card kpi"><span class="k-l">' + esc(label) + '</span>' +
+         '<span class="k-v"><span class="numP">' + val + '</span></span>' +
+         '<span class="k-d">' + esc(den || '') + '</span>' +
+         (trend ? '<span class="k-t">' + trend + '</span>' : '') + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ② الملاعب
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── ⭐ ترتيب الحالات كما يجري القمع لا كما تجري الأبجدية ──────────
+   كانت `.sort()` — فتقع «على المنصّة» بين «تفاوض» و«لم نتواصل» بلا معنى،
+   ويُقرأ الصفُّ قائمةَ وسومٍ لا مسارًا.
+   🔴 **والترتيب من الشيت لا من قائمةٍ أكتبها هنا**: قائمةُ التحقّق في
+      عمود «الحالة» مكتوبةٌ بترتيبها الطبيعي، وهي مصدرُ الحقيقة نفسه الذي
+      تُقرأ منه المفردات (القرار ⑤ في README). وقائمةٌ ثانية هنا تنحرف عنها
+      أوّلَ مرّةٍ يضيف فيها المالك حالة.
+   ⚠️ وما ليس في القائمة يُلحَق بعدها بترتيبه الأبجدي — لا يُحذَف ولا
+      يُخمَّن موضعُه. و«بلا حالة» آخرًا دائمًا: هي غيابُ مرحلةٍ لا مرحلة. */
+function funnelOrder(keys) {
+  var order = vocab('venues', 'الحالة');
+  var at = function (k) {
+    if (k === '—') return 1e6;
+    var i = order.indexOf(k);
+    return i === -1 ? 1e5 : i;
+  };
+  return keys.slice().sort(function (a, b) {
+    var d = at(a) - at(b);
+    return d || (a < b ? -1 : a > b ? 1 : 0);
+  });
+}
+
+function vVenues() {
+  var rows = venues();
+  var statuses = {}, regions = {};
+  rows.forEach(function (r) {
+    statuses[String(r['الحالة'] || '').trim() || '—'] = (statuses[String(r['الحالة'] || '').trim() || '—'] || 0) + 1;
+    if (r['المنطقة']) regions[r['المنطقة']] = (regions[r['المنطقة']] || 0) + 1;
+  });
+
+  var f = S.vFilter;
+  var shown = rows.filter(function (r) {
+    if (f.status && (String(r['الحالة'] || '').trim() || '—') !== f.status) return false;
+    if (f.region && r['المنطقة'] !== f.region) return false;
+    if (f.q) {
+      var hay = [r['اسم الملعب'], r['المنطقة'], r['المسؤول'], r['رقم التلفون'], r['ملاحظات / سبب الرفض']].join(' ');
+      if (hay.indexOf(f.q) === -1) return false;
+    }
+    return true;
+  });
+
+  var h = '<div class="stack">';
+
+  h += '<div class="card"><div class="sec-h" style="margin:0 0 12px">' +
+       '<h2>' + n0(rows.length) + ' مكانًا في قائمتك</h2>' +
+       '<p>' + n0(statuses[ON_PLATFORM] || 0) + ' على المنصّة</p>' +
+       '<button class="btn sm sp" type="button" data-add="venue">' + icon('plus') + 'أضف مكانًا</button></div>';
+
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+       '<button class="chip' + (!f.status ? ' on' : '') + '" type="button" data-fs="">الكل ' + n0(rows.length) + '</button>' +
+       funnelOrder(Object.keys(statuses)).map(function (k) {
+         return '<button class="chip' + (f.status === k ? ' on' : '') + '" type="button" data-fs="' + esc(k) + '">' +
+                esc(k === '—' ? 'بلا حالة' : k) + ' ' + n0(statuses[k]) + '</button>';
+       }).join('') + '</div>';
+
+  /* ⚠️ الشرائح مرتَّبةٌ قمعيًّا الآن، ويبقى أنّ القمع لا يُقرأ ما دام
+     العمودُ فارغًا في معظم الصفوف. والتنبيه يقول العدد ويفتح عليه بضغطة
+     — لا يوبّخ ولا يُخفي الرقم. */
+  if (statuses['—'] && rows.length && statuses['—'] >= rows.length / 3) {
+    h += '<p class="hint" style="margin-bottom:12px">' +
+         '<b>' + n0(statuses['—']) + '</b> من ' + n0(rows.length) +
+         ' بلا حالة — والشرائح أعلاه لا تقول مسارًا حتى تُملأ. ' +
+         'افتح أيّ صفٍّ واختر حالته.</p>';
+  }
+
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px">' +
+       '<input class="input" id="vq" type="search" placeholder="ابحث باسم أو منطقة أو رقم…" value="' + esc(f.q) + '" style="max-width:280px">' +
+       '<select class="input" id="vr" style="max-width:200px"><option value="">كلّ المناطق</option>' +
+       Object.keys(regions).sort().map(function (k) {
+         return '<option value="' + esc(k) + '"' + (f.region === k ? ' selected' : '') + '>' + esc(k) + ' (' + regions[k] + ')</option>';
+       }).join('') + '</select></div></div>';
+
+  h += '<div class="card pad-0"><div class="tbl-wrap"><table class="tbl"><thead><tr>' +
+       '<th>الملعب</th><th>المنطقة</th><th>الحالة</th><th>منذ</th><th>ملاعب فرعية</th><th>الخطوة التالية</th><th>الرقم</th>' +
+       '</tr></thead><tbody>';
+
+  if (!shown.length) {
+    h += '<tr><td colspan="7"><div class="empty"><h4>ما في نتائج</h4><p>جرّب مرشِّحًا أوسع.</p></div></td></tr>';
+  } else {
+    shown.forEach(function (r) {
+      var d = daysSince(r), st = String(r['الحالة'] || '').trim();
+      /* الغياب صنفٌ قائم بذاته (h0) لا «أقصى القيمة»: شريطٌ ممتلئ أحمر
+         لِمن لم نتواصل معه قطّ يُقرأ قياسًا، وهو ادّعاءٌ لا قياس. */
+      var lvl = d === null ? 0 : d > 21 ? 3 : d > 10 ? 2 : 1;
+      h += '<tr class="clickable" data-venue="' + r._row + '">' +
+        '<td class="nm">' + esc(r['اسم الملعب']) + '</td>' +
+        '<td>' + esc(r['المنطقة'] || '—') + '</td>' +
+        '<td>' + (st === ON_PLATFORM
+              ? '<span class="chip good"><span class="shape"></span>على المنصّة</span>'
+              : st ? '<span class="chip">' + esc(st) + '</span>' : '<span class="chip warn"><span class="shape"></span>بلا حالة</span>') + '</td>' +
+        '<td class="n"><span class="heat h' + lvl + '"><span class="bar"><i style="width:' +
+             (d === null ? 0 : Math.min(100, d / 30 * 100)).toFixed(0) + '%"></i></span>' +
+             (d === null ? '<span style="color:var(--ink-3)">ما تواصلت</span>' : n0(d)) + '</span></td>' +
+        '<td class="n">' + (Number(r['عدد الملاعب الفرعية']) > 0 ? n0(Number(r['عدد الملاعب الفرعية'])) :
+             (st === ON_PLATFORM ? '<span class="chip warn"><span class="shape"></span>ناقص</span>' : '—')) + '</td>' +
+        '<td>' + esc(r['الخطوة التالية'] || '—') + '</td>' +
+        '<td class="n">' + (r['رقم التلفون'] ? '<span dir="ltr">' + esc(r['#رقم التلفون'] || r['رقم التلفون']) + '</span>' : '—') + '</td>' +
+      '</tr>';
+    });
+  }
+  h += '</tbody></table></div></div>';
+
+  h += '<div class="note">' + icon('info') + '<div>الصفّ يُفتح بالنقر. و<b>عمودا «#» و«منذ (يوم)» صيغتان</b> في الشيت — ' +
+       'الموقع لا يكتب فوقهما إطلاقًا، والحارس في الخادم لا في الواجهة.</div></div>';
+
+  h += '</div>';
+  return h;
+}
+
+afterRender.venues = function () {
+  var q = $('#vq'); if (q) q.oninput = debounce(function () { S.vFilter.q = q.value.trim(); render(); q2focus(); }, 260);
+  var r = $('#vr'); if (r) r.onchange = function () { S.vFilter.region = r.value; render(); };
+};
+function q2focus() { var q = $('#vq'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
+function debounce(fn, ms) { var t; return function () { clearTimeout(t); t = setTimeout(fn, ms); }; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ③ حاسبة الملعب
+   ═══════════════════════════════════════════════════════════════════ */
+
+function vCalc() {
+  var t = T(), r = venueCalc(S.calc, t);
+
+  var h = '<div class="calc-grid">';
+
+  /* ── العمود الأيمن: مدخلاته ── */
+  h += '<div class="card"><div class="card-h"><h3>مدخلات ملعبه</h3><p>اسأله وأدخِلها — اكتب الرقم أو اضغط ±</p></div>';
+  h += '<div class="stack" style="gap:16px">' +
+    numField({ k: 'current',   label: 'حجوزاته الشهرية اليوم',      min: 0, max: 600, step: 1, val: S.calc.current }) +
+    numField({ k: 'subfields', label: 'عدد ملاعبه الفرعية',          min: 1, max: 30,  step: 1, val: S.calc.subfields,
+               hint: 'العدّاد والسقف لكلّ ملعبٍ فرعيّ' }) +
+    numField({ k: 'price',     label: 'متوسط سعر الحجزة (د.أ)',      min: 1, max: 400, step: 1, val: S.calc.price }) +
+    numField({ k: 'varCost',   label: 'تكلفته المتغيّرة للحجزة (د.أ)', min: 0, max: 300, step: 1, val: S.calc.varCost,
+               hint: 'كهرباء ومياه وتنظيف — لا إيجار ولا رواتب' }) +
+    numField({ k: 'through',   label: '٪ ممّا يمرّ عبر المنصّة',      min: 0, max: 100, step: 5, val: S.calc.through * 100,
+               pct: true, suffix: '٪', hint: '١٠٠٪ الافتراض الأكثر أمانًا حين تعرض عليه' }) +
+    numField({ k: 'newB',      label: 'حجوزات جديدة تجلبها المنصّة',  min: 0, max: 600, step: 1, val: S.calc.newB }) +
+  '</div>';
+
+  h += '<div style="display:flex;gap:8px;margin-top:18px">' +
+       '<button class="btn" type="button" id="stageBtn">' + icon('play') + 'وضع العرض</button>' +
+       '<button class="btn ghost sm" type="button" id="calcSave"' + (S.calcDirty ? '' : ' disabled') + '>' + icon('save') + 'احفظ في الشيت</button>' +
+       '</div>';
+  h += '<p class="hint" style="margin-top:8px">مدخلاته تخصّه وحده ولا تمسّ «اقتصاديات المنصة». ' +
+       'والتعديل هنا <b>محلّيّ</b> حتى تضغط «احفظ» — فتغييرها في اجتماعٍ آمن.</p>';
+  h += '</div>';
+
+  /* ── العمود الأيسر: النتيجة ── */
+  h += '<div class="stack">';
+
+  h += '<div class="grid g-4">' +
+    '<div class="hero">' +
+      '<p class="h-l">صافي فائدته الشهرية</p>' +
+      '<div class="h-v" style="color:' + (r.net >= 0 ? 'var(--good)' : 'var(--bad)') + '">' + big(r.net, 'د.أ') + '</div>' +
+      '<p class="h-d">ربح حجوزاته الجديدة (' + n0(r.grossNew) + ') ناقصَ ما يدفعه (' + n0(r.pay) + ').</p>' +
+    '</div>' +
+    kpi('ما يدفعه شهريًّا', n0(r.pay) + '<span class="u">د.أ</span>', 'من الشهر الثاني · سقفه المطلق ' + n0(r.capTotal)) +
+    kpi('النسبة الفعلية', pct(r.effRate), 'من قيمة ما مرّ عبرنا — لا ' + pct(t.r1, 0)) +
+  '</div>';
+
+  var verdict = !isNum(r.breakEven)
+      ? { k: 'no', t: 'ما في تعادل بهذي الأرقام — هامشه ما بيغطّي العمولة.' }
+      : S.calc.newB >= r.breakEven
+        ? { k: 'ok', t: 'رابح — فوق التعادل بـ<b> ' + n1(S.calc.newB - r.breakEven) + ' </b>حجزة جديدة شهريًّا.' }
+        : { k: 'no', t: 'تحت التعادل بـ<b> ' + n1(r.breakEven - S.calc.newB) + ' </b>حجزة جديدة شهريًّا.' };
+  h += '<div class="verdict ' + verdict.k + '">' + icon(verdict.k === 'ok' ? 'check' : 'alert') + '<div>' + verdict.t +
+       (isNum(r.breakEven) ? '<br><span style="opacity:.85;font-weight:400">نقطة التعادل: ' + n1(r.breakEven) +
+         ' حجزة جديدة — أي نموّ ' + pct(r.growthNeeded, 0) + ' على حجوزاته الحالية.</span>' : '') + '</div></div>';
+
+  /* 🔴 كان هذا رسمًا بسلسلتين (عمولة/اشتراك) — وقياسُهما أثبت أنّهما
+     تتطابقان تقريبًا: الفرق بينهما ثابتٌ صغير بينما يهيمن هامشُه هو
+     (35 × س) على الاثنين، فتُرسَم سلسلتان تُقرآن خطًّا واحدًا. المقارنة
+     صارت **رقمًا واحدًا** في جدول التفاصيل، وكلُّ رسمٍ هنا سلسلةٌ واحدة
+     تحكي قصّةً واحدة. */
+  h += '<div class="grid g-2">' +
+    '<div class="card chart-host"><div class="card-h"><h3>صافي فائدته كلّما نمت حجوزاته</h3>' +
+      '<p>بالدينار شهريًّا، مقابل الحجوزات الجديدة</p></div><div id="ch1"></div></div>' +
+    '<div class="card chart-host"><div class="card-h"><h3>ما يدفعه الملعب الفرعي الواحد</h3>' +
+      '<p>النسبة تنزل والسقف يقف — وهذا هو بيت القصيد</p></div><div id="ch2"></div></div>' +
+  '</div>';
+
+  h += '<div class="card"><div class="card-h"><h3>التفاصيل</h3><p>نفس أسطر الورقة</p></div>' +
+    detailRows([
+      ['حجوزات تمرّ عبر المنصّة (كلّ ملاعبه)', n1(r.through)],
+      ['منها لكلّ ملعبٍ فرعيّ شهريًّا',        n1(r.perSub)],
+      ['عمولة الملعب الفرعي الواحد',           n2(r.commPerSub) + ' د.أ'],
+      ['هامشه الصافي لكلّ حجزة',                n2(r.marginPer) + ' د.أ'],
+      ['ربحه من الحجوزات الجديدة (قبل ما يدفع)', n2(r.grossNew) + ' د.أ'],
+      ['صافي الشهر الأول (مجّانيّ بالكامل)',    n2(r.firstMonth) + ' د.أ'],
+      ['صافي فائدته في السنة الأولى',           n2(r.yearNet) + ' د.أ'],
+      ['لو كان اشتراكًا ثابتًا بدل العمولة',     n0(t.sub) + ' د.أ' +
+        (t.sub > r.pay ? '  (أغلى عليه بـ' + n0(t.sub - r.pay) + ')'
+                       : t.sub < r.pay ? '  (أرخص عليه بـ' + n0(r.pay - t.sub) + ')' : '  (سواء)')]
+    ]) + '</div>';
+
+  h += '</div></div>';
+  return h;
+}
+
+function detailRows(rows) {
+  return '<div class="tbl-wrap"><table class="tbl"><tbody>' + rows.map(function (r) {
+    return '<tr><td>' + esc(r[0]) + '</td><td class="n nm" style="text-align:end">' + esc(r[1]) + '</td></tr>';
+  }).join('') + '</tbody></table></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   حقل الرقم  —  مكوّنٌ واحد تستعمله الصفحات الثلاث
+   ───────────────────────────────────────────────────────────────────
+   🔴 المزلاج وحده كان يستحيل معه بلوغُ رقمٍ بعينه على شاشة لمس. وثلاث
+      صفحاتٍ بثلاث معالجاتٍ مختلفة للأرقام تنحرف إحداها يومًا — فمدخلٌ
+      واحد لكلّها: كتابةٌ مباشرة (والحقل يُحدَّد كلُّه عند اللمس فتكتب
+      فوقه فورًا) · خطوة ± بهدفٍ ٤٤px · ومزلاجٌ حيث يُطلَب السحبُ فعلًا.
+   ⚠️ والقيم في الواجهة **بمساحة العرض** (٪ من ٠ إلى ١٠٠)، والمكوّن هو
+      من يحوّلها إلى مساحة التخزين (كسرٌ من ٠ إلى ١) قبل أن يسلّمها —
+      فلا يحمل كلُّ نداءٍ تحويلَه بيده ويسهو أحدُها.
+   ═══════════════════════════════════════════════════════════════════ */
+function numField(o) {
+  var dec   = stepDec(o.step);
+  var shown = snapTo(o.val, o.step, dec);
+  var id    = 'nf-' + String(o.k).replace(/[^\w]/g, '_');
+  return '<div class="nf' + (o.big ? ' is-big' : '') + '" data-nf="' + esc(o.k) + '"' +
+      ' data-min="' + o.min + '" data-max="' + o.max + '" data-step="' + o.step + '" data-dec="' + dec + '"' +
+      (o.pct ? ' data-pct="1"' : '') + '>' +
+    '<div class="nf-top"><label for="' + id + '">' + esc(o.label) + '</label></div>' +
+    '<div class="nf-row">' +
+      '<button class="nf-step" type="button" data-d="-1" aria-label="أنقص">' + icon('minus') + '</button>' +
+      '<input class="nf-val" id="' + id + '" type="text" autocomplete="off" spellcheck="false"' +
+        ' inputmode="' + (dec ? 'decimal' : 'numeric') + '" value="' + esc(shown) + '">' +
+      (o.suffix ? '<span class="nf-suffix">' + esc(o.suffix) + '</span>' : '') +
+      '<button class="nf-step" type="button" data-d="1" aria-label="زِد">' + icon('plus') + '</button>' +
+    '</div>' +
+    (o.slider ? '<input type="range" data-nfr="1" min="' + o.min + '" max="' + o.max +
+                '" step="' + o.step + '" value="' + o.val + '" aria-label="' + esc(o.label) + '">' : '') +
+    (o.hint ? '<span class="hint">' + esc(o.hint) + '</span>' : '') +
+  '</div>';
+}
+
+/** يربط كلّ حقول الرقم داخل `root`، ويسلّم `(مفتاح، قيمةٌ مخزَّنة)`. */
+function wireNumFields(root, onChange) {
+  $$('[data-nf]', root).forEach(function (box) {
+    var key  = box.dataset.nf;
+    var min  = Number(box.dataset.min), max = Number(box.dataset.max);
+    var step = Number(box.dataset.step), dec = Number(box.dataset.dec);
+    var pct  = box.dataset.pct === '1';
+    var inp  = $('.nf-val', box), rng = $('[data-nfr]', box);
+
+    function cur() { var v = parseNum(inp.value); return isFinite(v) ? v : min; }
+
+    function emit(disp, writeBack) {
+      var v = Math.max(min, Math.min(max, disp));
+      if (rng) rng.value = v;
+      /* ⚠️ لا يُكتب في الحقل أثناء الكتابة: إعادةُ الكتابة تنقل المؤشّر
+         إلى الطرف فيستحيل إدخالُ رقمٍ من رقمين. التطبيعُ عند المغادرة. */
+      if (writeBack) inp.value = String(snapTo(v, step, dec));
+      onChange(key, pct ? v / 100 : v);
+    }
+
+    /* 🔴 `select()` داخل معالج `focus` نفسه يضيع: المتصفّح يضع المؤشّر
+       **بعد** الحدث فيمحو التحديد. مقيس: `selectionEnd === 0`. التأجيل
+       بمهمّةٍ واحدة يجعله يقع بعد وضعِ المتصفّح مؤشّرَه. */
+    inp.onfocus = function () {
+      setTimeout(function () { try { inp.select(); } catch (e) {} }, 0);
+    };
+    inp.oninput = function () {
+      var raw = parseNum(inp.value);
+      if (isFinite(raw)) emit(raw, false);
+    };
+    inp.onblur   = function () { emit(cur(), true); };
+    inp.onkeydown = function (e) {
+      if (e.key === 'Enter')     { inp.blur(); }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); emit(cur() + step, true); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); emit(cur() - step, true); }
+    };
+    $$('.nf-step', box).forEach(function (b) {
+      b.onclick = function () { emit(cur() + Number(b.dataset.d) * step, true); };
+    });
+    if (rng) rng.oninput = function () { emit(Number(rng.value), true); };
+  });
+}
+
+/** يكتب قيمةً مخزَّنة في حقلٍ قائم — للقفزات السريعة في وضع العرض. */
+function setNumField(root, key, stored) {
+  var box = $('[data-nf="' + key + '"]', root); if (!box) return;
+  var pct = box.dataset.pct === '1';
+  var disp = pct ? stored * 100 : stored;
+  var inp = $('.nf-val', box), rng = $('[data-nfr]', box);
+  inp.value = String(snapTo(disp, Number(box.dataset.step), Number(box.dataset.dec)));
+  if (rng) rng.value = disp;
+}
+
+afterRender.calc = function () {
+  wireNumFields($('#view'), function (k, v) {
+    S.calc[k] = v; S.calcDirty = true;
+    repaintCalc();
+  });
+  $('#stageBtn').onclick = openStage;
+  $('#calcSave').onclick = function () {
+    var btn = this; btn.classList.add('loading');
+    call('saveCalcInputs', S.calc)
+      .then(function () { S.calcDirty = false; render(); toast('حفظنا مدخلاته في «حاسبة الملعب».'); })
+      .catch(function (e) { btn.classList.remove('loading'); toast(e.message || 'ما قدرنا نحفظ.', 'bad'); });
+  };
+  drawCalcCharts();
+};
+
+/** يعيد رسم النتيجة وحدها — لا الصفحة كلّها، فالمزلاج تحت الإصبع. */
+function repaintCalc() {
+  var t = T(), r = venueCalc(S.calc, t);
+  var hv = $('#view .hero .h-v');
+  if (hv) {
+    /* يُسبَط رقمُ العنصر لا يُستبدَل الوسم كلّه — استبدالٌ كامل يقتل حالة
+       الحركة الجارية ويُفقد `._animRaf` أثره، وBig() يبني numP+u كشقيقين
+       أصلًا فعزل الرقم وحده آمن. */
+    var numEl = hv.querySelector('.numP');
+    if (numEl) animateNumber(numEl, r.net, { fmt: n0 });
+    else hv.innerHTML = big(r.net, 'د.أ');
+    hv.style.color = r.net >= 0 ? 'var(--good)' : 'var(--bad)';
+  }
+  var hd = $('#view .hero .h-d');
+  if (hd) hd.textContent = 'ربح حجوزاته الجديدة (' + n0(r.grossNew) + ') ناقصَ ما يدفعه (' + n0(r.pay) + ').';
+
+  var tiles = $$('#view .kpi .k-v');
+  if (tiles[0]) tiles[0].innerHTML = '<span class="numP">' + n0(r.pay) + '<span class="u">د.أ</span></span>';
+  if (tiles[1]) tiles[1].innerHTML = '<span class="numP">' + pct(r.effRate) + '</span>';
+  var dens = $$('#view .kpi .k-d');
+  if (dens[0]) dens[0].textContent = 'من الشهر الثاني · سقفه المطلق ' + n0(r.capTotal);
+
+  var vd = $('#view .verdict');
+  if (vd) {
+    var ok = isNum(r.breakEven) && S.calc.newB >= r.breakEven;
+    vd.className = 'verdict ' + (ok ? 'ok' : 'no');
+    vd.innerHTML = icon(ok ? 'check' : 'alert') + '<div>' +
+      (!isNum(r.breakEven) ? 'ما في تعادل بهذي الأرقام — هامشه ما بيغطّي العمولة.'
+        : ok ? 'رابح — فوق التعادل بـ<b> ' + n1(S.calc.newB - r.breakEven) + ' </b>حجزة جديدة شهريًّا.'
+             : 'تحت التعادل بـ<b> ' + n1(r.breakEven - S.calc.newB) + ' </b>حجزة جديدة شهريًّا.') +
+      (isNum(r.breakEven) ? '<br><span style="opacity:.85;font-weight:400">نقطة التعادل: ' + n1(r.breakEven) +
+        ' حجزة جديدة — أي نموّ ' + pct(r.growthNeeded, 0) + ' على حجوزاته الحالية.</span>' : '') + '</div>';
+  }
+
+  var save = $('#calcSave'); if (save) save.disabled = !S.calcDirty;
+  drawCalcCharts();
+  if (S.stageOn) paintStage();
+}
+
+function drawCalcCharts() {
+  var t = T();
+  var host1 = $('#ch1'), host2 = $('#ch2');
+  if (host1) {
+    var w = host1.clientWidth || 460;
+    var xs = [0, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100];
+    var a = xs.map(function (x) {
+      return [x, venueCalc(Object.assign({}, S.calc, { newB: x }), t).net];
+    });
+    host1.innerHTML = svgLine({
+      w: w, h: 236, series: [{ pts: a, color: cssVar('--s1') }],
+      fmtY: n0, fmtX: n0,
+      rule: { y: 0, color: cssVar('--ink-3'), label: 'التعادل' },
+      aria: 'صافي فائدة صاحب الملعب بالدينار مقابل عدد الحجوزات الجديدة الشهرية.'
+    });
+  }
+  if (host2) {
+    var w2 = host2.clientWidth || 460;
+    var pts = [], capStart = null;
+    for (var k = 0; k <= 90; k += 3) {
+      var c = commissionPerSubfield(k, S.calc.price, t.r1, t.n1, t.r2, t.cap);
+      pts.push([k, c]);
+      if (capStart === null && t.cap > 0 && c >= t.cap - 0.001) capStart = k;
+    }
+    host2.innerHTML = svgLine({
+      w: w2, h: 236, series: [{ pts: pts, color: cssVar('--s1') }], fmtY: n0, fmtX: n0,
+      rule: t.cap > 0 ? { y: t.cap, color: cssVar('--warn'), label: 'السقف ' + n0(t.cap) } : null,
+      aria: 'عمولة الملعب الفرعي الواحد مقابل عدد حجوزاته الشهرية — تتدرّج ثمّ تقف عند السقف.'
+    }) + '<p class="hint" style="margin-top:8px">' +
+      (capStart !== null ? 'السقف يبدأ عند الحجزة <b class="num">' + n0(capStart) + '</b> تقريبًا بسعر ' + n0(S.calc.price) + ' د.أ — وبعدها لا يزيد ما يدفعه ولو حجز الشهر كلّه.'
+                         : 'بلا سقفٍ في النموذج الحالي.') + '</p>';
+  }
+}
+
+/* ═══ وضع العرض ══════════════════════════════════════════════════ */
+function openStage() {
+  S.stageOn = true;
+  /* الداكن يُفرَض على المشهد وحده — التفضيل المحفوظ في localStorage لا
+     يُمَسّ، فيعود المظهر كما كان تمامًا عند الإغلاق. التباين الأعلى
+     يركّز نظر العميل على الرقم لا على تفاصيل الشاشة حوله. */
+  stagePrevTheme = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', 'dark');
+  $('#stage').hidden = false;
+  document.body.style.overflow = 'hidden';
+  paintStage();
+}
+function closeStage() {
+  S.stageOn = false;
+  if (stagePrevTheme) document.documentElement.setAttribute('data-theme', stagePrevTheme);
+  else document.documentElement.removeAttribute('data-theme');
+  stagePrevTheme = null;
+  $('#stage').hidden = true;
+  document.body.style.overflow = '';
+}
+
+function paintStage() {
+  var t = T(), r = venueCalc(S.calc, t);
+  var ok = isNum(r.breakEven) && S.calc.newB >= r.breakEven;
+  var capHit = t.cap > 0 && r.pay >= r.capTotal - 0.005;
+
+  var h = '<button class="icon-btn stage-x" type="button" id="stageX" aria-label="أغلق وضع العرض">' + icon('x') + '</button>';
+  h += '<button class="icon-btn stage-share" type="button" id="stageShare" aria-label="جهّز ملخّصًا للعميل">' + icon('wa') + '</button>';
+  h += '<div class="stage-in">';
+  h += '<p class="stage-eyebrow">المستديرة · لو ' + esc(bookingsNoun(S.calc.newB)) + ' جديدة بالشهر</p>';
+  h += '<h2 class="stage-title">هذا اللي بترجعلك من المنصّة</h2>';
+
+  h += '<div class="hero stage-hero"><p class="h-l">صافي فائدتك الشهرية</p>' +
+       '<div class="h-v" style="color:' + (r.net >= 0 ? 'var(--good)' : 'var(--bad)') + '">' + big(r.net, 'د.أ') + '</div>' +
+       '<p class="h-d">وفي الشهر الأول <b>' + n0(r.firstMonth) + ' د.أ</b> — لأنّه مجّانيّ بالكامل، ما بتدفع فلس.</p></div>';
+
+  h += '<div class="stage-tiles">' +
+    stageTile('اللي بتدفعه للمنصّة', n0(r.pay) + ' د.أ',
+      capHit ? 'السقف اكتمل — كلّ دينار إضافي من هون يدخل جيبك بالكامل'
+             : 'من الشهر الثاني · وسقفك ' + n0(r.capTotal) + ' مهما حجزت',
+      capHit ? 'cap-hit' : '') +
+    stageTile('النسبة الفعلية', pct(r.effRate), 'مش ' + pct(t.r1, 0) + ' — التدرّج والسقف بينزّلوها') +
+    stageTile('بتدفع بعد ما تقبض', 'نقدًا', 'اللاعب بيدفع سعرك كامل عندك في الملعب') +
+  '</div>';
+
+  h += '<div class="verdict ' + (ok ? 'ok' : 'no') + '">' + icon(ok ? 'check' : 'alert') + '<div>' +
+    (!isNum(r.breakEven)
+      ? 'بهذي الأرقام ما في تعادل — هامشك ما بيغطّي العمولة.'
+      : ok ? 'من <b>' + n1(r.breakEven) + '</b> حجزة جديدة بالشهر وبتصير رابح — وإحنا حاطّينها ' + n0(S.calc.newB) + '.'
+           : 'لازم <b>' + n1(r.breakEven) + '</b> حجزة جديدة بالشهر عشان تتعادل.') + '</div></div>';
+
+  /* كلّ ما يتحكّم فيه ظاهرٌ هنا — بلا طيّةٍ تُخفيه. ورقمُ المتابعة
+     («حجوزات جديدة») وحده ينزل إلى اللوحة السفلية لأنّه الذي يُحرَّك
+     أثناء الحديث، لا لأنّ البقيّة أقلّ شأنًا. */
+  h += '<div class="stage-inputs"><h3>الأرقام اللي بتتحكّم فيها</h3><div class="nf-grid">' +
+    numField({ k: 'price',     label: 'سعر الحجزة عندك (د.أ)',  min: 1, max: 400, step: 1, val: S.calc.price }) +
+    numField({ k: 'subfields', label: 'عدد ملاعبك',              min: 1, max: 30,  step: 1, val: S.calc.subfields }) +
+    numField({ k: 'current',   label: 'حجوزاتك الشهرية اليوم',   min: 0, max: 600, step: 1, val: S.calc.current }) +
+    numField({ k: 'varCost',   label: 'تكلفتك لكلّ حجزة (د.أ)',  min: 0, max: 300, step: 1, val: S.calc.varCost }) +
+    numField({ k: 'through',   label: '٪ اللي بيمرّ عبر المنصّة', min: 0, max: 100, step: 5, val: S.calc.through * 100,
+               pct: true, suffix: '٪' }) +
+  '</div></div>';
+
+  h += '<p class="hint" style="margin-top:18px">الأرقام محسوبة على مدخلاتك أنت — عدّل أيّ رقم وشوف.</p>';
+  h += '</div>';   // نهاية .stage-in
+
+  /* ── لوحة التحكّم السفلية: منطقة الإبهام ── */
+  var capAt = capReachNewB(S.calc, t);
+  h += '<div class="stage-dock"><div class="stage-dock-in">' +
+    numField({ k: 'newB', label: 'حجوزات جديدة بالشهر', min: 0, max: 300, step: 1,
+               val: S.calc.newB, slider: true, big: true }) +
+    '<div class="dock-chips">' +
+      ['+5', '+10', '+20'].map(function (j) {
+        return '<button class="chip" type="button" data-jump="' + j + '">' + j + '</button>';
+      }).join('') +
+      (isNum(capAt) ? '<button class="chip acc" type="button" data-jump="cap">عند السقف</button>' : '') +
+      '<button class="chip" type="button" data-jump="0">صفر</button>' +
+    '</div>' +
+  '</div></div>';
+
+  $('#stage').innerHTML = h;
+  $('#stageX').onclick = closeStage;
+  $('#stageShare').onclick = openProposal;
+
+  /* مدخلٌ واحد لكلّ الحقول — بما فيها حقل اللوحة السفلية. */
+  wireNumFields($('#stage'), function (k, v) {
+    S.calc[k] = v; S.calcDirty = true;
+    if (k === 'newB') paintStageNumbers();
+    else { paintStageNumbers(); refreshCapChip(); }
+  });
+
+  function refreshCapChip() {
+    var chip = $('#stage [data-jump="cap"]');
+    if (chip) chip.hidden = !isNum(capReachNewB(S.calc, T()));
+  }
+
+  $$('#stage [data-jump]').forEach(function (btn) {
+    btn.onclick = function () {
+      var j = btn.dataset.jump;
+      var next = j === 'cap' ? capReachNewB(S.calc, T())
+               : j === '0'   ? 0
+                             : S.calc.newB + Number(j.replace('+', ''));
+      if (!isNum(next)) return;
+      S.calc.newB = Math.max(0, Math.min(300, Math.round(next)));
+      S.calcDirty = true;
+      setNumField($('#stage'), 'newB', S.calc.newB);
+      paintStageNumbers();
+    };
+  });
+}
+
+/** تحديثٌ موضعيّ — إعادةُ بناء اللوح كلّه تُفقد المزلاجَ تركيزَه تحت الإصبع. */
+function paintStageNumbers() {
+  var t = T(), r = venueCalc(S.calc, t), ok = isNum(r.breakEven) && S.calc.newB >= r.breakEven;
+  var capHit = t.cap > 0 && r.pay >= r.capTotal - 0.005;
+
+  var hv = $('#stage .h-v');
+  if (hv) {
+    var numEl = hv.querySelector('.numP');
+    if (numEl) animateNumber(numEl, r.net, { fmt: n0 }); else hv.innerHTML = big(r.net, 'د.أ');
+    hv.style.color = r.net >= 0 ? 'var(--good)' : 'var(--bad)';
+  }
+  var hd = $('#stage .h-d');
+  if (hd) hd.innerHTML = 'وفي الشهر الأول <b>' + n0(r.firstMonth) + ' د.أ</b> — لأنّه مجّانيّ بالكامل، ما بتدفع فلس.';
+
+  var tl = $$('#stage .stage-tile');
+  if (tl[0]) {
+    tl[0].classList.toggle('cap-hit', capHit);
+    var lockEl = tl[0].querySelector('.cap-lock');
+    if (capHit && !lockEl) tl[0].insertAdjacentHTML('afterbegin', icon('lock', 'cap-lock'));
+    else if (!capHit && lockEl) lockEl.remove();
+
+    var payNum = tl[0].querySelector('.numP');
+    if (payNum) animateNumber(payNum, r.pay, { fmt: function (v) { return n0(v) + ' د.أ'; } });
+    else $('.k-v', tl[0]).innerHTML = '<span class="numP">' + n0(r.pay) + ' د.أ</span>';
+
+    $('.k-d', tl[0]).textContent = capHit
+      ? 'السقف اكتمل — كلّ دينار إضافي من هون يدخل جيبك بالكامل'
+      : 'من الشهر الثاني · وسقفك ' + n0(r.capTotal) + ' مهما حجزت';
+  }
+  if (tl[1]) $('.k-v', tl[1]).innerHTML = '<span class="numP">' + pct(r.effRate) + '</span>';
+
+  var eb = $('#stage .stage-eyebrow');
+  if (eb) eb.textContent = 'المستديرة · لو ' + bookingsNoun(S.calc.newB) + ' جديدة بالشهر';
+  var vd = $('#stage .verdict');
+  if (vd) {
+    vd.className = 'verdict ' + (ok ? 'ok' : 'no');
+    vd.innerHTML = icon(ok ? 'check' : 'alert') + '<div>' +
+      (!isNum(r.breakEven) ? 'بهذي الأرقام ما في تعادل — هامشك ما بيغطّي العمولة.'
+        : ok ? 'من <b>' + n1(r.breakEven) + '</b> حجزة جديدة بالشهر وبتصير رابح — وإحنا حاطّينها ' + n0(S.calc.newB) + '.'
+             : 'لازم <b>' + n1(r.breakEven) + '</b> حجزة جديدة بالشهر عشان تتعادل.') + '</div>';
+  }
+}
+
+/* ═══ ملخّص العميل ══════════════════════════════════════════════
+   نصٌّ يُبنى من نفس الأرقام المعروضة على الشاشة، يُعرَض ليُنسَخ ويُرسَل
+   يدويًّا — **صفر إرسالٍ من هنا وصفر رقم هاتف**. المستخدم يختار القناة. */
+function openProposal() {
+  var t = T(), r = venueCalc(S.calc, t);
+  $('#msgText').value = buildProposalText(r, t, S.calc);
+  $('#msgWrap').hidden = false;
+  setTimeout(function () { var ta = $('#msgText'); ta.focus(); ta.select(); }, 60);
+}
+function closeProposal() { $('#msgWrap').hidden = true; }
+
+function copyProposal() {
+  var btn = $('#msgCopy'), ta = $('#msgText');
+  var done = function () {
+    var old = btn.innerHTML;
+    btn.innerHTML = icon('check') + 'انتُسخ';
+    setTimeout(function () { btn.innerHTML = old; }, 1600);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value).then(done).catch(function () {
+      ta.select(); document.execCommand('copy'); done();
+    });
+  } else {
+    ta.select(); document.execCommand('copy'); done();
+  }
+}
+
+function stageTile(l, v, d, cls) {
+  return '<div class="stage-tile kpi' + (cls ? ' ' + cls : '') + '">' +
+         (cls === 'cap-hit' ? icon('lock', 'cap-lock') : '') +
+         '<span class="k-l">' + esc(l) + '</span>' +
+         '<span class="k-v" style="font-size:26px"><span class="numP">' + v + '</span></span>' +
+         '<span class="k-d">' + esc(d) + '</span></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ④ اقتصاديات المنصة
+   ═══════════════════════════════════════════════════════════════════ */
+
+function vEcon() {
+  var t = T(), r = econCalc(S.econ, t);
+  var TILES = econTiles(r, t);
+
+  var h = '<div class="stack">';
+
+  /* ── ① الجواب: رقمٌ واحد ومعه مؤشّراته ──
+     ولا يتكرّر أيٌّ منها في الملخّص تحته: «الدخل الشهري» و«تكلفة الرسائل»
+     كانتا بلاطتين تقولان ما يقوله الدفتر سطرًا سطرًا، فسقطتا. */
+  h += '<div class="grid g-4">' +
+    /* 🔴 اللون بالصنف لا بنمطٍ سطريّ: النمط السطريّ يغلب كلَّ قاعدة في
+       الورقة، فكان حبرُ `--ink` يقع فوق اللون الممتلئ ويقيس **2.14**.
+       ⚠️ والبطاقة الممتلئة **للجواب الموجب وحده**: خسارةٌ مصبوغةٌ بلون
+          الهويّة تُقرأ احتفاءً بها. فالخسارة تبقى على سطحٍ محايد بحبر
+          التحذير — نفس منطق «الأحمر للخطر لا للتحذير» في التطبيق. */
+    '<div class="hero' + (r.realProfit1 >= 0 ? ' is-answer' : ' is-loss') + '" id="ecHero">' +
+      /* 🔴 «الحقيقي» تُقرأ **مقبوضًا** — والرقم توقُّعٌ من مدخلاتك لا شيءٌ
+         وقع. والتسمية الدقيقة أطول، فتحتها سطرٌ خفيف يقول ما هي بكلماتٍ
+         عادية — وهو ما يجعل التسمية الاحترافية مفهومةً بدل أن تكون حاجزًا.
+         ⚠️ والمفتاح `realProfit1` **لم يتغيّر**: مطابقةُ الشيت تقرؤه باسمه
+            وتقارنه بـB78، وتغييرُه يكسر الحارس بلا أن يصرخ شيء. */
+      '<p class="h-l">الربح التشغيلي الشهري المتوقَّع</p>' +
+      '<p class="h-n">ما يبقى في جيبك من شهرٍ كامل بعد كلّ المصاريف — ' +
+        '<b>توقُّعٌ محسوبٌ من مدخلاتك</b>، لا مبلغٌ قبضتَه</p>' +
+      '<div class="h-v" id="ecProfit">' + big(r.realProfit1, 'د.أ') + '</div>' +
+      '<p class="h-d" id="ecProfitD">' + econHeroDesc(r) + '</p>' +
+      '<div class="h-spark" id="spark"></div></div>' +
+    /* ⚠️ المعرّف من الفهرس الأصلي لا من فهرس الشريحة — `slice().map` كان
+       سيبدأ العدّ من صفرٍ ثانية فيتكرّر `ecT0v` مرّتين في المستند. */
+    TILE_ORDER.map(function (i) { return kpiE(TILES[i], i); }).join('') +
+  '</div>';
+
+  /* ── الملخّص الشامل: وحدتان كبيرتان وتحت كلٍّ تفصيلُها ──
+     كان في الصفحة كلُّ رقمٍ على حدة — دخلٌ في بلاطة وتكاليفُ رسائل في
+     أخرى ورواتبُ في حاشية — ولا موضعَ واحدٌ يقول «هذا ما يدخل وهذا ما
+     يخرج». والملخّص لا يخترع رقمًا: يجمع ما في الصفحة أصلًا في دفترٍ
+     واحد بثلاثة أعمدة، ومصدرُه دالّةٌ واحدة فلا ينحرف عمّا تحته. */
+  h += '<div class="card"><div class="card-h"><h3>الملخّص الشامل</h3>' +
+    '<p>كلّ دينارٍ يدخل وكلّ دينارٍ يخرج — شهريًّا وسنويًّا</p>' +
+    '<span class="chip sp" id="ecToday">' + econTodayChip(r) + '</span></div>' +
+    '<div id="ecLedger">' + econSummaryHTML(r, t) + '</div>' +
+    '<p class="hint" style="margin-top:12px">عمودُ كلّ سنة <b>مجموعُ اثني عشر شهرًا من مسار ٤٨ شهرًا</b> ' +
+    'لا الشهرَ في اثني عشر: الأماكن تنمو بالإضافة وتنقص بالتسرّب، والرواتبُ والتسويق يتبدّلان في السنة الثانية. ' +
+    'وعمودُ الشهر هو <b>الشهر الأوّل</b> بمدخلاتك كما هي.</p></div>';
+
+  h += '<div class="sec-h"><h2>الاتجاه</h2>' +
+       '<p>إلى أين يذهب هذا الرقم على مدى أربع سنوات، ومن أيّ رياضةٍ يأتي</p></div>';
+
+  h += '<div class="grid g-2">' +
+    '<div class="card chart-host"><div class="card-h"><h3>مسار ٤٨ شهرًا</h3>' +
+      '<p id="ecPathSub">' + econPathSub() + '</p></div><div id="ep1"></div></div>' +
+    '<div class="card"><div class="card-h"><h3>الدخل بحسب الرياضة</h3>' +
+      '<p>شهريًّا بالدينار — عند اكتمال أماكن كلٍّ منها</p></div>' +
+      '<div id="ecBars">' + econBars(r) + '</div>' +
+      '<p class="hint" id="ecCap" style="margin-top:10px">' + econCapNote(r, t) + '</p></div>' +
+  '</div>';
+
+  /* ── المكان الواحد والتعادل ──────────────────────────────────────
+     «ربحي الشهري» يقول أين أنت. وهذان يقولان ما هو أهمّ لقرارٍ
+     استثماري: هل المكان الواحد يستحقّ ثمنه؟ وكم نقدًا يلزم قبل أن
+     يُطعم العملُ نفسَه؟ وكلُّها مشتقّةٌ من مدخلاتك لا مخترَعة. */
+  if (r.market) {
+    h += '<div class="card"><div class="card-h"><h3>حصّتك من السوق</h3>' +
+      '<p>كم من ملاعب السوق معك اليوم — <b>والمقام تقديرُك أنت</b>، من حقل ' +
+      '«سقف السوق» في بطاقة كلّ رياضة أدناه</p></div>' +
+      '<div id="ecMarket">' + econMarketHTML(r) + '</div>' +
+      '<p class="hint" style="margin-top:12px">🔴 <b>هذه نسبةٌ إلى تقديرك لا إلى إحصاءٍ رسميّ</b> — ' +
+      'ودقّتُها من دقّة السقف الذي أدخلتَه. وهي مع ذلك أنفعُ من العدد وحده: ' +
+      '«٧ مكانًا» لا تقول أين أنت من الطريق، و«٧ من ٥٠٠» تقول.</p></div>';
+  }
+
+  h += '<div class="grid g-2">' +
+    '<div class="card"><div class="card-h"><h3>المكان الواحد</h3>' +
+      '<p>كم يكلّف اكتسابه وكم يعيد لك على عمره</p></div>' +
+      '<div id="ecUnit">' + econUnitRows(r) + '</div></div>' +
+    '<div class="card"><div class="card-h"><h3>التعادل والنقد المطلوب</h3>' +
+      '<p>متى يُطعم نفسَه، وكم يلزم قبل ذلك</p></div>' +
+      '<div id="ecBreak">' + econBreakRows(r) + '</div></div>' +
+  '</div>';
+
+  /* ── السيناريوهات: «ماذا لو ساء الحظّ؟» ─────────────────────────
+     أهمّ ما ينقص النموذج ليس رقمًا بل **حدودَ ثقته**. وهذه تحرّك أقلّ
+     ثلاثة أرقامٍ يقينًا وتُري أثرها على القرارات السبعة. */
+  h += '<div class="card"><div class="card-h"><h3>السيناريوهات الثلاثة</h3>' +
+    '<p>نفس مدخلاتك، وقد ساءت أو تحسّنت الأرقام الأقلّ يقينًا</p></div>' +
+    '<div class="nf-grid">' +
+      /* ⚠️ مزالج لا حقولٌ رقمية: هذه الثلاثة **استكشافية** — تُحرَّك لترى
+         الأثر لا لتُكتب بدقّة، والمزلاج يقول مداها ويدعو إلى تحريكها.
+         ويبقى الحقل الرقمي حيث تكون الدقّة مقصودة (السعر · الأماكن). */
+      numField({ k: 'devWeekly',   label: 'انحراف الحجوزات الأسبوعية', min: 0, max: 90, step: 5, val: S.econ.devWeekly * 100,   pct: true, suffix: '٪', slider: true }) +
+      numField({ k: 'devChurn',    label: 'انحراف التسرّب',            min: 0, max: 90, step: 5, val: S.econ.devChurn * 100,    pct: true, suffix: '٪', slider: true }) +
+      numField({ k: 'devNewPlace', label: 'انحراف الأماكن الجديدة',    min: 0, max: 90, step: 5, val: S.econ.devNewPlace * 100, pct: true, suffix: '٪', slider: true }) +
+    '</div>' +
+    '<div id="ecScen" style="margin-top:14px">' + econScenRows(r, t) + '</div>' +
+    '<p class="hint" style="margin-top:10px">🔴 <b>هذه النِسَب تقديرٌ مبدئيّ منّي لا قياسٌ من بياناتك</b> — ' +
+    'وُضعت كنقطة بداية، وغيّرْها بما تراه ثمّ احفظ. ' +
+    'و<b>السعر وعدد الأماكن لا يتحرّكان</b>: الأوّل قرارُك والثاني خطّتك، وليسا تقديرين — ' +
+    'وتحريكُهما يخلط «ماذا لو ساء الحظّ» بـ«ماذا لو غيّرتُ قراري».</p></div>';
+
+  /* ── المدخلات: بطاقةٌ لكلّ رياضة بدل جدولٍ يُمرَّر أفقيًّا ──
+     ستّة عشر حقلًا في جدولٍ عرضُه ٦٣١px داخل شاشة ٣٧٥ يعني تمريرًا
+     أفقيًّا لكلّ رقمٍ يُعدَّل. والبطاقة تحمل حقولها في شبكةٍ تنطوي. */
+  /* ⚠️ عنوانُ قسمٍ لا بطاقةٌ تلفّ البطاقات: بطاقةٌ داخل بطاقة تضاعف
+     الحشوة والحدّ، وتُخرج الشبكةَ بكسلًا عن حاوية الصفحة عند 320px. */
+  h += '<div class="sec-h"><h2>المدخلات</h2>' +
+       '<p>عدّلْ أيّ رقمٍ وشوف الأثر فورًا في الأعلى — ولا شيء يصل الشيت حتى تضغط «احفظ». ' +
+       'والحجوزات الأسبوعية <b>لكلّ ملعبٍ فرعيّ</b> لا لكلّ مكان، و<b>متى تنضمّ</b> يقول متى ' +
+       'تدخل الرياضةُ المنصّة فلا يُحسَب دخلُها قبله</p>' +
+       '<button class="btn ghost sm sp" type="button" id="econSave"' + (S.econDirty ? '' : ' disabled') + '>' +
+       icon('save') + 'احفظ في الشيت</button></div>';
+
+  h += '<div class="grid g-2">' + S.econ.sports.map(function (s, i) {
+    return '<div class="card"><div class="card-h"><h3>' + esc(s.name) + '</h3>' +
+      '<span class="sp" id="ecWhen' + i + '">' + econWhenChip(r.rows[i]) + '</span></div>' +
+      '<div class="nf-grid">' +
+        numField({ k: 'sp' + i + '.places',   label: 'أماكن',                  min: 0, max: 999, step: 1,  val: s.places }) +
+        numField({ k: 'sp' + i + '.perPlace', label: 'ملاعب فرعية لكلّ مكان',   min: 0, max: 30,  step: .5, val: s.perPlace }) +
+        numField({ k: 'sp' + i + '.weekly',   label: 'حجوزات أسبوعية للملعب',  min: 0, max: 80,  step: .5, val: s.weekly }) +
+        numField({ k: 'sp' + i + '.price',    label: 'سعر الحجزة (د.أ)',        min: 0, max: 400, step: 1,  val: s.price }) +
+        /* ② سقفُ السوق — و`0` = بلا سقف، فلا يتغيّر رقمٌ حتى يُدخلَه */
+        numField({ k: 'sp' + i + '.maxPlaces', label: 'سقف السوق (0 = بلا سقف)', min: 0, max: 2000, step: 5, val: s.maxPlaces || 0 }) +
+        startField(i, s) +
+      '</div></div>';
+  }).join('') + '</div>';
+
+  h += '<div class="note" id="ecPlan">' + icon('clock') + '<div>' + econPlanNote(r) + '</div></div>';
+
+  h += '<div class="card"><div class="card-h"><h3>التكاليف</h3><p>ما تدفعه أنت شهريًّا</p></div>' +
+    '<div class="nf-grid">' +
+      numField({ k: 'msgCost',  label: 'تكلفة رسالة التحقّق (د.أ)', min: 0, max: 5,   step: .001, val: S.econ.msgCost }) +
+      numField({ k: 'msgPer',   label: 'رسائل تحقّق لكلّ حجزة',      min: 0, max: 10,  step: .1,   val: S.econ.msgPer }) +
+      numField({ k: 'infra',    label: 'بنية تحتية شهريًّا (د.أ)',   min: 0, max: 5000, step: 1,   val: S.econ.infra }) +
+      numField({ k: 'fixed',    label: 'تكاليف ثابتة أخرى (د.أ)',   min: 0, max: 50000, step: 1,  val: S.econ.fixed }) +
+      numField({ k: 'churn',    label: 'تسرّب الأماكن شهريًّا',      min: 0, max: 100, step: 1,    val: S.econ.churn * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'newPlace', label: 'أماكن جديدة شهريًّا',        min: 0, max: 200, step: 1,    val: S.econ.newPlace }) +
+    '</div></div>';
+
+  /* ── التكاليف الحقيقية ─────────────────────────────────────────
+     ما كان غائبًا عن اللوحة كلِّها: الرواتب والضمان والتسويق والإداري
+     وبوّابة الدفع والضريبة. وبدونها كان الرقم المعروض «هامش مساهمة»
+     يُقرأ ربحًا، وهو أخطر التباسٍ في هذه الصفحة. */
+  h += '<div class="card"><div class="card-h"><h3>الفريق والتسويق والإداري</h3>' +
+    '<p>كلّها <b>مبالغُ شهرية</b> — و«السنة الأولى/الثانية» تعني الفترة التي تُستعمَل فيها لا مجموعَها</p></div>' +
+    '<div class="nf-grid">' +
+      numField({ k: 'salary1',   label: 'رواتب شهريًّا — السنة الأولى (د.أ)',   min: 0, max: 20000, step: 25, val: S.econ.salary1 }) +
+      numField({ k: 'salary2',   label: 'رواتب شهريًّا — من السنة الثانية',      min: 0, max: 20000, step: 25, val: S.econ.salary2 }) +
+      numField({ k: 'ssRate',    label: 'الضمان الاجتماعي على الشركة',   min: 0, max: 30, step: .25, val: S.econ.ssRate * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'mkt1',      label: 'تسويق شهريًّا — السنة الأولى (د.أ)',   min: 0, max: 20000, step: 25, val: S.econ.mkt1 }) +
+      numField({ k: 'mkt2',      label: 'تسويق شهريًّا — من السنة الثانية',      min: 0, max: 20000, step: 25, val: S.econ.mkt2 }) +
+      numField({ k: 'admin',     label: 'إداري وقانوني شهريًّا (د.أ)',   min: 0, max: 5000, step: 5,  val: S.econ.admin }) +
+      numField({ k: 'salesComm', label: 'عمولة مبيعات لكلّ مكان جديد',   min: 0, max: 500, step: 5,   val: S.econ.salesComm }) +
+    '</div>' +
+    '<div class="note" style="margin-top:10px">' + icon('info') + '<div id="ecExtra">' + econExtraNote(r) + '</div></div></div>';
+
+  /* ── ③④ الطلبُ والتحصيل: ما كان النموذجُ لا يراه ──────────────────
+     كان يفترض أنّ المكان يدخل بكامل حجوزاته يوم يوقّع، وأنّ كلّ دينارٍ
+     يُحصَّل في شهره. والثلاثةُ **محايدةٌ افتراضًا** فلا يتحرّك رقمٌ قبل
+     أن يُدخلها المالك — وقياسُها من ملاعبه السبعة أصدقُ من تقديرها. */
+  h += '<div class="card"><div class="card-h"><h3>الطلب والتحصيل</h3>' +
+    '<p>ما لم يكن النموذج يراه: <b>متى يمرّ الحجز عبرك فعلًا</b>، و<b>كم منه يصلك</b>. ' +
+    'كلُّها اليوم على القيمة المحايدة (لا تغيّر شيئًا) — <b>قِسْها من ملاعبك السبعة</b> ثمّ أدخلها</p></div>' +
+    '<div class="nf-grid">' +
+      numField({ k: 'adopt0',      label: 'تبنٍّ في الشهر الأوّل للمكان',  min: 0, max: 100, step: 5, val: (S.econ.adopt0 == null ? 1 : S.econ.adopt0) * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'adoptMax',    label: 'وإلى كم يصل',                  min: 0, max: 100, step: 5, val: (S.econ.adoptMax == null ? 1 : S.econ.adoptMax) * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'adoptMonths', label: 'في كم شهرًا يصل إليه',          min: 0, max: 36, step: 1, val: S.econ.adoptMonths || 0 }) +
+      numField({ k: 'leak',        label: 'تسريب: وجدك ثمّ حجز مباشرةً',   min: 0, max: 100, step: 1, val: (S.econ.leak || 0) * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'collect',     label: 'نسبة ما تُحصّله فعلًا',          min: 0, max: 100, step: 1, val: (S.econ.collect == null ? 1 : S.econ.collect) * 100, pct: true, suffix: '٪' }) +
+      numField({ k: 'collectDays', label: 'متوسّط أيام التحصيل',           min: 0, max: 180, step: 5, val: S.econ.collectDays || 0 }) +
+    '</div>' +
+    '<div class="note" style="margin-top:10px">' + icon('info') + '<div id="ecDemand">' + econDemandNote(r) + '</div></div></div>';
+
+  h += '<div class="grid g-2">' +
+    '<div class="card"><div class="card-h"><h3>بوّابة الدفع</h3>' +
+      '<p>مطفأة اليوم — الدفع نقدًا في الملعب</p></div>' +
+      '<div class="nf-grid">' +
+        numField({ k: 'gwOn',   label: 'مفعّلة؟ (0 = لا · 1 = نعم)', min: 0, max: 1, step: 1, val: S.econ.gwOn }) +
+        numField({ k: 'gwRate', label: 'نسبة عمولة البوّابة',        min: 0, max: 10, step: .1, val: S.econ.gwRate * 100, pct: true, suffix: '٪' }) +
+      '</div>' +
+      '<p class="hint" id="ecGw" style="margin-top:8px">' + econGwNote(r) + '</p></div>' +
+    /* 🔴 «ضريبة الدخل» تُقرأ **التزامًا محسوبًا**، والرقم هنا نسبةٌ مسطّحة
+       على الربح لا حسابَ ضريبةٍ حقيقيًّا: لا يعرف تصنيف الشركة ولا
+       المصاريف المقبولة ولا الإهلاك ولا ترحيل الخسائر. والتسمية تقول
+       ذلك بدل أن تقوله حاشيةٌ تحتها وحدها. */
+    '<div class="card"><div class="card-h"><h3>ضريبة تقديرية</h3>' +
+      '<p>نسبةٌ مسطّحة على ربح السنة — <b>ليست حساب ضريبةٍ حقيقيًّا</b></p></div>' +
+      '<div class="nf-grid">' +
+        numField({ k: 'taxRate', label: 'نسبة ضريبة الدخل السنوية', min: 0, max: 40, step: 1, val: S.econ.taxRate * 100, pct: true, suffix: '٪' }) +
+      '</div>' +
+      '<p class="hint" style="margin-top:8px">هذا <b>افتراضٌ مبدئيّ</b> حتى يؤكّده محاسبٌ مرخَّص: ' +
+      'الضريبة الفعلية تعتمد على تصنيف الشركة والمصاريف المقبولة والإهلاك وترحيل الخسائر — ' +
+      'ولا شيء من ذلك محسوبٌ هنا.</p></div>' +
+  '</div>';
+
+  h += '<div class="note">' + icon('info') + '<div>الحجوزات الشهرية = الأسبوعية × ٥٢ ÷ ١٢ (لا × ٤ — الشهر ٤٫٣٣ أسبوع). ' +
+       'والنسب والسقف <b>مقروءةٌ من نموذج العمل</b> فاستحال أن تختلف عن حاسبة صاحب الملعب.</div></div>';
+
+  h += '</div>';
+  return h;
+}
+
+/* ── قطعٌ تُبنى مرّةً ويُعاد بناؤها موضعيًّا، فلا تنحرف نسختان ── */
+function econHeroDesc(r) {
+  return 'دخلٌ ' + n0(r.revenue) + ' ناقصَ تشغيلٍ ' + n0(r.costs) +
+         ' وناقصَ فريقٍ وتسويقٍ ' + n0(r.extra1) +
+         (r.gwFee ? ' وبوّابةِ دفعٍ ' + n0(r.gwFee) : '') + '. ' +
+         '<b>قبل ضريبة الدخل</b> — وهي سنويةٌ لا شهرية، فانظر صافي السنوات الأربع أدناه.';
+}
+function econPathSub() {
+  return '+' + n0(S.econ.newPlace) + ' مكان شهريًّا · تسرّب ' + pct(S.econ.churn, 0);
+}
+function econExtraNote(r) {
+  return '<b>التكاليف الإضافية:</b> السنة الأولى ' + n0(r.extra1) + ' د.أ شهريًّا · ' +
+         'من الثانية ' + n0(r.extra2) + ' د.أ — شاملةً الضمان (' + n0(r.ss1) + ' ثمّ ' + n0(r.ss2) + ') ' +
+         'وعمولة المبيعات عن الأماكن الجديدة.';
+}
+/* ── حاشيةُ الطلب والتحصيل ─────────────────────────────────────────
+   تقول **ما هو مطفأ** بالاسم لا «كل شيء تمام»: مِعلَمٌ محايدٌ صامت يُقرأ
+   «النموذج يعدّه» وهو لا يعدّه. */
+function econDemandNote(r) {
+  var e = S.econ, out = [];
+  var a0 = (e.adopt0 == null ? 1 : e.adopt0), aM = (e.adoptMax == null ? 1 : e.adoptMax);
+  var co = (e.collect == null ? 1 : e.collect);
+
+  if (a0 >= 1 && aM >= 1) out.push('<b>التبنّي مطفأ</b> — كلُّ مكانٍ يدخل بكامل حجوزاته من شهره الأوّل');
+  else out.push('التبنّي ' + pct(a0, 0) + ' ⇐ ' + pct(aM, 0) +
+                (e.adoptMonths ? ' خلال ' + monthsNoun(e.adoptMonths) : ' فورًا') +
+                ' — <b>والرياضةُ التي على المنصّة اليوم تدخل ناضجةً</b>، فحجوزاتُها مقروءةٌ من واقعها');
+
+  out.push(e.leak ? 'وتسريبٌ ' + pct(e.leak, 0) + ' يخرج قبل أن تُحسَب عليه عمولة'
+                  : '<b>ولا تسريب</b> — أي أنّ من وجدك عبرنا لن يحجز مباشرةً أبدًا');
+
+  if (co >= 1 && !e.collectDays) out.push('<b>والتحصيل فوريٌّ وكامل</b> — وأنت دائنٌ لأصحاب الملاعب بعمولةٍ قبضوا ثمنها نقدًا');
+  else out.push('وتحصيلٌ ' + pct(co, 0) + (e.collectDays ? ' بعد ' + daysNoun(e.collectDays) : '') +
+                ' — والتأخيرُ يزحزح <b>النقد لا الربح</b>، فأثرُه في «أقصى نقدٍ يلزمك» وحده');
+
+  return out.join('. ') + '.';
+}
+function econGwNote(r) {
+  return r.gwFee
+    ? 'مفعّلة: ' + n0(r.gwFee) + ' د.أ شهريًّا — على قيمة الحجوزات كاملةً لا على عمولتك.'
+    : 'مطفأة ⇒ صفر تكلفة. فعّلها يوم تُوصَل بوّابة دفعٍ فعلية.';
+}
+/* ── رقمٌ في الدفتر ─────────────────────────────────────────────────
+   `sign = -1` يعني «هذا بندُ خروج» فيُعرَض سالبًا وإن كانت قيمتُه موجبة
+   في النموذج — والصفر يُكتب صفرًا لا «-0». وغيرُ الرقم شرطةٌ لا صفر:
+   «لا رقم لهذا هنا» غيرُ «قيمتُه صفر». */
+function ldgMoney(v, sign) {
+  if (!isNum(v)) return '—';
+  var x = Math.round(v);
+  if (x === 0) return '0';
+  return (sign === -1 || x < 0 ? '-' : '') + n0(Math.abs(x));
+}
+
+/**
+ * الملخّص الشامل — ثلاثة صناديق ثمّ دفترٌ بثلاثة أعمدة.
+ * الأرقام كلُّها من `econLedger` **بنداءٍ واحد**، فلا ينحرف صندوقٌ عن
+ * سطرٍ تحته كما ينحرف رقمان يُحسَبان مرّتين.
+ */
+function econSummaryHTML(r, t) {
+  var g = econLedger(S.econ, t, r);
+
+  var vc = function (v, sign, cls, auto) {
+    var c = cls || '';
+    if (auto) c = v < 0 ? 'neg' : 'pos';
+    if (!isNum(v)) c = 'dim';
+    return '<span class="ldg-v' + (c ? ' ' + c : '') + '">' + ldgMoney(v, sign) + '</span>';
+  };
+  var row = function (o) {
+    return '<div class="ldg-r' + (o.cls ? ' ' + o.cls : '') + '">' +
+      '<span class="ldg-k l' + (o.lvl || 3) + '">' + esc(o.l) +
+        (o.h ? '<i>' + esc(o.h) + '</i>' : '') + '</span>' +
+      vc(o.m, o.sign, o.vcls, o.auto) +
+      (o.y || []).map(function (v) { return vc(v, o.sign, o.vcls, o.auto); }).join('') +
+      '</div>';
+  };
+  var line = function (x, sign) {
+    return row({ l: x.l, h: x.h, m: x.m, y: x.y, sign: sign, lvl: 3 });
+  };
+
+  /* ── الصناديق الثلاثة: الوحدتان الكبيرتان ثمّ حاصلُهما ── */
+  var YR = ['السنة الأولى', 'الثانية', 'الثالثة', 'الرابعة'];
+  var box = function (cls, label, val, desc, ys, sign) {
+    return '<div class="ldg-box ' + cls + '">' +
+      '<span class="b-l">' + esc(label) + '</span>' +
+      '<span class="b-v"><span class="numP">' + val + '</span><span class="u">د.أ</span></span>' +
+      '<span class="b-d">' + esc(desc) + '</span>' +
+      '<span class="b-y">' + ys.map(function (v, i) {
+        return '<span>' + esc(YR[i] || ('السنة ' + (i + 1))) +
+               ' <b class="num">' + ldgMoney(v, sign) + '</b></span>';
+      }).join('') + '</span></div>';
+  };
+
+  /* 🔴 صندوقان لا ثلاثة: «الصافي» هو رقم البطل أعلى الصفحة حرفيًّا،
+     وعرضُه هنا ثانيةً يجعل الشاشة تقول الرقم نفسه مرّتين. وصافي السنوات
+     في بلاطته، وصافي كلّ سنةٍ في سطر الدفتر تحت — فلا شيء ضاع. */
+  var h = '<div class="ldg-boxes">' +
+    box('in',  'الدخل',    ldgMoney(g.incomeT.m),   'شهريًّا — عمولةٌ واشتراكات',
+        g.incomeT.y) +
+    box('out', 'المصاريف', ldgMoney(g.costT.m, -1), 'شهريًّا — ثابتةٌ ومتغيّرة معًا',
+        g.costT.y, -1) +
+  '</div>';
+
+  /* ── الدفتر ──
+     ⚠️ داخل `.tbl-wrap`: ستّة أعمدة (بندٌ + شهرٌ + أربع سنوات) لا تسع
+        شاشةَ ٣٧٥px، والتمرير الأفقي **داخل الدفتر** لا على المستند. */
+  h += '<div class="tbl-wrap"><div class="ldg ldg-y' + g.years + '">';
+  h += '<div class="ldg-r ldg-h"><span class="ldg-k l1">البند</span>' +
+       '<span class="ldg-v">الشهر الأوّل</span>' +
+       g.net.y.map(function (v, i) {
+         return '<span class="ldg-v">' + esc(YR[i] || ('السنة ' + (i + 1))) + '</span>';
+       }).join('') + '</div>';
+
+  h += row({ cls: 'ldg-g in', lvl: 1, l: 'الدخل', h: 'كلّ ما يدخل — قبل أيّ مصروف',
+             m: g.incomeT.m, y: g.incomeT.y, vcls: 'pos' });
+  g.income.forEach(function (x) { h += line(x, 1); });
+
+  h += row({ cls: 'ldg-g out', lvl: 1, l: 'المصاريف', h: 'كلّ ما يخرج — المتغيّرة والثابتة معًا',
+             m: g.costT.m, y: g.costT.y, sign: -1, vcls: 'neg' });
+  h += row({ cls: 'ldg-sg', lvl: 2, l: 'متغيّرة', h: 'تكبر مع الحجوزات ومع الأماكن الجديدة',
+             m: g.varT.m, y: g.varT.y, sign: -1 });
+  g.varc.forEach(function (x) { h += line(x, -1); });
+  h += row({ cls: 'ldg-sg', lvl: 2, l: 'ثابتة', h: 'لا تتغيّر بعدد الحجوزات',
+             m: g.fixT.m, y: g.fixT.y, sign: -1 });
+  g.fixc.forEach(function (x) { h += line(x, -1); });
+
+  h += row({ cls: 'ldg-g net', lvl: 1, l: 'الصافي قبل الضريبة', h: 'الدخل ناقصَ المصاريف — وهو «الربح التشغيلي» في بطاقة الأعلى',
+             m: g.pre.m, y: g.pre.y, auto: true });
+  h += row({ lvl: 3, l: 'ضريبة تقديرية',
+             h: 'نسبةٌ مسطّحة على ربح كلّ سنة — تقديرٌ لا حساب ضريبة، ولا ضريبة على خسارة ولا ترحيلَ لها',
+             m: g.tax.m, y: g.tax.y, sign: -1, vcls: 'neg' });
+  h += row({ cls: 'ldg-g net fin', lvl: 1, l: 'الصافي بعد الضريبة',
+             h: 'الرقم الذي تُبنى عليه القرارات',
+             m: g.net.m, y: g.net.y, auto: true });
+  h += '</div></div>';
+
+  return h;
+}
+
+/**
+ * حقلُ «متى تنضمّ» — يُنشِئ نفس ما يُنشئه `numField()` بنيةً (`data-nf`
+ * وأزرارَ `.nf-step` وحقل `.nf-val`) كي يلتقطه `wireNumFields` بلا كودٍ
+ * خاصّ، ومعه صفٌّ من زرَّي وحدة («أشهر»/«أيام») لا حقلٌ آخر ولا نافذة.
+ *
+ * القيمةُ المخزَّنة `s.start` **شهرٌ صحيحٌ دائمًا** (١ = اليوم)؛ وحدةُ
+ * العرض عرضٌ محض تُقرأ من `S.econUnits[i]` ولا تُكتب إلى الشيت أبدًا —
+ * فتبديلها لا يُبدّل شهر الانضمام الحقيقي، هو محسوبٌ منه دائمًا.
+ */
+function startField(i, s) {
+  var unit = (S.econUnits[i] === 'days') ? 'days' : 'months';
+  var val  = unit === 'days' ? startToDelayDays(s.start) : startToDelayMonths(s.start);
+  var step = unit === 'days' ? 5 : 1;
+  var max  = unit === 'days' ? 1460 : 48;  /* نفس أفق مسار ٤٨ شهرًا */
+  var key  = 'sp' + i + '.startDelay';
+  /* 🔴 لا حاجةَ إلى ترجمةٍ حيّةٍ لشهر «الآن» — الشارة أعلى البطاقة
+     (`#ecWhen{i}`) تقول ذلك بالضبط وتتحدّث مع كل حرف عبر `repaintEcon`،
+     وهذا الحقل لا يُعاد بناؤه إلّا بتبديل الوحدة أو تنقّلٍ كامل. فحاشيةٌ
+     هنا تُكتَب مرّةً وتبقى معروضةً بعد أن يكتب المستخدم رقمًا آخر تكذب
+     صامتةً — نفس عائلة «رقمان لحقيقةٍ واحدة» المحظورة في هذا المشروع.
+     والحاشية الثابتة هنا **لا تعتمد على `s.start`** فلا تبلى أبدًا:
+     تشرح لماذا اليوم يُقرَّب لا تقول رقم الشهر الحيّ (ومصدره الشارة). */
+  var hint = unit === 'days' ? 'يُقرَّب لأقرب شهرٍ — دقّة المسار شهرية لا يومية' : '';
+  return '<div class="nf" data-nf="' + esc(key) + '" data-min="0" data-max="' + max +
+      '" data-step="' + step + '" data-dec="0">' +
+    '<div class="nf-top"><label>متى تنضمّ؟</label>' +
+      '<span class="sp" style="display:flex;gap:6px">' +
+        '<button class="chip' + (unit === 'months' ? ' on' : '') +
+          '" type="button" data-startunit="months" data-si="' + i + '">أشهر</button>' +
+        '<button class="chip' + (unit === 'days' ? ' on' : '') +
+          '" type="button" data-startunit="days" data-si="' + i + '">أيام</button>' +
+      '</span></div>' +
+    '<div class="nf-row">' +
+      '<button class="nf-step" type="button" data-d="-1" aria-label="أنقص">' + icon('minus') + '</button>' +
+      '<input class="nf-val" type="text" autocomplete="off" spellcheck="false" inputmode="numeric" value="' + esc(val) + '">' +
+      '<span class="nf-suffix">' + (unit === 'days' ? 'يوم' : 'شهر') + '</span>' +
+      '<button class="nf-step" type="button" data-d="1" aria-label="زِد">' + icon('plus') + '</button>' +
+    '</div>' +
+    (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') +
+  '</div>';
+}
+
+/** المعالج المشترك لكلّ حقول اقتصاديات المنصة — بما فيها حقل «متى تنضمّ»
+ *  الذي يحمل قيمةً بوحدة العرض الحالية (يومًا أو شهرًا) ويُترجَم إلى
+ *  `start` قبل أن يُكتب، فلا يخزَّن التأخيرُ نفسه في مكانين. */
+function econFieldChange(k, v) {
+  var m = /^sp(\d+)\.(\w+)$/.exec(k);
+  if (m) {
+    var i = Number(m[1]), field = m[2];
+    if (field === 'startDelay') {
+      var unit = (S.econUnits[i] === 'days') ? 'days' : 'months';
+      S.econ.sports[i].start = unit === 'days' ? delayDaysToStart(v) : delayMonthsToStart(v);
+    } else {
+      S.econ.sports[i][field] = v;
+    }
+  } else {
+    S.econ[k] = v;
+  }
+  S.econDirty = true;
+  repaintEcon();
+}
+
+/** أزرار «أشهر/أيام»: تبديل وحدة العرض وحدها — تستبدل حقل «متى تنضمّ»
+ *  بنسخةٍ من نفس الوحدة الجديدة (نفس `start`، رقمٌ مختلف) وتُعيد وصل
+ *  الحقول داخل تلك البطاقة، إذ لا `repaintEcon` يلمس حقول الإدخال
+ *  (وإلّا فقد أيّ رقمٍ آخر تحت الكتابة تركيزَه). */
+function wireStartUnit(root) {
+  $$('[data-startunit]', root).forEach(function (btn) {
+    btn.onclick = function () {
+      var i = Number(btn.dataset.si);
+      S.econUnits[i] = btn.dataset.startunit;
+      var card = btn.closest('.card');
+      var old  = card.querySelector('[data-nf="sp' + i + '.startDelay"]');
+      if (!old) return;
+      var tmp = document.createElement('div');
+      tmp.innerHTML = startField(i, S.econ.sports[i]);
+      old.replaceWith(tmp.firstElementChild);
+      wireNumFields(card, econFieldChange);
+      wireStartUnit(card);
+    };
+  });
+}
+
+/* صفٌّ في بطاقةٍ بعمودين — نفس مكوّن الدفتر (`.ldg-2`) لا مكوّنٌ ثانٍ. */
+function ecoRow(label, value, hint, cls) {
+  return '<div class="ldg-r"><span class="ldg-k l3">' + esc(label) +
+    (hint ? '<i>' + esc(hint) + '</i>' : '') + '</span>' +
+    '<span class="ldg-v' + (cls ? ' ' + cls : '') + '">' + value + '</span></div>';
+}
+
+/**
+ * اقتصاديات المكان الواحد — تكلفةُ اكتسابه وقيمتُه العمرية.
+ * 🔴 والغياب يُقال بسببه لا بشرطةٍ صامتة: مقلوبُ تسرّبٍ صفرٍ ما لا نهاية،
+ *    و«عمرٌ أبديّ» كذبةٌ بشكل رقم — فتُخفى القيمة ويُكتب لماذا.
+ */
+function econUnitRows(r) {
+  var h = '<div class="ldg ldg-2">';
+
+  /* 🔴 **حدٌّ أعلى لا رقمٌ دقيق**: التسويق في الورقة موصوفٌ بأنّه «إعلانات
+     لجلب اللاعبين» لا لجلب الملاعب، وتحميلُه كلَّه على اكتساب المكان
+     يضخّم التكلفة. وهذا مقصود: إن صحّت النسبة عند الحدّ الأعلى فهي
+     أصحّ دونه — أمّا رقمٌ أصغر أخترعه أنا فتقديرٌ بلباس قياس. */
+  h += ecoRow('تكلفة اكتساب المكان', isNum(r.cac) ? n0(r.cac) + ' د.أ' : '—',
+              isNum(r.cac) ? 'حدٌّ أعلى: عمولة المبيعات + كامل تسويق الشهر على الأماكن الجديدة — والتسويق موصوفٌ لجلب اللاعبين لا الملاعب'
+                           : 'يلزمها «أماكن جديدة شهريًّا» أكبر من صفر',
+              isNum(r.cac) ? 'neg' : 'dim');
+
+  /* ⚠️ ومقلوبُ التسرّب قد يتجاوز أفق النموذج نفسَه (٤٨ شهرًا): تسرّبُ
+     ١٪ يعني عمرًا مئةَ شهر — رقمٌ لا يسنده شيءٌ في هذا الملفّ، فيُقال
+     تجاوزُه بدل أن يُقرأ قياسًا. */
+  h += ecoRow('كم يبقى معك', isNum(r.lifeMonths) ? n1(r.lifeMonths) + ' شهرًا' : '—',
+              isNum(r.lifeMonths)
+                ? ('١ ÷ التسرّب الشهري' + (r.lifeMonths > 24
+                    ? ' — وهو أطول من أفق النموذج (٤٨ شهرًا)، فيقوم كلُّه على تقديرك للتسرّب'
+                    : ''))
+                : 'بتسرّبٍ صفر لا عمرَ يُحسَب — يبقى إلى الأبد',
+              isNum(r.lifeMonths) ? '' : 'dim');
+
+  h += ecoRow('قيمته العمرية', isNum(r.ltv) ? n0(r.ltv) + ' د.أ' : '—',
+              'مساهمته الشهرية × عمره — قبل التكاليف الثابتة' +
+              (isNum(r.lifeMonths) && r.lifeMonths > 24 ? '، وعمرُه فوق أفق النموذج' : ''),
+              isNum(r.ltv) ? 'pos' : 'dim');
+
+  /* ⭐ «القيمة ÷ التكلفة» تقول *هل* يستحقّ المكان ثمنه، وهذه تقول *متى*
+     يعود المال — وهو السؤال الذي يقرّر عليه من يموّل من جيبه. والمقام
+     **المساهمة** لا الدخل: ما يبقى من المكان بعد متغيّراته وحدها. */
+  h += ecoRow('يردّ ثمنه بعد', isNum(r.cacPayback) ? n1(r.cacPayback) + ' شهرًا' : '—',
+              isNum(r.cacPayback)
+                ? ('تكلفة اكتسابه ÷ ما يعطيه شهريًّا (' + n0(r.contribPerPlace) + ' د.أ)' +
+                   (isNum(r.lifeMonths) && r.cacPayback > r.lifeMonths
+                      ? ' — 🔴 وهو أطول من عمره معك، أي أنّه يخرج قبل أن يسدّد ثمنه'
+                      : ''))
+                : 'يلزمها تكلفةُ اكتسابٍ ومساهمةٌ شهرية أكبر من صفر',
+              isNum(r.cacPayback)
+                ? (isNum(r.lifeMonths) && r.cacPayback > r.lifeMonths ? 'neg' : 'pos')
+                : 'dim');
+
+  var ratio = r.ltvOverCac;
+  h += '<div class="ldg-r ldg-g net fin"><span class="ldg-k l1">القيمة ÷ التكلفة' +
+       '<i>' + esc(isNum(ratio)
+         ? (ratio >= 3 ? 'ثلاثةٌ فأعلى مريح · بين ١ و٣ يعمل ويضيق · أقلّ من ١ تدفع أكثر ممّا تكسب'
+                       : 'أقلّ من ٣ — راقبْ تكلفة الاكتساب والتسرّب')
+         : 'يلزمها تسرّبٌ وأماكنُ جديدة أكبر من صفر') + '</i></span>' +
+       '<span class="ldg-v ' + (isNum(ratio) ? (ratio >= 1 ? 'pos' : 'neg') : 'dim') + '">' +
+       (isNum(ratio) ? n1(ratio) + '×' : '—') + '</span></div>';
+
+  return h + '</div>';
+}
+
+/** التعادل بثلاثة مقاييس، ومعه النقد اللازم للوصول إليه. */
+function econBreakRows(r) {
+  var h = '<div class="ldg ldg-2">';
+
+  /* ⭐ **المقام قبل القسمة.** كلُّ صفوف التعادل تحته تقسم عليه، وكان
+     محسوبًا داخلها ولا يُعرَض رقمًا — فيُقرأ «تتعادل عند ٣٨ مكانًا»
+     نتيجةً بلا سبب. وإظهارُه يجعل الثلاثة تُقرأ سلسلةً واحدة. */
+  /* ⚠️ منزلةٌ عشرية لا صفر: المصاريف المتغيّرة عندك ضئيلة اليوم، و`pct(…,0)`
+     تُخرج «100٪» فتُقرأ قيمةً نائبة لم تُحسَب بعد — والصادقُ «99.7٪». */
+  /* ⚠️ و«١٠٠٪» هنا قد تكون **صادقة**: مصاريفك المتغيّرة اليوم صفر فعلًا
+     (الرسائل بلا كلفة · البوّابة مطفأة · عمولة المبيعات صفر). وسطرٌ يقول
+     ذلك يمنع أن تُقرأ النسبةُ رقمًا لم يُحسَب — وهو الالتباس الوحيد الذي
+     يصنعه رقمٌ مستديرٌ تمامًا. */
+  h += ecoRow('يبقى من كلّ دينار', isNum(r.contribMargin) ? pct(r.contribMargin, 1) : '—',
+              (r.contribution >= r.revenue - 1e-9
+                 ? 'كلُّه — لأنّ مصاريفك المتغيّرة اليوم صفر (الرسائل والبوّابة وعمولة المبيعات). ' +
+                   'أي أنّ ' + n0(r.contribution) + ' د.أ كلَّها تذهب لتغطية الثابت'
+                 : 'الدخل ناقصَ المصاريف التي تكبر معه (رسائل · بوّابة · عمولة مبيعات) — ' +
+                   'وهو ' + n0(r.contribution) + ' د.أ شهريًّا، منها يُدفع الثابت'),
+              'pos');
+
+  /* ⚠️ المقامُ يُقال بالرقم لا يُوصَف: «التكاليف الثابتة» وصفٌ يقرؤه القارئ
+     شاملًا وكان يعني البنية التحتية وحدها (٤٠ من ١٩٣٢) — والوصفُ العامّ
+     هو الذي غطّى العطل أربع دفعات. */
+  h += ecoRow('تتعادل عند', isNum(r.breakEvenPlaces) ? n1(r.breakEvenPlaces) + ' مكانًا' : '—',
+              'ثابتُك الشهري كلُّه (' + n0(r.breakEvenFixed) + ' د.أ — بنيةٌ ورواتبُ وضمانٌ ' +
+              'وتسويقٌ وإداريّ) ÷ مساهمة المكان الواحد');
+  h += ecoRow('وهي تساوي', isNum(r.breakEvenBookings) ? n0(r.breakEvenBookings) + ' حجزة شهريًّا' : '—',
+              'المكان وحده لا يصف شيئًا — مكانٌ بإشغالٍ ضعيف غيرُ مكانٍ ممتلئ');
+  h += ecoRow('وقيمةَ حجوزات', isNum(r.breakEvenGmv) ? n0(r.breakEvenGmv) + ' د.أ' : '—',
+              'ما يمرّ عبر المنصّة لا ما تقبضه أنت');
+
+  h += ecoRow('أوّل شهرٍ موجب', r.breakEvenMonth ? 'الشهر ' + n0(r.breakEvenMonth) : '—',
+              r.breakEvenMonth ? 'أوّل شهرٍ يغطّي فيه دخلُك تكاليفَه كلَّها'
+                               : 'لا يتعادل داخل الأربع سنوات بهذه الأرقام',
+              r.breakEvenMonth ? 'pos' : 'dim');
+
+  /* 🔴 أهمّ رقمٍ لمن يموّل من جيبه: أعمقُ نقطةٍ يبلغها التراكمي. */
+  h += '<div class="ldg-r ldg-g net"><span class="ldg-k l1">أقصى نقدٍ يلزمك' +
+       '<i>' + esc(r.cashNeeded > 0
+         ? 'أعمق نقطةٍ يبلغها التراكمي — في الشهر ' + n0(r.cashNeededMonth)
+         : 'لا يهبط تحت الصفر قطّ بهذه الأرقام') + '</i></span>' +
+       '<span class="ldg-v ' + (r.cashNeeded > 0 ? 'neg' : 'pos') + '">' +
+       (r.cashNeeded > 0 ? n0(r.cashNeeded) + ' د.أ' : 'لا شيء') + '</span></div>';
+
+  h += ecoRow('تسترد ما وضعتَه', r.paybackMonth ? 'الشهر ' + n0(r.paybackMonth) : '—',
+              r.paybackMonth ? 'حين يعود التراكمي إلى الموجب'
+                             : 'لا يسترد داخل الأربع سنوات بهذه الأرقام',
+              r.paybackMonth ? 'pos' : 'dim');
+
+  h += '</div>' + econCashOutRows(r);
+  return h;
+}
+
+/* ── ⭐ المال الذي حُسب دخلًا ولم يصل الجيب ────────────────────────
+   حقيقتان مختلفتان تمامًا كان يخلطهما رقمٌ واحد:
+     • **معلّق** — لك، ويصل بعد أيام. تأخيرُ توقيتٍ لا خسارة.
+     • **لن يصل** — خرج من الربح أصلًا (نسبة التحصيل). خسارةٌ لا تأخير.
+   وخلطُهما يجعل التأخير يبدو ضياعًا والضياعَ يبدو تأخيرًا، والقرار على
+   كلٍّ منهما مختلف: الأوّل يُعالَج بجيبٍ أوسع، والثاني بطريقة تحصيلٍ أخرى.
+   ⚠️ **ولا يُعرَض اللوح ما دام النموذج على التحصيل الفوريّ الكامل**:
+      صفّان بصفرٍ في كلّ فتحةٍ ضجيجٌ لا معلومة — ومحلُّهما سطرٌ يقول
+      كيف يُملآن، فتُعرَف الميزة ولا تُشغَل الشاشة. */
+function econCashOutRows(r) {
+  var lag  = Number(S.econ.collectDays) || 0;
+  var coll = (S.econ.collect == null) ? 1 : Number(S.econ.collect);
+  if (!(lag > 0) && !(coll < 1)) {
+    return '<p class="hint" style="margin-top:12px">النموذج اليوم يفترض أنّ ' +
+             '<b>كلّ دينارٍ يصلك كاملًا وفي شهره</b>. عدّلْ «نسبة ما تُحصّله» و«متوسّط ' +
+             'أيام التحصيل» في بطاقة «الطلب والتحصيل» أدناه ليظهر هنا ما هو معلّق ' +
+           'عند أصحاب الملاعب وما لن يصلك أصلًا.</p>';
+  }
+
+  var h = '<div class="ldg ldg-2" style="margin-top:14px">';
+  h += '<div class="ldg-r ldg-sg"><span class="ldg-k l1">من الدخل إلى الجيب' +
+       '<i>الفرق بين ما تحسبه دخلًا وما تقبضه فعلًا</i></span>' +
+       '<span class="ldg-v"></span></div>';
+
+  if (lag > 0) {
+    h += ecoRow('معلّقٌ عندهم الآن', n0(r.arNow) + ' د.أ',
+                'دخلٌ اعترفتَ به ولم يصل بعد — مالُك، ويصل خلال ' + n0(lag) + ' يومًا وسطيًّا',
+                r.arNow > 0 ? 'warn' : 'dim');
+    h += ecoRow('وأعلى ما يبلغه', n0(r.arPeak) + ' د.أ',
+                r.arPeakMonth ? 'في الشهر ' + n0(r.arPeakMonth) +
+                                ' — وهذا ما يجب أن يحتمله جيبك فوق «أقصى نقدٍ يلزمك»'
+                              : 'لا يتراكم شيء',
+                r.arPeak > 0 ? 'warn' : 'dim');
+  }
+  if (coll < 1) {
+    /* «د.أ» وحدها تمرّ (كلمةٌ واحدة في طرف الرقم)، أمّا «د.أ شهريًّا»
+       فكلمتان تُقلبان — والدورية تُقال في السطر الخفيف. */
+    h += ecoRow('ولن يصلك أصلًا شهريًّا', n0(r.badDebtNow) + ' د.أ',
+                'من نسبة التحصيل (' + pct(coll, 0) + ') — خسارةٌ لا تأخير، ومطروحةٌ من الربح أعلاه',
+                r.badDebtNow > 0 ? 'neg' : 'dim');
+  }
+  return h + '</div>';
+}
+
+/** جدولُ السيناريوهات — البند وثلاثة أعمدة. */
+function econScenRows(r, t) {
+  var sc = econScenarios(S.econ, t, {
+    weekly: S.econ.devWeekly, churn: S.econ.devChurn, newPlace: S.econ.devNewPlace
+  });
+
+  var cell = function (v, cls) {
+    return '<span class="ldg-v' + (cls ? ' ' + cls : '') + '">' + v + '</span>';
+  };
+  var row = function (label, hint, fmt, key, cls) {
+    return '<div class="ldg-r"><span class="ldg-k l3">' + esc(label) +
+      (hint ? '<i>' + esc(hint) + '</i>' : '') + '</span>' +
+      cell(fmt(sc.bad[key]), cls) + cell(fmt(sc.base[key]), cls) + cell(fmt(sc.good[key]), cls) + '</div>';
+  };
+  var money = function (v) { return isNum(v) ? n0(v) : '—'; };
+  var month = function (v) { return v ? 'الشهر ' + n0(v) : 'لا يتعادل'; };
+
+  var h = '<div class="ldg">';
+  h += '<div class="ldg-r ldg-h"><span class="ldg-k l1">البند</span>' +
+       '<span class="ldg-v">متشائم</span><span class="ldg-v">أساسي</span><span class="ldg-v">متفائل</span></div>';
+
+  h += row('الأماكن بعد ١٢ شهرًا', '', function (v) { return n0(v); }, 'places12');
+  h += row('دخل السنة الأولى', 'مجموع اثني عشر شهرًا من المسار', money, 'y1Revenue');
+  h += row('صافي السنة الأولى', 'بعد الضريبة', money, 'y1Net');
+
+  h += '<div class="ldg-r ldg-g net"><span class="ldg-k l1">صافي السنوات الأربع' +
+       '<i>بعد الضريبة</i></span>' +
+       cell(money(sc.bad.allYearsNet), sc.bad.allYearsNet < 0 ? 'neg' : 'pos') +
+       cell(money(sc.base.allYearsNet), sc.base.allYearsNet < 0 ? 'neg' : 'pos') +
+       cell(money(sc.good.allYearsNet), sc.good.allYearsNet < 0 ? 'neg' : 'pos') + '</div>';
+
+  h += row('أوّل شهرٍ موجب', '', month, 'breakEvenMonth');
+  h += row('أقصى نقدٍ يلزمك', 'أعمق نقطةٍ في التراكمي', money, 'cashNeeded', 'neg');
+  h += row('القيمة ÷ التكلفة', 'قيمةُ المكان العمرية على تكلفة اكتسابه',
+           function (v) { return isNum(v) ? n1(v) + '×' : '—'; }, 'ltvOverCac');
+
+  return h + '</div>' + scenAssumeHTML();
+}
+
+/* ── ⭐ الافتراض قبل النتيجة ───────────────────────────────────────
+   جدولٌ فيه «متفائل: ٩٤٠٠٠» لا يقول ما الذي يجب أن يقع كي يصل إليه —
+   فيُقرأ أمنيةً. وهذه تكتب الشرط بالأرقام: «حجوزات ٢٥ بدل ٢٠ · أماكن
+   جديدة ٧ بدل ٥ · تسرّب ١٫٢٪ بدل ٢٪». وحينها يعرف القارئ **ماذا يفعل**
+   لا كم يتمنّى.
+   ⚠️ **والأرقام مشتقّةٌ من `scenarioInput` نفسِها** لا محسوبةً هنا ثانيةً:
+      نسخةٌ ثانية من المعادلة تنحرف عن الجدول فوقها أوّلَ تعديل.
+   ⚠️ والحجوزات تُذكَر عن **أكبر رياضةٍ عندك بالأماكن** لا عن كلّ رياضة:
+      خمسةُ أسطرٍ لمعنًى واحد ضجيج، والنسبة واحدةٌ على الجميع فيكفي مثال. */
+function scenAssumeHTML() {
+  var dev = { weekly: S.econ.devWeekly, churn: S.econ.devChurn, newPlace: S.econ.devNewPlace };
+  var base = S.econ;
+
+  /* أكبر رياضةٍ بالأماكن — وهي التي يعرفها المالك بالاسم */
+  var bi = -1, bp = 0;
+  (base.sports || []).forEach(function (x, i) {
+    if ((Number(x.places) || 0) > bp) { bp = Number(x.places) || 0; bi = i; }
+  });
+
+  var line = function (dir, title, cls) {
+    var alt = scenarioInput(base, dev, dir);
+    var bits = [];
+    if (bi >= 0) {
+      bits.push('حجوزات «' + esc(base.sports[bi].name) + '» الأسبوعية <b class="num">' +
+                n1(alt.sports[bi].weekly) + '</b> بدل <b class="num">' +
+                n1(base.sports[bi].weekly) + '</b>');
+    }
+    bits.push('أماكن جديدة <b class="num">' + n1(alt.newPlace) +
+              '</b> بدل <b class="num">' + n1(base.newPlace) + '</b>');
+    bits.push('تسرّب <b class="num">' + pct(alt.churn, 1) +
+              '</b> بدل <b class="num">' + pct(base.churn, 1) + '</b>');
+    return '<p class="scen-if ' + cls + '"><b>' + title + '</b> ' + bits.join('  ·  ') + '</p>';
+  };
+
+  return '<div class="scen-ifs">' +
+    line(1,  'المتفائل يقع إذا:', 'good') +
+    line(-1, 'والمتشائم إذا:',    'bad') +
+    '</div>';
+}
+
+/* ── ⭐ حصّتك من السوق ─────────────────────────────────────────────
+   `maxPlaces` مُدخَلٌ في كلّ بطاقة رياضة منذ دفعاتٍ ويقصّ به المسارُ نموَّه،
+   ولا يُعرَض منه رقمٌ يقرؤه أحد. و«معك ٧ مكانًا» لا تصف شيئًا وحدها؛
+   «٧ من ٥٠٠» تصف موضعك من الطريق.
+   🔴 **والمقام تقديرُك أنت لا رقمٌ مقيس** — ويُقال ذلك في البطاقة نفسها،
+      وإلّا قُرئت النسبةُ قياسًا وهي قسمةٌ على رقمٍ كتبتَه بيدك.
+   ⚠️ ولا تدخل المقامَ رياضةٌ بلا سقف: «صفر» هناك تعني «لا أعرف حجم
+      سوقها» لا «سوقها صفر»، وعدُّها يضخّم حصّتك.
+   ⚠️ ولا تُعرَض البطاقة أصلًا إن لم تُصرّح رياضةٌ واحدة بسقف — بطاقةٌ
+      تقول «—» في كلّ سطرٍ أسوأ من غيابها. */
+function econMarketHTML(r) {
+  var mk = r.market;
+  if (!mk) return '';
+
+  /* 🔴 **لا كلمةَ عربية في خانة القيمة.** `.ldg-v` اتّجاهُها `ltr` (كي
+     تتحاذى الآحاد)، فـ«٢٥ من ٥٠٠ · ٥٪» خرجت معكوسةً على الشاشة:
+     «٪من ٥٠٠ · ٢٥ ٥٫٠». وهو مزلق bidi المسجَّل حرفيًّا في هذا المشروع.
+     فالخانة نسبةٌ صرفة — وهي المقارَنة الوحيدة الصالحة بين الصفوف —
+     والعددان الخامان في السطر الخفيف تحت الاسم، حيث اتّجاه السطر عربيّ. */
+  var h = '<div class="ldg ldg-2">';
+  mk.sports.forEach(function (x) {
+    h += ecoRow(x.name, pct(x.share, 1),
+                (x.live
+                   ? 'معك ' + placesNoun(x.have) + ' من سقفٍ قدره ' + n0(x.cap) + ' — على المنصّة اليوم'
+                   : 'سقفُها ' + n0(x.cap) + ' مكانًا، وتنضمّ في الشهر ' + n0(x.start) +
+                     ' — فحصّتُها اليوم صفر وسوقُها كلُّه أمامك'),
+                x.live && x.have ? '' : 'dim');
+  });
+  h += '<div class="ldg-r ldg-g net fin"><span class="ldg-k l1">حصّتك من السوق' +
+       '<i>' + esc('معك ' + placesNoun(mk.have) + ' من مجموع سقوفٍ قدرها ' + n0(mk.cap) +
+         (mk.uncapped ? ' — و' + countNoun(mk.uncapped, 'رياضةٌ واحدة', 'رياضتان', 'رياضات', 'رياضة') +
+                        ' بلا سقفٍ مُدخَل فهي خارج الحساب' : '')) + '</i></span>' +
+       '<span class="ldg-v ' + (mk.share > 0 ? 'pos' : 'dim') + '">' +
+       pct(mk.share, 1) + '</span></div>';
+  return h + '</div>';
+}
+
+/**
+ * ثمنُ السقف مقيسًا لا مقولًا: السقف أداةُ بيعٍ ممتازة، وثمنُها أنّ
+ * أفضل ملعبٍ عندك يتوقّف عن زيادة دخلك بعد نقطة. وهذا يقول كم بلغها.
+ */
+function econCapNote(r, t) {
+  if (!r.capped || !(t.cap > 0)) return 'لا سقفَ للعمولة في النموذج الحالي.';
+  if (!r.capped.allSubfields) return 'لا ملاعبَ على المنصّة اليوم لقياس السقف عليها.';
+  if (!r.capped.subfields) {
+    return '<b>السقف:</b> لا ملعبٍ فرعيّ بلغ سقف ' + n0(t.cap) + ' د.أ بعد — فكلّ حجزةٍ إضافية ما زالت تزيد دخلك.';
+  }
+  return '<b>السقف:</b> ' + n0(r.capped.subfields) + ' من ' + n0(r.capped.allSubfields) +
+         ' ملعبًا فرعيًّا بلغ سقف ' + n0(t.cap) + ' د.أ — أي <b>' + pct(r.capped.share, 0) +
+         '</b> من دخلك لا يزيد مهما نمت حجوزاتُه.';
+}
+
+/* ما يقوم عليه العمودُ الشهري — في شارةٍ واحدة لا في لوحٍ يكرّر الدفتر. */
+function econTodayChip(r) {
+  return 'اليوم: <b class="num">' + n0(Math.round(r.places)) + '</b> مكانًا · ' +
+         '<b class="num">' + n0(Math.round(r.subfields)) + '</b> ملعبًا فرعيًّا' +
+         (r.pending.length ? ' · وعند اكتمال الخطّة <b class="num">' + n0(r.plan.places) + '</b>' : '');
+}
+
+/* شارةُ حالة الرياضة على بطاقتها: دخلُها إن كانت على المنصّة اليوم،
+   وشهرُها إن كانت قادمة. ولا تُعرَض شارةٌ لرياضةٍ بلا أماكن أصلًا (م5). */
+function econWhenChip(x) {
+  if (!x.places) return '<span class="chip">بلا أماكن</span>';
+  if (x.live)    return '<span class="chip acc">الدخل <b class="num">' + n0(x.income) + '</b> د.أ</span>';
+  return '<span class="chip warn"><span class="shape"></span>من الشهر ' + n0(x.start) +
+         ' · <b class="num">' + n0(x.income) + '</b> د.أ</span>';
+}
+
+/* ── خطّة الإدخال: ما هو على المنصّة اليوم وما هو قادم ─────────────
+   ولا يُعرَض هذا اللوح إن كانت الرياضات كلُّها حيّة — سطرٌ يقول «لا شيء
+   قادم» ضجيجٌ لا معلومة. */
+function econPlanNote(r) {
+  if (!r.pending.length) {
+    return '<b>خطّة الإدخال:</b> الرياضات كلُّها على المنصّة من الشهر الأوّل — ' +
+           'غيّرْ «متى تنضمّ؟» على أيّ بطاقةٍ أعلاه لتؤجّلها.';
+  }
+  var list = r.pending.slice().sort(function (a, b) { return a.start - b.start; })
+    .map(function (x) {
+      return esc(x.name) + ' <b>من الشهر ' + n0(x.start) + '</b> (' +
+             placesNoun(Math.round(x.places)) + ' · ' + n0(x.income) + ' د.أ شهريًّا)';
+    }).join(' · ');
+  return '<b>قادمٌ في الخطّة:</b> ' + list + '.<br>' +
+         'وعند اكتمالها: <b>' + placesNoun(Math.round(r.plan.places)) + '</b> و' +
+         fieldsNoun(Math.round(r.plan.subfields)) + ' فرعيًّا و<b>' + n0(r.plan.income) +
+         ' د.أ</b> دخلًا من العمولة — <b>وهذه أرقامُ اليوم لا تحملها</b>: ' +
+         'الدخل الشهري أعلاه يعدّ ما هو على المنصّة الآن وحده، والمسارُ وعمودا السنة ' +
+         'يدخلانها في شهرها.';
+}
+/* الأشرطة تعرض دخلَ **الخطّة الكاملة** لكلّ رياضة، والقادمةُ موسومةٌ
+   بشهرها ولونها محايد — فلا يُقرأ شريطُ بادلٍ دخلًا يقع اليوم. */
+function econBars(r) {
+  var live = r.rows.filter(function (x) { return x.places > 0; });
+  if (!live.length) return '<div class="empty"><p>ما في أماكن مُدخَلة.</p></div>';
+  return hbars(live.map(function (x, i) {
+    return { t: x.name, v: x.income,
+             d: n0(x.income) + (x.live ? '' : ' · من الشهر ' + n0(x.start)),
+             color: x.live ? ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)'][i % 4] : 'var(--ink-3)' };
+  }), 'var(--s1)');
+}
+/* 🔴 البلاطات المعروضة **أربع** لا ستّ: «الدخل الشهري» و«تكلفة الرسائل»
+   كانتا تقولان ما يقوله الملخّص تحتهما (صندوقُ الدخل · سطرُ الرسائل في
+   الدفتر) — ورقمٌ يُقال مرّتين على شاشةٍ واحدة يُقرأ رقمين.
+   والفهارس تبقى كما هي كي لا تنزلق معرّفات `ecT{i}v` في إعادة الرسم. */
+var TILE_ORDER = [5, 1, 3, 2];
+
+function econTiles(r, t) {
+  return [
+    null,
+    { l: 'النسبة الفعلية', v: pct(r.effRate, 2),
+      d: 'من ' + n0(r.gmv) + ' د.أ قيمةَ حجوزات — وهي ما يقبضه أصحاب الملاعب' },
+    /* البلاطة صارت «النقد المطلوب» لا «أماكن التعادل»: الثانية بتفصيلها
+       الثلاثيّ في بطاقة التعادل أسفل، والأولى الرقمُ الذي يقرّر عليه من
+       يموّل من جيبه ولم يكن معروضًا في أيّ مكان. */
+    { l: 'أقصى نقدٍ يلزمك', v: n0(r.cashNeeded) + '<span class="u">د.أ</span>',
+      d: r.cashNeeded > 0 ? 'قبل أن يُطعم نفسَه — أعمق نقطةٍ في الشهر ' + n0(r.cashNeededMonth)
+                          : 'لا يهبط تحت الصفر بهذه الأرقام' },
+    { l: 'الدخل لكلّ ملعبٍ فرعيّ', v: n1(r.perSubfield) + '<span class="u">د.أ</span>', d: 'قارنه بالسقف ' + n0(t.cap) },
+    null,
+    { l: 'صافي السنوات الأربع بعد الضريبة', v: n0(r.allYearsNet) + '<span class="u">د.أ</span>',
+      d: r.breakEvenMonth ? 'وأوّل شهرٍ موجب: الشهر ' + n0(r.breakEvenMonth) : 'لا يتعادل داخل الأربع سنوات بهذه الأرقام' }
+  ];
+}
+function kpiE(o, i) {
+  return '<div class="card kpi"><span class="k-l">' + esc(o.l) + '</span>' +
+         '<span class="k-v"><span class="numP" id="ecT' + i + 'v">' + o.v + '</span></span>' +
+         '<span class="k-d" id="ecT' + i + 'd">' + esc(o.d) + '</span></div>';
+}
+
+/** يُعيد رسم النتيجة وحدها — إعادةُ بناء الصفحة تُفقد الحقلَ تركيزَه
+ *  عند كلّ حرف، وهو ما كان يجعل الكتابة في هذه الصفحة مستحيلة عمليًّا. */
+function repaintEcon() {
+  var t = T(), r = econCalc(S.econ, t);
+
+  var hv = $('#ecProfit');
+  if (hv) {
+    var numEl = hv.querySelector('.numP');
+    if (numEl) animateNumber(numEl, r.realProfit1, { fmt: n0 }); else hv.innerHTML = big(r.realProfit1, 'د.أ');
+  }
+  /* تبديلُ صنفٍ لا نمطٍ سطريّ — وإلّا عاد النمط يغلب الورقة عند كلّ رسم. */
+  var hero = $('#ecHero');
+  if (hero) {
+    hero.classList.toggle('is-answer', r.realProfit1 >= 0);
+    hero.classList.toggle('is-loss',   r.realProfit1 < 0);
+  }
+  var hd = $('#ecProfitD'); if (hd) hd.innerHTML = econHeroDesc(r);
+
+  econTiles(r, t).forEach(function (o, i) {
+    if (!o) return;                       /* بلاطةٌ محذوفة من العرض */
+    var v = $('#ecT' + i + 'v'), d = $('#ecT' + i + 'd');
+    if (v) v.innerHTML = o.v;
+    if (d) d.textContent = o.d;
+  });
+
+  r.rows.forEach(function (x, i) { var e = $('#ecWhen' + i); if (e) e.innerHTML = econWhenChip(x); });
+  var pn = $('#ecPlan div'); if (pn) pn.innerHTML = econPlanNote(r);
+
+  var ps = $('#ecPathSub'); if (ps) ps.textContent = econPathSub();
+  var bars = $('#ecBars');  if (bars) bars.innerHTML = econBars(r);
+  var cap = $('#ecCap');    if (cap) cap.innerHTML = econCapNote(r, t);
+  var un = $('#ecUnit');    if (un) un.innerHTML = econUnitRows(r);
+  var bk = $('#ecBreak');   if (bk) bk.innerHTML = econBreakRows(r);
+  var sn = $('#ecScen');    if (sn) sn.innerHTML = econScenRows(r, t);
+  /* ⚠️ البطاقة تُبنى مرّةً بشرط `r.market`، وهذا يملأ جوفها وحده — فلو
+     أدخل المالك أوّلَ سقفٍ الآن لم تظهر البطاقة حتى ينتقل ويعود. وهو
+     مقبول: الحقل في أسفل الصفحة نفسها، والانتقالُ منها وإليها ضغطة.
+     والبديل (إعادةُ بناء الصفحة) يُفقد الحقلَ تركيزَه عند كلّ حرف. */
+  var mkt = $('#ecMarket'); if (mkt) mkt.innerHTML = econMarketHTML(r);
+  var tc = $('#ecToday'); if (tc) tc.innerHTML = econTodayChip(r);
+  var ex = $('#ecExtra'); if (ex) ex.innerHTML = econExtraNote(r);
+  var dm = $('#ecDemand'); if (dm) dm.innerHTML = econDemandNote(r);
+  var gw = $('#ecGw');    if (gw) gw.textContent = econGwNote(r).replace(/<[^>]+>/g, '');
+  var lg = $('#ecLedger'); if (lg) lg.innerHTML = econSummaryHTML(r, t);
+
+  drawEconCharts();
+  var sv = $('#econSave'); if (sv) sv.disabled = !S.econDirty;
+}
+
+/* الترتيب زمنيّ لا بالأهمّية: التسمياتُ تتدرّج رأسيًّا بترتيب المصفوفة،
+   فترتيبٌ غيرُ زمنيّ يجعل السطر الأعلى يقع بعد الذي تحته على المحور. */
+function econMarks(r) {
+  var out = [];
+  var at = function (m) {
+    for (var i = 0; i < r.path.length; i++) if (r.path[i].m === m) return r.path[i].net;
+    return NaN;
+  };
+  if (r.cashNeededMonth) out.push({ x: r.cashNeededMonth, y: at(r.cashNeededMonth),
+                                    label: 'أعمق نقطة نقد', color: cssVar('--bad') });
+  if (r.breakEvenMonth)  out.push({ x: r.breakEvenMonth,  y: at(r.breakEvenMonth),
+                                    label: 'أوّل شهر موجب', color: cssVar('--good') });
+  if (r.paybackMonth)    out.push({ x: r.paybackMonth,    y: at(r.paybackMonth),
+                                    label: 'استرداد ما وضعتَه', color: cssVar('--accent') });
+  out.sort(function (a, b) { return a.x - b.x; });
+  return out;
+}
+
+/* الوصفُ المنطوق يقول ما تقوله العلاماتُ للمبصر — لا «رسمٌ بيانيّ». */
+function econChartAria(r) {
+  var p = [];
+  if (r.breakEvenMonth)  p.push('أوّل شهرٍ موجب هو الشهر ' + r.breakEvenMonth);
+  if (r.cashNeededMonth) p.push('وأعمقُ نقطةٍ للنقد في الشهر ' + r.cashNeededMonth);
+  if (r.paybackMonth)    p.push('واستردادُ ما وضعتَه في الشهر ' + r.paybackMonth);
+  return 'الربح التشغيلي الشهري عبر ثمانية وأربعين شهرًا. ' +
+         (p.length ? p.join('، ') + '.' : 'لا يتعادل داخل هذه المدّة.');
+}
+
+function drawEconCharts() {
+  var r = econCalc(S.econ, T());
+  var host = $('#ep1');
+  if (host) {
+    host.innerHTML = svgLine({
+      w: host.clientWidth || 460, h: 236,
+      series: [{ pts: r.path.map(function (p) { return [p.m, p.net]; }), color: cssVar('--s1') }],
+      /* الرقم عاريًا: حرفٌ عربيّ ملتصقٌ برقمٍ داخل SVG اتّجاهه LTR
+         يُعاد ترتيبه بـbidi، والعنوان فوق الرسم يقول «مسار ٤٨ شهرًا». */
+      fmtY: n0, fmtX: n0,
+      rule: { y: 0, color: cssVar('--ink-3'), label: 'خطّ الصفر' },
+      /* ⭐ اللحظاتُ الثلاث التي يُقرأ الرسمُ من أجلها — موسومةً على الخطّ
+         نفسه، فلا يُتتبَّع المنحنى بالعين ليُعرَف متى يقطع الصفر.
+         ⚠️ وتُعرَض الموجودةُ منها وحدها: علامةٌ لشهرٍ لا يقع (`null`)
+            كذبةٌ بشكل خطّ. */
+      marks: econMarks(r),
+      aria: econChartAria(r)
+    });
+  }
+  var sp = $('#spark');
+  if (sp) {
+    sp.innerHTML = sparkline(r.path.map(function (p) { return p.net; }), cssVar('--s1'), Math.min(260, sp.clientWidth || 220), 42) +
+      '<p class="hint" style="margin-top:2px">مسار ٤٨ شهرًا</p>';
+  }
+}
+
+afterRender.econ = function () {
+  drawEconCharts();
+  wireNumFields($('#view'), econFieldChange);
+  wireStartUnit($('#view'));
+
+  var sv = $('#econSave');
+  if (sv) sv.onclick = function () {
+    var btn = this; btn.classList.add('loading');
+    call('saveEconInputs', S.econ)
+      .then(function (res) { S.econDirty = false; btn.classList.remove('loading'); btn.disabled = true;
+                          /* صفُّ خطّة الإدخال يُنشَأ في الشيت أوّلَ حفظ — ويُقال
+                             ذلك مرّةً واحدة، فالمالك يفتح الورقة فيجد صفًّا
+                             لم يكتبه ولا يعرف من أين جاء. */
+                          var made = res && res.planRow && !S.econStartRow;
+                          if (res && res.planRow) S.econStartRow = res.planRow;
+                          toast(made ? 'حفظنا المدخلات، وأنشأنا في الورقة صفّ «شهر انضمام الرياضة للمنصّة».'
+                                     : 'حفظنا المدخلات في «اقتصاديات المنصة».'); })
+      .catch(function (e) { btn.classList.remove('loading'); toast(e.message || 'ما قدرنا نحفظ.', 'bad'); });
+  };
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ⑤ نموذج العمل (الثوابت)
+   ═══════════════════════════════════════════════════════════════════ */
+
+var TERM_GROUPS = [
+  { t: 'المال والتسعير', ic: 'coins', d: 'النموذج المعتمد — والحاسبتان تقرآنه',
+    rows: [5, 6, 7, 8, 9, 10, 11, 12] },
+  { t: 'قواعد الاتفاقية', ic: 'clock', d: 'ما وقّعتَ عليه',
+    rows: [23, 24, 25, 26, 27, 28] },
+  { t: 'الوعود', ic: 'target', d: 'ما تقوله في المكالمة — وما لا تقوله أبدًا',
+    rows: [31, 32] },
+  { t: 'حالة المنتج', ic: 'info', d: 'ما هو مفتوحٌ اليوم فعلًا',
+    rows: [35, 36] }
+];
+
+function vTerms() {
+  var t = T();
+  var h = '<div class="stack">';
+
+  h += '<div class="note acc">' + icon('info') + '<div><b>كلّ رقمٍ هنا يعيش مرّةً واحدة.</b> ' +
+       'الحاسبتان تقرآنه ولا تحملان نسخةً ثانية منه — فتغييره هنا يغيّرهما معًا، في الموقع وفي الشيت.</div></div>';
+
+  /* ── ماذا يعني هذا بالدينار ── */
+  var tryB = Number(C.B16 && C.B16.value) || 40, refP = Number(C.B15 && C.B15.value) || 40;
+  var comm = commissionPerSubfield(tryB, refP, t.r1, t.n1, t.r2, t.cap);
+  h += '<div class="card"><div class="card-h"><h3>ماذا يعني هذا بالدينار</h3><p>على ملعبٍ فرعيّ واحد</p></div>' +
+    '<div class="row2" style="margin-bottom:16px">' +
+      '<div class="field"><label for="tp">سعر الحجزة المرجعي (د.أ)</label>' +
+        '<input class="input n" id="tp" type="number" min="1" step="1" value="' + esc(refP) + '"></div>' +
+      '<div class="field"><label for="tb">جرّب: عدد حجوزات الشهر</label>' +
+        '<input class="input n" id="tb" type="number" min="0" step="1" value="' + esc(tryB) + '"></div>' +
+    '</div>' +
+    '<div class="grid g-3" id="tryOut">' + tryTiles(tryB, refP, t) + '</div>' +
+    '<div class="chart-host" style="margin-top:18px"><div id="tc"></div></div>' +
+  '</div>';
+
+  /* ── المجموعات ── */
+  TERM_GROUPS.forEach(function (g) {
+    h += '<div class="card"><div class="card-h">' + icon(g.ic) + '<h3>' + esc(g.t) + '</h3><p>' + esc(g.d) + '</p></div>';
+    h += '<div class="stack" style="gap:15px">';
+    g.rows.forEach(function (rn) {
+      var c = C['B' + rn];
+      if (!c || !c.label) return;
+      h += termField(rn, c);
+    });
+    h += '</div></div>';
+  });
+
+  /* ── فحص المطابقة ── */
+  h += '<div class="card"><div class="card-h"><h3>طابق الشيت</h3>' +
+    '<p>الموقع يحسب بنفسه ليبقى فوريًّا — وهذا يقارن ناتجه بما حسبه الشيت</p>' +
+    '<button class="btn ghost sm sp" type="button" id="verifyBtn">' + icon('refresh') + 'قارن الآن</button></div>' +
+    '<div id="verifyOut"><p class="hint">قارنَ الاثنين على نفس المدخلات. أيّ فرقٍ يعني أنّ أحدهما انحرف — وهو ' +
+    'أوّل ما يجب أن يُعرَف، لا آخره.</p></div></div>';
+
+  /* ── ترقية ورقة الاقتصاديات ──────────────────────────────────────
+     صيغ الورقة كانت تفترض أنّ كلّ رياضةٍ على المنصّة اليوم، فتختلف عن
+     الموقع بمجرّد أن تؤجّل رياضة. هذا يعيد كتابتها لتحسب ما يحسبه. */
+  h += '<div class="card"><div class="card-h"><h3>رقِّ ورقة الاقتصاديات</h3>' +
+    '<p>كي يحسب الشيت <b>شهر انضمام كلّ رياضة</b> كما يحسبه الموقع</p>' +
+    '<button class="btn ghost sm sp" type="button" id="upgradeBtn">' + icon('sliders') + 'رقِّ الآن</button></div>' +
+    '<div id="upgradeOut"><p class="hint">صيغُ الورقة تفترض أنّ كلّ رياضةٍ أدخلتَ لها أماكنَ هي على المنصّة ' +
+    '<b>الآن</b>. فلو أجّلتَ رياضةً ستّة أشهر، ظلّ الشيت يعدّ دخلها في ربح هذا الشهر بينما الموقع يستبعده — ' +
+    'ويختلف الرقمان بلا أن يكون أحدهما مخطئًا في حسابه.<br>' +
+    'الترقية تكتب في الورقة مسارًا لأماكن <b>كلّ رياضةٍ على حدة</b>، تدخل فيه في شهرها. ' +
+    '<b>لا تُدرِج صفًّا ولا عمودًا</b>، ولا تمسّ بياناتك ولا الرسمة، وتشغيلُها مرّتين يكتب نفس الصيغ.</p></div></div>';
+
+  h += '</div>';
+  return h;
+}
+
+function tryTiles(b, p, t) {
+  var comm = commissionPerSubfield(b, p, t.r1, t.n1, t.r2, t.cap);
+  var atTier = commissionPerSubfield(t.n1, p, t.r1, t.n1, t.r2, t.cap);
+  var capAt = '—';
+  if (t.cap > 0 && p > 0 && t.r1 > 0) {
+    capAt = (t.cap <= t.n1 * p * t.r1)
+      ? n0(Math.ceil(t.cap / (p * t.r1)))
+      : (t.r2 > 0 ? n0(t.n1 + Math.ceil((t.cap - t.n1 * p * t.r1) / (p * t.r2))) : 'لا يُبلَغ');
+  } else if (t.cap <= 0) capAt = 'بلا سقف';
+
+  return kpi('عمولتك عندها', n2(comm) + '<span class="u">د.أ</span>', 'ما يدفعه الملعب الفرعيّ الواحد ذلك الشهر') +
+         kpi('النسبة الفعلية', pct(safeDiv(comm, b * p)), 'ليست ' + pct(t.r1, 0) + ' — التدرّج والسقف ينزلان بها') +
+         kpi('الحجزة التي يبدأ عندها السقف', capAt, 'بعدها لا يزيد ولو حجز الشهر كلّه');
+}
+
+function termField(rn, c) {
+  var id = 'tf' + rn;
+  var v = c.value;
+  var isPct = /نسبة/.test(c.label);
+  var isNumF = typeof v === 'number';
+  var isLong = typeof v === 'string' && v.length > 44;
+  var opts = (rn === 5) ? (S.boot.vocab && S.boot.vocab.model) || [] : null;
+
+  var ctl;
+  if (opts && opts.length) {
+    ctl = '<select class="input" id="' + id + '" data-tb="' + rn + '">' + opts.map(function (o) {
+      return '<option value="' + esc(o) + '"' + (String(v) === o ? ' selected' : '') + '>' + esc(o) + '</option>';
+    }).join('') + '</select>';
+  } else if (isPct) {
+    ctl = '<div style="display:flex;align-items:center;gap:8px"><input class="input n" id="' + id + '" type="number" step="0.5" min="0" max="100" ' +
+          'data-tb="' + rn + '" data-pct="1" value="' + esc(Math.round(Number(v) * 1000) / 10) + '" style="max-width:130px">' +
+          '<span style="color:var(--ink-3)">٪</span></div>';
+  } else if (isNumF) {
+    ctl = '<input class="input n" id="' + id + '" type="number" step="1" min="0" data-tb="' + rn + '" value="' + esc(v) + '" style="max-width:170px">';
+  } else if (isLong) {
+    ctl = '<textarea class="input" id="' + id + '" data-tb="' + rn + '" rows="2">' + esc(v) + '</textarea>';
+  } else {
+    ctl = '<input class="input" id="' + id + '" type="text" data-tb="' + rn + '" value="' + esc(v) + '">';
+  }
+
+  var missing = String(v).indexOf('املأني') > -1;
+  return '<div class="field"><label for="' + id + '">' + esc(c.label) +
+    (missing ? ' <span class="chip warn" style="min-height:20px;font-size:11px"><span class="shape"></span>ناقصة</span>' : '') + '</label>' +
+    ctl + (c.hint ? '<span class="hint">' + esc(c.hint) + '</span>' : '') + '</div>';
+}
+
+afterRender.terms = function () {
+  var tp = $('#tp'), tb = $('#tb');
+  function redraw() {
+    var p = Number(tp.value) || 0, b = Number(tb.value) || 0, t = T();
+    $('#tryOut').innerHTML = tryTiles(b, p, t);
+    var host = $('#tc');
+    if (host) {
+      var pts = [];
+      for (var k = 0; k <= 90; k += 3) pts.push([k, commissionPerSubfield(k, p, t.r1, t.n1, t.r2, t.cap)]);
+      host.innerHTML = svgLine({
+        w: host.clientWidth || 520, h: 220,
+        series: [{ pts: pts, color: cssVar('--s1') }], fmtY: n0, fmtX: n0,
+        rule: t.cap > 0 ? { y: t.cap, color: cssVar('--warn'), label: 'السقف ' + n0(t.cap) } : null,
+        aria: 'العمولة على ملعبٍ فرعيّ واحد مقابل عدد حجوزاته الشهرية.'
+      });
+    }
+  }
+  if (tp && tb) { tp.oninput = redraw; tb.oninput = redraw; redraw(); }
+
+  $$('#view [data-tb]').forEach(function (el) {
+    el.onchange = function () {
+      var rn = Number(el.dataset.tb);
+      var val = el.dataset.pct ? (Number(el.value) || 0) / 100
+              : (el.type === 'number' ? (Number(el.value) || 0) : el.value);
+      call('saveConstant', rn, val).then(function (res) {
+        C['B' + rn].value = res.value;
+        toast('حُفظ في «الثوابت» — والحاسبتان تبعتاه.');
+        redraw();
+      }).catch(function (e) { toast(e.message || 'ما قدرنا نحفظ.', 'bad'); });
+    };
+  });
+
+  var vb = $('#verifyBtn');
+  if (vb) vb.onclick = function () { runVerify(vb); };
+
+  var ub = $('#upgradeBtn');
+  if (ub) ub.onclick = function () {
+    var out = $('#upgradeOut');
+    ub.classList.add('loading');
+    call('upgradeEconSheet').then(function (res) {
+      ub.classList.remove('loading');
+      out.innerHTML = '<div class="note"><div><b>تمّت الترقية.</b> ' +
+        n0(res.wrote) + ' خليّة كُتبت، وشهرُ انضمام كلّ رياضة في صفّ ' + n0(res.joinRow) +
+        (res.movedFrom ? ' (نُقل من صفّ ' + n0(res.movedFrom) + ' بقيمه)' : '') + '. ' +
+        'اضغط «قارن الآن» أعلاه لترى المطابقة.</div></div>';
+      toast('رُقّيت ورقة الاقتصاديات.');
+    }).catch(function (e) {
+      ub.classList.remove('loading');
+      out.innerHTML = '<div class="note bad">' + icon('alert') + '<div>' + esc(e.message || 'ما قدرنا نرقّي الورقة.') + '</div></div>';
+    });
+  };
+};
+
+/** يقارن ما حسبته الواجهة بما حسبه الشيت — على نفس المدخلات. */
+function runVerify(btn) {
+  if (btn) btn.classList.add('loading');
+  var out = $('#verifyOut');
+  out.innerHTML = '<p class="hint">نقرأ الشيت…</p>';
+  call('getBootstrap').then(function (b) {
+    var t = terms(b.constants);
+    var sc = b.sheetComputed || {};
+    var vc = venueCalc(b.calcInputs, t);
+    var ec = econCalc(b.econInputs, t);
+    var refP = Number(b.constants.B15.value) || 0, tryB = Number(b.constants.B16.value) || 0;
+
+    var checks = [
+      ['عمولة الشهر (الثوابت B17)', commissionPerSubfield(tryB, refP, t.r1, t.n1, t.r2, t.cap), sc.con_B17],
+      ['النسبة الفعلية (الثوابت B18)', safeDiv(commissionPerSubfield(tryB, refP, t.r1, t.n1, t.r2, t.cap), tryB * refP), sc.con_B18],
+      ['ما يدفعه صاحب الملعب (الحاسبة B31)', vc.pay, sc.cal_B31],
+      ['صافي فائدته (الحاسبة B34)', vc.net, sc.cal_B34],
+      ['نقطة التعادل (الحاسبة B36)', vc.breakEven, sc.cal_B36],
+      ['صافي السنة الأولى (الحاسبة B38)', vc.yearNet, sc.cal_B38],
+      ['الدخل الشهري (الاقتصاديات B45)', ec.revenue, sc.eco_B45],
+      ['الربح الشهري (الاقتصاديات B48)', ec.profit, sc.eco_B48],
+      /* 🔴 **التعريف القديم عمدًا**: الموقع صار يقسم على الثابت كلِّه
+         (البند ① — رواتبُ وضمانٌ وتسويقٌ وإداريّ)، وصيغةُ `B54` في الشيت
+         ما زالت على البنية التحتية وحدها. فحصُ المطابقة يقارن **ما يقوله
+         الشيتُ اليوم** لا ما نتمنّاه — وحارسٌ أحمرُ دائمًا حارسٌ يُتجاهَل.
+         ويعود إلى `breakEvenPlaces` بعد تشغيل `upgradeEconSheet()`. */
+      ['أماكن التعادل — بتعريف الشيت القديم (B54)', ec.breakEvenPlacesLegacy, sc.eco_B54],
+      /* الأرقام الحقيقية — أُضيفت مع قسم التكاليف 2026-09-03. وهي الأهمّ
+         في الفحص: الشيت يحسبها بصيغٍ والموقع بحلقةِ ٤٨ شهرًا، فتطابقُهما
+         يثبت أنّ المسارين يقولان الشيء نفسه لا شيئين متقاربين. */
+      ['تكاليف إضافية — سنة ١ (B76)', ec.extra1, sc.eco_B76],
+      ['الربح التشغيلي الشهري (B78)', ec.realProfit1, sc.eco_B78],
+      ['صافي السنة الأولى بعد الضريبة (B84)', ec.y1Net, sc.eco_B84],
+      ['صافي السنة الثانية بعد الضريبة (B87)', ec.y2Net, sc.eco_B87],
+      /* الشيت أفقُه سنتان والموقع أربع ⇒ المقارنة على **السنتين
+         الأوليين** لا على مجموع الأربع، وإلّا قارنّا شيئين مختلفين. */
+      ['إجمالي السنتين بعد الضريبة (B88)', ec.twoYearNet, sc.eco_B88]
+    ];
+
+    var bad = 0;
+    var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>الموقع</th><th>الشيت</th><th>الفرق</th></tr></thead><tbody>';
+    checks.forEach(function (c) {
+      var mine = c[1], sheet = Number(c[2]);
+      var okBoth = isNum(mine) && isNum(sheet);
+      var diff = okBoth ? Math.abs(mine - sheet) : NaN;
+      var tol = Math.max(0.02, Math.abs(sheet || 0) * 0.001);
+      var ok = okBoth ? diff <= tol : (!isNum(mine) && !isNum(sheet));
+      if (!ok) bad++;
+      h += '<tr><td>' + (ok ? '<span class="chip good"><span class="shape"></span>مطابق</span>'
+                            : '<span class="chip bad"><span class="shape"></span>مختلف</span>') +
+           ' ' + esc(c[0]) + '</td><td class="n">' + (isNum(mine) ? n2(mine) : '—') +
+           '</td><td class="n">' + (isNum(sheet) ? n2(sheet) : esc(String(c[2] === null || c[2] === '' ? '—' : c[2]))) +
+           '</td><td class="n">' + (okBoth ? n2(diff) : '—') + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    h += bad
+      ? '<div class="note bad" style="margin-top:14px">' + icon('alert') + '<div><b>' + bad + ' سطرًا مختلفًا.</b> ' +
+        'أحدهما انحرف — والأرجح أنّ الشيت لم يُعِد الحساب بعد، أو أنّ صيغةً فيه عُدّلت بيد. افتح الشيت واقرأ الخانة بنفسها.</div></div>'
+      : '<div class="note" style="margin-top:14px;border-inline-start-color:var(--good)">' + icon('check') +
+        '<div><b>كلّ سطرٍ مطابق.</b> ما يحسبه الموقع هو ما يحسبه الشيت، على نفس المدخلات.</div></div>';
+    out.innerHTML = h;
+  }).catch(function (e) { out.innerHTML = '<div class="note bad">' + icon('alert') + '<div>' + esc(e.message || 'فشل') + '</div></div>'; })
+    .finally(function () { if (btn) btn.classList.remove('loading'); });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ⑥⑦⑧ المهام · الأفكار · سجل التواصل
+   ═══════════════════════════════════════════════════════════════════ */
+
+function listPage(o) {
+  var rows = o.rows;
+  var h = '<div class="stack"><div class="card pad-0">' +
+    '<div class="sec-h" style="padding:16px 18px 0;margin:0">' +
+      '<h2>' + esc(o.title) + '</h2><p>' + n0(rows.length) + ' ' + esc(o.unit) + '</p>' +
+      '<button class="btn sm sp" type="button" data-add="' + o.add + '">' + icon('plus') + 'أضف</button></div>' +
+    '<div class="tbl-wrap" style="margin-top:12px"><table class="tbl"><thead><tr>' +
+      o.cols.map(function (c) { return '<th>' + esc(c.h) + '</th>'; }).join('') + '</tr></thead><tbody>';
+
+  if (!rows.length) {
+    h += '<tr><td colspan="' + o.cols.length + '"><div class="empty"><h4>' + esc(o.emptyT) + '</h4><p>' + esc(o.emptyD) + '</p></div></td></tr>';
+  } else {
+    rows.forEach(function (r) {
+      h += '<tr class="clickable" data-row="' + r._row + '" data-tbl="' + o.add + '">' +
+        o.cols.map(function (c) { return '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + c.f(r) + '</td>'; }).join('') + '</tr>';
+    });
+  }
+  return h + '</tbody></table></div></div>' + (o.note || '') + '</div>';
+}
+
+function vTasks() {
+  var open = openTasks(), done = tasksAll().length - open.length;
+  return listPage({
+    title: 'المهام', unit: 'مفتوحة' + (done ? ' · ' + n0(done) + ' منجزة' : ''), add: 'task',
+    rows: tasksAll(),
+    emptyT: 'لا مهامّ بعد', emptyD: 'اضغط «أضف» وارمِ أوّل واحدة.',
+    cols: [
+      { h: 'المهمّة', cls: 'nm', f: function (r) { return esc(r['المهمّة']); } },
+      { h: 'المجال',  f: function (r) { return esc(r['المجال'] || '—'); } },
+      { h: 'الأولوية', f: function (r) { return r['الأولوية'] ? '<span class="chip">' + esc(r['الأولوية']) + '</span>' : '—'; } },
+      { h: 'الحالة',  f: function (r) {
+          var s = String(r['الحالة'] || '').trim();
+          return s ? '<span class="chip' + (/تمّ|منجز|مكتمل/.test(s) ? ' good' : '') + '">' + esc(s) + '</span>' : '<span class="chip warn"><span class="shape"></span>مفتوحة</span>'; } },
+      { h: 'الموعد', cls: 'n', f: function (r) { return esc(r['#الموعد'] || r['الموعد'] || '—'); } }
+    ]
+  });
+}
+
+function vIdeas() {
+  return listPage({
+    title: 'الأفكار', unit: 'فكرة · ' + n0(undecidedIdeas().length) + ' بلا قرار', add: 'idea',
+    rows: ideasAll(),
+    emptyT: 'صندوق الوارد فاضي', emptyD: 'ارمِ الفكرة هنا ولا ترتّبها.',
+    cols: [
+      { h: 'الفكرة', cls: 'nm', f: function (r) { return esc(r['الفكرة']); } },
+      { h: 'من أين', f: function (r) { return esc(r['من أين جاءت'] || '—'); } },
+      { h: 'القرار', f: function (r) {
+          var d = String(r['القرار'] || '').trim();
+          var k = /مؤجَّل/.test(d) ? 'warn' : /رُفض|مرفوض/.test(d) ? 'bad' : /نُفِّذ|مقبول/.test(d) ? 'good' : 'warn';
+          return d ? '<span class="chip ' + k + '"><span class="shape"></span>' + esc(d) + '</span>'
+                   : '<span class="chip warn"><span class="shape"></span>لم يُقرَّر</span>'; } },
+      { h: 'السبب أو الشرط', f: function (r) { return esc(r['السبب أو الشرط'] || '—'); } },
+      { h: 'التاريخ', cls: 'n', f: function (r) { return esc(r['#التاريخ'] || r['التاريخ'] || '—'); } }
+    ],
+    note: '<div class="note">' + icon('info') + '<div>كلّ فكرةٍ قرارُها «لم يُقرَّر» تأخذ حكمًا في الطقس الأسبوعي — ' +
+          'والحكم قد يكون «مؤجَّلة» بشرطٍ مكتوب، وهو قرارٌ لا تأجيل.</div></div>'
+  });
+}
+
+function vLogs() {
+  return listPage({
+    title: 'سجل التواصل', unit: 'قيد', add: 'log',
+    rows: logsAll().slice().reverse(),
+    emptyT: 'لا قيود بعد', emptyD: 'كلّ مكالمةٍ أو زيارة تُقيَّد هنا — بماذا وعدتَه تحديدًا.',
+    cols: [
+      { h: 'التاريخ', cls: 'n', f: function (r) { return esc(r['#التاريخ'] || r['التاريخ'] || '—'); } },
+      { h: 'الملعب', cls: 'nm', f: function (r) { return esc(r['الملعب'] || '—'); } },
+      { h: 'النوع',  f: function (r) { return r['النوع'] ? '<span class="chip">' + esc(r['النوع']) + '</span>' : '—'; } },
+      { h: 'مع مَن', f: function (r) { return esc(r['مع مَن'] || '—'); } },
+      { h: 'النتيجة', f: function (r) {
+          var v = String(r['النتيجة'] || '').trim();
+          var k = /إيجابي/.test(v) ? 'good' : /سلبي|رفض/.test(v) ? 'bad' : '';
+          return v ? '<span class="chip ' + k + '">' + (k ? '<span class="shape"></span>' : '') + esc(v) + '</span>' : '—'; } },
+      { h: 'وعدتُه بـ', f: function (r) { return esc(r['وعدتُه بـ'] || '—'); } }
+    ]
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   الأوراق المنزلقة  —  إضافةٌ وتحرير
+   ═══════════════════════════════════════════════════════════════════ */
+
+var FORMS = {
+  venue: {
+    sheet: 'الملاعب', key: 'اسم الملعب', title: 'ملعب',
+    fields: [
+      { c: 'اسم الملعب', t: 'text', req: true },
+      { c: 'المنطقة', t: 'pick' },
+      { c: 'المسؤول', t: 'text' },
+      { c: 'رقم التلفون', t: 'tel' },
+      { c: 'الحالة', t: 'pick' },
+      { c: 'عدد الملاعب الفرعية', t: 'num' },
+      { c: 'الرياضة', t: 'pick' },
+      { c: 'آخر تواصل', t: 'date' },
+      { c: 'الخطوة التالية', t: 'text' },
+      { c: 'موعد المتابعة', t: 'date' },
+      { c: 'من أين وصلتُه', t: 'text' },
+      { c: 'ملاحظات / سبب الرفض', t: 'area' }
+    ]
+  },
+  task: {
+    sheet: 'المهام', key: 'المهمّة', title: 'مهمّة',
+    fields: [
+      { c: 'المهمّة', t: 'text', req: true },
+      { c: 'المجال', t: 'pick' },
+      { c: 'الأولوية', t: 'pick' },
+      { c: 'الحالة', t: 'pick' },
+      { c: 'على مَن', t: 'text' },
+      { c: 'الموعد', t: 'date' },
+      { c: 'ملاحظات', t: 'area' }
+    ]
+  },
+  idea: {
+    sheet: 'الأفكار', key: 'الفكرة', title: 'فكرة',
+    fields: [
+      { c: 'الفكرة', t: 'text', req: true },
+      { c: 'من أين جاءت', t: 'pick' },
+      { c: 'القرار', t: 'pick' },
+      { c: 'السبب أو الشرط', t: 'area' },
+      { c: 'التاريخ', t: 'date' },
+      { c: 'تاريخ القرار', t: 'date' }
+    ]
+  },
+  log: {
+    sheet: 'سجل التواصل', key: 'الملعب', title: 'قيد تواصل',
+    fields: [
+      { c: 'التاريخ', t: 'date' },
+      { c: 'الملعب', t: 'venue' },
+      { c: 'النوع', t: 'pick' },
+      { c: 'مع مَن', t: 'text' },
+      { c: 'خلاصة ما دار', t: 'area' },
+      { c: 'النتيجة', t: 'pick' },
+      { c: 'وعدتُه بـ', t: 'text' }
+    ]
+  }
+};
+var VOCAB_KEY = { venue: 'venues', task: 'tasks', idea: 'ideas', log: 'logs' };
+
+function openSheet(kind, row) {
+  var spec = FORMS[kind];
+  var data = row ? findRow(spec.sheet, row) : {};
+  S.sheetCtx = { kind: kind, row: row || 0 };
+
+  $('#sheetTitle').textContent = (row ? 'تعديل ' : 'إضافة ') + spec.title;
+  /* ⚠️ السجلّ **بعد الحقول لا قبلها**: اللوح يُفتَح للتعديل، فأوّل ما يقع
+     عليه المؤشّر حقلٌ يُكتب فيه. والسجلّ سياقٌ يُقرأ عند الحاجة. */
+  $('#sheetBody').innerHTML =
+    spec.fields.map(function (f) { return formField(kind, f, data[f.c]); }).join('') +
+    (kind === 'venue' && row ? venueHistory(data['اسم الملعب']) : '');
+  $('#sheetFoot').innerHTML =
+    '<button class="btn" type="button" id="sheetSave">' + icon('save') + (row ? 'احفظ' : 'أضف') + '</button>' +
+    '<button class="btn quiet" type="button" data-close="sheet">إلغاء</button>' +
+    (row ? '<button class="btn danger" type="button" id="sheetDel" aria-label="امسح">' + icon('trash') + '</button>' : '');
+
+  $('#sheetWrap').hidden = false;
+  setTimeout(function () { var f = $('#sheetBody input, #sheetBody select, #sheetBody textarea'); if (f) f.focus(); }, 60);
+
+  $('#sheetSave').onclick = saveSheet;
+  var del = $('#sheetDel');
+  if (del) del.onclick = function () {
+    if (!confirm('نمسح محتوى الصفّ؟ الصفّ نفسه يبقى — فصيغُه تبقى حيّةً لما بعده.')) return;
+    call('clearRow', spec.sheet, row).then(function () { closeSheetPanel(); reload(kind); toast('مُسح.'); })
+      .catch(function (e) { toast(e.message || 'ما قدرنا نمسح.', 'bad'); });
+  };
+}
+
+/**
+ * سجلُّ الملعب — مكالماتُه من ورقة «سجل التواصل».
+ * 🔴 **الرابط موجودٌ في الشيت أصلًا** (عمود «الملعب» في سجل التواصل) ولم
+ *    يكن يُعرَض: كانت الورقتان قائمتين متجاورتين لا ملفَّ عميلٍ واحدًا.
+ *    فبطاقة الملعب صارت تقول «متى كلّمتَه وبماذا وعدتَه» في مكانها.
+ * ⚠️ والمطابقة **بالاسم** لأنّه ما يربطهما في الشيت — فتغييرُ اسم ملعبٍ
+ *    يقطع سجلَّه. وهو قيدُ البيانات لا قيدُ العرض، ويُقال في الحاشية.
+ */
+function venueHistory(name) {
+  name = String(name || '').trim();
+  if (!name) return '';
+
+  var mine = logsAll().filter(function (r) {
+    return String(r['الملعب'] || '').trim() === name;
+  }).sort(function (a, b) {
+    return String(b['التاريخ'] || '').localeCompare(String(a['التاريخ'] || ''));
+  });
+
+  var h = '<div class="vh"><div class="vh-h"><h4>سجلّ التواصل معه</h4>' +
+          '<span class="chip' + (mine.length ? '' : ' warn') + '">' +
+          (mine.length ? logsNoun(mine.length) : 'ما في مكالمات') + '</span></div>';
+
+  if (!mine.length) {
+    /* حالةٌ فارغة تقول المخرج لا تعتذر — نفس نمط بقيّة الفراغات. */
+    h += '<p class="hint">ما سُجّلت مكالمةٌ لهذا الملعب بعد. أضِفْها من «سجل التواصل» ' +
+         'واختر اسمه، فتظهر هنا.</p></div>';
+    return h;
+  }
+
+  h += '<ul class="vh-list">' + mine.slice(0, 6).map(function (r) {
+    var d = String(r['التاريخ'] || '').trim();
+    var ago = daysAgo(d);
+    var res = String(r['النتيجة'] || '').trim();
+    var promise = String(r['وعدتُه بـ'] || '').trim();
+    return '<li class="vh-row">' +
+      '<div class="vh-top">' +
+        '<b>' + esc(String(r['النوع'] || 'تواصل')) + '</b>' +
+        (res ? '<span class="chip">' + esc(res) + '</span>' : '') +
+        '<span class="vh-when">' + esc(d || '—') +
+          (ago !== null ? ' · قبل ' + daysNoun(ago) : '') + '</span>' +
+      '</div>' +
+      (r['خلاصة ما دار'] ? '<p class="vh-sum">' + esc(r['خلاصة ما دار']) + '</p>' : '') +
+      (promise ? '<p class="vh-promise">وعدتَه بـ: <b>' + esc(promise) + '</b></p>' : '') +
+    '</li>';
+  }).join('') + '</ul>';
+
+  if (mine.length > 6) {
+    h += '<p class="hint">وأقدمُ منها ' + logsNoun(mine.length - 6) + ' في «سجل التواصل».</p>';
+  }
+  h += '<p class="hint">المطابقة <b>باسم الملعب</b> — فتغييرُ الاسم يقطع سجلَّه.</p>';
+  return h + '</div>';
+}
+
+function logsNoun(n) { return countNoun(n, 'مكالمة واحدة', 'مكالمتان', 'مكالمات', 'مكالمة'); }
+
+function formField(kind, f, val) {
+  var id = 'ff-' + f.c.replace(/[^\w؀-ۿ]/g, '');
+  var v = val === undefined || val === null ? '' : val;
+  var lab = '<label for="' + id + '">' + esc(f.c) + (f.req ? ' <span style="color:var(--bad)">*</span>' : '') + '</label>';
+  var ctl;
+
+  if (f.t === 'area')      ctl = '<textarea class="input" id="' + id + '" data-f="' + esc(f.c) + '" rows="3">' + esc(v) + '</textarea>';
+  else if (f.t === 'num')  ctl = '<input class="input n" id="' + id + '" data-f="' + esc(f.c) + '" type="number" min="0" step="1" value="' + esc(v) + '">';
+  else if (f.t === 'date') ctl = '<input class="input n" id="' + id + '" data-f="' + esc(f.c) + '" type="date" value="' + esc(v) + '">';
+  else if (f.t === 'tel')  ctl = '<input class="input n" id="' + id + '" data-f="' + esc(f.c) + '" type="tel" dir="ltr" placeholder="07 9999 9999" value="' + esc(v) + '">';
+  else if (f.t === 'venue') {
+    var names = venues().map(function (r) { return r['اسم الملعب']; });
+    ctl = '<input class="input" id="' + id + '" data-f="' + esc(f.c) + '" list="dl-ven" value="' + esc(v) + '">' +
+          '<datalist id="dl-ven">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>';
+  } else if (f.t === 'pick') {
+    var opts = vocab(VOCAB_KEY[kind], f.c);
+    if (v && opts.indexOf(String(v)) === -1) opts.unshift(String(v));
+    if (opts.length) {
+      /* قائمةٌ مغلقة + «أخرى…» — فالقيمة الجديدة قرارٌ لا زلّة لوحة مفاتيح.
+         (الكتابة الحرّة تصنع «عمّان» و«عمان» مدينتين، والمرشِّح ينشقّ.) */
+      ctl = '<select class="input" id="' + id + '" data-f="' + esc(f.c) + '" data-other="1">' +
+        '<option value="">—</option>' +
+        opts.map(function (o) { return '<option value="' + esc(o) + '"' + (String(v) === o ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+        '<option value="__other">أخرى…</option></select>' +
+        '<input class="input" data-other-for="' + esc(f.c) + '" placeholder="اكتب القيمة الجديدة" hidden>';
+    } else {
+      ctl = '<input class="input" id="' + id + '" data-f="' + esc(f.c) + '" type="text" value="' + esc(v) + '">';
+    }
+  } else ctl = '<input class="input" id="' + id + '" data-f="' + esc(f.c) + '" type="text" value="' + esc(v) + '">';
+
+  return '<div class="field">' + lab + ctl + '</div>';
+}
+
+function saveSheet() {
+  var ctx = S.sheetCtx, spec = FORMS[ctx.kind];
+  var patch = {};
+  $$('#sheetBody [data-f]').forEach(function (el) {
+    var k = el.dataset.f, v = el.value;
+    if (el.dataset.other && v === '__other') {
+      var o = $('#sheetBody [data-other-for="' + k + '"]');
+      v = o ? o.value.trim() : '';
+    }
+    if (el.type === 'number') v = v === '' ? '' : Number(v);
+    patch[k] = v;
+  });
+
+  if (!String(patch[spec.key] || '').trim()) { toast('«' + spec.key + '» مطلوبة.', 'bad'); return; }
+
+  var btn = $('#sheetSave'); btn.disabled = true; btn.classList.add('loading');
+  var p = ctx.row ? call('saveRow', spec.sheet, ctx.row, patch)
+                  : call('appendRow', spec.sheet, patch, spec.key);
+  p.then(function (res) {
+    closeSheetPanel();
+    reload(ctx.kind);
+    toast(ctx.row ? 'حُفظ في الشيت.' : 'أُضيف إلى الشيت.');
+    if (res && res.skipped && res.skipped.length) {
+      var f = res.skipped.filter(function (s) { return /صيغة/.test(s); });
+      if (f.length) toast('تُركت ' + f.length + ' خانة صيغة كما هي — الحارس في الخادم.', 'ok');
+    }
+  }).catch(function (e) { btn.disabled = false; btn.classList.remove('loading'); toast((e && e.message) || 'ما قدرنا نحفظ.', 'bad'); });
+}
+
+function closeSheetPanel() { $('#sheetWrap').hidden = true; S.sheetCtx = null; }
+
+function findRow(sheetName, row) {
+  var t = ({ 'الملاعب': 'venues', 'المهام': 'tasks', 'الأفكار': 'ideas', 'سجل التواصل': 'logs' })[sheetName];
+  var rows = (S.boot[t] && S.boot[t].rows) || [];
+  for (var i = 0; i < rows.length; i++) if (rows[i]._row === row) return rows[i];
+  return {};
+}
+
+function reload(kind) {
+  var key = ({ venue: 'venues', task: 'tasks', idea: 'ideas', log: 'logs' })[kind];
+  return call('refresh', key).then(function (t) { S.boot[key] = t; render(); });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   لوحة الأوامر
+   ═══════════════════════════════════════════════════════════════════ */
+
+function palOpen() {
+  $('#pal').hidden = false;
+  paintStaticIcons($('#pal'));
+  var q = $('#palQ');
+  q.value = '';
+  palFill('');
+  q.focus();                       /* فورًا: العنصر ظاهرٌ الآن فلا داعيَ لمؤقّت */
+  setTimeout(function () { q.focus(); }, 40);   /* واحتياطٌ لِما يسرق التركيز */
+}
+function palClose() { $('#pal').hidden = true; }
+
+function palFill(q) {
+  q = String(q || '').trim();
+  var rows = [];
+
+  PAGES.forEach(function (g) {
+    g.items.forEach(function (p) { rows.push({ ic: p.ic, t: p.t, sub: g.g, go: p.id }); });
+  });
+  rows.push({ ic: 'play',    t: 'وضع العرض (حاسبة الملعب)', sub: 'أمر', act: function () { go('calc'); setTimeout(openStage, 60); } });
+  rows.push({ ic: 'plus',    t: 'أضف ملعبًا',    sub: 'أمر', act: function () { openSheet('venue'); } });
+  rows.push({ ic: 'plus',    t: 'أضف مهمّة',     sub: 'أمر', act: function () { openSheet('task'); } });
+  rows.push({ ic: 'plus',    t: 'أضف فكرة',      sub: 'أمر', act: function () { openSheet('idea'); } });
+  rows.push({ ic: 'plus',    t: 'قيّد تواصلًا',   sub: 'أمر', act: function () { openSheet('log'); } });
+  rows.push({ ic: 'sun',     t: 'بدّل المظهر',   sub: 'أمر', act: cycleTheme });
+  rows.push({ ic: 'sheet',   t: 'افتح الشيت',    sub: 'أمر', act: function () { window.open(S.boot.sheetUrl, '_blank'); } });
+  rows.push({ ic: 'refresh', t: 'أعِد قراءة الشيت', sub: 'أمر', act: function () { boot(); } });
+
+  venues().forEach(function (r) {
+    rows.push({ ic: 'pin', t: r['اسم الملعب'], sub: r['المنطقة'] || 'ملعب',
+                act: function () { openSheet('venue', r._row); } });
+  });
+
+  if (q) rows = rows.filter(function (r) { return (r.t + ' ' + (r.sub || '')).indexOf(q) > -1; });
+
+  S.palRows = rows.slice(0, 40);
+  S.palIdx = 0;
+  paintPal();
+}
+
+function paintPal() {
+  var el = $('#palList');
+  if (!S.palRows.length) { el.innerHTML = '<div class="pal-empty">ما في نتيجة.</div>'; return; }
+  el.innerHTML = S.palRows.map(function (r, i) {
+    return '<div class="pal-row' + (i === S.palIdx ? ' on' : '') + '" data-i="' + i + '">' + icon(r.ic) +
+           '<b>' + esc(r.t) + '</b><span class="sub">' + esc(r.sub || '') + '</span></div>';
+  }).join('');
+  var on = $('.pal-row.on', el);
+  if (on) on.scrollIntoView({ block: 'nearest' });
+}
+
+function palRun(i) {
+  var r = S.palRows[i];
+  if (!r) return;
+  palClose();
+  if (r.go) go(r.go); else if (r.act) r.act();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   المظهر
+   ═══════════════════════════════════════════════════════════════════ */
+
+var THEMES = [
+  { k: 'dark',  ic: 'moon',    t: 'داكن' },
+  { k: 'light', ic: 'sun',     t: 'نهاري' },
+  { k: 'auto',  ic: 'monitor', t: 'حسب الجهاز' }
+];
+function themeNow() {
+  var t;
+  try { t = localStorage.getItem('mstd:theme'); } catch (e) {}
+  return (t === 'light' || t === 'auto') ? t : 'dark';
+}
+function cycleTheme() {
+  var i = THEMES.map(function (x) { return x.k; }).indexOf(themeNow());
+  var next = THEMES[(i + 1) % THEMES.length].k;
+  try { localStorage.setItem('mstd:theme', next); } catch (e) {}
+  if (next === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', next);
+  paintTheme();
+  if (S.ready) { render(); if (S.stageOn) paintStage(); }
+}
+/** الأيقونة تصف ما اختاره لا ما يُرسَم — وإلّا استحال أن يعرف أنّه في الوضع التلقائي. */
+function paintTheme() {
+  var cur = THEMES.filter(function (x) { return x.k === themeNow(); })[0];
+  $('#themeIc').innerHTML = iconSVG(cur.ic);
+  $('#themeLbl').textContent = 'المظهر · ' + cur.t;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   الأحداث
+   ═══════════════════════════════════════════════════════════════════ */
+
+document.addEventListener('click', function (e) {
+  var t = e.target;
+
+  var go1 = t.closest('[data-go]');       if (go1) { go(go1.dataset.go); return; }
+  var add = t.closest('[data-add]');      if (add) { openSheet(add.dataset.add); return; }
+  var ven = t.closest('[data-venue]');    if (ven) { e.preventDefault(); openSheet('venue', Number(ven.dataset.venue)); return; }
+  var row = t.closest('[data-row]');      if (row) { openSheet(row.dataset.tbl, Number(row.dataset.row)); return; }
+  var don = t.closest('[data-done]');     if (don) { markDone(Number(don.dataset.done), don); return; }
+  var fs  = t.closest('[data-fs]');       if (fs)  { S.vFilter.status = fs.dataset.fs; render(); return; }
+  var pr  = t.closest('.pal-row');        if (pr)  { palRun(Number(pr.dataset.i)); return; }
+
+  var cl = t.closest('[data-close]');
+  if (cl) {
+    if (cl.dataset.close === 'pal') palClose();
+    else if (cl.dataset.close === 'msg') closeProposal();
+    else closeSheetPanel();
+    return;
+  }
+
+  if (t.closest('#btnCmd'))   { palOpen(); return; }
+  if (t.closest('#btnTheme')) { cycleTheme(); return; }
+  if (t.closest('#btnMenu'))  { $('#rail').classList.toggle('open'); return; }
+
+  /* درجٌ مفتوح بلا مخرجٍ إلّا زرِّه مصيدةٌ صغيرة — النقر خارجه يغلقه. */
+  var rail = $('#rail');
+  if (rail.classList.contains('open') && !t.closest('.rail')) rail.classList.remove('open');
+});
+
+document.addEventListener('change', function (e) {
+  var sel = e.target.closest('select[data-other]');
+  if (!sel) return;
+  var other = $('#sheetBody [data-other-for="' + sel.dataset.f + '"]');
+  if (other) { other.hidden = sel.value !== '__other'; if (!other.hidden) other.focus(); }
+});
+
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); palOpen(); return; }
+
+  if (!$('#pal').hidden) {
+    if (e.key === 'Escape') { palClose(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); S.palIdx = Math.min(S.palIdx + 1, S.palRows.length - 1); paintPal(); return; }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); S.palIdx = Math.max(S.palIdx - 1, 0); paintPal(); return; }
+    if (e.key === 'Enter')     { e.preventDefault(); palRun(S.palIdx); return; }
+    return;
+  }
+  if (e.key === 'Escape') {
+    if (!$('#msgWrap').hidden) { closeProposal(); return; }   // الأعلى طبقةً يُغلَق أوّلًا
+    if (S.stageOn) { closeStage(); return; }
+    if (!$('#sheetWrap').hidden) { closeSheetPanel(); return; }
+  }
+});
+
+document.addEventListener('input', function (e) {
+  if (e.target.id === 'palQ') palFill(e.target.value);
+});
+
+/* الرسوم تُرسم بأبعاد البكسل الحقيقية ⇒ تُعاد عند تغيّر العرض. */
+var rz;
+window.addEventListener('resize', function () {
+  clearTimeout(rz);
+  rz = setTimeout(function () {
+    if (!S.ready) return;
+    if (afterRender[S.page] && $('#view').innerHTML) render();
+  }, 220);
+});
+
+function markDone(row, btn) {
+  if (btn) btn.classList.add('loading');
+  var vals = vocab('tasks', 'الحالة');
+  var done = vals.filter(function (v) { return /تمّ|منجز|مكتمل/.test(v); })[0] || 'تمّت';
+  call('saveRow', 'المهام', row, { 'الحالة': done })
+    .then(function () { return reload('task'); })
+    .then(function () { toast('علّمناها «' + done + '».'); })
+    .catch(function (e) { if (btn) btn.classList.remove('loading'); toast(e.message || 'ما قدرنا نحفظ.', 'bad'); });
+}
+
+/* ═══ انطلق ══════════════════════════════════════════════════════ */
+/* حارسٌ ضدّ إقلاعين: الحدث قد يكون وقع قبل تسجيلنا، فنفحص الحالة —
+   ونداءان يعنيان جلبتين ومستمعَين مكرَّرين على كلّ عنصر. */
+var booted = false;
+function bootOnce() { if (booted) return; booted = true; boot(); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootOnce);
+else bootOnce();
+
+})();
+</script>

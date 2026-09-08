@@ -762,7 +762,13 @@ function renderOwnerStats(bookings){
   const weekCount=bookings.filter(b=>String(b.date||'')>=weekStart && String(b.date)<=td).length;
   const webRev=fromWeb.reduce((s,b)=>s+(Number(b.price)||0),0);
   const manualRev=manual.reduce((s,b)=>s+(Number(b.price)||0),0);
-  const profit=webRev*CONFIG.COMMISSION; const net=webRev-profit+manualRev;
+  /* 🔴 العمولة لم تعد نسبةً تُضرَب في الإيراد (ترحيل 34): شريحتان وسقفٌ شهريّ
+     لكلّ ملعبٍ فرعيّ ⇒ `webRev * rate` صار يعطي رقمًا أعلى من الحقيقي كلّما
+     اقترب ملعبٌ من سقفه. و`commissionTotal` تحسبها حجزةً حجزة بنفس خطوات
+     العرض `booking_commission`، وتفلتر بنفسها (مؤكّد وغير يدويّ) فتُمرَّر
+     `bookings` كاملةً لا `fromWeb`.
+     ⚠️ ولا نسبةَ تُعرَض على الشاشة — قرار الدفعة ١٦ يبقى قائمًا. */
+  const profit=commissionTotal(bookings); const net=webRev-profit+manualRev;
   setText('oTotal',bookings.length); setText('oConfirmed',confirmed.length); setText('oPending',pending.length); setText('oToday',todayCount);
   setText('oWeek',`${t('last7')}: ${weekCount}`); setText('oRevenue',formatMoney(webRev)); setText('oProfit',formatMoney(profit)); setText('oNet',formatMoney(net));
   /* 🔴 **النسبة بمقامها أو لا نسبة.** «نسبة التأكيد ٦٧٪» على ثلاثة حجوزات

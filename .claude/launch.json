@@ -48,6 +48,18 @@
         "app/src"
       ],
       "port": 8014
+    },
+    {
+      "name": "mustadeera-console",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8031",
+        "--directory",
+        "mustadeera-console"
+      ],
+      "port": 8031
     }
   ]
 }

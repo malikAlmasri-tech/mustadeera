@@ -97,8 +97,16 @@ function extract(name) {
 
 const NAMES = ['normalizePhone', 'JO_PHONE_RE', 'validPhone', 'digits', 'isHttpUrl',
                'normalizeSlotsKeyword', 'parseSlots', 'DEFAULT_SLOTS', 'enSlotLabel',
-               'normSize', 'countNoun', 'slotsToKeyword', 'replySpeedText'];
-const bundle = NAMES.map(extract).join('\n');
+               'normSize', 'countNoun', 'slotsToKeyword', 'replySpeedText',
+               /* العمولة المتدرّجة (ترحيل 34) — ومعها تبعاتها، فالدالّة تقرأ
+                  `CONFIG` وأربعةَ قارئي حقول. تُستخرَج كلُّها من المصدر نفسه
+                  ولا تُنسَخ هنا: نسخةٌ في ملفّ اختبار تنحرف، والمنحرفة تمرّ. */
+               'CONFIG', 'normStatus', 'isOwnerManual', 'bkDate', 'bkKey', 'bkMade',
+               'monthIdx', 'commissionRules', 'commissionByBooking', 'commissionTotal'];
+/* `LIVE_RULES` مُعرَّفة بـ`let` في المصدر، و`extract` يعرف `function` و`const`
+   وحدهما. وقيمتها هنا `null` عمدًا — أي «لم يصل ردّ الخادم بعد» ⇒ الحساب يقع
+   على افتراضات `CONFIG`، وهي الحالة التي تُختبَر. */
+const bundle = 'let LIVE_RULES = null;\n' + NAMES.map(extract).join('\n');
 const api = new Function(`${bundle}\nreturn {${NAMES.join(',')}};`)();
 
 /* ── the harness ─────────────────────────────────────────────────────────── */
@@ -250,6 +258,82 @@ describe('replySpeedText', () => {
   eq(r(240, 'ar'), '4 ساعات',     'four hours takes the plural');
   /* A decimal keeps the noun singular in Arabic — "1.5 ساعات" is wrong. */
   eq(r(90, 'ar'),  '1.5 ساعة',    'a fraction singularises the noun');
+});
+
+/* ── العمولة المتدرّجة (ترحيل 34) ─────────────────────────────────────────
+   أخطر حسابٍ في المنتج يصمت حين يخطئ: رقمٌ أعلى أو أدنى بقليل لا يرمي خطأً
+   ولا يُفرغ شاشة — تقرأ اللوحة ربحًا وتقرأ القاعدة غيره. وكلّ تأكيدٍ هنا
+   محسوبٌ باليد من نصّ النموذج، لا من مخرَج الدالّة نفسها. */
+describe('commissionByBooking', () => {
+  const total = api.commissionTotal;
+  const map = api.commissionByBooking;
+  /* حجزٌ بأقلّ ما يلزم. التاريخ هو ما يرتّب ويُجمّع، والسعر ما يُضرَب. */
+  const mk = (id, field, date, price, extra) => Object.assign(
+    { booking_id: String(id), field_id: field, date, hour: 20, price,
+      status: 'confirmed', source: 'direct', timestamp: date + 'T00:00:00Z' }, extra || {});
+  /* حجوزاتٌ متتالية في شهرٍ واحد على ملعبٍ واحد */
+  /* ⚠️ المعرّف يحمل الشهر: الخريطة مفاتيحها معرّفات الحجوزات، ومعرّفان
+     متطابقان يبتلع أحدهما الآخر. في الإنتاج هي `uuid` مفتاحٌ أوّليّ فلا
+     تتكرّر — وفي المعطى الاصطناعي تتكرّر إن لم يُذكر الشهر. */
+  const run = (n, price, field, month) => Array.from({ length: n }, (_, i) =>
+    mk(`${field}-${month}-${i}`, field, `${month}-${String((i % 28) + 1).padStart(2, '0')}`, price,
+       { timestamp: `${month}-01T${String(i % 24).padStart(2, '0')}:00:00Z`, hour: i % 24 }));
+  /* أشهر الانضمام مُطفأة في اختبارات الشرائح كي تُقاس الشريحة وحدها */
+  const noFree = { free: 0 };
+
+  // ① داخل الشريحة الأولى: نسبةٌ واحدة لا غير
+  eq(total(run(3, 40, 'F1', '2026-03'), noFree), 12, '3 × 40 × 10٪');
+
+  // ② العبور إلى الشريحة الثانية عند الحجزة ٣١
+  eq(total(run(32, 40, 'F1', '2026-03'), noFree), 123.2, '30 بـ10٪ ثمّ 2 بـ4٪');
+
+  /* ③ السقف — والرقم مرجعيّ في الشيت نفسه: عند سعر ٤٠ يُبلَغ عند الحجزة ٥٥
+     (‏120 + 25×1.6 = 160)، وما بعدها لا يزيد شيئًا مهما حجز. */
+  eq(total(run(55, 40, 'F1', '2026-03'), noFree), 160, 'الحجزة ٥٥ تبلغ السقف بالضبط');
+  eq(total(run(60, 40, 'F1', '2026-03'), noFree), 160, 'ما بعد السقف لا يزيد');
+  eq(total(run(90, 40, 'F1', '2026-03'), noFree), 160, 'ولا يزيد مهما بعُد');
+
+  // ④ سقفٌ صفر = بلا سقف (اتّفاقٌ مكتوب في الشيت وفي الترحيل)
+  eq(total(run(60, 40, 'F1', '2026-03'), { free: 0, cap: 0 }), 168, 'cap=0 ⇒ بلا قصّ');
+
+  /* ⑤ العدّاد **لكلّ ملعبٍ فرعيّ لا لكلّ مكان** — وهو مفتاح النموذج كلّه:
+     ملعبان لكلٍّ ٣٠ حجزة يدفعان ١٢٠+١٢٠، لا ١٢٠ ثمّ ٤٪ على الثاني. */
+  eq(total([...run(30, 40, 'F1', '2026-03'), ...run(30, 40, 'F2', '2026-03')], noFree),
+     240, 'ملعبان × ٣٠ = ١٢٠ لكلٍّ');
+
+  // ⑥ ويصفّر أوّل كلّ شهرٍ ميلادي
+  eq(total([...run(30, 40, 'F1', '2026-03'), ...run(30, 40, 'F1', '2026-04')], noFree),
+     240, 'شهران × ٣٠ على نفس الملعب = ١٢٠ لكلٍّ');
+
+  /* ⑦ شهر الانضمام مجّانيّ بالكامل — والأوّل يُشتقّ من البيانات: أصغرُ شهرٍ
+     فيه حجزٌ محتسَبٌ لذلك الملعب. */
+  const twoMonths = [...run(3, 40, 'F1', '2026-03'), ...run(3, 40, 'F1', '2026-04')];
+  eq(total(twoMonths), 12, 'آذار مجّانيّ ونيسان يُحتسَب');
+  eq(total(twoMonths, { free: 0 }), 24, 'وبإطفاء المجّانيّ يُحتسَب الشهران');
+  eq(total(twoMonths, { free: 2 }), 0, 'وبشهرين مجّانيّين لا شيء');
+
+  /* ⑧ ما لا يُحتسَب أصلًا: غيرُ المؤكّد، وحجزُ المالك بيده — والثاني كان
+     يُحتسَب في `/admin` ولا يُحتسَب في التطبيق قبل هذا الترحيل. */
+  eq(total(run(3, 40, 'F1', '2026-03').map(b => ({ ...b, status: 'pending' })), noFree), 0, 'المعلّق لا يُحتسَب');
+  eq(total(run(3, 40, 'F1', '2026-03').map(b => ({ ...b, status: 'cancelled' })), noFree), 0, 'الملغى لا يُحتسَب');
+  eq(total(run(3, 40, 'F1', '2026-03').map(b => ({ ...b, source: 'owner_manual' })), noFree), 0, 'اليدويّ لا يُحتسَب');
+
+  /* ⑨ الترتيب زمنيّ لا بالسعر — «أوّل ثلاثين» تعني الأسبق وقتًا. وبأسعارٍ
+     متفاوتة يظهر الفرق: ثلاثون رخيصة أوّلًا ثمّ غاليةٌ واحدة في الشريحة
+     الثانية. لو رُتّبت بالسعر لخرج رقمٌ آخر تمامًا. */
+  const cheapFirst = [
+    ...Array.from({ length: 30 }, (_, i) =>
+      mk('c' + i, 'F1', `2026-03-${String(i + 1).padStart(2, '0')}`, 10)),
+    mk('big', 'F1', '2026-03-31', 1000),
+  ];
+  eq(total(cheapFirst, { free: 0, cap: 0 }), 70, '30×10×10٪ + 1000×4٪');
+
+  /* ⑩ الخريطة والمجموع حقيقةٌ واحدة — التجميعات كلّها (يوم · مكان · عميل)
+     مبنيّةٌ على أنّ مجموع الخريطة هو المجموع. */
+  const mixed = [...run(32, 40, 'F1', '2026-04'), ...run(5, 25, 'F2', '2026-04')];
+  const m = map(mixed, noFree);
+  let sum = 0; m.forEach(v => { sum += v; });
+  eq(Math.round(sum * 100) / 100, total(mixed, noFree), 'مجموع الخريطة = المجموع');
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

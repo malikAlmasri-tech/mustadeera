@@ -146,6 +146,91 @@ function statusLabel(s){ const m={confirmed:{t:t('statusConfirmed'),c:'badge-gre
 const isOwnerManual = (b) => String(b.source||'').trim().toLowerCase()==='owner_manual';
 const isWebsite = (b) => !isOwnerManual(b);
 
+/* ═══ العمولة المتدرّجة — نسختان بالضرورة، ونصٌّ واحد بينهما ══════════════
+   هذه **مرآةُ العرض `booking_commission`** (ترحيل 34) خطوةً بخطوة، ومرآتُها
+   الثانية في `site/admin.html`. والقاعدة هي الحكم دائمًا؛ هذه تجيب قبل أن
+   يصل ردُّ الخادم وقبل تشغيل الترحيل، فلا تبقى لوحةُ المالك بلا رقم.
+
+   ⚠️ **العمولة تُحسَب لكلّ حجزةٍ على حدة لا لكلّ شهر** — وهو نفس القرار
+      المعماري في الترحيل: النموذج تراكميّ (شريحتان وسقف)، فبحساب الحجزة
+      الواحدة يصير كلُّ تجميعٍ (يوم · شهر · مكان) مجموعَ عمودٍ واحد.
+
+   الخطوات الخمس، وكلٌّ منها مقابلٌ لسطرٍ في العرض:
+     ① المؤكّد وغير اليدويّ وحده — حجز المالك بيده ليس بيعًا جاءه منّا
+     ② التجميع بـ(ملعب فرعيّ × شهر ميلادي)
+     ③ ترتيبٌ زمنيّ حاسم داخل الشهر (‏`id` آخرَ فاصلٍ كي لا يتغيّر الناتج)
+     ④ الأولى n1 بنسبة r1 وما بعدها r2، ثمّ يُقصّ المجموع عند السقف
+     ⑤ وشهرُ الملعب الأوّل مجّانيّ بالكامل
+
+   ⚠️ ويقرأ الحقلين بالاسمين معًا (`date`/`booking_date` · `booking_id`/`id`)
+      لأنّ التطبيق يمرّر صفوفًا مطبَّعة و`/admin` يمرّر صفوفًا خامًا — ونصٌّ
+      واحد أسلمُ من نسختين تنحرفان. */
+/* الشروط الحيّة من `booking_rules` — تُملأ مرّةً في الجلسة (‏`sbLoadRules`)
+   وتبقى `null` قبل ذلك وعند فشل السؤال، فيقع الحساب على افتراضات `CONFIG`. */
+let LIVE_RULES = null;
+function commissionRules(over){
+  const o = over || LIVE_RULES || {};
+  const num = (v, d) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : d; };
+  return {
+    r1:    num(o.r1,    CONFIG.COMMISSION_TIER1_RATE),
+    n1:    num(o.n1,    CONFIG.COMMISSION_TIER1_N),
+    r2:    num(o.r2,    CONFIG.COMMISSION_TIER2_RATE),
+    cap:   num(o.cap,   CONFIG.COMMISSION_CAP),
+    free:  num(o.free,  CONFIG.COMMISSION_FREE_MONTHS),
+  };
+}
+const bkDate  = (b) => String((b && (b.date || b.booking_date)) || '').split('T')[0];
+const bkKey   = (b) => String((b && (b.booking_id || b.id)) || '');
+const bkMade  = (b) => String((b && (b.timestamp || b.created_at)) || '');
+/* فهرس الشهر رقمًا واحدًا (سنة×12+شهر) — به تُقارَن الأشهر بلا حساب تواريخ */
+const monthIdx = (ymd) => { const p = String(ymd||'').split('-');
+  const y = Number(p[0]), m = Number(p[1]); return (Number.isFinite(y) && Number.isFinite(m)) ? y*12 + (m-1) : NaN; };
+
+/* يُرجع خريطة: booking_id ⇒ عمولة تلك الحجزة (بالدينار) */
+function commissionByBooking(bookings, over){
+  const R = commissionRules(over);
+  const out = new Map();
+  const groups = new Map();          // "field|YYYY-MM" ⇒ [حجوزات]
+  const firstOf = new Map();         // field ⇒ أصغر فهرس شهر
+  (bookings||[]).forEach(b => {
+    if (normStatus(b) !== 'confirmed' || isOwnerManual(b)) return;
+    const d = bkDate(b); const mi = monthIdx(d);
+    if (!d || Number.isNaN(mi)) return;
+    const fid = String(b.field_id||'');
+    const gk = fid + '|' + d.slice(0,7);
+    if (!groups.has(gk)) groups.set(gk, []);
+    groups.get(gk).push(b);
+    const prev = firstOf.get(fid);
+    if (prev === undefined || mi < prev) firstOf.set(fid, mi);
+  });
+  groups.forEach((rows, gk) => {
+    const fid = gk.split('|')[0];
+    const mi  = monthIdx(gk.split('|')[1] + '-01');
+    const first = firstOf.get(fid);
+    const isFree = R.free > 0 && Number.isFinite(first) && mi < first + R.free;
+    rows.sort((a, b) =>
+      bkDate(a).localeCompare(bkDate(b)) ||
+      (Number(a.hour)||0) - (Number(b.hour)||0) ||
+      bkMade(a).localeCompare(bkMade(b)) ||
+      bkKey(a).localeCompare(bkKey(b)));
+    let before = 0;
+    rows.forEach((b, i) => {
+      if (isFree) { out.set(bkKey(b), 0); return; }
+      const price = Number(b.price)||0;
+      const raw = price * ((i+1) <= R.n1 ? R.r1 : R.r2);
+      const amt = R.cap > 0 ? Math.max(0, Math.min(raw, R.cap - before)) : raw;
+      before += raw;
+      out.set(bkKey(b), Math.round(amt*100)/100);
+    });
+  });
+  return out;
+}
+/* مجموع العمولة على مجموعة حجوزات — وهو ما تعرضه لوحة المالك */
+function commissionTotal(bookings, over){
+  let s = 0; commissionByBooking(bookings, over).forEach(v => { s += v; });
+  return Math.round(s*100)/100;
+}
+
 /* ═══ (١١) ساعة الخانة — مهلة الإلغاء · مهلة الردّ · لم يحضر ═══════════════
    كل ما تحت يعمل على وقت **الجهاز** لأن الجهاز في الأردن والخانة كذلك؛
    والقاعدة تحسب نفس المقارنة بتوقيت عمّان صراحةً (`amman_now()` في
@@ -917,13 +1002,41 @@ async function sbDelPriceRule(id, session){
    ⚠️ والقراءة **بلا توكن**: `br_read using (true)` ⇒ حتى الضيف الذي لم يسجّل
    دخوله بعدُ يعرف أنّ نسخته تخلّفت. وسؤالٌ واحد لكل جلسة، ويُبتلع فشلُه
    صامتًا — بوّابةٌ تكسر الإقلاع حين يتعذّر سؤالها أسوأ ممّا تحرسه. */
+/* ═══ جدول الشروط — سؤالٌ واحد لكل جلسة يخدم مستهلكَين ═════════════════════
+   كان فحصُ الإصدار يسأل مفتاحين بعينهما، وصارت العمولة تحتاج خمسةً أخرى من
+   **نفس** الجدول ⇒ سؤالٌ واحد بلا مرشِّح (‏الجدول أسطرٌ معدودة) يخدم الاثنين.
+   ⚠️ ويُنادى من مسارين: `loadData` (جهة اللاعب) و`getOwnerData` (لوحة المالك)
+      — والثاني لازمٌ لأنّ `/owner/` على الويب **لا يُنادي `loadData` أصلًا**
+      (الدفعة ٤٧)، فبلاه تبقى اللوحة على افتراضات `CONFIG` بلا أن يُقال ذلك. */
+let RULES_ROWS = null, RULES_ASKED = false;
+async function sbLoadRules(){
+  if (RULES_ASKED) return RULES_ROWS;
+  RULES_ASKED = true;
+  try{
+    const r = await sbRest('/booking_rules?select=key,num_value');
+    if (!r.ok || !Array.isArray(r.data)) return RULES_ROWS;
+    RULES_ROWS = r.data;
+    const at = (k) => { const row = RULES_ROWS.find(x => x.key === k);
+      return row ? Number(row.num_value) : undefined; };
+    /* الترحيل 34 قد لا يكون مُشغَّلًا ⇒ المفاتيح غائبة ⇒ `undefined` لكلٍّ
+       منها، و`commissionRules` تتراجع إلى `CONFIG`. لا فرعَ ثانٍ ولا رسالة:
+       الحساب صحيحٌ بالنموذج الذي تعرفه القاعدة فعلًا. */
+    LIVE_RULES = {
+      r1: at('commission_rate_tier1'),   n1:   at('commission_tier1_bookings'),
+      r2: at('commission_rate_tier2'),   cap:  at('commission_cap_monthly'),
+      free: at('commission_free_months'),
+    };
+  }catch(_){ /* لا شيء — الافتراضات تعمل */ }
+  return RULES_ROWS;
+}
+
 let VER_CHECKED = false;
 async function checkAppVersion(){
   if (VER_CHECKED) return; VER_CHECKED = true;
   try{
-    const r = await sbRest('/booking_rules?select=key,num_value&key=in.(min_app_version,block_app_version)');
-    if (!r.ok || !Array.isArray(r.data)) return;
-    const at = (k) => Number((r.data.find(x => x.key === k) || {}).num_value || 0);
+    const rows = await sbLoadRules();
+    if (!Array.isArray(rows)) return;
+    const at = (k) => Number((rows.find(x => x.key === k) || {}).num_value || 0);
     const min = at('min_app_version');
     if (!(CONFIG.APP_BUILD < min)) return;
     const bar = $('#verBar'); if (!bar) return;
@@ -1208,6 +1321,10 @@ const API = {
              عامّ أصلًا فلا باب جديد يُفتح — جلبةٌ داخل الدفعة لا جلبة جديدة. */
           sbRest(`/place_reply_speed?select=median_minutes,n&place_id=eq.${pid}`, { token:s.at }),
           sbGetOwnerDemand(pid, s.at),
+          /* شروط العمولة (ترحيل 34) — داخل الدفعة لا جلبةً جديدة، وناتجُها
+             يُخزَّن في `LIVE_RULES` فلا يُقرأ من هنا. ولوحة المالك هي أوّل
+             من يحتاجها: على `/owner/` لا يجري `loadData` إطلاقًا. */
+          sbLoadRules(),
         ]);
         if (!pl.ok || !(pl.data||[]).length) return { success:false, message:'ما لقينا المكان تبعك' };
         // ملاحظة: المالك يرى ملاعبه **الموقوفة** أيضًا — كان هذا عطلًا في الباكند القديم

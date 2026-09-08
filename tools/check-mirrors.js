@@ -40,16 +40,32 @@ function grab(file, re, label) {
 
 console.log('mirrors:');
 
-/* ── commission ──────────────────────────────────────────────────────────
-   Three copies, and the third is the dangerous one: changing the rate means
-   `create or replace view admin_daily`, and forgetting it gives a dashboard
-   that reports two different profits for the same month with no error. */
-const rate = [
-  grab('site/admin.html',        /var RATE\s*=\s*([\d.]+)/,        'RATE'),
-  grab('app/src/app.js',         /COMMISSION:\s*([\d.]+)/,         'CONFIG.COMMISSION'),
-  grab('db/migration/01_schema.sql', /\)\s*\*\s*([\d.]+),\s*2\)\s*as commission/, 'admin_daily'),
-].filter(Boolean);
-if (rate.length === 3) check('commission rate', rate);
+/* ── commission: the tiered model (migration 34) ─────────────────────────
+   Five numbers, three copies each. The rate is no longer a single figure a
+   client can multiply revenue by — it is two tiers, a monthly cap per
+   sub-field, and a free first month — so every one of the five has to agree
+   or the two dashboards disagree about the same month with no error raised.
+
+   The database row is the live value (all five sit in `booking_rules`, so the
+   owner can retune without a release); the JS constants are the fallback used
+   before that fetch lands and before the migration is run. They are compared
+   here because a fallback that disagrees with the server is a number that
+   changes under the reader the moment the network answers. */
+const commissionKeys = [
+  ['tier 1 rate',      /var RATE_TIER1\s*=\s*([\d.]+)/,       /COMMISSION_TIER1_RATE:\s*([\d.]+)/,  /\('commission_rate_tier1',\s*([\d.]+)/],
+  ['tier 1 bookings',  /var RATE_TIER1_N\s*=\s*([\d.]+)/,     /COMMISSION_TIER1_N:\s*([\d.]+)/,     /\('commission_tier1_bookings',\s*([\d.]+)/],
+  ['tier 2 rate',      /var RATE_TIER2\s*=\s*([\d.]+)/,       /COMMISSION_TIER2_RATE:\s*([\d.]+)/,  /\('commission_rate_tier2',\s*([\d.]+)/],
+  ['monthly cap',      /var RATE_CAP\s*=\s*([\d.]+)/,         /COMMISSION_CAP:\s*([\d.]+)/,         /\('commission_cap_monthly',\s*([\d.]+)/],
+  ['free months',      /var RATE_FREE_MONTHS\s*=\s*([\d.]+)/, /COMMISSION_FREE_MONTHS:\s*([\d.]+)/, /\('commission_free_months',\s*([\d.]+)/],
+];
+commissionKeys.forEach(([label, reAdmin, reApp, reSql]) => {
+  const trio = [
+    grab('site/admin.html',                  reAdmin, 'admin.html'),
+    grab('app/src/app.js',                   reApp,   'CONFIG'),
+    grab('db/migration/34_commission_tiers.sql', reSql, 'booking_rules'),
+  ].filter(Boolean);
+  if (trio.length === 3) check('commission — ' + label, trio);
+});
 
 /* ── app build number ────────────────────────────────────────────────────
    The gradle value is what actually ships; CONFIG.APP_BUILD is what the app

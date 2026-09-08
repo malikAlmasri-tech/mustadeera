@@ -1,0 +1,1091 @@
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   الطبقة النقيّة  —  الأيقونات · التنسيق · نموذج التسعير · الرسوم
+   ───────────────────────────────────────────────────────────────────
+   🔴 لا شيء هنا يلمس الـDOM العامّ ولا يطلب من الخادم. كلّ ما فيه دوالّ
+      تأخذ وتُرجع — فتُختبَر ويُقارَن ناتجُها بما حسبه الشيت نفسه
+      (زرّ «طابق الشيت» في «الثوابت»).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══ الأيقونات — مسارات SVG لا رموز تعبيرية ═════════════════════ */
+var ICONS = {
+  home:    '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+  pin:     '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  check:   '<path d="M20 6 9 17l-5-5"/>',
+  square:  '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  bulb:    '<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6V16h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z"/>',
+  chat:    '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z"/>',
+  calc:    '<rect x="4" y="2.5" width="16" height="19" rx="3"/><path d="M8 7h8"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/>',
+  chart:   '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M3 20h18"/>',
+  sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/>',
+  sheet:   '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 9v12"/>',
+  search:  '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  menu:    '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  x:       '<path d="M6 6l12 12M18 6 6 18"/>',
+  sun:     '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:    '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>',
+  monitor: '<rect x="2.5" y="4" width="19" height="12.5" rx="2.5"/><path d="M8 20.5h8M12 16.5v4"/>',
+  plus:    '<path d="M12 5v14M5 12h14"/>',
+  phone:   '<path d="M21 16.5v2.6a2 2 0 0 1-2.2 2 19.5 19.5 0 0 1-16.3-16.4A2 2 0 0 1 4.5 2.5h2.6a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.2 10.2a16 16 0 0 0 5.6 5.6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/>',
+  wa:      '<path d="M3 21l1.7-5.3A8.6 8.6 0 1 1 8.3 19L3 21Z"/><path d="M8.8 8.2c.3-.6.6-.6.9-.6h.6c.2 0 .5 0 .7.5l.8 1.8c.1.2.1.4 0 .6l-.4.6c-.1.2-.3.3-.1.6a7 7 0 0 0 3 2.6c.3.1.5.1.7-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.9c.2.1.4.2.4.4v.6c-.1.4-.5 1.1-1.4 1.3-1 .2-2.3.1-4.5-1.2a9.6 9.6 0 0 1-3.7-4c-.5-1-.6-2-.6-2.6 0-.3.1-.6.2-.8Z"/>',
+  ext:     '<path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>',
+  arrow:   '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
+  play:    '<path d="M6.5 4.5v15l13-7.5Z"/>',
+  save:    '<path d="M5 3.5h11L20.5 8v12.5H5Z"/><path d="M8.5 3.5v6h7v-6M8.5 20.5v-6h7v6"/>',
+  trash:   '<path d="M4 7h16"/><path d="M9.5 7V4.5h5V7"/><path d="M6.5 7v13a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5V7"/>',
+  edit:    '<path d="M4 20h4L19 9a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5V20Z"/><path d="m14.5 6.5 3.5 3.5"/>',
+  alert:   '<path d="M12 3.5 22 20H2Z"/><path d="M12 10v4.5M12 17.2h.01"/>',
+  info:    '<circle cx="12" cy="12" r="9"/><path d="M12 11.5V17M12 7.6h.01"/>',
+  refresh: '<path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4v5h-5"/>',
+  target:  '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  coins:   '<ellipse cx="12" cy="6.5" rx="8" ry="3.5"/><path d="M4 6.5v5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-5"/><path d="M4 11.5v5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-5"/>',
+  clock:   '<circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.4 2"/>',
+  users:   '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 5.2a3.5 3.5 0 0 1 0 5.6M18.5 20a6.5 6.5 0 0 0-2.6-5.2"/>',
+  minus:   '<path d="M5 12h14"/>',
+  lock:    '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  copy:    '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
+};
+
+function iconSVG(name) {
+  var p = ICONS[name];
+  if (!p) return '';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+function icon(name, cls) {
+  var p = ICONS[name];
+  if (!p) return '';
+  return '<span class="ic ' + (cls || '') + '">' + iconSVG(name) + '</span>';
+}
+/** أيقونات الوسم الثابت في Index.html — `data-ic` وحده لا يرسم شيئًا،
+ *  وصندوقٌ فارغٌ مكان زرّ القائمة لا يكشفه إلّا النظر إلى اللقطة. */
+function paintStaticIcons(root) {
+  var list = (root || document).querySelectorAll('[data-ic]');
+  Array.prototype.forEach.call(list, function (el) {
+    if (!el.firstElementChild) el.innerHTML = iconSVG(el.dataset.ic);
+  });
+}
+
+
+/* ═══ التهريب والتنسيق ═══════════════════════════════════════════ */
+
+/* يهرّب الاقتباس أيضًا — تسلسلُ عقدةٍ نصّية يهرّب &<> وحدها،
+   وهو خاطئ تمامًا داخل سمة. واسمُ ملعبٍ فيه " يكسر الوسم. */
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+var NF = {
+  i:  new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }),
+  d1: new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+  d2: new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+};
+
+function isNum(v) { return typeof v === 'number' && isFinite(v); }
+
+/* لوحة مفاتيح الجوّال العربية تُخرج ٠١٢٣ لا 0123 — ورقمٌ هنديّ يصل حقلًا
+   رقميًّا يُقرأ نصًّا فيصير صفرًا بصمت. تُطبَّع قبل أيّ تحليل. */
+function toLatinDigits(s) {
+  return String(s)
+    .replace(/[٠-٩]/g, function (d) { return String(d.charCodeAt(0) - 0x0660); })
+    .replace(/[۰-۹]/g, function (d) { return String(d.charCodeAt(0) - 0x06F0); });
+}
+
+/** يُرجع NaN للمدخَل الجزئي («-» أو «.») فلا يُحسَب رقمٌ لم يكتمل بعد. */
+function parseNum(s) {
+  var t = toLatinDigits(s).replace(/[^\d.\-]/g, '');
+  if (t === '' || t === '-' || t === '.' || t === '-.') return NaN;
+  var n = Number(t);
+  return isFinite(n) ? n : NaN;
+}
+
+/** عدد المنازل العشرية التي تقتضيها الخطوة — 0.001 ⇒ ٣. */
+function stepDec(step) {
+  var s = String(step), i = s.indexOf('.');
+  return i < 0 ? 0 : s.length - i - 1;
+}
+
+/** يُثبّت القيمة على مضاعفات الخطوة — وإلّا خرج 0.30000000000000004. */
+function snapTo(v, step, dec) {
+  var r = Math.round(v / step) * step;
+  return Number(r.toFixed(dec));
+}
+
+function n0(v)  { return isNum(v) ? NF.i.format(Math.round(v))  : '—'; }
+function n1(v)  { return isNum(v) ? NF.d1.format(v)             : '—'; }
+function n2(v)  { return isNum(v) ? NF.d2.format(v)             : '—'; }
+function pct(v, dp) {
+  if (!isNum(v)) return '—';
+  var f = dp === 2 ? NF.d2 : dp === 0 ? NF.i : NF.d1;
+  return f.format(v * 100) + '%';
+}
+/** رقمٌ عرضيّ كبير: بلا tabular-nums — تلك للأعمدة لا للأرقام المفردة. */
+function big(v, unit) {
+  return '<span class="numP">' + n0(v) + '</span>' + (unit ? '<span class="u">' + esc(unit) + '</span>' : '');
+}
+function jd(v) { return n0(v); }
+
+/* المعدود العربي يتغيّر مع العدد — و«1 حجوزات» خطأٌ لا يقبله أحد. */
+function countNoun(n, one, two, few, many) {
+  n = Math.abs(Math.round(Number(n) || 0));
+  if (n === 1) return one;
+  if (n === 2) return two;
+  if (n % 100 >= 3 && n % 100 <= 10) return n + ' ' + few;
+  return n + ' ' + many;
+}
+function bookingsNoun(n) { return countNoun(n, 'حجزة واحدة', 'حجزتان', 'حجزات', 'حجزة'); }
+function daysNoun(n)     { return countNoun(n, 'يوم واحد', 'يومان', 'أيام', 'يومًا'); }
+function monthsNoun(n)   { return countNoun(n, 'شهر واحد', 'شهران', 'أشهر', 'شهرًا'); }
+function placesNoun(n)   { return countNoun(n, 'مكان واحد', 'مكانان', 'أماكن', 'مكانًا'); }
+function fieldsNoun(n)   { return countNoun(n, 'ملعب واحد', 'ملعبان', 'ملاعب', 'ملعبًا'); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   نموذج التسعير  —  الدالّة الواحدة التي يناديها الطرفان
+   ───────────────────────────────────────────────────────────────────
+   عمولةٌ متدرّجة لكلّ **ملعبٍ فرعيّ**: نسبة الشريحة الأولى على أوّل n
+   حجزة في الشهر، ثمّ نسبةٌ أقلّ لما بعدها، ثمّ سقفٌ صلب يقف عنده كلّ شيء.
+   وهي مكتوبةٌ مرّةً واحدة هنا، تقرأها حاسبة الملعب واقتصاديات المنصة
+   معًا — تمامًا كما تقرأ الورقتان في الشيت نفس صيغة «الثوابت».
+   ═══════════════════════════════════════════════════════════════════ */
+
+function commissionPerSubfield(bookings, price, r1, n1c, r2, cap) {
+  var b = Math.max(0, Number(bookings) || 0);
+  var raw = Math.min(b, n1c) * price * r1 + Math.max(0, b - n1c) * price * r2;
+  return cap > 0 ? Math.min(raw, cap) : raw;
+}
+
+/** يقرأ شروط النموذج من كائن الثوابت — ولا يحمل نسخةً ثانية من أي رقم. */
+function terms(C) {
+  return {
+    model: String(C.B5 && C.B5.value || 'عمولة متدرّجة'),
+    r1:    Number(C.B6  && C.B6.value)  || 0,
+    n1:    Number(C.B7  && C.B7.value)  || 0,
+    r2:    Number(C.B8  && C.B8.value)  || 0,
+    cap:   Number(C.B9  && C.B9.value)  || 0,
+    free:  Number(C.B10 && C.B10.value) || 0,
+    sub:   Number(C.B11 && C.B11.value) || 0
+  };
+}
+
+/* ── حاسبة صاحب الملعب ─────────────────────────────────────────── */
+function venueCalc(inp, T) {
+  var price = Number(inp.price) || 0;
+  var cost  = Number(inp.varCost) || 0;
+  var subs  = Math.max(1, Number(inp.subfields) || 1);
+  var cur   = Number(inp.current) || 0;
+  var thr   = Number(inp.through) || 0;
+  var nb    = Number(inp.newB) || 0;
+
+  var isSubOnly = T.model === 'اشتراك شهري';
+  var isBoth    = T.model === 'الاثنان معاً';
+
+  /* النسب «الفعّالة»: النموذج المختار هو الذي يطفئ أحد المسارين. */
+  var r1e  = isSubOnly ? 0 : T.r1;
+  var r2e  = isSubOnly ? 0 : T.r2;
+  var cape = isSubOnly ? 0 : T.cap;
+  var sube = (T.model === 'عمولة متدرّجة') ? 0 : T.sub;
+
+  var through = nb + thr * cur;             // حجوزاته التي تمرّ عبرنا
+  var perSub  = subs ? through / subs : 0;  // ومنها لكلّ ملعبٍ فرعيّ
+  var comm1   = commissionPerSubfield(perSub, price, T.r1, T.n1, T.r2, T.cap);
+
+  var pay = isSubOnly ? T.sub
+          : isBoth    ? subs * comm1 + T.sub
+                      : subs * comm1;
+
+  var margin  = price - cost;
+  var grossNew = nb * margin;
+  var net      = grossNew - pay;
+
+  /* نقطة التعادل: ثلاثة مرشّحين لأنّ المنحنى ثلاثُ قطع (شريحة أولى ·
+     ما بعدها · السقف)، وكلٌّ يصلح في مداه وحده. نفس منطق الشيت. */
+  var c1 = safeDiv(thr * cur * price * r1e + sube, margin - price * r1e);
+  var c2 = safeDiv(subs * T.n1 * price * r1e + (thr * cur - subs * T.n1) * price * r2e + sube,
+                   margin - price * r2e);
+  var c3 = safeDiv(subs * cape + sube, margin);
+  var b1 = safeDiv(thr * cur + c1, subs);
+  var b2 = safeDiv(thr * cur + c2, subs);
+  var u1 = isNum(b1) ? Math.min(b1, T.n1) * price * r1e + Math.max(0, b1 - T.n1) * price * r2e : NaN;
+  var u2 = isNum(b2) ? Math.min(b2, T.n1) * price * r1e + Math.max(0, b2 - T.n1) * price * r2e : NaN;
+
+  var be = NaN;
+  if (isNum(c1) && c1 >= 0 && isNum(b1) && b1 <= T.n1 && (cape <= 0 || (isNum(u1) && u1 <= cape))) be = c1;
+  else if (isNum(c2) && c2 >= 0 && isNum(b2) && (b2 >= T.n1 || r1e <= 0) && (cape <= 0 || (isNum(u2) && u2 <= cape))) be = c2;
+  else if (cape > 0 && isNum(c3) && c3 >= 0) be = c3;
+
+  return {
+    through: through, perSub: perSub, commPerSub: comm1,
+    pay: pay,
+    effRate: safeDiv(pay, through * price),
+    marginPer: margin - safeDiv(pay, through),
+    grossNew: grossNew,
+    net: net,
+    firstMonth: grossNew,
+    breakEven: be,
+    growthNeeded: safeDiv(be, cur),
+    yearNet: net * (12 - T.free) + grossNew * T.free,
+    capTotal: subs * T.cap
+  };
+}
+
+function safeDiv(a, b) {
+  if (!isFinite(a) || !isFinite(b) || b === 0) return NaN;
+  var r = a / b;
+  return isFinite(r) ? r : NaN;
+}
+
+/**
+ * كم حجزةً جديدةً يلزم حتى **يكتمل السقف** على مدخلاته الحالية.
+ * وهو رقمُ العرض الأقوى: بعده لا يزيد ما يدفعه ولو حجز الشهر كلَّه،
+ * فكلّ دينارٍ إضافيّ يدخل جيبه بالكامل. يُحسَب ولا يُقدَّر.
+ */
+function capReachNewB(inp, T) {
+  var price = Number(inp.price) || 0;
+  var subs  = Math.max(1, Number(inp.subfields) || 1);
+  if (T.cap <= 0 || price <= 0 || T.model === 'اشتراك شهري') return NaN;
+
+  var b = NaN;
+  for (var k = 0; k <= 1000; k++) {
+    if (commissionPerSubfield(k, price, T.r1, T.n1, T.r2, T.cap) >= T.cap - 1e-9) { b = k; break; }
+  }
+  if (!isFinite(b)) return NaN;
+
+  var already = (Number(inp.through) || 0) * (Number(inp.current) || 0);
+  return Math.max(0, Math.ceil(b * subs - already));
+}
+
+/* ── اقتصاديات المنصة ──────────────────────────────────────────────
+   🔴 المسار يُبنى من **الرياضات لا من مجموعها**: لكلّ رياضةٍ شهرُ انضمامٍ
+      خاصّ بها (١ = على المنصّة اليوم)، فبادلٌ بخمسة عشر مكانًا يبدأ في
+      الشهر السابع لا يدخل الدخلَ ولا التكاليفَ قبله. والمجاميع الشهرية
+      والسنوية كلُّها **مشتقّة من المسار** لا محسوبةً على حدة — فلا رقمان
+      لحقيقةٍ واحدة.
+   ⚠️ وكلُّ ما يقوله هذا الملفّ عن «اليوم» يعني **الشهر الأوّل**: رياضةٌ
+      شهرُها ٧ لا تدخل «الدخل الشهري» ولا «عدد الأماكن»، وتدخل عمودَي
+      السنة حين يبلغها المسار. والخطّة الكاملة في `plan` منفصلةً.       */
+/* ── شهرُ انضمام الرياضة: يومًا أو شهرًا — الرقم المخزَّن شهرٌ دائمًا ──
+   `start` (المخزَّن في الشيت والنموذج) دائمًا **شهرٌ صحيح، ١ = اليوم**.
+   وهاتان الدالّتان تترجمان بينه وبين «تأخيرٍ» بالأيام أو بالأشهر
+   لأجل حقل إدخالٍ أُلفَ للمستخدم — فمن يخطّط ببداية «بعد ١٨٠ يومًا» لا
+   يُحسِب بنفسه كم شهرًا ذلك. والتحويل بمقياس الأسبوع نفسِه المستعمَل في
+   كل الملفّ (٥٢/١٢ أسبوعًا للشهر) لا بـ٣٠ يومًا جزافًا.
+   ⚠️ ودقّة النموذج **شهرية لا يومية**: يومان في نفس الشهر يقعان على
+      نفس `start` — فتحويل الأيام تقريبٌ لأقرب شهر، لا حسابٌ دقيق. */
+var DAYS_PER_MONTH = 52 * 7 / 12;   /* ≈ 30.33 يومًا */
+
+/* ── أفق النموذج: أربع سنوات ───────────────────────────────────────
+   كان سنتين، وطلبه المالك أربعًا 2026-09-06. والرواتبُ والتسويق يتبدّلان
+   عند الشهر ١٣ وحده («السنة الأولى» ثمّ «من الثانية») ⇒ السنوات ٢ و٣ و٤
+   تجري كلُّها بأرقام السنة الثانية — وهو ما تعنيه التسمية حرفيًّا، لا
+   إغفالَ زيادةٍ لم يُدخِلها أحد. */
+var ECON_YEARS   = 4;
+var ECON_HORIZON = ECON_YEARS * 12;
+
+function clamp01(v) { return Math.min(1, Math.max(0, Number(v) || 0)); }
+
+/* ── معامل التبنّي: كم من حجوزات المكان تمرّ عبرنا في شهره ن ────────
+   🔴 المكانُ لا يدخل بكامل حجوزاته يوم يوقّع. وحاسبةُ صاحب الملعب تعرف
+      هذا منذ البداية (`through`) والاقتصادياتُ لا تعرفه — فالحاسبتان
+      تتشاركان نموذج التسعير ولا تتشاركان أهمّ افتراضٍ في العمل.
+   ⚠️ **والافتراضي محايدٌ عمدًا** (`1 ⇐ 1`): رقمُ تبنٍّ مخترَع يُغيّر كلَّ
+      رقمٍ في الصفحة تحت المالك بلا أن يطلبه — وهو م5 حرفيًّا. يُقاس من
+      ملاعبك السبعة (حجوزاتُها عبر المنصّة ÷ حجوزاتُها كلِّها) ثمّ يُدخَل. */
+function adoptFactor(age, a0, aMax, months) {
+  if (!(months > 0)) return aMax;
+  var t = Math.min(1, Math.max(0, age / months));
+  return a0 + (aMax - a0) * t;
+}
+
+function startToDelayMonths(start) { return Math.max(1, Math.round(Number(start) || 1)) - 1; }
+function startToDelayDays(start)   { return Math.round(startToDelayMonths(start) * DAYS_PER_MONTH); }
+function delayMonthsToStart(m)     { return Math.max(0, Math.round(Number(m) || 0)) + 1; }
+function delayDaysToStart(d)       { return Math.max(0, Math.round((Number(d) || 0) / DAYS_PER_MONTH)) + 1; }
+
+function econCalc(inp, T) {
+  var isSubOnly = T.model === 'اشتراك شهري';
+  var isBoth    = T.model === 'الاثنان معاً';
+  var num = function (k) { return Number(inp[k]) || 0; };
+
+  var churn    = num('churn');
+  var newPlace = num('newPlace');
+  var msgUnit  = num('msgCost') * num('msgPer');     /* د.أ لكلّ حجزة */
+  var gwOn     = num('gwOn') ? 1 : 0;
+  var gwRate   = num('gwRate');
+  var salesFee = num('salesComm');
+  var fixed    = num('infra') + num('fixed');
+
+  /* ── التبنّي · التسريب · التحصيل ───────────────────────────────────
+     ثلاثتُها **محايدةٌ افتراضًا** فلا يتحرّك رقمٌ حتى يُدخلها المالك —
+     نفس نمط بوّابة الدفع (`gwOn = 0`): المِعلَمُ مبنيٌّ ومطفأ، لا مخترَعٌ
+     ومشتغل. و`== null` لا `||` لأنّ الصفر قيمةٌ مقصودة هنا لا غياب. */
+  var aMax = (inp.adoptMax == null) ? 1 : clamp01(inp.adoptMax);
+  var a0   = (inp.adopt0   == null) ? aMax : clamp01(inp.adopt0);
+  var aMon = Math.max(0, Math.round(num('adoptMonths')));
+  var leak = clamp01(inp.leak);                       /* يحجز مباشرةً بعد أن وجدنا */
+  var coll = (inp.collect == null) ? 1 : clamp01(inp.collect);
+  var lagM = Math.max(0, num('collectDays')) / DAYS_PER_MONTH;
+  var adoptAt = function (age) { return adoptFactor(age, a0, aMax, aMon); };
+
+  var rows = inp.sports.map(function (s) {
+    var places    = Number(s.places) || 0;
+    var subfields = places * (Number(s.perPlace) || 0);
+    var monthly   = (Number(s.weekly) || 0) * 52 / 12;    /* الشهر 4.33 أسبوع لا 4 */
+    var price     = Number(s.price) || 0;
+    var comm      = commissionPerSubfield(monthly, price, T.r1, T.n1, T.r2, T.cap);
+    var income    = subfields * comm;
+    var bookings  = subfields * monthly;
+    var gmv       = subfields * monthly * price;
+    /* شهرُ الانضمام عددٌ صحيح ≥ ١. و«١» تعني **على المنصّة اليوم** لا
+       «تنضمّ الشهر القادم» — والفرق حقيقيّ: الأولى لا شهرَ مجّانيًّا لها
+       ولا عمولةَ مبيعات، والثانية لها الاثنان. */
+    var start = Math.max(1, Math.round(Number(s.start) || 1));
+    return {
+      name: s.name, start: start, live: start <= 1,
+      places: places, subfields: subfields,
+      /* السعر والسقف يبقيان على الصفّ: الأوّل لأنّ العمولة **تُعاد
+         حسابها** عند كلّ حجمٍ مخفَّض لا تُضرَب في معامل، والثاني لأنّ
+         النموّ يُقصّ به شهرًا بشهر. */
+      price: price, maxPlaces: Math.max(0, Number(s.maxPlaces) || 0),
+      monthlyPerSub: monthly, commPerSub: comm,
+      income: income, bookings: bookings, gmv: gmv,
+      /* لكلّ مكانٍ واحد — وهي وحدةُ النموّ في المسار */
+      incPer:  places ? income    / places : 0,
+      bookPer: places ? bookings  / places : 0,
+      gmvPer:  places ? gmv       / places : 0,
+      subPer:  places ? subfields / places : 0
+    };
+  });
+
+  /* ── الخطّة الكاملة: كلّ الرياضات مهما كان شهرُها ── */
+  var pSum = function (k) { return rows.reduce(function (a, r) { return a + r[k]; }, 0); };
+  var plan = {
+    places: pSum('places'), subfields: pSum('subfields'), income: pSum('income'),
+    bookings: pSum('bookings'), gmv: pSum('gmv'),
+    lastStart: rows.reduce(function (a, r) { return r.places > 0 ? Math.max(a, r.start) : a; }, 1)
+  };
+  var pending = rows.filter(function (r) { return r.places > 0 && !r.live; });
+
+  /* ── مسار ٤٨ شهرًا ────────────────────────────────────────────────
+     الرياضة تدخل بأماكنها دفعةً واحدة في شهرها، ثمّ تنمو بحصّتها من
+     «الأماكن الجديدة شهريًّا» وتنقص بالتسرّب.
+     ⚠️ والحصّة تُوزَّع على الرياضات **الحيّة هذا الشهر** بنسبة حجمها
+        المخطَّط: بائعٌ واحد يوقّع عددًا ثابتًا شهريًّا مهما كانت رياضتُه،
+        والأكبرُ حجمًا يأخذ أكثر. وقبل أن تحيا رياضةٌ واحدة لا مكانَ
+        للأماكن الجديدة أصلًا ⇒ صفر دخل وتكاليفُ ثابتة تجري — وهو ما
+        يقع فعلًا قبل الإطلاق.                                          */
+  /* ⚠️ **دُفعاتٌ بأعمار لا عددٌ واحد**: التبنّي يعتمد على عمر المكان،
+     ومكانٌ في شهره الأوّل لا يمرّر ما يمرّره مكانٌ مضى عليه سنة. ومتوسّطٌ
+     واحد يخلط الاثنين فيكذب في الاتّجاهين معًا. */
+  var coh  = rows.map(function () { return []; });
+  var path = [];
+
+  for (var m = 1; m <= ECON_HORIZON; m++) {
+    /* تقادمٌ ثمّ تسرّب — ومجموعُ الدُّفعات بعدهما يساوي `p*(1-churn)` تمامًا */
+    rows.forEach(function (x, i) {
+      coh[i].forEach(function (c) { c.age++; c.n *= (1 - churn); });
+    });
+
+    var livePlan = 0;
+    rows.forEach(function (x) { if (m >= x.start) livePlan += x.places; });
+
+    var joined = [];
+    rows.forEach(function (x, i) {
+      if (m < x.start) { coh[i].length = 0; joined[i] = 0; return; }
+
+      var share = livePlan ? newPlace * x.places / livePlan : 0;
+      var capN  = x.maxPlaces;
+
+      if (m === x.start) {
+        /* 🔴 وعمرُ الدفعة الأولى ليس صفرًا دائمًا: رياضةٌ **على المنصّة
+           اليوم** (‏`start = 1`) أماكنُها مضى عليها وقتٌ وتبنّيها ناضجٌ،
+           وحجوزاتُها الأسبوعية مقروءةٌ من واقعها لا متوقَّعة ⇒ خصمُ منحنى
+           التبنّي عليها خصمٌ مرّتين. أمّا رياضةٌ تنضمّ لاحقًا فتبدأ من الصفر. */
+        coh[i] = [{ age: x.start > 1 ? 0 : aMon, n: capN > 0 ? Math.min(x.places, capN) : x.places }];
+        /* رياضةٌ على المنصّة اليوم أماكنُها ليست «جديدة» — الجديد فيها
+           تدفّقُ الشهر وحده. ورياضةٌ تنضمّ لاحقًا أماكنُها كلُّها جديدة.
+           ولا تُضاف حصّةُ الشهر إلى عددها في شهر دخولها — كما كان. */
+        joined[i] = x.start > 1 ? coh[i][0].n : share;
+        return;
+      }
+
+      /* ② سقف السوق: النموّ يقف عند ما في السوق من أماكنَ فعلًا.
+         بلاه يتجاوز المسارُ بعد سنواتٍ كلَّ عددٍ معقولٍ لملاعب عمّان
+         فيَعِد بما لا وجود له. **والقصّ على الوارد لا على القائم**: من
+         وقّع وقّع، والسقف يمنع توقيعًا لا يقع. و`0` = بلا سقف. */
+      var have = 0;
+      for (var k = 0; k < coh[i].length; k++) have += coh[i][k].n;
+      var add = capN > 0 ? Math.max(0, Math.min(share, capN - have)) : share;
+
+      joined[i] = add;
+      if (add > 0) coh[i].push({ age: 0, n: add });
+    });
+
+    var places = 0, subfields = 0, bookings = 0, gmv = 0,
+        commission = 0, drag = 0, joinedTot = 0;
+    rows.forEach(function (x, i) {
+      var n = 0;
+      coh[i].forEach(function (c) { n += c.n; });
+      places    += n;
+      subfields += n * x.subPer;
+      joinedTot += joined[i];
+
+      /* 🔴 العمولة **تُعاد حسابها** عند الحجم المخفَّض ولا تُضرَب في معامل:
+         الشريحة تتبدّل بتبدّل عدد الحجوزات — ملعبٌ يمرّر ٦٥ حجزة يدفع
+         بشريحتين، ونفسُه عند ١٣ يدفع بواحدة ولا يبلغ السقف. والضربُ
+         الخطّي في «٠٫٢ تبنٍّ» يُخرج خُمسَ عمولةِ الشريحتين وهو رقمٌ لا
+         يقع في أيّ حال. ولهذا تُجمَع الدُّفعةُ دُفعةً. */
+      coh[i].forEach(function (c) {
+        var f      = adoptAt(c.age) * (1 - leak);
+        var perSub = x.monthlyPerSub * f;
+        var subs   = c.n * x.subPer;
+        bookings   += subs * perSub;
+        gmv        += subs * perSub * x.price;
+        commission += subs * commissionPerSubfield(perSub, x.price, T.r1, T.n1, T.r2, T.cap);
+      });
+
+      /* والشهرُ المجّاني يُخصَم بما كان سيُحصَّل فعلًا من مكانٍ **جديد**
+         (عمرُه صفر) لا بعمولةِ مكانٍ ناضج — وإلّا خُصم ما لم يكن ليُقبَض. */
+      var f0 = adoptAt(0) * (1 - leak);
+      drag -= joined[i] * T.free * x.subPer *
+              commissionPerSubfield(x.monthlyPerSub * f0, x.price, T.r1, T.n1, T.r2, T.cap);
+    });
+
+    var subInc = places * T.sub;
+    /* ④ ومن الدخل ما لا يُحصَّل: الدفع نقدًا في الملعب يجعلك **دائنًا**
+       لأصحاب الملاعب بعمولةٍ قبضوا ثمنها كاملًا. و`coll` نسبةُ ما يصل
+       فعلًا — والباقي دَينٌ معدوم يخرج من الربح لا من التوقيت وحده. */
+    var gross   = isSubOnly ? subInc
+                : isBoth    ? commission + drag + subInc
+                            : commission + drag;
+    var revenue = gross * coll;
+    var msg   = bookings * msgUnit;
+    var gw    = gmv * gwRate * gwOn;
+    var sales = joinedTot * salesFee;
+
+    var first  = m <= 12;
+    var salary = first ? num('salary1') : num('salary2');
+    var ssv    = salary * num('ssRate');
+    var mkt    = first ? num('mkt1') : num('mkt2');
+    var admin  = num('admin');
+
+    var varCost = msg + gw + sales;
+    var fixCost = fixed + salary + ssv + mkt + admin;
+    var net     = revenue - varCost - fixCost;
+
+    path.push({
+      m: m, places: places, subfields: subfields, bookings: bookings, gmv: gmv,
+      joined: joinedTot,
+      commission: commission, freeDrag: drag, subIncome: subInc, revenue: revenue,
+      grossRevenue: gross, badDebt: gross - revenue,
+      msgCost: msg, gwFee: gw, salesCost: sales,
+      infra: num('infra'), fixedOther: num('fixed'),
+      salary: salary, ss: ssv, mkt: mkt, admin: admin,
+      varCost: varCost, fixCost: fixCost, cost: varCost + fixCost,
+      net: net,
+      /* يبقيان لأنّ الرسمَ والنصوص تقرؤهما */
+      profit: revenue - msg - fixed,
+      extra: salary + ssv + mkt + admin + sales + gw
+    });
+  }
+
+  /* ── تمريرةٌ ثانية: النقد لا الربح ─────────────────────────────────
+     🔴 التحصيلُ المتأخّر يزحزح **النقد** ولا يمسّ الربح: الدخل يُعترَف به
+     في شهره والمبلغُ يصل بعد أيام. فـ`net` تبقى للربح والتعادل، و`cum`
+     تصير **نقدًا تراكميًّا** — وهي التي تُبنى عليها «أقصى نقدٍ يلزمك»
+     و«متى أسترد»، وكلتاهما سؤالُ جيبٍ لا سؤالُ دفتر.
+     ⚠️ والتأخير يُوزَّع بين شهرين متجاورين لا يُقرَّب إلى أقربهما:
+        ٤٥ يومًا = شهرٌ ونصف، وتقريبُها إلى شهرين يُعمّق الحفرة كذبًا.
+     وعند `collectDays = 0` يخرج `cashIn = revenue` ⇒ `cum` كما كانت. */
+  var lagI = Math.floor(lagM), lagF = lagM - lagI, cum = 0;
+  var cumRev = 0, cumCash = 0;
+  var revAt = function (k) { return (k >= 0 && k < path.length) ? path[k].revenue : 0; };
+  path.forEach(function (x, i) {
+    x.cashIn  = revAt(i - lagI) * (1 - lagF) + revAt(i - lagI - 1) * lagF;
+    x.cashNet = x.cashIn - x.varCost - x.fixCost;
+    cum += x.cashNet;
+    x.cum = cum;
+    /* ── ما لك عند الناس ولم يصلك بعد ───────────────────────────────
+       الفرقُ بين ما اعترفتَ به دخلًا وما وصل جيبك فعلًا. وهو **ليس
+       خسارة**: مالٌ لك سيصل بعد أيام. وما لن يصل أبدًا رقمٌ آخر تمامًا
+       (`badDebt`، من نسبة التحصيل) — وخلطُهما يجعل التأخيرَ يبدو ضياعًا
+       والضياعَ يبدو تأخيرًا. وعند «متوسّط أيام التحصيل = ٠» يخرج صفرًا. */
+    cumRev  += x.revenue;
+    cumCash += x.cashIn;
+    x.ar = cumRev - cumCash;
+  });
+
+  /* ── «اليوم» = الشهر الأوّل من المسار، لا حسابٌ ثانٍ بجانبه ── */
+  var m1 = path[0];
+
+  /* ── السنواتُ الأربع ───────────────────────────────────────────────
+     مجموعُ كلّ سنةٍ من المسار نفسِه لا ضربًا في اثني عشر، والضريبةُ على
+     كلّ سنةٍ على حدة. ⚠️ **ولا ترحيلَ خسارة** (`Math.max(0, …)`): خسارةُ
+     سنةٍ لا تُخصَم من ربح ما بعدها. وأكثرُ الأنظمة تسمح بالترحيل ⇒ صافي
+     السنوات هنا **أقلُّ من الواقع** إن سُمح به. سؤالٌ لمحاسبٍ مرخَّص لا
+     يُحسَم من هنا، ولذلك تُرك الأحوطُ لا الأفضل. */
+  var yPre = [], yTax = [], yNet = [], yi;
+  for (yi = 0; yi < ECON_YEARS; yi++) { yPre[yi] = 0; }
+  path.forEach(function (x) {
+    var k = Math.min(ECON_YEARS - 1, Math.floor((x.m - 1) / 12));
+    yPre[k] += x.net;
+  });
+  var y1 = yPre[0], y2 = yPre[1];
+
+  var ss1 = num('salary1') * num('ssRate');
+  var ss2 = num('salary2') * num('ssRate');
+  var extra1 = num('salary1') + ss1 + num('mkt1') + num('admin') + m1.salesCost;
+  var extra2 = num('salary2') + ss2 + num('mkt2') + num('admin') + m1.salesCost;
+
+  var taxRate = num('taxRate');
+  for (yi = 0; yi < ECON_YEARS; yi++) {
+    yTax[yi] = Math.max(0, yPre[yi]) * taxRate;
+    yNet[yi] = yPre[yi] - yTax[yi];
+  }
+  var y1Tax = yTax[0], y2Tax = yTax[1];
+
+  return {
+    rows: rows, plan: plan, pending: pending,
+    places: m1.places, subfields: m1.subfields, bookings: m1.bookings, gmv: m1.gmv,
+    commissionIncome: m1.commission, freeDrag: m1.freeDrag, subIncome: m1.subIncome,
+    revenue: m1.revenue, msgCost: m1.msgCost, fixed: fixed,
+    costs: m1.msgCost + fixed, profit: m1.revenue - m1.msgCost - fixed,
+    margin: safeDiv(m1.revenue - m1.msgCost - fixed, m1.revenue),
+    yearly: (m1.revenue - m1.msgCost - fixed) * 12,
+    perPlace: safeDiv(m1.revenue, m1.places),
+    perSubfield: safeDiv(m1.revenue, m1.subfields),
+    effRate: safeDiv(m1.revenue, m1.gmv),
+    /* ── ① التعادل بالتكاليف الثابتة **كلِّها** ───────────────────────
+       🔴 كان المقام `fixed` وحده (بنيةٌ تحتية + ثابتةٌ أخرى = ٤٠ د.أ على
+          المدخلات الحقيقية)، والرواتبُ والضمانُ والتسويقُ والإداريُّ
+          (‏١٨٩٢٫٥) خارجَه — فتقول البطاقة «تتعادل عند ٠٫٣ مكانًا» أي إنّك
+          رابحٌ قبل ملعبك الأوّل، **وصفُّ «أوّل شهرٍ موجب» تحتها في البطاقة
+          نفسها** يقرأ التكاليف كاملةً. رقمان لحقيقةٍ واحدة على شاشةٍ واحدة.
+       ⚠️ والمساهمة `revenue − varCost` لا `revenue − msgCost`: البوّابةُ
+          وعمولةُ المبيعات متغيّرتان كذلك، وطرحُ الرسائل وحدها يترك
+          المقسومَ عليه أكبرَ ممّا هو. */
+    breakEvenPlaces: safeDiv(m1.fixCost, safeDiv(m1.revenue - m1.varCost, m1.places)),
+    /* التعريفُ القديم — **للمطابقة مع صيغة الشيت `B54` وحدها** حتى
+       تُرقَّى. ولا يُعرَض في أيّ بطاقة. */
+    breakEvenPlacesLegacy: safeDiv(fixed, safeDiv(m1.revenue - m1.msgCost, m1.places)),
+    path: path,
+    /* الأرقام الحقيقية */
+    ss1: ss1, ss2: ss2, extra1: extra1, extra2: extra2, gwFee: m1.gwFee,
+    realProfit1: m1.net,
+    /* ⚠️ «من السنة الثانية» هنا تعني **أرقام اليوم بتكاليف السنة الثانية**
+       لا صافيَ الشهر ١٣ — وهو تعريف `B79` في الشيت حرفيًّا. وكانا قد
+       تباعدا حين أُعيد بناء المسار، فأُعيد التعريف إلى أصله. */
+    realProfit2: m1.profit - extra2 - m1.gwFee,
+    y1Pre: y1, y1Tax: y1Tax, y1Net: yNet[0],
+    y2Pre: y2, y2Tax: y2Tax, y2Net: yNet[1],
+    /* المصفوفاتُ هي المصدر، والأربعةُ أعلاه أسماءٌ قديمة تقرؤها المطابقةُ
+       مع الشيت — لا حسابٌ ثانٍ بجانبها. */
+    years: ECON_YEARS, yPre: yPre, yTax: yTax, yNet: yNet,
+    twoYearNet: yNet[0] + yNet[1],
+    allYearsNet: yNet.reduce(function (a, v) { return a + v; }, 0),
+    /* أوّل شهرٍ يصير صافيه موجبًا — «متى أتعادل؟» سؤالٌ لا يجيب عنه
+       رقمٌ واحد، ويجيب عنه المسار. و`null` معناه «لا يتعادل داخل السنتين». */
+    breakEvenMonth: (function () {
+      for (var i = 0; i < path.length; i++) if (path[i].net > 0) return path[i].m;
+      return null;
+    })(),
+
+    /* ── ما يلزم من نقدٍ قبل أن يُطعم نفسَه ────────────────────────
+       أعمقُ نقطةٍ يبلغها الصافي التراكمي. وهو **أهمّ رقمٍ لمن يموّل من
+       جيبه**: «الربح الشهري» يقول إلى أين تصل، وهذا يقول كم تحتاج كي
+       تصل. و`0` معناه أنّه لم يهبط تحت الصفر قطّ — لا أنّه مجهول. */
+    cashNeeded: (function () {
+      var lo = 0;
+      for (var i = 0; i < path.length; i++) if (path[i].cum < lo) lo = path[i].cum;
+      /* 🔴 `-lo` حين يكون `lo` صفرًا يُخرج **صفرًا سالبًا**، وIntl يكتبه
+         «-0» — فيقرأ المالك سالبًا حيث لا سالب. الشرط يمنعه. */
+      return lo < 0 ? -lo : 0;
+    })(),
+    cashNeededMonth: (function () {
+      var lo = 0, at = null;
+      for (var i = 0; i < path.length; i++) if (path[i].cum < lo) { lo = path[i].cum; at = path[i].m; }
+      return at;
+    })(),
+    /* أوّل شهرٍ يعود فيه التراكمي إلى الموجب — أي استرداد ما وضعتَه. */
+    paybackMonth: (function () {
+      for (var i = 0; i < path.length; i++) if (path[i].cum > 0) return path[i].m;
+      return null;
+    })(),
+
+    /* ── التعادل بثلاثة مقاييس لا بواحد ───────────────────────────
+       «٥٠ مكانًا» لا تصف شيئًا وحدها: خمسون بإشغالٍ ضعيف غيرُ خمسين
+       بإشغالٍ قوي. فمعها حجوزاتُها وقيمتُها عند نفس النقطة. */
+    breakEvenBookings: safeDiv(m1.fixCost, safeDiv(m1.revenue - m1.varCost, m1.bookings)),
+    breakEvenGmv: safeDiv(m1.fixCost, safeDiv(m1.revenue - m1.varCost, m1.gmv)),
+    /* المقامُ نفسُه معروضًا، كي تُقرأ البطاقة بلا حسابٍ في الرأس */
+    breakEvenFixed: m1.fixCost,
+
+    /* ── ما لك عند أصحاب الملاعب (الذمم المدينة) ──────────────────
+       ثلاثةُ أرقامٍ لا رقمٌ واحد، وكلٌّ يجيب سؤالًا آخر:
+         • `arNow`      — معلّقٌ الآن (يصل بعد أيام)
+         • `arPeak`     — أعلى ما يبلغه، وهو الذي يجب أن يحتمله جيبك
+         • `badDebtNow` — ما **لن** يصل أصلًا (من نسبة التحصيل) */
+    arNow: m1.ar, badDebtNow: m1.badDebt,
+    arPeak: (function () {
+      var hi = 0;
+      for (var i = 0; i < path.length; i++) if (path[i].ar > hi) hi = path[i].ar;
+      return hi;
+    })(),
+    arPeakMonth: (function () {
+      var hi = 0, at = null;
+      for (var i = 0; i < path.length; i++) if (path[i].ar > hi) { hi = path[i].ar; at = path[i].m; }
+      return at;
+    })(),
+
+    /* ── هامش المساهمة ────────────────────────────────────────────
+       الدخلُ ناقصَ **المتغيّر وحده** — أي ما يبقى من كلّ دينارٍ ليغطّي
+       الثابت. وهو المقامُ الذي يُقسَم عليه في التعادل أصلًا، وكان
+       محسوبًا داخله ولا يُعرَض رقمًا يقرؤه أحد. */
+    contribution: m1.revenue - m1.varCost,
+    contribMargin: safeDiv(m1.revenue - m1.varCost, m1.revenue),
+    contribPerPlace: safeDiv(m1.revenue - m1.varCost, m1.places),
+
+    /* ── تكلفة اكتساب المكان وقيمته العمرية ───────────────────────
+       ⚠️ كلاهما **مشتقٌّ من مدخلاتك لا مخترَع**: التسويق الشهري موزّعًا
+          على الأماكن الجديدة، وعمرُ المكان مقلوبُ التسرّب.
+       🔴 و`null` حين يكون التسرّب أو الأماكن الجديدة صفرًا: القسمة على
+          صفرٍ تُخرج ما لا نهاية، و«عمرٌ أبديّ» كذبةٌ بشكل رقم. */
+    cac: (num('newPlace') > 0
+            ? num('salesComm') + num('mkt1') / num('newPlace')
+            : null),
+    lifeMonths: (churn > 0 ? 1 / churn : null),
+    ltv: (churn > 0 && m1.places > 0
+            ? ((m1.revenue - m1.msgCost) / m1.places) / churn
+            : null),
+    ltvOverCac: (function () {
+      var cac = (num('newPlace') > 0 ? num('salesComm') + num('mkt1') / num('newPlace') : null);
+      if (!cac || cac <= 0 || !(churn > 0) || !(m1.places > 0)) return null;
+      return (((m1.revenue - m1.msgCost) / m1.places) / churn) / cac;
+    })(),
+
+    /* ── بعد كم شهرٍ يردّ المكان ثمنَ اكتسابه ──────────────────────
+       تكلفةُ الاكتساب ÷ ما يعطيه المكان شهريًّا بعد متغيّراته. وهو أنفعُ
+       من «القيمة ÷ التكلفة» لمن يموّل من جيبه: تلك تقول *هل* يستحقّ،
+       وهذا يقول *متى* يعود المال. */
+    cacPayback: (function () {
+      var cac = (num('newPlace') > 0 ? num('salesComm') + num('mkt1') / num('newPlace') : null);
+      var per = safeDiv(m1.revenue - m1.varCost, m1.places);
+      if (!cac || cac <= 0 || !(per > 0)) return null;
+      return cac / per;
+    })(),
+
+    /* ── حصّتك من السوق ───────────────────────────────────────────
+       ⚠️ **المقام تقديرُك أنت** («سقف السوق» في بطاقة كلّ رياضة) لا رقمٌ
+          مقيس — ويُقال ذلك حيث يُعرَض. و`null` حين لا تُصرّح رياضةٌ
+          واحدة بسقف: نسبةٌ بلا مقامٍ معروف تكذب بثقة.
+       ⚠️ ولا تدخل المقامَ إلّا الرياضاتُ التي لها سقف: رياضةٌ بلا سقف
+          تعني «لا أعرف حجم سوقها»، وعدُّها صفرًا يضخّم حصّتك. */
+    market: (function () {
+      var have = 0, cap = 0, uncapped = 0, list = [];
+      rows.forEach(function (x) {
+        if (x.maxPlaces > 0) {
+          var mine = x.live ? Math.min(x.places, x.maxPlaces) : 0;
+          have += mine; cap += x.maxPlaces;
+          list.push({ name: x.name, have: mine, cap: x.maxPlaces,
+                      share: safeDiv(mine, x.maxPlaces), live: x.live, start: x.start });
+        } else if (x.places > 0) { uncapped++; }
+      });
+      if (!cap) return null;
+      return { have: have, cap: cap, share: safeDiv(have, cap),
+               uncapped: uncapped, sports: list };
+    })(),
+
+    /* ── كم من دخلك مسقوف ─────────────────────────────────────────
+       السقف أداةُ بيعٍ ممتازة، وثمنُها أنّ أفضل ملعبٍ عندك يتوقّف عن
+       زيادة دخلك بعد نقطة. وهذا يقيس الثمن بدل أن يبقى رأيًا:
+       كم ملعبًا فرعيًّا بلغ السقف، وكم دينارًا لا يزيد مهما نما. */
+    capped: (function () {
+      if (!(T.cap > 0)) return null;
+      var subs = 0, income = 0, all = 0, allIncome = 0;
+      rows.forEach(function (x) {
+        if (!x.live || !x.subfields) return;
+        all += x.subfields; allIncome += x.income;
+        if (x.commPerSub >= T.cap - 1e-9) { subs += x.subfields; income += x.income; }
+      });
+      return { subfields: subs, income: income, allSubfields: all,
+               share: safeDiv(income, allIncome) };
+    })()
+  };
+}
+
+/* ── السيناريوهات الثلاثة ──────────────────────────────────────────
+   🔴 **الانحرافات أرقامٌ مبدئية قابلة للتعديل، لا قياس.** وُضعت كنقطة
+      بداية لأنّ صفحةً بلا أرقامٍ لا تُستعمَل، ويغيّرها المالك من الواجهة
+      وتُحفَظ في الشيت. وسُمّيت في الواجهة «تقديرٌ مبدئيّ — غيّره» صراحةً
+      كي لا تُقرأ قياسًا مأخوذًا من بيانات.
+
+   والمنحرِفُ ثلاثةٌ لا أكثر — وهي **الأقلّ يقينًا** في النموذج كلِّه:
+     • الحجوزات الأسبوعية لكلّ ملعبٍ فرعيّ  (أضعفُ رقمٍ تقديرًا)
+     • التسرّب الشهري                        (لا سجلَّ له بعد)
+     • الأماكن الجديدة شهريًّا                (قدرةُ بيعٍ لم تُختبَر)
+   والسعرُ وعددُ الأماكن **لا يُمَسّان**: الأوّل قرارُك والثاني خطّتك، وليسا
+   تقديرين. وتحريكُ ما تتحكّم فيه يخلط «ماذا لو ساء الحظّ» بـ«ماذا لو
+   غيّرتُ قراري»، وهما سؤالان مختلفان.                                 */
+var SCEN_DEFAULTS = { weekly: 0.25, churn: 0.50, newPlace: 0.40 };
+
+/**
+ * ينسخ المدخلات ويطبّق الانحراف باتّجاهٍ واحد.
+ * `dir`: ‏-1 متشائم · 0 أساسي · +1 متفائل.
+ * ⚠️ والتسرّب **يسوء بالزيادة** فاتّجاهه معكوس — وإلّا خرج المتشائم أفضل.
+ */
+function scenarioInput(inp, dev, dir) {
+  var out = JSON.parse(JSON.stringify(inp));
+  if (!dir) return out;
+  var w = 1 + dir * (Number(dev.weekly) || 0);
+  var n = 1 + dir * (Number(dev.newPlace) || 0);
+  var c = 1 - dir * (Number(dev.churn) || 0);
+  out.sports = (out.sports || []).map(function (s) {
+    s.weekly = Math.max(0, (Number(s.weekly) || 0) * w);
+    return s;
+  });
+  out.newPlace = Math.max(0, (Number(inp.newPlace) || 0) * n);
+  out.churn    = Math.min(1, Math.max(0, (Number(inp.churn) || 0) * c));
+  return out;
+}
+
+/** يُرجع الحالات الثلاث محسوبةً بالكامل، ومعها ما يُعرَض منها. */
+function econScenarios(inp, T, dev) {
+  var mk = function (dir) {
+    var r = econCalc(scenarioInput(inp, dev, dir), T);
+    var y1Rev = 0;
+    r.path.forEach(function (x) { if (x.m <= 12) y1Rev += x.revenue; });
+    return {
+      places12: r.path[11].places,
+      y1Revenue: y1Rev,
+      y1Net: r.y1Net,
+      twoYearNet: r.twoYearNet,
+      allYearsNet: r.allYearsNet,
+      years: r.years,
+      breakEvenMonth: r.breakEvenMonth,
+      cashNeeded: r.cashNeeded,
+      ltvOverCac: r.ltvOverCac
+    };
+  };
+  return { bad: mk(-1), base: mk(0), good: mk(1) };
+}
+
+
+/* ── الدفتر الشامل: كلّ دينارٍ يدخل وكلّ دينارٍ يخرج ────────────────
+   **الشهر الأوّل** ثمّ **السنوات الأربع** — عمودٌ لكلٍّ.
+
+   ⚠️ والسنة ليست الشهرَ في اثني عشر: الأماكن تنمو بالإضافة وتنقص
+      بالتسرّب، والرياضةُ تدخل في شهرها، والرواتبُ والتسويق يتبدّلان عند
+      الشهر ١٣. فكلّ خانةٍ هنا **مجموعُ بندها من مسار ٤٨ شهرًا نفسِه** —
+      لا تقديرَ ولا ضربَ في اثني عشر، ومجموعُ الدفتر يساوي `yPre`
+      بالتعريف لا بالمصادفة.
+
+   ولا يخترع هذا الدفتر بندًا: كلّ سطرٍ فيه مدخلٌ في الصفحة أو مشتقٌّ منه. */
+function econLedger(inp, T, r) {
+  var num = function (key) { return Number(inp[key]) || 0; };
+
+  var KEYS = ['commission', 'freeDrag', 'subIncome', 'revenue',
+              'msgCost', 'gwFee', 'salesCost',
+              'infra', 'fixedOther', 'salary', 'ss', 'mkt', 'admin',
+              'varCost', 'fixCost', 'cost', 'net'];
+  var acc = function (lo, hi) {
+    var o = {};
+    KEYS.forEach(function (k) { o[k] = 0; });
+    r.path.forEach(function (x) {
+      if (x.m < lo || x.m > hi) return;
+      KEYS.forEach(function (k) { o[k] += x[k]; });
+    });
+    return o;
+  };
+  /* عمودٌ لكلّ سنة — والعددُ مشتقٌّ من `r.years` لا مكتوبٌ، فلا ينحرف
+     الدفترُ عن أفق النموذج يوم يتغيّر أحدُهما. */
+  var m1 = r.path[0];
+  var Y  = [];
+  for (var yk = 0; yk < r.years; yk++) Y.push(acc(yk * 12 + 1, yk * 12 + 12));
+
+  var cols = function (key) { return Y.map(function (o) { return o[key]; }); };
+  var L = function (l, key, h) { return { l: l, m: m1[key], y: cols(key), h: h || '' }; };
+  var any = function (key) { return m1[key] || cols(key).some(function (v) { return v; }); };
+  var T3  = function (key) { return { m: m1[key], y: cols(key) }; };
+
+  var isSubOnly = T.model === 'اشتراك شهري';
+  var isBoth    = T.model === 'الاثنان معاً';
+
+  /* ── الدخل ── */
+  var income = [];
+  if (!isSubOnly) {
+    income.push(L('عمولة الحجوزات', 'commission',
+                  n0(r.bookings) + ' حجزة شهريًّا · نسبةٌ فعلية ' + pct(r.effRate, 2)));
+    if (any('freeDrag')) income.push(L('شهر الانضمام المجّاني', 'freeDrag',
+                  'خصمٌ لا دخل: ' + T.free + ' شهر بلا عمولة لكلّ مكانٍ جديد'));
+  }
+  if (isSubOnly || isBoth) income.push(L('اشتراكات شهرية', 'subIncome', n0(T.sub) + ' د.أ لكلّ مكان'));
+
+  /* ── المصاريف المتغيّرة: تكبر مع الحجوزات ومع الأماكن الجديدة ── */
+  var varc = [
+    L('رسائل التحقّق', 'msgCost',
+      n2(num('msgCost')) + ' د.أ للرسالة × ' + n1(num('msgPer')) + ' لكلّ حجزة'),
+    L('عمولة بوّابة الدفع', 'gwFee',
+      num('gwOn') ? pct(num('gwRate'), 1) + ' من قيمة الحجوزات كاملةً لا من عمولتك'
+                  : 'مطفأة — الدفع نقدًا في الملعب'),
+    L('عمولة مبيعات الأماكن الجديدة', 'salesCost',
+      n0(num('salesComm')) + ' د.أ لكلّ مكانٍ جديد — وتقفز في شهر انضمام رياضة')
+  ];
+
+  /* ── المصاريف الثابتة: لا تتغيّر بعدد الحجوزات ── */
+  var fixc = [
+    L('بنية تحتية', 'infra', 'استضافة وقاعدة بيانات ورسائل'),
+    L('تكاليف ثابتة أخرى', 'fixedOther'),
+    L('رواتب', 'salary', 'شهريًّا — وتكبر مع الفريق في السنة الثانية'),
+    L('الضمان الاجتماعي', 'ss', pct(num('ssRate'), 2) + ' من الرواتب — يُحسَب لا يُقرأ'),
+    L('تسويق', 'mkt', 'شهريًّا'),
+    L('إداري وقانوني', 'admin', 'ترخيص ومحاسبة وما يجري مجراهما')
+  ];
+
+  return {
+    income: income, incomeT: T3('revenue'),
+    varc: varc, varT: T3('varCost'),
+    fixc: fixc, fixT: T3('fixCost'),
+    costT: T3('cost'), pre: T3('net'),
+    /* الضريبة سنويةٌ لا شهرية ⇒ لا رقم لها في عمود الشهر، ولا يُخترَع
+       له «حصّةٌ شهرية» فيقرأها أحدٌ التزامًا شهريًّا لا وجود له. */
+    tax: { m: NaN, y: r.yTax },
+    net: { m: NaN, y: r.yNet },
+    years: r.years
+  };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   الرسوم  —  SVG بأبعاد البكسل الحقيقية لا بـviewBox ثابت
+   ───────────────────────────────────────────────────────────────────
+   ⚠️ viewBox ثابتٌ يتمدّد إلى عرض حاويته ⇒ كلّ ما فيه يكبر بالمقياس
+      نفسه، فتخرج تسمياتُ المحور بحجمٍ غير الذي كُتب. هنا يُقاس العرض
+      أوّلًا ويُرسَم به، فالرقم في الورقة هو الرقم على الشاشة.
+   ═══════════════════════════════════════════════════════════════════ */
+
+function niceTicks(min, max, want) {
+  if (!isFinite(min) || !isFinite(max)) return { lo: 0, hi: 1, ticks: [0, 1] };
+  if (min === max) { min = Math.min(0, min); max = max || 1; }
+  var span = max - min;
+  var raw  = span / Math.max(1, want);
+  var mag  = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
+  var norm = raw / mag;
+  var step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
+  var lo = Math.floor(min / step) * step;
+  var hi = Math.ceil(max / step) * step;
+  var t = [];
+  for (var v = lo; v <= hi + step / 2; v += step) t.push(Math.round(v * 1e6) / 1e6);
+  return { lo: lo, hi: hi, ticks: t };
+}
+
+/**
+ * رسمٌ خطّي — سلسلةٌ أو سلسلتان.
+ * سلسلةٌ واحدة: بلا مفتاح (العنوان يسمّيها) ومعها غسلُ مساحةٍ خفيف.
+ * سلسلتان:      مفتاحٌ حاضرٌ دائمًا + تسميةٌ مباشرة على الطرف.
+ */
+function svgLine(o) {
+  var w = Math.max(240, o.w || 520), h = o.h || 230;
+  var padT = 14, padB = 30, padL = o.padL || 52, padR = o.padR || 16;
+  var iw = w - padL - padR, ih = h - padT - padB;
+
+  var xs = o.series[0].pts.map(function (p) { return p[0]; });
+  var xMin = Math.min.apply(null, xs), xMax = Math.max.apply(null, xs);
+  var all = [];
+  o.series.forEach(function (s) { s.pts.forEach(function (p) { if (isFinite(p[1])) all.push(p[1]); }); });
+  var yMin = Math.min.apply(null, all), yMax = Math.max.apply(null, all);
+  var nt = niceTicks(Math.min(0, yMin), yMax, 4);
+
+  var X = function (v) { return padL + (xMax === xMin ? iw / 2 : (v - xMin) / (xMax - xMin) * iw); };
+  var Y = function (v) { return padT + ih - (v - nt.lo) / ((nt.hi - nt.lo) || 1) * ih; };
+
+  var s = '<svg class="chart" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h +
+          '" style="direction:ltr" role="img" aria-label="' + esc(o.aria || '') + '">';
+
+  /* شبكةٌ أفقية بشعرةٍ صلبة لا متقطّعة */
+  nt.ticks.forEach(function (t) {
+    var y = Y(t);
+    s += '<line class="ax" x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + y.toFixed(1) + '"/>';
+    s += '<text class="axt" x="' + (padL - 8) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end">' +
+         esc((o.fmtY || n0)(t)) + '</text>';
+  });
+
+  /* تسميات المحور الأفقي — تُخفَّف كي لا تتداخل */
+  var every = Math.max(1, Math.ceil(o.series[0].pts.length / Math.max(3, Math.floor(iw / 58))));
+  o.series[0].pts.forEach(function (p, i) {
+    if (i % every && i !== o.series[0].pts.length - 1) return;
+    s += '<text class="axt" x="' + X(p[0]).toFixed(1) + '" y="' + (h - 10) + '" text-anchor="middle">' +
+         esc((o.fmtX || n0)(p[0])) + '</text>';
+  });
+
+  o.series.forEach(function (ser) {
+    var pts = ser.pts.filter(function (p) { return isFinite(p[1]); });
+    if (!pts.length) return;
+    var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1); }).join(' ');
+
+    if (o.series.length === 1 && o.area !== false) {
+      s += '<path d="' + d + ' L' + X(pts[pts.length - 1][0]).toFixed(1) + ' ' + Y(nt.lo).toFixed(1) +
+           ' L' + X(pts[0][0]).toFixed(1) + ' ' + Y(nt.lo).toFixed(1) + ' Z" fill="' + ser.color + '" opacity=".10"/>';
+    }
+    s += '<path class="ln" d="' + d + '" stroke="' + ser.color + '"/>';
+
+    var last = pts[pts.length - 1];
+    s += '<circle class="dot" cx="' + X(last[0]).toFixed(1) + '" cy="' + Y(last[1]).toFixed(1) +
+         '" r="4.5" fill="' + ser.color + '"/>';
+  });
+
+  /* ── علاماتٌ رأسية على لحظاتٍ بعينها ──────────────────────────────
+     🔴 رسمٌ يُقرأ كاملًا ليُعرَف منه شيءٌ واحد رسمٌ لم يؤدِّ عمله. والقارئ
+        لا يريد المنحنى: يريد **متى** تتعادل و**متى** يبلغ النقدُ قاعه
+        و**متى** تسترد. فتُوسَم الثلاثةُ على الخطّ نفسه.
+     ⚠️ والتسمياتُ تتدرّج رأسيًّا (`row`) لا تُكتب على ارتفاعٍ واحد:
+        شهرا التعادل والاسترداد قد يتجاوران فتركب إحداهما الأخرى.
+     ⚠️ والمحاذاة تنقلب قرب الحافّة اليمنى وإلّا خرج النصّ عن الـSVG. */
+  /* ⚠️ **الصفُّ يُختار بالتصادم لا بالترتيب.** أوّلُ صيغةٍ وضعت كلَّ علامةٍ
+     في صفٍّ خاصّ بها (`i * 14`) — فعلامتان متباعدتان تُكتب ثانيتُهما تحت
+     الأولى بلا سبب، وثلاثٌ متجاورة تُقرأ كتلةَ نصٍّ لا تسميات. والآن كلٌّ
+     تصعد إلى أعلى صفٍّ خالٍ عند مدى نصّها، فالمتباعدةُ في الصفّ الأوّل
+     والمتزاحمةُ وحدها تنزل. */
+  var rowsUsed = [];
+  (o.marks || []).forEach(function (mk) {
+    if (!isFinite(mk.x)) return;
+    var mx = X(mk.x), col = mk.color || cssVar('--ink-3');
+    s += '<line x1="' + mx.toFixed(1) + '" y1="' + padT + '" x2="' + mx.toFixed(1) +
+         '" y2="' + (padT + ih) + '" stroke="' + col + '" stroke-width="1.2" ' +
+         'stroke-dasharray="3 3" opacity=".7"/>';
+    if (isFinite(mk.y)) {
+      s += '<circle cx="' + mx.toFixed(1) + '" cy="' + Y(mk.y).toFixed(1) +
+           '" r="3.6" fill="' + col + '" stroke="' + cssVar('--surf') + '" stroke-width="1.6"/>';
+    }
+    /* تقديرُ عرضٍ لا قياس: `getBBox` لا تعمل قبل أن يدخل النصُّ المستند،
+       والسلسلةُ تُبنى نصًّا هنا. و5.9px للمحرف عند 11px تقديرٌ سخيّ
+       بالعربية — والسخاء في الاتّجاه الآمن: يُنزِل تسميةً كان يمكن أن
+       تبقى، ولا يُبقي تسميتين متراكبتين. */
+    var lbl = String(mk.label || ''), tw = lbl.length * 5.9 + 8;
+    var near = mx + tw > w - padR;
+    var x1 = near ? mx - tw - 5 : mx + 5, x2 = x1 + tw;
+    var row = 0;
+    while (rowsUsed[row] && x1 < rowsUsed[row].x2 && x2 > rowsUsed[row].x1) row++;
+    rowsUsed[row] = { x1: x1, x2: x2 };
+    s += '<text class="lbl" x="' + (mx + (near ? -5 : 5)).toFixed(1) + '" y="' +
+         (padT + 10 + row * 14) + '" text-anchor="' + (near ? 'end' : 'start') +
+         '" fill="' + col + '">' + esc(lbl) + '</text>';
+  });
+
+  /* خطُّ عتبةٍ اختياريّ — مُسمًّى، فلا يُقرأ زخرفةً */
+  if (o.rule && isFinite(o.rule.y)) {
+    var ry = Y(o.rule.y);
+    s += '<line class="ax" x1="' + padL + '" y1="' + ry.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + ry.toFixed(1) +
+         '" stroke="' + (o.rule.color || 'currentColor') + '" stroke-width="1.5" opacity=".55"/>';
+    s += '<text class="lbl" x="' + (w - padR) + '" y="' + (ry - 7).toFixed(1) + '" text-anchor="end" fill="' +
+         (o.rule.color || 'currentColor') + '">' + esc(o.rule.label || '') + '</text>';
+  }
+
+  return s + '</svg>';
+}
+
+/** أعمدة — سلسلةٌ واحدة، لونٌ واحد لكل عمود (لا تدرّج بحسب القيمة). */
+function svgBars(o) {
+  var w = Math.max(240, o.w || 520), h = o.h || 220;
+  var padT = 16, padB = 34, padL = o.padL || 52, padR = 12;
+  var iw = w - padL - padR, ih = h - padT - padB;
+  var nt = niceTicks(0, Math.max.apply(null, o.vals.concat([0])), 4);
+  var Y = function (v) { return padT + ih - (v - nt.lo) / ((nt.hi - nt.lo) || 1) * ih; };
+  var band = iw / o.vals.length;
+  var bw = Math.min(24, band * 0.52);
+
+  var s = '<svg class="chart" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h +
+          '" style="direction:ltr" role="img" aria-label="' + esc(o.aria || '') + '">';
+
+  nt.ticks.forEach(function (t) {
+    var y = Y(t);
+    s += '<line class="ax" x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + y.toFixed(1) + '"/>';
+    s += '<text class="axt" x="' + (padL - 8) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end">' +
+         esc((o.fmtY || n0)(t)) + '</text>';
+  });
+
+  o.vals.forEach(function (v, i) {
+    var x = padL + band * i + (band - bw) / 2;
+    var y = Y(v), hh = Math.max(0, Y(nt.lo) - y);
+    s += '<rect class="bar" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) +
+         '" height="' + hh.toFixed(1) + '" fill="' + (o.color || 'currentColor') + '"/>';
+    s += '<text class="axt" x="' + (x + bw / 2).toFixed(1) + '" y="' + (h - 12) + '" text-anchor="middle">' +
+         esc(o.cats[i]) + '</text>';
+    if (o.labelAll) {
+      s += '<text class="lbl" x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle">' +
+           esc((o.fmtV || n0)(v)) + '</text>';
+    }
+  });
+
+  return s + '</svg>';
+}
+
+/** خطٌّ صغير تحت رقمٍ بطل — ١٢ نقطة، بلا محاور. */
+function sparkline(vals, color, w, h) {
+  w = w || 220; h = h || 40;
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  if (lo === hi) { lo -= 1; hi += 1; }
+  var X = function (i) { return i / (vals.length - 1) * (w - 6) + 3; };
+  var Y = function (v) { return h - 4 - (v - lo) / (hi - lo) * (h - 10); };
+  var d = vals.map(function (v, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); }).join(' ');
+  return '<svg class="chart" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h +
+         '" style="direction:ltr" aria-hidden="true">' +
+         '<path d="' + d + ' L' + X(vals.length - 1).toFixed(1) + ' ' + h + ' L' + X(0).toFixed(1) + ' ' + h + ' Z" fill="' + color + '" opacity=".10"/>' +
+         '<path class="ln" d="' + d + '" stroke="' + color + '"/>' +
+         '<circle class="dot" cx="' + X(vals.length - 1).toFixed(1) + '" cy="' + Y(vals[vals.length - 1]).toFixed(1) +
+         '" r="3.6" fill="' + color + '"/></svg>';
+}
+
+/** أشرطة أفقية بـHTML — أوضح من SVG حين تكون التسميات نصًّا عربيًّا. */
+function hbars(items, color) {
+  var max = Math.max.apply(null, items.map(function (i) { return i.v; }).concat([0])) || 1;
+  return '<div class="hbar">' + items.map(function (i) {
+    return '<div class="hbar-row"><span class="t" title="' + esc(i.t) + '">' + esc(i.t) + '</span>' +
+           '<span class="tr"><i style="width:' + (Math.max(0, i.v) / max * 100).toFixed(1) + '%;background:' +
+           (i.color || color || 'var(--s1)') + '"></i></span>' +
+           '<span class="v">' + esc(i.d !== undefined ? i.d : n0(i.v)) + '</span></div>';
+  }).join('') + '</div>';
+}
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#888';
+}
+
+
+/**
+ * نصّ الملخّص الذي يُنسَخ ويُرسَل يدويًّا — **لا رقم هاتف هنا ولا إرسال
+ * من التطبيق نفسه**. الأرقام هي ذاتها المعروضة في الشاشة (نفس `r`)، فما
+ * تراه على الشاشة هو ما يصل العميل بالحرف — لا نسخةٌ ثانية تنحرف.
+ */
+function buildProposalText(r, t, calc) {
+  var L = [
+    'أهلًا كابتن، بناءً على حسبتنا اليوم لملعبك:',
+    '',
+    'لو جبنالك ' + bookingsNoun(calc.newB) + ' جديدة بالشهر:',
+    '✅ صافي ربحك الإضافي: ' + n0(r.net) + ' دينار'
+  ];
+
+  if (t.model === 'اشتراك شهري') {
+    L.push('✅ اشتراكك الثابت: ' + n0(t.sub) + ' دينار بالشهر مهما حجزت');
+  } else if (t.model === 'الاثنان معاً') {
+    /* 🔴 r.pay هنا **مجموع** العمولة والاشتراك معًا (`subs*comm + T.sub`
+       في `venueCalc`) — كتابةُ الاشتراك بعدها بـ«زائد» يُضاعفه على
+       قارئٍ يجمع الرقمين. التفصيل يُشتقّ من نفس المجموع لا يُضاف إليه. */
+    L.push('✅ اللي بتدفعه للمنصّة: ' + n0(r.pay) + ' دينار (اشتراك ' + n0(t.sub) +
+           ' + عمولة ' + n0(Math.max(0, r.pay - t.sub)) + ')');
+    if (t.cap > 0) L.push('✅ سقف العمولة وحدها: ' + n0(r.capTotal) + ' دينار مهما حجزت');
+  } else {
+    L.push('✅ اللي بتدفعه للمنصّة: ' + n0(r.pay) + ' دينار (من الشهر الثاني)');
+    if (t.cap > 0) L.push('✅ سقفك اللي ما بتتخطّاه: ' + n0(r.capTotal) + ' دينار مهما حجزت');
+  }
+
+  if (t.free > 0) {
+    var freeTxt = t.free === 1 ? 'شهر' : t.free === 2 ? 'شهرين' : n0(t.free) + ' أشهر';
+    L.push('', 'وأوّل ' + freeTxt + ' مجّانيّ بالكامل — ما بتدفع فيه إشي.');
+  }
+
+  L.push('', 'جاهزين نرفع حجوزاتك؟ ⚽');
+  return L.join('\n');
+}
+</script>

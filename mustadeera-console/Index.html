@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    /* يُقرأ قبل أوّل بكسل يُرسم — وإلّا ومض الأبيض قبل الثيم الداكن.
+       (وهو نفس سبب وضع سكربت الثيم في <head> لا في نهاية الصفحة.) */
+    (function () {
+      try {
+        var t = localStorage.getItem('mstd:theme');
+        /* ثلاث حالات صريحة: نهاري · داكن · حسب الجهاز.
+           و«لا قيمة» ليست حالةً رابعة — الافتراضي الداكن، وهو قرار
+           منتَج لا غياب: هذه لوحةُ عملٍ تُفتح عشرين مرّة في اليوم. */
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        else if (t !== 'auto') document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+    })();
+  </script>
+
+  <?!= include('Styles'); ?>
+</head>
+
+<body>
+
+<!-- ═══ شاشة الإقلاع ═══ -->
+<div id="boot" class="boot">
+  <div class="boot-mark" aria-hidden="true">
+    <svg viewBox="0 0 48 48" width="44" height="44">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".28"/>
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-dasharray="36 90" class="boot-spin"/>
+      <circle cx="24" cy="24" r="6.5" fill="currentColor"/>
+    </svg>
+  </div>
+  <p class="boot-t">المستديرة</p>
+  <p class="boot-s" id="bootMsg">نقرأ الشيت…</p>
+</div>
+
+<!-- ═══ الهيكل ═══ -->
+<div id="shell" class="shell" hidden>
+
+  <aside class="rail" id="rail">
+    <div class="rail-top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="26" height="26">
+            <circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="16" cy="16" r="4.4" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="brand-txt">
+          <b>المستديرة</b>
+          <i>لوحة الإدارة</i>
+        </span>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav" aria-label="التنقّل الرئيسي"></nav>
+
+    <div class="rail-foot">
+      <button class="rail-btn" id="btnTheme" type="button" aria-label="بدّل المظهر">
+        <span class="ic" id="themeIc"></span><span class="rail-lbl" id="themeLbl">المظهر</span>
+      </button>
+      <a class="rail-btn" id="btnSheet" href="#" target="_blank" rel="noopener">
+        <span class="ic" data-ic="sheet"></span><span class="rail-lbl">افتح الشيت</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn only-narrow" id="btnMenu" type="button" aria-label="القائمة">
+        <span class="ic" data-ic="menu"></span>
+      </button>
+
+      <div class="crumbs">
+        <h1 id="pageTitle">لوحة اليوم</h1>
+        <p id="pageSub"></p>
+      </div>
+
+      <button class="cmd-open" id="btnCmd" type="button">
+        <span class="ic" data-ic="search"></span>
+        <span>ابحث أو نفّذ…</span>
+        <kbd>Ctrl</kbd><kbd>K</kbd>
+      </button>
+
+      <div class="sync" id="sync" title="حالة المزامنة مع الشيت">
+        <span class="dot"></span><span id="syncTxt">متّصل</span>
+      </div>
+    </header>
+
+    <div class="view" id="view"></div>
+  </div>
+</div>
+
+<!-- ═══ لوحة الأوامر ═══ -->
+<div class="pal-wrap" id="pal" hidden>
+  <div class="pal-scrim" data-close="pal"></div>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="لوحة الأوامر">
+    <div class="pal-in">
+      <span class="ic" data-ic="search"></span>
+      <input id="palQ" type="text" placeholder="اسم ملعب · مهمّة · صفحة · أمر…" autocomplete="off" spellcheck="false">
+      <kbd>Esc</kbd>
+    </div>
+    <div class="pal-list" id="palList"></div>
+  </div>
+</div>
+
+<!-- ═══ وضع العرض (تُفتح أمام صاحب الملعب) ═══ -->
+<div class="stage" id="stage" hidden></div>
+
+<!-- ═══ الأوراق المنزلقة ═══ -->
+<div class="sheet-wrap" id="sheetWrap" hidden>
+  <div class="sheet-scrim" data-close="sheet"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head">
+      <h2 id="sheetTitle"></h2>
+      <button class="icon-btn" type="button" data-close="sheet" aria-label="إغلاق">
+        <span class="ic" data-ic="x"></span>
+      </button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-foot" id="sheetFoot"></div>
+  </div>
+</div>
+
+<!-- ═══ ملخّص للعميل — نصٌّ يُنسَخ ويُرسَل يدويًّا، لا إرسال من هنا ═══ -->
+<div class="msg-wrap" id="msgWrap" hidden>
+  <div class="msg-scrim" data-close="msg"></div>
+  <div class="msg" role="dialog" aria-modal="true" aria-labelledby="msgTitle">
+    <div class="msg-head">
+      <h2 id="msgTitle">ملخّص للعميل</h2>
+      <button class="icon-btn" type="button" data-close="msg" aria-label="إغلاق">
+        <span class="ic" data-ic="x"></span>
+      </button>
+    </div>
+    <p class="msg-note">انسخه وابعثه من واتساب أو أيّ تطبيقٍ عندك — ما في إرسالٌ من هون.</p>
+    <textarea class="msg-text" id="msgText" readonly rows="9"></textarea>
+    <div class="msg-foot">
+      <button class="btn" type="button" id="msgCopy"><span class="ic" data-ic="copy"></span>انسخ النصّ</button>
+      <button class="btn quiet" type="button" data-close="msg">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<?!= include('Model');  ?>
+<?!= include('Script'); ?>
+</body>
+</html>
