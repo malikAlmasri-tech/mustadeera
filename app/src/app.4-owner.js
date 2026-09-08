@@ -2382,7 +2382,7 @@ const Notifs = {
      الصفحة كلَّ يوم لا يلعب فيه أحد.
    ═══════════════════════════════════════════════════════════════════════════ */
 const Tracker = {
-  booking: null, timer: null,
+  booking: null, timer: null, all: [],
 
   /* الحجوزات تُجلَب هنا لا تُقرأ من صفحة «حجوزاتي»: الرئيسية قد تُفتَح قبلها
      أصلًا، وربطُ لوحٍ بصفحةٍ لم تُزَر بعد يجعله فارغًا بلا سبب ظاهر. */
@@ -2391,8 +2391,11 @@ const Tracker = {
     try {
       const res = await API.get('getPlayerBookings', { player_token: Session.player() }, 'trackerBk');
       if (!res || !res.success) return;
-      this.booking = this.pick(res.bookings || []);
-      this.paint();
+      /* القائمة كاملةً لا الأقرب وحده: «كرّر آخر حجز» يقرأ منها ما مضى،
+         وبلا هذا السطر كان يلزمه طلبٌ ثانٍ لنفس البيانات. */
+      this.all = res.bookings || [];
+      this.booking = this.pick(this.all);
+      this.paint(); Again.paint();
     } catch(_){ /* شبكة ⇒ نُبقي آخر ما عُرض؛ العدّاد يواصل من نفس الحجز */ }
   },
 
@@ -2490,6 +2493,98 @@ const Tracker = {
     this.timer = setInterval(()=>this.tick(), 60000);
   },
 };
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   «كرّر آخر حجز» — الطقس الأسبوعي يصير نقرتين
+
+   كرةُ القدم هنا عادةٌ لا حدث: نفس الشلّة، نفس الملعب، نفس الساعة، كلَّ أسبوع.
+   والمنتج لم يكن يملك سطحًا واحدًا لهذا — كلُّ حجزٍ يبدأ من قائمة الملاعب
+   وينتهي بعد ستّ لمسات، والمعلومة التي تختصرها كلَّها موجودة عندنا أصلًا:
+   آخرُ حجزٍ لعبه صاحبُه.
+
+   ⚠️ **وبلا طلبٍ واحد جديد**: `Tracker.refresh` تجلب حجوزات اللاعب كلَّها ثمّ
+      كانت ترمي ما مضى وتُبقي الأقرب. صارت تحتفظ بالقائمة، وهذا اللوح يقرأ منها.
+   ⚠️ **ولا يَعِد بخانة** (م5): الساعة تُختار فقط إن كانت **متاحةً وقتَ الضغط**
+      — مقيسةً من `bookedSlots` و`openSlotsFor` بعد جلبةٍ طازجة — وإلّا فُتح
+      اليومُ بشبكته ليرى صاحبُه ما هو فاضٍ فعلًا. والنصّ لا يقول «متاحة».
+   ⚠️ **ولا يُعرَض لمكانٍ لم يعد في القائمة** ولا لملعبٍ حُذف: زرٌّ يفتح على
+      «لم نجد المكان» أسوأ من غيابه.
+   ══════════════════════════════════════════════════════════════════════════ */
+const Again = {
+  /* آخرُ ما **لُعب فعلًا**: مؤكَّدٌ وانتهت خانته. والمرفوض والملغى والمعلّق
+     خارجَه — «كرّر» تعني «أعد ما نجح»، لا «أعد ما لم يقع». */
+  pick(){
+    if (!Session.player()) return null;
+    const list = (Tracker.all || []).filter(b => normStatus(b) === 'confirmed' && isFinished(b));
+    if (!list.length) return null;
+    const withAt = list.map(b => ({ b, at: Tracker.startAt(b) })).filter(x => x.at != null);
+    withAt.sort((x, y) => y.at - x.at);
+    for (const x of withAt){
+      const place = (State.allPlaces || []).find(p => String(p.place_id) === String(x.b.place_id));
+      if (place && place.fields && place.fields.length) return { b: x.b, place };
+    }
+    return null;
+  },
+
+  /* اليوم نفسه من الأسبوع داخل نافذة السبعة أيام — وهي سبعةٌ بالضبط، فكلُّ
+     يومٍ من أيّام الأسبوع يقع فيها **مرّةً واحدة**: لا اختيار ولا التباس. */
+  nextSameWeekday(dateStr){
+    const src = new Date(String(dateStr).split('T')[0] + 'T12:00:00');
+    if (isNaN(src)) return null;
+    for (let i = 0; i < 7; i++){
+      const ds = dateAfter(i);
+      if (new Date(ds + 'T12:00:00').getDay() === src.getDay()) return ds;
+    }
+    return null;
+  },
+
+  paint(){
+    const wrap = $('#againWrap'); if (!wrap) return;
+    clear(wrap);
+    const hit = this.pick();
+    /* ولا يُزاحم لوحَ «حجزك القادم»: من عنده حجزٌ قادم سؤالُه «هل ردّوا؟» لا
+       «أعِد الأسبوع الماضي» — ولوحان يطلبان الانتباه في شاشةٍ واحدة يضعفان معًا. */
+    if (!hit || Tracker.booking){ wrap.hidden = true; return; }
+    wrap.hidden = false;
+
+    const { b, place } = hit;
+    const day  = this.nextSameWeekday(b.date);
+    const time = b.time || '';
+    const card = h('button', { class:'again-card', type:'button',
+      'aria-label': t('againTitle') + ' — ' + place.place_name + ' · ' + (day ? dayLabel(day) : '') + ' ' + time });
+
+    card.append(
+      h('span', { class:'again-ico', 'aria-hidden':'true' }, ico('clock', 'svg-sm')),
+      h('span', { class:'again-body' },
+        h('span', { class:'again-t' }, t('againTitle')),
+        h('span', { class:'again-place' }, place.place_name),
+        h('span', { class:'again-when' },
+          h('bdi', {}, (day ? dayLabel(day) : '') + (time ? ' · ' + time : '')))),
+      h('span', { class:'again-go btn-go', 'aria-hidden':'true' }));
+
+    card.addEventListener('click', () => this.go(b, day));
+    wrap.append(card);
+  },
+
+  /* نفس مسار «شوف أوقات بديلة» بالحرف: نفتح التفاصيل بجلبةٍ طازجة ثمّ نضبط
+     الملعب واليوم، والساعةَ **بشرط** أن تكون معروضةً وغير محجوزة. */
+  go(b, day){
+    Track.push(EV.PLACE_VIEW, { place_id:String(b.place_id), sport:State.sport });
+    openDetail(b.place_id, { awaitFresh:true }).then(() => {
+      const d = State.detail; if (!d || !d.place) return;
+      const fld = d.place.fields.find(f => String(f.field_id) === String(b.field_id)) || d.field;
+      d.field = fld;
+      if (day) d.date = day;
+      const hour = Number(b.hour);
+      const open = openSlotsFor(fld, d.date).some(s => Number(s.hour) === hour);
+      const taken = ((State.bookedSlots[fld.field_id] || {})[d.date] || []).includes(hour);
+      d.hour = (open && !taken) ? hour : null;
+      renderSubFields(); renderDetailDays(); renderDetailTimes(); renderDetailSticky();
+      scrollToDetailSection('time', '#detailDays .day-btn');
+    }).catch(() => {});
+  },
+};
+
 
 /* «قبل دقيقتين» — بجموع عربية صحيحة مجّانًا (Intl يتكفّل بالمعدود) */
 function relTime(iso){

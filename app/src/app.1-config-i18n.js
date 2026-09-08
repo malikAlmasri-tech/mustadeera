@@ -195,6 +195,10 @@ const I18N = {
     ntfSlotFreeTitle:'فضيت الخانة اللي كنت مستنيها', ntfSlotFreeBody:'{place} — {day} {time} · احجزها قبل غيرك',
     ntfReason:'السبب: {r}',
     /* ── لوح متابعة الحجز على الرئيسية ── */
+    /* «كرّر آخر حجز» — النصّ يقول ما يفعله الزرّ بالضبط: يفتح نفس الملعب في
+       نفس اليوم من الأسبوع القادم. ولا يَعِد بأن الساعة فاضية (م5). */
+    againTitle:'كرّر آخر حجز', againCta:'افتح نفس الموعد',
+    againWhen:'{day} · {time}', againSame:'نفس الملعب ونفس الساعة',
     trkPending:'بانتظار ردّ الملعب', trkConfirmed:'حجزك مؤكّد', trkTitle:'حجزك القادم',
     trkStarts:'يبدأ بعد', trkNow:'بدأت المباراة', trkSoon:'يبدأ الآن',
     trkD:'{n} يوم', trkH:'{n} ساعة', trkM:'{n} دقيقة',
@@ -795,6 +799,8 @@ const I18N = {
     ntfExpiredTitle:'Your request timed out', ntfExpiredBody:'{place} — {day} {time} · the venue did not reply, and the slot is open again',
     ntfSlotFreeTitle:'A slot you were waiting for is free', ntfSlotFreeBody:'{place} — {day} {time} · book it before someone else does',
     ntfReason:'Reason: {r}',
+    againTitle:'Book it again', againCta:'Open the same slot',
+    againWhen:'{day} · {time}', againSame:'Same pitch, same hour',
     trkPending:'Awaiting the venue’s reply', trkConfirmed:'Booking confirmed', trkTitle:'Your next booking',
     trkStarts:'Starts in', trkNow:'Kick-off has passed', trkSoon:'Starting now',
     trkD:'{n}d', trkH:'{n}h', trkM:'{n}m',

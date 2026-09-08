@@ -1319,7 +1319,7 @@ function doLogout(){
   /* إشعارات الحساب السابق ولوح حجزه لا يبقيان على شاشة من خرج — والجهاز قد
      يُسلَّم لغيره. الصفوف باقية في القاعدة وتعود بعودته، وما يُمحى هنا الذاكرة. */
   Notifs.rows=[]; Notifs.missing=false; Notifs.asked=false; Notifs.paint();
-  Tracker.booking=null; Tracker.paint();
+  Tracker.booking=null; Tracker.all=[]; Tracker.paint(); Again.paint();
   $('#nav-player').classList.remove('show'); $('#nav-owner').classList.remove('show');
   showPage('welcome');
 }
@@ -1772,7 +1772,7 @@ function setLanguage(lang){
        المكان + الموعد)، فلا يمسّهما تبديل اللغة إلّا بإعادة بنائهما.
        ⚠️ مقيس: بدون هذين السطرين يبقى اللوح إنجليزيًّا بعد الرجوع إلى العربية
           — ونصُّه مكتوبٌ منذ آخر جلبة، فلا شيء يعيد كتابته حتى الجلبة التالية. */
-    Notifs.paint(); Tracker.paint(); paintThemeLabels();
+    Notifs.paint(); Tracker.paint(); Again.paint(); paintThemeLabels();
     if($('#page-verifyPhone')?.classList.contains('active')) Verify.syncText();
     if($('#page-owner')?.classList.contains('active') && State.ownerData) renderOwnerDashboard();
     // نصوص التبويبات تغيّرت ⇒ عروض الأزرار تغيّرت. قفزة لا انزلاق: الحبّة

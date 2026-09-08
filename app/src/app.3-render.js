@@ -1491,7 +1491,7 @@ function renderHub(){
   /* لوحُ «حجزك القادم» يُعاد رسمُه مع الشبكة: بياناته مجلوبةٌ سلفًا
      (‏`Tracker.refresh` بعد الدخول وعند العودة إلى التطبيق)، والرسم هنا يجعله
      يتبع اللغة كذلك — نصُّه مركَّبٌ من معطيات فلا يمسّه `data-i18n`. */
-  Tracker.paint();
+  Tracker.paint(); Again.paint();
   const av=$('#hubAvatar');
   if(av) av.textContent = ((State.player?.name||'').trim().charAt(0)) || t('avatarFallback');
   const wc=$('#bentoWomen'), wn=$('#bentoWomenNote'), ws=$('#bentoWomenSoon');
