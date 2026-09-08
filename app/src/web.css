@@ -80,7 +80,7 @@ html.web-owner #app:has(> #nav-owner.show) > .page.active{
 
 /* التلاشي أسفل الشاشة (‏§36) يقول «تحت هذا مزيد» فوق شريطٍ سفليّ. ولا شريط
    سفليَّ في هذا الشكل ⇒ شريطٌ داكن يطفو على قماشة بلا معنى. */
-html.web-owner:has(.bnav.show)::after{ content: none }
+html.web-owner body:has(.bnav.show)::before{ content: none }
 
 
 /* ── W2) الرصيف: الشريط السفلي يقف ────────────────────────────────────────

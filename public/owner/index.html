@@ -3713,7 +3713,7 @@ html.web-owner #app:has(> #nav-owner.show) > .page.active{
 
 /* التلاشي أسفل الشاشة (‏§36) يقول «تحت هذا مزيد» فوق شريطٍ سفليّ. ولا شريط
    سفليَّ في هذا الشكل ⇒ شريطٌ داكن يطفو على قماشة بلا معنى. */
-html.web-owner:has(.bnav.show)::after{ content: none }
+html.web-owner body:has(.bnav.show)::before{ content: none }
 
 
 /* ── W2) الرصيف: الشريط السفلي يقف ────────────────────────────────────────
@@ -15317,6 +15317,9 @@ function showPage(name, opts){
     void page.offsetWidth;                 // إعادة تشغيل مضمونة للأنيميشن بعد إزالة الأصناف
     page.classList.add(mode);
   }
+  /* ⚠️ وتنقّلٌ يعني كيبوردًا مغلقًا: أندرويد يُغلقه مع تغيّر الشاشة ولا يضمن
+     حدثًا لـ`visualViewport` ⇒ نُصفّر هنا كذلك، فلا يبقى الشريط السفلي مخفيًّا. */
+  kbClear();
   manageAutoRefresh();
   HeroPh.sync();   // يوقف دوران النائب خارج صفحة الهبوط ويستأنفه عند العودة إليها
   // الرئيسية تستعيد موضعها دائمًا؛ الرجوع يستعيد موضع الصفحة السابقة؛ التقدّم يبدأ من الأعلى
@@ -15581,16 +15584,39 @@ const PullRefresh = (()=>{
 })();
 
 /* ارتفاع كيبورد الهاتف: نرفع التوست فوقه ونُنزل الشريط السفلي تحته (بدل أن يطفو بمنتصف الشاشة) */
+/* 🔴 **و`kb-open` مشروطٌ بوجود حقلٍ مركَّز — لا بالحساب وحده.**
+   الصنف يُنزل الشريط السفلي خارج الشاشة (`translateY(120%)`)، فبقاؤه مرفوعًا
+   خطأً يعني **شريط تنقّلٍ يختفي ولا يعود** طوال الجلسة: عرَضٌ لا يوصله المستخدم
+   بالكيبورد أصلًا، فيقرؤه عطلًا في التطبيق (بلاغ المالك 2026-09-08).
+   والحساب وحده هشّ: `innerHeight - vv.height` يعتمد على وضع
+   `windowSoftInputMode` في أندرويد، وحدثُ `resize` قد يفوت (تبويبٌ في الخلفية،
+   أو إغلاقُ الكيبورد مع تنقّلٍ في اللحظة نفسها) فيبقى الصنف بلا من يُنزله.
+   ⚠️ **والشرط الثاني لا يُضعف الأوّل**: كيبورد الهاتف لا يُفتَح إلّا على حقلٍ
+      مركَّز، فاجتماعُهما هو التعريف الصحيح لا تشديدٌ زائد.
+   ⚠️ ويُصفَّر عند فقد التركيز وعند كل تنقّل — ثلاثة مخارج لحالةٍ واحدة، لأنّ
+      ثمن بقائها مرفوعةً أكبر من ثمن إنزالها مرّةً بلا داعٍ. */
+function kbEditing(){
+  const el = document.activeElement;
+  return !!el && el !== document.body &&
+         (el.matches('input:not([type=button]):not([type=submit]), textarea, [contenteditable=""], [contenteditable="true"]'));
+}
+function kbClear(){
+  document.documentElement.style.setProperty('--kb','0px');
+  document.documentElement.classList.remove('kb-open');
+}
 if(window.visualViewport){
   const vv=window.visualViewport;
   const syncKb=()=>{
     const kb=Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-    const open=kb>80;
+    const open=kb>80 && kbEditing();
     document.documentElement.style.setProperty('--kb', (open?kb:0)+'px');
     document.documentElement.classList.toggle('kb-open', open);
   };
   vv.addEventListener('resize', syncKb);
   vv.addEventListener('scroll', syncKb);
+  /* الحقل يفقد التركيز ⇒ لا كيبورد. والتأجيل فريمًا لأنّ الانتقال بين حقلين
+     يمرّ بلحظةٍ لا تركيز فيها، فتصفيرٌ فوريّ يُومض الشريط بينهما. */
+  document.addEventListener('focusout', ()=>{ setTimeout(()=>{ if(!kbEditing()) kbClear(); }, 60); }, true);
 }
 
 /* تحديث تلقائي للأوقات على الصفحات الحيّة فقط (+ لوحة المالك بتحديث صامت) */
