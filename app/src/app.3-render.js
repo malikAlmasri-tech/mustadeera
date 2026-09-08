@@ -1,7 +1,7 @@
 /* ===================== MODAL (+ swipe to close) ===================== */
 const Modal = {
   _last:null,
-  open(id, keepDirty){ const o=$('#'+id); if(!o) return; if(!keepDirty) Dirty.clear(id); this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open');
+  open(id, keepDirty){ const o=$('#'+id); if(!o) return; if(!keepDirty) Dirty.clear(id); this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open'); this._isolate();
     const panel=o.querySelector('.modal,.scard'); if(panel){ panel.setAttribute('tabindex','-1'); requestAnimationFrame(()=>{ try{ panel.focus({preventScroll:true}); }catch(_){} }); } },
   /* force=true يتخطّى سؤال «تعديلات لم تُحفظ» — يستعمله مسار الحفظ الناجح وحده */
   close(id, force){
@@ -12,9 +12,27 @@ const Modal = {
   },
   closeAll(except){ $$('.modal-overlay.show, .success-overlay.show').forEach(o=>{ if(o!==except) o.classList.remove('show'); }); },
   _afterClose(){
+    this._isolate();
     if($$('.modal-overlay.show, .success-overlay.show').length) return;   // ما زالت نافذة مفتوحة
     document.body.classList.remove('modal-open');
     if(this._last && this._last.focus){ try{ this._last.focus({preventScroll:true}); }catch(_){} this._last=null; }
+  },
+  /* عزل ما خلف النافذة (‏`inert`) — التركيز كان يخرج منها إلى ما تحتها.
+     `open` ينقل التركيز إلى اللوح ويعيده عند الإغلاق، ولا شيء كان يمنع Tab
+     ولا إيماءة TalkBack من المرور إلى الصفحة والشريط السفلي خلفها:
+     `aria-modal` تقول «مشروطة» لقارئ الشاشة ولا تفرض شيئًا على التنقّل.
+     ⚠️ والعزل على **أبناء `#app` المباشرين** لا على `#app` نفسه: النوافذ
+        كلُّها أبناؤه (مقيس) ⇒ تعطيلُه يعطّل النافذة معه.
+     ⚠️ ويُشتقّ من الـDOM لا من وسيط يُمرَّر: مسارات الإغلاق أكثر من واحد،
+        وقراءةُ `.show` الظاهرة تجعل الحالة صحيحةً في كل مسار بلا استثناء. */
+  _isolate(){
+    const app=$('#app'); if(!app) return;
+    const open=app.querySelector('.modal-overlay.show, .success-overlay.show');
+    Array.prototype.forEach.call(app.children, el=>{
+      const off = !!open && el!==open;
+      if('inert' in el) el.inert = off;
+      else if(off) el.setAttribute('inert',''); else el.removeAttribute('inert');
+    });
   },
 };
 /* السحب لأسفل لإغلاق النافذة — transform فقط لضمان 60fps */
@@ -1080,7 +1098,7 @@ function renderDetailTimes(){
              يلعب هنا» — لا بديل يُشتقّ منه على هذا الملعب في هذا الوقت.
              ولذلك بديلُ الأوّل لوحٌ فيه اقتراحات، والثاني يبقى صامتًا. */
           onTaken: (!cl && isTaken) ? (()=>openAltSheet(fld, date, s)) : null });
-      btn.style.animationDelay=`${i*0.04}s`; el.append(btn);
+      el.append(btn);
     });
   });
   if(slots.length && free===0){

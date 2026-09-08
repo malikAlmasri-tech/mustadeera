@@ -130,6 +130,42 @@ function dupTokens(file, css){
   }
 }
 
+/* ⑤ توكن يُستعمَل ولا يُعرَّف — `var(--x)` بلا احتياطي على اسمٍ غير معرَّف
+   **تُسقط التصريح كلَّه** (IACVT) فيعود إلى قيمته الابتدائية: خلفيةٌ تصير شفّافة،
+   وحدٌّ يختفي، وتدرّجٌ لا يُرسَم — **بلا خطأٍ واحد في الكونسول**. وقد قِيست خمسة
+   أحياء منها 2026-09-08: `var(--card)` مرّتين و`var(--bg)` ثلاثًا في التطبيق،
+   و`--r-md`/`--brd` مرّتين لكلٍّ في الموقع. والاسم الصحيح موجودٌ في الورقة نفسها
+   في الحالات كلّها (‏`--surface-solid` · `--bg-primary` · `--r` · `--line`) ⇒
+   العطل سهوُ تسميةٍ لا نقصُ تصميم، وهو بالضبط ما يُمسَك آليًّا.
+   ⚠️ **والتعليقات تُجرَّد أوّلًا**: نثرٌ يذكر `--bg: كذا` يُقرأ تعريفًا فيُخفي
+      العطل — وقد أخفاه فعلًا في القياس الأوّل.
+   ⚠️ **وما له احتياطي لا يُبلَّغ** (`var(--x, y)`): ذاك تدرّجٌ مقصود لا سهو.
+   ⚠️ ويُقاس على **مجموع** الأوراق التي تُشحَن معًا: `native.css`/`web.css` تُحقنان
+      بعد `app.css` وتقرآن توكناتها، فقياسُ كلٍّ وحدها يُخرج بلاغًا كاذبًا. */
+function undefinedVars(files, label){
+  const defs = new Set(), uses = new Map();
+  for (const rel of files){
+    const p = path.join(ROOT, rel);
+    if (!fs.existsSync(p)) continue;
+    const css = fs.readFileSync(p, 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
+    for (const m of css.matchAll(/(?:^|[{;])\s*(--[A-Za-z0-9_-]+)\s*:/g)) defs.add(m[1]);
+    for (const m of css.matchAll(/var\(\s*(--[A-Za-z0-9_-]+)\s*\)/g)){
+      const line = css.slice(0, m.index).split('\n').length;
+      if (!uses.has(m[1])) uses.set(m[1], []);
+      uses.get(m[1]).push({ rel, line });
+    }
+  }
+  for (const [name, locs] of uses){
+    if (defs.has(name)) continue;
+    for (const loc of locs)
+      add(loc.rel, loc.line, 'توكن', label,
+          'var(' + name + ') بلا تعريف وبلا احتياطي — التصريح كلّه يسقط صامتًا');
+  }
+}
+undefinedVars(['app/src/app.css', 'app/src/native.css', 'app/src/web.css'], 'التطبيق');
+undefinedVars(['site/styles/site.css'], 'الموقع');
+
 for (const file of ['app/src/app.css', 'app/src/native.css', 'app/src/web.css']){
   const p = path.join(ROOT, file);
   if (!fs.existsSync(p)) continue;
@@ -174,4 +210,4 @@ if (problems.length){
   console.error('');
   process.exit(1);
 }
-console.log('  ✓ check-css-rules: منطقية · تتبّع · ارتفاع تفاعلي · توكن مكرّر — لا مخالفة');
+console.log('  ✓ check-css-rules: منطقية · تتبّع · ارتفاع تفاعلي · توكن مكرّر · توكن بلا تعريف — لا مخالفة');

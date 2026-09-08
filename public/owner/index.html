@@ -240,7 +240,7 @@
    يكون إلى ارتفاع سطر العنوان. وبالمقاسات الأولى (٣٢×٢٨) كان الثمن تسعة. */.view-seg{display:inline-flex;gap:4px;flex:none;padding:2px;border-radius:10px;
   background:var(--surface-muted);border:1px solid var(--line)}.view-ico{display:grid;place-items:center;width:30px;height:22px;border:0;border-radius:10px;
   background:transparent;color:var(--muted);cursor:pointer;
-  transition:background-color var(--t-fast),color var(--t-fast)}.view-ico svg{width:16px;height:16px;fill:currentColor;stroke:none}.view-ico.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow-xs)}
+  transition:background-color var(--t-fast),color var(--t-fast)}.view-ico svg{width:16px;height:16px;fill:currentColor;stroke:none}.view-ico.on{background:var(--surface-solid);color:var(--ink);box-shadow:var(--shadow-xs)}
 /* ⚠️ حلقة التركيز بوسمٍ صريح لا داخل `:where()`: نوعيّة `:where()` صفر، فينازعها
    أي صنف يحمل `box-shadow` — مزلق مسجَّل، ظهر في حلقة التركيز العامّة. */button.view-ico:focus-visible{outline:2px solid var(--primary);outline-offset:2px}.sec-count{font-size:0.84375rem;font-weight:700;color:var(--emerald);background:var(--soft-green);border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums;letter-spacing:0}body.dark .sec-count{background:rgba(15,75,83,.16)}.sec-title .link{color:var(--emerald);cursor:pointer;font-size:0.84375rem;font-weight:700}.sec-title .link:hover{color:var(--emerald-2)}
 
@@ -259,12 +259,12 @@
 
 /* ---------- CARD ---------- */.card{background:var(--surface);border-radius:var(--r-xl);padding:22px var(--s-5);box-shadow:var(--shadow-card);color:var(--ink);border:1px solid var(--line);/* الزجاج حُذف: مقتولٌ بـ§13 منذ دفعات ⇒ كلفةٌ في المصدر بلا بكسل مرسوم */}.card + .card{margin-top:var(--s-5)}
 
-/* ---------- BADGES ---------- */.badge{border-radius:999px;padding:6px 13px;font-size:0.78125rem;font-weight:800;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}.badge-green{background:var(--mint-soft);color:var(--mint-electric);border:1.5px solid transparent}.badge-red{background:var(--danger-soft);color:var(--danger-ink);border:1.5px solid transparent}.badge-yellow{background:var(--warning-soft);color:var(--warning-ink);border:1.5px solid transparent}.badge-blue{background:var(--info-soft);color:var(--info-ink);border:1.5px solid transparent}.badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;flex-shrink:0}.badge-green::before{background:var(--mint-electric);box-shadow:0 0 0 3px var(--mint-soft)}.badge-red::before{background:var(--danger)}.badge-yellow::before{background:var(--warning)}
+/* ---------- BADGES ---------- */.badge{border-radius:999px;padding:6px 13px;font-size:0.78125rem;font-weight:800;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}.badge-green{background:var(--mint-soft);color:var(--ok-ink);border:1.5px solid transparent}.badge-red{background:var(--danger-soft);color:var(--danger-ink);border:1.5px solid transparent}.badge-yellow{background:var(--warning-soft);color:var(--warning-ink);border:1.5px solid transparent}.badge-blue{background:var(--info-soft);color:var(--info-ink);border:1.5px solid transparent}.badge-green::before,.badge-red::before,.badge-yellow::before{content:'';width:6px;height:6px;border-radius:999px;flex-shrink:0}.badge-green::before{background:var(--ok-ink);box-shadow:0 0 0 3px var(--mint-soft)}.badge-red::before{background:var(--danger)}.badge-yellow::before{background:var(--warning)}
 
 /* ---------- HEADERS ---------- */.app-header{color:#fff;position:relative;overflow:hidden;
   background:#0E3D45;  /* لوح Teal داكن مسطّح (هوية الشعار) في الوضعين */
   box-shadow:0 16px 36px -18px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.04)}.app-header::before{display:none}
-/* خيط ذهبي ناعم أسفل الهيدر (يتبع الزوايا الدائرية) */.app-header.home::after,.app-header.auth::after,.app-header.compact::after{content:'';position:absolute;left:14%;right:14%;bottom:0;height:1px;background:var(--copper-primary);opacity:.3;z-index:2}.app-header>*{position:relative;z-index:1}.app-header.home{padding:18px var(--s-5) 22px;border-radius:0 0 var(--r-2xl) var(--r-2xl)}.app-header.auth{padding:58px var(--s-6) 40px;text-align:center;border-radius:0 0 var(--r-3xl) var(--r-3xl)}.app-header.compact{padding:var(--s-6) var(--s-5);border-radius:0 0 var(--r-2xl) var(--r-2xl)}.header-grid{position:absolute;inset:0;background-image:var(--pattern-rings);background-size:132px 132px;pointer-events:none;mask-image:linear-gradient(180deg,#000,transparent)}.header-emoji{font-size:2.875rem;margin-bottom:14px;display:inline-flex;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}.header-emoji svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.header-title{font-size:1.5rem;font-weight:800;letter-spacing:var(--tr-tighter);text-shadow:0 2px 10px rgba(0,0,0,.22)}.header-subtitle{font-size:0.84375rem;opacity:.74;margin-top:6px;font-weight:500}
+/* خيط ذهبي ناعم أسفل الهيدر (يتبع الزوايا الدائرية) */.app-header.home::after,.app-header.auth::after,.app-header.compact::after{content:'';position:absolute;left:14%;right:14%;bottom:0;height:1px;background:var(--copper-primary);opacity:.3;z-index:2}.app-header>*{position:relative;z-index:1}.app-header.home{padding:18px var(--s-5) 22px;border-radius:0 0 var(--r-2xl) var(--r-2xl)}.app-header.auth{padding:58px var(--s-6) 40px;text-align:center;border-radius:0 0 var(--r-3xl) var(--r-3xl)}.app-header.compact{padding:var(--s-6) var(--s-5);border-radius:0 0 var(--r-2xl) var(--r-2xl)}.header-grid{position:absolute;inset:0;background-image:var(--pattern-rings);background-size:132px 132px;pointer-events:none;mask-image:linear-gradient(180deg,#000,transparent)}.header-emoji{font-size:2.875rem;margin-bottom:14px;display:inline-flex;filter:drop-shadow(0 5px 12px rgba(0,0,0,.3))}.header-emoji svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.header-title{font-size:1.5rem;font-weight:800;letter-spacing:var(--tr-tighter);text-shadow:0 2px 10px rgba(0,0,0,.22)}.header-subtitle{font-size:0.84375rem;opacity:.74;margin-top:6px;font-weight:500}
 
 /* الأدوات لا تتقلّص (أهداف لمس)، والعلامة تتقلّص ويُقصّ نصّها —
    وإلا فاض الصفّ عند اسم مستخدم طويل («أهلاً مالك مؤيد المصري») أو نصوص إنجليزية أعرض */.home-bar{display:flex;justify-content:space-between;align-items:center;gap:8px}.home-tools{flex-shrink:0}.home-brand{min-width:0}.home-brand>div:last-child{min-width:0}.brand-name,.brand-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.home-brand{display:flex;align-items:center;gap:12px;cursor:pointer;transition:opacity var(--t-fast)}@media(hover:hover){.home-brand:hover{opacity:.85}}.home-brand:active{transform:scale(.98)}.brand-logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;border:1.5px solid rgba(255,255,255,.18);box-shadow:0 3px 10px rgba(0,0,0,.14);background:rgba(255,255,255,.1)}.brand-mark{width:60%;height:60%;fill:none;stroke:var(--copper-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.brand-name{font-size:1.3125rem;font-weight:800;letter-spacing:var(--tr-tighter);font-family:'Montserrat','Changa',sans-serif;color:var(--copper-primary);text-shadow:0 2px 6px rgba(0,0,0,.2)}.brand-sub{font-size:0.78125rem;opacity:.7;font-weight:500}.home-tools{display:flex;align-items:center;gap:8px}.icon-btn{min-width:var(--tap);min-height:var(--tap);display:grid;place-items:center;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;font-size:1.0625rem;backdrop-filter:blur(8px);transition:background var(--t-fast),transform var(--t-fast)}.icon-btn:hover{background:rgba(255,255,255,.24)}.icon-btn:active{transform:scale(.92)}.icon-btn svg{width:20px;height:20px}
@@ -719,7 +719,7 @@
 /* زرّ خطر معبّأ — للإجراء الذي لا رجعة فيه (حذف الحساب · تجاهل التعديلات) */.danger-solid-btn{background:var(--danger-btn)!important;color:#fff!important;border-color:transparent!important}.danger-solid-btn:hover{background:#b8232e!important;color:#fff!important}
 /* منطقة الخطر: مفصولة بخطّ وبمسافة كي لا تُلمس بالخطأ بعد «تسجيل الخروج» */.danger-zone{margin-top:34px;padding-top:18px;border-top:1px dashed rgba(220,38,38,.28)}.danger-zone-title{font-size:0.78125rem;font-weight:800;color:var(--danger-ink);letter-spacing:var(--tr-wider);text-transform:uppercase;margin-bottom:10px}body.dark .danger-zone-title{color:#fca5a5}.readonly-field{background:var(--surface-muted);color:var(--muted)}
 
-/* ---------- SUCCESS + TOAST ---------- */.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}.success-overlay.show{display:flex;opacity:1}.scard{background:var(--surface);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-2xl);padding:36px var(--s-6);text-align:center;width:100%;max-width:340px;max-height:90vh;box-shadow:var(--shadow-lg);border:1px solid var(--line);position:relative;overflow:hidden auto;transform:scale(.86);opacity:0;transition:transform var(--t-slow) var(--ease-spring),opacity var(--t-base)}.success-overlay.show .scard{transform:scale(1);opacity:1}.scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(15,75,83,.18),transparent 65%);pointer-events:none}.scard-emoji{font-size:3.625rem;margin-bottom:14px;animation:ballFloat 2.2s ease-in-out infinite;display:inline-block}@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-9px) rotate(-7deg)}55%{transform:translateY(0) rotate(0)}75%{transform:translateY(-4px) rotate(5deg)}}
+/* ---------- SUCCESS + TOAST ---------- */.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.64);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px);opacity:0;transition:opacity var(--t-base)}.success-overlay.show{display:flex;opacity:1}.scard{background:var(--surface);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-2xl);padding:36px var(--s-6);text-align:center;width:100%;max-width:340px;max-height:90vh;box-shadow:var(--shadow-lg);border:1px solid var(--line);position:relative;overflow:hidden auto;transform:scale(.86);opacity:0;transition:transform var(--t-slow) var(--ease-spring),opacity var(--t-base)}.success-overlay.show .scard{transform:scale(1);opacity:1}.scard::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(15,75,83,.18),transparent 65%);pointer-events:none}.scard-emoji{font-size:3.625rem;margin-bottom:14px;animation:ballFloat 2.2s ease-in-out 3;display:inline-block}@keyframes ballFloat{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-9px) rotate(-7deg)}55%{transform:translateY(0) rotate(0)}75%{transform:translateY(-4px) rotate(5deg)}}
 /* علامة نجاح متحركة بسيطة (رسم بصري بدل الإيموجي عند الحجز) */.scard-emoji.is-check{font-size:0;width:74px;height:74px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--primary-soft);border:2px solid var(--primary);animation:none}.scard-emoji.is-check svg{width:38px;height:38px;stroke:var(--primary);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:32;animation:checkDraw .55s var(--ease-out) .15s forwards}@keyframes checkDraw{to{stroke-dashoffset:0}}.scard-title{font-size:1.3125rem;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:var(--tr-tighter)}.scard-text{font-size:0.9375rem;color:var(--muted);margin-bottom:20px;line-height:1.7}
 /* ملخّص الحجز داخل شاشة النجاح */.scard-summary{text-align:start;background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:6px 16px 12px;margin-bottom:20px}.ss-status{display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.84375rem;font-weight:700;color:var(--warning-ink);background:var(--warning-soft);border-radius:999px;padding:8px 14px;margin:12px 0}.ss-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:0.9375rem}.ss-row:first-of-type{border-top:none}.ss-lbl{color:var(--muted);font-weight:700;flex-shrink:0}.ss-val{color:var(--ink);font-weight:800;text-align:end}.scard-actions{display:flex;flex-direction:column}.scard-actions .cbtn{margin-top:10px}
 /* ===== شاشة تأكيد كاملة (نمط مرجع App — بترتيب جديد وبألوان Teal+Lime) ===== */.success-overlay.success-full{padding:0;background:var(--cream);backdrop-filter:none;-webkit-backdrop-filter:none}.success-overlay.success-full .scard{width:100%;max-width:none;height:100%;border:0;border-radius:0;box-shadow:none;background:transparent;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;justify-content:safe center;padding:44px 22px calc(28px + env(safe-area-inset-bottom))}.success-overlay.success-full .scard::before{content:none}.success-overlay.success-full .scard>*{width:100%;max-width:430px;margin-inline:auto}.success-overlay.success-full .scard-title{font-size:1.6875rem;margin-bottom:6px}.success-overlay.success-full .scard-text{margin-bottom:22px}.ss-eyebrow{font-size:0.78125rem;font-weight:var(--fw-black);letter-spacing:var(--tr-widest);text-transform:uppercase;color:var(--emerald);margin-bottom:10px}
@@ -883,7 +883,7 @@
 
 /* ---------- نبضة «مباشر» على شارة الهيرو (طاقة ملعب) ---------- */@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(18,183,106,.45)}70%{box-shadow:0 0 0 9px rgba(18,183,106,0)}100%{box-shadow:0 0 0 0 rgba(18,183,106,0)}}
 
-/* ---------- حالات الفراغ: أيقونة تطفو بلطف ---------- */.empty-icon{animation:floatY 5s ease-in-out infinite}
+/* ---------- حالات الفراغ: أيقونة تطفو بلطف ---------- */
 
 /* ---------- لمعة انزلاقية على الأزرار الرئيسية عند الـhover ---------- */.sbtn,.place-book-btn,.dsticky-btn{position:relative;overflow:hidden}@media(hover:hover) and (pointer:fine){
   /* (زر البطاقة .place-book-btn خارج اللمعة — ::after محجوز لسهم التقدّم) */
@@ -1201,8 +1201,8 @@
 
 /* ===================== SUCCESS MICRO-INTERACTION (م9) — نبضة + هالة فوق رسم الصح الموجود =====================
    يعمل فقط مع .is-check (حجز ناجح) — showSimpleSuccess لا يضيفها؛ absolute ⇒ صفر إزاحة تخطيط */
-/* دخول بنبضة ثم تنفّس مستمر لطيف؛ آخر أنيميشن في القائمة يتحكّم بالـtransform بعد انتهاء الدخول */.scard-emoji.is-check{position:relative;animation:successPop .5s var(--ease-spring) both,successBreath 3s ease-in-out .7s infinite}
-/* موجتان متكرّرتان تنبعثان من دائرة الصح (بتأخير متبادل) ⇒ حركة مستمرة لا تتوقف */.scard-emoji.is-check::before,.scard-emoji.is-check::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--primary);opacity:0;pointer-events:none}.scard-emoji.is-check::before{animation:successRipple 2.6s var(--ease-out) .3s infinite}.scard-emoji.is-check::after{animation:successRipple 2.6s var(--ease-out) 1.6s infinite}@keyframes successPop{0%{transform:scale(.55);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes successBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}@keyframes successRipple{0%{transform:scale(.92);opacity:.5}70%{opacity:0}100%{transform:scale(1.75);opacity:0}}
+/* دخول بنبضة ثم تنفّس مستمر لطيف؛ آخر أنيميشن في القائمة يتحكّم بالـtransform بعد انتهاء الدخول */.scard-emoji.is-check{position:relative;animation:successPop .5s var(--ease-spring) both}
+/* موجتان متكرّرتان تنبعثان من دائرة الصح (بتأخير متبادل) ⇒ حركة مستمرة لا تتوقف */.scard-emoji.is-check::before,.scard-emoji.is-check::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--primary);opacity:0;pointer-events:none}.scard-emoji.is-check::before{animation:successRipple 2.6s var(--ease-out) .3s 2}.scard-emoji.is-check::after{animation:successRipple 2.6s var(--ease-out) 1.6s 2}@keyframes successPop{0%{transform:scale(.55);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes successBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}@keyframes successRipple{0%{transform:scale(.92);opacity:.5}70%{opacity:0}100%{transform:scale(1.75);opacity:0}}
 /* أيقونة ساعة «بانتظار التأكيد» تنبض بهدوء ⇒ إحساس مستمر بأن الطلب حيّ قيد الانتظار */.ss-status svg{animation:ssTick 2s ease-in-out infinite}@keyframes ssTick{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.9)}}
 
 /* ===================== MOTION POLISH (م5) — انتقالات مضبوطة (transform/opacity/ألوان فقط، لا width/height) =====================
@@ -1412,7 +1412,7 @@
 /* إشارة الاتجاه تتبع اتجاه الكتابة: «للأمام» تدخل الصفحة من الحافة النهائية
    (يسار في العربي · يمين في الإنجليزي)، و«رجوع» من الحافة الابتدائية. */html[dir="rtl"]{--nav-dir:-1}html[dir="ltr"]{--nav-dir:1}
 
-/* الافتراضي: بلا حركة — الراوتر هو من يمنح الصفحة صنف الاتجاه في كل تنقّل */body.native .page.active{animation:none}body.native .page.active.pg-fwd{animation:pgFwd 320ms var(--sp-page) both}body.native .page.active.pg-back{animation:pgBack 300ms var(--sp-page) both}body.native .page.active.pg-fade{animation:pgFade 180ms var(--ease-out) both}@keyframes pgFwd{from{opacity:.4;transform:translate3d(calc(var(--nav-dir,1) * 22%),0,0)}to{opacity:1;transform:none}}@keyframes pgBack{from{opacity:.4;transform:translate3d(calc(var(--nav-dir,1) * -18%),0,0)}to{opacity:1;transform:none}}@keyframes pgFade{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
+/* الافتراضي: بلا حركة — الراوتر هو من يمنح الصفحة صنف الاتجاه في كل تنقّل */body.native .page.active{animation:none}body.native .page.active.pg-fade{animation:pgFade 180ms var(--ease-out) both}@keyframes pgFade{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
 
 /* السحب الحيّ للصفحة أثناء إيماءة الرجوع: بلا انتقال (يتبع الإصبع فريمًا بفريم) */body.native .page.pg-drag{animation:none!important;transition:none!important;will-change:transform}
 /* الإفلات دون العتبة ⇒ ترتدّ الصفحة لمكانها بنابض 260ms */body.native .page.pg-settle{animation:none!important;transition:transform 260ms var(--sp-snap)!important}
@@ -1726,7 +1726,7 @@
    `translateX(-50%)`: الأخيرة **لا تتمركز في RTL** لأن `transform` غير مدرك
    للاتجاه — مزلق مسجَّل. */.ver-bar{position:fixed;inset-inline:0;margin-inline:auto;bottom:calc(var(--bnav-h,64px) + 12px);
   z-index:8500;width:min(92%,420px);display:flex;align-items:center;gap:8px;
-  padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);
+  padding:10px 12px;border-radius:14px;background:var(--surface-solid);border:1px solid var(--line);
   box-shadow:var(--shadow-md);font-size:0.84375rem;color:var(--ink)}.ver-bar[hidden]{display:none}   /* [hidden] نوعيّتها (0,0,1) ⇒ يعلوها أي صنف يضع display */.ver-txt{flex:1;line-height:1.45}.ver-cta{flex:none;padding:7px 13px;border-radius:10px;background:var(--primary);color:#fff;font-weight:700;text-decoration:none}.ver-x{flex:none;width:28px;height:28px;border:0;background:transparent;color:var(--muted);font-size:1.3125rem;line-height:1;cursor:pointer}.offline-overlay{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px;
   background:rgba(4,14,17,.72);backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);
   opacity:0;transition:opacity var(--t-slow) var(--ease-out)}.offline-overlay.show{opacity:1}.offline-overlay[hidden]{display:none}.off-card{width:100%;max-width:340px;text-align:center;background:var(--surface-solid);border:1px solid var(--line);
@@ -2475,7 +2475,7 @@ html[dir="rtl"] .tl-name{ box-shadow:-1px 0 0 var(--line-2) }
 .tl-free{ border-style:dashed; border-color:var(--line-2); color:var(--muted) }
 .tl-free:hover{ border-color:var(--copper-primary); color:var(--ink) }
 .tl-pending{ border-color:var(--warning-ink); color:var(--warning-ink); background:var(--warning-soft) }
-.tl-confirmed{ border-color:var(--mint-electric); color:var(--mint-electric); background:var(--mint-soft) }
+.tl-confirmed{ border-color:var(--ok-ink); color:var(--ok-ink); background:var(--mint-soft) }
 .tl-closed{ border-color:var(--line-2); color:var(--muted); cursor:default;
   background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line) 5px 6px) }
 .tl-past{ opacity:1; border-style:dotted; border-color:var(--line); color:var(--soft) }
@@ -2683,7 +2683,7 @@ body.dark .cal-cell.sel, body.dark .field-switch.on{
 /* ① شريط الفعل — لاصقٌ، ويُخفى تمامًا عند الصفر (‏`hidden` من JS).
    ⚠️ `top:0` كـ`.home-sticky` بالضبط: المتمرِّر هو المستند لا `#app`. */
 .ot-alert-wrap{ position:sticky; inset-block-start:0; z-index:40;
-  padding-block:8px; margin-block-end:12px; background:var(--bg) }
+  padding-block:8px; margin-block-end:12px; background:var(--bg-primary) }
 .ot-alert-wrap[hidden]{ display:none }
 .ot-alert{ inline-size:100%; min-block-size:var(--tap); display:flex; align-items:center;
   justify-content:space-between; gap:8px; padding:12px 14px; border-radius:14px;
@@ -3033,9 +3033,9 @@ html[dir="rtl"] .bt-arw{ transform:scaleX(-1) }
 html:has(.bnav.show)::after{
   content:''; position:fixed; inset-inline:0; inset-block-end:0;
   block-size:120px; z-index:99; pointer-events:none;
-  background:linear-gradient(to top, var(--bg) 58%, transparent) }
+  background:linear-gradient(to top, var(--bg-primary) 58%, transparent) }
 @media (prefers-reduced-transparency: reduce){
-  html:has(.bnav.show)::after{ background:var(--bg) }
+  html:has(.bnav.show)::after{ background:var(--bg-primary) }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -5951,7 +5951,20 @@ const CONFIG = {
   CACHE_MS: 10 * 60 * 1000,
   AUTO_REFRESH_MS: 90 * 1000,
   SEARCH_DEBOUNCE: 300,
-  COMMISSION: 0.10,
+  /* ═══ العمولة المتدرّجة (ترحيل 34) ═════════════════════════════════════
+     نسبتان وسقفٌ شهريّ **لكلّ ملعبٍ فرعيّ**، والعدّاد يصفّر أوّل كلّ شهر
+     ميلادي. وهذه الخمسة **افتراضاتٌ لا مصدرُ حقيقة**: القيمة الحيّة تُقرأ
+     من `booking_rules` في نفس نداء فحص الإصدار (`checkAppVersion`)، فتغييرُ
+     نسبةٍ أو سقفٍ لا يحتاج نشرَ نسخة. وتبقى هنا كي يعمل الحساب قبل وصول
+     الردّ وقبل تشغيل الترحيل — والقاعدة هي الحكم متى وصلت.
+     ⚠️ ومرآتُها الثالثة في `site/admin.html`، يقارن الثلاثةَ
+     `tools/check-mirrors.js` — نسبةٌ تتغيّر في موضعين من ثلاثة تعطي
+     لوحتين تقولان رقمين للربح نفسه بلا خطأٍ يصرخ. */
+  COMMISSION_TIER1_RATE: 0.10,   // حجز ١–٣٠ في الشهر
+  COMMISSION_TIER1_N: 30,        // حدّ الشريحة الأولى
+  COMMISSION_TIER2_RATE: 0.04,   // حجز ٣١ فأكثر
+  COMMISSION_CAP: 160,           // سقف شهريّ لكلّ ملعب فرعيّ — صفر = بلا سقف
+  COMMISSION_FREE_MONTHS: 1,     // أشهر الانضمام المجّانية
   /* مهلة إلغاء اللاعب — بالساعات قبل بدء الخانة.
      ⚠️ **مصدر واحد**: لا يُكتب الرقم في أي موضع آخر من الواجهة. ونظيرُه في
      القاعدة صفٌّ في `booking_rules` (‏`player_cancel_window_hours`) يفرضه
@@ -7558,6 +7571,91 @@ function statusLabel(s){ const m={confirmed:{t:t('statusConfirmed'),c:'badge-gre
 const isOwnerManual = (b) => String(b.source||'').trim().toLowerCase()==='owner_manual';
 const isWebsite = (b) => !isOwnerManual(b);
 
+/* ═══ العمولة المتدرّجة — نسختان بالضرورة، ونصٌّ واحد بينهما ══════════════
+   هذه **مرآةُ العرض `booking_commission`** (ترحيل 34) خطوةً بخطوة، ومرآتُها
+   الثانية في `site/admin.html`. والقاعدة هي الحكم دائمًا؛ هذه تجيب قبل أن
+   يصل ردُّ الخادم وقبل تشغيل الترحيل، فلا تبقى لوحةُ المالك بلا رقم.
+
+   ⚠️ **العمولة تُحسَب لكلّ حجزةٍ على حدة لا لكلّ شهر** — وهو نفس القرار
+      المعماري في الترحيل: النموذج تراكميّ (شريحتان وسقف)، فبحساب الحجزة
+      الواحدة يصير كلُّ تجميعٍ (يوم · شهر · مكان) مجموعَ عمودٍ واحد.
+
+   الخطوات الخمس، وكلٌّ منها مقابلٌ لسطرٍ في العرض:
+     ① المؤكّد وغير اليدويّ وحده — حجز المالك بيده ليس بيعًا جاءه منّا
+     ② التجميع بـ(ملعب فرعيّ × شهر ميلادي)
+     ③ ترتيبٌ زمنيّ حاسم داخل الشهر (‏`id` آخرَ فاصلٍ كي لا يتغيّر الناتج)
+     ④ الأولى n1 بنسبة r1 وما بعدها r2، ثمّ يُقصّ المجموع عند السقف
+     ⑤ وشهرُ الملعب الأوّل مجّانيّ بالكامل
+
+   ⚠️ ويقرأ الحقلين بالاسمين معًا (`date`/`booking_date` · `booking_id`/`id`)
+      لأنّ التطبيق يمرّر صفوفًا مطبَّعة و`/admin` يمرّر صفوفًا خامًا — ونصٌّ
+      واحد أسلمُ من نسختين تنحرفان. */
+/* الشروط الحيّة من `booking_rules` — تُملأ مرّةً في الجلسة (‏`sbLoadRules`)
+   وتبقى `null` قبل ذلك وعند فشل السؤال، فيقع الحساب على افتراضات `CONFIG`. */
+let LIVE_RULES = null;
+function commissionRules(over){
+  const o = over || LIVE_RULES || {};
+  const num = (v, d) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : d; };
+  return {
+    r1:    num(o.r1,    CONFIG.COMMISSION_TIER1_RATE),
+    n1:    num(o.n1,    CONFIG.COMMISSION_TIER1_N),
+    r2:    num(o.r2,    CONFIG.COMMISSION_TIER2_RATE),
+    cap:   num(o.cap,   CONFIG.COMMISSION_CAP),
+    free:  num(o.free,  CONFIG.COMMISSION_FREE_MONTHS),
+  };
+}
+const bkDate  = (b) => String((b && (b.date || b.booking_date)) || '').split('T')[0];
+const bkKey   = (b) => String((b && (b.booking_id || b.id)) || '');
+const bkMade  = (b) => String((b && (b.timestamp || b.created_at)) || '');
+/* فهرس الشهر رقمًا واحدًا (سنة×12+شهر) — به تُقارَن الأشهر بلا حساب تواريخ */
+const monthIdx = (ymd) => { const p = String(ymd||'').split('-');
+  const y = Number(p[0]), m = Number(p[1]); return (Number.isFinite(y) && Number.isFinite(m)) ? y*12 + (m-1) : NaN; };
+
+/* يُرجع خريطة: booking_id ⇒ عمولة تلك الحجزة (بالدينار) */
+function commissionByBooking(bookings, over){
+  const R = commissionRules(over);
+  const out = new Map();
+  const groups = new Map();          // "field|YYYY-MM" ⇒ [حجوزات]
+  const firstOf = new Map();         // field ⇒ أصغر فهرس شهر
+  (bookings||[]).forEach(b => {
+    if (normStatus(b) !== 'confirmed' || isOwnerManual(b)) return;
+    const d = bkDate(b); const mi = monthIdx(d);
+    if (!d || Number.isNaN(mi)) return;
+    const fid = String(b.field_id||'');
+    const gk = fid + '|' + d.slice(0,7);
+    if (!groups.has(gk)) groups.set(gk, []);
+    groups.get(gk).push(b);
+    const prev = firstOf.get(fid);
+    if (prev === undefined || mi < prev) firstOf.set(fid, mi);
+  });
+  groups.forEach((rows, gk) => {
+    const fid = gk.split('|')[0];
+    const mi  = monthIdx(gk.split('|')[1] + '-01');
+    const first = firstOf.get(fid);
+    const isFree = R.free > 0 && Number.isFinite(first) && mi < first + R.free;
+    rows.sort((a, b) =>
+      bkDate(a).localeCompare(bkDate(b)) ||
+      (Number(a.hour)||0) - (Number(b.hour)||0) ||
+      bkMade(a).localeCompare(bkMade(b)) ||
+      bkKey(a).localeCompare(bkKey(b)));
+    let before = 0;
+    rows.forEach((b, i) => {
+      if (isFree) { out.set(bkKey(b), 0); return; }
+      const price = Number(b.price)||0;
+      const raw = price * ((i+1) <= R.n1 ? R.r1 : R.r2);
+      const amt = R.cap > 0 ? Math.max(0, Math.min(raw, R.cap - before)) : raw;
+      before += raw;
+      out.set(bkKey(b), Math.round(amt*100)/100);
+    });
+  });
+  return out;
+}
+/* مجموع العمولة على مجموعة حجوزات — وهو ما تعرضه لوحة المالك */
+function commissionTotal(bookings, over){
+  let s = 0; commissionByBooking(bookings, over).forEach(v => { s += v; });
+  return Math.round(s*100)/100;
+}
+
 /* ═══ (١١) ساعة الخانة — مهلة الإلغاء · مهلة الردّ · لم يحضر ═══════════════
    كل ما تحت يعمل على وقت **الجهاز** لأن الجهاز في الأردن والخانة كذلك؛
    والقاعدة تحسب نفس المقارنة بتوقيت عمّان صراحةً (`amman_now()` في
@@ -8329,13 +8427,41 @@ async function sbDelPriceRule(id, session){
    ⚠️ والقراءة **بلا توكن**: `br_read using (true)` ⇒ حتى الضيف الذي لم يسجّل
    دخوله بعدُ يعرف أنّ نسخته تخلّفت. وسؤالٌ واحد لكل جلسة، ويُبتلع فشلُه
    صامتًا — بوّابةٌ تكسر الإقلاع حين يتعذّر سؤالها أسوأ ممّا تحرسه. */
+/* ═══ جدول الشروط — سؤالٌ واحد لكل جلسة يخدم مستهلكَين ═════════════════════
+   كان فحصُ الإصدار يسأل مفتاحين بعينهما، وصارت العمولة تحتاج خمسةً أخرى من
+   **نفس** الجدول ⇒ سؤالٌ واحد بلا مرشِّح (‏الجدول أسطرٌ معدودة) يخدم الاثنين.
+   ⚠️ ويُنادى من مسارين: `loadData` (جهة اللاعب) و`getOwnerData` (لوحة المالك)
+      — والثاني لازمٌ لأنّ `/owner/` على الويب **لا يُنادي `loadData` أصلًا**
+      (الدفعة ٤٧)، فبلاه تبقى اللوحة على افتراضات `CONFIG` بلا أن يُقال ذلك. */
+let RULES_ROWS = null, RULES_ASKED = false;
+async function sbLoadRules(){
+  if (RULES_ASKED) return RULES_ROWS;
+  RULES_ASKED = true;
+  try{
+    const r = await sbRest('/booking_rules?select=key,num_value');
+    if (!r.ok || !Array.isArray(r.data)) return RULES_ROWS;
+    RULES_ROWS = r.data;
+    const at = (k) => { const row = RULES_ROWS.find(x => x.key === k);
+      return row ? Number(row.num_value) : undefined; };
+    /* الترحيل 34 قد لا يكون مُشغَّلًا ⇒ المفاتيح غائبة ⇒ `undefined` لكلٍّ
+       منها، و`commissionRules` تتراجع إلى `CONFIG`. لا فرعَ ثانٍ ولا رسالة:
+       الحساب صحيحٌ بالنموذج الذي تعرفه القاعدة فعلًا. */
+    LIVE_RULES = {
+      r1: at('commission_rate_tier1'),   n1:   at('commission_tier1_bookings'),
+      r2: at('commission_rate_tier2'),   cap:  at('commission_cap_monthly'),
+      free: at('commission_free_months'),
+    };
+  }catch(_){ /* لا شيء — الافتراضات تعمل */ }
+  return RULES_ROWS;
+}
+
 let VER_CHECKED = false;
 async function checkAppVersion(){
   if (VER_CHECKED) return; VER_CHECKED = true;
   try{
-    const r = await sbRest('/booking_rules?select=key,num_value&key=in.(min_app_version,block_app_version)');
-    if (!r.ok || !Array.isArray(r.data)) return;
-    const at = (k) => Number((r.data.find(x => x.key === k) || {}).num_value || 0);
+    const rows = await sbLoadRules();
+    if (!Array.isArray(rows)) return;
+    const at = (k) => Number((rows.find(x => x.key === k) || {}).num_value || 0);
     const min = at('min_app_version');
     if (!(CONFIG.APP_BUILD < min)) return;
     const bar = $('#verBar'); if (!bar) return;
@@ -8620,6 +8746,10 @@ const API = {
              عامّ أصلًا فلا باب جديد يُفتح — جلبةٌ داخل الدفعة لا جلبة جديدة. */
           sbRest(`/place_reply_speed?select=median_minutes,n&place_id=eq.${pid}`, { token:s.at }),
           sbGetOwnerDemand(pid, s.at),
+          /* شروط العمولة (ترحيل 34) — داخل الدفعة لا جلبةً جديدة، وناتجُها
+             يُخزَّن في `LIVE_RULES` فلا يُقرأ من هنا. ولوحة المالك هي أوّل
+             من يحتاجها: على `/owner/` لا يجري `loadData` إطلاقًا. */
+          sbLoadRules(),
         ]);
         if (!pl.ok || !(pl.data||[]).length) return { success:false, message:'ما لقينا المكان تبعك' };
         // ملاحظة: المالك يرى ملاعبه **الموقوفة** أيضًا — كان هذا عطلًا في الباكند القديم
@@ -9277,7 +9407,7 @@ async function confirmDiscard(id){
 /* ===================== MODAL (+ swipe to close) ===================== */
 const Modal = {
   _last:null,
-  open(id, keepDirty){ const o=$('#'+id); if(!o) return; if(!keepDirty) Dirty.clear(id); this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open');
+  open(id, keepDirty){ const o=$('#'+id); if(!o) return; if(!keepDirty) Dirty.clear(id); this.closeAll(o); this._last=document.activeElement; o.classList.add('show'); document.body.classList.add('modal-open'); this._isolate();
     const panel=o.querySelector('.modal,.scard'); if(panel){ panel.setAttribute('tabindex','-1'); requestAnimationFrame(()=>{ try{ panel.focus({preventScroll:true}); }catch(_){} }); } },
   /* force=true يتخطّى سؤال «تعديلات لم تُحفظ» — يستعمله مسار الحفظ الناجح وحده */
   close(id, force){
@@ -9288,9 +9418,27 @@ const Modal = {
   },
   closeAll(except){ $$('.modal-overlay.show, .success-overlay.show').forEach(o=>{ if(o!==except) o.classList.remove('show'); }); },
   _afterClose(){
+    this._isolate();
     if($$('.modal-overlay.show, .success-overlay.show').length) return;   // ما زالت نافذة مفتوحة
     document.body.classList.remove('modal-open');
     if(this._last && this._last.focus){ try{ this._last.focus({preventScroll:true}); }catch(_){} this._last=null; }
+  },
+  /* عزل ما خلف النافذة (‏`inert`) — التركيز كان يخرج منها إلى ما تحتها.
+     `open` ينقل التركيز إلى اللوح ويعيده عند الإغلاق، ولا شيء كان يمنع Tab
+     ولا إيماءة TalkBack من المرور إلى الصفحة والشريط السفلي خلفها:
+     `aria-modal` تقول «مشروطة» لقارئ الشاشة ولا تفرض شيئًا على التنقّل.
+     ⚠️ والعزل على **أبناء `#app` المباشرين** لا على `#app` نفسه: النوافذ
+        كلُّها أبناؤه (مقيس) ⇒ تعطيلُه يعطّل النافذة معه.
+     ⚠️ ويُشتقّ من الـDOM لا من وسيط يُمرَّر: مسارات الإغلاق أكثر من واحد،
+        وقراءةُ `.show` الظاهرة تجعل الحالة صحيحةً في كل مسار بلا استثناء. */
+  _isolate(){
+    const app=$('#app'); if(!app) return;
+    const open=app.querySelector('.modal-overlay.show, .success-overlay.show');
+    Array.prototype.forEach.call(app.children, el=>{
+      const off = !!open && el!==open;
+      if('inert' in el) el.inert = off;
+      else if(off) el.setAttribute('inert',''); else el.removeAttribute('inert');
+    });
   },
 };
 /* السحب لأسفل لإغلاق النافذة — transform فقط لضمان 60fps */
@@ -10356,7 +10504,7 @@ function renderDetailTimes(){
              يلعب هنا» — لا بديل يُشتقّ منه على هذا الملعب في هذا الوقت.
              ولذلك بديلُ الأوّل لوحٌ فيه اقتراحات، والثاني يبقى صامتًا. */
           onTaken: (!cl && isTaken) ? (()=>openAltSheet(fld, date, s)) : null });
-      btn.style.animationDelay=`${i*0.04}s`; el.append(btn);
+      el.append(btn);
     });
   });
   if(slots.length && free===0){
@@ -12575,7 +12723,13 @@ function renderOwnerStats(bookings){
   const weekCount=bookings.filter(b=>String(b.date||'')>=weekStart && String(b.date)<=td).length;
   const webRev=fromWeb.reduce((s,b)=>s+(Number(b.price)||0),0);
   const manualRev=manual.reduce((s,b)=>s+(Number(b.price)||0),0);
-  const profit=webRev*CONFIG.COMMISSION; const net=webRev-profit+manualRev;
+  /* 🔴 العمولة لم تعد نسبةً تُضرَب في الإيراد (ترحيل 34): شريحتان وسقفٌ شهريّ
+     لكلّ ملعبٍ فرعيّ ⇒ `webRev * rate` صار يعطي رقمًا أعلى من الحقيقي كلّما
+     اقترب ملعبٌ من سقفه. و`commissionTotal` تحسبها حجزةً حجزة بنفس خطوات
+     العرض `booking_commission`، وتفلتر بنفسها (مؤكّد وغير يدويّ) فتُمرَّر
+     `bookings` كاملةً لا `fromWeb`.
+     ⚠️ ولا نسبةَ تُعرَض على الشاشة — قرار الدفعة ١٦ يبقى قائمًا. */
+  const profit=commissionTotal(bookings); const net=webRev-profit+manualRev;
   setText('oTotal',bookings.length); setText('oConfirmed',confirmed.length); setText('oPending',pending.length); setText('oToday',todayCount);
   setText('oWeek',`${t('last7')}: ${weekCount}`); setText('oRevenue',formatMoney(webRev)); setText('oProfit',formatMoney(profit)); setText('oNet',formatMoney(net));
   /* 🔴 **النسبة بمقامها أو لا نسبة.** «نسبة التأكيد ٦٧٪» على ثلاثة حجوزات

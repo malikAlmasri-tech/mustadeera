@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="/assets/fonts/fonts-ar.css">
 
-<link rel="stylesheet" href="/build/site.e8340e46.css">
+<link rel="stylesheet" href="/build/site.430158e3.css">
 <script>(function(){var r=document.documentElement;try{var v=localStorage.getItem('mustadaira:theme');if(v!=='light'&&v!=='dark'){v=(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}if(v==='dark')r.classList.add('dark');}catch(e){}r.className+=' has-js';setTimeout(function(){if(!window.__mstd){r.classList.remove('has-js');}},2000);})();</script>
 <script src="/build/site.48cfbfaa.js" defer></script>
 <style>
@@ -1017,7 +1017,7 @@ html.dark .res .no{color:#FF8A90}
   </div>
 
   <p class="note" id="dataNote"></p>
-  <p class="note">بناء 2026-08-30</p>
+  <p class="note">بناء 2026-09-08</p>
 </main>
 
 <script>
@@ -1027,12 +1027,91 @@ var SB = 'https://nxqddfuwtrsabprxcfez.supabase.co', KEY = 'eyJhbGciOiJIUzI1NiIs
 var $ = function(s){ return document.querySelector(s); };
 var S = null;   // الجلسة
 
-var RATE = 0.10;            // العمولة — نفس النسبة المكتوبة في admin_daily.commission
-/* ⚠️ لا تُطبَع هذه النسبة في أيّ تسمية معروضة: /admin ملفّ ثابت يُخدَم للجميع،
-   ومن يفتح «عرض المصدر» يقرأ كل نصّ فيه بلا تسجيل دخول. التسميات تقول «دخلك»
-   والرقم يُحسَب. (والثابت نفسه يبقى مقروءًا هنا بالضرورة — الحساب في المتصفّح؛
-   إخفاؤه فعلًا يستلزم نقل الحساب إلى عرضٍ في القاعدة.) */
+/* ═══ العمولة المتدرّجة (ترحيل 34) ═════════════════════════════════════════
+   نسبتان وسقفٌ شهريّ **لكلّ ملعبٍ فرعيّ**، والعدّاد يصفّر أوّل كلّ شهر ميلادي.
+   🔴 **ولم تعد نسبةً تُضرَب في الإيراد**: `revenue * RATE` صار يعطي رقمًا أعلى
+      من الحقيقي كلّما اقترب ملعبٌ من سقفه، فحُذف `RATE` وحلّ محلّه حسابٌ
+      لكلّ حجزةٍ على حدة (`commissionByBooking`) — نفس خطوات العرض
+      `booking_commission`، ونفس نصّ الدالّة في `app/src/app.2-core.js`.
+   ⚠️ ولا تُطبَع نسبةٌ في أيّ تسمية معروضة: /admin ملفّ ثابت يُخدَم للجميع،
+      ومن يفتح «عرض المصدر» يقرأ كل نصّ فيه بلا تسجيل دخول (قرار الدفعة ١٦).
+      والثوابت تبقى مقروءةً هنا بالضرورة — الحساب في المتصفّح. */
+var RATE_TIER1 = 0.10;      // حجز ١–٣٠ في الشهر لكلّ ملعبٍ فرعيّ
+var RATE_TIER1_N = 30;      // حدّ الشريحة الأولى
+var RATE_TIER2 = 0.04;      // حجز ٣١ فأكثر
+var RATE_CAP = 160;         // سقف شهريّ لكلّ ملعب فرعيّ — صفر = بلا سقف
+var RATE_FREE_MONTHS = 1;   // أشهر الانضمام المجّانية
 var BK_LIMIT = 5000;        // سقف الحجوزات المحمَّلة؛ يُعلَن عند بلوغه
+
+/* ═══ حساب العمولة — مرآةُ `commissionByBooking` في `app/src/app.2-core.js`
+   ومرآةُ العرض `booking_commission` في الترحيل 34. الثلاثة نفس الخطوات:
+     ① المؤكّد وغير اليدويّ وحده  ② تجميع بـ(ملعب فرعيّ × شهر)
+     ③ ترتيبٌ زمنيّ حاسم           ④ شريحتان ثمّ قصٌّ عند السقف
+     ⑤ شهر الملعب الأوّل مجّانيّ
+   والقيم الخمس فوق يقارنها `tools/check-mirrors.js` بالترحيل وبالتطبيق. */
+function normStatus(b){ return String((b && b.status) || 'pending').toLowerCase(); }
+function isOwnerManual(b){ return String((b && b.source) || '').trim().toLowerCase() === 'owner_manual'; }
+function bkDate(b){ return String((b && (b.date || b.booking_date)) || '').split('T')[0]; }
+function bkKey(b){ return String((b && (b.booking_id || b.id)) || ''); }
+function bkMade(b){ return String((b && (b.timestamp || b.created_at)) || ''); }
+function monthIdx(ymd){
+  var p = String(ymd||'').split('-'), y = Number(p[0]), m = Number(p[1]);
+  return (isFinite(y) && isFinite(m)) ? y*12 + (m-1) : NaN;
+}
+function commissionByBooking(bookings){
+  var R = { r1:RATE_TIER1, n1:RATE_TIER1_N, r2:RATE_TIER2, cap:RATE_CAP, free:RATE_FREE_MONTHS };
+  var out = {}, groups = {}, firstOf = {};
+  (bookings||[]).forEach(function(b){
+    if (normStatus(b) !== 'confirmed' || isOwnerManual(b)) return;
+    var d = bkDate(b), mi = monthIdx(d);
+    if (!d || isNaN(mi)) return;
+    var fid = String(b.field_id||''), gk = fid + '|' + d.slice(0,7);
+    (groups[gk] = groups[gk] || []).push(b);
+    if (firstOf[fid] === undefined || mi < firstOf[fid]) firstOf[fid] = mi;
+  });
+  Object.keys(groups).forEach(function(gk){
+    var rows = groups[gk], fid = gk.split('|')[0];
+    var mi = monthIdx(gk.split('|')[1] + '-01'), first = firstOf[fid];
+    var isFree = R.free > 0 && isFinite(first) && mi < first + R.free;
+    rows.sort(function(a, b){
+      return bkDate(a).localeCompare(bkDate(b)) ||
+             (Number(a.hour)||0) - (Number(b.hour)||0) ||
+             bkMade(a).localeCompare(bkMade(b)) ||
+             bkKey(a).localeCompare(bkKey(b));
+    });
+    var before = 0;
+    rows.forEach(function(b, i){
+      if (isFree) { out[bkKey(b)] = 0; return; }
+      var price = Number(b.price)||0;
+      var raw = price * ((i+1) <= R.n1 ? R.r1 : R.r2);
+      var amt = R.cap > 0 ? Math.max(0, Math.min(raw, R.cap - before)) : raw;
+      before += raw;
+      out[bkKey(b)] = Math.round(amt*100)/100;
+    });
+  });
+  return out;
+}
+/* مجموع العمولة على قائمة حجوزات — يقرأ من الخريطة المحسوبة مرّةً بعد الجلب،
+   فلا يُعاد الترتيب والقصّ لكلّ لوحٍ على حدة. */
+function comOf(list){
+  var s = 0;
+  (list||[]).forEach(function(b){ var v = D.com && D.com[bkKey(b)]; if (v) s += v; });
+  return Math.round(s*100)/100;
+}
+/* 🔴 **النسبة الفعلية** — وهي بديلُ `RATE` في كلّ رقمٍ *هامشيّ* أو افتراضي
+   («كم يساوي +١ نقطة إشغال؟» · «دخلك الأسبوع القادم»). ولا يجوز فيها ثابت:
+   النموذج متدرّجٌ ومسقوف ⇒ نسبتك الحدّية عند السقف **صفر**، وضربُ ١٠٪ هناك
+   يَعِد بدخلٍ لا يقع. فتُقاس من بياناتك: العمولة ÷ المبيعات المحتسَبة.
+   وقبل أن توجد بيانات ⇒ نسبة الشريحة الأولى (أقصى ما يمكن). */
+function effRate(){
+  var gross = 0, com = 0;
+  (D.bookings||[]).forEach(function(b){
+    if (normStatus(b) !== 'confirmed' || isOwnerManual(b)) return;
+    gross += Number(b.price)||0;
+    var v = D.com && D.com[bkKey(b)]; if (v) com += v;
+  });
+  return gross > 0 ? com / gross : RATE_TIER1;
+}
 
 /* توحيد الرقم — نفس منطق التطبيق حرفيًّا كي يطابق البريد المشتقّ المخزَّن */
 function normPhone(p){
@@ -1500,7 +1579,11 @@ function start(){
    ⚠️ الحجوزات تحمل أرقام العملاء. تبقى في الذاكرة ولا تُخزَّن ولا تُرسَل.
    ═══════════════════════════════════════════════════════════════════════════ */
 var D = { daily:[], adminPlaces:[], bookings:[], fields:[], places:[], reviews:[], apps:[],
-          funnel:[], emptyQ:[], demand:[], truncated:false };
+          funnel:[], emptyQ:[], demand:[], truncated:false,
+          /* العمولة: خريطةٌ لكلّ حجزة ومجموعٌ لكلّ مكان، تُملآن بعد الجلب.
+             و`eff` النسبة الفعلية — تبدأ بنسبة الشريحة الأولى (أقصى ما يمكن)
+             فلا يقرأ لوحٌ يُرسَم قبل الجلب صفرًا يبدو حقيقةً. */
+          com:{}, comByPlace:{}, comByMonth:{}, comByDay:{}, eff:RATE_TIER1 };
 var HAS_SPORT = true;    // هل شُغّل ترحيل 13؟ يُقاس من ردّ القاعدة لا يُفترَض
 var HAS_APPS  = true;    // وهل شُغّل 19؟ نفس القاعدة: يُقاس لا يُفترَض
 var HAS_EVENTS = true;   // 21 — القياس
@@ -1585,6 +1668,24 @@ function loadAll(){
     HAS_EVENTS     = r[7].ok;
     HAS_WATCH      = r[9].ok;
     D.truncated    = D.bookings.length >= BK_LIMIT;
+    /* عمولة كلّ حجزةٍ — تُحسَب **مرّةً واحدة** بعد الجلب، ومنها تُجمَع كلّ
+       الأرقام (لكلّ مكان · لكلّ عميل · لكلّ شهر). الترتيب والقصّ داخل الشهر
+       عملٌ لا يُعاد لكلّ لوحٍ على حدة.
+       ⚠️ وحدُّ `BK_LIMIT` يسري عليها كما يسري على الإيراد نفسه: ما لم يُجلَب
+          لا يُحسَب، والشريط أعلى اللوحة يقول ذلك عند بلوغ الحدّ. */
+    D.com          = commissionByBooking(D.bookings);
+    D.eff          = effRate();
+    D.comByPlace   = {};
+    D.comByMonth   = {};
+    D.comByDay     = {};
+    D.bookings.forEach(function(b){
+      var v = D.com[bkKey(b)]; if (!v) return;
+      var k = String(b.place_id||'');
+      D.comByPlace[k] = Math.round(((D.comByPlace[k]||0) + v)*100)/100;
+      var d0 = bkDate(b), m = d0.slice(0,7);
+      D.comByMonth[m] = Math.round(((D.comByMonth[m]||0) + v)*100)/100;
+      D.comByDay[d0]  = Math.round(((D.comByDay[d0]||0) + v)*100)/100;
+    });
     renderAll();
   }); });
 }
@@ -1621,7 +1722,9 @@ function agg(rows){
       if (String(b.cancel_kind||'') === 'expired'){ o.exp++; o.expired += p; }
     }
   });
-  o.com  = o.gmv * RATE;
+  /* العمولة مجموعُ ما حُسب لكلّ حجزة، لا ضربةُ نسبةٍ في المبيعات — المتدرّج
+     المسقوف لا يُشتقّ من المجموع (ترحيل 34). */
+  o.com  = comOf(rows);
   o.avg  = o.cf ? o.gmv / o.cf : 0;
   o.rate = o.n ? o.cf / o.n * 100 : 0;
   return o;
@@ -1667,7 +1770,13 @@ function renderAll(){
 
   $('#dataNote').innerHTML = 'التحليل مبنيّ على ' + nBooking(D.bookings.length) + ' محمَّل و' +
     bdi(String(D.fields.filter(function(f){ return f.active; }).length)) + ' من الملاعب النشِطة.' +
-    (D.truncated ? ' ⚠️ بلغ الحدّ الأقصى (' + BK_LIMIT + ') ⇒ الأقدم من ذلك غير محسوب في أقسام العملاء والذروة.' : '');
+    /* ⚠️ وحدُّ الجلب يمسّ العمولة مسًّا خاصًّا لا يمسّ به بقيّة الأرقام:
+       «شهر الملعب الأول» يُشتقّ من أقدم حجزٍ **مجلوب**، فلو قُصّ الأقدم بدا
+       أقدمُ شهرٍ في النافذة شهرَ انضمامٍ مجّانيًّا وهو ليس كذلك ⇒ عمولةُ ذلك
+       الشهر تظهر أدنى من حقيقتها. والقاعدة لا يصيبها هذا (ترحيل 34 يرى
+       الصفوف كلَّها) — فالرقم الحاسم عندها، وهذا يُقال ولا يُخفى. */
+    (D.truncated ? ' ⚠️ بلغ الحدّ الأقصى (' + BK_LIMIT + ') ⇒ الأقدم من ذلك غير محسوب في أقسام العملاء والذروة، ' +
+                   'وقد تظهر عمولة أقدم شهرٍ أدنى من حقيقتها (شهر الانضمام يُشتقّ من أقدم حجزٍ محمَّل).' : '');
 }
 
 /* الطاقة اليومية: مجموع خانات كل ملعب نشِط. هي المقام في كل نسبة إشغال،
@@ -1703,7 +1812,7 @@ function renderKpis(W){
     }
     D.daily.forEach(function(d){
       var key = String(d.booking_date).slice(0,10);
-      if (key in byDay) byDay[key] += (+d.revenue || 0) * RATE;
+      if (key in byDay) byDay[key] = D.comByDay[key] || 0;
     });
     return sparkSvg(days.map(function(key){ return byDay[key]; }));
   })();
@@ -1763,7 +1872,7 @@ function renderBrief(W){
     say(c.rate >= 75 ? 'good' : c.rate >= 55 ? 'warn' : 'bad',
       'من كل ' + bdi('100') + ' طلب يصل، يُؤكَّد <b>' + bdi(pct(c.rate)) + '</b> فقط. ' +
       'الباقي ' + bdi(String(miss)) + ' من الطلبات، قيمتها ' + moneyB(c.pending + c.lost) + '.',
-      c.rate < 75 ? 'كل نقطة مئوية في هذه النسبة ≈ ' + moneyB(c.n * 0.01 * c.avg * RATE) + ' من دخلك شهريًّا.' : '');
+      c.rate < 75 ? 'كل نقطة مئوية في هذه النسبة ≈ ' + moneyB(c.n * 0.01 * c.avg * D.eff) + ' من دخلك شهريًّا.' : '');
   }
 
   // ③ المعلّق الذي فات موعده — يحجز خانة ولا يتحوّل إلى شيء
@@ -1789,7 +1898,7 @@ function renderBrief(W){
   if (W.cap.perDay > 0){
     var held = W.cur.filter(function(b){ var s=b.status; return s==='confirmed'||s==='pending'; }).length;
     var occ = held / (W.cap.perDay * 30) * 100;
-    var perPoint = W.cap.perDay * 30 * 0.01 * (c.avg || W.cap.medPrice) * RATE;
+    var perPoint = W.cap.perDay * 30 * 0.01 * (c.avg || W.cap.medPrice) * D.eff;
     say(occ >= 40 ? 'good' : 'warn',
       'الإشغال <b>' + bdi(pct(occ)) + '</b> من طاقة ' +
       countNoun(W.cap.perDay,'خانة واحدة','خانتين','خانات','خانة') + ' يوميًّا عبر ' +
@@ -1830,7 +1939,8 @@ function renderDaily(){
            '<td class="n pos">' + d.confirmed + '</td>' +
            '<td class="n ' + (pd ? 'wait' : '') + '">' + pd + '</td>' +
            '<td class="n neg">' + d.lost + '</td>' +
-           '<td class="n num">' + money(d.revenue) + '</td><td class="n num">' + money(d.commission) + '</td></tr>';
+           '<td class="n num">' + money(d.revenue) + '</td><td class="n num">' +
+           money(D.comByDay[String(d.booking_date).slice(0,10)] || 0) + '</td></tr>';
   }).join('');
   // صفّ المجاميع: بلا هذا كان على المالك أن يجمع أربعة عشر رقمًا بنفسه
   var sumOf = function(k){ return rows.reduce(function(a,d){ return a + (+d[k]||0); }, 0); };
@@ -1839,7 +1949,8 @@ function renderDaily(){
     '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
     '<td class="n ' + (pdAll ? 'wait' : '') + '">' + pdAll + '</td>' +
     '<td class="n neg">' + sumOf('lost') + '</td>' +
-    '<td class="n">' + money(sumOf('revenue')) + '</td><td class="n">' + money(sumOf('commission')) + '</td></tr>';
+    '<td class="n">' + money(sumOf('revenue')) + '</td><td class="n">' +
+    money(rows.reduce(function(a,d){ return a + (D.comByDay[String(d.booking_date).slice(0,10)]||0); }, 0)) + '</td></tr>';
   renderRevChart(rows);
 }
 
@@ -1849,9 +1960,17 @@ function renderMonths(){
   var by = {};
   D.daily.forEach(function(d){
     var m = String(d.booking_date).slice(0,7); if (m.length !== 7) return;
-    var o = by[m] || (by[m] = { m:m, bookings:0, confirmed:0, revenue:0 });
+    var o = by[m] || (by[m] = { m:m, bookings:0, confirmed:0, revenue:0, com:0 });
     o.bookings += +d.bookings||0; o.confirmed += +d.confirmed||0; o.revenue += +d.revenue||0;
+
   });
+  /* 🔴 العمولة من **حسابنا** لا من `admin_daily.commission`، وعمدًا: العدّ
+     والمبيعات يأتيان من العرض (كامل التاريخ)، والعمولة تُحسَب هنا من الحجوزات
+     المجلوبة. ولو قُرئت من العرض لاختلف رقمُ هذا الجدول عن رقم جدول الأماكن
+     على **نفس الصفحة** ما دام الترحيل ٣٤ غير مُشغَّل — وصفحةٌ تقول رقمين
+     للربح نفسه أسوأ من صفحةٍ تقول رقمًا واحدًا محدود المدى. وحدُّ `BK_LIMIT`
+     معلَنٌ في شريط أعلى اللوحة عند بلوغه. */
+  Object.keys(by).forEach(function(m){ by[m].com = D.comByMonth[m] || 0; });
   var rows = Object.keys(by).sort().reverse().map(function(k){ return by[k]; });
   var tb = $('#months tbody'), tf = $('#months tfoot');
   if (!rows.length){ tb.innerHTML = '<tr><td colspan="6" class="muted-row">لا بيانات بعد</td></tr>'; tf.innerHTML=''; return; }
@@ -1874,14 +1993,15 @@ function renderMonths(){
     return '<tr><td>' + esc(r.m) + tag + '</td>' +
       '<td class="n num">' + r.bookings + '</td><td class="n pos">' + r.confirmed + '</td>' +
       '<td class="n num">' + money(r.revenue) + '</td>' +
-      '<td class="n num">' + money(r.revenue * RATE) + '</td>' +
+      '<td class="n num">' + money(r.com) + '</td>' +
       '<td class="n ' + gCls + '">' + gTxt + '</td></tr>';
   }).join('');
   var tR = rows.reduce(function(a,r){ return a + r.revenue; }, 0);
+  var tCom = rows.reduce(function(a,r){ return a + (r.com||0); }, 0);
   tf.innerHTML = '<tr><td>الإجمالي</td>' +
     '<td class="n">' + rows.reduce(function(a,r){ return a+r.bookings; },0) + '</td>' +
     '<td class="n pos">' + rows.reduce(function(a,r){ return a+r.confirmed; },0) + '</td>' +
-    '<td class="n">' + money(tR) + '</td><td class="n">' + money(tR * RATE) + '</td><td class="n">—</td></tr>';
+    '<td class="n">' + money(tR) + '</td><td class="n">' + money(tCom) + '</td><td class="n">—</td></tr>';
 }
 
 function renderMoney(W){
@@ -1908,7 +2028,7 @@ function renderMoney(W){
       ' · لم يردّ المالك، ولم يرفض</span>']);
   leakRows.push(
     ['ما زال معلّقًا — قابل للإنقاذ', moneyB(c.pending) + ' <span class="mk">· ' + nBooking(c.pd) + '</span>'],
-    ['دخلك الضائع من الملغى', moneyB(c.lost * RATE)]);
+    ['دخلك الضائع من الملغى', moneyB(c.lost * D.eff)]);
   if (HAS_NOSHOW) leakRows.push(
     ['لم يحضروا — انباعت وما انلعبت', moneyB(c.noShow) + ' <span class="mk">· ' + nBooking(c.ns) +
       ' · العمولة مستحقّة</span>']);
@@ -1933,8 +2053,8 @@ function renderMoney(W){
       ' <span class="mk">عبر ' + W.cap.fields + ' من الملاعب النشِطة</span>'],
     ['سعر الساعة الوسطي المستعمَل', moneyB(basePrice)],
     ['+1 نقطة إشغال = مبيعات', moneyB(perPoint) + ' <span class="mk">شهريًّا</span>'],
-    ['+1 نقطة إشغال = دخلك', moneyB(perPoint * RATE) + ' <span class="mk">شهريًّا</span>'],
-    ['+5 نقاط إشغال = دخلك', moneyB(perPoint * 5 * RATE) + ' <span class="mk">شهريًّا</span>']
+    ['+1 نقطة إشغال = دخلك', moneyB(perPoint * D.eff) + ' <span class="mk">شهريًّا</span>'],
+    ['+5 نقاط إشغال = دخلك', moneyB(perPoint * 5 * D.eff) + ' <span class="mk">شهريًّا</span>']
   ]) : '<p class="chart-empty">لا ملعب نشِط له خانات ⇒ لا طاقة تُقاس عليها.</p>';
 }
 
@@ -1998,11 +2118,11 @@ function renderRevChart(rows){
     var last7 = revs.slice(-7).reduce(function(a,b){ return a+b; }, 0);
     out.push('<div class="fc"><div class="fc-h">' +
       '<span class="fc-k">دخلك الأسبوع القادم (متوقَّع)</span>' +
-      '<span class="fc-v">' + money(Math.round(sum * RATE)) + '</span>' +
-      '<span class="fc-r">± ' + money(Math.round(band * RATE)) + '</span></div>' +
+      '<span class="fc-v">' + money(Math.round(sum * D.eff)) + '</span>' +
+      '<span class="fc-r">± ' + money(Math.round(band * D.eff)) + '</span></div>' +
       trendEl(sum, last7, 'عن الأسبوع الماضي') +
       '<p class="fc-m">خطّ مستقيم بالمربّعات الصغرى على مبيعات ' + nDay(chron.length) +
-      ' ممدودًا سبعة أيام، ثمّ ضُرب في نسبة عمولتك. ' +
+      ' ممدودًا سبعة أيام، ثمّ ضُرب في نسبتك الفعلية المقيسة من حجوزاتك (لا نسبةً ثابتة — العمولة متدرّجة ومسقوفة، فنسبتك تنزل كلّما اقترب ملعبٌ من سقفه). ' +
       'الـ± تشتّتُ الأيام حول ذلك الخطّ — لا هامش أمان مضاف.</p></div>');
     out.push('<div class="fc"><div class="fc-h">' +
       '<span class="fc-k">حجم المبيعات الأسبوع القادم</span>' +
@@ -2154,7 +2274,7 @@ function renderPlacesTab(){
            '<td class="n num">' + p.bookings + '</td><td class="n pos">' + p.confirmed + '</td>' +
            '<td class="n ' + (open ? 'wait' : '') + '">' + open + '</td>' +
            '<td class="n num">' + money(p.revenue) + '</td>' +
-           '<td class="n num">' + money((+p.revenue||0) * RATE) + '</td>' +
+           '<td class="n num">' + money(D.comByPlace[String(p.id)] || 0) + '</td>' +
            '<td class="n ad-c2"><span class="share"><span class="share-b">' +
              '<span class="share-f" style="inline-size:' + sh + '%"></span></span>' +
              '<span class="share-t">' + sh + '%</span></span></td>' +
@@ -2169,7 +2289,7 @@ function renderPlacesTab(){
     '<td class="n ad-c2">' + cntAll + '</td><td class="n ad-c2">' + capAll + '</td>' +
     '<td class="n">' + sumOf('bookings') + '</td><td class="n pos">' + sumOf('confirmed') + '</td>' +
     '<td class="n">' + Math.max(0, sumOf('bookings') - sumOf('confirmed')) + '</td>' +
-    '<td class="n">' + money(totalRev) + '</td><td class="n">' + money(totalRev * RATE) + '</td>' +
+    '<td class="n">' + money(totalRev) + '</td><td class="n">' + money(sorted.reduce(function(a,p){ return a + (D.comByPlace[String(p.id)]||0); }, 0)) + '</td>' +
     /* الخليّتان الفارغتان: التقييم و«عادوا عبرنا». ولا مجموع لأيّهما —
        متوسّطُ نسبٍ على أماكن مختلفة الأحجام رقمٌ لا معنى له، وجمعُها أسوأ. */
     '<td class="n ad-c2">100%</td><td class="ad-c2"></td><td class="ad-c2"></td><td></td></tr>';
@@ -2184,9 +2304,9 @@ function customerRoll(){
     var k = String(b.customer_phone || '').trim();
     if (!k) k = b.player_id ? 'u:' + b.player_id : '';
     if (!k) return;
-    var o = by[k] || (by[k] = { key:k, name:b.customer_name||'', n:0, cf:0, gmv:0, last:'', ordered:'' });
+    var o = by[k] || (by[k] = { key:k, name:b.customer_name||'', n:0, cf:0, gmv:0, com:0, last:'', ordered:'' });
     o.n++;
-    if (b.status === 'confirmed'){ o.cf++; o.gmv += +b.price||0; }
+    if (b.status === 'confirmed'){ o.cf++; o.gmv += +b.price||0; o.com += (D.com && D.com[bkKey(b)]) || 0; }
     if (!o.name && b.customer_name) o.name = b.customer_name;
     var d = String(b.booking_date||''); if (d > o.last) o.last = d;
     // ⚠️ «نشِط» تُقاس بتاريخ **الطلب** لا بتاريخ اللعب. من حجز أمس لمباراة
@@ -2246,7 +2366,7 @@ function renderCustomers(){
       '<td dir="ltr">' + esc(ph) + '</td>' +
       '<td class="n num">' + x.n + '</td><td class="n pos">' + x.cf + '</td>' +
       '<td class="n num">' + money(x.gmv) + '</td>' +
-      '<td class="n num">' + money(x.gmv * RATE) + '</td>' +
+      '<td class="n num">' + money(x.com || 0) + '</td>' +
       '<td>' + esc(x.last) + (lastD && !isNaN(lastD) ? ' <span class="mk" style="color:var(--muted)">· ' +
         esc(whenText(lastD)) + '</span>' : '') + '</td></tr>';
   }).join('');
@@ -2691,7 +2811,13 @@ var MIG = [
      فتتجمّد قائمتُه. والتطبيق يقرأ من العرض ⇒ لا «لم يحضر» ولا شارة مباراة
      مفتوحة ولا تمييز «انقضت المهلة»، **وبلا عطلٍ ظاهر** لأن الجلب يتراجع
      ثلاث جولات. يُصلحه [`30_bookings_full_refresh.sql`](db/migration/). */
-  { n:'30', label:'أعمدة العرض bookings_full', kind:'col', table:'bookings_full', col:'no_show' }
+  { n:'30', label:'أعمدة العرض bookings_full', kind:'col', table:'bookings_full', col:'no_show' },
+  /* ٣٤ — العمولة المتدرّجة. اللوحة تحسبها في المتصفّح على أي حال (فالأرقام
+     المعروضة صحيحة قبل الترحيل وبعده)، والذي يتوقّف عليه الترحيل هو **رقم
+     القاعدة نفسها**: `admin_daily.commission` ومعه العروض الشهرية التي يقرؤها
+     من يستعلم مباشرةً. فبدونه تبقى القاعدة تقول ١٠٪ ثابتة بينما اللوحة تقول
+     الحقيقة — رقمان لحقيقةٍ واحدة، وهو ما يقيسه هذا الصفّ. */
+  { n:'34', label:'العمولة المتدرّجة',        kind:'tbl',  table:'admin_month_commission' }
 ];
 var MIG_STATE = {};
 

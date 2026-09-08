@@ -892,7 +892,7 @@ html.dark .bp-zero dd{color:var(--lime)}
    **داخله فبنسبته الحقيقية**: بادل 20×10 و قدم 105×68 و تنس 23.8×11 ⇒
    الأشكال تخرج مختلفة فعلًا، والاختلاف نفسه هو الرسالة. */
 .sport-court{position:relative;align-self:stretch;aspect-ratio:16/10;overflow:hidden;
-  border-radius:var(--r-md);background:var(--teal-soft)}
+  border-radius:var(--r);background:var(--teal-soft)}
 /* سمات الرسم على اللوح لا على كل مخطّط: خمسة مخطّطات × ~90 محرف سمات
    كانت ستعيد الرئيسة إلى ما فوق ميزانيتها. `>` عمدًا — الأيقونة تحته
    وسماتها الخاصّة (مقاسها ومسارات ممتلئة) يجب ألّا تُطمَس بهذه. */
@@ -1296,7 +1296,7 @@ html.dark .in-link{color:var(--lime)}
    ولا نعلّقهما على `.has-js` لأنها تُزال حين يتأخّر `site.js` — وهو ملفّ لا
    شأن للنموذج به، فكان سيُخفي نموذجًا يعمل.
    ============================================================= */
-.join-card{background:var(--surface);border:1px solid var(--brd);border-radius:var(--r-lg,20px);
+.join-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg,20px);
   padding:clamp(20px,3.4vw,34px)}
 .join-form{display:none}
 #join.join-ready .join-form{display:block}
@@ -1313,7 +1313,7 @@ html.dark .in-link{color:var(--lime)}
 .join-wide{grid-column:1/-1}
 .join-f input,.join-f select,.join-f textarea{
   font:inherit;font-size:15px;color:var(--ink);background:var(--surface-2,var(--bg));
-  border:1px solid var(--brd);border-radius:12px;padding:11px 13px;width:100%}
+  border:1px solid var(--line);border-radius:12px;padding:11px 13px;width:100%}
 .join-f textarea{resize:vertical;min-height:82px}
 .join-f input:focus-visible,.join-f select:focus-visible,.join-f textarea:focus-visible{
   outline:2px solid var(--teal);outline-offset:2px}
@@ -1379,7 +1379,7 @@ html.dark .pl-search input:focus{border-color:var(--lime)}
 .pl-range-l{font-size:13.5px;font-weight:700;color:var(--muted)}
 .pl-range-i{inline-size:88px;min-height:44px;padding-inline:12px;
   font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)}
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .pl-range-i::placeholder{color:var(--muted);font-weight:500}
 .pl-range-i:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
 html.dark .pl-range-i:focus{border-color:var(--lime)}
